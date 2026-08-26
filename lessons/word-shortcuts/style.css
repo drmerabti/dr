@@ -137,12 +137,9 @@ html[dir="rtl"] .search-input{ padding: 13px 46px 13px 20px; }
 .search-input:focus{ border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
 .search-input::placeholder{ color: var(--ink-soft); opacity: .7; }
 
-/* ---------------- Category tabs (sticky) ---------------- */
+/* ---------------- Category tabs ---------------- */
 
 .cat-tabs{
-  position: sticky;
-  top: 76px;
-  z-index: 20;
   display: flex;
   justify-content: center;
   gap: 22px;
@@ -286,9 +283,9 @@ html[dir="rtl"] .search-input{ padding: 13px 46px 13px 20px; }
 
 .kb-modal{
   background: var(--card-bg);
-  border-radius: 24px;
-  padding: 26px 28px 30px;
-  max-width: 640px;
+  border-radius: 26px;
+  padding: 32px 34px 38px;
+  max-width: 880px;
   width: 100%;
   box-shadow: 0 30px 70px rgba(10,20,35,.4);
   text-align: center;
@@ -300,44 +297,49 @@ html[dir="rtl"] .search-input{ padding: 13px 46px 13px 20px; }
   inset-inline-end: 14px;
 }
 
-.kb-modal-head{ position: relative; margin-bottom: 6px; }
-.kb-sc-name{ font-size: 1.15rem; font-weight: 900; margin: 0 0 4px; }
-.kb-sc-desc{ font-size: .85rem; color: var(--ink-soft); margin: 0 0 20px; }
+.kb-modal-head{ position: relative; margin-bottom: 10px; }
+.kb-sc-name{ font-size: 1.3rem; font-weight: 900; margin: 0 0 6px; }
+.kb-sc-desc{ font-size: .92rem; color: var(--ink-soft); margin: 0 0 26px; }
 
 .virtual-keyboard{
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 9px;
   background: linear-gradient(180deg, #DCE4EC 0%, #C9D4E0 100%);
-  padding: 14px;
-  border-radius: 16px;
+  padding: 20px;
+  border-radius: 18px;
   box-shadow: inset 0 2px 6px rgba(21,36,49,.12);
 }
 .kb-row{
   display: flex;
-  gap: 5px;
+  gap: 8px;
   justify-content: center;
 }
 .vkey{
   flex: 1;
-  min-width: 22px;
-  max-width: 46px;
-  height: 34px;
+  min-width: 28px;
+  max-width: 58px;
+  height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 7px;
+  border-radius: 10px;
   background: linear-gradient(180deg, var(--key-top) 0%, var(--key-bottom) 100%);
   border: 1px solid var(--key-border);
   border-bottom: 3px solid var(--key-border-b);
   color: var(--key-ink);
   font-family: 'Inter', sans-serif;
-  font-size: .68rem;
+  font-size: .82rem;
   font-weight: 700;
-  box-shadow: 0 2px 4px rgba(21,36,49,.08);
+  box-shadow: 0 3px 5px rgba(21,36,49,.08);
+  padding: 0 4px;
+  text-align: center;
+  line-height: 1.1;
 }
-.vkey.wide{ max-width: 76px; }
-.vkey.space{ max-width: 220px; }
+.vkey.wide{ max-width: 96px; }
+.vkey.space{ max-width: 320px; }
+.vkey.group-gap{ margin-inline-start: 14px; }
+.vkey.tiny{ font-size: .66rem; }
 .vkey.hl{
   background: linear-gradient(180deg, var(--accent) 0%, var(--accent-dark) 100%);
   border-color: var(--accent-dark);
@@ -348,12 +350,15 @@ html[dir="rtl"] .search-input{ padding: 13px 46px 13px 20px; }
 }
 
 @media (max-width: 640px){
-  .kb-modal{ padding: 20px 14px 22px; }
-  .virtual-keyboard{ padding: 8px; gap: 4px; }
-  .kb-row{ gap: 3px; }
-  .vkey{ font-size: .56rem; height: 28px; min-width: 16px; border-radius: 5px; }
-  .vkey.wide{ max-width: 52px; }
-  .vkey.space{ max-width: 130px; }
+  .kb-modal{ padding: 22px 14px 26px; }
+  .kb-sc-name{ font-size: 1.1rem; }
+  .kb-sc-desc{ font-size: .82rem; margin-bottom: 18px; }
+  .virtual-keyboard{ padding: 10px; gap: 6px; }
+  .kb-row{ gap: 4px; }
+  .vkey{ font-size: .64rem; height: 34px; min-width: 18px; border-radius: 6px; }
+  .vkey.tiny{ font-size: .5rem; }
+  .vkey.wide{ max-width: 60px; }
+  .vkey.space{ max-width: 150px; }
 }
 
 /* ---------------- Word icon badge on lesson card ---------------- */
@@ -411,7 +416,7 @@ html[dir="rtl"] .training-cta svg{ transform: scaleX(-1); }
   .search-input{ font-size: .9rem; padding: 12px 18px 12px 42px; }
   html[dir="rtl"] .search-input{ padding: 12px 42px 12px 18px; }
 
-  .cat-tabs{ top: 66px; padding: 10px 14px; gap: 16px; justify-content: flex-start; }
+  .cat-tabs{ padding: 10px 14px; gap: 16px; justify-content: flex-start; }
   .cat-tab{ font-size: .82rem; }
 
   .wrap{ padding: 6px 14px 30px; }
