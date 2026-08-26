@@ -35,6 +35,11 @@ html[data-theme="dark"]{
   --danger: #E37474;
   --shadow: 0 16px 34px rgba(0,0,0,.35);
 }
+html[data-theme="dark"] body{
+  background:
+    linear-gradient(160deg, rgba(22,32,43,.94) 0%, rgba(13,20,28,.94) 100%),
+    var(--bg-bottom) center/cover no-repeat fixed;
+}
 
 *{ box-sizing: border-box; }
 
@@ -49,7 +54,8 @@ html, body{
 
 body{
   background:
-    linear-gradient(160deg, var(--bg-top) 0%, var(--bg-bottom) 100%) fixed;
+    linear-gradient(160deg, rgba(22,32,43,.94) 0%, rgba(13,20,28,.94) 100%),
+    var(--bg-bottom) center/cover no-repeat fixed;
   transition: background .2s ease;
 }
 
@@ -608,6 +614,7 @@ html[dir="rtl"] .inv-meta{ text-align: left; }
   font-size: 15px;
   font-weight: 700;
   color: var(--text);
+  white-space: pre-line;
 }
 
 .inv-table{
