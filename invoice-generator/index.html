@@ -13,6 +13,9 @@
 
 <div class="topbar">
   <div class="brand">
+    <a href="../" class="icon-btn" id="backHomeBtn" aria-label="Back to homepage" title="Back to homepage">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12l9-9 9 9"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg>
+    </a>
     <span class="brand-mark">IG</span>
     <span class="brand-name" data-i18n="appTitle">Invoice Generator</span>
   </div>
@@ -63,7 +66,7 @@
 
       <div class="field">
         <label class="field-label" data-i18n="customer">Customer</label>
-        <input type="text" id="customerName" class="input" data-i18n-placeholder="customerPlaceholder" placeholder="Customer name">
+        <textarea id="customerName" class="input" rows="2" data-i18n-placeholder="customerPlaceholder" placeholder="Customer name"></textarea>
       </div>
     </div>
 
