@@ -193,10 +193,12 @@ const CONTENT = {
   trainings: [
     {
       id: 'training-word-basics',
-      title_ar: 'تمرين: أساسيات وورد',
-      title_en: 'Exercise: Word basics',
-      desc_ar: 'تمرين عملي لتثبيت ما تعلمته في دروس وورد الأساسية.',
-      desc_en: 'A hands-on exercise to reinforce the basic Word lessons.',
+      title_ar: 'تدريب شامل في وورد',
+      title_en: 'Complete Word Training',
+      desc_ar: '5 مستويات، 30 سؤال لكل مستوى (اختصارات ومعلومات عامة)، بصعوبة تصاعدية.',
+      desc_en: '5 levels, 30 questions each (shortcuts and general knowledge), increasing difficulty.',
+      url: 'trainings/word-training/',
+      icon: ICONS.wordApp,
     },
     // لإضافة اختبار جديد (Excel, Word, إعلام آلي...) أضف كائنًا هنا بنفس الشكل:
     // { id:'training-excel-1', title_ar:'اختبار: أساسيات إكسل', title_en:'Quiz: Excel basics',
