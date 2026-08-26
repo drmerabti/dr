@@ -8,6 +8,15 @@
 const CONTENT = {
   lessons: [
     {
+      id: 'lesson-word-shortcuts',
+      title_ar: 'اختصارات لوحة المفاتيح في وورد',
+      title_en: 'Word Keyboard Shortcuts',
+      desc_ar: 'أكثر من 100 اختصار مصنّف لتسريع عملك اليومي في مايكروسوفت وورد.',
+      desc_en: '100+ categorized shortcuts to speed up your everyday work in Microsoft Word.',
+      category: 'Word',
+      url: 'lessons/word-shortcuts/',
+    },
+    {
       id: 'lesson-word-move-image',
       title_ar: 'تحريك الصورة بسهولة في وورد',
       title_en: 'Moving images easily in Word',
@@ -51,14 +60,13 @@ const CONTENT = {
      }
   ============================== */
   tools: [
-    { id: 'tool-text-to-numbers', title_ar: 'تحويل الحروف إلى أرقام', title_en: 'Text to Numbers',
-      desc_ar: 'حوّل أي نص إلى أرقام حسب موضع كل حرف في الأبجدية.', desc_en: 'Convert any text into numbers based on letter position.',
-     url: 'tools/text-to-numbers/' },
+    { id: 'tool-text-to-numbers', title_ar: 'تحويل الأرقام إلى نص', title_en: 'Number to Words',
+      desc_ar: 'حوّل أي رقم إلى نص مكتوب بالعربية أو الإنجليزية أو الفرنسية، مع إمكانية إضافة اسم العملة.', desc_en: 'Convert any number into written words in Arabic, English, or French, with an optional currency name.',
+      url: 'tools/text-to-numbers/' },
     { id: 'tool-invoice-generator', title_ar: 'مولّد الفواتير', title_en: 'Invoice Generator',
       desc_ar: 'أنشئ فاتورة احترافية مع شعار، توقيع، ضريبة، وتحويل المبلغ إلى حروف — بثلاث لغات.',
       desc_en: 'Generate a professional invoice with logo, signature, VAT, and amount-in-words — in three languages.',
       url: 'https://drmerabti.github.io/dr/invoice-generator/', external: true },
-    // لإضافة أداة جديدة أضف سطرًا هنا بنفس الشكل:
     // لإضافة أداة جديدة أضف سطرًا هنا بنفس الشكل:
     // { id:'tool-distance', title_ar:'حساب المسافة بين منطقتين', title_en:'Distance Calculator',
     //   desc_ar:'احسب المسافة بين نقطتين جغرافيتين بسهولة.', desc_en:'Calculate distance between two locations.',
@@ -327,13 +335,13 @@ function renderSectionItems(){
   }
 
   items.forEach(item => {
-    if (key === 'tools' && item.url){
+    if (item.url){
       const card = document.createElement('a');
       card.className = 'item-card';
       card.href = item.url;
       card.style.textDecoration = 'none';
       card.style.color = 'inherit';
-           card.style.display = 'block';
+      card.style.display = 'block';
       if (item.external){
         card.target = '_blank';
         card.rel = 'noopener';
@@ -456,7 +464,7 @@ function initSearch(){
 
     searchResults.innerHTML = matches.length
       ? matches.map(m => {
-          const href = m.listKey === 'tools' && m.url ? m.url : `${pageByKey[m.listKey]}#${m.id}`;
+          const href = m.url ? m.url : `${pageByKey[m.listKey]}#${m.id}`;
           return `
             <div class="result-item" data-href="${href}">
               <span>${lang === 'ar' ? m.title_ar : m.title_en}</span>
