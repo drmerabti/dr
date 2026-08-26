@@ -6,6 +6,31 @@
 ===================================================================== */
 
 const ICONS = {
+  invoiceApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="gInvA" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#8CC9A8"/><stop offset="1" stop-color="#2E8A5B"/>
+      </linearGradient>
+    </defs>
+    <ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/>
+    <path d="M12 6c-1.7 0-3 1.3-3 3v30c0 1.7 1.3 3 3 3h24c1.7 0 3-1.3 3-3V6H12z" fill="url(#gInvA)"/>
+    <path d="M15 14h18M15 20h18M15 26h11" stroke="#EAF6EF" stroke-width="2" stroke-linecap="round"/>
+    <circle cx="24" cy="35" r="6.5" fill="#fff"/>
+    <path d="M24 31.5v7M21.7 33.2c0-1 1-1.7 2.3-1.7s2.3.6 2.3 1.5c0 2-4.6 1-4.6 3 0 .9 1 1.6 2.3 1.6s2.3-.6 2.3-1.5" stroke="#2E8A5B" stroke-width="1.3" stroke-linecap="round" fill="none"/>
+  </svg>`,
+  numbersApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="gNumA" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#F6BEDA"/><stop offset="1" stop-color="#B15C86"/>
+      </linearGradient>
+    </defs>
+    <ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/>
+    <rect x="5" y="14" width="16" height="20" rx="5" fill="url(#gNumA)"/>
+    <text x="13" y="27" font-family="Inter, sans-serif" font-size="11" font-weight="800" fill="#fff" text-anchor="middle">123</text>
+    <rect x="27" y="14" width="16" height="20" rx="5" fill="#F6E4EE"/>
+    <text x="35" y="27" font-family="Inter, sans-serif" font-size="9" font-weight="800" fill="#B15C86" text-anchor="middle">ABC</text>
+    <path d="M22.5 24h3.5m-1.5-1.5 1.5 1.5-1.5 1.5" stroke="#7A4260" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </svg>`,
   wordApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <linearGradient id="gWordA" x1="0" y1="0" x2="0" y2="1">
@@ -127,26 +152,6 @@ const CONTENT = {
       url: 'lessons/word-shortcuts/',
       icon: ICONS.wordApp,
     },
-    {
-      id: 'lesson-word-move-image',
-      title_ar: 'تحريك الصورة بسهولة في وورد',
-      title_en: 'Moving images easily in Word',
-      desc_ar: 'شرح خطوة بخطوة لتحريك الصور وتموضعها داخل مستند وورد.',
-      desc_en: 'A step-by-step guide to positioning and moving images inside a Word document.',
-      category: 'Word',
-      videoUrl: 'https://www.youtube.com/watch?v=7kxAqiy4ER0',
-      relatedTraining: 'training-word-basics',
-    },
-    {
-      id: 'lesson-word-table-move',
-      title_ar: 'تحريك الجدول بسهولة في وورد',
-      title_en: 'Moving tables easily in Word',
-      desc_ar: 'كيفية تحريك وتنظيم الجداول داخل المستند بدون تعقيد.',
-      desc_en: 'How to move and organize tables inside a document without hassle.',
-      category: 'Word',
-      videoUrl: 'https://www.youtube.com/watch?v=zFBEXsB-ZVo',
-      relatedTraining: 'training-word-basics',
-    },
   ],
   apps: [
     {
@@ -173,11 +178,11 @@ const CONTENT = {
   tools: [
     { id: 'tool-text-to-numbers', title_ar: 'تحويل الأرقام إلى نص', title_en: 'Number to Words',
       desc_ar: 'حوّل أي رقم إلى نص مكتوب بالعربية أو الإنجليزية أو الفرنسية، مع إمكانية إضافة اسم العملة.', desc_en: 'Convert any number into written words in Arabic, English, or French, with an optional currency name.',
-      url: 'tools/text-to-numbers/' },
+      url: 'tools/text-to-numbers/', icon: ICONS.numbersApp },
     { id: 'tool-invoice-generator', title_ar: 'مولّد الفواتير', title_en: 'Invoice Generator',
       desc_ar: 'أنشئ فاتورة احترافية مع شعار، توقيع، ضريبة، وتحويل المبلغ إلى حروف — بثلاث لغات.',
       desc_en: 'Generate a professional invoice with logo, signature, VAT, and amount-in-words — in three languages.',
-      url: 'https://drmerabti.github.io/dr/invoice-generator/', external: true },
+      url: 'https://drmerabti.github.io/dr/invoice-generator/', external: true, icon: ICONS.invoiceApp },
     // لإضافة أداة جديدة أضف سطرًا هنا بنفس الشكل:
     // { id:'tool-distance', title_ar:'حساب المسافة بين منطقتين', title_en:'Distance Calculator',
     //   desc_ar:'احسب المسافة بين نقطتين جغرافيتين بسهولة.', desc_en:'Calculate distance between two locations.',
@@ -192,7 +197,6 @@ const CONTENT = {
       title_en: 'Exercise: Word basics',
       desc_ar: 'تمرين عملي لتثبيت ما تعلمته في دروس وورد الأساسية.',
       desc_en: 'A hands-on exercise to reinforce the basic Word lessons.',
-      relatedLesson: 'lesson-word-move-image',
     },
     // لإضافة اختبار جديد (Excel, Word, إعلام آلي...) أضف كائنًا هنا بنفس الشكل:
     // { id:'training-excel-1', title_ar:'اختبار: أساسيات إكسل', title_en:'Quiz: Excel basics',
@@ -359,7 +363,7 @@ function renderSectionItems(){
         card.rel = 'noopener';
       }
       card.innerHTML = `
-        ${item.icon ? `<span class="icon-badge item-icon-badge">${item.icon}</span>` : ''}
+        ${item.icon ? `<span class="icon-badge badge-${key}">${item.icon}</span>` : ''}
         <h3>${lang === 'ar' ? item.title_ar : item.title_en}</h3>
         <p>${lang === 'ar' ? item.desc_ar : item.desc_en}</p>
         ${shareButtonsHtml(lang === 'ar' ? item.title_ar : item.title_en, item.external ? item.url : (location.origin + location.pathname.replace(/[^/]*$/, '') + item.url))}
