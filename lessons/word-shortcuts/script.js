@@ -169,7 +169,7 @@
 
   const KB_ROWS = [
     [{ k: "Esc", w: "wide" }, { k: "F1" }, { k: "F2" }, { k: "F3" }, { k: "F4" }, { k: "F5" }, { k: "F6" }, { k: "F7" }, { k: "F8" }, { k: "F9" }, { k: "F10" }, { k: "F11" }, { k: "F12" }],
-    ["`", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", { k: "Backspace", w: "wide" }, { k: "Delete", w: "wide" }],
+    ["`", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", { k: "Backspace", w: "wide" }, { k: "Delete", w: "wide", gap: true }],
     [{ k: "Tab", w: "wide" }, "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "[", "]", "\\"],
     [{ k: "CapsLock", w: "wide" }, "A", "S", "D", "F", "G", "H", "J", "K", "L", ";", "'", { k: "Enter", w: "wide" }],
     [{ k: "Shift", w: "wide" }, "Z", "X", "C", "V", "B", "N", "M", ",", ".", "/", { k: "Shift", w: "wide" }],
@@ -197,6 +197,7 @@
     els.kbScDesc.textContent = shortcut.desc[lang];
 
     const wanted = new Set(shortcut.keys.map(normalizeKey));
+    const alreadyHighlighted = new Set();
 
     let html = "";
     KB_ROWS.forEach((row) => {
@@ -205,8 +206,17 @@
         const isObj = typeof cell === "object";
         const label = isObj ? cell.k : cell;
         const widthClass = isObj && cell.w ? " " + cell.w : "";
-        const isHl = wanted.has(normalizeKey(label));
-        html += `<span class="vkey${widthClass}${isHl ? " hl" : ""}">${label}</span>`;
+        const gapClass = isObj && cell.gap ? " group-gap" : "";
+        const norm = normalizeKey(label);
+        const tinyClass = label.length >= 6 ? " tiny" : "";
+
+        let hlClass = "";
+        if (wanted.has(norm) && !alreadyHighlighted.has(norm)) {
+          hlClass = " hl";
+          alreadyHighlighted.add(norm);
+        }
+
+        html += `<span class="vkey${widthClass}${gapClass}${tinyClass}${hlClass}">${label}</span>`;
       });
       html += "</div>";
     });
