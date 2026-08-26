@@ -53,7 +53,12 @@ const CONTENT = {
   tools: [
     { id: 'tool-text-to-numbers', title_ar: 'تحويل الحروف إلى أرقام', title_en: 'Text to Numbers',
       desc_ar: 'حوّل أي نص إلى أرقام حسب موضع كل حرف في الأبجدية.', desc_en: 'Convert any text into numbers based on letter position.',
-      url: 'tools/text-to-numbers/' },
+     url: 'tools/text-to-numbers/' },
+    { id: 'tool-invoice-generator', title_ar: 'مولّد الفواتير', title_en: 'Invoice Generator',
+      desc_ar: 'أنشئ فاتورة احترافية مع شعار، توقيع، ضريبة، وتحويل المبلغ إلى حروف — بثلاث لغات.',
+      desc_en: 'Generate a professional invoice with logo, signature, VAT, and amount-in-words — in three languages.',
+      url: 'https://drmerabti.github.io/dr/invoice-generator/', external: true },
+    // لإضافة أداة جديدة أضف سطرًا هنا بنفس الشكل:
     // لإضافة أداة جديدة أضف سطرًا هنا بنفس الشكل:
     // { id:'tool-distance', title_ar:'حساب المسافة بين منطقتين', title_en:'Distance Calculator',
     //   desc_ar:'احسب المسافة بين نقطتين جغرافيتين بسهولة.', desc_en:'Calculate distance between two locations.',
@@ -328,11 +333,15 @@ function renderSectionItems(){
       card.href = item.url;
       card.style.textDecoration = 'none';
       card.style.color = 'inherit';
-      card.style.display = 'block';
+           card.style.display = 'block';
+      if (item.external){
+        card.target = '_blank';
+        card.rel = 'noopener';
+      }
       card.innerHTML = `
         <h3>${lang === 'ar' ? item.title_ar : item.title_en}</h3>
         <p>${lang === 'ar' ? item.desc_ar : item.desc_en}</p>
-        ${shareButtonsHtml(lang === 'ar' ? item.title_ar : item.title_en, location.origin + location.pathname.replace(/[^/]*$/, '') + item.url)}
+        ${shareButtonsHtml(lang === 'ar' ? item.title_ar : item.title_en, item.external ? item.url : (location.origin + location.pathname.replace(/[^/]*$/, '') + item.url))}
       `;
       wrap.appendChild(card);
     } else {
