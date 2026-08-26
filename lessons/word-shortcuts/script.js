@@ -169,9 +169,9 @@
 
   const KB_ROWS = [
     [{ k: "Esc", w: "wide" }, { k: "F1" }, { k: "F2" }, { k: "F3" }, { k: "F4" }, { k: "F5" }, { k: "F6" }, { k: "F7" }, { k: "F8" }, { k: "F9" }, { k: "F10" }, { k: "F11" }, { k: "F12" }],
-    ["`", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", { k: "Backspace", w: "wide" }, { k: "Delete", w: "wide", gap: true }],
+    ["`", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", { k: "Backspace", w: "wide", icon: "backspace" }, { k: "Delete", w: "wide", gap: true }],
     [{ k: "Tab", w: "wide" }, "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "[", "]", "\\"],
-    [{ k: "CapsLock", w: "wide" }, "A", "S", "D", "F", "G", "H", "J", "K", "L", ";", "'", { k: "Enter", w: "wide" }],
+    [{ k: "CapsLock", w: "wide", icon: "lock" }, "A", "S", "D", "F", "G", "H", "J", "K", "L", ";", "'", { k: "Enter", w: "wide" }],
     [{ k: "Shift", w: "wide" }, "Z", "X", "C", "V", "B", "N", "M", ",", ".", "/", { k: "Shift", w: "wide" }],
     [{ k: "Ctrl", w: "wide" }, { k: "Alt", w: "wide" }, { k: "Space", w: "space" }, { k: "Alt", w: "wide" }, { k: "Ctrl", w: "wide" }],
     [{ k: "Home" }, { k: "End" }, { k: "PageUp" }, { k: "PageDown" }, { k: "\u2191" }, { k: "\u2190" }, { k: "\u2193" }, { k: "\u2192" }],
@@ -192,6 +192,11 @@
     return String(k).toUpperCase();
   }
 
+  const VKEY_ICONS = {
+    backspace: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><path d="M12 9l6 6M18 9l-6 6" stroke-linecap="round"/></svg>',
+    lock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4" stroke-linecap="round"/></svg>',
+  };
+
   function openKeyboard(shortcut) {
     els.kbScName.textContent = shortcut.name[lang];
     els.kbScDesc.textContent = shortcut.desc[lang];
@@ -208,7 +213,8 @@
         const widthClass = isObj && cell.w ? " " + cell.w : "";
         const gapClass = isObj && cell.gap ? " group-gap" : "";
         const norm = normalizeKey(label);
-        const tinyClass = label.length >= 6 ? " tiny" : "";
+        const tinyClass = !isObj || !cell.icon ? (label.length >= 6 ? " tiny" : "") : "";
+        const content = isObj && cell.icon ? VKEY_ICONS[cell.icon] : label;
 
         let hlClass = "";
         if (wanted.has(norm) && !alreadyHighlighted.has(norm)) {
@@ -216,7 +222,7 @@
           alreadyHighlighted.add(norm);
         }
 
-        html += `<span class="vkey${widthClass}${gapClass}${tinyClass}${hlClass}">${label}</span>`;
+        html += `<span class="vkey${widthClass}${gapClass}${tinyClass}${hlClass}">${content}</span>`;
       });
       html += "</div>";
     });
