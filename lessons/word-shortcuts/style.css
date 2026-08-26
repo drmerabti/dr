@@ -144,33 +144,42 @@ html[dir="rtl"] .search-input{ padding: 13px 46px 13px 20px; }
   top: 76px;
   z-index: 20;
   display: flex;
-  gap: 8px;
+  justify-content: center;
+  gap: 22px;
   overflow-x: auto;
-  padding: 10px 20px;
+  padding: 14px 20px;
   margin-bottom: 8px;
-  background: rgba(233,241,246,.85);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
   scrollbar-width: none;
 }
 .cat-tabs::-webkit-scrollbar{ display: none; }
 
 .cat-tab{
   flex-shrink: 0;
-  border: 1px solid var(--line);
-  background: var(--card-bg);
+  border: none;
+  background: transparent;
   color: var(--ink-soft);
   font-family: inherit;
-  font-size: .85rem;
+  font-size: .9rem;
   font-weight: 700;
-  padding: 10px 18px;
-  border-radius: 999px;
+  padding: 8px 4px;
   cursor: pointer;
   white-space: nowrap;
-  transition: background .15s ease, color .15s ease, border-color .15s ease;
+  position: relative;
+  transition: transform .2s cubic-bezier(.2,.8,.3,1.4), color .2s ease;
 }
-.cat-tab:hover{ border-color: var(--accent); color: var(--ink); }
-.cat-tab.active{ background: var(--accent); border-color: var(--accent); color: #fff; }
+.cat-tab:hover{ color: var(--accent-dark); transform: translateY(-3px) scale(1.12); }
+.cat-tab.active{ color: var(--accent-dark); font-weight: 900; }
+.cat-tab.active::after{
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70%;
+  height: 3px;
+  border-radius: 3px;
+  background: var(--accent);
+}
 
 /* ---------------- Content ---------------- */
 
@@ -205,11 +214,12 @@ html[dir="rtl"] .search-input{ padding: 13px 46px 13px 20px; }
   display: flex;
   flex-direction: column;
   gap: 14px;
-  transition: transform .15s ease, box-shadow .15s ease;
+  cursor: pointer;
+  transition: transform .22s cubic-bezier(.2,.8,.3,1.4), box-shadow .22s ease;
 }
 .sc-card:hover{
-  transform: translateY(-3px);
-  box-shadow: 0 14px 28px rgba(21,36,49,.12);
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 22px 40px rgba(21,36,49,.18);
 }
 
 .sc-body{ flex: 1; }
@@ -260,7 +270,99 @@ html[dir="rtl"] .search-input{ padding: 13px 46px 13px 20px; }
   color: var(--ink-soft);
 }
 
-/* ---------------- No results / training CTA ---------------- */
+/* ---------------- Virtual Keyboard Modal ---------------- */
+
+.kb-overlay{
+  position: fixed;
+  inset: 0;
+  background: rgba(20,30,45,.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 20px;
+}
+.kb-overlay.hidden{ display: none; }
+
+.kb-modal{
+  background: var(--card-bg);
+  border-radius: 24px;
+  padding: 26px 28px 30px;
+  max-width: 640px;
+  width: 100%;
+  box-shadow: 0 30px 70px rgba(10,20,35,.4);
+  text-align: center;
+}
+
+.kb-close{
+  position: absolute;
+  top: 14px;
+  inset-inline-end: 14px;
+}
+
+.kb-modal-head{ position: relative; margin-bottom: 6px; }
+.kb-sc-name{ font-size: 1.15rem; font-weight: 900; margin: 0 0 4px; }
+.kb-sc-desc{ font-size: .85rem; color: var(--ink-soft); margin: 0 0 20px; }
+
+.virtual-keyboard{
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: linear-gradient(180deg, #DCE4EC 0%, #C9D4E0 100%);
+  padding: 14px;
+  border-radius: 16px;
+  box-shadow: inset 0 2px 6px rgba(21,36,49,.12);
+}
+.kb-row{
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+}
+.vkey{
+  flex: 1;
+  min-width: 22px;
+  max-width: 46px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+  background: linear-gradient(180deg, var(--key-top) 0%, var(--key-bottom) 100%);
+  border: 1px solid var(--key-border);
+  border-bottom: 3px solid var(--key-border-b);
+  color: var(--key-ink);
+  font-family: 'Inter', sans-serif;
+  font-size: .68rem;
+  font-weight: 700;
+  box-shadow: 0 2px 4px rgba(21,36,49,.08);
+}
+.vkey.wide{ max-width: 76px; }
+.vkey.space{ max-width: 220px; }
+.vkey.hl{
+  background: linear-gradient(180deg, var(--accent) 0%, var(--accent-dark) 100%);
+  border-color: var(--accent-dark);
+  border-bottom-color: #17293A;
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(34,65,90,.4);
+}
+
+@media (max-width: 640px){
+  .kb-modal{ padding: 20px 14px 22px; }
+  .virtual-keyboard{ padding: 8px; gap: 4px; }
+  .kb-row{ gap: 3px; }
+  .vkey{ font-size: .56rem; height: 28px; min-width: 16px; border-radius: 5px; }
+  .vkey.wide{ max-width: 52px; }
+  .vkey.space{ max-width: 130px; }
+}
+
+/* ---------------- Word icon badge on lesson card ---------------- */
+.sc-icon-badge{
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 14px;
+}
+.sc-icon-badge svg{ width: 100%; height: 100%; }
 
 .no-results{
   text-align: center;
@@ -309,8 +411,8 @@ html[dir="rtl"] .training-cta svg{ transform: scaleX(-1); }
   .search-input{ font-size: .9rem; padding: 12px 18px 12px 42px; }
   html[dir="rtl"] .search-input{ padding: 12px 42px 12px 18px; }
 
-  .cat-tabs{ top: 66px; padding: 8px 14px; }
-  .cat-tab{ font-size: .8rem; padding: 8px 14px; }
+  .cat-tabs{ top: 66px; padding: 10px 14px; gap: 16px; justify-content: flex-start; }
+  .cat-tab{ font-size: .82rem; }
 
   .wrap{ padding: 6px 14px 30px; }
   .sc-grid{ grid-template-columns: 1fr; gap: 10px; }
