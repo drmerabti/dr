@@ -49,7 +49,7 @@
 
   function formatMoney(n) {
     const num = isFinite(n) ? n : 0;
-    return "$" + num.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return num.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 
   function clampNonNegative(n) {
