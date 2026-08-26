@@ -5,92 +5,18 @@
    داخل CONTENT.tools فقط — لا حاجة لتعديل أي صفحة أخرى.
 ===================================================================== */
 
-const CONTENT = {
-  lessons: [
-    {
-      id: 'lesson-word-shortcuts',
-      title_ar: 'اختصارات لوحة المفاتيح في وورد',
-      title_en: 'Word Keyboard Shortcuts',
-      desc_ar: 'أكثر من 100 اختصار مصنّف لتسريع عملك اليومي في مايكروسوفت وورد.',
-      desc_en: '100+ categorized shortcuts to speed up your everyday work in Microsoft Word.',
-      category: 'Word',
-      url: 'lessons/word-shortcuts/',
-    },
-    {
-      id: 'lesson-word-move-image',
-      title_ar: 'تحريك الصورة بسهولة في وورد',
-      title_en: 'Moving images easily in Word',
-      desc_ar: 'شرح خطوة بخطوة لتحريك الصور وتموضعها داخل مستند وورد.',
-      desc_en: 'A step-by-step guide to positioning and moving images inside a Word document.',
-      category: 'Word',
-      videoUrl: 'https://www.youtube.com/watch?v=7kxAqiy4ER0',
-      relatedTraining: 'training-word-basics',
-    },
-    {
-      id: 'lesson-word-table-move',
-      title_ar: 'تحريك الجدول بسهولة في وورد',
-      title_en: 'Moving tables easily in Word',
-      desc_ar: 'كيفية تحريك وتنظيم الجداول داخل المستند بدون تعقيد.',
-      desc_en: 'How to move and organize tables inside a document without hassle.',
-      category: 'Word',
-      videoUrl: 'https://www.youtube.com/watch?v=zFBEXsB-ZVo',
-      relatedTraining: 'training-word-basics',
-    },
-  ],
-  apps: [
-    {
-      id: 'app-word-shortcuts',
-      title_ar: 'اختصارات وورد',
-      title_en: 'Word Shortcuts',
-      desc_ar: 'تطبيق ثنائي اللغة لتعلّم أهم اختصارات لوحة المفاتيح في مايكروسوفت وورد.',
-      desc_en: 'A bilingual app for learning the most useful Microsoft Word keyboard shortcuts.',
-      platform_ar: 'أندرويد',
-      platform_en: 'Android',
-      playStoreUrl: '',
-    },
-  ],
-  /* ============ الأدوات ============
-     كل عنصر هنا = أداة قائمة بذاتها لها مجلدها ورابطها الخاص.
-     لإضافة أداة جديدة أضف كائنًا جديدًا هنا بنفس الشكل:
-     {
-       id: 'tool-xxx',
-       title_ar: '...', title_en: '...',
-       desc_ar: '...', desc_en: '...',
-       url: 'tools/xxx/'
-     }
-  ============================== */
-  tools: [
-    { id: 'tool-text-to-numbers', title_ar: 'تحويل الأرقام إلى نص', title_en: 'Number to Words',
-      desc_ar: 'حوّل أي رقم إلى نص مكتوب بالعربية أو الإنجليزية أو الفرنسية، مع إمكانية إضافة اسم العملة.', desc_en: 'Convert any number into written words in Arabic, English, or French, with an optional currency name.',
-      url: 'tools/text-to-numbers/' },
-    { id: 'tool-invoice-generator', title_ar: 'مولّد الفواتير', title_en: 'Invoice Generator',
-      desc_ar: 'أنشئ فاتورة احترافية مع شعار، توقيع، ضريبة، وتحويل المبلغ إلى حروف — بثلاث لغات.',
-      desc_en: 'Generate a professional invoice with logo, signature, VAT, and amount-in-words — in three languages.',
-      url: 'https://drmerabti.github.io/dr/invoice-generator/', external: true },
-    // لإضافة أداة جديدة أضف سطرًا هنا بنفس الشكل:
-    // { id:'tool-distance', title_ar:'حساب المسافة بين منطقتين', title_en:'Distance Calculator',
-    //   desc_ar:'احسب المسافة بين نقطتين جغرافيتين بسهولة.', desc_en:'Calculate distance between two locations.',
-    //   url:'tools/distance-calculator/' },
-  ],
-  resources: [],
-  services: [],
-  trainings: [
-    {
-      id: 'training-word-basics',
-      title_ar: 'تمرين: أساسيات وورد',
-      title_en: 'Exercise: Word basics',
-      desc_ar: 'تمرين عملي لتثبيت ما تعلمته في دروس وورد الأساسية.',
-      desc_en: 'A hands-on exercise to reinforce the basic Word lessons.',
-      relatedLesson: 'lesson-word-move-image',
-    },
-    // لإضافة اختبار جديد (Excel, Word, إعلام آلي...) أضف كائنًا هنا بنفس الشكل:
-    // { id:'training-excel-1', title_ar:'اختبار: أساسيات إكسل', title_en:'Quiz: Excel basics',
-    //   desc_ar:'وصف الاختبار.', desc_en:'Quiz description.' },
-  ],
-};
-
-/* ============ أيقونات SVG (ستايل شبه ثلاثي الأبعاد: ظلال + انعكاسات ضوء) ============ */
 const ICONS = {
+  wordApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="gWordA" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#4A9AE8"/><stop offset="1" stop-color="#1857A8"/>
+      </linearGradient>
+    </defs>
+    <ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/>
+    <path d="M11 6c-1.7 0-3 1.3-3 3v30c0 1.7 1.3 3 3 3h20c1.7 0 3-1.3 3-3V15l-9-9H11z" fill="url(#gWordA)"/>
+    <path d="M25 6v7c0 1.1.9 2 2 2h7z" fill="#8FC2F5" opacity=".6"/>
+    <path d="M13.5 22.5h3.2l2.1 10.4 2.4-10.4h3.6l2.4 10.4 2.1-10.4h3.2l-3.6 15h-3.6l-2.3-9.7-2.3 9.7h-3.6z" fill="#fff"/>
+  </svg>`,
   lessons: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <linearGradient id="gLessonsL" x1="0" y1="0" x2="0" y2="1">
@@ -189,6 +115,92 @@ const ICONS = {
   </svg>`,
 };
 
+const CONTENT = {
+  lessons: [
+    {
+      id: 'lesson-word-shortcuts',
+      title_ar: 'اختصارات لوحة المفاتيح في وورد',
+      title_en: 'Word Keyboard Shortcuts',
+      desc_ar: 'أكثر من 100 اختصار مصنّف لتسريع عملك اليومي في مايكروسوفت وورد.',
+      desc_en: '100+ categorized shortcuts to speed up your everyday work in Microsoft Word.',
+      category: 'Word',
+      url: 'lessons/word-shortcuts/',
+      icon: ICONS.wordApp,
+    },
+    {
+      id: 'lesson-word-move-image',
+      title_ar: 'تحريك الصورة بسهولة في وورد',
+      title_en: 'Moving images easily in Word',
+      desc_ar: 'شرح خطوة بخطوة لتحريك الصور وتموضعها داخل مستند وورد.',
+      desc_en: 'A step-by-step guide to positioning and moving images inside a Word document.',
+      category: 'Word',
+      videoUrl: 'https://www.youtube.com/watch?v=7kxAqiy4ER0',
+      relatedTraining: 'training-word-basics',
+    },
+    {
+      id: 'lesson-word-table-move',
+      title_ar: 'تحريك الجدول بسهولة في وورد',
+      title_en: 'Moving tables easily in Word',
+      desc_ar: 'كيفية تحريك وتنظيم الجداول داخل المستند بدون تعقيد.',
+      desc_en: 'How to move and organize tables inside a document without hassle.',
+      category: 'Word',
+      videoUrl: 'https://www.youtube.com/watch?v=zFBEXsB-ZVo',
+      relatedTraining: 'training-word-basics',
+    },
+  ],
+  apps: [
+    {
+      id: 'app-word-shortcuts',
+      title_ar: 'اختصارات وورد',
+      title_en: 'Word Shortcuts',
+      desc_ar: 'تطبيق ثنائي اللغة لتعلّم أهم اختصارات لوحة المفاتيح في مايكروسوفت وورد.',
+      desc_en: 'A bilingual app for learning the most useful Microsoft Word keyboard shortcuts.',
+      platform_ar: 'أندرويد',
+      platform_en: 'Android',
+      playStoreUrl: '',
+    },
+  ],
+  /* ============ الأدوات ============
+     كل عنصر هنا = أداة قائمة بذاتها لها مجلدها ورابطها الخاص.
+     لإضافة أداة جديدة أضف كائنًا جديدًا هنا بنفس الشكل:
+     {
+       id: 'tool-xxx',
+       title_ar: '...', title_en: '...',
+       desc_ar: '...', desc_en: '...',
+       url: 'tools/xxx/'
+     }
+  ============================== */
+  tools: [
+    { id: 'tool-text-to-numbers', title_ar: 'تحويل الأرقام إلى نص', title_en: 'Number to Words',
+      desc_ar: 'حوّل أي رقم إلى نص مكتوب بالعربية أو الإنجليزية أو الفرنسية، مع إمكانية إضافة اسم العملة.', desc_en: 'Convert any number into written words in Arabic, English, or French, with an optional currency name.',
+      url: 'tools/text-to-numbers/' },
+    { id: 'tool-invoice-generator', title_ar: 'مولّد الفواتير', title_en: 'Invoice Generator',
+      desc_ar: 'أنشئ فاتورة احترافية مع شعار، توقيع، ضريبة، وتحويل المبلغ إلى حروف — بثلاث لغات.',
+      desc_en: 'Generate a professional invoice with logo, signature, VAT, and amount-in-words — in three languages.',
+      url: 'https://drmerabti.github.io/dr/invoice-generator/', external: true },
+    // لإضافة أداة جديدة أضف سطرًا هنا بنفس الشكل:
+    // { id:'tool-distance', title_ar:'حساب المسافة بين منطقتين', title_en:'Distance Calculator',
+    //   desc_ar:'احسب المسافة بين نقطتين جغرافيتين بسهولة.', desc_en:'Calculate distance between two locations.',
+    //   url:'tools/distance-calculator/' },
+  ],
+  resources: [],
+  services: [],
+  trainings: [
+    {
+      id: 'training-word-basics',
+      title_ar: 'تمرين: أساسيات وورد',
+      title_en: 'Exercise: Word basics',
+      desc_ar: 'تمرين عملي لتثبيت ما تعلمته في دروس وورد الأساسية.',
+      desc_en: 'A hands-on exercise to reinforce the basic Word lessons.',
+      relatedLesson: 'lesson-word-move-image',
+    },
+    // لإضافة اختبار جديد (Excel, Word, إعلام آلي...) أضف كائنًا هنا بنفس الشكل:
+    // { id:'training-excel-1', title_ar:'اختبار: أساسيات إكسل', title_en:'Quiz: Excel basics',
+    //   desc_ar:'وصف الاختبار.', desc_en:'Quiz description.' },
+  ],
+};
+
+/* ============ أيقونات SVG (ستايل شبه ثلاثي الأبعاد: ظلال + انعكاسات ضوء) ============ */
 const SECTIONS = [
   { key: 'lessons',   icon: ICONS.lessons,  badge: 'badge-lessons',   href: 'lessons.html' },
   { key: 'apps',      icon: ICONS.apps,     badge: 'badge-apps',      href: 'apps.html' },
@@ -347,6 +359,7 @@ function renderSectionItems(){
         card.rel = 'noopener';
       }
       card.innerHTML = `
+        ${item.icon ? `<span class="icon-badge item-icon-badge">${item.icon}</span>` : ''}
         <h3>${lang === 'ar' ? item.title_ar : item.title_en}</h3>
         <p>${lang === 'ar' ? item.desc_ar : item.desc_en}</p>
         ${shareButtonsHtml(lang === 'ar' ? item.title_ar : item.title_en, item.external ? item.url : (location.origin + location.pathname.replace(/[^/]*$/, '') + item.url))}
