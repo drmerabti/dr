@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="أكاديمية مرابطي — د. سفيان مرابطي: دروس، تطبيقات، أدوات، وتدريبات عملية لتسهيل استخدام برامج مايكروسوفت.">
+<title data-i18n="site_title">د. سفيان مرابطي — التعلم الرقمي</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@1,600;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="index.html" class="brand" data-i18n="brand">د. سفيان مرابطي</a>
+    <div class="topbar-actions">
+      <button id="themeToggle" class="theme-toggle" type="button" aria-label="Toggle theme"></button>
+      <div class="auth-wrap" id="authWrap">
+        <button id="authBtn" class="auth-btn" type="button"></button>
+        <div id="authMenu" class="auth-menu hidden"></div>
+      </div>
+      <button id="langToggle" class="lang-toggle" type="button">EN</button>
+    </div>
+  </div>
+</header>
+
+<main id="app">
+  <section class="view">
+    <div class="hero">
+      <h1 class="hero-logo">Merabti academy</h1>
+      <p class="hero-logo-ar">أكاديمية مرابطي</p>
+
+      <div class="search-wrap">
+        <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/>
+          <line x1="16.5" y1="16.5" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <input type="text" id="searchInput" class="search-input" data-i18n-placeholder="search_placeholder" placeholder="ابحث عن درس، تطبيق، أداة...">
+        <div id="searchResults" class="search-results hidden"></div>
+      </div>
+    </div>
+
+    <div id="sectionGrid" class="section-grid"></div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <p data-i18n="footer_text">© 2026 د. سفيان مرابطي</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
