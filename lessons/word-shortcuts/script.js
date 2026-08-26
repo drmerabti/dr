@@ -29,7 +29,7 @@
   };
 
   let lang = localStorage.getItem("wsl_lang") || "ar";
-  let activeCat = "all";
+  let activeCat = CATS[0].id;
   let query = "";
 
   const $ = (id) => document.getElementById(id);
@@ -44,6 +44,11 @@
     noResults: $("noResults"),
     trainingCtaText: $("trainingCtaText"),
     langBtns: document.querySelectorAll(".lang-btn"),
+    kbOverlay: $("kbOverlay"),
+    kbCloseBtn: $("kbCloseBtn"),
+    kbScName: $("kbScName"),
+    kbScDesc: $("kbScDesc"),
+    virtualKeyboard: $("virtualKeyboard"),
   };
 
   function applyLanguage() {
@@ -75,8 +80,7 @@
   });
 
   function renderTabs() {
-    const dict = STR[lang];
-    let html = `<button type="button" class="cat-tab ${activeCat === "all" ? "active" : ""}" data-cat="all">${dict.catAll}</button>`;
+    let html = "";
     CATS.forEach((c) => {
       html += `<button type="button" class="cat-tab ${activeCat === c.id ? "active" : ""}" data-cat="${c.id}">${c.name[lang]}</button>`;
     });
@@ -87,8 +91,7 @@
         activeCat = btn.getAttribute("data-cat");
         renderTabs();
         renderList();
-        const target = els.catTabs;
-        target.scrollIntoView({ behavior: "smooth", block: "start" });
+        els.catTabs.scrollIntoView({ behavior: "smooth", block: "start" });
       });
     });
   }
@@ -112,7 +115,8 @@
   }
 
   function renderList() {
-    const filtered = SC.filter((s) => (activeCat === "all" || s.cat === activeCat) && matchesQuery(s));
+    const searching = query.trim().length > 0;
+    const filtered = SC.filter((s) => (searching || s.cat === activeCat) && matchesQuery(s));
 
     if (filtered.length === 0) {
       els.shortcutsList.innerHTML = "";
@@ -121,7 +125,7 @@
     }
     els.noResults.classList.add("hidden");
 
-    const catsToRender = activeCat === "all" ? CATS : CATS.filter((c) => c.id === activeCat);
+    const catsToRender = searching ? CATS : CATS.filter((c) => c.id === activeCat);
     let html = "";
     catsToRender.forEach((c) => {
       const items = filtered.filter((s) => s.cat === c.id);
@@ -132,7 +136,7 @@
           ${items
             .map(
               (s) => `
-            <div class="sc-card">
+            <div class="sc-card" data-idx="${SC.indexOf(s)}">
               <div class="sc-body">
                 <p class="sc-name">${s.name[lang]}</p>
                 <p class="sc-desc">${s.desc[lang]}</p>
@@ -145,6 +149,13 @@
       </section>`;
     });
     els.shortcutsList.innerHTML = html;
+
+    els.shortcutsList.querySelectorAll(".sc-card").forEach((card) => {
+      card.addEventListener("click", () => {
+        const idx = parseInt(card.getAttribute("data-idx"), 10);
+        openKeyboard(SC[idx]);
+      });
+    });
   }
 
   els.searchInput.addEventListener("input", () => {
@@ -153,4 +164,65 @@
   });
 
   applyLanguage();
+
+  /* ---------------- Virtual keyboard modal ---------------- */
+
+  const KB_ROWS = [
+    [{ k: "Esc", w: "wide" }, { k: "F1" }, { k: "F2" }, { k: "F3" }, { k: "F4" }, { k: "F5" }, { k: "F6" }, { k: "F7" }, { k: "F8" }, { k: "F9" }, { k: "F10" }, { k: "F11" }, { k: "F12" }],
+    ["`", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", { k: "Backspace", w: "wide" }, { k: "Delete", w: "wide" }],
+    [{ k: "Tab", w: "wide" }, "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "[", "]", "\\"],
+    [{ k: "CapsLock", w: "wide" }, "A", "S", "D", "F", "G", "H", "J", "K", "L", ";", "'", { k: "Enter", w: "wide" }],
+    [{ k: "Shift", w: "wide" }, "Z", "X", "C", "V", "B", "N", "M", ",", ".", "/", { k: "Shift", w: "wide" }],
+    [{ k: "Ctrl", w: "wide" }, { k: "Alt", w: "wide" }, { k: "Space", w: "space" }, { k: "Alt", w: "wide" }, { k: "Ctrl", w: "wide" }],
+    [{ k: "Home" }, { k: "End" }, { k: "PageUp" }, { k: "PageDown" }, { k: "\u2191" }, { k: "\u2190" }, { k: "\u2193" }, { k: "\u2192" }],
+  ];
+
+  function normalizeKey(k) {
+    const map = {
+      "Page Up": "PageUp",
+      "Page Down": "PageDown",
+      "→": "→",
+      "←": "←",
+      "↑": "↑",
+      "↓": "↓",
+      ">": ".",
+      "<": ",",
+    };
+    if (map[k]) return map[k].toUpperCase();
+    return String(k).toUpperCase();
+  }
+
+  function openKeyboard(shortcut) {
+    els.kbScName.textContent = shortcut.name[lang];
+    els.kbScDesc.textContent = shortcut.desc[lang];
+
+    const wanted = new Set(shortcut.keys.map(normalizeKey));
+
+    let html = "";
+    KB_ROWS.forEach((row) => {
+      html += '<div class="kb-row">';
+      row.forEach((cell) => {
+        const isObj = typeof cell === "object";
+        const label = isObj ? cell.k : cell;
+        const widthClass = isObj && cell.w ? " " + cell.w : "";
+        const isHl = wanted.has(normalizeKey(label));
+        html += `<span class="vkey${widthClass}${isHl ? " hl" : ""}">${label}</span>`;
+      });
+      html += "</div>";
+    });
+    els.virtualKeyboard.innerHTML = html;
+    els.kbOverlay.classList.remove("hidden");
+  }
+
+  function closeKeyboard() {
+    els.kbOverlay.classList.add("hidden");
+  }
+
+  els.kbCloseBtn.addEventListener("click", closeKeyboard);
+  els.kbOverlay.addEventListener("click", (e) => {
+    if (e.target === els.kbOverlay) closeKeyboard();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeKeyboard();
+  });
 })();
