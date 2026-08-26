@@ -9,7 +9,7 @@
   const GENERAL_PER_LEVEL = 15;
   const SHORTCUT_PER_LEVEL = 15;
   const REPEAT_COUNT = 4; // questions repeated from the previous level
-  const TIME_PER_QUESTION = 10; // seconds
+  const TIME_PER_QUESTION = 15; // seconds
 
   const LEVEL_LABELS = {
     1: 'أساسي', 2: 'أساسي متقدم', 3: 'متوسط', 4: 'متقدم', 5: 'احترافي',
@@ -146,7 +146,7 @@
     levelsGrid: $('levelsGrid'),
     progressFill: $('progressFill'),
     progressLabel: $('progressLabel'),
-    timerCircle: $('timerCircle'),
+    timerDisplay: $('timerDisplay'),
     timerText: $('timerText'),
     questionText: $('questionText'),
     optionsGrid: $('optionsGrid'),
@@ -245,12 +245,12 @@
     clearInterval(timerInterval);
     let remaining = TIME_PER_QUESTION;
     updateTimerDisplay(remaining);
-    els.timerCircle.classList.remove('urgent');
+    els.timerDisplay.classList.remove('urgent');
 
     timerInterval = setInterval(() => {
       remaining--;
       updateTimerDisplay(remaining);
-      if (remaining <= 3) els.timerCircle.classList.add('urgent');
+      if (remaining <= 3) els.timerDisplay.classList.add('urgent');
       if (remaining <= 0) {
         clearInterval(timerInterval);
         handleAnswer(-1); // timeout = no answer
