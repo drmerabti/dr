@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="htmlRoot">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="pageTitleTag">منشئ السيرة الذاتية — أكاديمية مرابطي</title>
+<meta name="description" content="أنشئ سيرة ذاتية احترافية بمعاينة حية، تصدير PDF، وتعدد لغات.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar">
+  <a href="../../tools.html" class="icon-btn" id="backBtn" aria-label="back">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
+  </a>
+  <span class="topbar-title" id="topbarTitle">منشئ السيرة الذاتية</span>
+  <div class="topbar-actions">
+    <span class="save-indicator hidden" id="saveIndicator"></span>
+    <div class="lang-switch" role="group">
+      <button type="button" class="lang-btn" data-lang="ar">عربي</button>
+      <button type="button" class="lang-btn" data-lang="en">EN</button>
+      <button type="button" class="lang-btn" data-lang="fr">FR</button>
+    </div>
+    <div class="user-chip hidden" id="userChip">
+      <span id="userChipName"></span>
+      <button type="button" id="logoutBtn"></button>
+    </div>
+  </div>
+</div>
+
+<main class="wrap">
+
+  <!-- ============ LOCKED / AUTH SCREEN ============ -->
+  <section id="lockedScreen" class="screen">
+    <div class="locked-hero">
+      <div class="locked-icon">🔒</div>
+      <h1 id="lockedTitle">أنشئ حسابك لتبدأ في بناء سيرتك الذاتية</h1>
+      <p id="lockedSub">سجّل دخولك أو أنشئ حساب مجاني للوصول لمنشئ السيرة الذاتية.</p>
+    </div>
+
+    <div class="auth-card">
+      <div class="auth-tabs">
+        <button type="button" class="auth-tab active" data-mode="login" id="tabLogin"></button>
+        <button type="button" class="auth-tab" data-mode="signup" id="tabSignup"></button>
+      </div>
+      <p class="auth-card-error hidden" id="authCardError"></p>
+      <form id="authCardForm">
+        <input type="text" id="acName" class="cv-input hidden" placeholder="">
+        <input type="email" id="acEmail" class="cv-input" required placeholder="">
+        <input type="password" id="acPassword" class="cv-input" required minlength="6" placeholder="">
+        <button type="submit" class="btn btn-primary btn-block" id="acSubmitBtn"></button>
+      </form>
+      <button type="button" class="link-btn" id="forgotPwBtn"></button>
+      <div class="auth-divider" id="orDivider">أو</div>
+      <button type="button" class="auth-google-btn" id="acGoogleBtn">
+        <svg viewBox="0 0 48 48" width="18" height="18"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 8 3l6-6C34.5 5.1 29.5 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21 21-9.4 21-21c0-1.2-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.6 15.6 18.9 13 24 13c3.1 0 5.8 1.1 8 3l6-6C34.5 5.1 29.5 3 24 3c-7.6 0-14.1 4.3-17.7 10.7z"/><path fill="#4CAF50" d="M24 45c5.3 0 10.2-2 13.9-5.3l-6.4-5.4C29.3 36 26.8 37 24 37c-5.2 0-9.6-3.1-11.4-7.6l-6.6 5.1C9.8 40.6 16.3 45 24 45z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.2-4.2 5.6l6.4 5.4C40.5 36.6 43 30.8 43 24c0-1.2-.1-2.4-.4-3.5z"/></svg>
+        <span id="acGoogleText">المتابعة عبر Google</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ============ DASHBOARD SCREEN ============ -->
+  <section id="dashboardScreen" class="screen hidden">
+    <div class="dash-head">
+      <h1 id="dashTitle">سيري الذاتية</h1>
+      <button type="button" class="btn btn-primary" id="newCvBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg>
+        <span id="newCvText">إنشاء سيرة جديدة</span>
+      </button>
+    </div>
+    <div class="cv-grid" id="cvGrid"></div>
+    <p class="dash-empty hidden" id="dashEmpty"></p>
+  </section>
+
+  <!-- ============ EDITOR SCREEN ============ -->
+  <section id="editorScreen" class="screen hidden">
+    <div class="editor-topbar">
+      <button type="button" class="icon-btn" id="editorBackBtn" aria-label="back">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
+      </button>
+      <input type="text" id="cvTitleInput" class="cv-title-input" placeholder="">
+      <button type="button" class="btn btn-primary" id="downloadPdfBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M5 21h14"/></svg>
+        <span id="downloadPdfText">تحميل PDF</span>
+      </button>
+    </div>
+
+    <div class="editor-grid">
+      <!-- FORM COLUMN -->
+      <div class="editor-form" id="editorForm">
+
+        <div class="form-card">
+          <h2 class="form-card-title" id="personalInfoTitle">المعلومات الشخصية</h2>
+
+          <div class="photo-row">
+            <div class="photo-upload" id="photoUploadBox">
+              <img id="photoPreview" class="photo-preview hidden" alt="">
+              <span class="photo-placeholder" id="photoPlaceholder">📷</span>
+              <input type="file" id="photoInput" accept="image/*" hidden>
+            </div>
+            <button type="button" class="link-btn" id="removePhotoBtn"></button>
+          </div>
+
+          <div class="field-grid">
+            <input type="text" id="pFullName" class="cv-input" placeholder="">
+            <input type="text" id="pTitle" class="cv-input" placeholder="">
+            <input type="text" id="pPhone" class="cv-input" placeholder="">
+            <input type="email" id="pEmail" class="cv-input" placeholder="">
+            <input type="text" id="pAddress" class="cv-input" placeholder="">
+            <input type="text" id="pLinkedin" class="cv-input" placeholder="">
+            <input type="text" id="pWebsite" class="cv-input" placeholder="">
+            <input type="text" id="pPassport" class="cv-input" placeholder="">
+          </div>
+          <label class="toggle-row">
+            <span id="showPassportLabel">إظهار رقم جواز السفر بالسيرة</span>
+            <input type="checkbox" id="pShowPassport">
+            <span class="toggle-switch"></span>
+          </label>
+        </div>
+
+        <div class="form-card">
+          <h2 class="form-card-title" id="colorTitle">لون الشريط الجانبي</h2>
+          <div class="color-swatches" id="colorSwatches"></div>
+        </div>
+
+        <div class="form-card">
+          <h2 class="form-card-title" id="sectionsTitle">أقسام السيرة</h2>
+          <div id="sectionsList"></div>
+          <button type="button" class="btn btn-add" id="addSectionBtn">
+            <span>+</span> <span id="addSectionText">إضافة قسم آخر</span>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- PREVIEW COLUMN -->
+      <div class="editor-preview">
+        <div class="preview-shell">
+          <div class="cv-sheet" id="cvSheet">
+            <div class="cv-sidebar" id="cvSidebar">
+              <div class="cv-photo-wrap">
+                <img id="cvPreviewPhoto" class="cv-photo" hidden alt="">
+                <div class="cv-photo-placeholder" id="cvPhotoPlaceholder"></div>
+              </div>
+              <div class="cv-contact" id="cvContact"></div>
+              <div class="cv-sidebar-sections" id="cvSidebarSections"></div>
+            </div>
+            <div class="cv-main">
+              <h1 class="cv-name" id="cvName"></h1>
+              <p class="cv-role" id="cvRole"></p>
+              <div class="cv-main-sections" id="cvMainSections"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p>© 2026 د. سفيان مرابطي</p>
+</footer>
+
+<!-- section entry templates (cloned by JS) -->
+<template id="tplSectionRow"></template>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="../../firebase-init.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
