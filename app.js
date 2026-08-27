@@ -529,33 +529,56 @@ function initTheme(){
 }
 
 /* =====================================================================
-   AUTH (email + Google)
-   ملاحظة: لتفعيل تسجيل الدخول عبر Google فعليًا، ضع Client ID الحقيقي
-   من Google Cloud Console هنا واستدعِ Google Identity Services.
+   AUTH (Firebase — Google + Email/Password)
 ===================================================================== */
-const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com';
-
 function getCurrentUser(){
   try { return JSON.parse(localStorage.getItem('site_user')); } catch(e){ return null; }
 }
-function setCurrentUser(user){
+function cacheCurrentUser(user){
   if (user) localStorage.setItem('site_user', JSON.stringify(user));
   else localStorage.removeItem('site_user');
-  renderAuth();
 }
 
-function renderAuthForm(mode){
+const AUTH_ERR = {
+  ar: {
+    'auth/email-already-in-use': 'هذا البريد مستخدم مسبقًا.',
+    'auth/invalid-email': 'صيغة البريد الإلكتروني غير صحيحة.',
+    'auth/weak-password': 'كلمة المرور ضعيفة (6 أحرف على الأقل).',
+    'auth/wrong-password': 'كلمة المرور غير صحيحة.',
+    'auth/user-not-found': 'لا يوجد حساب بهذا البريد.',
+    'auth/invalid-credential': 'البريد أو كلمة المرور غير صحيحة.',
+    'auth/popup-closed-by-user': 'تم إغلاق نافذة تسجيل الدخول.',
+    default: 'حدث خطأ، حاول مرة أخرى.',
+  },
+  en: {
+    'auth/email-already-in-use': 'This email is already in use.',
+    'auth/invalid-email': 'Invalid email format.',
+    'auth/weak-password': 'Password is too weak (min 6 characters).',
+    'auth/wrong-password': 'Incorrect password.',
+    'auth/user-not-found': 'No account found with this email.',
+    'auth/invalid-credential': 'Incorrect email or password.',
+    'auth/popup-closed-by-user': 'Sign-in window was closed.',
+    default: 'Something went wrong, please try again.',
+  },
+};
+function authErrMsg(code){
+  const dict = AUTH_ERR[lang] || AUTH_ERR.en;
+  return dict[code] || dict.default;
+}
+
+function renderAuthForm(mode, errorMsg){
   const menu = document.getElementById('authMenu');
   if (!menu) return;
   const isLogin = mode === 'login';
   menu.innerHTML = `
     <div class="auth-form">
       <h4>${isLogin ? t('login') : t('signup')}</h4>
+      ${errorMsg ? `<p class="auth-error">${errorMsg}</p>` : ''}
       <form id="authForm">
         ${!isLogin ? `<input type="text" id="authName" placeholder="${t('name_label')}" required>` : ''}
         <input type="email" id="authEmail" placeholder="${t('email_label')}" required>
         <input type="password" id="authPassword" placeholder="${t('password_label')}" required minlength="6">
-        <button type="submit" class="auth-submit">${isLogin ? t('login') : t('signup')}</button>
+        <button type="submit" class="auth-submit" id="authSubmitBtn">${isLogin ? t('login') : t('signup')}</button>
       </form>
       <div class="auth-divider">${t('or_divider')}</div>
       <button type="button" class="auth-google-btn" id="googleAuthBtn">
@@ -568,16 +591,40 @@ function renderAuthForm(mode){
       </div>
     </div>`;
 
-  document.getElementById('authForm').addEventListener('submit', (e) => {
+  document.getElementById('authForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const email = document.getElementById('authEmail').value;
+    const email = document.getElementById('authEmail').value.trim();
+    const password = document.getElementById('authPassword').value;
     const nameInput = document.getElementById('authName');
-    const name = nameInput ? nameInput.value : email.split('@')[0];
-    setCurrentUser({ name, email });
+    const submitBtn = document.getElementById('authSubmitBtn');
+    submitBtn.disabled = true;
+    submitBtn.textContent = '…';
+    try {
+      if (isLogin) {
+        await window.fbAuth.signInWithEmailAndPassword(email, password);
+      } else {
+        const cred = await window.fbAuth.createUserWithEmailAndPassword(email, password);
+        if (nameInput && nameInput.value.trim()) {
+          await cred.user.updateProfile({ displayName: nameInput.value.trim() });
+        }
+      }
+      // onAuthStateChanged will handle closing/rendering
+    } catch (err) {
+      renderAuthForm(mode, authErrMsg(err.code));
+    }
   });
+
   document.getElementById('authSwitchBtn').addEventListener('click', () => renderAuthForm(isLogin ? 'signup' : 'login'));
-  document.getElementById('googleAuthBtn').addEventListener('click', () => {
-    alert('لإتمام تسجيل الدخول عبر Google: ضع Google Client ID الخاص بك في app.js داخل متغير GOOGLE_CLIENT_ID، ثم فعّل مكتبة Google Identity Services.');
+
+  document.getElementById('googleAuthBtn').addEventListener('click', async () => {
+    try {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      await window.fbAuth.signInWithPopup(provider);
+    } catch (err) {
+      if (err.code !== 'auth/popup-closed-by-user') {
+        renderAuthForm(mode, authErrMsg(err.code));
+      }
+    }
   });
 }
 
@@ -590,13 +637,15 @@ function renderAuth(){
 
   if (user){
     const initial = (user.name || user.email || '?')[0].toUpperCase();
-    btn.innerHTML = `<span class="auth-avatar">${initial}</span><span>${user.name || user.email}</span>`;
+    btn.innerHTML = user.picture
+      ? `<img class="auth-avatar-img" src="${user.picture}" alt="">${'<span>' + (user.name || user.email) + '</span>'}`
+      : `<span class="auth-avatar">${initial}</span><span>${user.name || user.email}</span>`;
     menu.innerHTML = `
       <button type="button" class="auth-menu-item" id="logoutBtn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
         ${t('logout')}
       </button>`;
-    document.getElementById('logoutBtn').addEventListener('click', () => setCurrentUser(null));
+    document.getElementById('logoutBtn').addEventListener('click', () => window.fbAuth.signOut());
   } else {
     btn.innerHTML = `
       <span class="auth-avatar"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
@@ -610,7 +659,26 @@ function initAuth(){
   const btn = document.getElementById('authBtn');
   const menu = document.getElementById('authMenu');
   if (!wrap || !btn || !menu) return;
-  renderAuth();
+
+  if (window.fbAuth) {
+    window.fbAuth.onAuthStateChanged((fbUser) => {
+      if (fbUser) {
+        cacheCurrentUser({
+          uid: fbUser.uid,
+          name: fbUser.displayName || fbUser.email,
+          email: fbUser.email,
+          picture: fbUser.photoURL || null,
+        });
+      } else {
+        cacheCurrentUser(null);
+      }
+      renderAuth();
+      menu.classList.add('hidden');
+    });
+  } else {
+    renderAuth();
+  }
+
   btn.addEventListener('click', (e) => {
     e.stopPropagation();
     menu.classList.toggle('hidden');
