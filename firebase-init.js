@@ -18,3 +18,11 @@ firebase.initializeApp(firebaseConfig);
 // Exposed globally for app.js / page scripts to use
 window.fbAuth = firebase.auth();
 window.fbDb = firebase.firestore();
+
+// Explicitly force LOCAL persistence (survives tab/browser close) instead of
+// relying on the SDK default — protects against the session being lost
+// across page navigations.
+window.fbAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(() => {
+  // Some browsers (private mode, storage restrictions) may reject this —
+  // the SDK will fall back to in-memory persistence for that session.
+});
