@@ -161,28 +161,46 @@
     return all;
   }
 
-  /* ---------------- Auth (reads the main site's login state) ---------------- */
+  /* ---------------- Auth (Firebase, shared with the main site) ---------------- */
   function getCurrentUser() {
+    // Instant cache for first paint; kept in sync by onAuthStateChanged below.
     try { return JSON.parse(localStorage.getItem('site_user')); } catch (e) { return null; }
   }
 
-  /* ---------------- Progress persistence ---------------- */
-  function progressKey() {
-    const user = getCurrentUser();
-    return user ? `wordTraining:progress:${user.email}` : null;
+  /* ---------------- Progress persistence (Firestore) ---------------- */
+  let progressCache = {}; // { 1: {best, lastPlayed}, 2: {...}, ... }
+
+  async function loadProgressFromFirestore() {
+    const fbUser = window.fbAuth && window.fbAuth.currentUser;
+    if (!fbUser || !window.fbDb) { progressCache = {}; return; }
+    try {
+      const doc = await window.fbDb.collection('users').doc(fbUser.uid).get();
+      const data = doc.exists ? doc.data() : {};
+      progressCache = data.website || {};
+    } catch (e) {
+      progressCache = {};
+    }
   }
+
   function loadProgress() {
-    const key = progressKey();
-    if (!key) return {};
-    try { return JSON.parse(localStorage.getItem(key)) || {}; } catch (e) { return {}; }
+    return progressCache;
   }
-  function saveProgress(level, pct) {
-    const key = progressKey();
-    if (!key) return;
-    const progress = loadProgress();
-    const prevBest = progress[level] ? progress[level].best : 0;
-    progress[level] = { best: Math.max(prevBest, pct), lastPlayed: Date.now() };
-    localStorage.setItem(key, JSON.stringify(progress));
+
+  async function saveProgress(level, pct) {
+    const fbUser = window.fbAuth && window.fbAuth.currentUser;
+    if (!fbUser || !window.fbDb) return; // not logged in — nothing to save
+
+    const prevBest = progressCache[level] ? progressCache[level].best : 0;
+    const best = Math.max(prevBest, pct);
+    progressCache[level] = { best, lastPlayed: Date.now() };
+
+    const update = {};
+    update[`website.${level}`] = { best, lastPlayed: firebase.firestore.FieldValue.serverTimestamp() };
+    try {
+      await window.fbDb.collection('users').doc(fbUser.uid).set(update, { merge: true });
+    } catch (e) {
+      // Offline or permission issue — progress stays in memory for this session only.
+    }
   }
 
   /* ---------------- DOM refs ---------------- */
@@ -408,6 +426,24 @@
 
   /* ---------------- Init ---------------- */
   applyLanguage();
-  renderLevels();
+  renderLevels(); // instant paint using cached local user (if any)
   showScreen('levelSelectScreen');
+
+  if (window.fbAuth) {
+    window.fbAuth.onAuthStateChanged(async (fbUser) => {
+      if (fbUser) {
+        localStorage.setItem('site_user', JSON.stringify({
+          uid: fbUser.uid,
+          name: fbUser.displayName || fbUser.email,
+          email: fbUser.email,
+          picture: fbUser.photoURL || null,
+        }));
+        await loadProgressFromFirestore();
+      } else {
+        localStorage.removeItem('site_user');
+        progressCache = {};
+      }
+      renderLevels();
+    });
+  }
 })();
