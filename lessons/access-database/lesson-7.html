@@ -12,7 +12,7 @@
 <body>
 
 <div class="topbar">
-  <a href="index.html" class="icon-btn" id="backBtn" aria-label="رجوع لفهرس الدروس" title="رجوع لفهرس الدروس">
+  <a href="index.html" class="icon-btn" id="backBtn" aria-label="العودة إلى فهرس الدروس" title="العودة إلى فهرس الدروس">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
   </a>
 </div>
@@ -25,41 +25,27 @@
 <main class="lesson-body">
 
   <p>
-    الكتابة مباشرة بالجدول (Datasheet View) مربكة أحيانًا، خصوصًا لو الجدول فيه أعمدة كثيرة.
-    <strong>النموذج (Form)</strong> يعطيك واجهة مرتّبة — حقل واحد تحت الثاني، بخط واضح — تسهّل إدخال البيانات على أي شخص، حتى لو ما يعرف Access.
+    قد تكون الكتابة مباشرة في الجدول (Datasheet View) مربكة أحيانًا، خصوصًا لو كان الجدول يحتوي أعمدة كثيرة.
+    يمنحك <strong>النموذج (Form)</strong> واجهة مرتّبة، حقلًا تحت الآخر بخط واضح، تسهّل إدخال البيانات على أي شخص، حتى لو لم يكن ملمًّا ببرنامج Access.
   </p>
 
   <div class="lesson-diagram">
-    <svg viewBox="0 0 640 260" xmlns="http://www.w3.org/2000/svg">
-      <rect x="170" y="20" width="300" height="220" rx="16" fill="#fff" stroke="#8B6FD9" stroke-width="1.5"/>
-      <text x="320" y="50" text-anchor="middle" font-family="Tajawal, sans-serif" font-size="14" font-weight="800" fill="#5A3FA0">نموذج إضافة كتاب</text>
-
-      <text x="440" y="80" text-anchor="end" font-family="Tajawal, sans-serif" font-size="11.5" fill="#64768A">عنوان الكتاب</text>
-      <rect x="200" y="86" width="240" height="28" rx="6" fill="#F3EFFC" stroke="#B7A3E8" stroke-width="1"/>
-
-      <text x="440" y="130" text-anchor="end" font-family="Tajawal, sans-serif" font-size="11.5" fill="#64768A">المؤلف</text>
-      <rect x="200" y="136" width="240" height="28" rx="6" fill="#F3EFFC" stroke="#B7A3E8" stroke-width="1"/>
-
-      <text x="440" y="180" text-anchor="end" font-family="Tajawal, sans-serif" font-size="11.5" fill="#64768A">سنة النشر</text>
-      <rect x="200" y="186" width="240" height="28" rx="6" fill="#F3EFFC" stroke="#B7A3E8" stroke-width="1"/>
-
-      <rect x="280" y="222" width="80" height="10" rx="5" fill="#5A3FA0" opacity="0"/>
-    </svg>
+    <img src="img/lesson-7.jpg" alt="نموذج إدخال بيانات في Access يعرض حقولًا مرتبة مثل الرقم والاسم والبريد الإلكتروني">
   </div>
 
   <ol class="lesson-steps">
     <li>من قائمة الجداول الجانبية، اضغط على جدول <strong>"Books"</strong> لتحديده.</li>
-    <li>من تبويب <strong>"Create"</strong>، اضغط زر <strong>"Form"</strong> مباشرة — Access ينشئ نموذج تلقائي بكل حقول الجدول.</li>
-    <li>بدّل لعرض <strong>"Layout View"</strong> عشان تقدر تعدّل ترتيب الحقول أو تلوينها بسهولة سحب وإفلات.</li>
+    <li>من تبويب <strong>"Create"</strong>، اضغط زر <strong>"Form"</strong> مباشرة، لينشئ Access نموذجًا تلقائيًا بجميع حقول الجدول.</li>
+    <li>انتقل إلى عرض <strong>"Layout View"</strong> لتتمكن من تعديل ترتيب الحقول أو تنسيقها بسهولة عبر السحب والإفلات.</li>
     <li>احفظ النموذج باسم <strong>"إضافة كتاب"</strong>.</li>
-    <li>افتحه، وجرّب تضيف كتاب جديد مباشرة من النموذج — راح تلاحظه يظهر تلقائيًا بجدول Books.</li>
+    <li>افتحه، وجرّب إضافة كتاب جديد مباشرة من النموذج؛ ستلاحظ ظهوره تلقائيًا في جدول Books.</li>
   </ol>
 
   <div class="callout-tip">
     <span class="callout-icon">💡</span>
     <div>
       <h3>هل تعلم؟</h3>
-      <p>النموذج والجدول مرتبطين ببعض حيًّا — أي تعديل تسويه من النموذج ينعكس فورًا بالجدول، والعكس صحيح كمان.</p>
+      <p>يرتبط النموذج بالجدول ارتباطًا حيًّا؛ أي تعديل تجريه من خلال النموذج ينعكس فورًا على الجدول، والعكس صحيح أيضًا.</p>
     </div>
   </div>
 
@@ -68,10 +54,10 @@
       <span class="callout-icon">🎯</span>
       <h3>جرّب بنفسك</h3>
     </div>
-    <p>أنشئ نموذج ثاني لجدول "Loans" (الاستعارات)، واستخدمه لتسجيل عملية استعارة جديدة.</p>
+    <p>أنشئ نموذجًا ثانيًا لجدول "Loans" (الاستعارات)، واستخدمه لتسجيل عملية استعارة جديدة.</p>
     <details>
       <summary>الحل المتوقع</summary>
-      <p>نفس الخطوات بالضبط: حدد جدول Loans، اضغط Create ثم Form. لو الجدولين مرتبطين بعلاقة (من الدرس 5)، ممكن Access يعرض لك نموذج فرعي (Subform) تلقائيًا يبين بيانات الكتاب المرتبط.</p>
+      <p>اتّبع الخطوات نفسها: حدد جدول Loans، ثم اضغط Create فـ Form. ولو كان الجدولان مرتبطين بعلاقة (من الدرس الخامس)، قد يعرض لك Access نموذجًا فرعيًا (Subform) تلقائيًا يبيّن بيانات الكتاب المرتبط.</p>
     </details>
   </div>
 

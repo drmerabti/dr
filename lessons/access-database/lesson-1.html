@@ -12,7 +12,7 @@
 <body>
 
 <div class="topbar">
-  <a href="index.html" class="icon-btn" id="backBtn" aria-label="رجوع لفهرس الدروس" title="رجوع لفهرس الدروس">
+  <a href="index.html" class="icon-btn" id="backBtn" aria-label="العودة إلى فهرس الدروس" title="العودة إلى فهرس الدروس">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
   </a>
 </div>
@@ -25,55 +25,30 @@
 <main class="lesson-body">
 
   <p>
-    تخيّل عندك مكتبة فيها آلاف الكتب، وكل مرة تبي تعرف "شنو الكتب المستعارة حاليًا؟" لازم تدوّر يدويًا بين أوراق مبعثرة.
-    <strong>قاعدة البيانات</strong> هي طريقة منظّمة لتخزين المعلومات بحيث تقدر تبحث فيها، تفلترها، وتربطها ببعضها بسهولة وسرعة — بدون فوضى.
+    تخيّل وجود مكتبة تحتوي آلاف الكتب، وفي كل مرة تريد معرفة "ما هي الكتب المستعارة حاليًا؟" يتوجّب عليك البحث يدويًا بين أوراق متناثرة.
+    <strong>قاعدة البيانات</strong> هي طريقة منظّمة لتخزين المعلومات، بحيث يمكن البحث فيها وتصفيتها وربطها ببعضها البعض بسهولة وسرعة، دون فوضى.
   </p>
 
   <p>
-    <strong>Microsoft Access</strong> برنامج يساعدك تبني قاعدة بيانات كاملة بدون ما تحتاج تكتب أكواد برمجة معقدة. يعتمد على 4 عناصر أساسية تشتغل مع بعض:
+    يُعَدّ <strong>Microsoft Access</strong> برنامجًا يساعدك على بناء قاعدة بيانات كاملة دون الحاجة إلى كتابة أكواد برمجية معقدة.
+    يعتمد على أربعة عناصر أساسية تعمل معًا: <strong>الجداول</strong> لتخزين البيانات، و<strong>الاستعلامات</strong> لاستخراج معلومات محددة،
+    و<strong>النماذج</strong> لإدخال البيانات بسهولة، و<strong>التقارير</strong> لعرض النتائج وطباعتها.
   </p>
 
   <div class="lesson-diagram">
-    <svg viewBox="0 0 640 320" xmlns="http://www.w3.org/2000/svg">
-      <rect x="20" y="20" width="600" height="280" rx="24" fill="#F3EFFC" stroke="#B7A3E8" stroke-width="1.5"/>
-      <text x="50" y="52" font-family="Tajawal, sans-serif" font-size="18" font-weight="700" fill="#5A3FA0">Microsoft Access</text>
-
-      <g>
-        <rect x="46" y="76" width="255" height="90" rx="14" fill="#fff" stroke="#8B6FD9" stroke-width="1"/>
-        <text x="173" y="108" text-anchor="middle" font-family="Tajawal, sans-serif" font-size="15" font-weight="700" fill="#5A3FA0">الجداول (Tables)</text>
-        <text x="173" y="132" text-anchor="middle" font-family="Tajawal, sans-serif" font-size="12.5" fill="#6B5EA8">حيث تُخزَّن البيانات الفعلية</text>
-      </g>
-
-      <g>
-        <rect x="339" y="76" width="255" height="90" rx="14" fill="#fff" stroke="#8B6FD9" stroke-width="1"/>
-        <text x="466" y="108" text-anchor="middle" font-family="Tajawal, sans-serif" font-size="15" font-weight="700" fill="#5A3FA0">الاستعلامات (Queries)</text>
-        <text x="466" y="132" text-anchor="middle" font-family="Tajawal, sans-serif" font-size="12.5" fill="#6B5EA8">لاستخراج بيانات محددة</text>
-      </g>
-
-      <g>
-        <rect x="46" y="180" width="255" height="90" rx="14" fill="#fff" stroke="#8B6FD9" stroke-width="1"/>
-        <text x="173" y="212" text-anchor="middle" font-family="Tajawal, sans-serif" font-size="15" font-weight="700" fill="#5A3FA0">النماذج (Forms)</text>
-        <text x="173" y="236" text-anchor="middle" font-family="Tajawal, sans-serif" font-size="12.5" fill="#6B5EA8">واجهة سهلة لإدخال البيانات</text>
-      </g>
-
-      <g>
-        <rect x="339" y="180" width="255" height="90" rx="14" fill="#fff" stroke="#8B6FD9" stroke-width="1"/>
-        <text x="466" y="212" text-anchor="middle" font-family="Tajawal, sans-serif" font-size="15" font-weight="700" fill="#5A3FA0">التقارير (Reports)</text>
-        <text x="466" y="236" text-anchor="middle" font-family="Tajawal, sans-serif" font-size="12.5" fill="#6B5EA8">عرض وطباعة النتائج</text>
-      </g>
-    </svg>
+    <img src="img/lesson-1.jpg" alt="الشاشة الرئيسية لبرنامج Access عند فتحه، مع خيار Blank database لإنشاء قاعدة بيانات جديدة">
   </div>
 
   <p>
-    بالدروس الجاية، راح نبني مع بعض <strong>قاعدة بيانات مكتبة فعلية</strong> — فيها جدول للكتب، جدول للمستعارين، ونربطهم ببعض،
-    وبعدها نستخرج منها استعلامات ونماذج وتقارير حقيقية.
+    في الدروس القادمة، سنبني معًا <strong>قاعدة بيانات مكتبة فعلية</strong>، تحتوي على جدول للكتب وجدول للمستعيرين، ونربطهما ببعضهما،
+    ثم نستخرج منهما استعلامات ونماذج وتقارير حقيقية.
   </p>
 
   <div class="callout-tip">
     <span class="callout-icon">💡</span>
     <div>
       <h3>هل تعلم؟</h3>
-      <p>Access يُخزّن كل قاعدة البيانات (الجداول، النماذج، التقارير...) داخل ملف واحد بامتداد <code>.accdb</code> — عكس إكسل اللي يفصل كل ورقة عمل لوحدها.</p>
+      <p>يُخزّن Access كامل قاعدة البيانات (الجداول، النماذج، التقارير...) داخل ملف واحد بامتداد <code>.accdb</code>، على عكس إكسل الذي يفصل كل ورقة عمل على حدة.</p>
     </div>
   </div>
 
@@ -82,10 +57,10 @@
       <span class="callout-icon">🎯</span>
       <h3>جرّب بنفسك</h3>
     </div>
-    <p>افتح Microsoft Access على جهازك، وتصفّح الواجهة الرئيسية. حاول تلاقي بنفسك أين تبويب "Create" اللي راح نستخدمه بالدرس الجاي لإنشاء أول قاعدة بيانات.</p>
+    <p>افتح برنامج Microsoft Access على جهازك، وتصفّح الواجهة الرئيسية. حاول أن تجد بنفسك تبويب "Create" الذي سنستخدمه في الدرس القادم لإنشاء أول قاعدة بيانات.</p>
     <details>
       <summary>تلميح</summary>
-      <p>تبويب "Create" موجود بشريط الأدوات العلوي (Ribbon)، جنب تبويب "Home" مباشرة.</p>
+      <p>يقع تبويب "Create" في شريط الأدوات العلوي (Ribbon)، بجانب تبويب "Home" مباشرة.</p>
     </details>
   </div>
 
