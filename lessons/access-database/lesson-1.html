@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="htmlRoot">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الدرس 1: ما هي قاعدة البيانات؟ — أكاديمية مرابطي</title>
+<meta name="description" content="تعرّف على مفهوم قاعدة البيانات ومكونات Access الأساسية: الجداول، الاستعلامات، النماذج، والتقارير.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar">
+  <a href="index.html" class="icon-btn" id="backBtn" aria-label="رجوع لفهرس الدروس" title="رجوع لفهرس الدروس">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
+  </a>
+</div>
+
+<header class="lesson-page-head">
+  <p class="lesson-crumb">الدرس 1 من 8</p>
+  <h1 class="lesson-page-title">ما هي قاعدة البيانات؟</h1>
+</header>
+
+<main class="lesson-body">
+
+  <p>
+    تخيّل عندك مكتبة فيها آلاف الكتب، وكل مرة تبي تعرف "شنو الكتب المستعارة حاليًا؟" لازم تدوّر يدويًا بين أوراق مبعثرة.
+    <strong>قاعدة البيانات</strong> هي طريقة منظّمة لتخزين المعلومات بحيث تقدر تبحث فيها، تفلترها، وتربطها ببعضها بسهولة وسرعة — بدون فوضى.
+  </p>
+
+  <p>
+    <strong>Microsoft Access</strong> برنامج يساعدك تبني قاعدة بيانات كاملة بدون ما تحتاج تكتب أكواد برمجة معقدة. يعتمد على 4 عناصر أساسية تشتغل مع بعض:
+  </p>
+
+  <div class="lesson-diagram">
+    <svg viewBox="0 0 640 320" xmlns="http://www.w3.org/2000/svg">
+      <rect x="20" y="20" width="600" height="280" rx="24" fill="#F3EFFC" stroke="#B7A3E8" stroke-width="1.5"/>
+      <text x="50" y="52" font-family="Tajawal, sans-serif" font-size="18" font-weight="700" fill="#5A3FA0">Microsoft Access</text>
+
+      <g>
+        <rect x="46" y="76" width="255" height="90" rx="14" fill="#fff" stroke="#8B6FD9" stroke-width="1"/>
+        <text x="173" y="108" text-anchor="middle" font-family="Tajawal, sans-serif" font-size="15" font-weight="700" fill="#5A3FA0">الجداول (Tables)</text>
+        <text x="173" y="132" text-anchor="middle" font-family="Tajawal, sans-serif" font-size="12.5" fill="#6B5EA8">حيث تُخزَّن البيانات الفعلية</text>
+      </g>
+
+      <g>
+        <rect x="339" y="76" width="255" height="90" rx="14" fill="#fff" stroke="#8B6FD9" stroke-width="1"/>
+        <text x="466" y="108" text-anchor="middle" font-family="Tajawal, sans-serif" font-size="15" font-weight="700" fill="#5A3FA0">الاستعلامات (Queries)</text>
+        <text x="466" y="132" text-anchor="middle" font-family="Tajawal, sans-serif" font-size="12.5" fill="#6B5EA8">لاستخراج بيانات محددة</text>
+      </g>
+
+      <g>
+        <rect x="46" y="180" width="255" height="90" rx="14" fill="#fff" stroke="#8B6FD9" stroke-width="1"/>
+        <text x="173" y="212" text-anchor="middle" font-family="Tajawal, sans-serif" font-size="15" font-weight="700" fill="#5A3FA0">النماذج (Forms)</text>
+        <text x="173" y="236" text-anchor="middle" font-family="Tajawal, sans-serif" font-size="12.5" fill="#6B5EA8">واجهة سهلة لإدخال البيانات</text>
+      </g>
+
+      <g>
+        <rect x="339" y="180" width="255" height="90" rx="14" fill="#fff" stroke="#8B6FD9" stroke-width="1"/>
+        <text x="466" y="212" text-anchor="middle" font-family="Tajawal, sans-serif" font-size="15" font-weight="700" fill="#5A3FA0">التقارير (Reports)</text>
+        <text x="466" y="236" text-anchor="middle" font-family="Tajawal, sans-serif" font-size="12.5" fill="#6B5EA8">عرض وطباعة النتائج</text>
+      </g>
+    </svg>
+  </div>
+
+  <p>
+    بالدروس الجاية، راح نبني مع بعض <strong>قاعدة بيانات مكتبة فعلية</strong> — فيها جدول للكتب، جدول للمستعارين، ونربطهم ببعض،
+    وبعدها نستخرج منها استعلامات ونماذج وتقارير حقيقية.
+  </p>
+
+  <div class="callout-tip">
+    <span class="callout-icon">💡</span>
+    <div>
+      <h3>هل تعلم؟</h3>
+      <p>Access يُخزّن كل قاعدة البيانات (الجداول، النماذج، التقارير...) داخل ملف واحد بامتداد <code>.accdb</code> — عكس إكسل اللي يفصل كل ورقة عمل لوحدها.</p>
+    </div>
+  </div>
+
+  <div class="try-box">
+    <div class="try-box-head">
+      <span class="callout-icon">🎯</span>
+      <h3>جرّب بنفسك</h3>
+    </div>
+    <p>افتح Microsoft Access على جهازك، وتصفّح الواجهة الرئيسية. حاول تلاقي بنفسك أين تبويب "Create" اللي راح نستخدمه بالدرس الجاي لإنشاء أول قاعدة بيانات.</p>
+    <details>
+      <summary>تلميح</summary>
+      <p>تبويب "Create" موجود بشريط الأدوات العلوي (Ribbon)، جنب تبويب "Home" مباشرة.</p>
+    </details>
+  </div>
+
+</main>
+
+<nav class="lesson-nav">
+  <span class="lesson-nav-btn disabled"><span class="nav-label">السابق</span></span>
+  <div class="lesson-progress-dots" id="progressDots"></div>
+  <a href="lesson-2.html" class="lesson-nav-btn primary">
+    <span class="nav-label">الدرس التالي</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
+  </a>
+</nav>
+
+<footer class="site-footer">
+  <p>© 2026 د. سفيان مرابطي</p>
+</footer>
+
+<script>window.LESSON_NUM = 1;</script>
+<script src="lesson-nav.js"></script>
+</body>
+</html>

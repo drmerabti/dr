@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="htmlRoot">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الدرس 2: إنشاء قاعدة بيانات جديدة — أكاديمية مرابطي</title>
+<meta name="description" content="خطوات إنشاء قاعدة بيانات Access جديدة من الصفر، وتسمية أول ملف لقاعدة بيانات المكتبة.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar">
+  <a href="index.html" class="icon-btn" id="backBtn" aria-label="رجوع لفهرس الدروس" title="رجوع لفهرس الدروس">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
+  </a>
+</div>
+
+<header class="lesson-page-head">
+  <p class="lesson-crumb">الدرس 2 من 8</p>
+  <h1 class="lesson-page-title">إنشاء قاعدة بيانات جديدة</h1>
+</header>
+
+<main class="lesson-body">
+
+  <p>
+    قبل ما نضيف أي بيانات، لازم ننشئ "ملف" قاعدة البيانات نفسه — تمامًا زي ما تنشئ ملف وورد فارغ قبل ما تكتب فيه.
+    راح ننشئ الآن ملف قاعدة بيانات المكتبة اللي راح نبني عليها كل الدروس الجاية.
+  </p>
+
+  <div class="lesson-diagram">
+    <svg viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg">
+      <rect x="60" y="60" width="140" height="100" rx="12" fill="#fff" stroke="#B4B2A9" stroke-width="1.5" stroke-dasharray="6 5"/>
+      <text x="130" y="118" text-anchor="middle" font-family="Tajawal, sans-serif" font-size="13" fill="#64768A">ملف فارغ</text>
+
+      <line x1="215" y1="110" x2="275" y2="110" stroke="#8B6FD9" stroke-width="2"/>
+      <polygon points="275,104 289,110 275,116" fill="#8B6FD9"/>
+
+      <rect x="300" y="55" width="280" height="110" rx="14" fill="#F3EFFC" stroke="#8B6FD9" stroke-width="1.5"/>
+      <rect x="322" y="75" width="60" height="70" rx="6" fill="#8B6FD9"/>
+      <text x="352" y="115" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#fff">DB</text>
+      <text x="480" y="105" text-anchor="middle" font-family="Tajawal, sans-serif" font-size="14" font-weight="700" fill="#5A3FA0">Library.accdb</text>
+      <text x="480" y="128" text-anchor="middle" font-family="Tajawal, sans-serif" font-size="12" fill="#6B5EA8">قاعدة بيانات المكتبة</text>
+    </svg>
+  </div>
+
+  <ol class="lesson-steps">
+    <li>افتح برنامج <strong>Microsoft Access</strong> من قائمة البرامج.</li>
+    <li>من الشاشة الرئيسية، اضغط على خيار <strong>"Blank database"</strong> (قاعدة بيانات فارغة).</li>
+    <li>بخانة اسم الملف، اكتب <strong>"Library"</strong> بدل الاسم الافتراضي.</li>
+    <li>اختر مكان حفظ الملف بجهازك (سطح المكتب مثلًا)، وتأكد من الامتداد <code>.accdb</code>.</li>
+    <li>اضغط زر <strong>"Create"</strong> — راح يفتح Access مباشرة قاعدة البيانات الجديدة مع جدول فارغ جاهز.</li>
+  </ol>
+
+  <div class="callout-tip">
+    <span class="callout-icon">💡</span>
+    <div>
+      <h3>هل تعلم؟</h3>
+      <p>Access يفتح تلقائيًا جدول فارغ باسم "Table1" بمجرد إنشاء قاعدة بيانات جديدة — هذا بالضبط الجدول اللي راح نعدّله بالدرس الجاي.</p>
+    </div>
+  </div>
+
+  <div class="try-box">
+    <div class="try-box-head">
+      <span class="callout-icon">🎯</span>
+      <h3>جرّب بنفسك</h3>
+    </div>
+    <p>أنشئ قاعدة بيانات جديدة فعليًا باسم "Library"، واحفظها بمجلد تتذكره — راح نحتاجها بكل الدروس الجاية.</p>
+    <details>
+      <summary>الحل المتوقع</summary>
+      <p>بعد الإنشاء، لازم تشوف نافذة Access مفتوحة، وبالجانب الأيسر قائمة صغيرة فيها "Table1" — هذا معناه نجحت العملية.</p>
+    </details>
+  </div>
+
+</main>
+
+<nav class="lesson-nav">
+  <a href="lesson-1.html" class="lesson-nav-btn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
+    <span class="nav-label">السابق</span>
+  </a>
+  <div class="lesson-progress-dots" id="progressDots"></div>
+  <a href="lesson-3.html" class="lesson-nav-btn primary">
+    <span class="nav-label">الدرس التالي</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
+  </a>
+</nav>
+
+<footer class="site-footer">
+  <p>© 2026 د. سفيان مرابطي</p>
+</footer>
+
+<script>window.LESSON_NUM = 2;</script>
+<script src="lesson-nav.js"></script>
+</body>
+</html>

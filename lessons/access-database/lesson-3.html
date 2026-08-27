@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="htmlRoot">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الدرس 3: إنشاء أول جدول — أكاديمية مرابطي</title>
+<meta name="description" content="كيفية إنشاء جدول الكتب في Access، وتحديد الحقول وأنواع البيانات المناسبة لكل حقل.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar">
+  <a href="index.html" class="icon-btn" id="backBtn" aria-label="رجوع لفهرس الدروس" title="رجوع لفهرس الدروس">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
+  </a>
+</div>
+
+<header class="lesson-page-head">
+  <p class="lesson-crumb">الدرس 3 من 8</p>
+  <h1 class="lesson-page-title">إنشاء أول جدول وتحديد الحقول</h1>
+</header>
+
+<main class="lesson-body">
+
+  <p>
+    <strong>الجدول</strong> هو المكان اللي تُخزَّن فيه البيانات فعليًا، منظّمة بشكل صفوف وأعمدة — كل عمود اسمه <strong>حقل (Field)</strong>،
+    وكل حقل له <strong>نوع بيانات</strong> يحدد شنو نوع المعلومة اللي يقبلها (نص، رقم، تاريخ...).
+  </p>
+
+  <p>راح ننشئ جدول <strong>"Books"</strong> (الكتب) بثلاثة حقول أساسية:</p>
+
+  <div class="lesson-diagram">
+    <svg viewBox="0 0 640 200" xmlns="http://www.w3.org/2000/svg">
+      <rect x="30" y="30" width="180" height="46" rx="8" fill="#F3EFFC" stroke="#8B6FD9" stroke-width="1"/>
+      <text x="120" y="50" text-anchor="middle" font-family="Tajawal, sans-serif" font-size="13" font-weight="700" fill="#5A3FA0">عنوان الكتاب</text>
+      <text x="120" y="66" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#8B6FD9">Short Text</text>
+
+      <rect x="230" y="30" width="180" height="46" rx="8" fill="#EAF3FB" stroke="#5B9BD5" stroke-width="1"/>
+      <text x="320" y="50" text-anchor="middle" font-family="Tajawal, sans-serif" font-size="13" font-weight="700" fill="#215D8F">المؤلف</text>
+      <text x="320" y="66" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#5B9BD5">Short Text</text>
+
+      <rect x="430" y="30" width="180" height="46" rx="8" fill="#EAF8F0" stroke="#4CAF7D" stroke-width="1"/>
+      <text x="520" y="50" text-anchor="middle" font-family="Tajawal, sans-serif" font-size="13" font-weight="700" fill="#1E6B45">سنة النشر</text>
+      <text x="520" y="66" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="#4CAF7D">Number</text>
+
+      <rect x="30" y="100" width="180" height="34" rx="6" fill="#fff" stroke="#E3E1EE" stroke-width="1"/>
+      <text x="120" y="121" text-anchor="middle" font-family="Tajawal, sans-serif" font-size="12" fill="#333">مقدمة ابن خلدون</text>
+      <rect x="230" y="100" width="180" height="34" rx="6" fill="#fff" stroke="#E3E1EE" stroke-width="1"/>
+      <text x="320" y="121" text-anchor="middle" font-family="Tajawal, sans-serif" font-size="12" fill="#333">ابن خلدون</text>
+      <rect x="430" y="100" width="180" height="34" rx="6" fill="#fff" stroke="#E3E1EE" stroke-width="1"/>
+      <text x="520" y="121" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#333">1377</text>
+    </svg>
+  </div>
+
+  <ol class="lesson-steps">
+    <li>بجدول "Table1" المفتوح، اضغط على تبويب <strong>"Design View"</strong> (أسفل يسار الشاشة أو من تبويب Home).</li>
+    <li>لما يطلب منك اسم للجدول، اكتب <strong>"Books"</strong> واضغط موافق.</li>
+    <li>بعمود "Field Name"، اكتب أول حقل: <strong>"عنوان الكتاب"</strong>، وبعمود "Data Type" اختر <strong>Short Text</strong>.</li>
+    <li>بالسطر الثاني، أضف حقل <strong>"المؤلف"</strong> بنفس النوع Short Text.</li>
+    <li>بالسطر الثالث، أضف حقل <strong>"سنة النشر"</strong> واختر نوع البيانات <strong>Number</strong>.</li>
+    <li>احفظ الجدول (Ctrl+S)، ثم بدّل لعرض <strong>"Datasheet View"</strong> وابدأ تكتب صفوف بيانات تجريبية.</li>
+  </ol>
+
+  <div class="callout-tip">
+    <span class="callout-icon">💡</span>
+    <div>
+      <h3>هل تعلم؟</h3>
+      <p>اختيار نوع البيانات الصحيح يمنع الأخطاء لاحقًا — مثلاً لو اخترت "Number" لحقل السنة، Access يرفض تلقائيًا أي محاولة كتابة نص فيه.</p>
+    </div>
+  </div>
+
+  <div class="try-box">
+    <div class="try-box-head">
+      <span class="callout-icon">🎯</span>
+      <h3>جرّب بنفسك</h3>
+    </div>
+    <p>أضف بجدول "Books" 3 صفوف بيانات تجريبية (3 كتب مختلفة بعناوين ومؤلفين وسنوات حقيقية).</p>
+    <details>
+      <summary>تلميح</summary>
+      <p>بعرض Datasheet View، بس اضغط بالخلية الفارغة تحت كل عمود وابدأ اكتب — Access يحفظ كل صف تلقائيًا بمجرد ما تنتقل للصف التالي.</p>
+    </details>
+  </div>
+
+</main>
+
+<nav class="lesson-nav">
+  <a href="lesson-2.html" class="lesson-nav-btn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
+    <span class="nav-label">السابق</span>
+  </a>
+  <div class="lesson-progress-dots" id="progressDots"></div>
+  <a href="lesson-4.html" class="lesson-nav-btn primary">
+    <span class="nav-label">الدرس التالي</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
+  </a>
+</nav>
+
+<footer class="site-footer">
+  <p>© 2026 د. سفيان مرابطي</p>
+</footer>
+
+<script>window.LESSON_NUM = 3;</script>
+<script src="lesson-nav.js"></script>
+</body>
+</html>
