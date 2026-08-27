@@ -6,6 +6,20 @@
 ===================================================================== */
 
 const ICONS = {
+  cvApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="gCvA" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#9AC8E0"/><stop offset="1" stop-color="#2F6FB0"/>
+      </linearGradient>
+    </defs>
+    <ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/>
+    <rect x="8" y="5" width="32" height="38" rx="4" fill="#fff" stroke="#DCE6EE" stroke-width="1"/>
+    <rect x="8" y="5" width="13" height="38" rx="4" fill="url(#gCvA)"/>
+    <circle cx="14.5" cy="15" r="4.2" fill="#fff" opacity=".9"/>
+    <path d="M9 27c0-3.5 2.5-6 5.5-6s5.5 2.5 5.5 6" fill="#fff" opacity=".75"/>
+    <path d="M25 13h10M25 17h10M25 23h10M25 27h7" stroke="#B9CEE1" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M25 33h10M25 37h6" stroke="#DCE6EE" stroke-width="1.6" stroke-linecap="round"/>
+  </svg>`,
   invoiceApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <linearGradient id="gInvA" x1="0" y1="0" x2="0" y2="1">
@@ -183,6 +197,10 @@ const CONTENT = {
       desc_ar: 'أنشئ فاتورة احترافية مع شعار، توقيع، ضريبة، وتحويل المبلغ إلى حروف — بثلاث لغات.',
       desc_en: 'Generate a professional invoice with logo, signature, VAT, and amount-in-words — in three languages.',
       url: 'https://drmerabti.github.io/dr/invoice-generator/', external: true, icon: ICONS.invoiceApp },
+    { id: 'tool-cv-builder', title_ar: 'منشئ السيرة الذاتية', title_en: 'CV Builder',
+      desc_ar: 'أنشئ سيرة ذاتية احترافية بمعاينة حية وتصدير PDF — يتطلب تسجيل الدخول.',
+      desc_en: 'Build a professional CV with live preview and PDF export — requires login.',
+      url: 'tools/cv-builder/', icon: ICONS.cvApp },
     // لإضافة أداة جديدة أضف سطرًا هنا بنفس الشكل:
     // { id:'tool-distance', title_ar:'حساب المسافة بين منطقتين', title_en:'Distance Calculator',
     //   desc_ar:'احسب المسافة بين نقطتين جغرافيتين بسهولة.', desc_en:'Calculate distance between two locations.',
