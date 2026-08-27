@@ -132,7 +132,7 @@
     langBtns: document.querySelectorAll('.lang-btn'),
     saveIndicator: $('saveIndicator'),
     userChip: $('userChip'), userChipName: $('userChipName'), logoutBtn: $('logoutBtn'),
-    lockedScreen: $('lockedScreen'), dashboardScreen: $('dashboardScreen'), editorScreen: $('editorScreen'),
+    lockedScreen: $('lockedScreen'), dashboardScreen: $('dashboardScreen'), editorScreen: $('editorScreen'), loadingScreen: $('loadingScreen'),
     lockedTitle: $('lockedTitle'), lockedSub: $('lockedSub'),
     tabLogin: $('tabLogin'), tabSignup: $('tabSignup'),
     authCardForm: $('authCardForm'), authCardError: $('authCardError'),
@@ -235,7 +235,7 @@
 
   /* ================= Screens ================= */
   function showScreen(name) {
-    [els.lockedScreen, els.dashboardScreen, els.editorScreen].forEach((s) => s.classList.add('hidden'));
+    [els.loadingScreen, els.lockedScreen, els.dashboardScreen, els.editorScreen].forEach((s) => s.classList.add('hidden'));
     els[name].classList.remove('hidden');
   }
 
@@ -351,6 +351,14 @@
   }
 
   function escapeHtml(s) { return String(s || '').replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  function formatMonthYear(val) {
+    if (!val) return '';
+    const [y, m] = val.split('-');
+    if (!y || !m) return val;
+    const d = new Date(Number(y), Number(m) - 1, 1);
+    const locale = lang === 'ar' ? 'ar' : lang === 'fr' ? 'fr-FR' : 'en-US';
+    return d.toLocaleDateString(locale, { month: 'short', year: 'numeric' });
+  }
   function formatDate(ts) {
     if (!ts) return '—';
     const d = new Date(ts);
@@ -635,8 +643,8 @@
           </div>
           <div class="section-subrow">
             <input type="text" class="cv-input" data-f="location" placeholder="${t('location')}" value="${escapeHtml(entry.location || '')}">
-            <input type="text" class="cv-input" data-f="start" placeholder="${t('startDate')}" value="${escapeHtml(entry.start || '')}">
-            <input type="text" class="cv-input" data-f="end" placeholder="${t('endDate')}" value="${escapeHtml(entry.end || '')}" ${entry.current ? 'disabled' : ''}>
+            <input type="month" class="cv-input" data-f="start" title="${t('startDate')}" value="${escapeHtml(entry.start || '')}">
+            <input type="month" class="cv-input" data-f="end" title="${t('endDate')}" value="${escapeHtml(entry.end || '')}" ${entry.current ? 'disabled' : ''}>
           </div>
           ${isExp ? `<label class="toggle-row" style="margin-bottom:8px;"><span>${t('currentlyHere')}</span><input type="checkbox" data-f="current" ${entry.current ? 'checked' : ''}><span class="toggle-switch"></span></label>` : ''}
           <textarea class="section-textarea" data-f="description" placeholder="${t('description')}">${escapeHtml(entry.description || '')}</textarea>
@@ -788,7 +796,7 @@
         const titleLine = isExp
           ? [e.title, e.company].filter(Boolean).join(' — ')
           : [e.degree, e.institution].filter(Boolean).join(' — ');
-        const metaLine = [e.location, [e.start, e.current ? (I18N[lang].currentlyHere) : e.end].filter(Boolean).join(' - ')].filter(Boolean).join(' · ');
+        const metaLine = [e.location, [formatMonthYear(e.start), e.current ? (I18N[lang].currentlyHere) : formatMonthYear(e.end)].filter(Boolean).join(' - ')].filter(Boolean).join(' · ');
         return `<div class="entry">
           <p class="entry-title">${escapeHtml(titleLine)}</p>
           ${metaLine ? `<p class="entry-meta">${escapeHtml(metaLine)}</p>` : ''}
@@ -856,7 +864,3 @@
     showScreen('lockedScreen');
   }
 })();
-
-
-
-
