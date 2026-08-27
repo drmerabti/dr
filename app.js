@@ -67,6 +67,20 @@ const ICONS = {
     <path d="M25 6v7c0 1.1.9 2 2 2h7z" fill="#A8E6BE" opacity=".6"/>
     <path d="M14 22.5h4.2l2.3 4 2.3-4h4.2l-4.4 6.75L27.2 36H23l-2.5-4.3-2.5 4.3h-4.2l4.6-6.75z" fill="#fff"/>
   </svg>`,
+  accessApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="gAccessA" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#B79BEE"/><stop offset="1" stop-color="#5A3FA0"/>
+      </linearGradient>
+    </defs>
+    <ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/>
+    <path d="M11 6c-1.7 0-3 1.3-3 3v30c0 1.7 1.3 3 3 3h20c1.7 0 3-1.3 3-3V15l-9-9H11z" fill="url(#gAccessA)"/>
+    <path d="M25 6v7c0 1.1.9 2 2 2h7z" fill="#DCCEF7" opacity=".6"/>
+    <rect x="13" y="20" width="9" height="7" rx="1.5" fill="#fff" opacity=".95"/>
+    <rect x="24" y="20" width="9" height="7" rx="1.5" fill="#fff" opacity=".7"/>
+    <rect x="13" y="29" width="9" height="7" rx="1.5" fill="#fff" opacity=".7"/>
+    <rect x="24" y="29" width="9" height="7" rx="1.5" fill="#fff" opacity=".95"/>
+  </svg>`,
   lessons: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <linearGradient id="gLessonsL" x1="0" y1="0" x2="0" y2="1">
@@ -186,6 +200,16 @@ const CONTENT = {
       category: 'Excel',
       url: 'lessons/excel-shortcuts/',
       icon: ICONS.excelApp,
+    },
+    {
+      id: 'lesson-access-database',
+      title_ar: 'قاعدة بيانات Access خطوة بخطوة',
+      title_en: 'Access Database Step by Step',
+      desc_ar: '8 دروس تبني معك قاعدة بيانات مكتبة فعلية من الصفر — جداول، علاقات، استعلامات، نماذج، وتقارير.',
+      desc_en: '8 lessons building a real library database from scratch — tables, relationships, queries, forms, and reports.',
+      category: 'Access',
+      url: 'lessons/access-database/',
+      icon: ICONS.accessApp,
     },
   ],
   apps: [
