@@ -1,5 +1,5 @@
 // ============================================================
-// script.js — Word Training quiz engine
+// script.js — Word Training quiz engine (ar / en / fr)
 // ============================================================
 
 (function () {
@@ -10,11 +10,63 @@
   const SHORTCUT_PER_LEVEL = 15;
   const REPEAT_COUNT = 4; // questions repeated from the previous level
   const TIME_PER_QUESTION = 15; // seconds
-
-  const LEVEL_LABELS = {
-    1: 'أساسي', 2: 'أساسي متقدم', 3: 'متوسط', 4: 'متقدم', 5: 'احترافي',
-  };
   const LEVEL_MIN_LOGIN = 3;
+
+  const UI = {
+    ar: {
+      dir: 'rtl', pageTitleTag: 'تدريب شامل في وورد — أكاديمية مرابطي', topbarTitle: 'تدريب شامل في وورد',
+      pageTitle: 'اختر المستوى', pageSub: '5 مستويات، 30 سؤال لكل مستوى — كل سؤال 15 ثانية',
+      levelLabels: { 1: 'أساسي', 2: 'أساسي متقدم', 3: 'متوسط', 4: 'متقدم', 5: 'احترافي' },
+      questionsCount: 'سؤال', bestScore: 'أفضل نتيجة', loginRequired: 'يتطلب تسجيل الدخول',
+      progressLabel: (i, n) => `سؤال ${i} من ${n}`,
+      lockedTitle: 'هذا المستوى يتطلب تسجيل الدخول',
+      lockedMsg: 'سجّل دخولك من الصفحة الرئيسية لفتح المستويات 3، 4، و5، ولحفظ تقدمك.',
+      goLogin: 'الذهاب لتسجيل الدخول', backToLevels: 'رجوع للمستويات',
+      resultLevel: (lvl, label) => `أنهيت المستوى ${lvl} (${label})`,
+      resultScore: (score, total) => `${score} من ${total} إجابة صحيحة`,
+      shareLabel: 'شارك إنجازك:',
+      shareText: (lvl, pct) => `أنهيت المستوى ${lvl} من تدريب وورد بنسبة ${pct}%! جرّب أنت كمان في أكاديمية مرابطي.`,
+      titles: { excellent: 'ممتاز جدًا!', great: 'أحسنت!', good: 'جيد، واصل التدريب!', tryAgain: 'لا بأس، حاول مرة أخرى!' },
+      qShortcutFunc: (keys) => `ماذا يفعل الاختصار <span class="kbd-inline">${keys.join('+')}</span> ؟`,
+      qShortcutKeys: (name) => `ما هو اختصار: "${name}" ؟`,
+    },
+    en: {
+      dir: 'ltr', pageTitleTag: 'Complete Word Training — Merabti Academy', topbarTitle: 'Complete Word Training',
+      pageTitle: 'Choose a Level', pageSub: '5 levels, 30 questions each — 15 seconds per question',
+      levelLabels: { 1: 'Basic', 2: 'Elementary', 3: 'Intermediate', 4: 'Advanced', 5: 'Expert' },
+      questionsCount: 'questions', bestScore: 'Best score', loginRequired: 'Requires login',
+      progressLabel: (i, n) => `Question ${i} of ${n}`,
+      lockedTitle: 'This level requires login',
+      lockedMsg: 'Sign in from the homepage to unlock levels 3, 4, and 5, and to save your progress.',
+      goLogin: 'Go to login', backToLevels: 'Back to levels',
+      resultLevel: (lvl, label) => `You finished Level ${lvl} (${label})`,
+      resultScore: (score, total) => `${score} out of ${total} correct`,
+      shareLabel: 'Share your achievement:',
+      shareText: (lvl, pct) => `I finished Level ${lvl} of the Word training with ${pct}%! Try it yourself at Merabti Academy.`,
+      titles: { excellent: 'Excellent!', great: 'Well done!', good: 'Good, keep practicing!', tryAgain: 'No worries, try again!' },
+      qShortcutFunc: (keys) => `What does <span class="kbd-inline">${keys.join('+')}</span> do?`,
+      qShortcutKeys: (name) => `What is the shortcut for: "${name}"?`,
+    },
+    fr: {
+      dir: 'ltr', pageTitleTag: 'Formation complète Word — Académie Merabti', topbarTitle: 'Formation complète Word',
+      pageTitle: 'Choisissez un niveau', pageSub: '5 niveaux, 30 questions chacun — 15 secondes par question',
+      levelLabels: { 1: 'Basique', 2: 'Élémentaire', 3: 'Intermédiaire', 4: 'Avancé', 5: 'Expert' },
+      questionsCount: 'questions', bestScore: 'Meilleur score', loginRequired: 'Connexion requise',
+      progressLabel: (i, n) => `Question ${i} sur ${n}`,
+      lockedTitle: 'Ce niveau nécessite une connexion',
+      lockedMsg: "Connectez-vous depuis la page d'accueil pour débloquer les niveaux 3, 4 et 5, et sauvegarder votre progression.",
+      goLogin: 'Aller à la connexion', backToLevels: 'Retour aux niveaux',
+      resultLevel: (lvl, label) => `Vous avez terminé le niveau ${lvl} (${label})`,
+      resultScore: (score, total) => `${score} sur ${total} bonnes réponses`,
+      shareLabel: 'Partagez votre réussite :',
+      shareText: (lvl, pct) => `J'ai terminé le niveau ${lvl} de la formation Word avec ${pct} % ! Essayez à votre tour sur Académie Merabti.`,
+      titles: { excellent: 'Excellent !', great: 'Bien joué !', good: 'Bien, continuez à vous entraîner !', tryAgain: 'Pas grave, réessayez !' },
+      qShortcutFunc: (keys) => `Que fait <span class="kbd-inline">${keys.join('+')}</span> ?`,
+      qShortcutKeys: (name) => `Quel est le raccourci pour : « ${name} » ?`,
+    },
+  };
+
+  let lang = localStorage.getItem('wordTraining:lang') || 'ar';
 
   /* ---------------- Assign difficulty level to each shortcut ---------------- */
   const SC_WITH_LEVEL = SC.map((s, i) => ({
@@ -41,20 +93,17 @@
   function pickN(arr, n) {
     return shuffle(arr).slice(0, n);
   }
-  function keysStr(keys) {
-    return `<span class="kbd-inline">${keys.join('+')}</span>`;
-  }
 
   function buildShortcutQuestion(shortcut, pool) {
     const direction = Math.random() < 0.5 ? 'keys2func' : 'func2keys';
     const others = pool.filter((s) => s !== shortcut);
 
     if (direction === 'keys2func') {
-      const correctText = shortcut.name.ar;
-      const distractorPool = shuffle(others.map((s) => s.name.ar).filter((n) => n !== correctText));
+      const correctText = shortcut.name[lang];
+      const distractorPool = shuffle(others.map((s) => s.name[lang]).filter((n) => n !== correctText));
       const options = shuffle([correctText, ...distractorPool.slice(0, 3)]);
       return {
-        q: `ماذا يفعل الاختصار ${keysStr(shortcut.keys)} ؟`,
+        q: UI[lang].qShortcutFunc(shortcut.keys),
         options,
         correct: options.indexOf(correctText),
         isHtml: true,
@@ -66,7 +115,7 @@
       const rawOptions = shuffle([correctText, ...uniqueDistractors]);
       const options = rawOptions.map((k) => `<span class="kbd-inline">${k}</span>`);
       return {
-        q: `ما هو اختصار: "${shortcut.name.ar}" ؟`,
+        q: UI[lang].qShortcutKeys(shortcut.name[lang]),
         options,
         correct: rawOptions.indexOf(correctText),
         isHtml: true,
@@ -75,10 +124,11 @@
   }
 
   function buildGeneralQuestion(item) {
-    const correctText = item.options[item.correct];
-    const order = shuffle(item.options.map((opt, i) => ({ opt, wasCorrect: i === item.correct })));
+    const localized = item[lang];
+    const correctText = localized.options[item.correct];
+    const order = shuffle(localized.options.map((opt, i) => ({ opt, wasCorrect: i === item.correct })));
     return {
-      q: item.q,
+      q: localized.q,
       options: order.map((o) => o.opt),
       correct: order.findIndex((o) => o.wasCorrect),
       isHtml: false,
@@ -99,7 +149,6 @@
 
     let all = [...shortcutQs, ...generalQs];
 
-    // Trim / pad to exactly QUESTIONS_PER_LEVEL, then splice in repeats from previous level
     if (level > 1 && previousLevelQuestions.length > 0) {
       const repeats = pickN(previousLevelQuestions, Math.min(REPEAT_COUNT, previousLevelQuestions.length));
       all = all.slice(0, QUESTIONS_PER_LEVEL - repeats.length).concat(repeats);
@@ -139,15 +188,21 @@
   /* ---------------- DOM refs ---------------- */
   const $ = (id) => document.getElementById(id);
   const els = {
+    htmlRoot: $('htmlRoot'),
+    pageTitleTag: $('pageTitleTag'),
+    topbarTitle: $('topbarTitle'),
+    langBtns: document.querySelectorAll('.lang-btn'),
     levelSelectScreen: $('levelSelectScreen'),
     quizScreen: $('quizScreen'),
     resultScreen: $('resultScreen'),
     lockedScreen: $('lockedScreen'),
+    pageTitle: $('pageTitle'),
+    pageSub: $('pageSub'),
     levelsGrid: $('levelsGrid'),
-    progressFill: $('progressFill'),
-    progressLabel: $('progressLabel'),
     timerDisplay: $('timerDisplay'),
     timerText: $('timerText'),
+    progressFill: $('progressFill'),
+    progressLabel: $('progressLabel'),
     questionText: $('questionText'),
     optionsGrid: $('optionsGrid'),
     resultEmoji: $('resultEmoji'),
@@ -157,6 +212,10 @@
     resultScore: $('resultScore'),
     backToLevelsBtn: $('backToLevelsBtn'),
     lockedBackBtn: $('lockedBackBtn'),
+    lockedTitle: $('lockedTitle'),
+    lockedMsg: $('lockedMsg'),
+    goLoginBtn: $('goLoginBtn'),
+    shareLabel: $('shareLabel'),
     shareWhatsapp: $('shareWhatsapp'),
     shareTelegram: $('shareTelegram'),
   };
@@ -166,8 +225,41 @@
     els[name].classList.remove('hidden');
   }
 
+  /* ---------------- Language ---------------- */
+  function applyLanguage() {
+    const t = UI[lang];
+    document.documentElement.setAttribute('lang', lang);
+    document.documentElement.setAttribute('dir', t.dir);
+    els.pageTitleTag.textContent = t.pageTitleTag;
+    document.title = t.pageTitleTag;
+    els.topbarTitle.textContent = t.topbarTitle;
+    els.pageTitle.textContent = t.pageTitle;
+    els.pageSub.textContent = t.pageSub;
+    els.lockedTitle.textContent = t.lockedTitle;
+    els.lockedMsg.textContent = t.lockedMsg;
+    els.goLoginBtn.textContent = t.goLogin;
+    els.lockedBackBtn.textContent = t.backToLevels;
+    els.backToLevelsBtn.textContent = t.backToLevels;
+    els.shareLabel.textContent = t.shareLabel;
+
+    els.langBtns.forEach((btn) => {
+      btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+    });
+    localStorage.setItem('wordTraining:lang', lang);
+  }
+
+  els.langBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      lang = btn.getAttribute('data-lang');
+      applyLanguage();
+      renderLevels();
+      showScreen('levelSelectScreen');
+    });
+  });
+
   /* ---------------- Level select screen ---------------- */
   function renderLevels() {
+    const t = UI[lang];
     const user = getCurrentUser();
     const progress = loadProgress();
     let html = '';
@@ -178,10 +270,10 @@
         <div class="level-card ${locked ? 'locked' : ''}" data-level="${lvl}">
           ${locked ? '<span class="level-lock">🔒</span>' : ''}
           <span class="level-num">${lvl}</span>
-          <p class="level-label">${LEVEL_LABELS[lvl]}</p>
-          <p class="level-meta">30 سؤال</p>
-          ${best !== null ? `<p class="level-best">أفضل نتيجة: ${best}%</p>` : ''}
-          ${locked ? '<p class="level-locked-text">يتطلب تسجيل الدخول</p>' : ''}
+          <p class="level-label">${t.levelLabels[lvl]}</p>
+          <p class="level-meta">30 ${t.questionsCount}</p>
+          ${best !== null ? `<p class="level-best">${t.bestScore}: ${best}%</p>` : ''}
+          ${locked ? `<p class="level-locked-text">${t.loginRequired}</p>` : ''}
         </div>`;
     }
     els.levelsGrid.innerHTML = html;
@@ -204,30 +296,22 @@
 
   function startLevel(level) {
     const questions = buildLevelQuestions(level);
-    quizState = {
-      level,
-      questions,
-      idx: 0,
-      score: 0,
-      locked: false,
-    };
+    quizState = { level, questions, idx: 0, score: 0, locked: false };
     showScreen('quizScreen');
     renderQuestion();
   }
 
   function renderQuestion() {
+    const t = UI[lang];
     const { questions, idx } = quizState;
     const total = questions.length;
     const q = questions[idx];
 
     els.progressFill.style.width = `${(idx / total) * 100}%`;
-    els.progressLabel.textContent = `سؤال ${idx + 1} من ${total}`;
+    els.progressLabel.textContent = t.progressLabel(idx + 1, total);
 
-    if (q.isHtml) {
-      els.questionText.innerHTML = q.q;
-    } else {
-      els.questionText.textContent = q.q;
-    }
+    if (q.isHtml) els.questionText.innerHTML = q.q;
+    else els.questionText.textContent = q.q;
 
     els.optionsGrid.innerHTML = q.options
       .map((opt, i) => `<button type="button" class="option-btn" data-i="${i}">${opt}</button>`)
@@ -253,7 +337,7 @@
       if (remaining <= 3) els.timerDisplay.classList.add('urgent');
       if (remaining <= 0) {
         clearInterval(timerInterval);
-        handleAnswer(-1); // timeout = no answer
+        handleAnswer(-1);
       }
     }, 1000);
   }
@@ -281,36 +365,32 @@
 
     setTimeout(() => {
       quizState.idx++;
-      if (quizState.idx >= quizState.questions.length) {
-        finishLevel();
-      } else {
-        renderQuestion();
-      }
+      if (quizState.idx >= quizState.questions.length) finishLevel();
+      else renderQuestion();
     }, 900);
   }
 
   function finishLevel() {
     clearInterval(timerInterval);
+    const t = UI[lang];
     const total = quizState.questions.length;
     const pct = Math.round((quizState.score / total) * 100);
 
     saveProgress(quizState.level, pct);
 
-    let emoji = '🙂', title = 'محاولة جيدة!';
-    if (pct >= 90) { emoji = '🏆'; title = 'ممتاز جدًا!'; }
-    else if (pct >= 70) { emoji = '🎉'; title = 'أحسنت!'; }
-    else if (pct >= 50) { emoji = '👍'; title = 'جيد، واصل التدريب!'; }
-    else { emoji = '💪'; title = 'لا بأس، حاول مرة أخرى!'; }
+    let emoji = '🙂', title = t.titles.good;
+    if (pct >= 90) { emoji = '🏆'; title = t.titles.excellent; }
+    else if (pct >= 70) { emoji = '🎉'; title = t.titles.great; }
+    else if (pct >= 50) { emoji = '👍'; title = t.titles.good; }
+    else { emoji = '💪'; title = t.titles.tryAgain; }
 
     els.resultEmoji.textContent = emoji;
     els.resultTitle.textContent = title;
-    els.resultMsg.textContent = `أنهيت المستوى ${quizState.level} (${LEVEL_LABELS[quizState.level]})`;
+    els.resultMsg.textContent = t.resultLevel(quizState.level, t.levelLabels[quizState.level]);
     els.resultPct.textContent = `${pct}%`;
-    els.resultScore.textContent = `${quizState.score} من ${total} إجابة صحيحة`;
+    els.resultScore.textContent = t.resultScore(quizState.score, total);
 
-    const shareText = encodeURIComponent(
-      `أنهيت المستوى ${quizState.level} من تدريب وورد بنسبة ${pct}%! جرّب أنت كمان في أكاديمية مرابطي.`
-    );
+    const shareText = encodeURIComponent(t.shareText(quizState.level, pct));
     const shareLink = encodeURIComponent(location.href);
     els.shareWhatsapp.href = `https://wa.me/?text=${shareText}%20${shareLink}`;
     els.shareTelegram.href = `https://t.me/share/url?url=${shareLink}&text=${shareText}`;
@@ -327,6 +407,7 @@
   });
 
   /* ---------------- Init ---------------- */
+  applyLanguage();
   renderLevels();
   showScreen('levelSelectScreen');
 })();
