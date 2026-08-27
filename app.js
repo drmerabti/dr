@@ -56,6 +56,17 @@ const ICONS = {
     <path d="M25 6v7c0 1.1.9 2 2 2h7z" fill="#8FC2F5" opacity=".6"/>
     <path d="M13.5 22.5h3.2l2.1 10.4 2.4-10.4h3.6l2.4 10.4 2.1-10.4h3.2l-3.6 15h-3.6l-2.3-9.7-2.3 9.7h-3.6z" fill="#fff"/>
   </svg>`,
+  excelApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="gExcelA" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#6FCF97"/><stop offset="1" stop-color="#1D7A46"/>
+      </linearGradient>
+    </defs>
+    <ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/>
+    <path d="M11 6c-1.7 0-3 1.3-3 3v30c0 1.7 1.3 3 3 3h20c1.7 0 3-1.3 3-3V15l-9-9H11z" fill="url(#gExcelA)"/>
+    <path d="M25 6v7c0 1.1.9 2 2 2h7z" fill="#A8E6BE" opacity=".6"/>
+    <path d="M14 22.5h4.2l2.3 4 2.3-4h4.2l-4.4 6.75L27.2 36H23l-2.5-4.3-2.5 4.3h-4.2l4.6-6.75z" fill="#fff"/>
+  </svg>`,
   lessons: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <linearGradient id="gLessonsL" x1="0" y1="0" x2="0" y2="1">
@@ -165,6 +176,16 @@ const CONTENT = {
       category: 'Word',
       url: 'lessons/word-shortcuts/',
       icon: ICONS.wordApp,
+    },
+    {
+      id: 'lesson-excel-shortcuts',
+      title_ar: 'اختصارات لوحة المفاتيح في إكسل',
+      title_en: 'Excel Keyboard Shortcuts',
+      desc_ar: 'أكثر من 100 اختصار مصنّف لتسريع عملك اليومي في مايكروسوفت إكسل.',
+      desc_en: '100+ categorized shortcuts to speed up your everyday work in Microsoft Excel.',
+      category: 'Excel',
+      url: 'lessons/excel-shortcuts/',
+      icon: ICONS.excelApp,
     },
   ],
   apps: [
