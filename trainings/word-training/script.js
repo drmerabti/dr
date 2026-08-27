@@ -29,6 +29,15 @@
       titles: { excellent: 'ممتاز جدًا!', great: 'أحسنت!', good: 'جيد، واصل التدريب!', tryAgain: 'لا بأس، حاول مرة أخرى!' },
       qShortcutFunc: (keys) => `ماذا يفعل الاختصار <span class="kbd-inline">${keys.join('+')}</span> ؟`,
       qShortcutKeys: (name) => `ما هو اختصار: "${name}" ؟`,
+      getCertBtn: 'احصل على شهادتك',
+      certModalTitle: 'بيانات الشهادة',
+      certModalHint: 'هذه البيانات تُستخدم لإصدار شهادتك عند إنهاء أي مستوى بنجاح.',
+      certFirstNamePh: 'الاسم الأول', certLastNamePh: 'اللقب',
+      certContinue: 'متابعة',
+      certPreviewTitle: 'شهادتك جاهزة!',
+      certClose: 'إغلاق', certShare: 'مشاركة', certDownload: 'تحميل',
+      certName: 'تُمنح هذه الشهادة إلى', certPresented: 'فخورون بمنح هذه الشهادة إلى',
+      certLevelLine: (lvl, label, pct) => `لإتمامه بتفوّق المستوى ${lvl} (${label}) من تدريب وورد الشامل، بنسبة نجاح ${pct}٪`,
     },
     en: {
       dir: 'ltr', pageTitleTag: 'Complete Word Training — Merabti Academy', topbarTitle: 'Complete Word Training',
@@ -46,6 +55,15 @@
       titles: { excellent: 'Excellent!', great: 'Well done!', good: 'Good, keep practicing!', tryAgain: 'No worries, try again!' },
       qShortcutFunc: (keys) => `What does <span class="kbd-inline">${keys.join('+')}</span> do?`,
       qShortcutKeys: (name) => `What is the shortcut for: "${name}"?`,
+      getCertBtn: 'Get your certificate',
+      certModalTitle: 'Certificate details',
+      certModalHint: 'This info is used to issue your certificate whenever you pass a level.',
+      certFirstNamePh: 'First name', certLastNamePh: 'Last name',
+      certContinue: 'Continue',
+      certPreviewTitle: 'Your certificate is ready!',
+      certClose: 'Close', certShare: 'Share', certDownload: 'Download',
+      certName: 'This certificate is proudly presented to', certPresented: 'This certificate is proudly presented to',
+      certLevelLine: (lvl, label, pct) => `For successfully completing Level ${lvl} (${label}) of the Complete Word Training, with a score of ${pct}%`,
     },
     fr: {
       dir: 'ltr', pageTitleTag: 'Formation complète Word — Académie Merabti', topbarTitle: 'Formation complète Word',
@@ -236,6 +254,13 @@
     shareLabel: $('shareLabel'),
     shareWhatsapp: $('shareWhatsapp'),
     shareTelegram: $('shareTelegram'),
+    getCertBtn: $('getCertBtn'), getCertText: $('getCertText'),
+    certNameOverlay: $('certNameOverlay'), certNameTitle: $('certNameTitle'), certNameHint: $('certNameHint'),
+    certFirstName: $('certFirstName'), certLastName: $('certLastName'), certLangRow: $('certLangRow'),
+    certNameContinueBtn: $('certNameContinueBtn'),
+    certPreviewOverlay: $('certPreviewOverlay'), certPreviewTitle: $('certPreviewTitle'), certPreviewImg: $('certPreviewImg'),
+    certCloseBtn: $('certCloseBtn'), certShareBtn: $('certShareBtn'), certShareText: $('certShareText'),
+    certDownloadBtn: $('certDownloadBtn'), certDownloadText: $('certDownloadText'),
   };
 
   function showScreen(name) {
@@ -308,11 +333,237 @@
     });
   }
 
+  /* ---------------- Certificate ---------------- */
+  const CERT_MIN_PCT = 90;
+  let certName = null; // { first, last, lang }
+  let pendingLevelStart = null;
+
+  const CERT_TEMPLATES = {
+    ar: {
+      src: 'certs/cert-ar.jpg',
+      nameY: 0.555, presentedY: 0.478, levelY: 0.698, dateY: 0.81, dateX: 0.746,
+      nameFont: 'bold 46px Tajawal, sans-serif',
+      lineFont: '22px Tajawal, sans-serif',
+      dateFont: 'bold 20px Tajawal, sans-serif',
+      color: '#1E2F40', dir: 'rtl',
+    },
+    en: {
+      src: 'certs/cert-en.jpg',
+      nameY: 0.513, levelY: 0.601, dateY: 0.688, dateX: 0.638,
+      nameFont: 'bold 58px "Times New Roman", serif',
+      lineFont: '26px Georgia, serif',
+      dateFont: 'bold 24px Georgia, serif',
+      color: '#1E2F40', dir: 'ltr',
+    },
+  };
+
+  function certDocRef() {
+    const fbUser = window.fbAuth && window.fbAuth.currentUser;
+    if (!fbUser || !window.fbDb) return null;
+    return window.fbDb.collection('users').doc(fbUser.uid);
+  }
+
+  async function loadCertName() {
+    const ref = certDocRef();
+    if (!ref) { certName = null; return; }
+    try {
+      const doc = await ref.get();
+      const data = doc.exists ? doc.data() : {};
+      certName = data.certName || null;
+    } catch (e) {
+      certName = null;
+    }
+  }
+
+  async function saveCertName(first, last, clang) {
+    certName = { first, last, lang: clang };
+    const ref = certDocRef();
+    if (!ref) return;
+    try { await ref.set({ certName }, { merge: true }); } catch (e) { /* ignore */ }
+  }
+
+  let certLangChoice = 'ar';
+  els.certLangRow.querySelectorAll('.cert-lang-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      certLangChoice = btn.getAttribute('data-clang');
+      els.certLangRow.querySelectorAll('.cert-lang-btn').forEach((b) => b.classList.toggle('active', b === btn));
+    });
+  });
+
+  function openCertNameModal(onDone) {
+    const t = UI[lang];
+    els.certNameTitle.textContent = t.certModalTitle;
+    els.certNameHint.textContent = t.certModalHint;
+    els.certFirstName.placeholder = t.certFirstNamePh;
+    els.certLastName.placeholder = t.certLastNamePh;
+    els.certNameContinueBtn.textContent = t.certContinue;
+    els.certFirstName.value = certName ? certName.first : '';
+    els.certLastName.value = certName ? certName.last : '';
+    certLangChoice = (certName && certName.lang) || (lang === 'en' ? 'en' : 'ar');
+    els.certLangRow.querySelectorAll('.cert-lang-btn').forEach((b) => {
+      b.classList.toggle('active', b.getAttribute('data-clang') === certLangChoice);
+    });
+    els.certNameOverlay.classList.remove('hidden');
+
+    const submit = async () => {
+      const first = els.certFirstName.value.trim();
+      const last = els.certLastName.value.trim();
+      if (!first || !last) return;
+      await saveCertName(first, last, certLangChoice);
+      els.certNameOverlay.classList.add('hidden');
+      els.certNameContinueBtn.removeEventListener('click', submit);
+      onDone();
+    };
+    els.certNameContinueBtn.addEventListener('click', submit);
+  }
+
+  function isLoggedIn() {
+    return !!(window.fbAuth && window.fbAuth.currentUser);
+  }
+
+  function canGetCertificate(level, pct) {
+    if (!isLoggedIn() || pct < CERT_MIN_PCT) return false;
+    for (let i = 1; i < level; i++) {
+      const p = progressCache[i];
+      if (!p || p.best < CERT_MIN_PCT) return false;
+    }
+    return true;
+  }
+
+  function formatCertDate() {
+    const locale = certName && certName.lang === 'en' ? 'en-US' : 'ar';
+    return new Date().toLocaleDateString(locale, { year: 'numeric', month: 'long', day: 'numeric' });
+  }
+
+  function loadImage(src) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => resolve(img);
+      img.onerror = reject;
+      img.src = src;
+    });
+  }
+
+  let lastCertCanvas = null;
+
+  async function generateCertificate(level, pct) {
+    if (!certName) return null;
+    const clang = certName.lang === 'en' ? 'en' : 'ar';
+    const cfg = CERT_TEMPLATES[clang];
+    const t = UI[clang === 'en' ? 'en' : 'ar'];
+
+    if (document.fonts && document.fonts.load) {
+      try { await document.fonts.load(cfg.nameFont); await document.fonts.load(cfg.lineFont); } catch (e) { /* ignore */ }
+    }
+
+    const img = await loadImage(cfg.src);
+    const canvas = document.createElement('canvas');
+    canvas.width = img.naturalWidth;
+    canvas.height = img.naturalHeight;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0);
+
+    ctx.direction = cfg.dir;
+    ctx.textAlign = 'center';
+    ctx.fillStyle = cfg.color;
+
+    const fullName = `${certName.first} ${certName.last}`;
+    ctx.font = cfg.nameFont;
+    ctx.fillText(fullName, canvas.width / 2, canvas.height * cfg.nameY);
+
+    if (clang === 'ar' && cfg.presentedY) {
+      // Arabic template already prints "فخورون بمنح هذه الشهادة إلى" — nothing extra needed here.
+    }
+
+    ctx.font = cfg.lineFont;
+    const levelLine = t.certLevelLine(level, t.levelLabels[level], pct);
+    wrapCanvasText(ctx, levelLine, canvas.width / 2, canvas.height * cfg.levelY, canvas.width * 0.72, 34);
+
+    ctx.font = cfg.dateFont;
+    ctx.textAlign = clang === 'ar' ? 'center' : 'center';
+    ctx.fillText(formatCertDate(), canvas.width * cfg.dateX, canvas.height * cfg.dateY);
+
+    lastCertCanvas = canvas;
+    return canvas;
+  }
+
+  function wrapCanvasText(ctx, text, x, y, maxWidth, lineHeight) {
+    const words = text.split(' ');
+    let line = '';
+    const lines = [];
+    words.forEach((word) => {
+      const test = line ? line + ' ' + word : word;
+      if (ctx.measureText(test).width > maxWidth && line) {
+        lines.push(line);
+        line = word;
+      } else {
+        line = test;
+      }
+    });
+    if (line) lines.push(line);
+    const startY = y - ((lines.length - 1) * lineHeight) / 2;
+    lines.forEach((l, i) => ctx.fillText(l, x, startY + i * lineHeight));
+  }
+
+  els.getCertBtn.addEventListener('click', async () => {
+    const t = UI[lang];
+    els.getCertText.textContent = '…';
+    els.getCertBtn.disabled = true;
+    try {
+      const canvas = await generateCertificate(quizState.level, Math.round((quizState.score / quizState.questions.length) * 100));
+      if (canvas) {
+        els.certPreviewTitle.textContent = t.certPreviewTitle;
+        els.certCloseBtn.textContent = t.certClose;
+        els.certShareText.textContent = t.certShare;
+        els.certDownloadText.textContent = t.certDownload;
+        els.certPreviewImg.src = canvas.toDataURL('image/png');
+        els.certPreviewOverlay.classList.remove('hidden');
+      }
+    } catch (e) { /* ignore */ }
+    els.getCertText.textContent = t.getCertBtn;
+    els.getCertBtn.disabled = false;
+  });
+
+  els.certCloseBtn.addEventListener('click', () => els.certPreviewOverlay.classList.add('hidden'));
+
+  els.certDownloadBtn.addEventListener('click', () => {
+    if (!lastCertCanvas) return;
+    const a = document.createElement('a');
+    a.download = `certificate-level-${quizState ? quizState.level : ''}.png`;
+    a.href = lastCertCanvas.toDataURL('image/png');
+    a.click();
+  });
+
+  els.certShareBtn.addEventListener('click', async () => {
+    if (!lastCertCanvas) return;
+    lastCertCanvas.toBlob(async (blob) => {
+      const file = new File([blob], 'certificate.png', { type: 'image/png' });
+      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+        try { await navigator.share({ files: [file], title: 'Certificate' }); } catch (e) { /* user cancelled */ }
+      } else {
+        const a = document.createElement('a');
+        a.download = 'certificate.png';
+        a.href = URL.createObjectURL(blob);
+        a.click();
+      }
+    }, 'image/png');
+  });
+
   /* ---------------- Quiz state ---------------- */
   let quizState = null;
   let timerInterval = null;
 
   function startLevel(level) {
+    if (isLoggedIn() && !certName) {
+      pendingLevelStart = level;
+      openCertNameModal(() => actuallyStartLevel(level));
+      return;
+    }
+    actuallyStartLevel(level);
+  }
+
+  function actuallyStartLevel(level) {
     const questions = buildLevelQuestions(level);
     quizState = { level, questions, idx: 0, score: 0, locked: false };
     showScreen('quizScreen');
@@ -408,6 +659,9 @@
     els.resultPct.textContent = `${pct}%`;
     els.resultScore.textContent = t.resultScore(quizState.score, total);
 
+    els.getCertBtn.classList.toggle('hidden', !canGetCertificate(quizState.level, pct));
+    els.getCertText.textContent = t.getCertBtn;
+
     const shareText = encodeURIComponent(t.shareText(quizState.level, pct));
     const shareLink = encodeURIComponent(location.href);
     els.shareWhatsapp.href = `https://wa.me/?text=${shareText}%20${shareLink}`;
@@ -439,9 +693,11 @@
           picture: fbUser.photoURL || null,
         }));
         await loadProgressFromFirestore();
+        await loadCertName();
       } else {
         localStorage.removeItem('site_user');
         progressCache = {};
+        certName = null;
       }
       renderLevels();
     });

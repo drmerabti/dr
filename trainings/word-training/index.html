@@ -59,6 +59,10 @@
       <p class="result-msg" id="resultMsg"></p>
       <div class="result-pct" id="resultPct">0%</div>
       <p class="result-score" id="resultScore"></p>
+      <button type="button" class="btn btn-cert hidden" id="getCertBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15a5 5 0 1 0 0-10 5 5 0 0 0 0 10z"/><path d="M8.5 13.5L7 22l5-3 5 3-1.5-8.5"/></svg>
+        <span id="getCertText">احصل على شهادتك</span>
+      </button>
       <div class="result-actions">
         <button type="button" class="btn btn-primary" id="backToLevelsBtn">رجوع للمستويات</button>
       </div>
@@ -73,6 +77,44 @@
       </div>
     </div>
   </section>
+
+  <!-- ============ CERTIFICATE NAME / LANGUAGE MODAL ============ -->
+  <div class="overlay hidden" id="certNameOverlay">
+    <div class="overlay-box">
+      <h3 class="overlay-title" id="certNameTitle">بيانات الشهادة</h3>
+      <p class="overlay-hint" id="certNameHint">هذه البيانات تُستخدم لإصدار شهادتك عند إنهاء أي مستوى بنجاح.</p>
+      <input type="text" id="certFirstName" class="cert-input" placeholder="">
+      <input type="text" id="certLastName" class="cert-input" placeholder="">
+      <div class="cert-lang-row" id="certLangRow">
+        <button type="button" class="cert-lang-btn" data-clang="ar">عربي</button>
+        <button type="button" class="cert-lang-btn" data-clang="en">English</button>
+      </div>
+      <div class="overlay-actions">
+        <button type="button" class="btn btn-primary btn-block" id="certNameContinueBtn">متابعة</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ CERTIFICATE PREVIEW / DOWNLOAD ============ -->
+  <div class="overlay hidden" id="certPreviewOverlay">
+    <div class="overlay-box overlay-box-wide">
+      <h3 class="overlay-title" id="certPreviewTitle">شهادتك جاهزة!</h3>
+      <div class="cert-preview-wrap">
+        <img id="certPreviewImg" alt="Certificate">
+      </div>
+      <div class="overlay-actions cert-preview-actions">
+        <button type="button" class="btn btn-secondary" id="certCloseBtn">إغلاق</button>
+        <button type="button" class="btn btn-secondary" id="certShareBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 3.9M15.4 6.6L8.6 10.5"/></svg>
+          <span id="certShareText">مشاركة</span>
+        </button>
+        <button type="button" class="btn btn-primary" id="certDownloadBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M5 21h14"/></svg>
+          <span id="certDownloadText">تحميل</span>
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- ============ LOGIN REQUIRED SCREEN ============ -->
   <section id="lockedScreen" class="screen hidden">
