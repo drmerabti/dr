@@ -93,6 +93,19 @@ const ICONS = {
     <circle cx="24" cy="22" r="4.2" fill="#fff"/>
     <path d="M12 12A17 17 0 0 1 24 5v2A15 15 0 0 0 13.4 13.4z" fill="#fff" opacity=".35"/>
   </svg>`,
+  humanizerApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="gHumA" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#7DD6C3"/><stop offset="1" stop-color="#1A8A72"/>
+      </linearGradient>
+    </defs>
+    <ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/>
+    <circle cx="24" cy="20" r="16" fill="url(#gHumA)"/>
+    <circle cx="18" cy="18" r="2" fill="#fff"/>
+    <circle cx="30" cy="18" r="2" fill="#fff"/>
+    <path d="M16 26c2.5 3 13.5 3 16 0" stroke="#fff" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+    <path d="M14 34l4 8 6-5 6 5 4-8" fill="none" stroke="#1A8A72" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" opacity=".55"/>
+  </svg>`,
   lessons: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <linearGradient id="gLessonsL" x1="0" y1="0" x2="0" y2="1">
@@ -225,6 +238,14 @@ const CONTENT = {
     },
   ],
   apps: [
+    { id: 'app-ai-detector', title_ar: 'كاشف النص الآلي', title_en: 'AI Text Detector', title_fr: 'Détecteur de texte IA',
+      desc_ar: 'تقدير استرشادي بمساعدة الذكاء الاصطناعي لاحتمال أن يكون نص معين مولّدًا آليًا — يتطلب تسجيل الدخول.',
+      desc_en: 'AI-assisted indicative estimate of how likely a text was AI-generated — requires login.',
+      url: 'tools/ai-detector/', icon: ICONS.aiDetectorApp },
+    { id: 'app-humanizer', title_ar: 'تحويل النص من آلي إلى بشري', title_en: 'AI to Humane', title_fr: 'IA vers Humain',
+      desc_ar: 'أعد صياغة نصك بأسلوب أكثر طبيعية مع الحفاظ التام على المعنى — يتطلب تسجيل الدخول.',
+      desc_en: 'Rewrite your text in a more natural style while fully preserving its meaning — requires login.',
+      url: 'tools/humanizer/', icon: ICONS.humanizerApp },
     {
       id: 'app-word-shortcuts',
       title_ar: 'اختصارات وورد',
@@ -258,10 +279,6 @@ const CONTENT = {
       desc_ar: 'أنشئ سيرة ذاتية احترافية بمعاينة حية وتصدير PDF — يتطلب تسجيل الدخول.',
       desc_en: 'Build a professional CV with live preview and PDF export — requires login.',
       url: 'tools/cv-builder/', icon: ICONS.cvApp },
-    { id: 'tool-ai-detector', title_ar: 'كاشف النص الآلي', title_en: 'AI Text Detector',
-      desc_ar: 'تقدير استرشادي بمساعدة الذكاء الاصطناعي لاحتمال أن يكون نص معين مولّدًا آليًا — يتطلب تسجيل الدخول.',
-      desc_en: 'AI-assisted indicative estimate of how likely a text was AI-generated — requires login.',
-      url: 'tools/ai-detector/', icon: ICONS.aiDetectorApp },
     // لإضافة أداة جديدة أضف سطرًا هنا بنفس الشكل:
     // { id:'tool-distance', title_ar:'حساب المسافة بين منطقتين', title_en:'Distance Calculator',
     //   desc_ar:'احسب المسافة بين نقطتين جغرافيتين بسهولة.', desc_en:'Calculate distance between two locations.',
