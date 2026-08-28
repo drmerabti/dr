@@ -81,6 +81,18 @@ const ICONS = {
     <rect x="13" y="29" width="9" height="7" rx="1.5" fill="#fff" opacity=".7"/>
     <rect x="24" y="29" width="9" height="7" rx="1.5" fill="#fff" opacity=".95"/>
   </svg>`,
+  aiDetectorApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="gAiDetA" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#F0A8B8"/><stop offset="1" stop-color="#B1345A"/>
+      </linearGradient>
+    </defs>
+    <ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/>
+    <circle cx="24" cy="22" r="17" fill="url(#gAiDetA)"/>
+    <circle cx="24" cy="22" r="10.5" fill="none" stroke="#fff" stroke-width="2.6" opacity=".9"/>
+    <circle cx="24" cy="22" r="4.2" fill="#fff"/>
+    <path d="M12 12A17 17 0 0 1 24 5v2A15 15 0 0 0 13.4 13.4z" fill="#fff" opacity=".35"/>
+  </svg>`,
   lessons: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <linearGradient id="gLessonsL" x1="0" y1="0" x2="0" y2="1">
@@ -246,6 +258,10 @@ const CONTENT = {
       desc_ar: 'أنشئ سيرة ذاتية احترافية بمعاينة حية وتصدير PDF — يتطلب تسجيل الدخول.',
       desc_en: 'Build a professional CV with live preview and PDF export — requires login.',
       url: 'tools/cv-builder/', icon: ICONS.cvApp },
+    { id: 'tool-ai-detector', title_ar: 'كاشف النص الآلي', title_en: 'AI Text Detector',
+      desc_ar: 'تقدير استرشادي بمساعدة الذكاء الاصطناعي لاحتمال أن يكون نص معين مولّدًا آليًا — يتطلب تسجيل الدخول.',
+      desc_en: 'AI-assisted indicative estimate of how likely a text was AI-generated — requires login.',
+      url: 'tools/ai-detector/', icon: ICONS.aiDetectorApp },
     // لإضافة أداة جديدة أضف سطرًا هنا بنفس الشكل:
     // { id:'tool-distance', title_ar:'حساب المسافة بين منطقتين', title_en:'Distance Calculator',
     //   desc_ar:'احسب المسافة بين نقطتين جغرافيتين بسهولة.', desc_en:'Calculate distance between two locations.',
