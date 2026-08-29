@@ -236,6 +236,16 @@ const CONTENT = {
       url: 'lessons/access-database/',
       icon: ICONS.accessApp,
     },
+    {
+      id: 'lesson-word-full',
+      title_ar: 'دورة Word الشاملة (مبتدئ إلى محترف)',
+      title_en: 'Complete Word Course (Beginner to Advanced)',
+      desc_ar: 'دورة كاملة بأيقونات حقيقية وشرح مبسّط، من أول فتحة للبرنامج إلى الاحتراف الكامل.',
+      desc_en: 'A complete course with real icons and simple explanations, from opening the program for the first time to full mastery.',
+      category: 'Word',
+      url: 'lessons/word-full/',
+      icon: ICONS.wordApp,
+    },
   ],
   apps: [
     { id: 'app-ai-detector', title_ar: 'كاشف النص الآلي', title_en: 'AI Text Detector', title_fr: 'Détecteur de texte IA',
