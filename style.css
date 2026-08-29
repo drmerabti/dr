@@ -101,6 +101,7 @@ a{ color: inherit; }
   max-width: 1080px; margin-inline: auto;
   padding: 24px 28px 0;
   display:flex; align-items:center; justify-content: space-between;
+  flex-wrap: wrap; row-gap: 12px;
 }
 .brand{
   font-weight: 700;
