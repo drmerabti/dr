@@ -25,6 +25,8 @@ html[lang="en"]{ --font-body: var(--font-en-body); }
 
 *{ box-sizing: border-box; }
 
+.hidden{ display: none !important; }
+
 html, body{ margin:0; min-height: 100%; }
 
 body{
@@ -463,6 +465,8 @@ html[dir="rtl"] .training-cta svg{ transform: scaleX(-1); }
 .lesson-check svg{ width: 14px; height: 14px; }
 .lesson-card .sc-name{ margin-bottom: 4px; }
 .lesson-card .sc-body{ text-align: center; }
+.unit-soon{ opacity: .55; cursor: default; pointer-events: none; }
+.soon-tag{ font-size: .72rem !important; color: var(--ink-soft); font-weight: 700; margin-top: 6px !important; }
 
 /* ============================================================
    Access lesson content page

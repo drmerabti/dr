@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="htmlRoot">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>دورة Word الشاملة — أكاديمية مرابطي</title>
+<meta name="description" content="دورة كاملة لتعلّم Word من الصفر حتى الاحتراف: مبتدئ، متوسط، ومحترف.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar">
+  <a href="../../lessons.html" class="icon-btn" id="backBtn" aria-label="العودة إلى الموقع">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
+  </a>
+</div>
+
+<header class="lesson-head">
+  <h1 class="lesson-title">دورة Word الشاملة</h1>
+  <p class="lesson-sub">من أول فتحة للبرنامج إلى الاحتراف الكامل — بأيقونات حقيقية وشرح مبسّط</p>
+</header>
+
+<main class="wrap">
+  <div class="sc-grid" id="levelsGrid"></div>
+</main>
+
+<footer class="site-footer">
+  <p>© 2026 د. سفيان مرابطي</p>
+</footer>
+
+<script>
+const LEVELS = [
+  { n: 1, title: "مبتدئ", desc: "أساسيات لا غنى عنها للانطلاق (6 وحدات، 42 درسًا)", href: "beginner.html", ready: true },
+  { n: 2, title: "متوسط", desc: "مهارات تنسيق وتنظيم أعمق للمستندات", href: "intermediate.html", ready: false },
+  { n: 3, title: "محترف", desc: "أدوات متقدمة: دمج المراسلات، المراجعة، والأنماط", href: "advanced.html", ready: false },
+];
+
+const grid = document.getElementById("levelsGrid");
+grid.innerHTML = LEVELS.map((l) => {
+  const cardTag = l.ready ? "a" : "div";
+  const hrefAttr = l.ready ? `href="${l.href}"` : "";
+  return `
+  <${cardTag} ${hrefAttr} class="sc-card lesson-card ${l.ready ? '' : 'unit-soon'}" style="text-decoration:none;">
+    <div class="sc-body">
+      <span class="lesson-num-badge">${l.n}</span>
+      <p class="sc-name">${l.title}</p>
+      <p class="sc-desc">${l.desc}</p>
+      ${!l.ready ? `<p class="soon-tag">قريبًا</p>` : ""}
+    </div>
+  </${cardTag}>`;
+}).join("");
+</script>
+</body>
+</html>

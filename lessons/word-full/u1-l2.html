@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="htmlRoot">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>واجهة البرنامج ومكوناتها — أكاديمية مرابطي</title>
+<meta name="description" content="جولة عامة على واجهة Word: الشريط، التبويبات، شريط الأدوات السريع، ومنطقة الكتابة.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar">
+  <a href="u1-index.html" class="icon-btn" id="backBtn" aria-label="العودة إلى دروس الوحدة">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
+  </a>
+</div>
+
+<header class="lesson-page-head">
+  <p class="lesson-crumb">مبتدئ ← الوحدة 1: التعرف على Word ← الدرس 2</p>
+  <h1 class="lesson-page-title">واجهة البرنامج ومكوناتها</h1>
+</header>
+
+<main class="lesson-body">
+
+  <p>قبل ما نبدأ الكتابة، خلّينا نتعرّف سريعًا على الأجزاء الرئيسية لواجهة Word، حتى تعرف وين تلاقي أي أداة تحتاجها.</p>
+
+  <div class="lesson-diagram">
+    <img src="img/ribbon-overview.jpg" alt="واجهة برنامج Word توضح شريط الأدوات السريع والتبويبات والشريط الرئيسي">
+  </div>
+
+  <ul class="simple-list">
+    <li><strong>شريط الأدوات السريع</strong> (أعلى اليسار): يحتوي أزرار تستخدمها كثيرًا، مثل الحفظ والتراجع والإعادة.</li>
+    <li><strong>التبويبات</strong> (Tabs): كلمات زي "الصفحة الرئيسية"، "إدراج"، "تخطيط"... كل تبويب يفتح مجموعة أدوات مختلفة.</li>
+    <li><strong>الشريط (Ribbon)</strong>: المنطقة اللي تظهر فيها الأيقونات والأدوات الخاصة بالتبويب المفتوح حاليًا.</li>
+    <li><strong>منطقة الكتابة</strong>: الصفحة البيضاء الكبيرة في الوسط، هذا وين تكتب فيه نصك فعليًا.</li>
+  </ul>
+
+  <div class="callout-tip">
+    <span class="callout-icon">💡</span>
+    <div>
+      <h3>هل تعلم؟</h3>
+      <p>تبويب "الصفحة الرئيسية" (Home) هو التبويب الذي يفتح تلقائيًا كل مرة، لأنه يحتوي أكثر الأدوات استخدامًا مثل التنسيق والنسخ واللصق.</p>
+    </div>
+  </div>
+
+  <button type="button" class="quiz-launch-btn" id="quizLaunchBtn">
+    <span class="callout-icon">🎯</span>
+    اختبر نفسك
+  </button>
+
+</main>
+
+<nav class="lesson-nav">
+  <a href="u1-l1.html" class="lesson-nav-btn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
+    <span class="nav-label">السابق</span>
+  </a>
+  <div class="lesson-progress-dots" id="progressDots"></div>
+  <a href="u1-l3.html" class="lesson-nav-btn primary">
+    <span class="nav-label">الدرس التالي</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
+  </a>
+</nav>
+
+<footer class="site-footer">
+  <p>© 2026 د. سفيان مرابطي</p>
+</footer>
+
+<script>window.LESSON_NUM = 2; window.UNIT_KEY = "u1"; window.UNIT_TOTAL = 7;</script>
+<script>
+window.QUIZ_QUESTIONS = [
+  { q: "ما اسم المنطقة التي تحتوي أيقونات كل تبويب؟", options: ["الشريط (Ribbon)", "شريط العنوان", "شريط الحالة", "المسطرة"], correct: 0 },
+  { q: "أين تجد أدوات النسخ واللصق عادةً؟", options: ["تبويب إدراج", "تبويب الصفحة الرئيسية", "تبويب تخطيط", "تبويب مراجعة"], correct: 1 },
+  { q: "ماذا يحتوي شريط الأدوات السريع؟", options: ["الصفحة البيضاء للكتابة", "أزرار شائعة مثل الحفظ والتراجع", "قائمة الملفات الأخيرة", "إعدادات الطباعة فقط"], correct: 1 },
+];
+</script>
+<script src="lesson-nav.js"></script>
+<script src="quiz.js"></script>
+</body>
+</html>

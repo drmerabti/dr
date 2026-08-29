@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="htmlRoot">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>التعامل مع المستندات الأخيرة — أكاديمية مرابطي</title>
+<meta name="description" content="تعلّم كيفية الوصول السريع للملفات التي عملت عليها مؤخرًا.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar">
+  <a href="u1-index.html" class="icon-btn" id="backBtn" aria-label="العودة إلى دروس الوحدة">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
+  </a>
+</div>
+
+<header class="lesson-page-head">
+  <p class="lesson-crumb">مبتدئ ← الوحدة 1: التعرف على Word ← الدرس 7 (الأخير)</p>
+  <h1 class="lesson-page-title">التعامل مع المستندات الأخيرة</h1>
+</header>
+
+<main class="lesson-body">
+
+  <p>
+    بدل ما تدوّر يدويًا بين مجلدات جهازك عن ملف عملت عليه بالأمس، يوفّرلك Word قائمة "المستندات الأخيرة"
+    (Recent) توري آخر الملفات اللي فتحتها، عشان توصلها بضغطة وحدة.
+  </p>
+
+  <div class="icon-feature">
+    <img src="img/open.png" alt="أيقونة الفتح" class="icon-feature-img">
+    <div class="icon-feature-text">
+      <h3>فتح → المستندات الأخيرة</h3>
+      <p>اضغط على "ملف" (File)، ثم "فتح" (Open)، وبتلاقي قائمة بأحدث الملفات اللي اشتغلت عليها، مرتبة من الأحدث للأقدم.</p>
+      <p class="icon-example"><strong>مثال:</strong> كنت تكتب تقريرًا أمس ونسيت وين حفظته بالضبط؟ افتح "المستندات الأخيرة" وبتلاقيه بالأعلى مباشرة.</p>
+    </div>
+  </div>
+
+  <div class="callout-tip">
+    <span class="callout-icon">💡</span>
+    <div>
+      <h3>هل تعلم؟</h3>
+      <p>تقدر "تثبيت" ملف مهم بقائمة المستندات الأخيرة (بالضغط على أيقونة الدبوس بجانبه)، حتى يبقى بالأعلى دائمًا ولا يختفي حتى لو فتحت ملفات كثيرة بعده.</p>
+    </div>
+  </div>
+
+  <p style="text-align:center; margin-top:32px; font-weight:700; color:var(--accent-dark);">
+    🎉 مبروك! أنهيت الوحدة الأولى بالكامل — تعرّفت على Word وواجهته وأساسيات التعامل مع الملفات.
+  </p>
+
+  <button type="button" class="quiz-launch-btn" id="quizLaunchBtn">
+    <span class="callout-icon">🎯</span>
+    اختبر نفسك
+  </button>
+
+</main>
+
+<nav class="lesson-nav">
+  <a href="u1-l6.html" class="lesson-nav-btn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
+    <span class="nav-label">السابق</span>
+  </a>
+  <div class="lesson-progress-dots" id="progressDots"></div>
+  <a href="u1-index.html" class="lesson-nav-btn primary">
+    <span class="nav-label">فهرس الوحدة</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg>
+  </a>
+</nav>
+
+<footer class="site-footer">
+  <p>© 2026 د. سفيان مرابطي</p>
+</footer>
+
+<script>window.LESSON_NUM = 7; window.UNIT_KEY = "u1"; window.UNIT_TOTAL = 7;</script>
+<script>
+window.QUIZ_QUESTIONS = [
+  { q: "أين تجد قائمة \"المستندات الأخيرة\"؟", options: ["تبويب مراجعة", "ملف ← فتح", "تبويب تصميم", "شريط الحالة"], correct: 1 },
+  { q: "كيف تُرتَّب المستندات في قائمة الأخيرة؟", options: ["أبجديًا", "حسب الحجم", "من الأحدث للأقدم", "عشوائيًا"], correct: 2 },
+  { q: "كيف تجعل ملفًا مهمًا يبقى بأعلى القائمة دائمًا؟", options: ["حذف باقي الملفات", "تثبيته بأيقونة الدبوس", "تغيير اسمه فقط", "لا توجد طريقة"], correct: 1 },
+];
+</script>
+<script src="lesson-nav.js"></script>
+<script src="quiz.js"></script>
+</body>
+</html>

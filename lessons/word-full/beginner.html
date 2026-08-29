@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="htmlRoot">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>المستوى المبتدئ — دورة Word الشاملة — أكاديمية مرابطي</title>
+<meta name="description" content="6 وحدات تعليمية تغطي أساسيات برنامج Word خطوة بخطوة.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar">
+  <a href="index.html" class="icon-btn" id="backBtn" aria-label="العودة إلى المستويات">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
+  </a>
+</div>
+
+<header class="lesson-head">
+  <p class="lesson-crumb" style="text-align:center;">دورة Word الشاملة</p>
+  <h1 class="lesson-title">المستوى المبتدئ</h1>
+  <p class="lesson-sub">6 وحدات، 42 درسًا — من أول فتحة لبرنامج Word إلى مستند احترافي كامل</p>
+</header>
+
+<main class="wrap">
+  <div class="sc-grid" id="unitsGrid"></div>
+</main>
+
+<footer class="site-footer">
+  <p>© 2026 د. سفيان مرابطي</p>
+</footer>
+
+<script>
+const UNITS = [
+  { key: "u1", n: 1, title: "التعرف على Word", desc: "مقدمة، الواجهة، وأساسيات الملفات (7 دروس)", href: "u1-index.html", total: 7, ready: true },
+  { key: "u2", n: 2, title: "الكتابة والتحرير", desc: "الكتابة، التحديد، النسخ، البحث والاستبدال (6 دروس)", href: "u2-index.html", total: 6, ready: false },
+  { key: "u3", n: 3, title: "تنسيق النص", desc: "الخط، الألوان، التمييز، نسخ التنسيق (7 دروس)", href: "u3-index.html", total: 7, ready: false },
+  { key: "u4", n: 4, title: "تنسيق الفقرات", desc: "المحاذاة، التباعد، التعداد والقوائم (8 دروس)", href: "u4-index.html", total: 8, ready: false },
+  { key: "u5", n: 5, title: "الصفحات", desc: "الهوامش، الاتجاه، الترقيم، الطباعة (7 دروس)", href: "u5-index.html", total: 7, ready: false },
+  { key: "u6", n: 6, title: "العناصر الأساسية", desc: "الصور، الأشكال، الرموز، الروابط (7 دروس)", href: "u6-index.html", total: 7, ready: false },
+];
+
+function getProgress() {
+  try { return JSON.parse(localStorage.getItem("word_full_progress")) || {}; }
+  catch (e) { return {}; }
+}
+const progress = getProgress();
+
+const grid = document.getElementById("unitsGrid");
+grid.innerHTML = UNITS.map((u) => {
+  const done = progress[u.key] || {};
+  const doneCount = Object.keys(done).filter((k) => done[k]).length;
+  const complete = u.ready && doneCount >= u.total;
+  const cardTag = u.ready ? "a" : "div";
+  const hrefAttr = u.ready ? `href="${u.href}"` : "";
+  return `
+  <${cardTag} ${hrefAttr} class="sc-card lesson-card ${u.ready ? '' : 'unit-soon'}" style="text-decoration:none;">
+    ${complete ? `<span class="lesson-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>` : ""}
+    <div class="sc-body">
+      <span class="lesson-num-badge">${u.n}</span>
+      <p class="sc-name">${u.title}</p>
+      <p class="sc-desc">${u.desc}</p>
+      ${!u.ready ? `<p class="soon-tag">قريبًا</p>` : (doneCount ? `<p class="soon-tag" style="color:#2E8A5B;">${doneCount} من ${u.total} دروس مكتملة</p>` : "")}
+    </div>
+  </${cardTag}>`;
+}).join("");
+</script>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="htmlRoot">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>فتح وحفظ وإغلاق المستند — أكاديمية مرابطي</title>
+<meta name="description" content="تعلّم كيفية فتح مستند موجود، حفظه، وإغلاقه بشكل صحيح.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar">
+  <a href="u1-index.html" class="icon-btn" id="backBtn" aria-label="العودة إلى دروس الوحدة">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
+  </a>
+</div>
+
+<header class="lesson-page-head">
+  <p class="lesson-crumb">مبتدئ ← الوحدة 1: التعرف على Word ← الدرس 4</p>
+  <h1 class="lesson-page-title">فتح وحفظ وإغلاق المستند</h1>
+</header>
+
+<main class="lesson-body">
+
+  <p>ثلاث عمليات تسويها كل يوم تقريبًا عند استخدام Word: فتح مستند سبق أن حفظته، حفظ عملك، وإغلاقه عند الانتهاء.</p>
+
+  <div class="icon-feature">
+    <img src="img/open.png" alt="أيقونة الفتح" class="icon-feature-img">
+    <div class="icon-feature-text">
+      <h3>فتح (Open)</h3>
+      <p>تستخدمها لفتح مستند سبق أن حفظته على جهازك، لتكمل العمل عليه.</p>
+      <p class="icon-example"><strong>مثال:</strong> كتبت تقريرًا أمس وتبي تكمله اليوم؟ استخدم "فتح" وابحث عن الملف.</p>
+    </div>
+  </div>
+
+  <div class="icon-feature">
+    <img src="img/save.png" alt="أيقونة الحفظ" class="icon-feature-img">
+    <div class="icon-feature-text">
+      <h3>حفظ (Save)</h3>
+      <p>تحفظ كل التعديلات التي أجريتها على المستند، حتى لا تفقد عملك.</p>
+      <p class="icon-example"><strong>مثال:</strong> بعد كل فقرة تكتبها تقريبًا، اضغط "حفظ" حتى لا تخسر شيئًا لو حدث خطأ مفاجئ.</p>
+    </div>
+  </div>
+
+  <div class="icon-feature">
+    <img src="img/close.png" alt="أيقونة الإغلاق" class="icon-feature-img">
+    <div class="icon-feature-text">
+      <h3>إغلاق (Close)</h3>
+      <p>تغلق المستند الحالي فقط (البرنامج نفسه يبقى مفتوحًا). إذا كان فيه تعديلات غير محفوظة، سيسألك Word إذا تريد حفظها أولًا.</p>
+      <p class="icon-example"><strong>مثال:</strong> خلصت من التقرير؟ احفظه أولًا، ثم اضغط "إغلاق" للانتقال لملف آخر.</p>
+    </div>
+  </div>
+
+  <div class="callout-tip">
+    <span class="callout-icon">💡</span>
+    <div>
+      <h3>هل تعلم؟</h3>
+      <p>لو حاولت تغلق مستندًا فيه تعديلات غير محفوظة، يعرض لك Word رسالة تحذير تسألك "هل تريد حفظ التغييرات؟" — هذا يحميك من فقدان عملك بالخطأ.</p>
+    </div>
+  </div>
+
+  <button type="button" class="quiz-launch-btn" id="quizLaunchBtn">
+    <span class="callout-icon">🎯</span>
+    اختبر نفسك
+  </button>
+
+</main>
+
+<nav class="lesson-nav">
+  <a href="u1-l3.html" class="lesson-nav-btn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
+    <span class="nav-label">السابق</span>
+  </a>
+  <div class="lesson-progress-dots" id="progressDots"></div>
+  <a href="u1-l5.html" class="lesson-nav-btn primary">
+    <span class="nav-label">الدرس التالي</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
+  </a>
+</nav>
+
+<footer class="site-footer">
+  <p>© 2026 د. سفيان مرابطي</p>
+</footer>
+
+<script>window.LESSON_NUM = 4; window.UNIT_KEY = "u1"; window.UNIT_TOTAL = 7;</script>
+<script>
+window.QUIZ_QUESTIONS = [
+  { q: "متى تستخدم \"فتح\" (Open)؟", options: ["لإنشاء مستند فارغ", "لفتح مستند سبق حفظه", "لطباعة مستند", "لحذف مستند"], correct: 1 },
+  { q: "ماذا يحدث إذا حاولت إغلاق مستند فيه تعديلات غير محفوظة؟", options: ["يُغلق مباشرة بدون سؤال", "يظهر تحذير يسألك عن الحفظ", "يُحذف المستند تلقائيًا", "لا يمكن إغلاقه أبدًا"], correct: 1 },
+  { q: "هل يغلق زر \"إغلاق\" (Close) برنامج Word بالكامل؟", options: ["نعم دائمًا", "لا، يغلق المستند الحالي فقط", "فقط إذا لم تحفظ", "فقط في حاسوب معين"], correct: 1 },
+];
+</script>
+<script src="lesson-nav.js"></script>
+<script src="quiz.js"></script>
+</body>
+</html>

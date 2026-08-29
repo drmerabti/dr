@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="htmlRoot">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الفرق بين Save و Save As — أكاديمية مرابطي</title>
+<meta name="description" content="افهم الفرق بين حفظ المستند وحفظه بنسخة جديدة.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar">
+  <a href="u1-index.html" class="icon-btn" id="backBtn" aria-label="العودة إلى دروس الوحدة">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
+  </a>
+</div>
+
+<header class="lesson-page-head">
+  <p class="lesson-crumb">مبتدئ ← الوحدة 1: التعرف على Word ← الدرس 5</p>
+  <h1 class="lesson-page-title">الفرق بين Save و Save As</h1>
+</header>
+
+<main class="lesson-body">
+
+  <p>كثير من المبتدئين يخلطون بين هاتين الأيقونتين. الفرق بسيط جدًا بمجرد ما تفهمه.</p>
+
+  <div class="icon-feature">
+    <img src="img/save.png" alt="أيقونة حفظ" class="icon-feature-img">
+    <div class="icon-feature-text">
+      <h3>حفظ (Save)</h3>
+      <p>يحفظ التعديلات الجديدة في <strong>نفس الملف</strong>، بنفس الاسم ونفس المكان. الملف القديم يُستبدل بالنسخة المحدّثة.</p>
+      <p class="icon-example"><strong>مثال:</strong> فتحت ملف "تقرير.docx" وأضفت فقرة؟ اضغط "حفظ" وتُحفظ الفقرة الجديدة في نفس الملف.</p>
+    </div>
+  </div>
+
+  <div class="icon-feature">
+    <img src="img/saveas.png" alt="أيقونة حفظ باسم" class="icon-feature-img">
+    <div class="icon-feature-text">
+      <h3>حفظ باسم (Save As)</h3>
+      <p>يحفظ نسخة <strong>جديدة تمامًا</strong> من المستند، باسم مختلف أو في مكان مختلف — والملف الأصلي يبقى كما هو دون تغيير.</p>
+      <p class="icon-example"><strong>مثال:</strong> عندك "تقرير.docx" وتبي تسوي نسخة معدّلة لعميل ثانٍ؟ استخدم "حفظ باسم" واحفظها باسم "تقرير_عميل2.docx".</p>
+    </div>
+  </div>
+
+  <div class="callout-tip">
+    <span class="callout-icon">💡</span>
+    <div>
+      <h3>هل تعلم؟</h3>
+      <p>عند حفظ مستند لأول مرة، حتى لو ضغطت "حفظ" العادي، سيظهر لك Word نفس نافذة "حفظ باسم" لأنه يحتاج يعرف اسم الملف ومكانه أول مرة.</p>
+    </div>
+  </div>
+
+  <button type="button" class="quiz-launch-btn" id="quizLaunchBtn">
+    <span class="callout-icon">🎯</span>
+    اختبر نفسك
+  </button>
+
+</main>
+
+<nav class="lesson-nav">
+  <a href="u1-l4.html" class="lesson-nav-btn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
+    <span class="nav-label">السابق</span>
+  </a>
+  <div class="lesson-progress-dots" id="progressDots"></div>
+  <a href="u1-l6.html" class="lesson-nav-btn primary">
+    <span class="nav-label">الدرس التالي</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
+  </a>
+</nav>
+
+<footer class="site-footer">
+  <p>© 2026 د. سفيان مرابطي</p>
+</footer>
+
+<script>window.LESSON_NUM = 5; window.UNIT_KEY = "u1"; window.UNIT_TOTAL = 7;</script>
+<script>
+window.QUIZ_QUESTIONS = [
+  { q: "ماذا يفعل \"حفظ\" (Save)؟", options: ["ينشئ ملفًا جديدًا دائمًا", "يحفظ التعديلات في نفس الملف", "يحذف الملف القديم", "يطبع المستند"], correct: 1 },
+  { q: "متى تستخدم \"حفظ باسم\" (Save As)؟", options: ["عندما تريد إنشاء نسخة جديدة باسم مختلف", "عندما تريد حذف الملف", "عندما تريد طباعة الملف", "عندما تريد إغلاق البرنامج"], correct: 0 },
+  { q: "ماذا يحدث للملف الأصلي عند استخدام \"حفظ باسم\"؟", options: ["يُحذف نهائيًا", "يبقى كما هو دون تغيير", "يُعاد تسميته تلقائيًا", "يُنقل لمجلد آخر"], correct: 1 },
+];
+</script>
+<script src="lesson-nav.js"></script>
+<script src="quiz.js"></script>
+</body>
+</html>

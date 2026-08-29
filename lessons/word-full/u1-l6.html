@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="htmlRoot">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>أنواع ملفات Word — أكاديمية مرابطي</title>
+<meta name="description" content="تعرّف على امتدادات ملفات Word الشائعة ومتى تستخدم كل واحد.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar">
+  <a href="u1-index.html" class="icon-btn" id="backBtn" aria-label="العودة إلى دروس الوحدة">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
+  </a>
+</div>
+
+<header class="lesson-page-head">
+  <p class="lesson-crumb">مبتدئ ← الوحدة 1: التعرف على Word ← الدرس 6</p>
+  <h1 class="lesson-page-title">أنواع ملفات Word</h1>
+</header>
+
+<main class="lesson-body">
+
+  <p>
+    لاحظت يومًا رموزًا مثل <strong>.docx</strong> أو <strong>.pdf</strong> بعد اسم الملف؟ هذا يُسمى <strong>امتداد الملف</strong>،
+    ويخبر الحاسوب بنوع الملف وكيف يفتحه.
+  </p>
+
+  <ul class="simple-list">
+    <li><strong>.docx</strong> — الصيغة الحديثة والافتراضية لملفات Word (منذ إصدار 2007 فما بعد). هذا الخيار الأنسب للاستخدام اليومي.</li>
+    <li><strong>.doc</strong> — الصيغة القديمة لملفات Word (قبل 2007). قد تحتاجها لو ترسل ملفًا لشخص يستخدم برنامج قديم جدًا.</li>
+    <li><strong>.pdf</strong> — صيغة للعرض والطباعة فقط، لا يمكن تعديل النص فيها بسهولة. مناسبة عند إرسال مستند نهائي لا تريد أحدًا يغيّره.</li>
+    <li><strong>.rtf</strong> — صيغة نص منسّق بسيطة، تفتح في برامج كثيرة غير Word.</li>
+    <li><strong>.txt</strong> — نص عادي بدون أي تنسيق (بلا خط غامق أو ألوان)، أبسط صيغة ممكنة.</li>
+  </ul>
+
+  <div class="callout-tip">
+    <span class="callout-icon">💡</span>
+    <div>
+      <h3>هل تعلم؟</h3>
+      <p>تقدر تحوّل أي مستند Word إلى PDF مباشرة من نافذة "حفظ باسم"، باختيار "PDF" من قائمة نوع الملف — مفيد جدًا عند إرسال سيرتك الذاتية لصاحب عمل.</p>
+    </div>
+  </div>
+
+  <button type="button" class="quiz-launch-btn" id="quizLaunchBtn">
+    <span class="callout-icon">🎯</span>
+    اختبر نفسك
+  </button>
+
+</main>
+
+<nav class="lesson-nav">
+  <a href="u1-l5.html" class="lesson-nav-btn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
+    <span class="nav-label">السابق</span>
+  </a>
+  <div class="lesson-progress-dots" id="progressDots"></div>
+  <a href="u1-l7.html" class="lesson-nav-btn primary">
+    <span class="nav-label">الدرس التالي</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
+  </a>
+</nav>
+
+<footer class="site-footer">
+  <p>© 2026 د. سفيان مرابطي</p>
+</footer>
+
+<script>window.LESSON_NUM = 6; window.UNIT_KEY = "u1"; window.UNIT_TOTAL = 7;</script>
+<script>
+window.QUIZ_QUESTIONS = [
+  { q: "ما هو الامتداد الافتراضي الحديث لملفات Word؟", options: [".txt", ".docx", ".pdf", ".jpg"], correct: 1 },
+  { q: "متى تستخدم صيغة PDF عادةً؟", options: ["عندما تريد تعديل النص باستمرار", "عندما تريد إرسال مستند نهائي دون تعديل", "فقط للصور", "فقط للفيديو"], correct: 1 },
+  { q: "ما هي أبسط صيغة نصية بدون أي تنسيق؟", options: [".docx", ".pdf", ".txt", ".rtf"], correct: 2 },
+];
+</script>
+<script src="lesson-nav.js"></script>
+<script src="quiz.js"></script>
+</body>
+</html>
