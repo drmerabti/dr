@@ -106,6 +106,35 @@ const ICONS = {
     <path d="M16 26c2.5 3 13.5 3 16 0" stroke="#fff" stroke-width="2.2" stroke-linecap="round" fill="none"/>
     <path d="M14 34l4 8 6-5 6 5 4-8" fill="none" stroke="#1A8A72" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" opacity=".55"/>
   </svg>`,
+  budgetApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gBud" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7DD6A8"/><stop offset="1" stop-color="#1E8A52"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="7" y="14" width="34" height="22" rx="5" fill="url(#gBud)"/><circle cx="24" cy="25" r="6" fill="#fff" opacity=".9"/><rect x="7" y="14" width="8" height="22" rx="5" fill="#fff" opacity=".18"/></svg>`,
+  certGenApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gCertG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F0C56B"/><stop offset="1" stop-color="#B8860B"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="6" y="9" width="36" height="26" rx="4" fill="#fff" stroke="#E4C888" stroke-width="1.5"/><circle cx="24" cy="20" r="6" fill="url(#gCertG)"/><path d="M20 32l2 8 2-3 2 3 2-8z" fill="url(#gCertG)"/></svg>`,
+  coverPageApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gCov" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#93B4E8"/><stop offset="1" stop-color="#2F5CA8"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="10" y="6" width="28" height="36" rx="3" fill="url(#gCov)"/><rect x="15" y="14" width="18" height="3" rx="1.5" fill="#fff" opacity=".9"/><rect x="15" y="21" width="12" height="2" rx="1" fill="#fff" opacity=".6"/><rect x="15" y="26" width="12" height="2" rx="1" fill="#fff" opacity=".6"/></svg>`,
+  adminReqApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gAdm" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8FA8C7"/><stop offset="1" stop-color="#3A5A7D"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="9" y="7" width="30" height="34" rx="3" fill="url(#gAdm)"/><rect x="15" y="15" width="18" height="2.5" rx="1" fill="#fff" opacity=".9"/><rect x="15" y="22" width="18" height="2.5" rx="1" fill="#fff" opacity=".7"/><path d="M16 31l3 3 6-6" stroke="#fff" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  salaryApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gSal" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D6A8E8"/><stop offset="1" stop-color="#7A3FA8"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><circle cx="24" cy="24" r="17" fill="url(#gSal)"/><text x="24" y="31" text-anchor="middle" font-family="Inter,sans-serif" font-size="18" font-weight="800" fill="#fff">$</text></svg>`,
+  dateDiffApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gDD" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D6A8E8"/><stop offset="1" stop-color="#7A3FA8"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="6" y="9" width="15" height="17" rx="2.5" fill="url(#gDD)"/><rect x="27" y="22" width="15" height="17" rx="2.5" fill="url(#gDD)" opacity=".6"/><path d="M22 22l4 -4" stroke="#7A3FA8" stroke-width="2" stroke-linecap="round"/></svg>`,
+  receiptApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gRec" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8FA8C7"/><stop offset="1" stop-color="#3A5A7D"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><path d="M12 6h24v36l-4-3-4 3-4-3-4 3-4-3-4 3z" fill="url(#gRec)"/><rect x="17" y="14" width="14" height="2" fill="#fff" opacity=".8"/><rect x="17" y="20" width="14" height="2" fill="#fff" opacity=".8"/><rect x="17" y="26" width="8" height="2" fill="#fff" opacity=".8"/></svg>`,
+  unitConvApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gUC" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D6A8E8"/><stop offset="1" stop-color="#7A3FA8"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="6" y="18" width="16" height="12" rx="3" fill="url(#gUC)"/><circle cx="34" cy="24" r="10" fill="url(#gUC)" opacity=".6"/><path d="M22 24h8" stroke="#fff" stroke-width="2" stroke-linecap="round"/><path d="M27 20l4 4-4 4" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  sciCalcApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gSC" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D6A8E8"/><stop offset="1" stop-color="#7A3FA8"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="11" y="6" width="26" height="36" rx="4" fill="url(#gSC)"/><rect x="15" y="12" width="18" height="6" rx="1.5" fill="#fff" opacity=".9"/><circle cx="18" cy="25" r="2" fill="#fff"/><circle cx="24" cy="25" r="2" fill="#fff"/><circle cx="30" cy="25" r="2" fill="#fff"/><circle cx="18" cy="32" r="2" fill="#fff"/><circle cx="24" cy="32" r="2" fill="#fff"/><circle cx="30" cy="32" r="2" fill="#fff"/></svg>`,
+  qrApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gQR" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8FA8C7"/><stop offset="1" stop-color="#3A5A7D"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="6" y="6" width="36" height="36" rx="4" fill="url(#gQR)"/><rect x="11" y="11" width="8" height="8" fill="#fff"/><rect x="29" y="11" width="8" height="8" fill="#fff"/><rect x="11" y="29" width="8" height="8" fill="#fff"/><rect x="24" y="24" width="4" height="4" fill="#fff"/><rect x="31" y="31" width="6" height="6" fill="#fff"/></svg>`,
+  teacherNoteApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gTN" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7DD6C3"/><stop offset="1" stop-color="#1A8A72"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="9" y="7" width="30" height="34" rx="3" fill="url(#gTN)"/><rect x="15" y="15" width="18" height="2.5" fill="#fff" opacity=".9"/><rect x="15" y="21" width="18" height="2.5" fill="#fff" opacity=".7"/><rect x="15" y="27" width="10" height="2.5" fill="#fff" opacity=".7"/><path d="M30 30l4-4 2 2-4 4z" fill="#fff"/></svg>`,
+  idCardApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gID" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8FA8C7"/><stop offset="1" stop-color="#3A5A7D"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="5" y="12" width="38" height="24" rx="4" fill="url(#gID)"/><circle cx="15" cy="24" r="5" fill="#fff" opacity=".9"/><rect x="24" y="19" width="14" height="2.3" fill="#fff" opacity=".8"/><rect x="24" y="24" width="14" height="2.3" fill="#fff" opacity=".6"/><rect x="24" y="29" width="9" height="2.3" fill="#fff" opacity=".6"/></svg>`,
+  reportApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gRep" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8FA8C7"/><stop offset="1" stop-color="#3A5A7D"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="10" y="6" width="28" height="36" rx="3" fill="url(#gRep)"/><rect x="15" y="24" width="4" height="10" fill="#fff" opacity=".85"/><rect x="21" y="18" width="4" height="16" fill="#fff" opacity=".85"/><rect x="27" y="12" width="4" height="22" fill="#fff" opacity=".85"/></svg>`,
+  hoursApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gHrs" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D6A8E8"/><stop offset="1" stop-color="#7A3FA8"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><circle cx="24" cy="23" r="17" fill="url(#gHrs)"/><path d="M24 13v10l7 4" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  ageApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gAge" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D6A8E8"/><stop offset="1" stop-color="#7A3FA8"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="9" y="9" width="30" height="28" rx="4" fill="url(#gAge)"/><rect x="9" y="9" width="30" height="7" rx="4" fill="#fff" opacity=".25"/><text x="24" y="30" text-anchor="middle" font-family="Inter,sans-serif" font-size="14" font-weight="800" fill="#fff">+18</text></svg>`,
+  hijriApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gHij" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D6A8E8"/><stop offset="1" stop-color="#7A3FA8"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><path d="M20 8a15 15 0 1 0 9 27 12 12 0 0 1-9-27z" fill="url(#gHij)"/><path d="M28 30l4-4 2 2-4 4z" fill="#fff"/></svg>`,
+  gradeApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gGrd" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7DD6C3"/><stop offset="1" stop-color="#1A8A72"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><path d="M8 12l16-6 16 6-16 6z" fill="url(#gGrd)"/><path d="M14 18v10c0 3 4 6 10 6s10-3 10-6V18" fill="none" stroke="#1A8A72" stroke-width="2.2"/></svg>`,
+  scheduleApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gSch" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8FA8C7"/><stop offset="1" stop-color="#3A5A7D"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="8" y="9" width="32" height="30" rx="4" fill="url(#gSch)"/><rect x="8" y="9" width="32" height="8" rx="4" fill="#fff" opacity=".25"/><rect x="13" y="22" width="6" height="6" fill="#fff" opacity=".85"/><rect x="21" y="22" width="6" height="6" fill="#fff" opacity=".55"/><rect x="29" y="22" width="6" height="6" fill="#fff" opacity=".85"/></svg>`,
+  textCleanApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gTC" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F0A8B8"/><stop offset="1" stop-color="#B1345A"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="10" y="8" width="28" height="32" rx="3" fill="#fff" stroke="#F0C4D0" stroke-width="1.5"/><rect x="15" y="15" width="18" height="2.3" fill="#DDD"/><rect x="15" y="21" width="14" height="2.3" fill="#DDD"/><path d="M30 28l6 6M36 28l-6 6" stroke="#B1345A" stroke-width="2.4" stroke-linecap="round"/></svg>`,
+  summarizeApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gSum" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F0A8B8"/><stop offset="1" stop-color="#B1345A"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="7" y="10" width="18" height="26" rx="2.5" fill="#fff" stroke="#F0C4D0" stroke-width="1.3"/><rect x="10" y="15" width="12" height="1.8" fill="#DDD"/><rect x="10" y="19" width="12" height="1.8" fill="#DDD"/><rect x="10" y="23" width="8" height="1.8" fill="#DDD"/><path d="M27 20h10M27 24h10M27 28h6" stroke="#B1345A" stroke-width="2.2" stroke-linecap="round"/></svg>`,
+  mailAssistApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gMail" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F0A8B8"/><stop offset="1" stop-color="#B1345A"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="6" y="12" width="36" height="24" rx="4" fill="url(#gMail)"/><path d="M6 14l18 13 18-13" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  excelCourseApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gExCA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6FCF97"/><stop offset="1" stop-color="#1D7A46"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><path d="M6 10.5c0-2 1.7-3.6 3.8-3.6H23v29H9.8C7.7 35.9 6 34.3 6 32.3V10.5z" fill="url(#gExCA)"/><path d="M25 6v7c0 1.1.9 2 2 2h7z" fill="#A8E6BE" opacity=".6"/><path d="M14 22.5h4.2l2.3 4 2.3-4h4.2l-4.4 6.75L27.2 36H23l-2.5-4.3-2.5 4.3h-4.2l4.6-6.75z" fill="#fff"/></svg>`,
+  pptApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gPPT" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F0A868"/><stop offset="1" stop-color="#C0561E"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><path d="M11 6c-1.7 0-3 1.3-3 3v30c0 1.7 1.3 3 3 3h20c1.7 0 3-1.3 3-3V15l-9-9H11z" fill="url(#gPPT)"/><path d="M25 6v7c0 1.1.9 2 2 2h7z" fill="#F5CBA0" opacity=".6"/><circle cx="19" cy="27" r="6" fill="#fff"/></svg>`,
+  spssApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gSPSS" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#93B4E8"/><stop offset="1" stop-color="#2F5CA8"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="7" y="8" width="34" height="30" rx="4" fill="url(#gSPSS)"/><path d="M13 30l6-10 6 6 8-14" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  powerbiApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gPBI" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F0C56B"/><stop offset="1" stop-color="#C79214"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="8" y="22" width="7" height="16" rx="1.5" fill="url(#gPBI)"/><rect x="20" y="12" width="7" height="26" rx="1.5" fill="url(#gPBI)"/><rect x="32" y="6" width="7" height="32" rx="1.5" fill="url(#gPBI)"/></svg>`,
+  refManagerApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gRefM" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#93B4E8"/><stop offset="1" stop-color="#2F5CA8"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="9" y="8" width="10" height="30" rx="1.5" fill="url(#gRefM)"/><rect x="20" y="12" width="10" height="26" rx="1.5" fill="url(#gRefM)" opacity=".8"/><rect x="31" y="16" width="8" height="22" rx="1.5" fill="url(#gRefM)" opacity=".6"/></svg>`,
+  pdfToImgApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gP2I" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8FA8C7"/><stop offset="1" stop-color="#3A5A7D"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="6" y="8" width="20" height="26" rx="2.5" fill="url(#gP2I)"/><rect x="22" y="16" width="20" height="24" rx="2.5" fill="#fff" stroke="#8FA8C7" stroke-width="1.5"/><circle cx="28" cy="23" r="2" fill="#F0C56B"/><path d="M24 34l4-5 4 4 5-6 5 7" fill="none" stroke="#3A5A7D" stroke-width="1.6"/></svg>`,
+  excelToPdfApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gE2P" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6FCF97"/><stop offset="1" stop-color="#1D7A46"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="6" y="8" width="20" height="26" rx="2.5" fill="url(#gE2P)"/><rect x="22" y="16" width="20" height="24" rx="2.5" fill="#C0392B"/><text x="32" y="32" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" font-weight="800" fill="#fff">PDF</text></svg>`,
+  wordToPdfApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gW2P" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4A9AE8"/><stop offset="1" stop-color="#1857A8"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="6" y="8" width="20" height="26" rx="2.5" fill="url(#gW2P)"/><rect x="22" y="16" width="20" height="24" rx="2.5" fill="#C0392B"/><text x="32" y="32" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" font-weight="800" fill="#fff">PDF</text></svg>`,
   lessons: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <linearGradient id="gLessonsL" x1="0" y1="0" x2="0" y2="1">
@@ -246,6 +275,21 @@ const CONTENT = {
       url: 'lessons/word-full/',
       icon: ICONS.wordApp,
     },
+    { id: 'lesson-excel-full', title_ar: 'دورة Excel الشاملة (مبتدئ إلى محترف)', title_en: 'Complete Excel Course (Beginner to Advanced)',
+      desc_ar: 'دورة كاملة تغطي إكسل من الأساسيات إلى الدوال المتقدمة وPower Query وVBA.', desc_en: 'A complete course covering Excel from basics to advanced functions, Power Query, and VBA.',
+      icon: ICONS.excelCourseApp, comingSoon: true },
+    { id: 'lesson-ppt-full', title_ar: 'دورة PowerPoint الشاملة', title_en: 'Complete PowerPoint Course',
+      desc_ar: 'تعلّم تصميم عروض تقديمية احترافية خطوة بخطوة.', desc_en: 'Learn to design professional presentations step by step.',
+      icon: ICONS.pptApp, comingSoon: true },
+    { id: 'lesson-spss-full', title_ar: 'دورة SPSS الشاملة', title_en: 'Complete SPSS Course',
+      desc_ar: 'تعلّم التحليل الإحصائي للبيانات باستخدام SPSS.', desc_en: 'Learn statistical data analysis using SPSS.',
+      icon: ICONS.spssApp, comingSoon: true },
+    { id: 'lesson-powerbi-full', title_ar: 'دورة Power BI الشاملة', title_en: 'Complete Power BI Course',
+      desc_ar: 'تعلّم بناء لوحات تحليل بيانات تفاعلية احترافية.', desc_en: 'Learn to build professional interactive data dashboards.',
+      icon: ICONS.powerbiApp, comingSoon: true },
+    { id: 'lesson-ref-manager', title_ar: 'إدارة المراجع (Mendeley / Zotero / EndNote)', title_en: 'Reference Management (Mendeley / Zotero / EndNote)',
+      desc_ar: 'تعلّم تنظيم مصادرك البحثية وتوثيقها آليًا.', desc_en: 'Learn to organize and automatically cite your research sources.',
+      icon: ICONS.refManagerApp, comingSoon: true },
   ],
   apps: [
     { id: 'app-ai-detector', title_ar: 'كاشف النص الآلي', title_en: 'AI Text Detector', title_fr: 'Détecteur de texte IA',
@@ -257,14 +301,31 @@ const CONTENT = {
       desc_en: 'Rewrite your text in a more natural style while fully preserving its meaning — requires login.',
       url: 'tools/humanizer/', icon: ICONS.humanizerApp },
     {
-      id: 'app-word-shortcuts',
-      title_ar: 'اختصارات وورد',
-      title_en: 'Word Shortcuts',
-      desc_ar: 'تطبيق ثنائي اللغة لتعلّم أهم اختصارات لوحة المفاتيح في مايكروسوفت وورد.',
-      desc_en: 'A bilingual app for learning the most useful Microsoft Word keyboard shortcuts.',
-      platform_ar: 'أندرويد',
-      platform_en: 'Android',
-      playStoreUrl: '',
+      id: 'app-summarizer',
+      title_ar: 'AI Summarizer',
+      title_en: 'AI Summarizer',
+      desc_ar: 'لخّص أي نص طويل تلقائيًا بمساعدة الذكاء الاصطناعي.',
+      desc_en: 'Automatically summarize any long text with AI assistance.',
+      icon: ICONS.summarizeApp,
+      comingSoon: true,
+    },
+    {
+      id: 'app-text-cleaner',
+      title_ar: 'Text Cleaner',
+      title_en: 'Text Cleaner',
+      desc_ar: 'نظّف النص من المسافات والرموز الزائدة تلقائيًا.',
+      desc_en: 'Automatically clean text from extra spaces and symbols.',
+      icon: ICONS.textCleanApp,
+      comingSoon: true,
+    },
+    {
+      id: 'app-mail-assist',
+      title_ar: 'مساعد البريد المهني',
+      title_en: 'Professional Email Assistant',
+      desc_ar: 'قوالب جاهزة ومساعدة اختيارية بالذكاء الاصطناعي لصياغة إيميلات احترافية.',
+      desc_en: 'Ready templates and optional AI help for professional email writing.',
+      icon: ICONS.mailAssistApp,
+      comingSoon: true,
     },
   ],
   /* ============ الأدوات ============
@@ -280,15 +341,81 @@ const CONTENT = {
   tools: [
     { id: 'tool-text-to-numbers', title_ar: 'تحويل الأرقام إلى نص', title_en: 'Number to Words',
       desc_ar: 'حوّل أي رقم إلى نص مكتوب بالعربية أو الإنجليزية أو الفرنسية، مع إمكانية إضافة اسم العملة.', desc_en: 'Convert any number into written words in Arabic, English, or French, with an optional currency name.',
-      url: 'tools/text-to-numbers/', icon: ICONS.numbersApp },
+      url: 'tools/text-to-numbers/', icon: ICONS.numbersApp, family: 'admin' },
     { id: 'tool-invoice-generator', title_ar: 'مولّد الفواتير', title_en: 'Invoice Generator',
       desc_ar: 'أنشئ فاتورة احترافية مع شعار، توقيع، ضريبة، وتحويل المبلغ إلى حروف — بثلاث لغات.',
       desc_en: 'Generate a professional invoice with logo, signature, VAT, and amount-in-words — in three languages.',
-      url: 'https://drmerabti.github.io/dr/invoice-generator/', external: true, icon: ICONS.invoiceApp },
+      url: 'https://drmerabti.github.io/dr/invoice-generator/', external: true, icon: ICONS.invoiceApp, family: 'admin' },
     { id: 'tool-cv-builder', title_ar: 'منشئ السيرة الذاتية', title_en: 'CV Builder',
       desc_ar: 'أنشئ سيرة ذاتية احترافية بمعاينة حية وتصدير PDF — يتطلب تسجيل الدخول.',
       desc_en: 'Build a professional CV with live preview and PDF export — requires login.',
-      url: 'tools/cv-builder/', icon: ICONS.cvApp },
+      url: 'tools/cv-builder/', icon: ICONS.cvApp, family: 'admin' },
+    { id: 'tool-budget', title_ar: 'تسيير الميزانية الشهرية', title_en: 'Monthly Budget Tracker',
+      desc_ar: 'نظّم مصاريف ودخل البيت الشهري بسهولة.', desc_en: 'Organize your monthly household income and expenses easily.',
+      icon: ICONS.budgetApp, family: 'home', comingSoon: true },
+    { id: 'tool-cert-gen', title_ar: 'أداة توليد الشهادات', title_en: 'Certificate Generator',
+      desc_ar: 'اختر قالبًا، أضف المضمون وختمك، واحصل على شهادة جاهزة — يتطلب تسجيل الدخول.', desc_en: 'Pick a template, add your content and stamp, and get a ready certificate — requires login.',
+      icon: ICONS.certGenApp, family: 'admin', comingSoon: true },
+    { id: 'tool-cover-page', title_ar: 'مولّد صفحات الغلاف', title_en: 'Cover Page Generator',
+      desc_ar: 'أنشئ غلافًا احترافيًا لتقاريرك وبحوثك بضغطة واحدة.', desc_en: 'Create a professional cover page for your reports and research in one click.',
+      icon: ICONS.coverPageApp, family: 'admin', comingSoon: true },
+    { id: 'tool-admin-request', title_ar: 'مولّد الطلب الإداري', title_en: 'Administrative Request Generator',
+      desc_ar: 'أنشئ طلبات رسمية جاهزة (إجازة، توظيف، استفادة...).', desc_en: 'Generate ready official requests (leave, employment, benefit...).',
+      icon: ICONS.adminReqApp, family: 'admin', comingSoon: true },
+    { id: 'tool-salary-calc', title_ar: 'حاسبة الراتب', title_en: 'Salary Calculator',
+      desc_ar: 'احسب الراتب الصافي والخصومات بسهولة.', desc_en: 'Calculate net salary and deductions easily.',
+      icon: ICONS.salaryApp, family: 'calc', comingSoon: true },
+    { id: 'tool-date-diff', title_ar: 'حاسبة المدة بين تاريخين', title_en: 'Date Difference Calculator',
+      desc_ar: 'احسب الفرق بالأيام والأشهر والسنوات بين تاريخين.', desc_en: 'Calculate the difference in days, months, and years between two dates.',
+      icon: ICONS.dateDiffApp, family: 'calc', comingSoon: true },
+    { id: 'tool-receipt', title_ar: 'مولّد وصل استلام', title_en: 'Receipt Generator',
+      desc_ar: 'أنشئ وصل استلام رسمي جاهز للطباعة.', desc_en: 'Generate an official, print-ready receipt.',
+      icon: ICONS.receiptApp, family: 'admin', comingSoon: true },
+    { id: 'tool-unit-convert', title_ar: 'محوّل الوحدات', title_en: 'Unit Converter',
+      desc_ar: 'حوّل بين وحدات الطول والوزن والحرارة والمساحة والحجم.', desc_en: 'Convert between units of length, weight, temperature, area, and volume.',
+      icon: ICONS.unitConvApp, family: 'calc', comingSoon: true },
+    { id: 'tool-sci-calc', title_ar: 'حاسبة هندسية', title_en: 'Scientific Calculator',
+      desc_ar: 'عمليات رياضية وهندسية متقدمة (جذور، أسس، دوال مثلثية).', desc_en: 'Advanced math and engineering operations (roots, powers, trig functions).',
+      icon: ICONS.sciCalcApp, family: 'calc', comingSoon: true },
+    { id: 'tool-qr', title_ar: 'مولّد QR Code', title_en: 'QR Code Generator',
+      desc_ar: 'حوّل أي نص أو رابط لرمز QR جاهز للتحميل.', desc_en: 'Turn any text or link into a downloadable QR code.',
+      icon: ICONS.qrApp, family: 'admin', comingSoon: true },
+    { id: 'tool-teacher-note', title_ar: 'مولّد مذكرة أستاذ', title_en: 'Lesson Plan Generator',
+      desc_ar: 'أنشئ مذكرة تحضير دروس منظّمة وجاهزة للأساتذة.', desc_en: 'Create organized, ready lesson-preparation notes for teachers.',
+      icon: ICONS.teacherNoteApp, family: 'edu', comingSoon: true },
+    { id: 'tool-id-card', title_ar: 'مولّد بطاقات الهوية', title_en: 'ID Card Generator',
+      desc_ar: 'أنشئ بطاقات هوية (موظف، طالب، عضو) بتصميم جاهز.', desc_en: 'Generate ID cards (employee, student, member) with a ready design.',
+      icon: ICONS.idCardApp, family: 'admin', comingSoon: true },
+    { id: 'tool-report-gen', title_ar: 'مولّد تقرير مهني', title_en: 'Professional Report Generator',
+      desc_ar: 'أنشئ تقارير عمل احترافية جاهزة.', desc_en: 'Generate ready, professional work reports.',
+      icon: ICONS.reportApp, family: 'admin', comingSoon: true },
+    { id: 'tool-hours-calc', title_ar: 'حاسبة عدد الساعات', title_en: 'Hours Calculator',
+      desc_ar: 'احسب عدد ساعات العمل بين وقتين.', desc_en: 'Calculate the number of work hours between two times.',
+      icon: ICONS.hoursApp, family: 'calc', comingSoon: true },
+    { id: 'tool-age-calc', title_ar: 'حاسبة السن', title_en: 'Age Calculator',
+      desc_ar: 'احسب العمر الدقيق بالسنوات والأشهر والأيام.', desc_en: 'Calculate exact age in years, months, and days.',
+      icon: ICONS.ageApp, family: 'calc', comingSoon: true },
+    { id: 'tool-hijri', title_ar: 'محوّل هجري/ميلادي', title_en: 'Hijri/Gregorian Converter',
+      desc_ar: 'حوّل أي تاريخ بالاتجاهين بضغطة واحدة.', desc_en: 'Convert any date both ways in one click.',
+      icon: ICONS.hijriApp, family: 'calc', comingSoon: true },
+    { id: 'tool-grade-avg', title_ar: 'حساب معدل التلاميذ', title_en: 'Student Average Calculator',
+      desc_ar: 'احسب المعدل العام من درجات المواد المختلفة.', desc_en: 'Calculate the overall average from different subject grades.',
+      icon: ICONS.gradeApp, family: 'edu', comingSoon: true },
+    { id: 'tool-schedule', title_ar: 'مولّد جدول زمني', title_en: 'Schedule Generator',
+      desc_ar: 'أنشئ جدولًا زمنيًا أو أسبوعيًا جاهزًا.', desc_en: 'Create a ready timetable or weekly schedule.',
+      icon: ICONS.scheduleApp, family: 'admin', comingSoon: true },
+    { id: 'tool-mail-assist', title_ar: 'مساعد البريد المهني', title_en: 'Professional Email Assistant',
+      desc_ar: 'قوالب جاهزة ومساعدة اختيارية بالذكاء الاصطناعي لصياغة إيميلات احترافية.', desc_en: 'Ready templates and optional AI help for professional email writing.',
+      icon: ICONS.mailAssistApp, family: 'admin', comingSoon: true },
+    { id: 'tool-pdf-to-image', title_ar: 'PDF إلى صورة', title_en: 'PDF to Image',
+      desc_ar: 'حوّل صفحات PDF إلى صور مباشرة من متصفحك.', desc_en: 'Convert PDF pages into images directly from your browser.',
+      icon: ICONS.pdfToImgApp, family: 'admin', comingSoon: true },
+    { id: 'tool-excel-to-pdf', title_ar: 'Excel إلى PDF', title_en: 'Excel to PDF',
+      desc_ar: 'حوّل ملف إكسل إلى PDF جاهز للمشاركة.', desc_en: 'Convert an Excel file into a ready-to-share PDF.',
+      icon: ICONS.excelToPdfApp, family: 'admin', comingSoon: true },
+    { id: 'tool-word-to-pdf', title_ar: 'Word إلى PDF', title_en: 'Word to PDF',
+      desc_ar: 'حوّل مستند وورد إلى PDF جاهز للمشاركة.', desc_en: 'Convert a Word document into a ready-to-share PDF.',
+      icon: ICONS.wordToPdfApp, family: 'admin', comingSoon: true },
     // لإضافة أداة جديدة أضف سطرًا هنا بنفس الشكل:
     // { id:'tool-distance', title_ar:'حساب المسافة بين منطقتين', title_en:'Distance Calculator',
     //   desc_ar:'احسب المسافة بين نقطتين جغرافيتين بسهولة.', desc_en:'Calculate distance between two locations.',
@@ -306,6 +433,21 @@ const CONTENT = {
       url: 'trainings/word-training/',
       icon: ICONS.wordApp,
     },
+    { id: 'training-excel', title_ar: 'تدريب شامل في إكسل', title_en: 'Complete Excel Training',
+      desc_ar: '5 مستويات بصعوبة تصاعدية لاختبار معلوماتك في إكسل.', desc_en: '5 levels of increasing difficulty to test your Excel knowledge.',
+      icon: ICONS.excelCourseApp, comingSoon: true },
+    { id: 'training-ppt', title_ar: 'تدريب شامل في PowerPoint', title_en: 'Complete PowerPoint Training',
+      desc_ar: '5 مستويات بصعوبة تصاعدية لاختبار معلوماتك في PowerPoint.', desc_en: '5 levels of increasing difficulty to test your PowerPoint knowledge.',
+      icon: ICONS.pptApp, comingSoon: true },
+    { id: 'training-access', title_ar: 'تدريب شامل في Access', title_en: 'Complete Access Training',
+      desc_ar: '5 مستويات بصعوبة تصاعدية لاختبار معلوماتك في Access.', desc_en: '5 levels of increasing difficulty to test your Access knowledge.',
+      icon: ICONS.accessApp, comingSoon: true },
+    { id: 'training-spss', title_ar: 'تدريب شامل في SPSS', title_en: 'Complete SPSS Training',
+      desc_ar: '5 مستويات بصعوبة تصاعدية لاختبار معلوماتك في SPSS.', desc_en: '5 levels of increasing difficulty to test your SPSS knowledge.',
+      icon: ICONS.spssApp, comingSoon: true },
+    { id: 'training-powerbi', title_ar: 'تدريب شامل في Power BI', title_en: 'Complete Power BI Training',
+      desc_ar: '5 مستويات بصعوبة تصاعدية لاختبار معلوماتك في Power BI.', desc_en: '5 levels of increasing difficulty to test your Power BI knowledge.',
+      icon: ICONS.powerbiApp, comingSoon: true },
     // لإضافة اختبار جديد (Excel, Word, إعلام آلي...) أضف كائنًا هنا بنفس الشكل:
     // { id:'training-excel-1', title_ar:'اختبار: أساسيات إكسل', title_en:'Quiz: Excel basics',
     //   desc_ar:'وصف الاختبار.', desc_en:'Quiz description.' },
@@ -446,11 +588,41 @@ function renderHomeGrid(){
 /* =====================================================================
    SECTION LIST + DETAIL (lessons / apps / tools / resources / services)
 ===================================================================== */
+const FAMILY_LABELS = {
+  ar: { all: 'الكل', admin: 'إدارية', edu: 'تعليمية', calc: 'حاسبات', home: 'منزلية' },
+  en: { all: 'All', admin: 'Admin', edu: 'Educational', calc: 'Calculators', home: 'Home' },
+};
+let activeFamily = 'all';
+
+function renderFamilyFilter(items){
+  const bar = document.getElementById('familyFilter');
+  if (!bar) return;
+  const families = Array.from(new Set(items.map(i => i.family).filter(Boolean)));
+  if (families.length === 0){ bar.classList.add('hidden'); return; }
+  bar.classList.remove('hidden');
+  const labels = FAMILY_LABELS[lang] || FAMILY_LABELS.ar;
+  const order = ['all', ...families];
+  bar.innerHTML = order.map(f => `<button type="button" class="family-btn ${f === activeFamily ? 'active' : ''}" data-family="${f}">${labels[f] || f}</button>`).join('');
+  bar.querySelectorAll('.family-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeFamily = btn.getAttribute('data-family');
+      renderSectionItems();
+    });
+  });
+}
+
 function renderSectionItems(){
   const wrap = document.getElementById('sectionItems');
   if (!wrap) return;
   const key = document.body.dataset.section;
-  const items = CONTENT[key] || [];
+  const allItems = CONTENT[key] || [];
+
+  if (key === 'tools'){
+    renderFamilyFilter(allItems);
+  }
+  const items = (key === 'tools' && activeFamily !== 'all')
+    ? allItems.filter(i => i.family === activeFamily)
+    : allItems;
 
   wrap.innerHTML = '';
   if (items.length === 0){
@@ -459,7 +631,17 @@ function renderSectionItems(){
   }
 
   items.forEach(item => {
-    if (item.url){
+    if (item.comingSoon){
+      const card = document.createElement('div');
+      card.className = 'item-card coming-soon-card';
+      card.innerHTML = `
+        ${item.icon ? `<span class="icon-badge badge-${key}">${item.icon}</span>` : ''}
+        <h3>${lang === 'ar' ? item.title_ar : item.title_en}</h3>
+        <p>${lang === 'ar' ? item.desc_ar : item.desc_en}</p>
+        <span class="coming-soon-badge">${lang === 'ar' ? 'قريبًا' : 'Coming soon'}</span>
+      `;
+      wrap.appendChild(card);
+    } else if (item.url){
       const card = document.createElement('a');
       card.className = 'item-card';
       card.href = item.url;

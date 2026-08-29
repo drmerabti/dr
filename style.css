@@ -56,7 +56,7 @@ html[data-theme="dark"] body{
 
 *{ box-sizing: border-box; }
 
-html, body{ min-height: 100%; }
+html, body{ min-height: 100%; overflow-x: hidden; }
 
 body{
   margin:0;
@@ -436,4 +436,50 @@ a:focus-visible, button:focus-visible, input:focus-visible, [tabindex]:focus-vis
 
 @media (prefers-reduced-motion: reduce){
   *{ transition: none !important; animation: none !important; }
+}
+
+/* ============ Family filter (horizontal, tools section) ============ */
+.family-filter{
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 4px 2px 18px;
+  margin: 0 auto 6px;
+  max-width: 1080px;
+  -webkit-overflow-scrolling: touch;
+}
+.family-filter::-webkit-scrollbar{ height: 4px; }
+.family-btn{
+  flex-shrink: 0;
+  border: 1px solid var(--line);
+  background: var(--card-bg);
+  color: var(--ink-soft);
+  font-family: inherit;
+  font-size: .85rem;
+  font-weight: 700;
+  padding: 9px 18px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background .15s ease, color .15s ease, border-color .15s ease;
+}
+.family-btn:hover{ border-color: var(--accent); color: var(--ink); }
+.family-btn.active{ background: var(--accent); border-color: var(--accent); color: #fff; }
+
+/* ============ Coming soon cards ============ */
+.coming-soon-card{
+  position: relative;
+  opacity: .55;
+  cursor: default;
+  filter: grayscale(.3);
+}
+.coming-soon-card:hover{ transform: none; box-shadow: var(--shadow); }
+.coming-soon-badge{
+  display: inline-block;
+  margin-top: 10px;
+  font-size: .72rem;
+  font-weight: 800;
+  color: var(--accent-dark);
+  background: var(--accent-soft);
+  padding: 4px 12px;
+  border-radius: 999px;
 }
