@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="htmlRoot">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مولّد بطاقات الهوية — أكاديمية مرابطي</title>
+<meta name="description" content="أنشئ بطاقة هوية احترافية بوجهين، بعدة ثيمات ورمز QR حقيقي.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar">
+  <a href="../../tools.html" class="icon-btn" id="backBtn" aria-label="back">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
+  </a>
+  <span class="topbar-title" id="topbarTitle" data-i18n="topbarTitle">مولّد بطاقات الهوية</span>
+  <div class="topbar-actions">
+    <div class="lang-switch" id="langSwitch">
+      <button type="button" class="lang-btn" data-lang="ar">AR</button>
+      <button type="button" class="lang-btn" data-lang="fr">FR</button>
+      <button type="button" class="lang-btn" data-lang="en">EN</button>
+    </div>
+    <span class="save-indicator hidden" id="saveIndicator"></span>
+  </div>
+</div>
+
+<main class="wrap">
+
+  <!-- ============ LOADING ============ -->
+  <section id="loadingScreen" class="screen loading-screen">
+    <div class="loading-spinner"></div>
+  </section>
+
+  <!-- ============ LOCKED / AUTH SCREEN ============ -->
+  <section id="lockedScreen" class="screen hidden">
+    <div class="locked-hero">
+      <div class="locked-icon">🔒</div>
+      <h1 id="lockedTitle" data-i18n="lockedTitle">سجّل دخولك لاستخدام مولّد بطاقات الهوية</h1>
+      <p id="lockedSub" data-i18n="lockedSub">هذه الأداة متاحة للمستخدمين المسجّلين فقط.</p>
+    </div>
+    <div class="auth-card">
+      <div class="auth-tabs">
+        <button type="button" class="auth-tab active" data-mode="login" id="tabLogin" data-i18n="tabLogin">تسجيل الدخول</button>
+        <button type="button" class="auth-tab" data-mode="signup" id="tabSignup" data-i18n="tabSignup">إنشاء حساب</button>
+      </div>
+      <p class="auth-card-error hidden" id="authCardError"></p>
+      <form id="authCardForm">
+        <input type="text" id="acName" class="cv-input hidden" data-i18n-placeholder="acNamePh" placeholder="الاسم الكامل">
+        <input type="email" id="acEmail" class="cv-input" required data-i18n-placeholder="acEmailPh" placeholder="البريد الإلكتروني">
+        <input type="password" id="acPassword" class="cv-input" required minlength="6" data-i18n-placeholder="acPasswordPh" placeholder="كلمة المرور">
+        <button type="submit" class="btn btn-primary btn-block" id="acSubmitBtn" data-i18n="tabLogin">تسجيل الدخول</button>
+      </form>
+      <div class="auth-divider" data-i18n="authOr">أو</div>
+      <button type="button" class="auth-google-btn" id="acGoogleBtn">
+        <svg viewBox="0 0 48 48" width="18" height="18"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 8 3l6-6C34.5 5.1 29.5 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21 21-9.4 21-21c0-1.2-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.6 15.6 18.9 13 24 13c3.1 0 5.8 1.1 8 3l6-6C34.5 5.1 29.5 3 24 3c-7.6 0-14.1 4.3-17.7 10.7z"/><path fill="#4CAF50" d="M24 45c5.3 0 10.2-2 13.9-5.3l-6.4-5.4C29.3 36 26.8 37 24 37c-5.2 0-9.6-3.1-11.4-7.6l-6.6 5.1C9.8 40.6 16.3 45 24 45z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.2-4.2 5.6l6.4 5.4C40.5 36.6 43 30.8 43 24c0-1.2-.1-2.4-.4-3.5z"/></svg>
+        <span data-i18n="authGoogleBtn">المتابعة عبر Google</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ============ EDITOR SCREEN ============ -->
+  <section id="editorScreen" class="screen hidden">
+    <h1 class="tool-page-title" data-i18n="toolTitle">مولّد بطاقات الهوية</h1>
+
+    <div class="theme-filter" id="themeFilter"></div>
+
+    <div class="editor-grid">
+      <!-- FORM COLUMN -->
+      <div class="editor-form">
+
+        <div class="form-card">
+          <h2 class="form-card-title" data-i18n="photoCardTitle">الصورة الشخصية</h2>
+          <div class="photo-row">
+            <div class="photo-upload" id="photoUploadBox">
+              <img id="photoPreview" class="photo-preview hidden" alt="">
+              <span class="photo-placeholder" id="photoPlaceholder">📷</span>
+              <input type="file" id="photoInput" accept="image/*" hidden>
+            </div>
+            <button type="button" class="link-btn" id="removePhotoBtn" data-i18n="removePhotoBtn">إزالة الصورة</button>
+          </div>
+        </div>
+
+        <div class="form-card">
+          <h2 class="form-card-title" data-i18n="basicCardTitle">البيانات الأساسية</h2>
+          <div class="field-grid">
+            <input type="text" id="fFirstName" class="cv-input" data-i18n-placeholder="phFirstName" placeholder="الاسم" value="Dr Soufiane">
+            <input type="text" id="fLastName" class="cv-input" data-i18n-placeholder="phLastName" placeholder="اللقب" value="Merabti">
+            <input type="text" id="fJobTitle" class="cv-input" data-i18n-placeholder="phJobTitle" placeholder="الوظيفة" value="Electrical Engineer">
+            <input type="text" id="fOrg" class="cv-input" data-i18n-placeholder="phOrg" placeholder="المؤسسة" value="Merabti academy">
+            <input type="text" id="fPhone" class="cv-input" data-i18n-placeholder="phPhone" placeholder="رقم الهاتف" value="0663708148">
+            <input type="email" id="fEmail" class="cv-input" data-i18n-placeholder="phEmail" placeholder="البريد الإلكتروني" value="contact@merabti.com">
+            <input type="text" id="fWebsite" class="cv-input" data-i18n-placeholder="phWebsite" placeholder="رابط الموقع" value="merabti.com">
+            <input type="text" id="fFacebook" class="cv-input" data-i18n-placeholder="phFacebook" placeholder="رابط فيسبوك" value="facebook.com/drmerabti">
+            <input type="text" id="fIdNumber" class="cv-input" data-i18n-placeholder="phIdNumber" placeholder="رقم الموظف/العضوية" value="2278469">
+          </div>
+        </div>
+
+        <div class="form-card">
+          <h2 class="form-card-title"><span data-i18n="extraCardTitle">بيانات إضافية</span> <span class="optional-tag" data-i18n="optionalTag">(اختياري)</span></h2>
+          <div class="field-grid">
+            <input type="text" id="fDept" class="cv-input" data-i18n-placeholder="phDept" placeholder="القسم/الإدارة">
+            <input type="text" id="fAddress" class="cv-input" data-i18n-placeholder="phAddress" placeholder="العنوان">
+            <input type="date" id="fIssueDate" class="cv-input" data-i18n-placeholder="phIssueDate" placeholder="تاريخ الإصدار">
+            <input type="date" id="fExpiryDate" class="cv-input" data-i18n-placeholder="phExpiryDate" placeholder="تاريخ الانتهاء">
+            <input type="text" id="fFreeText" class="cv-input" data-i18n-placeholder="phFreeText" placeholder="نص حر (يظهر على حافة الظهر)" value="T&amp;Cs Apply">
+          </div>
+        </div>
+
+        <button type="button" class="btn btn-primary btn-block" id="downloadPdfBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M5 21h14"/></svg>
+          <span data-i18n="downloadPdfBtn">تحميل PDF (الوجهين)</span>
+        </button>
+        <button type="button" class="btn btn-secondary btn-block" id="downloadImgBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5-9 9"/></svg>
+          <span data-i18n="downloadImgBtn">تحميل صورة (الوجهين)</span>
+        </button>
+      </div>
+
+      <!-- PREVIEW COLUMN -->
+      <div class="editor-preview">
+        <div class="cards-preview-stack">
+          <div>
+            <p class="face-label" data-i18n="faceFront">الوجه الأول</p>
+            <div class="id-card-frame">
+              <div class="id-card" id="cardFront" data-layout="a">
+                <div class="card-accent-shape"><div class="card-band"></div></div>
+                <div class="card-badge-logo" id="cardBadgeLogo"></div>
+                <p class="card-corner-tag" id="cardCornerTag" dir="auto"></p>
+                <div class="card-photo-wrap">
+                  <img id="cardPhotoImg" class="card-photo-img" hidden alt="">
+                  <span class="card-photo-initials" id="cardPhotoInitials"></span>
+                </div>
+                <p class="card-org" id="cardOrg" dir="auto"></p>
+                <p class="card-name" id="cardName" dir="auto">الاسم واللقب</p>
+                <div class="card-field" id="cardTitleField">
+                  <p class="card-field-label" data-i18n="badgeTitleLabel">TITLE</p>
+                  <p class="card-title" id="cardTitle" dir="auto"></p>
+                </div>
+                <div class="card-field" id="cardIdField">
+                  <p class="card-field-label" data-i18n="badgeIdLabel">ID NUMBER</p>
+                  <p class="card-idnum" id="cardIdNum" dir="auto"></p>
+                </div>
+                <p class="card-badge-year" id="cardBadgeYear"></p>
+                <p class="card-front-name" id="cardFrontBigName" dir="auto"></p>
+                <div class="card-front-rows" id="cardFrontRows"></div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <p class="face-label" data-i18n="faceBack">الوجه الثاني</p>
+            <div class="id-card-frame">
+              <div class="id-card id-card-back" id="cardBack" data-layout="a">
+                <div class="card-accent-shape"></div>
+                <div class="card-back-content">
+                  <div class="card-contact-list" id="cardContactList"></div>
+                  <div class="card-qr-wrap" id="cardQrWrap"><div id="cardQr"></div></div>
+                </div>
+                <p class="card-back-footer" id="cardBackFooter" dir="auto"></p>
+                <div class="card-barcode-wrap hidden" id="cardBarcodeWrap"><svg id="cardBarcode"></svg></div>
+                <span class="card-edge-text" id="cardEdgeText" dir="auto"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p>© 2026 د. سفيان مرابطي</p>
+</footer>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="../../firebase-init.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/JsBarcode/3.11.5/JsBarcode.all.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
