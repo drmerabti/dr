@@ -3,40 +3,45 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>مولّد QR Code — أكاديمية مرابطي</title>
+<title id="pageTitleTag">مولّد QR Code — أكاديمية مرابطي</title>
 <meta name="description" content="أنشئ رمز QR لبطاقة تعريفك الشخصية بسهولة، ونزّله كصورة.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="topbar">
-  <a href="../../tools.html" class="icon-btn" aria-label="رجوع للموقع">
+  <a href="../../tools.html" class="icon-btn" aria-label="back">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
   </a>
+  <div class="lang-switch" role="group">
+    <button type="button" class="lang-btn" data-lang="ar">عربي</button>
+    <button type="button" class="lang-btn" data-lang="en">EN</button>
+    <button type="button" class="lang-btn" data-lang="fr">FR</button>
+  </div>
 </div>
 
 <main class="wrap">
-  <h1 class="title">مولّد QR Code</h1>
-  <p class="subtitle">عبّي بياناتك، وشوف رمز QR يتحدّث فورًا — يُمسح ويُحفظ كجهة اتصال كاملة</p>
+  <h1 class="title" id="pageTitle">مولّد QR Code</h1>
+  <p class="subtitle" id="pageSubtitle">أدخل بياناتك، وشاهد رمز QR يتحدّث فورًا — يمكن مسحه وحفظه كجهة اتصال كاملة</p>
 
   <div class="qr-layout">
     <div class="qr-form">
       <div class="field">
-        <input type="text" id="qName" class="big-input" placeholder="الاسم واللقب">
+        <input type="text" id="qName" class="big-input" placeholder="">
       </div>
       <div class="field">
-        <input type="tel" id="qPhone" class="big-input" placeholder="رقم الهاتف">
+        <input type="tel" id="qPhone" class="big-input" placeholder="">
       </div>
       <div class="field">
-        <input type="text" id="qJob" class="big-input" placeholder="المهنة">
+        <input type="text" id="qJob" class="big-input" placeholder="">
       </div>
       <div class="field">
-        <input type="email" id="qEmail" class="big-input" placeholder="البريد الإلكتروني">
+        <input type="email" id="qEmail" class="big-input" placeholder="">
       </div>
       <div class="field">
-        <textarea id="qNote" class="big-input qr-textarea" placeholder="ملاحظة حرة (اختياري)"></textarea>
+        <textarea id="qNote" class="big-input qr-textarea" placeholder=""></textarea>
       </div>
     </div>
 
@@ -46,7 +51,7 @@
       </div>
       <button type="button" class="generate-btn" id="downloadBtn">
         <svg class="gen-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M5 21h14"/></svg>
-        <span>تحميل الصورة</span>
+        <span id="downloadBtnText">تحميل الصورة</span>
       </button>
     </div>
   </div>

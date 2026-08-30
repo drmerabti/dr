@@ -134,7 +134,15 @@ html[dir="rtl"] #backBtn svg{ transform: scaleX(-1); }
   font-family: inherit;
   outline: none;
   box-shadow: var(--shadow);
+  direction: inherit;
+  text-align: start;
   transition: border-color .15s ease, box-shadow .15s ease;
+}
+input[type="tel"].big-input,
+input[type="email"].big-input{
+  direction: inherit;
+  text-align: start;
+  unicode-bidi: plaintext;
 }
 .big-input:focus{
   border-color: var(--accent);
