@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="htmlRoot">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الوحدة 2: الكتابة والتحرير — أكاديمية مرابطي</title>
+<meta name="description" content="ستة دروس حول الكتابة، التحديد، النسخ، القص، اللصق، والبحث والاستبدال.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar">
+  <a href="beginner.html" class="icon-btn" id="backBtn" aria-label="العودة إلى وحدات المستوى">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
+  </a>
+</div>
+
+<header class="lesson-head">
+  <p class="lesson-crumb" style="text-align:center;">مبتدئ ← الوحدة 2</p>
+  <h1 class="lesson-title">الكتابة والتحرير</h1>
+  <p class="lesson-sub">ستة دروس حول الكتابة، التحديد، النسخ، والبحث والاستبدال</p>
+</header>
+
+<main class="wrap">
+  <div class="sc-grid" id="lessonsGrid"></div>
+</main>
+
+<footer class="site-footer">
+  <p>© 2026 د. سفيان مرابطي</p>
+</footer>
+
+<script>
+const LESSONS = [
+  { n: 1, title: "كتابة النصوص العربية والفرنسية", desc: "الكتابة بلغات متعددة داخل المستند", href: "u2-l1.html" },
+  { n: 2, title: "تحديد النص ونسخه وقصه ولصقه", desc: "أساسيات التعامل مع النص المحدَّد", href: "u2-l2.html" },
+  { n: 3, title: "التراجع والإعادة", desc: "إصلاح الأخطاء بسرعة", href: "u2-l3.html" },
+  { n: 4, title: "البحث داخل المستند", desc: "إيجاد أي كلمة بثوانٍ", href: "u2-l4.html" },
+  { n: 5, title: "استبدال الكلمات", desc: "تصحيح كلمة متكررة دفعة واحدة", href: "u2-l5.html" },
+  { n: 6, title: "تحديد كلمة، سطر، فقرة، والمستند بالكامل", desc: "اختصارات نقر سريعة", href: "u2-l6.html" },
+];
+
+function getProgress() {
+  try { return JSON.parse(localStorage.getItem("word_full_progress")) || {}; }
+  catch (e) { return {}; }
+}
+
+const progress = (getProgress().u2) || {};
+const grid = document.getElementById("lessonsGrid");
+grid.innerHTML = LESSONS.map((l) => `
+  <a href="${l.href}" class="sc-card lesson-card" style="text-decoration:none;">
+    ${progress[l.n] ? `<span class="lesson-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>` : ""}
+    <div class="sc-body">
+      <span class="lesson-num-badge">${l.n}</span>
+      <p class="sc-name">${l.title}</p>
+      <p class="sc-desc">${l.desc}</p>
+    </div>
+  </a>`).join("");
+</script>
+</body>
+</html>

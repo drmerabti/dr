@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="htmlRoot">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تحديد النص ونسخه وقصه ولصقه — أكاديمية مرابطي</title>
+<meta name="description" content="تعلّم كيفية تحديد النص واستخدام أيقونات النسخ والقص واللصق.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar">
+  <a href="u2-index.html" class="icon-btn" id="backBtn" aria-label="العودة إلى دروس الوحدة">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
+  </a>
+</div>
+
+<header class="lesson-page-head">
+  <p class="lesson-crumb">مبتدئ ← الوحدة 2: الكتابة والتحرير ← الدرس 2</p>
+  <h1 class="lesson-page-title">تحديد النص ونسخه وقصه ولصقه</h1>
+</header>
+
+<main class="lesson-body">
+
+  <p>
+    قبل أن تنسخ أو تقص أي جزء من النص، يجب أولًا <strong>تحديده</strong>. اضغط بزر الفأرة الأيسر مع السحب فوق النص
+    الذي تريده، فيتلوّن بخلفية زرقاء، وهذا يعني أنه محدَّد وجاهز للتعامل معه.
+  </p>
+
+  <div class="icon-feature">
+    <img src="img/copy.png" alt="أيقونة النسخ" class="icon-feature-img">
+    <div class="icon-feature-text">
+      <h3>نسخ (Copy)</h3>
+      <p>بعد تحديد النص، اضغط "نسخ" لتكرار النص دون حذفه من مكانه الأصلي.</p>
+    </div>
+  </div>
+
+  <div class="icon-feature">
+    <img src="img/cut.png" alt="أيقونة القص" class="icon-feature-img">
+    <div class="icon-feature-text">
+      <h3>قص (Cut)</h3>
+      <p>يأخذ النص المحدَّد ويحذفه من مكانه، مع الاحتفاظ به مؤقتًا لنقله إلى مكان آخر.</p>
+    </div>
+  </div>
+
+  <div class="icon-feature">
+    <img src="img/paste.png" alt="أيقونة اللصق" class="icon-feature-img">
+    <div class="icon-feature-text">
+      <h3>لصق (Paste)</h3>
+      <p>ضع المؤشر في المكان الجديد، ثم اضغط "لصق" ليظهر النص الذي نسخته أو قصصته هناك.</p>
+    </div>
+  </div>
+
+  <div class="callout-tip">
+    <span class="callout-icon">💡</span>
+    <div>
+      <h3>هل تعلم؟</h3>
+      <p>يمكنك تحديد كتلة نص طويلة بسرعة بالضغط في بدايتها، ثم الضغط على مفتاح Shift مع النقر في نهايتها، دون الحاجة للسحب المستمر بالفأرة.</p>
+    </div>
+  </div>
+
+  <button type="button" class="quiz-launch-btn" id="quizLaunchBtn">
+    <span class="callout-icon">🎯</span>
+    اختبر نفسك
+  </button>
+
+</main>
+
+<nav class="lesson-nav">
+  <a href="u2-l1.html" class="lesson-nav-btn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
+    <span class="nav-label">السابق</span>
+  </a>
+  <div class="lesson-progress-dots" id="progressDots"></div>
+  <a href="u2-l3.html" class="lesson-nav-btn primary">
+    <span class="nav-label">الدرس التالي</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
+  </a>
+</nav>
+
+<footer class="site-footer">
+  <p>© 2026 د. سفيان مرابطي</p>
+</footer>
+
+<!-- ============ MINI QUIZ MODAL ============ -->
+<div class="quiz-overlay hidden" id="quizOverlay">
+  <div class="quiz-modal">
+    <button type="button" class="quiz-close" id="quizCloseBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
+    </button>
+    <div id="quizQuestionView">
+      <p class="quiz-progress" id="quizProgress">سؤال 1 من 3</p>
+      <p class="quiz-question" id="quizQuestion"></p>
+      <div class="quiz-options" id="quizOptions"></div>
+    </div>
+    <div id="quizDoneView" class="quiz-done hidden">
+      <div class="quiz-done-emoji" id="quizDoneEmoji">🎉</div>
+      <h3 class="quiz-done-title" id="quizDoneTitle">أحسنت!</h3>
+      <p class="quiz-done-msg" id="quizDoneMsg"></p>
+      <button type="button" class="btn btn-primary" id="quizRestartBtn">أعد المحاولة</button>
+    </div>
+  </div>
+</div>
+
+<script>window.LESSON_NUM = 2; window.UNIT_KEY = "u2"; window.UNIT_TOTAL = 6;</script>
+<script>
+window.QUIZ_QUESTIONS = [
+  { q: "ما أول خطوة قبل نسخ أو قص أي نص؟", options: ["حفظ المستند", "تحديد النص أولًا", "طباعة المستند", "إغلاق البرنامج"], correct: 1 },
+  { q: "ما الفرق بين القص والنسخ؟", options: ["لا فرق", "القص يحذف النص من مكانه، النسخ يبقيه", "النسخ يحذف النص، القص يبقيه", "كلاهما يحذف النص"], correct: 1 },
+  { q: "كيف تحدد كتلة نص طويلة بسرعة؟", options: ["الضغط على Ctrl فقط", "النقر بالبداية ثم Shift+نقر بالنهاية", "الضغط على مفتاح المسافة", "لا توجد طريقة سريعة"], correct: 1 },
+];
+</script>
+<script src="lesson-nav.js"></script>
+<script src="quiz.js"></script>
+</body>
+</html>
