@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="حاسبة الراتب الصافي مع IRG وCNAS وكشف مفصل — أكاديمية مرابطي.">
+<meta name="description" content="حاسبة الراتب الصافي بثلاث لغات مع كشف مفصل — أكاديمية مرابطي.">
 <title>حاسبة الراتب — د. سفيان مرابطي</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -35,77 +35,84 @@
 
 <main id="app">
   <section class="view">
-    <h2 class="view-title tool-title">
-      <span class="tool-title-ar">حاسبة الراتب</span>
-      <span class="tool-title-en">Salary Calculator</span>
-    </h2>
+
+    <h1 class="tool-big-title" data-k="title">حاسبة الراتب</h1>
+
+    <div class="lang-bar no-print">
+      <button type="button" data-lang="ar" class="active">عربي</button>
+      <button type="button" data-lang="fr">FR</button>
+      <button type="button" data-lang="en">EN</button>
+    </div>
 
     <div class="salary-layout">
 
       <!-- ===== نموذج الإدخال ===== -->
       <div class="salary-form no-print">
 
-        <fieldset class="s-panel">
-          <legend>معلومات الموظف</legend>
+        <div class="s-panel">
+          <h3 class="s-title" data-k="emp">معلومات الموظف</h3>
           <div class="s-grid">
-            <label>الاسم الكامل <input type="text" id="empName" placeholder="مثال: محمد بن أحمد"></label>
-            <label>المنصب <input type="text" id="empJob" placeholder="مثال: أستاذ التعليم الثانوي"></label>
-            <label>القطاع
+            <label><span data-k="name">الاسم الكامل</span><input type="text" id="empName"></label>
+            <label><span data-k="job">المنصب</span><input type="text" id="empJob"></label>
+            <label><span data-k="sector">القطاع</span>
               <select id="empSector">
-                <option value="عمومي">عمومي</option>
-                <option value="خاص">خاص</option>
+                <option value="public" data-k="pub">عمومي</option>
+                <option value="private" data-k="priv">خاص</option>
               </select>
             </label>
-            <label>الشهر <input type="month" id="empMonth"></label>
+            <label><span data-k="month">الشهر</span><input type="month" id="empMonth"></label>
+            <label><span data-k="currency">العملة</span><input type="text" id="curInput" value="دج" placeholder="دج / DA / € / $"></label>
           </div>
-        </fieldset>
+        </div>
 
-        <fieldset class="s-panel">
-          <legend>الأجر الأساسي</legend>
+        <div class="s-panel">
+          <h3 class="s-title" data-k="base_t">الأجر الأساسي</h3>
           <div class="s-grid">
-            <label>الأجر القاعدي (دج) <input type="number" id="baseSalary" min="0" value="0"></label>
-            <label>أيام العمل <input type="number" id="workDays" min="0" max="30" value="30"></label>
-            <label>الخبرة المهنية IEP (%) <input type="number" id="iepRate" min="0" value="0"></label>
-            <label>منحة المنطقة (%) <input type="number" id="zoneRate" min="0" value="0"></label>
+            <label><span data-k="base">الأجر القاعدي</span><input type="number" id="baseSalary" min="0" value="0"></label>
+            <label><span data-k="days">أيام العمل</span><input type="number" id="workDays" min="0" max="30" value="30"></label>
+            <label><span data-k="iep">الخبرة المهنية IEP (%)</span><input type="number" id="iepRate" min="0" value="0"></label>
+            <label><span data-k="zone">منحة المنطقة (%)</span><input type="number" id="zoneRate" min="0" value="0"></label>
           </div>
-        </fieldset>
+        </div>
 
-        <fieldset class="s-panel">
-          <legend>منح خاضعة للاشتراك والضريبة</legend>
+        <div class="s-panel">
+          <h3 class="s-title" data-k="a1">منح خاضعة للاشتراك والضريبة</h3>
           <div id="allowList1" class="dyn-list"></div>
-          <button type="button" class="add-btn" data-list="allowList1">+ إضافة منحة</button>
-        </fieldset>
+          <button type="button" class="add-btn" data-list="allowList1" data-k="add_a">+ إضافة منحة</button>
+        </div>
 
-        <fieldset class="s-panel">
-          <legend>منح خاضعة للضريبة فقط (سلة / نقل...)</legend>
+        <div class="s-panel">
+          <h3 class="s-title" data-k="a2">منح خاضعة للضريبة فقط (سلة / نقل...)</h3>
           <div id="allowList2" class="dyn-list"></div>
-          <button type="button" class="add-btn" data-list="allowList2">+ إضافة منحة</button>
-        </fieldset>
+          <button type="button" class="add-btn" data-list="allowList2" data-k="add_a">+ إضافة منحة</button>
+        </div>
 
-        <fieldset class="s-panel">
-          <legend>المنح العائلية (معفاة)</legend>
+        <div class="s-panel">
+          <h3 class="s-title" data-k="fam">المنح العائلية (معفاة)</h3>
           <div class="s-grid">
-            <label>عدد الأبناء <input type="number" id="childCount" min="0" value="0"></label>
-            <label>المبلغ لكل طفل (دج) <input type="number" id="childAmount" min="0" value="300"></label>
-            <label>الأجر الوحيد — زوجة غير عاملة (دج) <input type="number" id="singleSalary" min="0" value="0"></label>
+            <label><span data-k="kids">عدد الأبناء</span><input type="number" id="childCount" min="0" value="0"></label>
+            <label><span data-k="kid_amt">المبلغ لكل طفل</span><input type="number" id="childAmount" min="0" value="300"></label>
+            <label><span data-k="single">الأجر الوحيد — زوجة غير عاملة</span><input type="number" id="singleSalary" min="0" value="0"></label>
           </div>
-        </fieldset>
+        </div>
 
-        <fieldset class="s-panel">
-          <legend>الاقتطاعات</legend>
+        <div class="s-panel">
+          <h3 class="s-title" data-k="ded">الاقتطاعات</h3>
           <div class="s-grid">
-            <label>الضمان الاجتماعي CNAS (%) <input type="number" id="cnasRate" min="0" step="0.5" value="9"></label>
-            <label>وضعية IRG
+            <label><span data-k="cnas">الضمان الاجتماعي CNAS (%)</span><input type="number" id="cnasRate" min="0" step="0.5" value="9"></label>
+            <label><span data-k="irg">وضعية IRG</span>
               <select id="irgMode">
-                <option value="normal">عادي (الجدول الرسمي 2022)</option>
-                <option value="special">معاق / متقاعد</option>
-                <option value="exempt">معفى</option>
+                <option value="normal" data-k="irg_n">عادي (الجدول الجزائري 2022)</option>
+                <option value="special" data-k="irg_s">معاق / متقاعد</option>
+                <option value="exempt" data-k="irg_e">معفى</option>
+                <option value="manual" data-k="irg_m">إدخال يدوي</option>
               </select>
             </label>
+            <label id="irgManualWrap" class="hidden"><span data-k="irg_amt">مبلغ الضريبة (يدوي)</span><input type="number" id="irgManual" min="0" value="0"></label>
           </div>
           <div id="dedList" class="dyn-list"></div>
-          <button type="button" class="add-btn" data-list="dedList">+ إضافة اقتطاع (تعاضدية، سلفة...)</button>
-        </fieldset>
+          <button type="button" class="add-btn" data-list="dedList" data-k="add_d">+ إضافة اقتطاع (تعاضدية، سلفة...)</button>
+        </div>
 
       </div>
 
@@ -113,7 +120,7 @@
       <div class="payslip-wrap">
         <div class="payslip" id="payslip"></div>
         <div class="payslip-actions no-print">
-          <button type="button" class="print-btn" id="printBtn">🖨️ طباعة الكشف</button>
+          <button type="button" class="print-btn" id="printBtn" data-k="print">🖨️ طباعة الكشف</button>
         </div>
       </div>
 
