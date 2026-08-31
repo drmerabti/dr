@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="تسيير الميزانية الشهرية للبيت بطريقة الأظرف — أكاديمية مرابطي.">
+<title>تسيير الميزانية الشهرية — د. سفيان مرابطي</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../style.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="../../index.html" class="brand" data-i18n="brand">د. سفيان مرابطي</a>
+    <div class="topbar-actions">
+      <button id="themeToggle" class="theme-toggle" type="button" aria-label="Toggle theme"></button>
+      <div class="auth-wrap" id="authWrap">
+        <button id="authBtn" class="auth-btn" type="button"></button>
+        <div id="authMenu" class="auth-menu hidden"></div>
+      </div>
+      <button id="langToggle" class="lang-toggle" type="button">EN</button>
+    </div>
+  </div>
+</header>
+
+<nav class="breadcrumbs">
+  <a href="../../index.html" class="crumb-home">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l9-9 9 9"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg>
+    <span data-i18n="home">الرئيسية</span>
+  </a>
+</nav>
+
+<main id="app">
+  <section class="view">
+
+    <h1 class="tool-big-title" data-k="title">تسيير الميزانية الشهرية</h1>
+
+    <div class="lang-bar no-print">
+      <button type="button" data-lang="ar" class="active">عربي</button>
+      <button type="button" data-lang="fr">FR</button>
+      <button type="button" data-lang="en">EN</button>
+    </div>
+
+    <!-- قفل تسجيل الدخول -->
+    <div id="loginGate" class="login-gate hidden">
+      <div class="gate-card">
+        <span class="gate-icon">🔒</span>
+        <h3 data-k="gate_t">هذه الأداة تتطلب تسجيل الدخول</h3>
+        <p data-k="gate_p">سجّل دخولك من الزر أعلى الصفحة حتى تُحفظ ميزانيتك في حسابك.</p>
+      </div>
+    </div>
+
+    <div id="budgetApp" class="budget-app hidden">
+
+      <!-- الشهر + الدخل + العملة -->
+      <div class="b-panel b-toprow">
+        <div class="month-nav">
+          <button type="button" id="prevM">‹</button>
+          <input type="month" id="monthInput">
+          <button type="button" id="nextM">›</button>
+        </div>
+        <label class="inline-field"><span data-k="income">دخل الشهر</span>
+          <input type="number" id="incomeInput" min="0" placeholder="0"></label>
+        <label class="inline-field"><span data-k="currency">العملة</span>
+          <input type="text" id="curInput" value="دج"></label>
+        <button type="button" class="dist-btn" id="distBtn" data-k="dist">✨ وزّع لي (50/30/20)</button>
+      </div>
+
+      <!-- بطاقات الملخص -->
+      <div class="stat-row">
+        <div class="stat-card"><span class="stat-lbl" data-k="st_inc">الدخل</span><span class="stat-val" id="statInc">0</span></div>
+        <div class="stat-card"><span class="stat-lbl" data-k="st_exp">المصروف</span><span class="stat-val neg" id="statExp">0</span></div>
+        <div class="stat-card"><span class="stat-lbl" data-k="st_rem">المتبقي</span><span class="stat-val" id="statRem">0</span></div>
+        <div class="stat-card hero"><span class="stat-lbl" data-k="st_day">المتاح لك يومياً</span><span class="stat-val" id="statDaily">0</span></div>
+      </div>
+
+      <!-- إضافة سريعة -->
+      <div class="b-panel quick-bar">
+        <input type="number" id="qAmt" min="0" placeholder="المبلغ" data-ph="ph_amt">
+        <select id="qEnv"></select>
+        <input type="text" id="qNote" placeholder="ملاحظة (اختياري)" data-ph="ph_note">
+        <button type="button" id="qAdd" data-k="q_add">+ أضف</button>
+      </div>
+
+      <!-- الأظرف -->
+      <div class="b-panel">
+        <h3 class="s-title" data-k="env_t">الأظرف</h3>
+        <div class="env-grid" id="envGrid"></div>
+        <button type="button" class="add-btn" id="addEnvBtn" data-k="env_add">+ ظرف جديد</button>
+      </div>
+
+      <div class="two-col">
+        <!-- الدائرة -->
+        <div class="b-panel donut-panel">
+          <h3 class="s-title" data-k="donut_t">أين تذهب أموالك؟</h3>
+          <div class="donut-wrap"><svg id="donutSvg" viewBox="0 0 42 42"></svg>
+            <div class="donut-center" id="donutCenter"></div></div>
+          <div class="legend" id="legend"></div>
+          <p class="cheer" id="cheerMsg"></p>
+        </div>
+
+        <!-- المصاريف الثابتة -->
+        <div class="b-panel">
+          <h3 class="s-title" data-k="rec_t">مصاريف ثابتة (تُضاف تلقائياً كل شهر)</h3>
+          <div id="recList" class="rec-list"></div>
+          <div class="rec-add">
+            <input type="text" id="recName" placeholder="الاسم" data-ph="ph_name">
+            <input type="number" id="recAmt" min="0" placeholder="المبلغ" data-ph="ph_amt">
+            <select id="recEnv"></select>
+            <button type="button" id="recAdd">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- السجل -->
+      <div class="b-panel">
+        <h3 class="s-title" data-k="log_t">سجل مصاريف الشهر</h3>
+        <div id="logList" class="log-list"></div>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <p data-i18n="footer_text">© 2026 د. سفيان مرابطي</p>
+</footer>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="../../firebase-init.js"></script>
+<script src="../../app.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
