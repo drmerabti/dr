@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="htmlRoot">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="pageTitleTag">حاسبة الفرق بين تاريخين — أكاديمية مرابطي</title>
+<meta name="description" content="احسب الفرق بين أي تاريخين، أو فعّل خانة حتى اليوم لمعرفة سنّك بالضبط.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar">
+  <a href="../../tools.html" class="icon-btn" aria-label="back">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
+  </a>
+  <div class="lang-switch" role="group">
+    <button type="button" class="lang-btn" data-lang="ar">عربي</button>
+    <button type="button" class="lang-btn" data-lang="en">EN</button>
+    <button type="button" class="lang-btn" data-lang="fr">FR</button>
+  </div>
+</div>
+
+<main class="wrap">
+  <h1 class="title" id="pageTitle">حاسبة الفرق بين تاريخين</h1>
+  <p class="subtitle" id="pageSubtitle">احسب الفرق بين أي تاريخين، أو فعّل "حتى اليوم" لمعرفة سنّك بالضبط</p>
+
+  <div class="dd-layout">
+    <div class="dd-form">
+      <div class="field">
+        <label class="dd-label" id="labelStart">التاريخ الأول</label>
+        <input type="date" id="dateStart" class="big-input dd-date">
+      </div>
+      <div class="field">
+        <label class="dd-label" id="labelEnd">التاريخ الثاني</label>
+        <input type="date" id="dateEnd" class="big-input dd-date">
+      </div>
+      <label class="dd-checkbox-row">
+        <input type="checkbox" id="untilToday" checked>
+        <span id="untilTodayLabel">حتى اليوم (لحساب السن تلقائيًا)</span>
+      </label>
+      <button type="button" class="generate-btn" id="calcBtn">
+        <span id="calcBtnText">احسب</span>
+      </button>
+      <p class="dd-error hidden" id="ddError"></p>
+    </div>
+
+    <div class="dd-result-wrap">
+      <div class="dd-result-card hidden" id="resultCard">
+        <p class="dd-result-main" id="resultMain">30 سنة، 5 أشهر، 19 يوم</p>
+        <p class="dd-result-sub" id="resultSub">= 11128 يومًا إجمالًا · 1590 أسبوعًا</p>
+      </div>
+      <p class="dd-empty-hint" id="emptyHint">اختر التاريخين واضغط "احسب"</p>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <p>© 2026 د. سفيان مرابطي</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
