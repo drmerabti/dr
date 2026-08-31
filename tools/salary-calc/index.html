@@ -108,7 +108,14 @@
                 <option value="manual" data-k="irg_m">إدخال يدوي</option>
               </select>
             </label>
-            <label id="irgManualWrap" class="hidden"><span data-k="irg_amt">مبلغ الضريبة (يدوي)</span><input type="number" id="irgManual" min="0" value="0"></label>
+            <label id="irgManualTypeWrap" class="hidden"><span data-k="irg_type">طريقة الإدخال اليدوي</span>
+              <select id="irgManualType">
+                <option value="amount" data-k="irg_t_amt">مبلغ ثابت</option>
+                <option value="percent" data-k="irg_t_pct">نسبة % من الوعاء</option>
+              </select>
+            </label>
+            <label id="irgManualWrap" class="hidden"><span data-k="irg_amt">قيمة الضريبة</span><input type="number" id="irgManual" min="0" value="0"></label>
+
           </div>
           <div id="dedList" class="dyn-list"></div>
           <button type="button" class="add-btn" data-list="dedList" data-k="add_d">+ إضافة اقتطاع (تعاضدية، سلفة...)</button>
