@@ -394,7 +394,7 @@ const CONTENT = {
       icon: ICONS.hoursApp, family: 'calc', comingSoon: true },
     { id: 'tool-hijri', title_ar: 'محوّل هجري/ميلادي', title_en: 'Hijri/Gregorian Converter',
       desc_ar: 'حوّل أي تاريخ بالاتجاهين بضغطة واحدة.', desc_en: 'Convert any date both ways in one click.',
-      icon: ICONS.hijriApp, family: 'calc', comingSoon: true },
+      url: 'tools/hijri/', icon: ICONS.hijriApp, family: 'calc' },
     { id: 'tool-grade-avg', title_ar: 'حساب معدل التلاميذ', title_en: 'Student Average Calculator',
       desc_ar: 'احسب المعدل العام من درجات المواد المختلفة.', desc_en: 'Calculate the overall average from different subject grades.',
       icon: ICONS.gradeApp, family: 'edu', comingSoon: true },
