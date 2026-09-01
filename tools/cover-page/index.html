@@ -6,7 +6,7 @@
 <title id="pageTitleTag">مولّد صفحات الغلاف — أكاديمية مرابطي</title>
 <meta name="description" content="أنشئ صفحة غلاف احترافية لمذكرتك أو تقريرك، بعدة قوالب وإطارات اختيارية.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Inter:wght@400;500;600;700;800&family=Amiri:wght@400;700&family=Cairo:wght@400;500;700;900&family=Noto+Naskh+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -62,11 +62,12 @@
 
     <p class="sub-section-label" id="frameSectionLabel">الإطار (اختياري)</p>
     <div class="theme-filter centered-filter" id="frameFilter"></div>
-    <input type="file" id="customFrameInput" accept="image/png,image/jpeg" hidden>
+
+    <p class="sub-section-label" id="fontSectionLabel">الخط</p>
+    <div class="theme-filter centered-filter font-filter" id="fontFilter"></div>
 
     <p class="sub-section-label" id="templateSectionLabel">القالب</p>
-    <div class="category-filter" id="categoryFilter"></div>
-    <div class="theme-filter centered-filter" id="templateFilter"></div>
+    <div class="theme-filter centered-filter template-filter" id="templateFilter"></div>
 
     <div class="editor-grid">
       <div class="editor-form">
@@ -76,32 +77,46 @@
           <div class="logo-row">
             <div class="logo-upload-box" id="logo1Box">
               <img id="logo1Preview" class="logo-preview" alt="">
-              <input type="file" id="logo1Input" accept="image/*" hidden>
             </div>
             <div class="logo-upload-box hidden" id="logo2Box">
               <img id="logo2Preview" class="logo-preview hidden" alt="">
               <span class="logo-placeholder" id="logo2Placeholder">🖼️</span>
-              <input type="file" id="logo2Input" accept="image/*" hidden>
             </div>
+            <input type="file" id="logo1Input" accept="image/*" hidden>
+            <input type="file" id="logo2Input" accept="image/*" hidden>
           </div>
         </div>
 
-        <div class="form-card">
+        <div class="form-card" id="academicTextCard">
           <h2 class="form-card-title" id="textCardTitle">النصوص</h2>
           <input type="text" id="fCountry" class="cv-input" placeholder="الجمهورية / الدولة">
-          <input type="text" id="fOrg1" class="cv-input" placeholder="اسم الجهة الأولى">
-          <input type="text" id="fOrg2" class="cv-input" placeholder="اسم الجهة الثانية (اختياري)">
-          <input type="text" id="fMainTitle" class="cv-input" placeholder="العنوان الرئيسي">
-          <input type="text" id="fSubtitle" class="cv-input" placeholder="الموضوع / العنوان الفرعي">
-          <input type="text" id="fDate" class="cv-input" placeholder="السنة / التاريخ">
+          <input type="text" id="fMinistry" class="cv-input" placeholder="الوزارة">
+          <input type="text" id="fUni" class="cv-input" placeholder="اسم الجامعة">
+          <input type="text" id="fFaculty" class="cv-input" placeholder="الكلية">
+          <input type="text" id="fDegreeType" class="cv-input" placeholder="نوع الشهادة (أطروحة / مذكرة تخرج...)">
+          <input type="text" id="fSpecialty" class="cv-input" placeholder="التخصص (اختياري)">
+          <input type="text" id="fMainTitle" class="cv-input" placeholder="عنوان المشروع / الأطروحة">
+          <input type="text" id="fDate" class="cv-input" placeholder="السنة الجامعية">
+        </div>
+
+        <div class="form-card hidden" id="instTextCard">
+          <h2 class="form-card-title" id="instTextCardTitle">النصوص</h2>
+          <input type="text" id="fCompany" class="cv-input" placeholder="اسم الشركة/المؤسسة">
+          <input type="text" id="fCategoryLabel" class="cv-input" placeholder="تصنيف التقرير (مثال: التقرير السنوي)">
+          <input type="text" id="fInstTitle" class="cv-input" placeholder="عنوان التقرير الكامل">
+          <input type="text" id="fPreparedBy" class="cv-input" placeholder="إعداد: (جهة الإعداد)">
+          <input type="text" id="fWebsite" class="cv-input" placeholder="الموقع الإلكتروني">
+          <input type="text" id="fCountrySimple" class="cv-input" placeholder="البلد">
         </div>
 
         <div class="form-card" id="studentsCard">
-          <div class="form-card-head">
-            <h2 class="form-card-title" id="studentsCardTitle">إعداد الطالب</h2>
-            <button type="button" class="add-row-btn" id="addStudentBtn">+ <span id="addStudentText">إضافة</span></button>
-          </div>
+          <h2 class="form-card-title" id="studentsCardTitle">إعداد الطالب</h2>
           <div id="studentsList"></div>
+        </div>
+
+        <div class="form-card hidden" id="supervisorCard">
+          <h2 class="form-card-title" id="supervisorCardTitle">تحت إشراف</h2>
+          <input type="text" id="fSupervisor" class="cv-input" placeholder="اسم المشرف">
         </div>
 
         <div class="form-card hidden" id="juryCard">
@@ -112,11 +127,6 @@
           <div id="juryList"></div>
         </div>
 
-        <div class="form-card hidden" id="simplePersonCard">
-          <h2 class="form-card-title" id="simplePersonCardTitle">جهة إضافية</h2>
-          <input type="text" id="fSecondPerson" class="cv-input" placeholder="المشرف / جهة إضافية (اختياري)">
-        </div>
-
         <button type="button" class="btn btn-primary btn-block" id="downloadPdfBtn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M5 21h14"/></svg>
           <span id="downloadBtnText">تحميل PDF</span>
@@ -124,29 +134,61 @@
       </div>
 
       <div class="editor-preview">
-        <div class="cover-page" id="coverPage" data-layout="l1" data-decor="deco-none">
-          <div class="cover-frame-overlay" id="frameOverlay"></div>
+        <div class="cover-page" id="coverPage">
           <img class="cover-frame-img hidden" id="frameImg" alt="">
-          <p class="cover-country" id="coverCountry"></p>
-          <div class="cover-logos-row" id="coverLogosRow">
-            <img class="cover-logo" id="coverLogo1" alt="">
-            <img class="cover-logo hidden" id="coverLogo2" alt="">
-          </div>
-          <p class="cover-org1" id="coverOrg1"></p>
-          <p class="cover-org2" id="coverOrg2"></p>
-          <div class="cover-center">
-            <p class="cover-main-title" id="coverMainTitle"></p>
-            <div class="cover-title-box hidden" id="coverTitleBox">
-              <p class="cover-subtitle-boxed" id="coverSubtitleBoxed"></p>
+
+          <!-- ACADEMIC STRUCTURE -->
+          <div class="tpl-academic" id="tplAcademic">
+            <p class="ac-country" id="acCountry"></p>
+            <p class="ac-ministry" id="acMinistry"></p>
+            <div class="ac-divider"></div>
+            <p class="ac-uni" id="acUni"></p>
+            <p class="ac-faculty" id="acFaculty"></p>
+            <div class="ac-logos-row" id="acLogosRow">
+              <img class="ac-logo" id="acLogo1" alt="">
+              <img class="ac-logo hidden" id="acLogo2" alt="">
             </div>
-            <p class="cover-subtitle" id="coverSubtitle"></p>
+            <div class="ac-middle" id="acMiddle">
+              <div class="ac-title-block">
+                <p class="ac-degree-type" id="acDegreeType"></p>
+                <p class="ac-specialty" id="acSpecialty"></p>
+                <div class="ac-title-box"><p class="ac-main-title" id="acMainTitle"></p></div>
+              </div>
+              <div class="ac-presenter-block" id="acPresenterBlock">
+                <p class="ac-presented-label" id="acPresentedLabel"></p>
+                <p class="ac-presenter-name" id="acPresenterName"></p>
+              </div>
+              <div class="ac-side-by-side hidden" id="acSideBySide">
+                <div>
+                  <p class="ac-presented-label" id="acStudentLabel2"></p>
+                  <p class="ac-presenter-name" id="acPresenterName2"></p>
+                </div>
+                <div>
+                  <p class="ac-presented-label" id="acSupervisorLabel"></p>
+                  <p class="ac-presenter-name" id="acSupervisorName"></p>
+                </div>
+              </div>
+              <div class="ac-jury-table hidden" id="acJuryTable"></div>
+            </div>
+            <p class="ac-date" id="acDate"></p>
           </div>
-          <div class="cover-footer">
-            <p class="cover-presented-by" id="coverPresentedByLabel"></p>
-            <p class="cover-presenter" id="coverPresenter"></p>
-            <p class="cover-second" id="coverSecond"></p>
-            <div class="cover-jury-table hidden" id="coverJuryTable"></div>
-            <p class="cover-date" id="coverDate"></p>
+
+          <!-- INSTITUTIONAL STRUCTURE -->
+          <div class="tpl-institutional hidden" id="tplInstitutional">
+            <div class="inst-top">
+              <div class="inst-logo-box"><img id="instLogo" class="inst-logo" alt=""></div>
+              <p class="inst-company" id="instCompany"></p>
+            </div>
+            <div class="inst-middle">
+              <p class="inst-category" id="instCategory"></p>
+              <p class="inst-title" id="instTitle"></p>
+              <div class="inst-line"></div>
+              <p class="inst-prepared" id="instPrepared"></p>
+            </div>
+            <div class="inst-footer">
+              <span id="instWebsite"></span>
+              <span id="instCountry"></span>
+            </div>
           </div>
         </div>
       </div>
