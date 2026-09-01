@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="htmlRoot">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="pageTitleTag">مولّد الطلب الإداري — أكاديمية مرابطي</title>
+<meta name="description" content="أنشئ طلبًا إداريًا رسميًا بمساعدة الذكاء الاصطناعي، وحمّله PDF جاهزًا.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar">
+  <a href="../../tools.html" class="icon-btn" id="backBtn" aria-label="back">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
+  </a>
+  <span class="topbar-title" id="topbarTitle">مولّد الطلب الإداري</span>
+  <div class="topbar-actions">
+    <div class="lang-switch" role="group">
+      <button type="button" class="lang-btn" data-lang="ar">عربي</button>
+      <button type="button" class="lang-btn" data-lang="en">EN</button>
+      <button type="button" class="lang-btn" data-lang="fr">FR</button>
+    </div>
+  </div>
+</div>
+
+<main class="wrap">
+
+  <section id="loadingScreen" class="screen loading-screen">
+    <div class="loading-spinner"></div>
+  </section>
+
+  <section id="lockedScreen" class="screen hidden">
+    <div class="locked-hero">
+      <div class="locked-icon">🔒</div>
+      <h1 id="lockedTitle">سجّل دخولك لاستخدام مولّد الطلب الإداري</h1>
+      <p id="lockedSub">هذه الأداة متاحة للمستخدمين المسجّلين فقط.</p>
+    </div>
+    <div class="auth-card">
+      <div class="auth-tabs">
+        <button type="button" class="auth-tab active" data-mode="login" id="tabLogin">تسجيل الدخول</button>
+        <button type="button" class="auth-tab" data-mode="signup" id="tabSignup">إنشاء حساب</button>
+      </div>
+      <p class="auth-card-error hidden" id="authCardError"></p>
+      <form id="authCardForm">
+        <input type="text" id="acName" class="cv-input hidden" placeholder="الاسم الكامل">
+        <input type="email" id="acEmail" class="cv-input" required placeholder="البريد الإلكتروني">
+        <input type="password" id="acPassword" class="cv-input" required minlength="6" placeholder="كلمة المرور">
+        <button type="submit" class="btn btn-primary btn-block" id="acSubmitBtn">تسجيل الدخول</button>
+      </form>
+      <div class="auth-divider">أو</div>
+      <button type="button" class="auth-google-btn" id="acGoogleBtn">
+        <svg viewBox="0 0 48 48" width="18" height="18"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 8 3l6-6C34.5 5.1 29.5 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21 21-9.4 21-21c0-1.2-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.6 15.6 18.9 13 24 13c3.1 0 5.8 1.1 8 3l6-6C34.5 5.1 29.5 3 24 3c-7.6 0-14.1 4.3-17.7 10.7z"/><path fill="#4CAF50" d="M24 45c5.3 0 10.2-2 13.9-5.3l-6.4-5.4C29.3 36 26.8 37 24 37c-5.2 0-9.6-3.1-11.4-7.6l-6.6 5.1C9.8 40.6 16.3 45 24 45z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.2-4.2 5.6l6.4 5.4C40.5 36.6 43 30.8 43 24c0-1.2-.1-2.4-.4-3.5z"/></svg>
+        <span>المتابعة عبر Google</span>
+      </button>
+    </div>
+  </section>
+
+  <section id="editorScreen" class="screen hidden">
+    <h1 class="tool-page-title-big" id="toolTitle">مولّد الطلب الإداري</h1>
+    <p class="usage-indicator" id="usageIndicator"></p>
+
+    <div class="editor-grid">
+      <div class="editor-form">
+
+        <div class="form-card">
+          <h2 class="form-card-title" id="companyCardTitle">شعار الشركة (اختياري)</h2>
+          <div class="logo-row">
+            <div class="logo-upload-box" id="companyLogoBox">
+              <img id="companyLogoPreview" class="logo-preview hidden" alt="">
+              <span class="logo-placeholder" id="companyLogoPlaceholder">🖼️</span>
+              <input type="file" id="companyLogoInput" accept="image/*" hidden>
+            </div>
+            <input type="text" id="fCompanyName" class="cv-input" placeholder="اسم الشركة (اختياري)" style="flex:1;">
+          </div>
+        </div>
+
+        <div class="form-card">
+          <h2 class="form-card-title" id="personalCardTitle">بياناتك</h2>
+          <div class="field-grid">
+            <input type="text" id="fFirstName" class="cv-input" placeholder="الاسم">
+            <input type="text" id="fLastName" class="cv-input" placeholder="اللقب">
+            <input type="text" id="fPhone" class="cv-input" placeholder="رقم الهاتف">
+            <input type="email" id="fEmail" class="cv-input" placeholder="البريد الإلكتروني">
+          </div>
+          <input type="text" id="fAddressedTo" class="cv-input" placeholder="موجّه إلى (السيد المدير...)">
+          <input type="date" id="fDate" class="cv-input">
+        </div>
+
+        <div class="form-card" id="extraFieldsCard">
+          <div class="form-card-head">
+            <h2 class="form-card-title" id="extraCardTitle">معلومات إضافية</h2>
+            <button type="button" class="add-row-btn" id="addExtraBtn">+</button>
+          </div>
+          <div id="extraFieldsList"></div>
+        </div>
+
+        <div class="form-card">
+          <h2 class="form-card-title" id="requestCardTitle">موضوع الطلب</h2>
+          <textarea id="fRequestSubject" class="cv-input request-textarea" placeholder="اكتب فكرة طلبك بإيجاز (مثال: أطلب إجازة سنوية من 10 إلى 20 أوت)"></textarea>
+
+          <div class="ai-actions-row">
+            <button type="button" class="ai-action-btn primary" id="generateBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8z"/></svg>
+              <span id="generateBtnText">توليد الطلب</span>
+            </button>
+            <button type="button" class="ai-action-btn" id="rephraseBtn" disabled title="تغيير الصيغة">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 2l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+            </button>
+            <button type="button" class="ai-action-btn" id="shortenBtn" disabled title="اختصار الطلب">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16"/><path d="M4 12h10"/><path d="M4 17h6"/></svg>
+            </button>
+          </div>
+          <p class="ai-error hidden" id="aiError"></p>
+        </div>
+
+        <div class="form-card">
+          <h2 class="form-card-title" id="stampCardTitle">الختم والتوقيع (اختياري)</h2>
+          <div class="logo-upload-box" id="stampBox">
+            <img id="stampPreview" class="logo-preview hidden" alt="">
+            <span class="logo-placeholder" id="stampPlaceholder">🖋️</span>
+            <input type="file" id="stampInput" accept="image/*" hidden>
+          </div>
+        </div>
+
+        <button type="button" class="btn btn-primary btn-block" id="downloadPdfBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M5 21h14"/></svg>
+          <span id="downloadBtnText">تحميل PDF</span>
+        </button>
+      </div>
+
+      <div class="editor-preview">
+        <div class="request-page" id="requestPage">
+          <div class="req-header hidden" id="reqHeader">
+            <img id="reqCompanyLogo" class="req-company-logo hidden" alt="">
+            <p class="req-company-name" id="reqCompanyName"></p>
+          </div>
+
+          <p class="req-date" id="reqDate"></p>
+          <p class="req-addressed" id="reqAddressed"></p>
+
+          <div class="req-body" id="reqBody" contenteditable="true"></div>
+
+          <div class="req-signature">
+            <img id="reqStamp" class="req-stamp-img hidden" alt="">
+            <p class="req-signer-name" id="reqSignerName"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p>© 2026 د. سفيان مرابطي</p>
+</footer>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="../../firebase-init.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
