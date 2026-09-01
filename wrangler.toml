@@ -1,0 +1,12 @@
+name = "dr"
+main = "worker.js"
+compatibility_date = "2025-01-01"
+
+[assets]
+directory = "./"
+binding = "ASSETS"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "surveysdb"
+database_id = "dfe47a68-cef0-4841-946b-aa8112011441"
