@@ -103,7 +103,7 @@
   );
   let activeFrame = FRAMES[0];
 
-  const DEFAULT_LOGO_SVG = `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><circle cx="24" cy="24" r="22" fill="#EEF3F6" stroke="#B7C7D3" stroke-width="1"/><path d="M24 15c-3-2-8-2-11 0v16c3-2 8-2 11 0V15z" fill="#2F5770"/><path d="M24 15c3-2 8-2 11 0v16c-3-2-8-2-11 0V15z" fill="#3A6E8F"/></svg>`;
+  const DEFAULT_LOGO_SVG = `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><circle cx="24" cy="24" r="22" fill="none" stroke="#B7C7D3" stroke-width="1"/><path d="M24 15c-3-2-8-2-11 0v16c3-2 8-2 11 0V15z" fill="#2F5770"/><path d="M24 15c3-2 8-2 11 0v16c-3-2-8-2-11 0V15z" fill="#3A6E8F"/></svg>`;
   const DEFAULT_LOGO_URL = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(DEFAULT_LOGO_SVG)));
 
   let logo1DataUrl = null;
@@ -139,7 +139,7 @@
     coverPage: $('coverPage'), frameImg: $('frameImg'),
     tplAcademic: $('tplAcademic'), tplInstitutional: $('tplInstitutional'),
     acCountry: $('acCountry'), acMinistry: $('acMinistry'), acUni: $('acUni'), acFaculty: $('acFaculty'),
-    acLogosRow: $('acLogosRow'), acLogo1: $('acLogo1'), acLogo2: $('acLogo2'),
+    acLogosRow: $('acLogosRow'), acLogo1: $('acLogo1'), acHeaderRow: $('acHeaderRow'), acLogoLeft: $('acLogoLeft'), acLogoRight: $('acLogoRight'),
     acMiddle: $('acMiddle'), acDegreeType: $('acDegreeType'), acSpecialty: $('acSpecialty'), acMainTitle: $('acMainTitle'),
     acPresenterBlock: $('acPresenterBlock'), acPresentedLabel: $('acPresentedLabel'), acPresenterName: $('acPresenterName'),
     acSideBySide: $('acSideBySide'), acStudentLabel2: $('acStudentLabel2'), acPresenterName2: $('acPresenterName2'),
@@ -361,12 +361,19 @@
       els.acFaculty.textContent = els.fFaculty.value.trim();
 
       const logoSrc1 = logo1DataUrl || DEFAULT_LOGO_URL;
-      els.acLogo1.src = logoSrc1;
       if (tpl.dualLogo) {
-        els.acLogo2.src = logo2DataUrl || DEFAULT_LOGO_URL;
-        els.acLogo2.classList.remove('hidden');
+        // Dual-logo template: logos flank the country/ministry header row
+        els.acLogosRow.classList.add('hidden');
+        els.acLogoLeft.src = logoSrc1;
+        els.acLogoLeft.classList.remove('hidden');
+        els.acLogoRight.src = logo2DataUrl || DEFAULT_LOGO_URL;
+        els.acLogoRight.classList.remove('hidden');
       } else {
-        els.acLogo2.classList.add('hidden');
+        // Single-logo templates: one centered logo below university/faculty
+        els.acLogoLeft.classList.add('hidden');
+        els.acLogoRight.classList.add('hidden');
+        els.acLogosRow.classList.remove('hidden');
+        els.acLogo1.src = logoSrc1;
       }
 
       els.acDegreeType.textContent = els.fDegreeType.value.trim();
