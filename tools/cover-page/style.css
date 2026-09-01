@@ -454,6 +454,19 @@ html[dir="rtl"] .cv-sidebar-sections h4{ letter-spacing: 0; }
 .logo-preview{ width: 100%; height: 100%; object-fit: contain; }
 .logo-placeholder{ font-size: 1.6rem; opacity: .5; }
 
+.theme-swatch-btn.frame-upload-btn{ border: 2px dashed var(--line); }
+.theme-swatch-btn.frame-upload-btn:hover{ border-color: var(--accent); }
+.theme-swatch-btn.frame-upload-btn.active{ border-style: solid; }
+.frame-upload-icon{ display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; color: var(--ink-soft); }
+.frame-remove-badge{
+  position: absolute; top: 3px; inset-inline-end: 3px;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: #fff; border: 1px solid var(--line); color: #C0392B;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .85rem; line-height: 1; cursor: pointer;
+}
+.frame-remove-badge:hover{ background: var(--accent-soft); border-color: var(--accent); }
+
 .dyn-row{ display: flex; gap: 8px; margin-bottom: 10px; align-items: center; }
 .dyn-row .cv-input{ margin-bottom: 0 !important; }
 .dyn-row-remove{ flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--line); background: #fff; color: #C0392B; cursor: pointer; font-size: 1rem; line-height: 1; }

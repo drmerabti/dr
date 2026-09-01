@@ -12,7 +12,7 @@
       lockedTitle: 'سجّل دخولك لاستخدام مولّد صفحات الغلاف', lockedSub: 'هذه الأداة متاحة للمستخدمين المسجّلين فقط.',
       tabLogin: 'تسجيل الدخول', tabSignup: 'إنشاء حساب', namePh: 'الاسم الكامل', emailPh: 'البريد الإلكتروني', passwordPh: 'كلمة المرور',
       loginBtn: 'تسجيل الدخول', signupBtn: 'إنشاء حساب', googleBtn: 'المتابعة عبر Google',
-      frameSectionLabel: 'الإطار (اختياري)', fontSectionLabel: 'الخط', templateSectionLabel: 'القالب',
+      frameSectionLabel: 'الإطار (اختياري)', uploadFrameLabel: 'ارفع إطارك الخاص', removeFrameLabel: 'إزالة', fontSectionLabel: 'الخط', templateSectionLabel: 'القالب',
       logosCardTitle: 'الشعارات', textCardTitle: 'النصوص', instTextCardTitle: 'النصوص',
       countryPh: 'الجمهورية / الدولة', ministryPh: 'الوزارة', uniPh: 'اسم الجامعة', facultyPh: 'الكلية',
       degreeTypePh: 'نوع الشهادة (أطروحة / مذكرة تخرج...)', specialtyPh: 'التخصص (اختياري)',
@@ -34,7 +34,7 @@
       lockedTitle: 'Sign in to use the Cover Page Generator', lockedSub: 'This tool is available to registered users only.',
       tabLogin: 'Log In', tabSignup: 'Sign Up', namePh: 'Full name', emailPh: 'Email', passwordPh: 'Password',
       loginBtn: 'Log In', signupBtn: 'Sign Up', googleBtn: 'Continue with Google',
-      frameSectionLabel: 'Frame (optional)', fontSectionLabel: 'Font', templateSectionLabel: 'Template',
+      frameSectionLabel: 'Frame (optional)', uploadFrameLabel: 'Upload your own frame', removeFrameLabel: 'Remove', fontSectionLabel: 'Font', templateSectionLabel: 'Template',
       logosCardTitle: 'Logos', textCardTitle: 'Text', instTextCardTitle: 'Text',
       countryPh: 'Country / Republic', ministryPh: 'Ministry', uniPh: 'University name', facultyPh: 'Faculty',
       degreeTypePh: 'Degree type (Thesis / Dissertation...)', specialtyPh: 'Specialty (optional)',
@@ -56,7 +56,7 @@
       lockedTitle: 'Connectez-vous pour utiliser le générateur de page de garde', lockedSub: 'Cet outil est réservé aux utilisateurs inscrits.',
       tabLogin: 'Connexion', tabSignup: 'Inscription', namePh: 'Nom complet', emailPh: 'E-mail', passwordPh: 'Mot de passe',
       loginBtn: 'Connexion', signupBtn: "S'inscrire", googleBtn: 'Continuer avec Google',
-      frameSectionLabel: 'Cadre (optionnel)', fontSectionLabel: 'Police', templateSectionLabel: 'Modèle',
+      frameSectionLabel: 'Cadre (optionnel)', uploadFrameLabel: 'Importer votre propre cadre', removeFrameLabel: 'Supprimer', fontSectionLabel: 'Police', templateSectionLabel: 'Modèle',
       logosCardTitle: 'Logos', textCardTitle: 'Textes', instTextCardTitle: 'Textes',
       countryPh: 'République / Pays', ministryPh: 'Ministère', uniPh: "Nom de l'université", facultyPh: 'Faculté',
       degreeTypePh: 'Type de diplôme (Thèse / Mémoire...)', specialtyPh: 'Spécialité (optionnel)',
@@ -109,6 +109,7 @@
   let logo1DataUrl = null;
   let logo2DataUrl = null;
   let instLogoDataUrl = null;
+  let customFrameDataUrl = null; // frame image uploaded by the user from their own computer
   let students = [''];
   let jury = [{ name: '', rank: '', uni: '', role: 0 }];
 
@@ -154,7 +155,7 @@
   function saveDraft() {
     const draft = {
       lang, activeTemplateId: activeTemplate.id, activeFontId: activeFont.id, activeFrameId: activeFrame.id,
-      logo1DataUrl, logo2DataUrl, instLogoDataUrl, students, jury,
+      customFrameDataUrl, logo1DataUrl, logo2DataUrl, instLogoDataUrl, students, jury,
       fCountry: els.fCountry.value, fMinistry: els.fMinistry.value, fUni: els.fUni.value, fFaculty: els.fFaculty.value,
       fDegreeType: els.fDegreeType.value, fSpecialty: els.fSpecialty.value, fMainTitle: els.fMainTitle.value, fDate: els.fDate.value,
       fCompany: els.fCompany.value, fCategoryLabel: els.fCategoryLabel.value, fInstTitle: els.fInstTitle.value,
@@ -270,17 +271,65 @@
   }
 
   function renderFrameFilter() {
-    els.frameFilter.innerHTML = FRAMES.map((f) => `
+    const presetsHtml = FRAMES.map((f) => `
       <button type="button" class="theme-swatch-btn ${f.id === activeFrame.id ? 'active' : ''}" data-id="${f.id}">
         ${f.file ? `<img src="${f.file}" style="width:100%;height:100%;object-fit:cover;" alt="">` : `<span class="mini-page" style="display:flex;align-items:center;justify-content:center;font-size:.6rem;color:#999;">${lang === 'ar' ? 'بدون' : lang === 'fr' ? 'Aucun' : 'None'}</span>`}
       </button>`).join('');
-    els.frameFilter.querySelectorAll('.theme-swatch-btn').forEach((btn) => {
+
+    const uploadHtml = `
+      <button type="button" class="theme-swatch-btn frame-upload-btn ${activeFrame.id === 'custom' ? 'active' : ''}" id="frameUploadBtn" title="${t('uploadFrameLabel')}">
+        ${customFrameDataUrl
+          ? `<img src="${customFrameDataUrl}" style="width:100%;height:100%;object-fit:cover;" alt="">
+             <span class="frame-remove-badge" id="frameRemoveBtn" title="${t('removeFrameLabel')}">&times;</span>`
+          : `<span class="frame-upload-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span>`}
+      </button>
+      <input type="file" id="frameUploadInput" accept="image/*" hidden>`;
+
+    els.frameFilter.innerHTML = presetsHtml + uploadHtml;
+
+    els.frameFilter.querySelectorAll('.theme-swatch-btn[data-id]').forEach((btn) => {
       btn.addEventListener('click', () => {
         activeFrame = FRAMES.find((f) => f.id === parseInt(btn.getAttribute('data-id'), 10));
         renderFrameFilter();
         renderCover();
         saveDraft();
       });
+    });
+
+    $('frameUploadBtn').addEventListener('click', () => {
+      if (customFrameDataUrl) {
+        activeFrame = { id: 'custom', file: customFrameDataUrl };
+        renderFrameFilter();
+        renderCover();
+        saveDraft();
+      } else {
+        $('frameUploadInput').click();
+      }
+    });
+
+    const removeBtn = $('frameRemoveBtn');
+    if (removeBtn) {
+      removeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        customFrameDataUrl = null;
+        if (activeFrame.id === 'custom') activeFrame = FRAMES[0];
+        renderFrameFilter();
+        renderCover();
+        saveDraft();
+      });
+    }
+
+    $('frameUploadInput').addEventListener('change', function () {
+      const file = this.files[0]; if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        customFrameDataUrl = e.target.result;
+        activeFrame = { id: 'custom', file: customFrameDataUrl };
+        renderFrameFilter();
+        renderCover();
+        saveDraft();
+      };
+      reader.readAsDataURL(file);
     });
   }
 
@@ -501,7 +550,10 @@
       lang = draft.lang || lang;
       activeTemplate = TEMPLATES.find((tp) => tp.id === draft.activeTemplateId) || TEMPLATES[0];
       activeFont = FONTS.find((f) => f.id === draft.activeFontId) || FONTS[0];
-      activeFrame = FRAMES.find((f) => f.id === draft.activeFrameId) || FRAMES[0];
+      customFrameDataUrl = draft.customFrameDataUrl || null;
+      activeFrame = (draft.activeFrameId === 'custom' && customFrameDataUrl)
+        ? { id: 'custom', file: customFrameDataUrl }
+        : (FRAMES.find((f) => f.id === draft.activeFrameId) || FRAMES[0]);
       logo1DataUrl = draft.logo1DataUrl || null;
       logo2DataUrl = draft.logo2DataUrl || null;
       instLogoDataUrl = draft.instLogoDataUrl || null;
