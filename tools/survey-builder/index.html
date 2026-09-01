@@ -1,1 +1,80 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مولّد الاستبيان — د. سفيان مرابطي</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../style.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
 
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="../../index.html" class="brand">د. سفيان مرابطي</a>
+  </div>
+</header>
+
+<nav class="breadcrumbs">
+  <a href="../../index.html" class="crumb-home">الرئيسية</a>
+  <span> / </span>
+  <a href="../../tools.html" class="crumb-home">الأدوات</a>
+  <span> / مولّد الاستبيان</span>
+</nav>
+
+<main id="app">
+  <section class="view">
+    <div class="survey-builder">
+
+      <div class="sb-card">
+        <label class="sb-label">عنوان الاستبيان</label>
+        <input type="text" id="surveyTitle" class="sb-input" placeholder="مثال: استبيان رضا الموظفين">
+        <label class="sb-label">وصف مختصر (اختياري)</label>
+        <textarea id="surveyDesc" class="sb-input" rows="2" placeholder="اشرح للمُجيب الهدف من الاستبيان..."></textarea>
+      </div>
+
+      <div id="questionsList" class="sb-questions"></div>
+
+      <div class="sb-add-wrap">
+        <p class="sb-add-title">أضف سؤالاً جديدًا:</p>
+        <div class="sb-type-grid">
+          <button class="sb-type-btn" data-type="short">📝<span>نص قصير</span></button>
+          <button class="sb-type-btn" data-type="long">📄<span>نص طويل</span></button>
+          <button class="sb-type-btn" data-type="radio">⚪<span>اختيار واحد</span></button>
+          <button class="sb-type-btn" data-type="checkbox">☑️<span>اختيار متعدد</span></button>
+          <button class="sb-type-btn" data-type="dropdown">🔽<span>قائمة منسدلة</span></button>
+          <button class="sb-type-btn" data-type="rating">⭐<span>تقييم نجوم</span></button>
+          <button class="sb-type-btn" data-type="yesno">👍<span>نعم / لا</span></button>
+        </div>
+      </div>
+
+      <button id="publishBtn" class="sb-publish-btn">نشر الاستبيان ومشاركته</button>
+
+      <div id="publishResult" class="sb-publish-result hidden">
+        <h3>✅ تم النشر بنجاح</h3>
+        <p>رابط المشاركة (أرسله للمُجيبين):</p>
+        <div class="sb-link-row">
+          <input type="text" id="shareLink" class="sb-input" readonly>
+          <button id="copyShareBtn" class="related-btn">نسخ</button>
+        </div>
+        <p>رابط النتائج والتحليل (احتفظ به لنفسك):</p>
+        <div class="sb-link-row">
+          <input type="text" id="resultsLink" class="sb-input" readonly>
+          <button id="copyResultsBtn" class="related-btn">نسخ</button>
+        </div>
+        <a id="openResultsBtn" href="#" class="store-btn">فتح صفحة النتائج</a>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <p>© 2026 د. سفيان مرابطي</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
