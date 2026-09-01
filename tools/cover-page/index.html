@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="htmlRoot">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="pageTitleTag">مولّد صفحات الغلاف — أكاديمية مرابطي</title>
+<meta name="description" content="أنشئ صفحة غلاف احترافية لمذكرتك أو تقريرك، بعدة قوالب وإطارات اختيارية.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar">
+  <a href="../../tools.html" class="icon-btn" id="backBtn" aria-label="back">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
+  </a>
+  <span class="topbar-title" id="topbarTitle">مولّد صفحات الغلاف</span>
+  <div class="topbar-actions">
+    <div class="lang-switch" role="group">
+      <button type="button" class="lang-btn" data-lang="ar">عربي</button>
+      <button type="button" class="lang-btn" data-lang="en">EN</button>
+      <button type="button" class="lang-btn" data-lang="fr">FR</button>
+    </div>
+  </div>
+</div>
+
+<main class="wrap">
+
+  <!-- ============ LOADING ============ -->
+  <section id="loadingScreen" class="screen loading-screen">
+    <div class="loading-spinner"></div>
+  </section>
+
+  <!-- ============ LOCKED / AUTH SCREEN ============ -->
+  <section id="lockedScreen" class="screen hidden">
+    <div class="locked-hero">
+      <div class="locked-icon">🔒</div>
+      <h1 id="lockedTitle">سجّل دخولك لاستخدام مولّد صفحات الغلاف</h1>
+      <p id="lockedSub">هذه الأداة متاحة للمستخدمين المسجّلين فقط.</p>
+    </div>
+    <div class="auth-card">
+      <div class="auth-tabs">
+        <button type="button" class="auth-tab active" data-mode="login" id="tabLogin">تسجيل الدخول</button>
+        <button type="button" class="auth-tab" data-mode="signup" id="tabSignup">إنشاء حساب</button>
+      </div>
+      <p class="auth-card-error hidden" id="authCardError"></p>
+      <form id="authCardForm">
+        <input type="text" id="acName" class="cv-input hidden" placeholder="الاسم الكامل">
+        <input type="email" id="acEmail" class="cv-input" required placeholder="البريد الإلكتروني">
+        <input type="password" id="acPassword" class="cv-input" required minlength="6" placeholder="كلمة المرور">
+        <button type="submit" class="btn btn-primary btn-block" id="acSubmitBtn">تسجيل الدخول</button>
+      </form>
+      <div class="auth-divider">أو</div>
+      <button type="button" class="auth-google-btn" id="acGoogleBtn">
+        <svg viewBox="0 0 48 48" width="18" height="18"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 8 3l6-6C34.5 5.1 29.5 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21 21-9.4 21-21c0-1.2-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.6 15.6 18.9 13 24 13c3.1 0 5.8 1.1 8 3l6-6C34.5 5.1 29.5 3 24 3c-7.6 0-14.1 4.3-17.7 10.7z"/><path fill="#4CAF50" d="M24 45c5.3 0 10.2-2 13.9-5.3l-6.4-5.4C29.3 36 26.8 37 24 37c-5.2 0-9.6-3.1-11.4-7.6l-6.6 5.1C9.8 40.6 16.3 45 24 45z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.2-4.2 5.6l6.4 5.4C40.5 36.6 43 30.8 43 24c0-1.2-.1-2.4-.4-3.5z"/></svg>
+        <span>المتابعة عبر Google</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ============ EDITOR SCREEN ============ -->
+  <section id="editorScreen" class="screen hidden">
+    <h1 class="tool-page-title" id="toolTitle">مولّد صفحات الغلاف</h1>
+
+    <div class="category-filter" id="categoryFilter"></div>
+    <div class="theme-filter" id="templateFilter"></div>
+
+    <p class="sub-section-label" id="frameSectionLabel">الإطار (اختياري)</p>
+    <div class="theme-filter frame-filter" id="frameFilter"></div>
+    <input type="file" id="customFrameInput" accept="image/png,image/jpeg" hidden>
+
+    <div class="editor-grid">
+      <!-- FORM COLUMN -->
+      <div class="editor-form">
+
+        <div class="form-card">
+          <h2 class="form-card-title" id="logosCardTitle">الشعارات</h2>
+          <div class="logo-row">
+            <div class="logo-upload-box" id="logo1Box">
+              <img id="logo1Preview" class="logo-preview hidden" alt="">
+              <span class="logo-placeholder" id="logo1Placeholder">🖼️</span>
+              <input type="file" id="logo1Input" accept="image/*" hidden>
+            </div>
+            <div class="logo-upload-box" id="logo2Box">
+              <img id="logo2Preview" class="logo-preview hidden" alt="">
+              <span class="logo-placeholder" id="logo2Placeholder">🖼️</span>
+              <input type="file" id="logo2Input" accept="image/*" hidden>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-card">
+          <h2 class="form-card-title" id="textCardTitle">النصوص</h2>
+          <input type="text" id="fOrg1" class="cv-input" placeholder="اسم الجهة الأولى (جامعة / شركة)">
+          <input type="text" id="fOrg2" class="cv-input" placeholder="اسم الجهة الثانية (اختياري)">
+          <input type="text" id="fMainTitle" class="cv-input" placeholder="العنوان الرئيسي (مثال: مذكرة تخرج)">
+          <input type="text" id="fSubtitle" class="cv-input" placeholder="الموضوع / العنوان الفرعي">
+          <input type="text" id="fPresenter" class="cv-input" placeholder="إعداد الطالب / من طرف">
+          <input type="text" id="fSecondPerson" class="cv-input" placeholder="المشرف / جهة إضافية (اختياري)">
+          <input type="text" id="fDate" class="cv-input" placeholder="السنة / التاريخ">
+        </div>
+
+        <button type="button" class="btn btn-primary btn-block" id="downloadPdfBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M5 21h14"/></svg>
+          <span id="downloadBtnText">تحميل PDF</span>
+        </button>
+      </div>
+
+      <!-- PREVIEW COLUMN -->
+      <div class="editor-preview">
+        <div class="cover-page" id="coverPage" data-layout="l1" data-color="c1">
+          <img class="cover-frame-img hidden" id="frameImg" alt="">
+          <div class="cover-border" id="coverBorder"></div>
+          <div class="cover-logos-row" id="coverLogosRow">
+            <img class="cover-logo" id="coverLogo1" hidden alt="">
+            <img class="cover-logo" id="coverLogo2" hidden alt="">
+          </div>
+          <p class="cover-org1" id="coverOrg1"></p>
+          <p class="cover-org2" id="coverOrg2"></p>
+          <div class="cover-center">
+            <p class="cover-main-title" id="coverMainTitle">العنوان الرئيسي</p>
+            <p class="cover-subtitle" id="coverSubtitle"></p>
+          </div>
+          <div class="cover-footer">
+            <p class="cover-presenter" id="coverPresenter"></p>
+            <p class="cover-second" id="coverSecond"></p>
+            <p class="cover-date" id="coverDate"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p>© 2026 د. سفيان مرابطي</p>
+</footer>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="../../firebase-init.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
