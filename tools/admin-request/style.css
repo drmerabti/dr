@@ -581,7 +581,18 @@ html[dir="rtl"] .cv-sidebar-sections h4{ letter-spacing: 0; }
   direction: rtl; text-align: right;
 }
 
-.req-header{ margin: -8% -9% 16px; }
+.req-header{ position: relative; margin: -8% -9% 24px; }
+.req-header:not(.hidden) + .req-date{ margin-top: 6px; }
+.req-remove-btn{
+  position: absolute; top: 6px; inset-inline-end: 6px; z-index: 3;
+  width: 24px; height: 24px; border-radius: 50%; border: none;
+  background: rgba(20,20,20,.55); color: #fff; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.req-remove-btn svg{ width: 12px; height: 12px; }
+.req-remove-btn:hover{ background: rgba(192,57,43,.9); }
+.req-signature{ position: relative; }
+.req-signature .req-remove-btn{ top: -8px; inset-inline-end: -8px; background: rgba(20,20,20,.7); }
 .req-letterhead-img{ width: 100%; height: auto; display: block; }
 
 .req-date{ font-size: .8rem; font-weight: 800; color: var(--ink); text-align: left; margin: 0 0 16px; }

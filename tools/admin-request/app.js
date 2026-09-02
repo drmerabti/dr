@@ -15,7 +15,7 @@
       usageIndicator: (used, max) => `الاستخدام اليوم: ${used} من ${max}`,
       companyCardTitle: 'شعار الشركة (اختياري)', companyNamePh: 'اسم الشركة (اختياري)',
       personalCardTitle: 'بياناتك', firstNamePh: 'الاسم', lastNamePh: 'اللقب', phonePh: 'رقم الهاتف', emailPh2: 'البريد الإلكتروني',
-      addressedToPh: 'موجّه إلى (السيد المدير...)',
+      addressedToPh: 'موجّه إلى (السيد المدير...)', subjectTitlePh: 'الموضوع (عنوان قصير، مثال: طلب إجازة سنوية)',
       extraCardTitle: 'معلومات إضافية', extraKeyPh: 'العنوان (مثال: الرتبة)', extraValPh: 'القيمة',
       requestCardTitle: 'موضوع الطلب', requestPh: 'اكتب فكرة طلبك بإيجاز (مثال: أطلب إجازة سنوية من 10 إلى 20 أوت)',
       generateBtnText: 'توليد الطلب', generating: 'جارٍ التوليد…',
@@ -25,7 +25,7 @@
       errNeedSubject: 'اكتب فكرة الطلب أولًا.', errNeedText: 'لا يوجد نص لتعديله بعد.',
       errLimit: 'وصلت للحد الأقصى المسموح اليوم (مرتين كل 24 ساعة). حاول لاحقًا.',
       errGeneric: 'حدث خطأ أثناء التوليد، حاول مرة أخرى.',
-      bodyPlaceholder: 'سيظهر نص طلبك هنا بعد الضغط على "توليد الطلب"...',
+      bodyPlaceholder: 'سيظهر نص طلبك هنا بعد الضغط على "توليد الطلب"، أو اكتبه يدويًا مباشرة...',
       defaultAddressed: 'السيد المدير المحترم',
       listTitle: 'طلباتي', newRequestBtnText: 'إنشاء طلب', backToListText: 'طلباتي',
       clearAllText: 'تفريغ الخانات', emptyListHint: 'ما عندك طلبات محفوظة بعد.',
@@ -41,7 +41,7 @@
       usageIndicator: (used, max) => `Today's usage: ${used} of ${max}`,
       companyCardTitle: 'Company logo (optional)', companyNamePh: 'Company name (optional)',
       personalCardTitle: 'Your details', firstNamePh: 'First name', lastNamePh: 'Last name', phonePh: 'Phone number', emailPh2: 'Email',
-      addressedToPh: 'Addressed to (Dear Director...)',
+      addressedToPh: 'Addressed to (Dear Director...)', subjectTitlePh: 'Subject (short title, e.g. Annual leave request)',
       extraCardTitle: 'Additional info', extraKeyPh: 'Label (e.g. Rank)', extraValPh: 'Value',
       requestCardTitle: 'Request topic', requestPh: 'Briefly describe your request (e.g. Requesting annual leave from Aug 10 to 20)',
       generateBtnText: 'Generate request', generating: 'Generating…',
@@ -51,7 +51,7 @@
       errNeedSubject: 'Please write your request topic first.', errNeedText: 'No text to edit yet.',
       errLimit: "You've reached today's limit (2 per 24 hours). Try again later.",
       errGeneric: 'Something went wrong while generating, please try again.',
-      bodyPlaceholder: 'Your request text will appear here after pressing "Generate request"...',
+      bodyPlaceholder: 'Your request text will appear here after pressing "Generate request", or write it manually...',
       defaultAddressed: 'Dear Director',
       listTitle: 'My Requests', newRequestBtnText: 'New request', backToListText: 'My requests',
       clearAllText: 'Clear fields', emptyListHint: "You don't have any saved requests yet.",
@@ -67,7 +67,7 @@
       usageIndicator: (used, max) => `Utilisation aujourd'hui : ${used} sur ${max}`,
       companyCardTitle: "Logo de l'entreprise (optionnel)", companyNamePh: "Nom de l'entreprise (optionnel)",
       personalCardTitle: 'Vos informations', firstNamePh: 'Prénom', lastNamePh: 'Nom', phonePh: 'Téléphone', emailPh2: 'E-mail',
-      addressedToPh: 'Adressée à (Monsieur le Directeur...)',
+      addressedToPh: 'Adressée à (Monsieur le Directeur...)', subjectTitlePh: 'Objet (titre court, ex : Demande de congé annuel)',
       extraCardTitle: 'Informations supplémentaires', extraKeyPh: 'Libellé (ex: Grade)', extraValPh: 'Valeur',
       requestCardTitle: 'Objet de la demande', requestPh: 'Décrivez brièvement votre demande (ex: congé annuel du 10 au 20 août)',
       generateBtnText: 'Générer la demande', generating: 'Génération…',
@@ -77,7 +77,7 @@
       errNeedSubject: "Veuillez d'abord décrire l'objet de votre demande.", errNeedText: 'Aucun texte à modifier pour le moment.',
       errLimit: "Vous avez atteint la limite du jour (2 fois par 24h). Réessayez plus tard.",
       errGeneric: 'Une erreur est survenue, veuillez réessayer.',
-      bodyPlaceholder: 'Le texte de votre demande apparaîtra ici après avoir cliqué sur « Générer la demande »...',
+      bodyPlaceholder: 'Le texte de votre demande apparaîtra ici après avoir cliqué sur « Générer la demande », ou écrivez-le directement...',
       defaultAddressed: 'Monsieur le Directeur',
       listTitle: 'Mes demandes', newRequestBtnText: 'Créer une demande', backToListText: 'Mes demandes',
       clearAllText: 'Vider les champs', emptyListHint: "Vous n'avez pas encore de demandes enregistrées.",
@@ -112,7 +112,7 @@
     companyCardTitle: $('companyCardTitle'), companyLogoBox: $('companyLogoBox'), companyLogoPreview: $('companyLogoPreview'),
     companyLogoInput: $('companyLogoInput'), companyLogoPlaceholder: $('companyLogoPlaceholder'),
     personalCardTitle: $('personalCardTitle'), fFirstName: $('fFirstName'), fLastName: $('fLastName'),
-    fPhone: $('fPhone'), fEmail: $('fEmail'), fAddressedTo: $('fAddressedTo'), fDate: $('fDate'),
+    fPhone: $('fPhone'), fEmail: $('fEmail'), fAddressedTo: $('fAddressedTo'), fSubjectTitle: $('fSubjectTitle'), fDate: $('fDate'),
     extraCardTitle: $('extraCardTitle'), addExtraBtn: $('addExtraBtn'), extraFieldsList: $('extraFieldsList'),
     requestCardTitle: $('requestCardTitle'), fRequestSubject: $('fRequestSubject'),
     generateBtn: $('generateBtn'), generateBtnText: $('generateBtnText'),
@@ -122,8 +122,10 @@
     stampCardTitle: $('stampCardTitle'), stampBox: $('stampBox'), stampPreview: $('stampPreview'), stampInput: $('stampInput'), stampPlaceholder: $('stampPlaceholder'),
     downloadPdfBtn: $('downloadPdfBtn'), downloadBtnText: $('downloadBtnText'),
     requestPage: $('requestPage'), reqHeader: $('reqHeader'), reqCompanyLogo: $('reqCompanyLogo'),
+    removeHeaderBtn: $('removeHeaderBtn'), removeStampBtn: $('removeStampBtn'),
     reqDate: $('reqDate'),
     reqSenderFirst: $('reqSenderFirst'), reqSenderLast: $('reqSenderLast'), reqSenderPhone: $('reqSenderPhone'), reqSenderEmail: $('reqSenderEmail'),
+    reqExtraInfo: $('reqExtraInfo'),
     reqAddressed: $('reqAddressed'), reqSubjectValue: $('reqSubjectValue'), reqBody: $('reqBody'),
     reqStamp: $('reqStamp'), reqSignatureCaption: $('reqSignatureCaption'),
   };
@@ -198,6 +200,7 @@
   });
 
   function escapeAttr(s) { return String(s || '').replace(/"/g, '&quot;'); }
+  function escapeHtml(s) { return String(s || '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
 
   /* ================= Persistence ================= */
   const STORAGE_KEY = 'adminreq:draft';
@@ -205,7 +208,7 @@
     const draft = {
       lang, activeFontId: activeFont.id, companyLogoDataUrl, stampDataUrl, extraFields,
       fFirstName: els.fFirstName.value, fLastName: els.fLastName.value,
-      fPhone: els.fPhone.value, fEmail: els.fEmail.value, fAddressedTo: els.fAddressedTo.value, fDate: els.fDate.value,
+      fPhone: els.fPhone.value, fEmail: els.fEmail.value, fAddressedTo: els.fAddressedTo.value, fSubjectTitle: els.fSubjectTitle.value, fDate: els.fDate.value,
       fRequestSubject: els.fRequestSubject.value, bodyText: els.reqBody.innerText, bodyIsOwned,
     };
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(draft)); } catch (e) { /* ignore */ }
@@ -230,7 +233,7 @@
     return {
       activeFontId: activeFont.id, companyLogoDataUrl, stampDataUrl, extraFields,
       fFirstName: els.fFirstName.value, fLastName: els.fLastName.value,
-      fPhone: els.fPhone.value, fEmail: els.fEmail.value, fAddressedTo: els.fAddressedTo.value, fDate: els.fDate.value,
+      fPhone: els.fPhone.value, fEmail: els.fEmail.value, fAddressedTo: els.fAddressedTo.value, fSubjectTitle: els.fSubjectTitle.value, fDate: els.fDate.value,
       fRequestSubject: els.fRequestSubject.value, bodyText: els.reqBody.innerText, bodyIsOwned,
     };
   }
@@ -242,7 +245,7 @@
     extraFields = state.extraFields || [];
     els.fFirstName.value = state.fFirstName || ''; els.fLastName.value = state.fLastName || '';
     els.fPhone.value = state.fPhone || ''; els.fEmail.value = state.fEmail || '';
-    els.fAddressedTo.value = state.fAddressedTo || ''; els.fDate.value = state.fDate || els.fDate.value;
+    els.fAddressedTo.value = state.fAddressedTo || ''; els.fSubjectTitle.value = state.fSubjectTitle || ''; els.fDate.value = state.fDate || els.fDate.value;
     els.fRequestSubject.value = state.fRequestSubject || '';
     els.reqBody.innerText = state.bodyText || '';
     bodyIsOwned = !!state.bodyIsOwned;
@@ -290,7 +293,7 @@
     activeFont = FONTS[0];
     companyLogoDataUrl = null; stampDataUrl = null; extraFields = [];
     els.fFirstName.value = ''; els.fLastName.value = '';
-    els.fPhone.value = ''; els.fEmail.value = ''; els.fAddressedTo.value = '';
+    els.fPhone.value = ''; els.fEmail.value = ''; els.fAddressedTo.value = ''; els.fSubjectTitle.value = '';
     const today = new Date(); els.fDate.value = today.toISOString().slice(0, 10);
     els.fRequestSubject.value = ''; els.reqBody.innerText = '';
     bodyIsOwned = false;
@@ -298,16 +301,24 @@
     renderExtraFields(); renderFontFilter(); applyFont(); renderPreview(); syncAiButtons();
   }
 
-  function openNewRequest() {
+  async function openNewRequest() {
     currentRequestId = null;
     clearFormFields();
-    els.saveStatusIndicator.textContent = '';
-    saveDraft();
     showScreen('editorScreen');
+    await saveToCloud(); // create the entry immediately so it shows in "طلباتي" right away
   }
   els.newRequestBtn.addEventListener('click', openNewRequest);
 
-  els.backToListBtn.addEventListener('click', () => {
+  async function flushPendingSave() {
+    if (cloudSaveTimer) {
+      clearTimeout(cloudSaveTimer);
+      cloudSaveTimer = null;
+      await saveToCloud();
+    }
+  }
+
+  els.backToListBtn.addEventListener('click', async () => {
+    await flushPendingSave();
     showScreen('listScreen');
     renderSavedRequestsList();
   });
@@ -414,9 +425,11 @@
     if (companyLogoDataUrl) {
       els.reqCompanyLogo.src = companyLogoDataUrl; els.reqCompanyLogo.classList.remove('hidden');
       els.reqHeader.classList.remove('hidden');
+      els.removeHeaderBtn.classList.remove('hidden');
     } else {
       els.reqCompanyLogo.classList.add('hidden');
       els.reqHeader.classList.add('hidden');
+      els.removeHeaderBtn.classList.add('hidden');
     }
 
     const d = els.fDate.value ? new Date(els.fDate.value + 'T12:00:00') : new Date();
@@ -428,16 +441,39 @@
     els.reqSenderPhone.textContent = els.fPhone.value.trim() || DEFAULTS.phone;
     els.reqSenderEmail.textContent = els.fEmail.value.trim() || DEFAULTS.email;
 
-    els.reqAddressed.textContent = els.fAddressedTo.value.trim() || DEFAULTS.addressedTo;
-    els.reqSubjectValue.textContent = els.fRequestSubject.value.trim() || DEFAULTS.subject;
+    els.reqExtraInfo.innerHTML = extraFields
+      .filter((f) => f.key.trim() || f.val.trim())
+      .map((f) => `<p><span class="req-label">${escapeHtml(f.key)}: </span><span class="req-value">${escapeHtml(f.val)}</span></p>`)
+      .join('');
 
-    if (stampDataUrl) { els.reqStamp.src = stampDataUrl; els.reqStamp.classList.remove('hidden'); }
-    else { els.reqStamp.classList.add('hidden'); }
+    els.reqAddressed.textContent = els.fAddressedTo.value.trim() || DEFAULTS.addressedTo;
+    els.reqSubjectValue.textContent = els.fSubjectTitle.value.trim() || DEFAULTS.subject;
+
+    if (stampDataUrl) {
+      els.reqStamp.src = stampDataUrl; els.reqStamp.classList.remove('hidden');
+      els.removeStampBtn.classList.remove('hidden');
+    } else {
+      els.reqStamp.classList.add('hidden');
+      els.removeStampBtn.classList.add('hidden');
+    }
 
     els.reqBody.setAttribute('data-placeholder', t('bodyPlaceholder'));
   }
-  [els.fFirstName, els.fLastName, els.fPhone, els.fEmail, els.fAddressedTo, els.fDate].forEach((inp) => {
+  [els.fFirstName, els.fLastName, els.fPhone, els.fEmail, els.fAddressedTo, els.fSubjectTitle, els.fDate].forEach((inp) => {
     inp.addEventListener('input', () => { renderPreview(); saveDraft(); });
+  });
+
+  els.removeHeaderBtn.addEventListener('click', () => {
+    companyLogoDataUrl = null;
+    els.companyLogoPreview.classList.add('hidden');
+    els.companyLogoInput.value = '';
+    renderPreview(); saveDraft();
+  });
+  els.removeStampBtn.addEventListener('click', () => {
+    stampDataUrl = null;
+    els.stampPreview.classList.add('hidden');
+    els.stampInput.value = '';
+    renderPreview(); saveDraft();
   });
 
   // Live-mirror the subject textarea into the body preview as a draft, until the body becomes "owned"
@@ -545,6 +581,7 @@
     els.fFirstName.placeholder = dict.firstNamePh; els.fLastName.placeholder = dict.lastNamePh;
     els.fPhone.placeholder = dict.phonePh; els.fEmail.placeholder = dict.emailPh2;
     els.fAddressedTo.placeholder = dict.addressedToPh;
+    els.fSubjectTitle.placeholder = dict.subjectTitlePh;
     els.extraCardTitle.textContent = dict.extraCardTitle;
     els.requestCardTitle.textContent = dict.requestCardTitle; els.fRequestSubject.placeholder = dict.requestPh;
     els.generateBtnText.textContent = dict.generateBtnText;
@@ -580,7 +617,7 @@
       extraFields = draft.extraFields || [];
       els.fFirstName.value = draft.fFirstName || ''; els.fLastName.value = draft.fLastName || '';
       els.fPhone.value = draft.fPhone || ''; els.fEmail.value = draft.fEmail || '';
-      els.fAddressedTo.value = draft.fAddressedTo || ''; els.fDate.value = draft.fDate || els.fDate.value;
+      els.fAddressedTo.value = draft.fAddressedTo || ''; els.fSubjectTitle.value = draft.fSubjectTitle || ''; els.fDate.value = draft.fDate || els.fDate.value;
       els.fRequestSubject.value = draft.fRequestSubject || '';
       els.reqBody.innerText = draft.bodyText || '';
       bodyIsOwned = !!draft.bodyIsOwned;

@@ -108,6 +108,7 @@
             <input type="email" id="fEmail" class="cv-input" placeholder="example@email.com">
           </div>
           <input type="text" id="fAddressedTo" class="cv-input" placeholder="موجّه إلى (السيد المدير...)">
+          <input type="text" id="fSubjectTitle" class="cv-input" placeholder="الموضوع (عنوان قصير، مثال: طلب إجازة سنوية)">
           <input type="date" id="fDate" class="cv-input">
         </div>
 
@@ -161,6 +162,9 @@
         <div class="request-page" id="requestPage">
           <div class="req-header hidden" id="reqHeader">
             <img id="reqCompanyLogo" class="req-letterhead-img hidden" alt="">
+            <button type="button" class="req-remove-btn" id="removeHeaderBtn" title="إزالة">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
+            </button>
           </div>
 
           <p class="req-date" id="reqDate"></p>
@@ -170,6 +174,7 @@
             <p><span class="req-label">اللقب: </span><span class="req-value" id="reqSenderLast"></span></p>
             <p><span class="req-label">الهاتف: </span><span class="req-value req-ltr" id="reqSenderPhone"></span></p>
             <p><span class="req-label">البريد: </span><span class="req-value req-ltr" id="reqSenderEmail"></span></p>
+            <div id="reqExtraInfo"></div>
           </div>
 
           <p class="req-addressed" id="reqAddressed"></p>
@@ -180,6 +185,9 @@
 
           <div class="req-signature">
             <img id="reqStamp" class="req-stamp-img hidden" alt="">
+            <button type="button" class="req-remove-btn hidden" id="removeStampBtn" title="إزالة">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
+            </button>
             <p class="req-signature-caption" id="reqSignatureCaption">إمضاء</p>
           </div>
         </div>
