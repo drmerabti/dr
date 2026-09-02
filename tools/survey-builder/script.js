@@ -1,8 +1,8 @@
-let qCounter = 0;
 /* =====================================================================
    البيانات المحلية: كل استبيان (منشور أو مسودة) محفوظ في localStorage
    ليقدر المستخدم يدير عدة استبيانات من نفس الجهاز.
 ===================================================================== */
+let qCounter = 0;
 const STORAGE_KEY = 'sb_surveys_v1';
 
 function loadLocalSurveys(){
@@ -68,7 +68,6 @@ const PRESET_QUESTIONS = {
   education: () => mkQ('radio', 'المؤهل العلمي', ['ابتدائي', 'متوسط', 'ثانوي', 'جامعي', 'ماجستير', 'دكتوراه']),
   job:       () => mkQ('radio', 'الحالة المهنية', ['طالب', 'موظف', 'عامل حر', 'باحث عن عمل', 'متقاعد']),
 };
-
 
 function mkQ(type, title, options){
   qCounter++;
@@ -426,11 +425,18 @@ document.getElementById('publishBtn').addEventListener('click', async () => {
   }
 });
 
-document.getElementById('copyShareBtn').addEventListener('click', () => {
-  navigator.clipboard.writeText(document.getElementById('shareLink').value);
+function flashCopyBtn(btn, textToCopy){
+  navigator.clipboard.writeText(textToCopy);
+  const original = btn.textContent;
+  btn.textContent = '✅';
+  btn.disabled = true;
+  setTimeout(() => { btn.textContent = original; btn.disabled = false; }, 1200);
+}
+document.getElementById('copyShareBtn').addEventListener('click', function(){
+  flashCopyBtn(this, document.getElementById('shareLink').value);
 });
-document.getElementById('copyResultsBtn').addEventListener('click', () => {
-  navigator.clipboard.writeText(document.getElementById('resultsLink').value);
+document.getElementById('copyResultsBtn').addEventListener('click', function(){
+  flashCopyBtn(this, document.getElementById('resultsLink').value);
 });
 
 /* =====================================================================

@@ -151,9 +151,9 @@ async function init(){
           <p style="color:var(--ink-soft);margin:0;">عدد الإجابات: <strong>${RAW.responses.length}</strong>
           ${completion !== null ? ` · نسبة إكمال الأسئلة الإلزامية: <strong>${completion}%</strong>` : ''}</p>
         </div>
-        <div style="display:flex;gap:8px;">
-          <button id="exportBtn" class="related-btn">⬇️ تصدير Excel</button>
-          <button id="printBtn" class="related-btn">🖨️ طباعة / PDF</button>
+        <div class="sb-results-actions">
+          <button id="exportBtn" class="sb-action-btn primary"><span class="abtn-icon">⬇️</span> تصدير Excel</button>
+          <button id="printBtn" class="sb-action-btn"><span class="abtn-icon">🖨️</span> طباعة / PDF</button>
         </div>
       </div>`;
     wrap.appendChild(header);
@@ -319,11 +319,12 @@ document.getElementById('closeExportModal').addEventListener('click', () => {
 });
 document.getElementById('confirmExportBtn').addEventListener('click', exportCSV);
 
-function csvEscape(v){
-  const s = String(v ?? '');
-  return /[",\n]/.test(s) ? `"${s.replace(/"/g,'""')}"` : s;
+function htmlEscape(v){
+  return String(v ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
+/* نصدّر كجدول HTML بامتداد xls — يفتحه Excel دائمًا منظمًا بأعمدة صحيحة
+   بغض النظر عن إعدادات فاصلة اللغة (على عكس CSV العادي). */
 function exportCSV(){
   const selectedIdx = [...document.querySelectorAll('.exp-check:checked')].map(c => parseInt(c.value, 10));
   const selectedQs = selectedIdx.map(i => RAW.questions[i]);
@@ -356,11 +357,23 @@ function exportCSV(){
     return row;
   });
 
-  const csv = '\uFEFF' + [headers, ...rows].map(r => r.map(csvEscape).join(',')).join('\n');
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const table = `
+    <table dir="rtl" border="1">
+      <thead><tr>${headers.map(h => `<th style="background:#2F5770;color:#fff;padding:6px 10px;">${htmlEscape(h)}</th>`).join('')}</tr></thead>
+      <tbody>
+        ${rows.map(r => `<tr>${r.map(v => `<td style="padding:6px 10px;mso-number-format:'\\@';">${htmlEscape(v)}</td>`).join('')}</tr>`).join('')}
+      </tbody>
+    </table>`;
+
+  const html = `
+    <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+    <head><meta charset="UTF-8"></head>
+    <body>${table}</body></html>`;
+
+  const blob = new Blob(['\uFEFF' + html], { type: 'application/vnd.ms-excel;charset=utf-8;' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = (RAW.title || 'survey') + '.csv';
+  a.download = (RAW.title || 'survey') + '.xls';
   a.click();
 
   document.getElementById('exportModal').classList.add('hidden');

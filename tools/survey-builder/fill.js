@@ -41,6 +41,25 @@ function isAnswered(q){
   return false;
 }
 
+const GENDER_ICONS = { 'ذكر': { icon: '🧑', bg: '#E3EEF4', color: '#2F5770' }, 'أنثى': { icon: '👩', bg: '#F6E4EE', color: '#B15C86' } };
+
+function renderChoicePills(q, opts, inputType){
+  if (q.title.trim() === 'الجنس' && opts.length === 2 && opts.every(o => GENDER_ICONS[o])){
+    return `<div class="sb-icon-choice-row" data-qid="${q.id}">` + opts.map(o => {
+      const meta = GENDER_ICONS[o];
+      return `<label class="sb-icon-choice" style="background:${meta.bg};color:${meta.color};">
+        <input type="${inputType}" name="${q.id}" value="${o}" data-type="${inputType}" style="display:none;">
+        <span class="sic-icon">${meta.icon}</span><span class="sic-label">${o}</span>
+      </label>`;
+    }).join('') + `</div>`;
+  }
+  return `<div class="sb-pill-choice" data-qid="${q.id}">` + opts.map(o => `
+    <label class="sb-pill">
+      <input type="${inputType}" name="${q.id}" value="${o}" data-type="${inputType}" style="display:none;">
+      <span>${o}</span>
+    </label>`).join('') + `</div>`;
+}
+
 function renderQuestionField(q){
   const box = document.createElement('div');
   box.className = 'sb-card';
@@ -52,31 +71,32 @@ function renderQuestionField(q){
     inner += `<textarea class="sb-input" rows="3" data-qid="${q.id}" data-type="long"></textarea>`;
   } else if (q.type === 'radio' || q.type === 'yesno'){
     const opts = q.type === 'yesno' ? ['نعم', 'لا'] : q.options;
-    inner += `<div class="sb-q-options">` + opts.map(o => `
-      <label style="display:flex;align-items:center;gap:8px;">
-        <input type="radio" name="${q.id}" value="${o}" data-type="radio"> ${o}
-      </label>`).join('') + `</div>`;
+    inner += renderChoicePills(q, opts, 'radio');
   } else if (q.type === 'checkbox'){
-    inner += `<div class="sb-q-options">` + q.options.map(o => `
-      <label style="display:flex;align-items:center;gap:8px;">
-        <input type="checkbox" name="${q.id}" value="${o}" data-type="checkbox"> ${o}
-      </label>`).join('') + `</div>`;
+    inner += renderChoicePills(q, q.options, 'checkbox');
   } else if (q.type === 'dropdown'){
     inner += `<select class="sb-input" data-qid="${q.id}" data-type="dropdown">
       <option value="">اختر...</option>
       ${q.options.map(o => `<option value="${o}">${o}</option>`).join('')}
     </select>`;
   } else if (q.type === 'rating'){
-    inner += `<div class="sb-q-options" style="flex-direction:row;gap:6px;font-size:1.6rem;" data-qid="${q.id}" data-type="rating">
+    inner += `<div class="sb-q-options" style="flex-direction:row;gap:8px;font-size:2rem;" data-qid="${q.id}" data-type="rating">
       ${[1,2,3,4,5].map(n => `<span class="rating-star" data-val="${n}" style="cursor:pointer;">☆</span>`).join('')}
     </div>`;
   }
 
   box.innerHTML = inner;
   box.addEventListener('input', updateProgress);
-  box.addEventListener('change', updateProgress);
-  box.addEventListener('click', () => setTimeout(updateProgress, 0));
+  box.addEventListener('change', () => { syncPillSelection(box); updateProgress(); });
+  box.addEventListener('click', () => setTimeout(() => { syncPillSelection(box); updateProgress(); }, 0));
   return box;
+}
+
+function syncPillSelection(box){
+  box.querySelectorAll('.sb-pill, .sb-icon-choice').forEach(label => {
+    const input = label.querySelector('input');
+    label.classList.toggle('selected', input.checked);
+  });
 }
 
 async function init(){
