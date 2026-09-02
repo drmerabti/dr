@@ -19,6 +19,7 @@
       extraCardTitle: 'معلومات إضافية', extraKeyPh: 'العنوان (مثال: الرتبة)', extraValPh: 'القيمة',
       requestCardTitle: 'موضوع الطلب', requestPh: 'اكتب فكرة طلبك بإيجاز (مثال: أطلب إجازة سنوية من 10 إلى 20 أوت)',
       generateBtnText: 'توليد الطلب', generating: 'جارٍ التوليد…',
+      rephraseBtnLabel: 'تغيير الصيغة', shortenBtnLabel: 'اختصار الطلب',
       stampCardTitle: 'الختم والتوقيع (اختياري)',
       download: 'تحميل PDF', downloading: '…',
       errNeedSubject: 'اكتب فكرة الطلب أولًا.', errNeedText: 'لا يوجد نص لتعديله بعد.',
@@ -39,6 +40,7 @@
       extraCardTitle: 'Additional info', extraKeyPh: 'Label (e.g. Rank)', extraValPh: 'Value',
       requestCardTitle: 'Request topic', requestPh: 'Briefly describe your request (e.g. Requesting annual leave from Aug 10 to 20)',
       generateBtnText: 'Generate request', generating: 'Generating…',
+      rephraseBtnLabel: 'Rephrase', shortenBtnLabel: 'Shorten',
       stampCardTitle: 'Stamp and signature (optional)',
       download: 'Download PDF', downloading: '…',
       errNeedSubject: 'Please write your request topic first.', errNeedText: 'No text to edit yet.',
@@ -59,6 +61,7 @@
       extraCardTitle: 'Informations supplémentaires', extraKeyPh: 'Libellé (ex: Grade)', extraValPh: 'Valeur',
       requestCardTitle: 'Objet de la demande', requestPh: 'Décrivez brièvement votre demande (ex: congé annuel du 10 au 20 août)',
       generateBtnText: 'Générer la demande', generating: 'Génération…',
+      rephraseBtnLabel: 'Reformuler', shortenBtnLabel: 'Raccourcir',
       stampCardTitle: 'Cachet et signature (optionnel)',
       download: 'Télécharger le PDF', downloading: '…',
       errNeedSubject: "Veuillez d'abord décrire l'objet de votre demande.", errNeedText: 'Aucun texte à modifier pour le moment.',
@@ -82,24 +85,55 @@
   const els = {
     htmlRoot: $('htmlRoot'), pageTitleTag: $('pageTitleTag'), topbarTitle: $('topbarTitle'), toolTitle: $('toolTitle'),
     langBtns: document.querySelectorAll('.lang-btn'), usageIndicator: $('usageIndicator'),
+    fontSectionLabel: $('fontSectionLabel'), fontFilter: $('fontFilter'),
     loadingScreen: $('loadingScreen'), lockedScreen: $('lockedScreen'), editorScreen: $('editorScreen'),
     lockedTitle: $('lockedTitle'), lockedSub: $('lockedSub'),
     tabLogin: $('tabLogin'), tabSignup: $('tabSignup'), authCardForm: $('authCardForm'), authCardError: $('authCardError'),
     acName: $('acName'), acEmail: $('acEmail'), acPassword: $('acPassword'), acSubmitBtn: $('acSubmitBtn'), acGoogleBtn: $('acGoogleBtn'),
     companyCardTitle: $('companyCardTitle'), companyLogoBox: $('companyLogoBox'), companyLogoPreview: $('companyLogoPreview'),
-    companyLogoInput: $('companyLogoInput'), companyLogoPlaceholder: $('companyLogoPlaceholder'), fCompanyName: $('fCompanyName'),
+    companyLogoInput: $('companyLogoInput'), companyLogoPlaceholder: $('companyLogoPlaceholder'),
     personalCardTitle: $('personalCardTitle'), fFirstName: $('fFirstName'), fLastName: $('fLastName'),
     fPhone: $('fPhone'), fEmail: $('fEmail'), fAddressedTo: $('fAddressedTo'), fDate: $('fDate'),
     extraCardTitle: $('extraCardTitle'), addExtraBtn: $('addExtraBtn'), extraFieldsList: $('extraFieldsList'),
     requestCardTitle: $('requestCardTitle'), fRequestSubject: $('fRequestSubject'),
-    generateBtn: $('generateBtn'), generateBtnText: $('generateBtnText'), rephraseBtn: $('rephraseBtn'), shortenBtn: $('shortenBtn'),
+    generateBtn: $('generateBtn'), generateBtnText: $('generateBtnText'),
+    rephraseBtn: $('rephraseBtn'), rephraseBtnText: $('rephraseBtnText'),
+    shortenBtn: $('shortenBtn'), shortenBtnText: $('shortenBtnText'),
     aiError: $('aiError'),
     stampCardTitle: $('stampCardTitle'), stampBox: $('stampBox'), stampPreview: $('stampPreview'), stampInput: $('stampInput'), stampPlaceholder: $('stampPlaceholder'),
     downloadPdfBtn: $('downloadPdfBtn'), downloadBtnText: $('downloadBtnText'),
-    requestPage: $('requestPage'), reqHeader: $('reqHeader'), reqCompanyLogo: $('reqCompanyLogo'), reqCompanyName: $('reqCompanyName'),
-    reqDate: $('reqDate'), reqAddressed: $('reqAddressed'), reqBody: $('reqBody'),
-    reqStamp: $('reqStamp'), reqSignerName: $('reqSignerName'),
+    requestPage: $('requestPage'), reqLogoBox: $('reqLogoBox'), reqCompanyLogo: $('reqCompanyLogo'), reqLogoIcon: $('reqLogoIcon'),
+    reqDate: $('reqDate'),
+    reqSenderFirst: $('reqSenderFirst'), reqSenderLast: $('reqSenderLast'), reqSenderPhone: $('reqSenderPhone'), reqSenderEmail: $('reqSenderEmail'),
+    reqAddressed: $('reqAddressed'), reqSubjectValue: $('reqSubjectValue'), reqBody: $('reqBody'),
+    reqStamp: $('reqStamp'), reqSignatureCaption: $('reqSignatureCaption'), reqSignerName: $('reqSignerName'),
   };
+
+  /* ================= Fonts (4, matching cover-page) ================= */
+  const FONTS = [
+    { id: 1, name: 'عصري', ar: "'Tajawal'", en: "'Inter'" },
+    { id: 2, name: 'كلاسيكي', ar: "'Amiri'", en: "'Georgia'" },
+    { id: 3, name: 'رسمي تقليدي', ar: "'Noto Naskh Arabic'", en: "'Georgia'" },
+    { id: 4, name: 'خط اليد', ar: "'Aref Ruqaa', cursive", en: "'Caveat', cursive" },
+  ];
+  let activeFont = FONTS[0];
+  function renderFontFilter() {
+    els.fontFilter.innerHTML = FONTS.map((f) => `
+      <button type="button" class="theme-swatch-btn ${f.id === activeFont.id ? 'active' : ''}" data-id="${f.id}" style="font-family:${f.ar};">${f.name}</button>
+    `).join('');
+    els.fontFilter.querySelectorAll('.theme-swatch-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        activeFont = FONTS.find((f) => f.id === parseInt(btn.getAttribute('data-id'), 10));
+        renderFontFilter();
+        applyFont();
+        saveDraft();
+      });
+    });
+  }
+  function applyFont() {
+    els.requestPage.style.setProperty('--rq-font-ar', activeFont.ar);
+    els.requestPage.style.setProperty('--rq-font-en', activeFont.en);
+  }
 
   function showScreen(name) {
     [els.loadingScreen, els.lockedScreen, els.editorScreen].forEach((s) => s.classList.add('hidden'));
@@ -150,10 +184,10 @@
   const STORAGE_KEY = 'adminreq:draft';
   function saveDraft() {
     const draft = {
-      lang, companyLogoDataUrl, stampDataUrl, extraFields,
-      fCompanyName: els.fCompanyName.value, fFirstName: els.fFirstName.value, fLastName: els.fLastName.value,
+      lang, activeFontId: activeFont.id, companyLogoDataUrl, stampDataUrl, extraFields,
+      fFirstName: els.fFirstName.value, fLastName: els.fLastName.value,
       fPhone: els.fPhone.value, fEmail: els.fEmail.value, fAddressedTo: els.fAddressedTo.value, fDate: els.fDate.value,
-      fRequestSubject: els.fRequestSubject.value, bodyText: els.reqBody.innerText,
+      fRequestSubject: els.fRequestSubject.value, bodyText: els.reqBody.innerText, bodyIsOwned,
     };
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(draft)); } catch (e) { /* ignore */ }
   }
@@ -196,31 +230,56 @@
   }
   els.addExtraBtn.addEventListener('click', () => { extraFields.push({ key: '', val: '' }); renderExtraFields(); saveDraft(); });
 
+  /* ================= Default example values (shown as real placeholders) ================= */
+  const DEFAULTS = {
+    firstName: 'سفيان', lastName: 'مرابطي', phone: '0555 12 34 56', email: 'sofiane@email.com',
+    addressedTo: 'السيد المدير المحترم', subject: 'أطلب إجازة سنوية من 10 إلى 20 أوت',
+  };
+
   /* ================= Live preview ================= */
+  let bodyIsOwned = false; // true once AI-generated or manually edited — stops auto-mirroring the subject draft
+
   function renderPreview() {
-    const hasCompany = companyLogoDataUrl || els.fCompanyName.value.trim();
-    els.reqHeader.classList.toggle('hidden', !hasCompany);
-    if (companyLogoDataUrl) { els.reqCompanyLogo.src = companyLogoDataUrl; els.reqCompanyLogo.classList.remove('hidden'); }
-    else { els.reqCompanyLogo.classList.add('hidden'); }
-    els.reqCompanyName.textContent = els.fCompanyName.value.trim();
+    if (companyLogoDataUrl) {
+      els.reqCompanyLogo.src = companyLogoDataUrl; els.reqCompanyLogo.classList.remove('hidden');
+      els.reqLogoIcon.classList.add('hidden');
+    } else {
+      els.reqCompanyLogo.classList.add('hidden'); els.reqLogoIcon.classList.remove('hidden');
+    }
 
     const d = els.fDate.value ? new Date(els.fDate.value + 'T12:00:00') : new Date();
     const dateFmt = { ar: 'ar', en: 'en', fr: 'fr' }[lang];
     els.reqDate.textContent = d.toLocaleDateString(dateFmt, { year: 'numeric', month: 'long', day: 'numeric' });
 
-    els.reqAddressed.textContent = els.fAddressedTo.value.trim() || t('defaultAddressed');
+    els.reqSenderFirst.textContent = els.fFirstName.value.trim() || DEFAULTS.firstName;
+    els.reqSenderLast.textContent = els.fLastName.value.trim() || DEFAULTS.lastName;
+    els.reqSenderPhone.textContent = els.fPhone.value.trim() || DEFAULTS.phone;
+    els.reqSenderEmail.textContent = els.fEmail.value.trim() || DEFAULTS.email;
+
+    els.reqAddressed.textContent = els.fAddressedTo.value.trim() || DEFAULTS.addressedTo;
+    els.reqSubjectValue.textContent = els.fRequestSubject.value.trim() || DEFAULTS.subject;
 
     if (stampDataUrl) { els.reqStamp.src = stampDataUrl; els.reqStamp.classList.remove('hidden'); }
     else { els.reqStamp.classList.add('hidden'); }
-    const fullName = `${els.fFirstName.value.trim()} ${els.fLastName.value.trim()}`.trim();
+    const fullName = `${els.fFirstName.value.trim() || DEFAULTS.firstName} ${els.fLastName.value.trim() || DEFAULTS.lastName}`.trim();
     els.reqSignerName.textContent = fullName;
 
     els.reqBody.setAttribute('data-placeholder', t('bodyPlaceholder'));
   }
-  [els.fCompanyName, els.fFirstName, els.fLastName, els.fPhone, els.fEmail, els.fAddressedTo, els.fDate].forEach((inp) => {
+  [els.fFirstName, els.fLastName, els.fPhone, els.fEmail, els.fAddressedTo, els.fDate].forEach((inp) => {
     inp.addEventListener('input', () => { renderPreview(); saveDraft(); });
   });
-  els.reqBody.addEventListener('input', () => { saveDraft(); syncAiButtons(); });
+
+  // Live-mirror the subject textarea into the body preview as a draft, until the body becomes "owned"
+  els.fRequestSubject.addEventListener('input', () => {
+    if (!bodyIsOwned) {
+      els.reqBody.innerText = els.fRequestSubject.value;
+      syncAiButtons();
+    }
+    saveDraft();
+  });
+
+  els.reqBody.addEventListener('input', () => { bodyIsOwned = els.reqBody.innerText.trim().length > 0; saveDraft(); syncAiButtons(); });
 
   function syncAiButtons() {
     const hasText = els.reqBody.innerText.trim().length > 0;
@@ -262,6 +321,7 @@
       if (!data || !data.text) throw new Error('no-text');
 
       els.reqBody.innerText = data.text;
+      bodyIsOwned = true;
       if (typeof data.usedToday === 'number') { dailyUsage.used = data.usedToday; updateUsageIndicator(); }
       syncAiButtons();
       saveDraft();
@@ -310,7 +370,7 @@
     els.tabLogin.textContent = dict.tabLogin; els.tabSignup.textContent = dict.tabSignup;
     els.acName.placeholder = dict.namePh; els.acEmail.placeholder = dict.emailPh; els.acPassword.placeholder = dict.passwordPh;
     els.acGoogleBtn.querySelector('span').textContent = dict.googleBtn;
-    els.companyCardTitle.textContent = dict.companyCardTitle; els.fCompanyName.placeholder = dict.companyNamePh;
+    els.companyCardTitle.textContent = dict.companyCardTitle;
     els.personalCardTitle.textContent = dict.personalCardTitle;
     els.fFirstName.placeholder = dict.firstNamePh; els.fLastName.placeholder = dict.lastNamePh;
     els.fPhone.placeholder = dict.phonePh; els.fEmail.placeholder = dict.emailPh2;
@@ -318,13 +378,15 @@
     els.extraCardTitle.textContent = dict.extraCardTitle;
     els.requestCardTitle.textContent = dict.requestCardTitle; els.fRequestSubject.placeholder = dict.requestPh;
     els.generateBtnText.textContent = dict.generateBtnText;
+    els.rephraseBtnText.textContent = dict.rephraseBtnLabel;
+    els.shortenBtnText.textContent = dict.shortenBtnLabel;
     els.stampCardTitle.textContent = dict.stampCardTitle;
     els.downloadBtnText.textContent = dict.download;
     els.langBtns.forEach((b) => b.classList.toggle('active', b.getAttribute('data-lang') === lang));
     localStorage.setItem('adminreq:lang', lang);
 
     updateAuthFormMode(els.tabLogin.classList.contains('active') ? 'login' : 'signup');
-    renderExtraFields(); renderPreview(); updateUsageIndicator();
+    renderExtraFields(); renderFontFilter(); renderPreview(); updateUsageIndicator();
   }
   els.langBtns.forEach((btn) => btn.addEventListener('click', () => { lang = btn.getAttribute('data-lang'); applyLanguage(); saveDraft(); }));
 
@@ -337,19 +399,21 @@
     }
     if (draft) {
       lang = draft.lang || lang;
+      activeFont = FONTS.find((f) => f.id === draft.activeFontId) || FONTS[0];
       companyLogoDataUrl = draft.companyLogoDataUrl || null;
       stampDataUrl = draft.stampDataUrl || null;
       extraFields = draft.extraFields || [];
-      els.fCompanyName.value = draft.fCompanyName || '';
       els.fFirstName.value = draft.fFirstName || ''; els.fLastName.value = draft.fLastName || '';
       els.fPhone.value = draft.fPhone || ''; els.fEmail.value = draft.fEmail || '';
       els.fAddressedTo.value = draft.fAddressedTo || ''; els.fDate.value = draft.fDate || els.fDate.value;
       els.fRequestSubject.value = draft.fRequestSubject || '';
       els.reqBody.innerText = draft.bodyText || '';
+      bodyIsOwned = !!draft.bodyIsOwned;
       if (companyLogoDataUrl) { els.companyLogoPreview.src = companyLogoDataUrl; els.companyLogoPreview.classList.remove('hidden'); }
       if (stampDataUrl) { els.stampPreview.src = stampDataUrl; els.stampPreview.classList.remove('hidden'); }
     }
     applyLanguage();
+    applyFont();
     syncAiButtons();
   }
 

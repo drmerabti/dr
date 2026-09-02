@@ -522,10 +522,15 @@ html[dir="rtl"] .cv-sidebar-sections h4{ letter-spacing: 0; }
 }
 
 /* ============================================================
-   Admin Request Generator
+   Admin Request Generator — precise rebuild
 ============================================================ */
 .tool-page-title-big{ font-size: clamp(1.6rem, 3.6vw, 2.3rem); font-weight: 900; text-align: center; margin: 16px 0 6px; color: var(--ink); }
-.usage-indicator{ text-align: center; font-size: .82rem; color: var(--ink-soft); margin: 0 0 20px; }
+.usage-indicator{ text-align: center; font-size: .82rem; color: var(--ink-soft); margin: 0 0 12px; }
+.sub-section-label{ text-align: center; font-size: .9rem; font-weight: 800; color: var(--ink-soft); margin: 12px 0 6px; }
+
+.centered-filter{ display: flex; justify-content: center; align-items: stretch; flex-wrap: wrap; gap: 10px; padding: 4px 2px 20px; max-width: 900px; margin-inline: auto; }
+.centered-filter.font-filter .theme-swatch-btn{ width: auto; height: auto; padding: 10px 18px; border-radius: 999px; background: var(--card-bg); border: 1px solid var(--line); font-size: .85rem; font-weight: 700; }
+.centered-filter.font-filter .theme-swatch-btn.active{ background: var(--accent); border-color: var(--accent); color: #fff; }
 
 .form-card-head{ display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
 .form-card-head .form-card-title{ margin: 0; }
@@ -538,36 +543,68 @@ html[dir="rtl"] .cv-sidebar-sections h4{ letter-spacing: 0; }
 
 .request-textarea{ min-height: 90px; resize: vertical; line-height: 1.7; margin-bottom: 14px; }
 
-.ai-actions-row{ display: flex; gap: 10px; }
+.ai-actions-row{ display: flex; gap: 10px; flex-wrap: wrap; }
 .ai-action-btn{
   display: flex; align-items: center; justify-content: center; gap: 8px;
   border: 1px solid var(--line); background: #fff; color: var(--ink);
-  font-family: inherit; font-size: .88rem; font-weight: 700;
-  padding: 12px 16px; border-radius: 12px; cursor: pointer; flex-shrink: 0;
+  font-family: inherit; font-size: .85rem; font-weight: 700;
+  padding: 12px 16px; border-radius: 12px; cursor: pointer; flex: 1; min-width: 130px;
 }
-.ai-action-btn svg{ width: 18px; height: 18px; }
-.ai-action-btn.primary{ flex: 1; background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%); color: #fff; border-color: transparent; }
+.ai-action-btn svg{ width: 17px; height: 17px; flex-shrink: 0; }
+.ai-action-btn.primary{ flex: 1.4; background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%); color: #fff; border-color: transparent; }
 .ai-action-btn:disabled{ opacity: .4; cursor: default; }
 .ai-action-btn:not(:disabled):not(.primary):hover{ border-color: var(--accent); }
 .ai-error{ background: #FDECEC; color: #C0392B; font-size: .85rem; padding: 10px 14px; border-radius: 10px; margin: 10px 0 0; }
+
+/* ---- Logo upload (simplified, icon-only) ---- */
+.logo-upload-box{ width: 64px; height: 64px; border-radius: 12px; border: 2px dashed var(--line); background: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; flex-shrink: 0; }
+.logo-upload-box:hover{ border-color: var(--accent); }
+.logo-preview{ width: 100%; height: 100%; object-fit: contain; }
+.upload-icon{ width: 26px; height: 26px; color: var(--ink-soft); }
 
 /* ---- Preview document ---- */
 .editor-preview{ display: flex; justify-content: center; }
 .request-page{
   width: 100%; max-width: 460px; min-height: 600px;
   background: #fff; box-shadow: var(--shadow); padding: 8% 9%;
-  font-family: var(--font-en); direction: rtl; text-align: start;
+  font-family: var(--rq-font-ar, 'Tajawal'), var(--rq-font-en, 'Inter'), sans-serif;
+  direction: rtl; text-align: right;
 }
-.req-header{ display: flex; align-items: center; gap: 12px; margin-bottom: 8%; padding-bottom: 4%; border-bottom: 1px solid var(--line); }
-.req-company-logo{ width: 50px; height: 50px; object-fit: contain; }
-.req-company-name{ font-size: 1rem; font-weight: 800; margin: 0; color: var(--ink); }
-.req-date{ font-size: .85rem; color: var(--ink-soft); margin: 0 0 6%; text-align: end; }
-.req-addressed{ font-size: .95rem; font-weight: 700; margin: 0 0 8%; color: var(--ink); }
+
+.req-header{ display: flex; justify-content: flex-end; margin-bottom: 14px; }
+.req-logo-box{ width: 36px; height: 36px; border-radius: 8px; background: #F7F9FB; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.req-company-logo{ width: 100%; height: 100%; object-fit: contain; }
+.req-logo-icon{ width: 17px; height: 17px; color: var(--ink-soft); }
+
+.req-date{ font-size: .8rem; font-weight: 800; color: var(--ink); text-align: left; margin: 0 0 16px; }
+
+.req-sender-block p{ margin: 0 0 3px; font-size: .85rem; }
+.req-sender-block{ margin-bottom: 18px; }
+.req-label{ font-weight: 800; color: var(--ink); }
+.req-value{ font-weight: 400; color: var(--ink); }
+.req-ltr{ direction: ltr; unicode-bidi: isolate; display: inline-block; }
+
+.req-addressed{
+  margin: 0 0 18px; font-size: .85rem; font-weight: 700; color: var(--ink);
+  margin-inline-start: 38%; margin-inline-end: 0; text-align: justify;
+}
+
+.req-subject{ text-align: center; margin: 0 0 20px; font-size: .92rem; }
+.req-subject .req-label{ font-weight: 800; }
+.req-subject .req-value{ font-weight: 400; }
+
 .req-body{
-  font-size: .92rem; line-height: 2; color: var(--ink); min-height: 180px;
-  white-space: pre-wrap; outline: none; margin-bottom: 10%;
+  font-size: .88rem; line-height: 2; color: var(--ink); min-height: 160px;
+  white-space: pre-wrap; outline: none; margin-bottom: 8%; text-align: justify;
 }
 .req-body:empty::before{ content: attr(data-placeholder); color: var(--ink-soft); }
-.req-signature{ text-align: end; }
-.req-stamp-img{ max-width: 110px; max-height: 110px; object-fit: contain; margin-bottom: 6px; }
-.req-signer-name{ font-size: .9rem; font-weight: 700; margin: 0; color: var(--ink); }
+
+.req-signature{ text-align: left; }
+.req-stamp-img{ max-width: 100px; max-height: 100px; object-fit: contain; margin-bottom: 4px; }
+.req-signature-caption{ font-size: .72rem; color: var(--ink-soft); margin: 0 0 3px; }
+.req-signer-name{ font-size: .88rem; font-weight: 700; margin: 0; color: var(--ink); }
+
+@media (max-width: 640px){
+  .req-addressed{ margin-inline-start: 10%; }
+}
+
