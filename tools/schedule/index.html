@@ -20,6 +20,7 @@
 
 <div class="hero">
   <h1 class="tool-title" data-i18n="title">مولّد جدول زمني</h1>
+  <p class="hero-section-name hidden" id="heroSectionName"></p>
   <p class="tool-sub" id="heroSub" data-i18n="subtitleList">اختر قسمًا أو أنشئ جدولًا جديدًا</p>
 </div>
 
@@ -37,11 +38,14 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M15 18l-6-6 6-6"/></svg>
         <span data-i18n-inline="backToList">القائمة</span>
       </button>
-      <h2 id="sectionName" class="section-name"></h2>
       <span id="readonlyBadge" class="readonly-badge hidden" data-i18n="readonlyBadge">عرض فقط — بدون تعديل</span>
     </div>
 
     <div class="controls" id="controlsBar">
+      <div class="field">
+        <label data-i18n="switchLabel">التنقل بين الأقسام</label>
+        <select id="sectionSwitcher"></select>
+      </div>
       <div class="field">
         <label data-i18n="daysLabel">عدد الأيام</label>
         <select id="daysCount">
@@ -68,16 +72,40 @@
       </div>
     </div>
 
+    <div class="controls" id="infoBar">
+      <div class="field field-wide">
+        <label data-i18n="ownerNameLabel">الاسم</label>
+        <input type="text" id="ownerName" maxlength="50">
+      </div>
+      <div class="field field-wide">
+        <label data-i18n="institutionLabel">المؤسسة</label>
+        <input type="text" id="institution" maxlength="60">
+      </div>
+    </div>
+    <div class="info-readonly hidden" id="infoReadonly"></div>
+
     <div class="controls-actions" id="controlsActions">
       <button class="btn btn-danger" id="clearBtn" data-i18n="clearBtn">مسح الكل</button>
       <button class="btn btn-ghost" id="printBtn" data-i18n="printBtn">طباعة / تصدير</button>
       <button class="btn btn-ghost" id="shareBtn" data-i18n="shareBtn">مشاركة</button>
       <button class="btn btn-primary" id="applyBtn" data-i18n="applyBtn">تحديث الجدول</button>
+      <button class="btn btn-cloud hidden" id="saveCloudBtn">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 18a4 4 0 01-.6-7.96A5.5 5.5 0 0117 9a4.5 4.5 0 01.5 8.98"/></svg>
+        <span data-i18n-inline="saveCloudBtn">حفظ في حسابي</span>
+      </button>
+      <button class="btn btn-cloud hidden" id="signInBtn">
+        <svg viewBox="0 0 24 24" width="15" height="15"><path fill="currentColor" d="M21.35 11.1h-9.2v2.8h5.3c-.23 1.4-1.6 4.1-5.3 4.1-3.2 0-5.8-2.6-5.8-5.9s2.6-5.9 5.8-5.9c1.8 0 3 .76 3.7 1.42l2.5-2.42C16.7 3.6 14.6 2.6 12.15 2.6 6.9 2.6 2.7 6.8 2.7 12s4.2 9.4 9.45 9.4c5.45 0 9.06-3.83 9.06-9.23 0-.62-.07-1.1-.16-1.07z"/></svg>
+        <span data-i18n-inline="signInBtn">تسجيل الدخول بقوقل</span>
+      </button>
     </div>
 
     <div class="legend" id="legend"></div>
 
     <div class="grid-wrap">
+      <div class="print-header" id="printHeader">
+        <p id="printHeaderSection" class="print-section-name"></p>
+        <p id="printHeaderMeta" class="print-meta"></p>
+      </div>
       <table class="schedule" id="scheduleTable"></table>
     </div>
 
@@ -134,6 +162,10 @@
   </div>
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="../../firebase-init.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

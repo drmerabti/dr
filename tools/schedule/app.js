@@ -1,4 +1,4 @@
-/* ================= I18N ================= */
+/* ================= I18N (ar / en / fr) ================= */
 const I18N = {
   ar: {
     backHome: 'الرئيسية', backToList: 'القائمة',
@@ -6,8 +6,12 @@ const I18N = {
     subtitleList: 'اختر قسمًا أو أنشئ جدولًا جديدًا',
     subtitleEditor: 'اضغط أي خانة لإضافة مهمة',
     createLabel: 'إنشاء جدول جديد',
+    switchLabel: 'التنقل بين الأقسام',
     daysLabel: 'عدد الأيام', startLabel: 'من الساعة', endLabel: 'إلى الساعة', stepLabel: 'مدة الخانة',
+    ownerNameLabel: 'الاسم', institutionLabel: 'المؤسسة',
     clearBtn: 'مسح الكل', printBtn: 'طباعة / تصدير', shareBtn: 'مشاركة', applyBtn: 'تحديث الجدول',
+    saveCloudBtn: 'حفظ في حسابي', savingCloudBtn: 'جارِ الحفظ...', savedCloudBtn: 'تم الحفظ ✓',
+    signInBtn: 'تسجيل الدخول بقوقل',
     emptyHint: 'يُحفظ جدولك تلقائيًا في هذا المتصفح',
     popoverTitle: 'إضافة مهمة', taskNameLabel: 'اسم المهمة', taskNoteLabel: 'ملاحظة (اختياري)',
     cancelBtn: 'إلغاء', saveBtn: 'حفظ',
@@ -20,6 +24,7 @@ const I18N = {
     confirmClear: 'هل تريد مسح مهام هذا الجدول؟',
     confirmDeleteSection: 'حذف هذا القسم نهائيًا؟',
     sectionMeta: (n) => `${n} أيام`,
+    printMeta: (owner, inst) => [owner, inst].filter(Boolean).join(' — '),
   },
   en: {
     backHome: 'Home', backToList: 'Sections',
@@ -27,8 +32,12 @@ const I18N = {
     subtitleList: 'Pick a section or create a new schedule',
     subtitleEditor: 'Click any cell to add a task',
     createLabel: 'Create new schedule',
+    switchLabel: 'Switch section',
     daysLabel: 'Days', startLabel: 'Start time', endLabel: 'End time', stepLabel: 'Slot length',
+    ownerNameLabel: 'Name', institutionLabel: 'Institution',
     clearBtn: 'Clear all', printBtn: 'Print / Export', shareBtn: 'Share', applyBtn: 'Update schedule',
+    saveCloudBtn: 'Save to my account', savingCloudBtn: 'Saving...', savedCloudBtn: 'Saved ✓',
+    signInBtn: 'Sign in with Google',
     emptyHint: 'Your schedule is saved automatically in this browser',
     popoverTitle: 'Add task', taskNameLabel: 'Task name', taskNoteLabel: 'Note (optional)',
     cancelBtn: 'Cancel', saveBtn: 'Save',
@@ -36,14 +45,43 @@ const I18N = {
     shareTitle: 'Share link', shareNote: 'Anyone with this link can only view the schedule, not edit it.',
     closeBtn: 'Close', copyBtn: 'Copy link', copiedBtn: 'Copied ✓',
     readonlyBadge: 'View only — no editing',
-    days: ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
+    days: ['Saturday','Sunday','Monday','Tuesday','Wednesday','Thursday','Friday'],
     cats: { study:'Study', work:'Work', personal:'Personal', rest:'Rest', sport:'Sport', other:'Other' },
     confirmClear: 'Clear this schedule\u2019s tasks?',
     confirmDeleteSection: 'Delete this section permanently?',
     sectionMeta: (n) => `${n} days`,
+    printMeta: (owner, inst) => [owner, inst].filter(Boolean).join(' — '),
+  },
+  fr: {
+    backHome: 'Accueil', backToList: 'Sections',
+    title: 'Générateur d\u2019emploi du temps',
+    subtitleList: 'Choisissez une section ou créez un nouvel emploi du temps',
+    subtitleEditor: 'Cliquez sur une case pour ajouter une tâche',
+    createLabel: 'Créer un nouvel emploi du temps',
+    switchLabel: 'Changer de section',
+    daysLabel: 'Jours', startLabel: 'Heure de début', endLabel: 'Heure de fin', stepLabel: 'Durée de case',
+    ownerNameLabel: 'Nom', institutionLabel: 'Établissement',
+    clearBtn: 'Tout effacer', printBtn: 'Imprimer / Exporter', shareBtn: 'Partager', applyBtn: 'Mettre à jour',
+    saveCloudBtn: 'Enregistrer dans mon compte', savingCloudBtn: 'Enregistrement...', savedCloudBtn: 'Enregistré ✓',
+    signInBtn: 'Se connecter avec Google',
+    emptyHint: 'Votre emploi du temps est enregistré automatiquement dans ce navigateur',
+    popoverTitle: 'Ajouter une tâche', taskNameLabel: 'Nom de la tâche', taskNoteLabel: 'Remarque (optionnel)',
+    cancelBtn: 'Annuler', saveBtn: 'Enregistrer',
+    createTitle: 'Créer un nouvel emploi du temps', sectionNameLabel: 'Nom de la section', createBtn: 'Créer',
+    shareTitle: 'Lien de partage', shareNote: 'Quiconque ouvre ce lien peut seulement consulter l\u2019emploi du temps, pas le modifier.',
+    closeBtn: 'Fermer', copyBtn: 'Copier le lien', copiedBtn: 'Copié ✓',
+    readonlyBadge: 'Lecture seule — sans modification',
+    days: ['Samedi','Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi'],
+    cats: { study:'Études', work:'Travail', personal:'Personnel', rest:'Repos', sport:'Sport', other:'Autre' },
+    confirmClear: 'Effacer les tâches de cet emploi du temps ?',
+    confirmDeleteSection: 'Supprimer définitivement cette section ?',
+    sectionMeta: (n) => `${n} jours`,
+    printMeta: (owner, inst) => [owner, inst].filter(Boolean).join(' — '),
   }
 };
+const LANG_ORDER = ['ar', 'en', 'fr'];
 let lang = localStorage.getItem('schedule_lang') || 'ar';
+if (!LANG_ORDER.includes(lang)) lang = 'ar';
 function t(k){ return I18N[lang][k]; }
 
 const CATS = [
@@ -67,11 +105,11 @@ function loadSections(){
     return raw ? JSON.parse(raw) : {};
   } catch(e){ return {}; }
 }
-function saveSections(sections){
+function saveSections(){
   localStorage.setItem(SECTIONS_KEY, JSON.stringify(sections));
 }
 function defaultSectionData(name){
-  return { name, daysCount: 7, startTime: '08:00', endTime: '18:00', stepMinutes: 60, tasks: {} };
+  return { name, ownerName: '', institution: '', daysCount: 7, startTime: '08:00', endTime: '18:00', stepMinutes: 60, tasks: {}, savedToCloud: false };
 }
 function newSectionId(){
   return 'sec_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
@@ -82,6 +120,8 @@ let sections = loadSections();
 let currentSectionId = null;
 let sharedData = null;      // when in read-only shared mode
 let isReadonly = false;
+let currentUser = null;
+let cloudSaveBusy = false;
 
 /* ================= Unicode-safe base64 ================= */
 function b64Encode(str){
@@ -116,12 +156,13 @@ function escapeHtml(str){
 function showView(name){
   document.getElementById('listView').classList.toggle('hidden', name !== 'list');
   document.getElementById('editorView').classList.toggle('hidden', name !== 'editor');
+  document.getElementById('heroSectionName').classList.toggle('hidden', name !== 'editor');
 }
 
 /* ================= List view ================= */
 function renderListView(){
-  document.getElementById('heroSub').setAttribute('data-i18n', 'subtitleList');
   document.getElementById('heroSub').textContent = t('subtitleList');
+  document.getElementById('heroSectionName').textContent = '';
 
   const grid = document.getElementById('sectionGrid');
   const ids = Object.keys(sections);
@@ -130,6 +171,7 @@ function renderListView(){
     const s = sections[id];
     html += `
       <div class="section-item-card" data-id="${id}">
+        ${s.savedToCloud ? `<span class="cloud-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 18a4 4 0 01-.6-7.96A5.5 5.5 0 0117 9a4.5 4.5 0 01.5 8.98"/></svg></span>` : ''}
         <button class="section-del" data-id="${id}">✕</button>
         <h3>${escapeHtml(s.name)}</h3>
         <p>${t('sectionMeta')(s.daysCount)}</p>
@@ -153,7 +195,7 @@ function renderListView(){
       e.stopPropagation();
       if (confirm(t('confirmDeleteSection'))){
         delete sections[btn.dataset.id];
-        saveSections(sections);
+        saveSections();
         renderListView();
       }
     });
@@ -178,10 +220,11 @@ document.getElementById('createBackdrop').addEventListener('click', (e) => {
 });
 document.getElementById('confirmCreateBtn').addEventListener('click', () => {
   const input = document.getElementById('newSectionName');
-  const name = input.value.trim() || (lang === 'ar' ? `القسم ${Object.keys(sections).length + 1}` : `Section ${Object.keys(sections).length + 1}`);
+  const fallback = { ar: `القسم ${Object.keys(sections).length + 1}`, en: `Section ${Object.keys(sections).length + 1}`, fr: `Section ${Object.keys(sections).length + 1}` };
+  const name = input.value.trim() || fallback[lang];
   const id = newSectionId();
   sections[id] = defaultSectionData(name);
-  saveSections(sections);
+  saveSections();
   closeCreatePopover();
   openSection(id);
 });
@@ -205,24 +248,43 @@ function backToList(){
 }
 document.getElementById('backToListBtn').addEventListener('click', backToList);
 
+function renderSwitcher(){
+  const sel = document.getElementById('sectionSwitcher');
+  sel.innerHTML = Object.keys(sections).map(id =>
+    `<option value="${id}" ${id === currentSectionId ? 'selected' : ''}>${escapeHtml(sections[id].name)}</option>`
+  ).join('');
+}
+document.getElementById('sectionSwitcher').addEventListener('change', (e) => {
+  openSection(e.target.value);
+});
+
 function renderEditor(){
   const data = currentData();
 
   document.getElementById('heroSub').textContent = isReadonly ? '' : t('subtitleEditor');
-  document.getElementById('sectionName').textContent = data.name;
+  document.getElementById('heroSectionName').textContent = data.name;
   document.getElementById('readonlyBadge').classList.toggle('hidden', !isReadonly);
   document.getElementById('backToListBtn').classList.toggle('hidden', isReadonly);
   document.getElementById('controlsBar').classList.toggle('hidden', isReadonly);
+  document.getElementById('infoBar').classList.toggle('hidden', isReadonly);
+  document.getElementById('infoReadonly').classList.toggle('hidden', !isReadonly);
   document.getElementById('shareBtn').classList.toggle('hidden', isReadonly);
   document.getElementById('clearBtn').classList.toggle('hidden', isReadonly);
   document.getElementById('applyBtn').classList.toggle('hidden', isReadonly);
   document.getElementById('emptyHint').classList.toggle('hidden', isReadonly);
+  updateCloudButtons();
 
-  if (!isReadonly){
+  if (isReadonly){
+    const metaText = t('printMeta')(data.ownerName, data.institution);
+    document.getElementById('infoReadonly').innerHTML = metaText ? `<b>${escapeHtml(metaText)}</b>` : '';
+  } else {
+    renderSwitcher();
     document.getElementById('daysCount').value = data.daysCount;
     document.getElementById('startTime').value = data.startTime;
     document.getElementById('endTime').value = data.endTime;
     document.getElementById('stepMinutes').value = data.stepMinutes;
+    document.getElementById('ownerName').value = data.ownerName || '';
+    document.getElementById('institution').value = data.institution || '';
   }
 
   renderLegend();
@@ -280,7 +342,7 @@ function renderTable(){
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
         delete sections[currentSectionId].tasks[btn.dataset.key];
-        saveSections(sections);
+        saveSections();
         renderTable();
       });
     });
@@ -323,7 +385,7 @@ document.getElementById('saveTaskBtn').addEventListener('click', () => {
   const note = document.getElementById('taskNote').value.trim();
   if (!name){ document.getElementById('taskName').focus(); return; }
   sections[currentSectionId].tasks[activeKey] = { name, note, cat: selectedCat };
-  saveSections(sections);
+  saveSections();
   renderTable();
   closeTaskPopover();
 });
@@ -335,14 +397,25 @@ document.getElementById('applyBtn').addEventListener('click', () => {
   s.startTime = document.getElementById('startTime').value;
   s.endTime = document.getElementById('endTime').value;
   s.stepMinutes = Number(document.getElementById('stepMinutes').value);
-  saveSections(sections);
+  saveSections();
   renderTable();
 });
-document.getElementById('printBtn').addEventListener('click', () => window.print());
+['ownerName', 'institution'].forEach(fieldId => {
+  document.getElementById(fieldId).addEventListener('change', () => {
+    sections[currentSectionId][fieldId] = document.getElementById(fieldId).value.trim();
+    saveSections();
+  });
+});
+document.getElementById('printBtn').addEventListener('click', () => {
+  const data = currentData();
+  document.getElementById('printHeaderSection').textContent = data.name;
+  document.getElementById('printHeaderMeta').textContent = t('printMeta')(data.ownerName, data.institution);
+  window.print();
+});
 document.getElementById('clearBtn').addEventListener('click', () => {
   if (confirm(t('confirmClear'))){
     sections[currentSectionId].tasks = {};
-    saveSections(sections);
+    saveSections();
     renderTable();
   }
 });
@@ -350,7 +423,7 @@ document.getElementById('clearBtn').addEventListener('click', () => {
 /* ================= Share ================= */
 document.getElementById('shareBtn').addEventListener('click', () => {
   const s = sections[currentSectionId];
-  const payload = { n: s.name, d: s.daysCount, st: s.startTime, et: s.endTime, sm: s.stepMinutes, t: s.tasks, l: lang };
+  const payload = { n: s.name, on: s.ownerName, inst: s.institution, d: s.daysCount, st: s.startTime, et: s.endTime, sm: s.stepMinutes, t: s.tasks, l: lang };
   const encoded = b64Encode(JSON.stringify(payload));
   const url = `${location.origin}${location.pathname}#shared=${encoded}`;
   document.getElementById('shareLinkInput').value = url;
@@ -374,22 +447,104 @@ document.getElementById('copyShareBtn').addEventListener('click', () => {
   });
 });
 
-/* ================= Language ================= */
+/* ================= Language (cycles ar -> en -> fr) ================= */
 function applyLanguage(){
   document.documentElement.lang = lang;
   document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-  document.getElementById('langToggle').textContent = lang === 'ar' ? 'EN' : 'AR';
+  const nextLang = LANG_ORDER[(LANG_ORDER.indexOf(lang) + 1) % LANG_ORDER.length];
+  document.getElementById('langToggle').textContent = nextLang.toUpperCase();
   document.querySelectorAll('[data-i18n]').forEach(el => {
     el.textContent = t(el.getAttribute('data-i18n'));
   });
+  updateCloudButtons();
   localStorage.setItem('schedule_lang', lang);
 }
 document.getElementById('langToggle').addEventListener('click', () => {
-  lang = lang === 'ar' ? 'en' : 'ar';
+  lang = LANG_ORDER[(LANG_ORDER.indexOf(lang) + 1) % LANG_ORDER.length];
   applyLanguage();
   if (currentSectionId || isReadonly) renderEditor();
   else renderListView();
 });
+
+/* ================= Firebase auth + cloud save ================= */
+function updateCloudButtons(){
+  const saveCloudBtn = document.getElementById('saveCloudBtn');
+  const signInBtn = document.getElementById('signInBtn');
+  if (isReadonly){
+    saveCloudBtn.classList.add('hidden');
+    signInBtn.classList.add('hidden');
+    return;
+  }
+  saveCloudBtn.classList.toggle('hidden', !currentUser);
+  signInBtn.classList.toggle('hidden', !!currentUser);
+  if (!cloudSaveBusy){
+    saveCloudBtn.querySelector('[data-i18n-inline]')?.remove();
+    const span = saveCloudBtn.querySelector('span');
+    if (span) span.textContent = t('saveCloudBtn');
+  }
+  const signSpan = signInBtn.querySelector('span');
+  if (signSpan) signSpan.textContent = t('signInBtn');
+}
+
+document.getElementById('signInBtn').addEventListener('click', () => {
+  if (!window.fbAuth) return;
+  window.fbAuth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(() => {});
+});
+
+document.getElementById('saveCloudBtn').addEventListener('click', () => {
+  if (!currentUser || !currentSectionId || !window.fbDb) return;
+  const btnSpan = document.getElementById('saveCloudBtn').querySelector('span');
+  cloudSaveBusy = true;
+  btnSpan.textContent = t('savingCloudBtn');
+  const s = sections[currentSectionId];
+  const payload = {
+    owner: currentUser.uid, name: s.name, ownerName: s.ownerName || '', institution: s.institution || '',
+    daysCount: s.daysCount, startTime: s.startTime, endTime: s.endTime, stepMinutes: s.stepMinutes,
+    tasks: s.tasks, updatedAt: new Date().toISOString()
+  };
+  window.fbDb.collection('schedules').doc(currentSectionId).set(payload, { merge: true })
+    .then(() => {
+      s.savedToCloud = true;
+      saveSections();
+      btnSpan.textContent = t('savedCloudBtn');
+      setTimeout(() => { cloudSaveBusy = false; btnSpan.textContent = t('saveCloudBtn'); }, 2000);
+    })
+    .catch(() => {
+      cloudSaveBusy = false;
+      btnSpan.textContent = t('saveCloudBtn');
+    });
+});
+
+function fetchCloudSections(){
+  if (!currentUser || !window.fbDb) return;
+  window.fbDb.collection('schedules').where('owner', '==', currentUser.uid).get()
+    .then(snap => {
+      let changed = false;
+      snap.forEach(doc => {
+        if (doc.id === currentSectionId) return; // don't clobber active edit session
+        const d = doc.data();
+        sections[doc.id] = {
+          name: d.name, ownerName: d.ownerName || '', institution: d.institution || '',
+          daysCount: d.daysCount, startTime: d.startTime, endTime: d.endTime, stepMinutes: d.stepMinutes,
+          tasks: d.tasks || {}, savedToCloud: true
+        };
+        changed = true;
+      });
+      if (changed){
+        saveSections();
+        if (!currentSectionId && !isReadonly) renderListView();
+      }
+    })
+    .catch(() => {});
+}
+
+if (window.fbAuth){
+  window.fbAuth.onAuthStateChanged(user => {
+    currentUser = user;
+    updateCloudButtons();
+    if (user) fetchCloudSections();
+  });
+}
 
 /* ================= Init: check for shared (read-only) link ================= */
 function tryLoadSharedFromHash(){
@@ -399,8 +554,8 @@ function tryLoadSharedFromHash(){
       const encoded = hash.slice('#shared='.length);
       const payload = JSON.parse(b64Decode(decodeURIComponent(encoded)));
       sharedData = {
-        name: payload.n, daysCount: payload.d, startTime: payload.st,
-        endTime: payload.et, stepMinutes: payload.sm, tasks: payload.t || {}
+        name: payload.n, ownerName: payload.on, institution: payload.inst, daysCount: payload.d,
+        startTime: payload.st, endTime: payload.et, stepMinutes: payload.sm, tasks: payload.t || {}
       };
       if (payload.l) lang = payload.l;
       isReadonly = true;
