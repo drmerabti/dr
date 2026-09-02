@@ -26,6 +26,8 @@
       errLimit: 'وصلت للحد الأقصى المسموح اليوم (مرتين كل 24 ساعة). حاول لاحقًا.',
       errGeneric: 'حدث خطأ أثناء التوليد، حاول مرة أخرى.',
       bodyPlaceholder: 'سيظهر نص طلبك هنا بعد الضغط على "توليد الطلب"، أو اكتبه يدويًا مباشرة...',
+      labelName: 'الاسم: ', labelLastName: 'اللقب: ', labelPhone: 'الهاتف: ', labelEmail: 'البريد: ',
+      labelSubject: 'الموضوع: ', signatureCaption: 'إمضاء',
       defaultAddressed: 'السيد المدير المحترم',
       listTitle: 'طلباتي', newRequestBtnText: 'إنشاء طلب', backToListText: 'طلباتي',
       clearAllText: 'تفريغ الخانات', emptyListHint: 'ما عندك طلبات محفوظة بعد.',
@@ -52,6 +54,8 @@
       errLimit: "You've reached today's limit (2 per 24 hours). Try again later.",
       errGeneric: 'Something went wrong while generating, please try again.',
       bodyPlaceholder: 'Your request text will appear here after pressing "Generate request", or write it manually...',
+      labelName: 'Name: ', labelLastName: 'Last name: ', labelPhone: 'Phone: ', labelEmail: 'Email: ',
+      labelSubject: 'Subject: ', signatureCaption: 'Signature',
       defaultAddressed: 'Dear Director',
       listTitle: 'My Requests', newRequestBtnText: 'New request', backToListText: 'My requests',
       clearAllText: 'Clear fields', emptyListHint: "You don't have any saved requests yet.",
@@ -78,6 +82,8 @@
       errLimit: "Vous avez atteint la limite du jour (2 fois par 24h). Réessayez plus tard.",
       errGeneric: 'Une erreur est survenue, veuillez réessayer.',
       bodyPlaceholder: 'Le texte de votre demande apparaîtra ici après avoir cliqué sur « Générer la demande », ou écrivez-le directement...',
+      labelName: 'Nom : ', labelLastName: 'Prénom : ', labelPhone: 'Téléphone : ', labelEmail: 'E-mail : ',
+      labelSubject: 'Objet : ', signatureCaption: 'Signature',
       defaultAddressed: 'Monsieur le Directeur',
       listTitle: 'Mes demandes', newRequestBtnText: 'Créer une demande', backToListText: 'Mes demandes',
       clearAllText: 'Vider les champs', emptyListHint: "Vous n'avez pas encore de demandes enregistrées.",
@@ -124,6 +130,7 @@
     requestPage: $('requestPage'), reqHeader: $('reqHeader'), reqCompanyLogo: $('reqCompanyLogo'),
     removeHeaderBtn: $('removeHeaderBtn'), removeStampBtn: $('removeStampBtn'),
     reqDate: $('reqDate'),
+    reqLabelName: $('reqLabelName'), reqLabelLastName: $('reqLabelLastName'), reqLabelPhone: $('reqLabelPhone'), reqLabelEmail: $('reqLabelEmail'), reqLabelSubject: $('reqLabelSubject'),
     reqSenderFirst: $('reqSenderFirst'), reqSenderLast: $('reqSenderLast'), reqSenderPhone: $('reqSenderPhone'), reqSenderEmail: $('reqSenderEmail'),
     reqExtraInfo: $('reqExtraInfo'),
     reqAddressed: $('reqAddressed'), reqSubjectValue: $('reqSubjectValue'), reqBody: $('reqBody'),
@@ -221,6 +228,14 @@
 
   /* ================= Cloud persistence (multiple saved requests) ================= */
   let currentRequestId = null;
+  const LAST_OPEN_KEY = 'adminreq:lastOpenId';
+  function setCurrentRequestId(id) {
+    currentRequestId = id;
+    if (id) { try { localStorage.setItem(LAST_OPEN_KEY, id); } catch (e) { /* ignore */ } }
+  }
+  function clearLastOpenId() {
+    try { localStorage.removeItem(LAST_OPEN_KEY); } catch (e) { /* ignore */ }
+  }
   let cloudSaveTimer = null;
 
   function requestsCollectionRef() {
@@ -281,7 +296,7 @@
         await col.doc(currentRequestId).set(payload, { merge: true });
       } else {
         const docRef = await col.add(Object.assign({ createdAt: firebase.firestore.FieldValue.serverTimestamp() }, payload));
-        currentRequestId = docRef.id;
+        setCurrentRequestId(docRef.id);
       }
       els.saveStatusIndicator.textContent = t('savedStatus');
     } catch (e) {
@@ -320,6 +335,7 @@
 
   els.backToListBtn.addEventListener('click', async () => {
     await flushPendingSave();
+    clearLastOpenId();
     showScreen('listScreen');
     renderSavedRequestsList();
   });
@@ -327,6 +343,7 @@
   els.clearAllBtn.addEventListener('click', () => {
     if (!confirm(t('confirmClear'))) return;
     currentRequestId = null;
+    clearLastOpenId();
     clearFormFields();
     saveDraft();
   });
@@ -361,7 +378,7 @@
         `;
         card.addEventListener('click', (e) => {
           if (e.target.closest('.saved-request-delete')) return;
-          currentRequestId = doc.id;
+          setCurrentRequestId(doc.id);
           applyState(data);
           els.saveStatusIndicator.textContent = '';
           showScreen('editorScreen');
@@ -407,10 +424,10 @@
         <input type="text" class="cv-input extra-val" data-i="${i}" placeholder="${t('extraValPh')}" value="${escapeAttr(f.val)}" style="flex:1.4;">
         <button type="button" class="dyn-row-remove" data-i="${i}">×</button>
       </div>`).join('');
-    els.extraFieldsList.querySelectorAll('.extra-key').forEach((inp) => inp.addEventListener('input', () => { extraFields[+inp.dataset.i].key = inp.value; saveDraft(); }));
-    els.extraFieldsList.querySelectorAll('.extra-val').forEach((inp) => inp.addEventListener('input', () => { extraFields[+inp.dataset.i].val = inp.value; saveDraft(); }));
+    els.extraFieldsList.querySelectorAll('.extra-key').forEach((inp) => inp.addEventListener('input', () => { extraFields[+inp.dataset.i].key = inp.value; renderPreview(); saveDraft(); }));
+    els.extraFieldsList.querySelectorAll('.extra-val').forEach((inp) => inp.addEventListener('input', () => { extraFields[+inp.dataset.i].val = inp.value; renderPreview(); saveDraft(); }));
     els.extraFieldsList.querySelectorAll('.dyn-row-remove').forEach((btn) => btn.addEventListener('click', () => {
-      extraFields.splice(parseInt(btn.getAttribute('data-i'), 10), 1); renderExtraFields(); saveDraft();
+      extraFields.splice(parseInt(btn.getAttribute('data-i'), 10), 1); renderExtraFields(); renderPreview(); saveDraft();
     }));
   }
   els.addExtraBtn.addEventListener('click', () => { extraFields.push({ key: '', val: '' }); renderExtraFields(); saveDraft(); });
@@ -592,6 +609,13 @@
     els.shortenBtnText.textContent = dict.shortenBtnLabel;
     els.stampCardTitle.textContent = dict.stampCardTitle;
     els.downloadBtnText.textContent = dict.download;
+    els.requestPage.setAttribute('dir', dict.dir);
+    els.reqLabelName.textContent = dict.labelName;
+    els.reqLabelLastName.textContent = dict.labelLastName;
+    els.reqLabelPhone.textContent = dict.labelPhone;
+    els.reqLabelEmail.textContent = dict.labelEmail;
+    els.reqLabelSubject.textContent = dict.labelSubject;
+    document.getElementById('reqSignatureCaption').textContent = dict.signatureCaption;
     els.listTitle.textContent = dict.listTitle;
     els.newRequestBtnText.textContent = dict.newRequestBtnText;
     els.backToListText.textContent = dict.backToListText;
@@ -634,11 +658,34 @@
 
   init();
 
+  async function tryResumeLastOpenRequest() {
+    let lastId = null;
+    try { lastId = localStorage.getItem(LAST_OPEN_KEY); } catch (e) { /* ignore */ }
+    if (!lastId) return false;
+    const col = requestsCollectionRef();
+    if (!col) return false;
+    try {
+      const doc = await col.doc(lastId).get();
+      if (!doc.exists) { clearLastOpenId(); return false; }
+      currentRequestId = lastId;
+      applyState(doc.data());
+      els.saveStatusIndicator.textContent = '';
+      showScreen('editorScreen');
+      return true;
+    } catch (e) {
+      clearLastOpenId();
+      return false;
+    }
+  }
+
   if (window.fbAuth) {
-    window.fbAuth.onAuthStateChanged((fbUser) => {
+    window.fbAuth.onAuthStateChanged(async (fbUser) => {
       if (fbUser) {
-        showScreen('listScreen');
-        renderSavedRequestsList();
+        const resumed = await tryResumeLastOpenRequest();
+        if (!resumed) {
+          showScreen('listScreen');
+          renderSavedRequestsList();
+        }
       } else {
         showScreen('lockedScreen');
       }

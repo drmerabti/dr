@@ -170,16 +170,16 @@
           <p class="req-date" id="reqDate"></p>
 
           <div class="req-sender-block">
-            <p><span class="req-label">الاسم: </span><span class="req-value" id="reqSenderFirst"></span></p>
-            <p><span class="req-label">اللقب: </span><span class="req-value" id="reqSenderLast"></span></p>
-            <p><span class="req-label">الهاتف: </span><span class="req-value req-ltr" id="reqSenderPhone"></span></p>
-            <p><span class="req-label">البريد: </span><span class="req-value req-ltr" id="reqSenderEmail"></span></p>
+            <p><span class="req-label" id="reqLabelName">الاسم: </span><span class="req-value" id="reqSenderFirst"></span></p>
+            <p><span class="req-label" id="reqLabelLastName">اللقب: </span><span class="req-value" id="reqSenderLast"></span></p>
+            <p><span class="req-label" id="reqLabelPhone">الهاتف: </span><span class="req-value req-ltr" id="reqSenderPhone"></span></p>
+            <p><span class="req-label" id="reqLabelEmail">البريد: </span><span class="req-value req-ltr" id="reqSenderEmail"></span></p>
             <div id="reqExtraInfo"></div>
           </div>
 
           <p class="req-addressed" id="reqAddressed"></p>
 
-          <p class="req-subject"><span class="req-label">الموضوع: </span><span class="req-value" id="reqSubjectValue"></span></p>
+          <p class="req-subject"><span class="req-label" id="reqLabelSubject">الموضوع: </span><span class="req-value" id="reqSubjectValue"></span></p>
 
           <div class="req-body" id="reqBody" contenteditable="true"></div>
 
@@ -188,7 +188,7 @@
             <button type="button" class="req-remove-btn hidden" id="removeStampBtn" title="إزالة">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
             </button>
-            <p class="req-signature-caption" id="reqSignatureCaption">إمضاء</p>
+            <p class="req-signature-caption" id="reqSignatureCaption"></p>
           </div>
         </div>
       </div>

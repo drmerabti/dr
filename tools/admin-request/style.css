@@ -578,10 +578,10 @@ html[dir="rtl"] .cv-sidebar-sections h4{ letter-spacing: 0; }
   width: 100%; max-width: 460px; min-height: 600px;
   background: #fff; box-shadow: var(--shadow); padding: 8% 9%;
   font-family: var(--rq-font-ar, 'Tajawal'), var(--rq-font-en, 'Inter'), sans-serif;
-  direction: rtl; text-align: right;
+  text-align: start;
 }
 
-.req-header{ position: relative; margin: -8% -9% 24px; }
+.req-header{ position: relative; margin: -8% -9% 36px; }
 .req-header:not(.hidden) + .req-date{ margin-top: 6px; }
 .req-remove-btn{
   position: absolute; top: 6px; inset-inline-end: 6px; z-index: 3;
@@ -595,7 +595,7 @@ html[dir="rtl"] .cv-sidebar-sections h4{ letter-spacing: 0; }
 .req-signature .req-remove-btn{ top: -8px; inset-inline-end: -8px; background: rgba(20,20,20,.7); }
 .req-letterhead-img{ width: 100%; height: auto; display: block; }
 
-.req-date{ font-size: .8rem; font-weight: 800; color: var(--ink); text-align: left; margin: 0 0 16px; }
+.req-date{ font-size: .8rem; font-weight: 800; color: var(--ink); text-align: end; margin: 0 0 16px; }
 
 .req-sender-block p{ margin: 0 0 3px; font-size: .85rem; }
 .req-sender-block{ margin-bottom: 18px; }
@@ -618,7 +618,7 @@ html[dir="rtl"] .cv-sidebar-sections h4{ letter-spacing: 0; }
 }
 .req-body:empty::before{ content: attr(data-placeholder); color: var(--ink-soft); }
 
-.req-signature{ text-align: left; }
+.req-signature{ text-align: end; }
 .req-stamp-img{ max-width: 100px; max-height: 100px; object-fit: contain; margin-bottom: 4px; }
 .req-signature-caption{ font-size: .72rem; color: var(--ink-soft); margin: 0; }
 
