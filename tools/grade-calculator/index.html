@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="htmlRoot">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="pageTitleTag">حاسبة المعدل — أكاديمية مرابطي</title>
+<meta name="description" content="احسب معدلك الدراسي بمرونة كاملة، بأي عدد من المواد ومعاملاتك الخاصة.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar">
+  <a href="../../tools.html" class="icon-btn" aria-label="back">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
+  </a>
+  <div class="lang-switch" role="group">
+    <button type="button" class="lang-btn" data-lang="ar">عربي</button>
+    <button type="button" class="lang-btn" data-lang="en">EN</button>
+    <button type="button" class="lang-btn" data-lang="fr">FR</button>
+  </div>
+</div>
+
+<main class="wrap gc-wrap">
+  <h1 class="title" id="pageTitle">حاسبة المعدل</h1>
+  <p class="subtitle" id="pageSubtitle">أضف موادك، عدّل المعاملات كما تريد، وشوف معدلك يتحدّث فورًا</p>
+
+  <div class="gc-top-row">
+    <button type="button" class="gc-weights-btn" id="openWeightsBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      <span id="openWeightsBtnText">معاملات الفروض</span>
+    </button>
+  </div>
+
+  <div id="subjectsList" class="gc-subjects-list"></div>
+
+  <button type="button" class="gc-add-subject-btn" id="addSubjectBtn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+    <span id="addSubjectBtnText">إضافة مادة</span>
+  </button>
+
+  <div class="gc-result-card">
+    <p class="gc-result-label" id="resultLabel">المعدل العام</p>
+    <p class="gc-result-value" id="resultValue">0.00</p>
+  </div>
+</main>
+
+<!-- Weights modal -->
+<div class="gc-modal-overlay hidden" id="weightsModalOverlay">
+  <div class="gc-modal">
+    <h3 id="weightsModalTitle">معاملات المكوّنات (عام لكل المواد)</h3>
+    <div class="gc-weight-row">
+      <label id="labelTest1">فرض 1</label>
+      <input type="number" id="weightTest1" class="gc-weight-input" min="0" step="0.5">
+    </div>
+    <div class="gc-weight-row">
+      <label id="labelTest2">فرض 2</label>
+      <input type="number" id="weightTest2" class="gc-weight-input" min="0" step="0.5">
+    </div>
+    <div class="gc-weight-row">
+      <label id="labelContinuous">مراقبة مستمرة</label>
+      <input type="number" id="weightContinuous" class="gc-weight-input" min="0" step="0.5">
+    </div>
+    <div class="gc-weight-row">
+      <label id="labelExam">اختبار الفصل</label>
+      <input type="number" id="weightExam" class="gc-weight-input" min="0" step="0.5">
+    </div>
+    <button type="button" class="gc-modal-save-btn" id="saveWeightsBtn">حفظ</button>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <p>© 2026 د. سفيان مرابطي</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
