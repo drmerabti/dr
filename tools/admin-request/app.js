@@ -5,8 +5,6 @@
 (function () {
   "use strict";
 
-  const CLOUD_FN_URL = 'https://us-central1-word-shortcuts.cloudfunctions.net/generateAdminRequest';
-
   /* ================= i18n ================= */
   const I18N = {
     ar: {
@@ -247,7 +245,6 @@
     try {
       const user = window.fbAuth && window.fbAuth.currentUser;
       if (!user) throw new Error('not-authed');
-      const idToken = await user.getIdToken();
 
       const payload = {
         mode, lang,
@@ -259,24 +256,18 @@
         currentText: els.reqBody.innerText.trim(),
       };
 
-      const res = await fetch(CLOUD_FN_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + idToken },
-        body: JSON.stringify(payload),
-      });
-
-      if (res.status === 429) { showAiError(t('errLimit')); return; }
-      if (!res.ok) throw new Error('bad-response');
-
-      const data = await res.json();
-      if (!data.text) throw new Error('no-text');
+      const callable = firebase.functions().httpsCallable('generateAdminRequest');
+      const result = await callable(payload);
+      const data = result.data;
+      if (!data || !data.text) throw new Error('no-text');
 
       els.reqBody.innerText = data.text;
       if (typeof data.usedToday === 'number') { dailyUsage.used = data.usedToday; updateUsageIndicator(); }
       syncAiButtons();
       saveDraft();
     } catch (e) {
-      showAiError(t('errGeneric'));
+      if (e && e.code === 'functions/resource-exhausted') { showAiError(t('errLimit')); }
+      else { showAiError(t('errGeneric')); }
     } finally {
       btn.disabled = false;
       btn.style.opacity = '';
