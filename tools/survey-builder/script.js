@@ -1,3 +1,4 @@
+let qCounter = 0;
 /* =====================================================================
    البيانات المحلية: كل استبيان (منشور أو مسودة) محفوظ في localStorage
    ليقدر المستخدم يدير عدة استبيانات من نفس الجهاز.
@@ -68,7 +69,7 @@ const PRESET_QUESTIONS = {
   job:       () => mkQ('radio', 'الحالة المهنية', ['طالب', 'موظف', 'عامل حر', 'باحث عن عمل', 'متقاعد']),
 };
 
-let qCounter = 0;
+
 function mkQ(type, title, options){
   qCounter++;
   return { key: 'q' + Date.now() + '_' + qCounter, type, title, required: false, options: [...options] };
