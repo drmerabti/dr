@@ -285,7 +285,8 @@
       }
       els.saveStatusIndicator.textContent = t('savedStatus');
     } catch (e) {
-      els.saveStatusIndicator.textContent = '';
+      console.error('[adminreq] saveToCloud failed:', e);
+      els.saveStatusIndicator.textContent = 'خطأ بالحفظ: ' + (e && e.message ? e.message : e);
     }
   }
 
@@ -374,7 +375,9 @@
         els.savedRequestsList.appendChild(card);
       });
     } catch (e) {
+      console.error('[adminreq] renderSavedRequestsList failed:', e);
       els.emptyListHint.classList.remove('hidden');
+      els.emptyListHint.textContent = 'خطأ بتحميل الطلبات: ' + (e && e.message ? e.message : e);
     }
   }
 
