@@ -1,6 +1,45 @@
 const params = new URLSearchParams(location.search);
 const surveyId = params.get('id');
 const wrap = document.getElementById('fillWrap');
+const progressWrap = document.getElementById('progressWrap');
+const progressFill = document.getElementById('progressFill');
+const progressLabel = document.getElementById('progressLabel');
+
+let surveyData = null;
+let allQuestionsFlat = [];
+
+const PRESET_ICONS = {
+  'الجنس': { type: 'gender' },
+};
+
+function updateProgress(){
+  const inputs = allQuestionsFlat;
+  let answered = 0;
+  inputs.forEach(q => {
+    if (isAnswered(q)) answered++;
+  });
+  const pct = inputs.length ? Math.round((answered / inputs.length) * 100) : 0;
+  progressFill.style.width = pct + '%';
+  progressLabel.textContent = `${answered} من ${inputs.length} أسئلة`;
+}
+
+function isAnswered(q){
+  if (q.type === 'short' || q.type === 'long' || q.type === 'dropdown'){
+    const el = wrap.querySelector(`[data-qid="${q.id}"]`);
+    return el && el.value.trim() !== '';
+  }
+  if (q.type === 'radio' || q.type === 'yesno'){
+    return !!wrap.querySelector(`input[name="${q.id}"]:checked`);
+  }
+  if (q.type === 'checkbox'){
+    return wrap.querySelectorAll(`input[name="${q.id}"]:checked`).length > 0;
+  }
+  if (q.type === 'rating'){
+    const group = wrap.querySelector(`[data-qid="${q.id}"]`);
+    return group && !!group.dataset.value;
+  }
+  return false;
+}
 
 function renderQuestionField(q){
   const box = document.createElement('div');
@@ -13,7 +52,7 @@ function renderQuestionField(q){
     inner += `<textarea class="sb-input" rows="3" data-qid="${q.id}" data-type="long"></textarea>`;
   } else if (q.type === 'radio' || q.type === 'yesno'){
     const opts = q.type === 'yesno' ? ['نعم', 'لا'] : q.options;
-    inner += `<div class="sb-q-options">` + opts.map((o, i) => `
+    inner += `<div class="sb-q-options">` + opts.map(o => `
       <label style="display:flex;align-items:center;gap:8px;">
         <input type="radio" name="${q.id}" value="${o}" data-type="radio"> ${o}
       </label>`).join('') + `</div>`;
@@ -34,6 +73,9 @@ function renderQuestionField(q){
   }
 
   box.innerHTML = inner;
+  box.addEventListener('input', updateProgress);
+  box.addEventListener('change', updateProgress);
+  box.addEventListener('click', () => setTimeout(updateProgress, 0));
   return box;
 }
 
@@ -48,42 +90,59 @@ async function init(){
     const res = await fetch(`/api/surveys/${surveyId}`);
     const survey = await res.json();
     if (!res.ok) throw new Error(survey.error || 'خطأ');
+    surveyData = survey;
+    allQuestionsFlat = survey.questions;
+
+    if (survey.color) document.documentElement.style.setProperty('--accent', survey.color);
 
     wrap.innerHTML = '';
-    const header = document.createElement('div');
-    header.className = 'sb-card';
-    header.innerHTML = `<h2 style="margin:0 0 8px;">${survey.title}</h2>${survey.description ? `<p style="color:var(--ink-soft);margin:0;">${survey.description}</p>` : ''}`;
-    wrap.appendChild(header);
 
-    survey.questions.forEach(q => wrap.appendChild(renderQuestionField(q)));
-
-    // نجوم التقييم
-    wrap.querySelectorAll('[data-type="rating"]').forEach(group => {
-      group.addEventListener('click', e => {
-        if (!e.target.classList.contains('rating-star')) return;
-        const val = e.target.dataset.val;
-        group.dataset.value = val;
-        group.querySelectorAll('.rating-star').forEach(s => {
-          s.textContent = s.dataset.val <= val ? '★' : '☆';
-        });
-      });
-    });
-
-    const submitBtn = document.createElement('button');
-    submitBtn.className = 'sb-publish-btn';
-    submitBtn.textContent = 'إرسال الإجابات';
-    submitBtn.addEventListener('click', () => submitAnswers(survey));
-    wrap.appendChild(submitBtn);
+    // شاشة الترحيب
+    const welcome = document.createElement('div');
+    welcome.className = 'sb-welcome-card';
+    welcome.innerHTML = `
+      <h2 style="margin:0 0 10px;">${survey.title}</h2>
+      ${survey.description ? `<p style="color:var(--ink-soft);margin:0 0 18px;">${survey.description}</p>` : ''}
+      <button id="startBtn" class="sb-publish-btn" style="width:auto;padding:12px 32px;">ابدأ الآن</button>
+    `;
+    wrap.appendChild(welcome);
+    welcome.querySelector('#startBtn').addEventListener('click', showQuestions);
 
   } catch (err) {
     wrap.innerHTML = `<div class="sb-card"><p>تعذّر تحميل الاستبيان: ${err.message}</p></div>`;
   }
 }
 
-async function submitAnswers(survey){
-  const answers = {};
+function showQuestions(){
+  wrap.innerHTML = '';
+  progressWrap.classList.remove('hidden');
 
-  for (const q of survey.questions){
+  surveyData.questions.forEach(q => wrap.appendChild(renderQuestionField(q)));
+
+  wrap.querySelectorAll('[data-type="rating"]').forEach(group => {
+    group.addEventListener('click', e => {
+      if (!e.target.classList.contains('rating-star')) return;
+      const val = e.target.dataset.val;
+      group.dataset.value = val;
+      group.querySelectorAll('.rating-star').forEach(s => {
+        s.textContent = s.dataset.val <= val ? '★' : '☆';
+      });
+      updateProgress();
+    });
+  });
+
+  const submitBtn = document.createElement('button');
+  submitBtn.className = 'sb-publish-btn';
+  submitBtn.textContent = 'إرسال الإجابات';
+  submitBtn.addEventListener('click', submitAnswers);
+  wrap.appendChild(submitBtn);
+
+  updateProgress();
+}
+
+async function submitAnswers(){
+  const answers = {};
+  for (const q of surveyData.questions){
     if (q.type === 'short' || q.type === 'long' || q.type === 'dropdown'){
       const el = wrap.querySelector(`[data-qid="${q.id}"]`);
       const val = el ? el.value.trim() : '';
@@ -107,12 +166,19 @@ async function submitAnswers(survey){
 
   try {
     const res = await fetch(`/api/surveys/${surveyId}/responses`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ answers }),
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ answers }),
     });
+    const data = await res.json();
     if (!res.ok) throw new Error('فشل الإرسال');
-    wrap.innerHTML = `<div class="sb-card"><h2>شكرًا لك 🙏</h2><p>تم إرسال إجاباتك بنجاح.</p></div>`;
+
+    progressWrap.classList.add('hidden');
+    const thanks = surveyData.thanksMessage && surveyData.thanksMessage.trim()
+      ? surveyData.thanksMessage : 'شكرًا لمشاركتك! 🙏';
+    wrap.innerHTML = `
+      <div class="sb-card" style="text-align:center;">
+        <h2 style="margin:0 0 10px;">${thanks}</h2>
+        <p style="color:var(--ink-soft);">أنت المُجيب رقم ${data.respondentNumber}</p>
+      </div>`;
   } catch (err) {
     alert('حدث خطأ أثناء الإرسال: ' + err.message);
   }

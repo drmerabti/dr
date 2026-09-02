@@ -1,24 +1,90 @@
 .survey-builder{ max-width: 720px; margin: 0 auto; }
+.hidden{ display:none !important; }
+
+.back-arrow{ font-size:1.1rem; text-decoration:none; margin-inline-end:6px; color: var(--accent); }
+
+/* ============ قائمة الاستبيانات ============ */
+.sb-new-btn{ margin-bottom: 20px; }
+.sb-drafts-list{ display:flex; flex-direction:column; gap:12px; }
+.sb-draft-card{
+  background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow);
+  padding: 16px 20px; display:flex; align-items:center; gap:14px;
+}
+.sb-draft-dot{ width:14px; height:14px; border-radius:50%; flex-shrink:0; }
+.sb-draft-info{ flex:1; }
+.sb-draft-title{ font-weight:700; color: var(--ink); margin:0 0 2px; }
+.sb-draft-meta{ font-size:.78rem; color: var(--ink-soft); margin:0; }
+.sb-draft-actions{ display:flex; gap:6px; }
+.sb-draft-actions button, .sb-draft-actions a{
+  border:none; background: var(--accent-soft); color: var(--accent);
+  padding:6px 12px; border-radius:20px; cursor:pointer; font-size:.8rem; text-decoration:none;
+}
+.sb-draft-actions .danger{ background:#fbe4e2; color:#c0392b; }
+.sb-empty-msg{ text-align:center; color: var(--ink-soft); padding: 30px 0; }
+
+/* ============ نافذة القوالب ============ */
+.sb-modal{
+  position: fixed; inset:0; background: rgba(20,30,40,.55);
+  display:flex; align-items:center; justify-content:center; z-index: 100; padding: 16px;
+}
+.sb-modal-box{
+  background:#fff; border-radius: var(--radius); padding: 26px; max-width: 460px; width:100%;
+  text-align:center;
+}
+.sb-modal-sub{ color: var(--ink-soft); font-size:.85rem; margin: 4px 0 18px; }
+.sb-template-grid{ display:grid; grid-template-columns: repeat(2,1fr); gap:12px; margin-bottom: 18px; }
+.sb-template-card{
+  display:flex; flex-direction:column; align-items:center; gap:8px;
+  background: var(--card-bg); border:1px solid var(--line); border-radius:14px;
+  padding:18px 8px; cursor:pointer; font-size:1.8rem; color: var(--ink);
+}
+.sb-template-card span{ font-size:.8rem; font-weight:700; }
+.sb-template-card:hover{ box-shadow: var(--shadow); }
+.sb-modal-close{
+  border:none; background: transparent; color: var(--ink-soft); cursor:pointer; text-decoration:underline;
+}
+
+/* ============ عام ============ */
+.sb-back-link{
+  border:none; background:transparent; color: var(--accent); cursor:pointer;
+  font-weight:700; margin-bottom: 16px; font-size:.9rem;
+}
 
 .sb-card{
   background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow);
   padding: 24px; margin-bottom: 20px;
 }
+.sb-title-row{ display:flex; gap:16px; align-items:flex-end; }
+.sb-color-input{ width:52px; height:42px; border:none; border-radius:10px; cursor:pointer; padding:0; background:none; }
+
 .sb-label{ display:block; font-weight:600; color: var(--ink); margin: 12px 0 6px; font-size:.9rem; }
 .sb-label:first-child{ margin-top: 0; }
 .sb-input{
   width: 100%; font-family: var(--font-ar); font-size: 1rem;
   padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line);
-  background: #fff; color: var(--ink);
+  background: #fff; color: var(--ink); box-sizing:border-box;
 }
+.sb-input::placeholder{ color:#a7b3bd; }
 
-.sb-questions{ display:flex; flex-direction:column; gap:14px; margin-bottom: 20px; }
+/* ============ المحاور ============ */
+.sb-section{ margin-bottom: 22px; }
+.sb-section-head{ display:flex; align-items:center; gap:10px; margin-bottom: 12px; }
+.sb-section-title-input{
+  flex:1; font-weight:800; font-size:1.05rem; border:none; border-bottom:2px solid var(--accent-soft);
+  padding:6px 4px; background:transparent; color: var(--ink); font-family: var(--font-ar);
+}
+.sb-section-del{ border:none; background:transparent; color:#c0392b; cursor:pointer; font-size:1rem; }
+
+.sb-questions{ display:flex; flex-direction:column; gap:14px; }
 
 .sb-question{
   background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow);
-  padding: 20px; position: relative;
+  padding: 20px; position: relative; animation: sbFadeIn .25s ease;
 }
+@keyframes sbFadeIn{ from{ opacity:0; transform:translateY(6px);} to{ opacity:1; transform:translateY(0);} }
+
 .sb-q-head{ display:flex; align-items:center; gap:10px; margin-bottom: 10px; }
+.sb-q-number{ font-weight:800; color: var(--accent); font-size:.85rem; }
 .sb-q-icon{ font-size:1.3rem; }
 .sb-q-type-label{ font-size:.78rem; color: var(--ink-soft); background: var(--accent-soft); padding:2px 10px; border-radius:20px; }
 .sb-q-actions{ margin-inline-start:auto; display:flex; gap:6px; }
@@ -28,21 +94,37 @@
 }
 .sb-q-actions button:hover{ filter:brightness(.95); }
 
+.sb-likert-picker{
+  display:flex; align-items:center; gap:8px; margin: 10px 0; font-size:.85rem; color: var(--ink-soft);
+}
+.sb-likert-picker select{
+  padding:5px 10px; border-radius:8px; border:1px solid var(--line); font-family: var(--font-ar);
+}
+
 .sb-q-options{ display:flex; flex-direction:column; gap:8px; margin-top: 10px; }
-.sb-q-option-row{ display:flex; gap:8px; align-items:center; }
+.sb-q-option-row{ display:flex; gap:10px; align-items:center; }
 .sb-q-option-row input{ flex:1; }
 .sb-q-option-row button{
-  border:none; background: transparent; color:#c0392b; cursor:pointer; font-size:1rem;
+  border:none; background: transparent; color:#c0392b; cursor:pointer; font-size:1rem; flex-shrink:0;
 }
 .sb-add-option-btn{
   align-self:flex-start; border:1px dashed var(--line); background:transparent;
   color: var(--accent); padding:6px 14px; border-radius:20px; cursor:pointer; font-size:.85rem;
+  margin-top: 6px;
 }
 
 .sb-q-required{ display:flex; align-items:center; gap:6px; margin-top:10px; font-size:.85rem; color: var(--ink-soft); }
 
+/* ============ الإضافة ============ */
 .sb-add-wrap{ margin-bottom: 24px; }
 .sb-add-title{ font-weight:600; color: var(--ink); margin-bottom:10px; }
+.sb-preset-row{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom: 20px; }
+.sb-preset-btn{
+  border:1px solid var(--line); background: var(--card-bg); color: var(--ink);
+  padding:8px 14px; border-radius:20px; cursor:pointer; font-size:.85rem; font-family: var(--font-ar);
+}
+.sb-preset-btn:hover{ background: var(--accent-soft); }
+
 .sb-type-grid{ display:grid; grid-template-columns: repeat(4, 1fr); gap:10px; }
 .sb-type-btn{
   display:flex; flex-direction:column; align-items:center; gap:6px;
@@ -52,6 +134,15 @@
 }
 .sb-type-btn span{ font-size:.72rem; font-weight:600; }
 .sb-type-btn:hover{ transform: translateY(-2px); box-shadow: var(--shadow); }
+
+.sb-add-section-btn{
+  width:100%; padding:12px; margin-bottom:22px; border:1px dashed var(--accent);
+  background:transparent; color: var(--accent); border-radius: var(--radius);
+  font-weight:700; cursor:pointer; font-family: var(--font-ar);
+}
+
+.sb-bottom-actions{ text-align:center; margin-bottom: 14px; }
+.sb-danger-link{ border:none; background:transparent; color:#c0392b; cursor:pointer; font-size:.85rem; }
 
 .sb-publish-btn{
   width:100%; padding:14px; border:none; border-radius: var(--radius);
@@ -64,9 +155,41 @@
   margin-top:20px; background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow);
   padding:24px;
 }
-.sb-link-row{ display:flex; gap:8px; margin-bottom:14px; }
+.sb-link-row{ display:flex; gap:8px; margin-bottom:14px; align-items:center; }
 .sb-link-row input{ flex:1; }
+.sb-copy-icon-btn{
+  border:none; background: var(--accent-soft); width:38px; height:38px; border-radius:10px;
+  cursor:pointer; font-size:1rem; flex-shrink:0;
+}
+
+/* ============ صفحة الإجابة (fill) ============ */
+.sb-progress-wrap{ margin-bottom: 6px; }
+.sb-progress-track{ height:10px; border-radius:20px; background: var(--accent-soft); overflow:hidden; }
+.sb-progress-fill{
+  height:100%; border-radius:20px; background: var(--accent);
+  animation: sbPulse 1.4s ease-in-out infinite; transition: width .3s ease;
+}
+@keyframes sbPulse{ 0%,100%{ opacity:1; } 50%{ opacity:.55; } }
+.sb-progress-label{ font-size:.8rem; color: var(--ink-soft); margin: 6px 0 20px; }
+
+.sb-welcome-card{
+  background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow);
+  padding: 26px; text-align:center; margin-bottom:20px;
+}
+.sb-preset-icon-row{ display:flex; gap:10px; }
+.sb-preset-icon-opt{
+  flex:1; display:flex; flex-direction:column; align-items:center; gap:6px;
+  border-radius:12px; padding:14px; cursor:pointer; font-size:1.5rem; border:2px solid transparent;
+}
+.sb-preset-icon-opt span{ font-size:.85rem; font-weight:700; color: var(--ink); }
+.sb-preset-icon-opt.selected{ border-color: var(--accent); }
 
 @media (max-width: 640px){
   .sb-type-grid{ grid-template-columns: repeat(3, 1fr); }
+  .sb-template-grid{ grid-template-columns: repeat(2,1fr); }
+}
+
+@media print{
+  .topbar, .site-footer, .breadcrumbs, #exportBtn, #printBtn{ display:none !important; }
+  .sb-question, .sb-card{ box-shadow:none !important; border:1px solid #ddd; break-inside: avoid; }
 }

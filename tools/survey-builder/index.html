@@ -18,6 +18,7 @@
 </header>
 
 <nav class="breadcrumbs">
+  <a href="../../tools.html" class="back-arrow" title="رجوع للأدوات">→</a>
   <a href="../../index.html" class="crumb-home">الرئيسية</a>
   <span> / </span>
   <a href="../../tools.html" class="crumb-home">الأدوات</a>
@@ -26,18 +27,62 @@
 
 <main id="app">
   <section class="view">
-    <div class="survey-builder">
+
+    <!-- ============ قائمة الاستبيانات ============ -->
+    <div id="listView" class="survey-builder">
+      <button id="newSurveyBtn" class="sb-publish-btn sb-new-btn">+ استبيان جديد</button>
+      <div id="surveysList" class="sb-drafts-list"></div>
+    </div>
+
+    <!-- ============ نافذة اختيار قالب ============ -->
+    <div id="templateModal" class="sb-modal hidden">
+      <div class="sb-modal-box">
+        <h3>ابدأ استبيانك</h3>
+        <p class="sb-modal-sub">اختر قالبًا جاهزًا أو ابدأ من صفر</p>
+        <div class="sb-template-grid">
+          <button class="sb-template-card" data-tpl="blank">📄<span>صفحة فارغة</span></button>
+          <button class="sb-template-card" data-tpl="employee">🏢<span>رضا الموظفين</span></button>
+          <button class="sb-template-card" data-tpl="course">🎓<span>تقييم دورة</span></button>
+          <button class="sb-template-card" data-tpl="opinion">💬<span>استطلاع رأي</span></button>
+        </div>
+        <button id="closeTemplateModal" class="sb-modal-close">إلغاء</button>
+      </div>
+    </div>
+
+    <!-- ============ واجهة البناء ============ -->
+    <div id="builderView" class="survey-builder hidden">
+      <button id="backToListBtn" class="sb-back-link">← رجوع لقائمة الاستبيانات</button>
 
       <div class="sb-card">
-        <label class="sb-label">عنوان الاستبيان</label>
-        <input type="text" id="surveyTitle" class="sb-input" placeholder="مثال: استبيان رضا الموظفين">
-        <label class="sb-label">وصف مختصر (اختياري)</label>
-        <textarea id="surveyDesc" class="sb-input" rows="2" placeholder="اشرح للمُجيب الهدف من الاستبيان..."></textarea>
+        <div class="sb-title-row">
+          <div style="flex:1;">
+            <label class="sb-label">عنوان الاستبيان</label>
+            <input type="text" id="surveyTitle" class="sb-input" placeholder="مثال: استبيان رضا الموظفين">
+          </div>
+          <div>
+            <label class="sb-label">لون الاستبيان</label>
+            <input type="color" id="surveyColor" class="sb-color-input" value="#2F5770">
+          </div>
+        </div>
+        <label class="sb-label">رسالة ترحيب (تظهر قبل الأسئلة)</label>
+        <textarea id="surveyDesc" class="sb-input" rows="2" placeholder="مرحبًا! يسعدنا مشاركتك رأيك، إجاباتك تهمنا كثيرًا..."></textarea>
+        <label class="sb-label">رسالة الشكر (تظهر بعد الإرسال)</label>
+        <input type="text" id="thanksMessage" class="sb-input" placeholder="شكرًا لمشاركتك! 🙏">
       </div>
 
-      <div id="questionsList" class="sb-questions"></div>
+      <div id="sectionsList"></div>
+
+      <button id="addSectionBtn" class="sb-add-section-btn">+ إضافة محور جديد</button>
 
       <div class="sb-add-wrap">
+        <p class="sb-add-title">أسئلة جاهزة سريعة:</p>
+        <div class="sb-preset-row">
+          <button class="sb-preset-btn" data-preset="gender">🚻 الجنس</button>
+          <button class="sb-preset-btn" data-preset="age">🎂 الفئة العمرية</button>
+          <button class="sb-preset-btn" data-preset="education">🎓 المؤهل العلمي</button>
+          <button class="sb-preset-btn" data-preset="job">💼 الوظيفة</button>
+        </div>
+
         <p class="sb-add-title">أضف سؤالاً جديدًا:</p>
         <div class="sb-type-grid">
           <button class="sb-type-btn" data-type="short">📝<span>نص قصير</span></button>
@@ -50,6 +95,10 @@
         </div>
       </div>
 
+      <div class="sb-bottom-actions">
+        <button id="clearSurveyBtn" class="sb-danger-link">🗑️ تفريغ الاستبيان بالكامل</button>
+      </div>
+
       <button id="publishBtn" class="sb-publish-btn">نشر الاستبيان ومشاركته</button>
 
       <div id="publishResult" class="sb-publish-result hidden">
@@ -57,17 +106,17 @@
         <p>رابط المشاركة (أرسله للمُجيبين):</p>
         <div class="sb-link-row">
           <input type="text" id="shareLink" class="sb-input" readonly>
-          <button id="copyShareBtn" class="related-btn">نسخ</button>
+          <button id="copyShareBtn" class="sb-copy-icon-btn" title="نسخ">📋</button>
         </div>
         <p>رابط النتائج والتحليل (احتفظ به لنفسك):</p>
         <div class="sb-link-row">
           <input type="text" id="resultsLink" class="sb-input" readonly>
-          <button id="copyResultsBtn" class="related-btn">نسخ</button>
+          <button id="copyResultsBtn" class="sb-copy-icon-btn" title="نسخ">📋</button>
         </div>
         <a id="openResultsBtn" href="#" class="store-btn">فتح صفحة النتائج</a>
       </div>
-
     </div>
+
   </section>
 </main>
 

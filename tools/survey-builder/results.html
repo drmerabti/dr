@@ -20,6 +20,15 @@
 <main id="app">
   <section class="view">
     <div id="resultsWrap" class="survey-builder"></div>
+
+    <div id="exportModal" class="sb-modal hidden">
+      <div class="sb-modal-box" style="text-align:right;">
+        <h3 style="text-align:center;">اختر الأسئلة المراد تصديرها</h3>
+        <div id="exportChecklist" style="max-height:300px;overflow:auto;margin:14px 0;display:flex;flex-direction:column;gap:8px;"></div>
+        <button id="confirmExportBtn" class="sb-publish-btn">تحميل ملف Excel (CSV)</button>
+        <button id="closeExportModal" class="sb-modal-close" style="display:block;margin:12px auto 0;">إلغاء</button>
+      </div>
+    </div>
   </section>
 </main>
 
