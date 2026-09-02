@@ -27,6 +27,11 @@
       errGeneric: 'حدث خطأ أثناء التوليد، حاول مرة أخرى.',
       bodyPlaceholder: 'سيظهر نص طلبك هنا بعد الضغط على "توليد الطلب"...',
       defaultAddressed: 'السيد المدير المحترم',
+      listTitle: 'طلباتي', newRequestBtnText: 'إنشاء طلب', backToListText: 'طلباتي',
+      clearAllText: 'تفريغ الخانات', emptyListHint: 'ما عندك طلبات محفوظة بعد.',
+      untitledRequest: 'طلب بدون عنوان', savingStatus: 'جارٍ الحفظ…', savedStatus: 'تم الحفظ',
+      confirmClear: 'هل تريد تفريغ كل الخانات؟ لن يتأثر الطلب المحفوظ سابقًا.',
+      confirmDelete: 'هل تريد حذف هذا الطلب نهائيًا؟',
     },
     en: {
       dir: 'ltr', pageTitleTag: 'Administrative Request Generator — Merabti Academy', topbarTitle: 'Admin Request Generator', toolTitle: 'Admin Request Generator',
@@ -48,6 +53,11 @@
       errGeneric: 'Something went wrong while generating, please try again.',
       bodyPlaceholder: 'Your request text will appear here after pressing "Generate request"...',
       defaultAddressed: 'Dear Director',
+      listTitle: 'My Requests', newRequestBtnText: 'New request', backToListText: 'My requests',
+      clearAllText: 'Clear fields', emptyListHint: "You don't have any saved requests yet.",
+      untitledRequest: 'Untitled request', savingStatus: 'Saving…', savedStatus: 'Saved',
+      confirmClear: 'Clear all fields? Previously saved requests are not affected.',
+      confirmDelete: 'Delete this request permanently?',
     },
     fr: {
       dir: 'ltr', pageTitleTag: 'Générateur de demande administrative — Académie Merabti', topbarTitle: 'Générateur de demande', toolTitle: 'Générateur de demande administrative',
@@ -69,6 +79,11 @@
       errGeneric: 'Une erreur est survenue, veuillez réessayer.',
       bodyPlaceholder: 'Le texte de votre demande apparaîtra ici après avoir cliqué sur « Générer la demande »...',
       defaultAddressed: 'Monsieur le Directeur',
+      listTitle: 'Mes demandes', newRequestBtnText: 'Créer une demande', backToListText: 'Mes demandes',
+      clearAllText: 'Vider les champs', emptyListHint: "Vous n'avez pas encore de demandes enregistrées.",
+      untitledRequest: 'Demande sans titre', savingStatus: 'Enregistrement…', savedStatus: 'Enregistré',
+      confirmClear: 'Vider tous les champs ? Les demandes déjà enregistrées ne seront pas affectées.',
+      confirmDelete: 'Supprimer définitivement cette demande ?',
     },
   };
 
@@ -86,7 +101,11 @@
     htmlRoot: $('htmlRoot'), pageTitleTag: $('pageTitleTag'), topbarTitle: $('topbarTitle'), toolTitle: $('toolTitle'),
     langBtns: document.querySelectorAll('.lang-btn'), usageIndicator: $('usageIndicator'),
     fontSectionLabel: $('fontSectionLabel'), fontFilter: $('fontFilter'),
-    loadingScreen: $('loadingScreen'), lockedScreen: $('lockedScreen'), editorScreen: $('editorScreen'),
+    loadingScreen: $('loadingScreen'), lockedScreen: $('lockedScreen'), listScreen: $('listScreen'), editorScreen: $('editorScreen'),
+    listTitle: $('listTitle'), newRequestBtn: $('newRequestBtn'), newRequestBtnText: $('newRequestBtnText'),
+    savedRequestsList: $('savedRequestsList'), emptyListHint: $('emptyListHint'),
+    backToListBtn: $('backToListBtn'), backToListText: $('backToListText'),
+    clearAllBtn: $('clearAllBtn'), clearAllText: $('clearAllText'), saveStatusIndicator: $('saveStatusIndicator'),
     lockedTitle: $('lockedTitle'), lockedSub: $('lockedSub'),
     tabLogin: $('tabLogin'), tabSignup: $('tabSignup'), authCardForm: $('authCardForm'), authCardError: $('authCardError'),
     acName: $('acName'), acEmail: $('acEmail'), acPassword: $('acPassword'), acSubmitBtn: $('acSubmitBtn'), acGoogleBtn: $('acGoogleBtn'),
@@ -102,11 +121,11 @@
     aiError: $('aiError'),
     stampCardTitle: $('stampCardTitle'), stampBox: $('stampBox'), stampPreview: $('stampPreview'), stampInput: $('stampInput'), stampPlaceholder: $('stampPlaceholder'),
     downloadPdfBtn: $('downloadPdfBtn'), downloadBtnText: $('downloadBtnText'),
-    requestPage: $('requestPage'), reqLogoBox: $('reqLogoBox'), reqCompanyLogo: $('reqCompanyLogo'), reqLogoIcon: $('reqLogoIcon'),
+    requestPage: $('requestPage'), reqHeader: $('reqHeader'), reqCompanyLogo: $('reqCompanyLogo'),
     reqDate: $('reqDate'),
     reqSenderFirst: $('reqSenderFirst'), reqSenderLast: $('reqSenderLast'), reqSenderPhone: $('reqSenderPhone'), reqSenderEmail: $('reqSenderEmail'),
     reqAddressed: $('reqAddressed'), reqSubjectValue: $('reqSubjectValue'), reqBody: $('reqBody'),
-    reqStamp: $('reqStamp'), reqSignatureCaption: $('reqSignatureCaption'), reqSignerName: $('reqSignerName'),
+    reqStamp: $('reqStamp'), reqSignatureCaption: $('reqSignatureCaption'),
   };
 
   /* ================= Fonts (4, matching cover-page) ================= */
@@ -136,7 +155,7 @@
   }
 
   function showScreen(name) {
-    [els.loadingScreen, els.lockedScreen, els.editorScreen].forEach((s) => s.classList.add('hidden'));
+    [els.loadingScreen, els.lockedScreen, els.listScreen, els.editorScreen].forEach((s) => s.classList.add('hidden'));
     els[name].classList.remove('hidden');
   }
 
@@ -190,10 +209,162 @@
       fRequestSubject: els.fRequestSubject.value, bodyText: els.reqBody.innerText, bodyIsOwned,
     };
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(draft)); } catch (e) { /* ignore */ }
+    if (!els.editorScreen.classList.contains('hidden')) scheduleCloudSave();
   }
   function loadDraft() {
     try { const raw = localStorage.getItem(STORAGE_KEY); return raw ? JSON.parse(raw) : null; }
     catch (e) { return null; }
+  }
+
+  /* ================= Cloud persistence (multiple saved requests) ================= */
+  let currentRequestId = null;
+  let cloudSaveTimer = null;
+
+  function requestsCollectionRef() {
+    const user = window.fbAuth && window.fbAuth.currentUser;
+    if (!user || !window.firebase || !firebase.firestore) return null;
+    return firebase.firestore().collection('users').doc(user.uid).collection('adminRequests');
+  }
+
+  function collectFullState() {
+    return {
+      activeFontId: activeFont.id, companyLogoDataUrl, stampDataUrl, extraFields,
+      fFirstName: els.fFirstName.value, fLastName: els.fLastName.value,
+      fPhone: els.fPhone.value, fEmail: els.fEmail.value, fAddressedTo: els.fAddressedTo.value, fDate: els.fDate.value,
+      fRequestSubject: els.fRequestSubject.value, bodyText: els.reqBody.innerText, bodyIsOwned,
+    };
+  }
+
+  function applyState(state) {
+    activeFont = FONTS.find((f) => f.id === state.activeFontId) || FONTS[0];
+    companyLogoDataUrl = state.companyLogoDataUrl || null;
+    stampDataUrl = state.stampDataUrl || null;
+    extraFields = state.extraFields || [];
+    els.fFirstName.value = state.fFirstName || ''; els.fLastName.value = state.fLastName || '';
+    els.fPhone.value = state.fPhone || ''; els.fEmail.value = state.fEmail || '';
+    els.fAddressedTo.value = state.fAddressedTo || ''; els.fDate.value = state.fDate || els.fDate.value;
+    els.fRequestSubject.value = state.fRequestSubject || '';
+    els.reqBody.innerText = state.bodyText || '';
+    bodyIsOwned = !!state.bodyIsOwned;
+    if (companyLogoDataUrl) { els.companyLogoPreview.src = companyLogoDataUrl; els.companyLogoPreview.classList.remove('hidden'); }
+    else { els.companyLogoPreview.classList.add('hidden'); }
+    if (stampDataUrl) { els.stampPreview.src = stampDataUrl; els.stampPreview.classList.remove('hidden'); }
+    else { els.stampPreview.classList.add('hidden'); }
+    renderExtraFields(); renderFontFilter(); applyFont(); renderPreview(); syncAiButtons();
+  }
+
+  function deriveTitle() {
+    const subject = els.fRequestSubject.value.trim();
+    if (subject) return subject.slice(0, 60);
+    return t('untitledRequest');
+  }
+
+  function scheduleCloudSave() {
+    if (cloudSaveTimer) clearTimeout(cloudSaveTimer);
+    els.saveStatusIndicator.textContent = t('savingStatus');
+    cloudSaveTimer = setTimeout(saveToCloud, 1200);
+  }
+
+  async function saveToCloud() {
+    const col = requestsCollectionRef();
+    if (!col) return;
+    const state = collectFullState();
+    const payload = Object.assign({}, state, {
+      title: deriveTitle(),
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+    });
+    try {
+      if (currentRequestId) {
+        await col.doc(currentRequestId).set(payload, { merge: true });
+      } else {
+        const docRef = await col.add(Object.assign({ createdAt: firebase.firestore.FieldValue.serverTimestamp() }, payload));
+        currentRequestId = docRef.id;
+      }
+      els.saveStatusIndicator.textContent = t('savedStatus');
+    } catch (e) {
+      els.saveStatusIndicator.textContent = '';
+    }
+  }
+
+  function clearFormFields() {
+    activeFont = FONTS[0];
+    companyLogoDataUrl = null; stampDataUrl = null; extraFields = [];
+    els.fFirstName.value = ''; els.fLastName.value = '';
+    els.fPhone.value = ''; els.fEmail.value = ''; els.fAddressedTo.value = '';
+    const today = new Date(); els.fDate.value = today.toISOString().slice(0, 10);
+    els.fRequestSubject.value = ''; els.reqBody.innerText = '';
+    bodyIsOwned = false;
+    els.companyLogoPreview.classList.add('hidden'); els.stampPreview.classList.add('hidden');
+    renderExtraFields(); renderFontFilter(); applyFont(); renderPreview(); syncAiButtons();
+  }
+
+  function openNewRequest() {
+    currentRequestId = null;
+    clearFormFields();
+    els.saveStatusIndicator.textContent = '';
+    saveDraft();
+    showScreen('editorScreen');
+  }
+  els.newRequestBtn.addEventListener('click', openNewRequest);
+
+  els.backToListBtn.addEventListener('click', () => {
+    showScreen('listScreen');
+    renderSavedRequestsList();
+  });
+
+  els.clearAllBtn.addEventListener('click', () => {
+    if (!confirm(t('confirmClear'))) return;
+    currentRequestId = null;
+    clearFormFields();
+    saveDraft();
+  });
+
+  function formatRelativeDate(ts) {
+    if (!ts || !ts.toDate) return '';
+    const d = ts.toDate();
+    const fmt = { ar: 'ar', en: 'en', fr: 'fr' }[lang];
+    return d.toLocaleDateString(fmt, { year: 'numeric', month: 'short', day: 'numeric' });
+  }
+
+  async function renderSavedRequestsList() {
+    const col = requestsCollectionRef();
+    els.savedRequestsList.innerHTML = '';
+    if (!col) { els.emptyListHint.classList.remove('hidden'); return; }
+    try {
+      const snap = await col.orderBy('updatedAt', 'desc').get();
+      if (snap.empty) { els.emptyListHint.classList.remove('hidden'); return; }
+      els.emptyListHint.classList.add('hidden');
+      snap.forEach((doc) => {
+        const data = doc.data();
+        const card = document.createElement('div');
+        card.className = 'saved-request-card';
+        card.innerHTML = `
+          <div>
+            <p class="saved-request-title">${escapeHtml(data.title || t('untitledRequest'))}</p>
+            <p class="saved-request-date">${formatRelativeDate(data.updatedAt)}</p>
+          </div>
+          <button type="button" class="saved-request-delete" data-id="${doc.id}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+          </button>
+        `;
+        card.addEventListener('click', (e) => {
+          if (e.target.closest('.saved-request-delete')) return;
+          currentRequestId = doc.id;
+          applyState(data);
+          els.saveStatusIndicator.textContent = '';
+          showScreen('editorScreen');
+        });
+        card.querySelector('.saved-request-delete').addEventListener('click', async (e) => {
+          e.stopPropagation();
+          if (!confirm(t('confirmDelete'))) return;
+          await col.doc(doc.id).delete();
+          renderSavedRequestsList();
+        });
+        els.savedRequestsList.appendChild(card);
+      });
+    } catch (e) {
+      els.emptyListHint.classList.remove('hidden');
+    }
   }
 
   /* ================= Logo / stamp uploads ================= */
@@ -242,9 +413,10 @@
   function renderPreview() {
     if (companyLogoDataUrl) {
       els.reqCompanyLogo.src = companyLogoDataUrl; els.reqCompanyLogo.classList.remove('hidden');
-      els.reqLogoIcon.classList.add('hidden');
+      els.reqHeader.classList.remove('hidden');
     } else {
-      els.reqCompanyLogo.classList.add('hidden'); els.reqLogoIcon.classList.remove('hidden');
+      els.reqCompanyLogo.classList.add('hidden');
+      els.reqHeader.classList.add('hidden');
     }
 
     const d = els.fDate.value ? new Date(els.fDate.value + 'T12:00:00') : new Date();
@@ -261,8 +433,6 @@
 
     if (stampDataUrl) { els.reqStamp.src = stampDataUrl; els.reqStamp.classList.remove('hidden'); }
     else { els.reqStamp.classList.add('hidden'); }
-    const fullName = `${els.fFirstName.value.trim() || DEFAULTS.firstName} ${els.fLastName.value.trim() || DEFAULTS.lastName}`.trim();
-    els.reqSignerName.textContent = fullName;
 
     els.reqBody.setAttribute('data-placeholder', t('bodyPlaceholder'));
   }
@@ -382,6 +552,11 @@
     els.shortenBtnText.textContent = dict.shortenBtnLabel;
     els.stampCardTitle.textContent = dict.stampCardTitle;
     els.downloadBtnText.textContent = dict.download;
+    els.listTitle.textContent = dict.listTitle;
+    els.newRequestBtnText.textContent = dict.newRequestBtnText;
+    els.backToListText.textContent = dict.backToListText;
+    els.clearAllText.textContent = dict.clearAllText;
+    els.emptyListHint.textContent = dict.emptyListHint;
     els.langBtns.forEach((b) => b.classList.toggle('active', b.getAttribute('data-lang') === lang));
     localStorage.setItem('adminreq:lang', lang);
 
@@ -420,7 +595,14 @@
   init();
 
   if (window.fbAuth) {
-    window.fbAuth.onAuthStateChanged((fbUser) => { showScreen(fbUser ? 'editorScreen' : 'lockedScreen'); });
+    window.fbAuth.onAuthStateChanged((fbUser) => {
+      if (fbUser) {
+        showScreen('listScreen');
+        renderSavedRequestsList();
+      } else {
+        showScreen('lockedScreen');
+      }
+    });
   } else {
     showScreen('lockedScreen');
   }

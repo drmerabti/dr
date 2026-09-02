@@ -534,8 +534,14 @@ html[dir="rtl"] .cv-sidebar-sections h4{ letter-spacing: 0; }
 
 .form-card-head{ display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
 .form-card-head .form-card-title{ margin: 0; }
-.add-row-btn{ border: 1px solid var(--accent); background: var(--accent-soft); color: var(--accent-dark); font-family: inherit; font-size: 1rem; font-weight: 800; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; line-height: 1; }
-.add-row-btn:hover{ background: var(--accent); color: #fff; }
+.add-row-btn{
+  display: flex; align-items: center; justify-content: center;
+  border: none; background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+  color: #fff; width: 34px; height: 34px; border-radius: 50%; cursor: pointer;
+  box-shadow: 0 4px 10px rgba(34,65,90,.25); transition: transform .15s ease;
+}
+.add-row-btn svg{ width: 16px; height: 16px; }
+.add-row-btn:hover{ transform: scale(1.08) rotate(90deg); }
 
 .dyn-row{ display: flex; gap: 8px; margin-bottom: 10px; align-items: center; }
 .dyn-row .cv-input{ margin-bottom: 0 !important; }
@@ -556,11 +562,15 @@ html[dir="rtl"] .cv-sidebar-sections h4{ letter-spacing: 0; }
 .ai-action-btn:not(:disabled):not(.primary):hover{ border-color: var(--accent); }
 .ai-error{ background: #FDECEC; color: #C0392B; font-size: .85rem; padding: 10px 14px; border-radius: 10px; margin: 10px 0 0; }
 
-/* ---- Logo upload (simplified, icon-only) ---- */
+/* ---- Logo upload (icon-only, square e.g. stamp) ---- */
 .logo-upload-box{ width: 64px; height: 64px; border-radius: 12px; border: 2px dashed var(--line); background: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; flex-shrink: 0; }
 .logo-upload-box:hover{ border-color: var(--accent); }
 .logo-preview{ width: 100%; height: 100%; object-fit: contain; }
 .upload-icon{ width: 26px; height: 26px; color: var(--ink-soft); }
+
+/* ---- Letterhead upload (wide banner shape) ---- */
+.letterhead-upload-box{ width: 100%; height: 90px; border-radius: 10px; }
+.letterhead-upload-box .logo-preview{ object-fit: contain; }
 
 /* ---- Preview document ---- */
 .editor-preview{ display: flex; justify-content: center; }
@@ -571,10 +581,8 @@ html[dir="rtl"] .cv-sidebar-sections h4{ letter-spacing: 0; }
   direction: rtl; text-align: right;
 }
 
-.req-header{ display: flex; justify-content: flex-end; margin-bottom: 14px; }
-.req-logo-box{ width: 36px; height: 36px; border-radius: 8px; background: #F7F9FB; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-.req-company-logo{ width: 100%; height: 100%; object-fit: contain; }
-.req-logo-icon{ width: 17px; height: 17px; color: var(--ink-soft); }
+.req-header{ margin: -8% -9% 16px; }
+.req-letterhead-img{ width: 100%; height: auto; display: block; }
 
 .req-date{ font-size: .8rem; font-weight: 800; color: var(--ink); text-align: left; margin: 0 0 16px; }
 
@@ -586,7 +594,7 @@ html[dir="rtl"] .cv-sidebar-sections h4{ letter-spacing: 0; }
 
 .req-addressed{
   margin: 0 0 18px; font-size: .85rem; font-weight: 700; color: var(--ink);
-  margin-inline-start: 38%; margin-inline-end: 0; text-align: justify;
+  margin-inline-start: 50%; margin-inline-end: 0; text-align: justify; text-align-last: justify;
 }
 
 .req-subject{ text-align: center; margin: 0 0 20px; font-size: .92rem; }
@@ -601,10 +609,48 @@ html[dir="rtl"] .cv-sidebar-sections h4{ letter-spacing: 0; }
 
 .req-signature{ text-align: left; }
 .req-stamp-img{ max-width: 100px; max-height: 100px; object-fit: contain; margin-bottom: 4px; }
-.req-signature-caption{ font-size: .72rem; color: var(--ink-soft); margin: 0 0 3px; }
-.req-signer-name{ font-size: .88rem; font-weight: 700; margin: 0; color: var(--ink); }
+.req-signature-caption{ font-size: .72rem; color: var(--ink-soft); margin: 0; }
 
 @media (max-width: 640px){
   .req-addressed{ margin-inline-start: 10%; }
 }
+
+/* ============================================================
+   Saved requests list + editor navigation
+============================================================ */
+.editor-topbar-row{ display: flex; justify-content: space-between; align-items: center; max-width: 900px; margin: 10px auto 0; padding: 0 4px; }
+.back-to-list-btn, .clear-all-btn{
+  display: flex; align-items: center; gap: 6px;
+  border: 1px solid var(--line); background: #fff; color: var(--ink-soft);
+  font-family: inherit; font-size: .82rem; font-weight: 700;
+  padding: 8px 14px; border-radius: 999px; cursor: pointer;
+}
+.back-to-list-btn svg, .clear-all-btn svg{ width: 15px; height: 15px; }
+.back-to-list-btn:hover{ border-color: var(--accent); color: var(--accent); }
+.clear-all-btn:hover{ border-color: #C0392B; color: #C0392B; }
+
+.save-indicator{ text-align: center; font-size: .76rem; color: var(--ink-soft); margin: 0 0 8px; min-height: 1em; }
+
+.list-actions-row{ display: flex; justify-content: center; margin: 10px 0 26px; }
+.list-actions-row .btn{ display: flex; align-items: center; gap: 8px; }
+.list-actions-row .btn svg{ width: 18px; height: 18px; }
+
+.saved-requests-list{ max-width: 640px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
+.saved-request-card{
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  background: var(--card-bg); border-radius: 16px; box-shadow: var(--shadow);
+  padding: 16px 20px; cursor: pointer; transition: transform .15s ease;
+}
+.saved-request-card:hover{ transform: translateY(-2px); }
+.saved-request-title{ font-size: .95rem; font-weight: 800; color: var(--ink); margin: 0 0 3px; }
+.saved-request-date{ font-size: .78rem; color: var(--ink-soft); margin: 0; }
+.saved-request-delete{
+  flex-shrink: 0; width: 34px; height: 34px; border-radius: 50%;
+  border: 1px solid var(--line); background: #fff; color: #C0392B; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.saved-request-delete svg{ width: 15px; height: 15px; }
+.saved-request-delete:hover{ background: #FDECEC; border-color: #C0392B; }
+
+.empty-hint{ text-align: center; color: var(--ink-soft); font-size: .9rem; margin-top: 20px; }
 
