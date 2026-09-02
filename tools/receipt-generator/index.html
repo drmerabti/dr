@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مولّد وصل استلام — أكاديمية مرابطي</title>
+<meta name="description" content="أنشئ وصل استلام احترافي في ثوانٍ، مع تحويل المبلغ إلى حروف تلقائيًا وتصدير PDF.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar">
+  <a href="../../tools.html" class="icon-btn" id="backBtn" aria-label="back">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
+  </a>
+  <span class="topbar-title" data-i18n="topbarTitle">مولّد وصل استلام</span>
+  <div class="topbar-actions">
+    <div class="lang-switch">
+      <button type="button" class="lang-btn" data-lang="ar">عربي</button>
+      <button type="button" class="lang-btn" data-lang="en">EN</button>
+      <button type="button" class="lang-btn" data-lang="fr">FR</button>
+    </div>
+  </div>
+</div>
+
+<main class="wrap">
+  <h1 class="page-title" data-i18n="pageTitle">مولّد وصل استلام</h1>
+
+  <div class="editor-grid">
+    <div class="editor-form">
+
+      <div class="form-card">
+        <h2 class="form-card-title" data-i18n="issuerCardTitle">بيانات الجهة المُصدِرة</h2>
+        <div class="logo-upload-box" id="logoBox">
+          <span class="logo-placeholder">🖼️</span>
+        </div>
+        <input type="file" id="logoInput" accept="image/*" hidden>
+        <label class="field-label" data-i18n="issuerName">اسم الجهة أو الشخص</label>
+        <input type="text" id="issuerName" class="cv-input live-field" data-i18n-placeholder="issuerPlaceholder" placeholder="اسم الجهة">
+      </div>
+
+      <div class="form-card">
+        <h2 class="form-card-title" data-i18n="detailsCardTitle">بيانات الوصل</h2>
+
+        <div class="field-row">
+          <div>
+            <label class="field-label" data-i18n="receiptNo">رقم الوصل</label>
+            <input type="text" id="receiptNo" class="cv-input live-field">
+          </div>
+          <div>
+            <label class="field-label" data-i18n="receiptDate">التاريخ</label>
+            <input type="date" id="receiptDate" class="cv-input live-field">
+          </div>
+        </div>
+
+        <label class="field-label" data-i18n="receivedFrom">استلمت من</label>
+        <input type="text" id="receivedFrom" class="cv-input live-field" data-i18n-placeholder="receivedFromPlaceholder" placeholder="الاسم الكامل">
+
+        <div class="field-row">
+          <div>
+            <label class="field-label" data-i18n="amount">المبلغ</label>
+            <input type="number" id="amountInput" class="cv-input live-field" min="0" step="0.01" placeholder="0.00">
+          </div>
+          <div>
+            <label class="field-label" data-i18n="currencyName">اسم العملة</label>
+            <input type="text" id="currencyInput" class="cv-input live-field" placeholder="دينار جزائري">
+          </div>
+        </div>
+
+        <label class="field-label" data-i18n="forWhat">وذلك مقابل</label>
+        <input type="text" id="forWhat" class="cv-input live-field" data-i18n-placeholder="forWhatPlaceholder" placeholder="وصف مختصر">
+
+        <label class="field-label" data-i18n="paymentMethod">طريقة الدفع</label>
+        <select id="paymentMethod" class="cv-select"></select>
+
+        <label class="field-label" data-i18n="receiverName">اسم المستلم (للتوقيع)</label>
+        <input type="text" id="receiverName" class="cv-input live-field" data-i18n-placeholder="receiverPlaceholder" placeholder="الاسم الكامل">
+      </div>
+
+      <div class="btn-row">
+        <button type="button" class="btn btn-primary btn-block" id="downloadBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M5 21h14"/></svg>
+          <span data-i18n="downloadPdf">تحميل PDF</span>
+        </button>
+        <button type="button" class="btn btn-secondary btn-block" id="printBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>
+          <span data-i18n="printBtn">طباعة</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="editor-preview">
+      <div>
+        <div class="receipt-card" id="receiptCard">
+          <div class="receipt-band"></div>
+          <div class="receipt-body">
+            <div class="receipt-header">
+              <img class="receipt-logo hidden" id="pvLogo" alt="">
+              <span class="receipt-issuer" id="pvIssuer"></span>
+            </div>
+
+            <div class="receipt-title-row">
+              <span class="receipt-title" id="pvTitle"></span>
+            </div>
+
+            <div class="receipt-meta">
+              <span><span id="pvNoLabel"></span>: <b id="pvNo"></b></span>
+              <span><span id="pvDateLabel"></span>: <b id="pvDate"></b></span>
+            </div>
+
+            <div class="receipt-line"><span class="lbl" id="pvFromLabel"></span><span class="val" id="pvFrom"></span></div>
+            <div class="receipt-line"><span class="lbl" id="pvAmountLabel"></span><span class="val" id="pvAmount"></span></div>
+            <div class="receipt-amount-box" id="pvAmountWords"></div>
+            <div class="receipt-line"><span class="lbl" id="pvForLabel"></span><span class="val" id="pvFor"></span></div>
+            <div class="receipt-line"><span class="lbl" id="pvMethodLabel"></span><span class="val" id="pvMethod"></span></div>
+
+            <div class="receipt-sign-row">
+              <div class="receipt-sign">
+                <div class="lbl" id="pvSignLabel"></div>
+                <div class="line"></div>
+                <div class="name" id="pvSignName"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="receipt-zigzag"></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
