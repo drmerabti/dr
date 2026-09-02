@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" id="htmlRoot">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Professional Report Generator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <span class="brand-mark">RG</span>
+    <span class="brand-name" data-i18n="appTitle">Report Generator</span>
+  </div>
+  <div class="lang-switch" role="group" aria-label="Language switcher">
+    <button type="button" class="lang-btn" data-lang="ar">العربية</button>
+    <button type="button" class="lang-btn active" data-lang="en">English</button>
+    <button type="button" class="lang-btn" data-lang="fr">Français</button>
+  </div>
+</div>
+
+<main class="app-grid">
+
+  <!-- ============ LEFT COLUMN: EDITOR ============ -->
+  <section class="col col-form">
+    <h1 class="col-title" data-i18n="reportEditor">Report Editor</h1>
+
+    <div class="card templates-card">
+      <h2 class="card-title" data-i18n="chooseTemplate">Start from a Template</h2>
+      <div class="template-grid" id="templateGrid">
+        <button type="button" class="template-btn" data-template="general">
+          <span class="tpl-icon">📋</span>
+          <span data-i18n="tplGeneral">General Work Report</span>
+        </button>
+        <button type="button" class="template-btn" data-template="incident">
+          <span class="tpl-icon">⚠️</span>
+          <span data-i18n="tplIncident">Incident Report</span>
+        </button>
+        <button type="button" class="template-btn" data-template="performance">
+          <span class="tpl-icon">📈</span>
+          <span data-i18n="tplPerformance">Periodic Performance Report</span>
+        </button>
+        <button type="button" class="template-btn" data-template="minutes">
+          <span class="tpl-icon">🗒️</span>
+          <span data-i18n="tplMinutes">Meeting Minutes</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 class="card-title" data-i18n="coverInfo">Cover Information</h2>
+
+      <div class="field-row">
+        <div class="field field-upload">
+          <label class="field-label" data-i18n="uploadLogo">Logo / Letterhead</label>
+          <div class="upload-box" id="logoUploadBox">
+            <input type="file" id="logoInput" accept=".png,.jpg,.jpeg,.svg,image/*" hidden>
+            <div class="upload-placeholder" id="logoPlaceholder">
+              <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+              <span data-i18n="uploadLogoText">Upload Logo</span>
+            </div>
+            <img id="logoPreview" class="upload-img" hidden alt="Logo preview">
+          </div>
+        </div>
+
+        <div class="field-stack">
+          <div class="field">
+            <label class="field-label" data-i18n="reportDate">Date</label>
+            <input type="date" id="reportDate" class="input">
+          </div>
+          <div class="field">
+            <label class="field-label" data-i18n="organization">Organization</label>
+            <input type="text" id="organization" class="input" data-i18n-placeholder="organizationPlaceholder" placeholder="Organization name">
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label" data-i18n="reportTitle">Report Title</label>
+        <input type="text" id="reportTitle" class="input" data-i18n-placeholder="reportTitlePlaceholder" placeholder="Report title">
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label" data-i18n="preparedBy">Prepared By</label>
+          <input type="text" id="preparedBy" class="input" data-i18n-placeholder="preparedByPlaceholder" placeholder="Your name">
+        </div>
+        <div class="field">
+          <label class="field-label" data-i18n="preparedFor">Prepared For</label>
+          <input type="text" id="preparedFor" class="input" data-i18n-placeholder="preparedForPlaceholder" placeholder="Recipient (optional)">
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 class="card-title" data-i18n="execSummary">Executive Summary</h2>
+      <textarea id="execSummary" class="textarea" rows="4" data-i18n-placeholder="execSummaryPlaceholder" placeholder="A short overview of the report's purpose and key findings..."></textarea>
+    </div>
+
+    <div class="card">
+      <div class="card-title-row">
+        <h2 class="card-title" data-i18n="sections">Report Sections</h2>
+        <span class="section-count-badge" id="sectionCountBadge">0</span>
+      </div>
+      <div id="sectionsList" class="sections-list"></div>
+      <button type="button" class="btn btn-add" id="addSectionBtn">
+        <span aria-hidden="true">+</span> <span data-i18n="addSection">Add Section</span>
+      </button>
+    </div>
+
+    <div class="card">
+      <h2 class="card-title" data-i18n="recommendations">Conclusion &amp; Recommendations</h2>
+      <textarea id="recommendations" class="textarea" rows="4" data-i18n-placeholder="recommendationsPlaceholder" placeholder="Final conclusions and recommended next steps..."></textarea>
+    </div>
+
+    <div class="card">
+      <h2 class="card-title" data-i18n="uploadSignature">Signature / Approval</h2>
+      <div class="upload-box upload-box-wide" id="signatureUploadBox">
+        <input type="file" id="signatureInput" accept=".png,.jpg,.jpeg,.svg,image/*" hidden>
+        <div class="upload-placeholder" id="signaturePlaceholder">
+          <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+          <span data-i18n="uploadSignatureText">Upload Signature</span>
+        </div>
+        <img id="signaturePreview" class="upload-img" hidden alt="Signature preview">
+      </div>
+    </div>
+
+    <div class="actions-row">
+      <button type="button" class="btn btn-primary" id="generatePdfBtn" data-i18n="generatePdf">Generate PDF</button>
+      <button type="button" class="btn btn-secondary" id="printBtn" data-i18n="print">Print</button>
+      <button type="button" class="btn btn-secondary" id="clearBtn" data-i18n="clear">Clear</button>
+    </div>
+    <div class="autosave-note" id="autosaveNote"></div>
+  </section>
+
+  <!-- ============ RIGHT COLUMN: PREVIEW ============ -->
+  <section class="col col-preview">
+    <h1 class="col-title" data-i18n="livePreview">Live Report Preview</h1>
+
+    <div class="preview-shell">
+      <div class="report-sheet" id="reportSheet">
+
+        <!-- Cover block -->
+        <div class="rp-cover">
+          <div class="rp-logo-wrap">
+            <img id="previewLogo" class="rp-logo" hidden alt="Logo">
+            <div class="rp-logo-placeholder" id="previewLogoPlaceholder" data-i18n="companyLogo">ORGANIZATION</div>
+          </div>
+          <div class="rp-cover-meta">
+            <div class="rp-org" id="previewOrg">—</div>
+            <div class="rp-date" id="previewDate">—</div>
+          </div>
+        </div>
+
+        <div class="rp-title-block">
+          <h2 class="rp-title" id="previewTitle" data-i18n="untitledReport">Untitled Report</h2>
+          <div class="rp-authors">
+            <span id="previewPreparedBy"></span>
+            <span id="previewPreparedFor"></span>
+          </div>
+        </div>
+
+        <!-- Table of contents -->
+        <div class="rp-toc" id="previewToc" hidden>
+          <div class="rp-block-label" data-i18n="tableOfContents">Table of Contents</div>
+          <ol class="rp-toc-list" id="previewTocList"></ol>
+        </div>
+
+        <!-- Executive summary -->
+        <div class="rp-block" id="previewSummaryBlock" hidden>
+          <div class="rp-block-label" data-i18n="execSummary">Executive Summary</div>
+          <div class="rp-block-text" id="previewSummary"></div>
+        </div>
+
+        <!-- Dynamic sections -->
+        <div id="previewSections"></div>
+
+        <!-- Recommendations -->
+        <div class="rp-block" id="previewRecBlock" hidden>
+          <div class="rp-block-label" data-i18n="recommendations">Conclusion &amp; Recommendations</div>
+          <div class="rp-block-text" id="previewRec"></div>
+        </div>
+
+        <!-- Signature -->
+        <div class="rp-signature">
+          <div class="rp-signature-label" data-i18n="signature">Signature</div>
+          <img id="previewSignature" class="rp-signature-img" hidden alt="Signature">
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<div class="confirm-overlay" id="confirmOverlay" hidden>
+  <div class="confirm-box">
+    <p id="confirmMessage" data-i18n="confirmClear">Clear the whole report? This cannot be undone.</p>
+    <div class="confirm-actions">
+      <button type="button" class="btn btn-secondary" id="confirmCancel" data-i18n="cancel">Cancel</button>
+      <button type="button" class="btn btn-danger" id="confirmOk" data-i18n="confirmYes">Clear</button>
+    </div>
+  </div>
+</div>
+
+<div class="confirm-overlay" id="pdfWarnOverlay" hidden>
+  <div class="confirm-box">
+    <p data-i18n="emptyReportWarning">This report has no title or sections yet. Generate the PDF anyway?</p>
+    <div class="confirm-actions">
+      <button type="button" class="btn btn-secondary" id="pdfWarnCancel" data-i18n="cancel">Cancel</button>
+      <button type="button" class="btn btn-primary" id="pdfWarnOk" data-i18n="continueAnyway">Generate Anyway</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
