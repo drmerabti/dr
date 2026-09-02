@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مولّد جدول زمني — د. سفيان مرابطي</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <a href="../../index.html" class="brand-link">
+    <svg class="back-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+    <span data-i18n="backHome">الرئيسية</span>
+  </a>
+  <button id="langToggle" class="lang-toggle" type="button">EN</button>
+</header>
+
+<div class="hero">
+  <h1 class="tool-title" data-i18n="title">مولّد جدول زمني</h1>
+  <p class="tool-sub" id="heroSub" data-i18n="subtitleList">اختر قسمًا أو أنشئ جدولًا جديدًا</p>
+</div>
+
+<main>
+
+  <!-- ============ LIST VIEW ============ -->
+  <section id="listView" class="view">
+    <div class="section-grid" id="sectionGrid"></div>
+  </section>
+
+  <!-- ============ EDITOR VIEW (also used read-only for shared) ============ -->
+  <section id="editorView" class="view hidden">
+    <div class="editor-head">
+      <button class="btn btn-ghost btn-back" id="backToListBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M15 18l-6-6 6-6"/></svg>
+        <span data-i18n-inline="backToList">القائمة</span>
+      </button>
+      <h2 id="sectionName" class="section-name"></h2>
+      <span id="readonlyBadge" class="readonly-badge hidden" data-i18n="readonlyBadge">عرض فقط — بدون تعديل</span>
+    </div>
+
+    <div class="controls" id="controlsBar">
+      <div class="field">
+        <label data-i18n="daysLabel">عدد الأيام</label>
+        <select id="daysCount">
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7" selected>7</option>
+        </select>
+      </div>
+      <div class="field">
+        <label data-i18n="startLabel">من الساعة</label>
+        <input type="time" id="startTime" value="08:00">
+      </div>
+      <div class="field">
+        <label data-i18n="endLabel">إلى الساعة</label>
+        <input type="time" id="endTime" value="18:00">
+      </div>
+      <div class="field">
+        <label data-i18n="stepLabel">مدة الخانة</label>
+        <select id="stepMinutes">
+          <option value="30">30</option>
+          <option value="60" selected>60</option>
+          <option value="90">90</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="controls-actions" id="controlsActions">
+      <button class="btn btn-danger" id="clearBtn" data-i18n="clearBtn">مسح الكل</button>
+      <button class="btn btn-ghost" id="printBtn" data-i18n="printBtn">طباعة / تصدير</button>
+      <button class="btn btn-ghost" id="shareBtn" data-i18n="shareBtn">مشاركة</button>
+      <button class="btn btn-primary" id="applyBtn" data-i18n="applyBtn">تحديث الجدول</button>
+    </div>
+
+    <div class="legend" id="legend"></div>
+
+    <div class="grid-wrap">
+      <table class="schedule" id="scheduleTable"></table>
+    </div>
+
+    <p class="empty-hint" id="emptyHint" data-i18n="emptyHint">يُحفظ جدولك تلقائيًا في هذا المتصفح</p>
+  </section>
+
+</main>
+
+<!-- ============ Add / edit task popover ============ -->
+<div class="popover-backdrop hidden" id="popoverBackdrop">
+  <div class="popover">
+    <h3 data-i18n="popoverTitle">إضافة مهمة</h3>
+    <div class="field">
+      <label data-i18n="taskNameLabel">اسم المهمة</label>
+      <input type="text" id="taskName" maxlength="40">
+    </div>
+    <div class="field">
+      <label data-i18n="taskNoteLabel">ملاحظة (اختياري)</label>
+      <input type="text" id="taskNote" maxlength="40">
+    </div>
+    <div class="color-row" id="colorRow"></div>
+    <div class="popover-actions">
+      <button class="btn btn-ghost" id="cancelTaskBtn" data-i18n="cancelBtn">إلغاء</button>
+      <button class="btn btn-primary" id="saveTaskBtn" data-i18n="saveBtn">حفظ</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Create section popover ============ -->
+<div class="popover-backdrop hidden" id="createBackdrop">
+  <div class="popover">
+    <h3 data-i18n="createTitle">إنشاء جدول جديد</h3>
+    <div class="field">
+      <label data-i18n="sectionNameLabel">اسم القسم</label>
+      <input type="text" id="newSectionName" maxlength="30" placeholder="القسم 1">
+    </div>
+    <div class="popover-actions">
+      <button class="btn btn-ghost" id="cancelCreateBtn" data-i18n="cancelBtn">إلغاء</button>
+      <button class="btn btn-primary" id="confirmCreateBtn" data-i18n="createBtn">إنشاء</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Share link popover ============ -->
+<div class="popover-backdrop hidden" id="shareBackdrop">
+  <div class="popover">
+    <h3 data-i18n="shareTitle">رابط المشاركة</h3>
+    <p class="share-note" data-i18n="shareNote">من يفتح هذا الرابط يشاهد الجدول فقط ولا يستطيع تعديله.</p>
+    <input type="text" id="shareLinkInput" class="share-link-input" readonly>
+    <div class="popover-actions">
+      <button class="btn btn-ghost" id="closeShareBtn" data-i18n="closeBtn">إغلاق</button>
+      <button class="btn btn-primary" id="copyShareBtn" data-i18n="copyBtn">نسخ الرابط</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
