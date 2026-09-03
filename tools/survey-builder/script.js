@@ -324,13 +324,16 @@ function renderOptions(optList, q){
 ===================================================================== */
 document.getElementById('newSurveyBtn').addEventListener('click', () => {
   document.getElementById('templateModal').classList.remove('hidden');
+  document.body.classList.add('sb-modal-open');
 });
 document.getElementById('closeTemplateModal').addEventListener('click', () => {
   document.getElementById('templateModal').classList.add('hidden');
+  document.body.classList.remove('sb-modal-open');
 });
 document.querySelectorAll('.sb-template-card').forEach(btn => {
   btn.addEventListener('click', () => {
     document.getElementById('templateModal').classList.add('hidden');
+    document.body.classList.remove('sb-modal-open');
     newSurveyFromTemplate(btn.dataset.tpl);
   });
 });

@@ -30,6 +30,7 @@
 .sb-modal-box{
   background:#fff; border-radius: var(--radius); padding: 26px; max-width: 460px; width:100%;
   text-align:center; box-shadow: 0 20px 50px rgba(0,0,0,.25);
+  max-height: 90vh; overflow-y: auto;
 }
 .sb-modal-sub{ color: var(--ink-soft); font-size:.85rem; margin: 4px 0 18px; }
 .sb-template-grid{ display:grid; grid-template-columns: repeat(2,1fr); gap:12px; margin-bottom: 18px; }
@@ -44,6 +45,9 @@
 .sb-template-card:hover{ box-shadow: var(--shadow); border-color: var(--accent); }
 .sb-modal-close{
   border:none; background: transparent; color: var(--ink-soft); cursor:pointer; text-decoration:underline;
+}
+body.sb-modal-open .topbar, body.sb-modal-open .site-footer, body.sb-modal-open .breadcrumbs{
+  visibility: hidden;
 }
 
 /* ============ عام ============ */
@@ -227,6 +231,57 @@
 
 @media print{
   .topbar, .site-footer, .breadcrumbs, .sb-results-actions{ display:none !important; }
-  .sb-question, .sb-card{ box-shadow:none !important; border:1px solid #ddd; break-inside: avoid; margin-bottom: 14px !important; padding: 16px !important; }
-  body{ background:#fff !important; }
+  .sb-question, .sb-card, .sb-cronbach-card, .sb-dashboard{ box-shadow:none !important; border:1px solid #ddd; break-inside: avoid; margin-bottom: 14px !important; padding: 16px !important; }
+  body{ background:#fff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .sb-dash-card, .sb-cronbach-card, .sb-interp, .sb-legend-dot{ -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
+
+/* ============ لوحة الملخص ============ */
+.sb-dashboard{ display:grid; grid-template-columns: repeat(auto-fit, minmax(140px,1fr)); gap:12px; margin-bottom: 20px; }
+.sb-dash-card{
+  background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow);
+  padding: 18px; text-align:center; border-top: 4px solid var(--dc, var(--accent));
+}
+.sb-dash-num{ font-size:1.7rem; font-weight:900; color: var(--ink); margin:0; }
+.sb-dash-label{ font-size:.78rem; color: var(--ink-soft); margin:4px 0 0; }
+
+/* ============ الرسوم الدائرية ============ */
+.sb-chart-row{ display:flex; align-items:center; gap:24px; flex-wrap:wrap; }
+.sb-donut-wrap{ flex-shrink:0; }
+.sb-legend{ flex:1; min-width:180px; display:flex; flex-direction:column; gap:8px; }
+.sb-legend-row{ display:flex; align-items:center; gap:8px; font-size:.85rem; }
+.sb-legend-dot{ width:12px; height:12px; border-radius:50%; flex-shrink:0; }
+.sb-legend-label{ flex:1; color: var(--ink); }
+.sb-legend-val{ color: var(--ink-soft); font-weight:700; }
+
+/* ============ صناديق التفسير ============ */
+.sb-interp{
+  background: var(--accent-soft); border-radius: 12px; padding: 14px 16px; margin-top: 16px;
+  border-inline-start: 4px solid var(--accent);
+}
+.sb-interp p{ margin: 0 0 6px; font-size: .87rem; line-height:1.7; color: var(--ink); }
+.sb-interp p:last-child{ margin-bottom: 0; }
+.sb-interp-h{ font-weight:800; font-size:.85rem; margin: 16px 0 4px; color: var(--ink); }
+.sb-interp-group .sb-interp-h:first-child{ margin-top: 4px; }
+
+.sb-stats-table{ width:100%; border-collapse:collapse; font-size:.88rem; }
+.sb-stats-table td{ padding:7px 0; }
+.sb-stats-table td:first-child{ color: var(--ink-soft); }
+.sb-stats-table td:last-child{ font-weight:700; text-align:left; }
+
+/* ============ بطاقة كرونباخ البارزة ============ */
+.sb-cronbach-card{
+  background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow);
+  padding: 22px; margin-bottom: 16px; border-inline-start: 6px solid var(--cc, var(--accent));
+}
+.sb-cronbach-head{ display:flex; align-items:center; gap:16px; margin-bottom: 10px; }
+.sb-cronbach-alpha{
+  font-size:2.2rem; font-weight:900; color: var(--cc, var(--accent));
+  background: color-mix(in srgb, var(--cc, var(--accent)) 15%, white);
+  width:74px; height:74px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+
+/* ============ جداول الارتباط والتقاطع ============ */
+.sb-corr-table{ width:100%; border-collapse:collapse; font-size:.78rem; text-align:center; }
+.sb-corr-table td{ padding:7px; }
+.sb-corr-table .rowlabel{ text-align:right; color: var(--ink-soft); }
