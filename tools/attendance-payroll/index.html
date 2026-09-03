@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="htmlRoot">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="pageTitleTag">إدارة الحضور والرواتب — أكاديمية مرابطي</title>
+<meta name="description" content="نظام متكامل لإدارة المصالح والمناصب والموظفين والحضور والرواتب.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar">
+  <a href="../../tools.html" class="icon-btn" id="backBtn" aria-label="back">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
+  </a>
+  <span class="topbar-title" id="topbarTitle">إدارة الحضور والرواتب</span>
+  <div class="topbar-actions">
+    <div class="lang-switch" role="group">
+      <button type="button" class="lang-btn" data-lang="ar">عربي</button>
+      <button type="button" class="lang-btn" data-lang="en">EN</button>
+      <button type="button" class="lang-btn" data-lang="fr">FR</button>
+    </div>
+  </div>
+</div>
+
+<main class="ap-page">
+
+  <section id="loadingScreen" class="screen loading-screen">
+    <div class="loading-spinner"></div>
+  </section>
+
+  <section id="lockedScreen" class="screen hidden">
+    <div class="locked-hero">
+      <div class="locked-icon">🔒</div>
+      <h1 id="lockedTitle">سجّل دخولك لاستخدام إدارة الحضور والرواتب</h1>
+      <p id="lockedSub">هذه الأداة متاحة للمستخدمين المسجّلين فقط.</p>
+    </div>
+    <div class="auth-card">
+      <div class="auth-tabs">
+        <button type="button" class="auth-tab active" data-mode="login" id="tabLogin">تسجيل الدخول</button>
+        <button type="button" class="auth-tab" data-mode="signup" id="tabSignup">إنشاء حساب</button>
+      </div>
+      <p class="auth-card-error hidden" id="authCardError"></p>
+      <form id="authCardForm">
+        <input type="text" id="acName" class="cv-input hidden" placeholder="الاسم الكامل">
+        <input type="email" id="acEmail" class="cv-input" required placeholder="البريد الإلكتروني">
+        <input type="password" id="acPassword" class="cv-input" required minlength="6" placeholder="كلمة المرور">
+        <button type="submit" class="btn btn-primary btn-block" id="acSubmitBtn">تسجيل الدخول</button>
+      </form>
+      <div class="auth-divider">أو</div>
+      <button type="button" class="auth-google-btn" id="acGoogleBtn">
+        <svg viewBox="0 0 48 48" width="18" height="18"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 8 3l6-6C34.5 5.1 29.5 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21 21-9.4 21-21c0-1.2-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.6 15.6 18.9 13 24 13c3.1 0 5.8 1.1 8 3l6-6C34.5 5.1 29.5 3 24 3c-7.6 0-14.1 4.3-17.7 10.7z"/><path fill="#4CAF50" d="M24 45c5.3 0 10.2-2 13.9-5.3l-6.4-5.4C29.3 36 26.8 37 24 37c-5.2 0-9.6-3.1-11.4-7.6l-6.6 5.1C9.8 40.6 16.3 45 24 45z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.2-4.2 5.6l6.4 5.4C40.5 36.6 43 30.8 43 24c0-1.2-.1-2.4-.4-3.5z"/></svg>
+        <span>المتابعة عبر Google</span>
+      </button>
+    </div>
+  </section>
+
+  <section id="dashboardScreen" class="screen hidden">
+    <div class="ap-shell">
+
+      <aside class="ap-sidebar">
+        <div class="ap-sidebar-brand">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 21h18M4 21V10l8-6 8 6v11M9 21v-6h6v6"/></svg>
+          <span id="sidebarBrand">مؤسستي</span>
+        </div>
+        <nav class="ap-nav" id="apNav">
+          <button type="button" class="ap-nav-item active" data-section="departments">
+            <span class="ap-nav-icon ap-icon-dept"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="1"/><path d="M9 8h1M14 8h1M9 12h1M14 12h1M9 16h1M14 16h1"/></svg></span>
+            <span id="navDepartments">المصالح</span>
+          </button>
+          <button type="button" class="ap-nav-item" data-section="positions">
+            <span class="ap-nav-icon ap-icon-pos"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></span>
+            <span id="navPositions">المناصب</span>
+          </button>
+          <button type="button" class="ap-nav-item" data-section="employees">
+            <span class="ap-nav-icon ap-icon-emp"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20c0-3.6 2.9-6.5 6.5-6.5s6.5 2.9 6.5 6.5"/><path d="M16.5 9a3 3 0 1 0 0-6M21 20c0-2.9-2-5.3-4.7-6"/></svg></span>
+            <span id="navEmployees">الموظفون</span>
+          </button>
+          <button type="button" class="ap-nav-item" data-section="attendance">
+            <span class="ap-nav-icon ap-icon-att"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="M8 15l2 2 4-4"/></svg></span>
+            <span id="navAttendance">الحضور</span>
+          </button>
+          <button type="button" class="ap-nav-item" data-section="payroll">
+            <span class="ap-nav-icon ap-icon-pay"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9.5 9.5c0-1.1 1.1-2 2.5-2s2.5.7 2.5 1.7c0 2.3-5 1.1-5 3.4 0 1 1.1 1.7 2.5 1.7s2.5-.9 2.5-2"/></svg></span>
+            <span id="navPayroll">الرواتب</span>
+          </button>
+        </nav>
+      </aside>
+
+      <div class="ap-main">
+
+        <!-- ===== Departments ===== -->
+        <div class="ap-section" id="sectionDepartments">
+          <div class="ap-section-head">
+            <h1 id="deptTitle">المصالح</h1>
+            <div class="ap-head-actions">
+              <button type="button" class="ap-btn" id="importDeptBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M20 17v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2"/></svg>
+                <span id="importDeptText">استيراد Excel</span>
+              </button>
+              <button type="button" class="ap-btn ap-btn-primary" id="addDeptBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                <span id="addDeptText">إضافة مصلحة</span>
+              </button>
+            </div>
+          </div>
+          <div class="ap-list" id="departmentsList"></div>
+          <p class="ap-empty-hint hidden" id="deptEmptyHint">ما فيه مصالح بعد.</p>
+        </div>
+
+        <!-- ===== Positions ===== -->
+        <div class="ap-section hidden" id="sectionPositions">
+          <div class="ap-section-head">
+            <h1 id="posTitle">المناصب</h1>
+            <div class="ap-head-actions">
+              <button type="button" class="ap-btn" id="importPosBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M20 17v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2"/></svg>
+                <span id="importPosText">استيراد Excel</span>
+              </button>
+              <button type="button" class="ap-btn ap-btn-primary" id="addPosBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                <span id="addPosText">إضافة منصب</span>
+              </button>
+            </div>
+          </div>
+          <div class="ap-list" id="positionsList"></div>
+          <p class="ap-empty-hint hidden" id="posEmptyHint">ما فيه مناصب بعد.</p>
+        </div>
+
+        <!-- ===== Employees ===== -->
+        <div class="ap-section hidden" id="sectionEmployees">
+          <div class="ap-section-head">
+            <h1 id="empTitle">الموظفون</h1>
+            <div class="ap-head-actions">
+              <button type="button" class="ap-btn" id="importEmpBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M20 17v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2"/></svg>
+                <span id="importEmpText">استيراد Excel</span>
+              </button>
+              <button type="button" class="ap-btn ap-btn-primary" id="addEmpBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                <span id="addEmpText">إضافة موظف</span>
+              </button>
+            </div>
+          </div>
+          <div class="ap-list" id="employeesList"></div>
+          <p class="ap-empty-hint hidden" id="empEmptyHint">ما فيه موظفون بعد.</p>
+        </div>
+
+        <!-- ===== Attendance (placeholder, phase 2) ===== -->
+        <div class="ap-section hidden" id="sectionAttendance">
+          <div class="ap-soon-box">
+            <span class="ap-soon-icon ap-icon-att"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span>
+            <h2 id="attSoonTitle">قسم الحضور — قريبًا</h2>
+            <p id="attSoonDesc">جدول الحضور الشهري بنظام الفرشاة السريعة قيد الإنشاء بجلسة قادمة.</p>
+          </div>
+        </div>
+
+        <!-- ===== Payroll (placeholder, phase 2) ===== -->
+        <div class="ap-section hidden" id="sectionPayroll">
+          <div class="ap-soon-box">
+            <span class="ap-soon-icon ap-icon-pay"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 7v10"/></svg></span>
+            <h2 id="paySoonTitle">قسم الرواتب — قريبًا</h2>
+            <p id="paySoonDesc">حساب الرواتب التلقائي وقانون الضريبة القابل للتعديل قيد الإنشاء بجلسة قادمة.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p>© 2026 د. سفيان مرابطي</p>
+</footer>
+
+<!-- ===== Modals ===== -->
+<div class="ap-modal-overlay hidden" id="deptModalOverlay">
+  <div class="ap-modal">
+    <h3 id="deptModalTitle">إضافة مصلحة</h3>
+    <p class="ap-modal-hint" id="deptModalHint">أدخل اسم المصلحة، مثال: مصلحة الموارد البشرية</p>
+    <label id="deptNameLabel">اسم المصلحة</label>
+    <input type="text" id="deptNameInput" class="cv-input" placeholder="مصلحة الموارد البشرية">
+    <label id="deptDescLabel">وصف مختصر (اختياري)</label>
+    <input type="text" id="deptDescInput" class="cv-input" placeholder="تسيير شؤون الموظفين والتوظيف">
+    <div class="ap-modal-actions">
+      <button type="button" class="ap-btn" id="deptCancelBtn">إلغاء</button>
+      <button type="button" class="ap-btn ap-btn-primary" id="deptSaveBtn">حفظ المصلحة</button>
+    </div>
+  </div>
+</div>
+
+<div class="ap-modal-overlay hidden" id="posModalOverlay">
+  <div class="ap-modal">
+    <h3 id="posModalTitle">إضافة منصب</h3>
+    <p class="ap-modal-hint" id="posModalHint">حدّد اسم المنصب وأجره القاعدي</p>
+    <label id="posNameLabel">اسم المنصب</label>
+    <input type="text" id="posNameInput" class="cv-input" placeholder="مهندس دولة">
+    <label id="posSalaryLabel">الأجر القاعدي (دج)</label>
+    <input type="number" id="posSalaryInput" class="cv-input" placeholder="45000">
+    <div class="ap-modal-actions">
+      <button type="button" class="ap-btn" id="posCancelBtn">إلغاء</button>
+      <button type="button" class="ap-btn ap-btn-primary" id="posSaveBtn">حفظ المنصب</button>
+    </div>
+  </div>
+</div>
+
+<div class="ap-modal-overlay hidden" id="empModalOverlay">
+  <div class="ap-modal">
+    <h3 id="empModalTitle">إضافة موظف</h3>
+    <p class="ap-modal-hint" id="empModalHint">اسم الموظف، ثم اربطه بمصلحة ومنصب</p>
+    <label id="empNameLabel">اسم الموظف</label>
+    <input type="text" id="empNameInput" class="cv-input" placeholder="أحمد بن علي">
+    <label id="empDeptLabel">المصلحة</label>
+    <select id="empDeptSelect" class="cv-input"></select>
+    <label id="empPosLabel">المنصب</label>
+    <select id="empPosSelect" class="cv-input"></select>
+    <div class="ap-modal-actions">
+      <button type="button" class="ap-btn" id="empCancelBtn">إلغاء</button>
+      <button type="button" class="ap-btn ap-btn-primary" id="empSaveBtn">حفظ الموظف</button>
+    </div>
+  </div>
+</div>
+
+<div class="ap-modal-overlay hidden" id="importModalOverlay">
+  <div class="ap-modal">
+    <h3 id="importModalTitle">استيراد من Excel</h3>
+    <p class="ap-modal-hint" id="importModalHint"></p>
+    <div class="ap-import-drop" id="importDropZone">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M20 17v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2"/></svg>
+      <span id="importDropText">اضغط لاختيار ملف Excel</span>
+      <input type="file" id="importFileInput" accept=".xlsx,.xls,.csv" hidden>
+    </div>
+    <p class="ap-import-status" id="importStatus"></p>
+    <div class="ap-modal-actions">
+      <button type="button" class="ap-btn" id="importCancelBtn">إلغاء</button>
+      <button type="button" class="ap-btn ap-btn-primary" id="importConfirmBtn" disabled>استيراد</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="../../firebase-init.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
