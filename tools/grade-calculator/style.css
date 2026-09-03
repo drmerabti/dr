@@ -353,32 +353,32 @@ html[dir="rtl"] .big-output{ padding: 20px 28px 20px 130px; }
 /* ============================================================
    Grade Average Calculator v2 — inline dynamic components
 ============================================================ */
-.gc-wrap{ max-width: 640px; }
+.gc-wrap{ max-width: 1000px; }
 
 .gc-components-section{ margin-bottom: 28px; }
 .gc-section-label{ text-align: center; font-size: .85rem; font-weight: 700; color: var(--ink-soft); margin: 0 0 12px; }
 
-.gc-components-row{ display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 12px; }
+.gc-components-row{ display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-bottom: 14px; }
 .gc-component-chip{
-  display: flex; align-items: center; gap: 6px;
-  background: var(--card-bg); box-shadow: var(--shadow); border-radius: 14px;
-  padding: 8px 10px 8px 8px;
+  display: flex; align-items: center; gap: 8px;
+  background: var(--card-bg); box-shadow: var(--shadow); border-radius: 16px;
+  padding: 12px 14px 12px 10px;
 }
 .gc-comp-name-input{
   border: none; background: transparent; font-family: inherit; font-weight: 700;
-  font-size: .85rem; color: var(--ink); width: 82px; outline: none;
+  font-size: 1rem; color: var(--ink); width: 108px; outline: none;
 }
 .gc-comp-weight-input{
-  width: 34px; border: 1px solid var(--line); border-radius: 8px; text-align: center;
-  padding: 4px 2px; font-family: inherit; font-size: .8rem;
+  width: 48px; border: 1px solid var(--line); border-radius: 10px; text-align: center;
+  padding: 8px 4px; font-family: inherit; font-size: .95rem;
 }
 .gc-comp-remove{
-  flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%;
+  flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%;
   border: none; background: none; color: var(--ink-soft); cursor: pointer;
   display: flex; align-items: center; justify-content: center;
 }
 .gc-comp-remove:hover{ background: #FDECEC; color: #C0392B; }
-.gc-comp-remove svg{ width: 12px; height: 12px; }
+.gc-comp-remove svg{ width: 14px; height: 14px; }
 
 .gc-add-component-btn{
   display: flex; align-items: center; gap: 6px; margin: 0 auto;
@@ -389,42 +389,42 @@ html[dir="rtl"] .big-output{ padding: 20px 28px 20px 130px; }
 .gc-add-component-btn svg{ width: 14px; height: 14px; }
 .gc-add-component-btn:hover{ border-color: var(--accent); color: var(--accent); }
 
-.gc-subjects-list{ display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
+.gc-subjects-list{ display: flex; flex-direction: column; gap: 14px; margin-bottom: 18px; }
 
 .gc-subject-card{
-  background: var(--card-bg); border-radius: 18px; box-shadow: var(--shadow);
-  padding: 16px 18px; text-align: start;
+  background: var(--card-bg); border-radius: 20px; box-shadow: var(--shadow);
+  padding: 20px 22px; text-align: start;
 }
-.gc-subject-head{ display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.gc-subject-head{ display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
 .gc-subject-icon{
-  width: 34px; height: 34px; flex-shrink: 0; border-radius: 10px;
+  width: 40px; height: 40px; flex-shrink: 0; border-radius: 12px;
   display: flex; align-items: center; justify-content: center;
 }
-.gc-subject-icon svg{ width: 19px; height: 19px; color: #fff; }
+.gc-subject-icon svg{ width: 22px; height: 22px; color: #fff; }
 .gc-subject-name{
   flex: 1; border: none; background: transparent; font-family: inherit;
-  font-size: .98rem; font-weight: 700; color: var(--ink); outline: none;
+  font-size: 1.1rem; font-weight: 700; color: var(--ink); outline: none;
   min-width: 0;
 }
-.gc-subject-coef-wrap{ display: flex; align-items: center; gap: 5px; font-size: .78rem; color: var(--ink-soft); flex-shrink: 0; }
+.gc-subject-coef-wrap{ display: flex; align-items: center; gap: 6px; font-size: .85rem; color: var(--ink-soft); flex-shrink: 0; }
 .gc-coef-input{
-  width: 42px; border: 1px solid var(--line); border-radius: 8px; text-align: center;
-  padding: 5px; font-family: inherit; font-size: .85rem;
+  width: 52px; border: 1px solid var(--line); border-radius: 10px; text-align: center;
+  padding: 8px; font-family: inherit; font-size: .95rem;
 }
 .gc-subject-delete{
-  flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%;
+  flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%;
   border: none; background: none; color: var(--ink-soft); cursor: pointer;
   display: flex; align-items: center; justify-content: center;
 }
 .gc-subject-delete:hover{ background: #FDECEC; color: #C0392B; }
-.gc-subject-delete svg{ width: 15px; height: 15px; }
+.gc-subject-delete svg{ width: 17px; height: 17px; }
 
-.gc-components-grid{ display: grid; grid-template-columns: repeat(auto-fit, minmax(60px, 1fr)); gap: 6px; margin-bottom: 10px; }
-.gc-comp-cell{ display: flex; flex-direction: column; align-items: center; gap: 3px; }
-.gc-comp-label{ font-size: .62rem; color: var(--ink-soft); font-weight: 600; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%; }
+.gc-components-grid{ display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 10px; margin-bottom: 14px; }
+.gc-comp-cell{ display: flex; flex-direction: column; align-items: center; gap: 5px; }
+.gc-comp-label{ font-size: .72rem; color: var(--ink-soft); font-weight: 600; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%; }
 .gc-comp-input{
-  width: 100%; border: 1px solid var(--line); border-radius: 8px; text-align: center;
-  padding: 6px 2px; font-family: inherit; font-size: .8rem;
+  width: 100%; border: 1px solid var(--line); border-radius: 10px; text-align: center;
+  padding: 10px 4px; font-family: inherit; font-size: 1rem; font-weight: 600;
 }
 
 .gc-subject-avg-row{
@@ -448,3 +448,15 @@ html[dir="rtl"] .big-output{ padding: 20px 28px 20px 130px; }
 }
 .gc-result-label{ font-size: .85rem; font-weight: 700; color: var(--accent-dark); margin: 0 0 6px; }
 .gc-result-value{ font-size: 2.4rem; font-weight: 900; color: var(--accent-dark); margin: 0; }
+.gc-result-rating{
+  display: inline-block; margin-top: 10px; font-size: .9rem; font-weight: 800;
+  color: var(--accent-dark); background: #fff; padding: 6px 18px; border-radius: 999px;
+}
+.gc-scale-row{
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  margin-top: 14px; font-size: .8rem; color: var(--accent-dark);
+}
+.gc-scale-input{
+  width: 60px; border: 1px solid var(--line); border-radius: 10px; text-align: center;
+  padding: 6px; font-family: inherit; font-size: .85rem; background: #fff;
+}

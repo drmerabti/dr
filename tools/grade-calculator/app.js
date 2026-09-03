@@ -13,7 +13,9 @@
       componentsSectionLabel: 'المكوّنات (تنطبق على كل المواد)', addComponentBtnText: 'إضافة مكوّن',
       addSubjectBtnText: 'إضافة مادة', resultLabel: 'المعدل العام',
       subjectAvgLabel: 'معدل المادة', coefLabel: 'المعامل',
-      newSubjectName: 'مادة جديدة', newComponentName: 'مكوّن جديد',
+      newSubjectName: 'مادة جديدة', newComponentName: 'مكوّن جديد', scaleLabel: 'من أصل',
+      ratingExcellent: 'ممتاز', ratingVeryGood: 'جيد جدًا', ratingGood: 'جيد',
+      ratingPass: 'مقبول', ratingWeak: 'ضعيف', ratingVeryWeak: 'ضعيف جدًا',
     },
     en: {
       dir: 'ltr', pageTitleTag: 'Grade Average Calculator — Merabti Academy',
@@ -21,7 +23,9 @@
       componentsSectionLabel: 'Components (apply to all subjects)', addComponentBtnText: 'Add component',
       addSubjectBtnText: 'Add subject', resultLabel: 'Overall average',
       subjectAvgLabel: 'Subject average', coefLabel: 'Coefficient',
-      newSubjectName: 'New subject', newComponentName: 'New component',
+      newSubjectName: 'New subject', newComponentName: 'New component', scaleLabel: 'out of',
+      ratingExcellent: 'Excellent', ratingVeryGood: 'Very good', ratingGood: 'Good',
+      ratingPass: 'Pass', ratingWeak: 'Weak', ratingVeryWeak: 'Very weak',
     },
     fr: {
       dir: 'ltr', pageTitleTag: 'Calculateur de moyenne — Académie Merabti',
@@ -29,7 +33,9 @@
       componentsSectionLabel: 'Composantes (pour toutes les matières)', addComponentBtnText: 'Ajouter une composante',
       addSubjectBtnText: 'Ajouter une matière', resultLabel: 'Moyenne générale',
       subjectAvgLabel: 'Moyenne matière', coefLabel: 'Coefficient',
-      newSubjectName: 'Nouvelle matière', newComponentName: 'Nouvelle composante',
+      newSubjectName: 'Nouvelle matière', newComponentName: 'Nouvelle composante', scaleLabel: 'sur',
+      ratingExcellent: 'Excellent', ratingVeryGood: 'Très bien', ratingGood: 'Bien',
+      ratingPass: 'Passable', ratingWeak: 'Faible', ratingVeryWeak: 'Très faible',
     },
   };
 
@@ -112,7 +118,8 @@
     addComponentBtn: $('addComponentBtn'), addComponentBtnText: $('addComponentBtnText'),
     subjectsList: $('subjectsList'),
     addSubjectBtn: $('addSubjectBtn'), addSubjectBtnText: $('addSubjectBtnText'),
-    resultLabel: $('resultLabel'), resultValue: $('resultValue'),
+    resultLabel: $('resultLabel'), resultValue: $('resultValue'), resultRating: $('resultRating'),
+    scaleLabel: $('scaleLabel'), scaleInput: $('scaleInput'),
   };
 
   function escapeAttr(s) { return String(s || '').replace(/"/g, '&quot;'); }
@@ -120,7 +127,7 @@
   /* ================= Persistence (local only) ================= */
   const STORAGE_KEY = 'gradecalc:data:v2';
   function saveState() {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ components, subjects })); } catch (e) { /* ignore */ }
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ components, subjects, scale: els.scaleInput.value })); } catch (e) { /* ignore */ }
   }
   function loadState() {
     try {
@@ -166,13 +173,21 @@
         </button>` : ''}
       </div>`).join('');
 
-    els.componentsRow.querySelectorAll('[data-field]').forEach((inp) => {
+    els.componentsRow.querySelectorAll('[data-field="weight"]').forEach((inp) => {
       inp.addEventListener('input', () => {
         const c = components.find((x) => x.id === inp.getAttribute('data-id'));
         if (!c) return;
-        c[inp.getAttribute('data-field')] = inp.value;
-        renderSubjects();
-        renderResult();
+        c.weight = inp.value;
+        updateAllAverages();
+        saveState();
+      });
+    });
+    els.componentsRow.querySelectorAll('[data-field="name"]').forEach((inp) => {
+      inp.addEventListener('input', () => {
+        const c = components.find((x) => x.id === inp.getAttribute('data-id'));
+        if (!c) return;
+        c.name = inp.value;
+        updateComponentLabels(c.id, inp.value);
         saveState();
       });
     });
@@ -181,6 +196,24 @@
         components = components.filter((c) => c.id !== btn.getAttribute('data-id'));
         renderAll();
       });
+    });
+  }
+
+  // Lightweight targeted updates (no full re-render, so inputs never lose focus mid-typing)
+  function updateAllAverages() {
+    subjects.forEach((s) => {
+      const card = els.subjectsList.querySelector(`.gc-subject-card[data-id="${s.id}"]`);
+      if (!card) return;
+      const avg = subjectAverage(s);
+      const valueEl = card.querySelector('.gc-subject-avg-value');
+      if (valueEl) valueEl.textContent = avg === null ? '—' : avg.toFixed(2);
+    });
+    renderResult();
+  }
+
+  function updateComponentLabels(componentId, newName) {
+    els.subjectsList.querySelectorAll(`.gc-comp-label[data-cid="${componentId}"]`).forEach((el) => {
+      el.textContent = newName;
     });
   }
 
@@ -196,14 +229,14 @@
       const avgText = avg === null ? '—' : avg.toFixed(2);
       const gradesHtml = components.map((c) => `
         <div class="gc-comp-cell">
-          <span class="gc-comp-label">${escapeAttr(c.name)}</span>
+          <span class="gc-comp-label" data-cid="${c.id}">${escapeAttr(c.name)}</span>
           <input type="number" class="gc-comp-input" data-id="${s.id}" data-cid="${c.id}" value="${escapeAttr(s.grades[c.id] || '')}">
         </div>`).join('');
 
       return `
       <div class="gc-subject-card" data-id="${s.id}">
         <div class="gc-subject-head">
-          <span class="gc-subject-icon" style="background:${ICON_COLORS[s.icon] || ICON_COLORS.book};">${iconSvg(s.icon)}</span>
+          <span class="gc-subject-icon" data-icon-for="${s.id}" style="background:${ICON_COLORS[s.icon] || ICON_COLORS.book};">${iconSvg(s.icon)}</span>
           <input type="text" class="gc-subject-name" data-id="${s.id}" data-field="name" value="${escapeAttr(s.name)}">
           <span class="gc-subject-coef-wrap">${t('coefLabel')} <input type="number" class="gc-coef-input" data-id="${s.id}" data-field="coef" min="0" step="0.5" value="${escapeAttr(s.coef)}"></span>
           <button type="button" class="gc-subject-delete" data-id="${s.id}" data-action="delete-subject">
@@ -230,8 +263,12 @@
         if (!s) return;
         s.name = inp.value;
         s.icon = guessIcon(inp.value);
-        renderResult(); saveState();
-        renderSubjects(); // refresh icon/color live
+        const iconEl = els.subjectsList.querySelector(`[data-icon-for="${s.id}"]`);
+        if (iconEl) {
+          iconEl.style.background = ICON_COLORS[s.icon] || ICON_COLORS.book;
+          iconEl.innerHTML = iconSvg(s.icon);
+        }
+        saveState();
       });
     });
     els.subjectsList.querySelectorAll('[data-field="coef"]').forEach((inp) => {
@@ -242,13 +279,13 @@
         renderResult(); saveState();
       });
     });
-    els.subjectsList.querySelectorAll('[data-cid]').forEach((inp) => {
+    els.subjectsList.querySelectorAll('.gc-comp-input[data-cid]').forEach((inp) => {
       inp.addEventListener('input', () => {
         const s = findSubject(inp.getAttribute('data-id'));
         if (!s) return;
         s.grades[inp.getAttribute('data-cid')] = inp.value;
-        renderSubjects();
-        renderResult(); saveState();
+        updateAllAverages();
+        saveState();
       });
     });
     els.subjectsList.querySelectorAll('[data-action="delete-subject"]').forEach((btn) => {
@@ -264,9 +301,23 @@
     renderAll();
   });
 
-  function renderResult() {
-    els.resultValue.textContent = overallAverage().toFixed(2);
+  function getRatingText(percentage) {
+    if (percentage >= 80) return t('ratingExcellent');
+    if (percentage >= 70) return t('ratingVeryGood');
+    if (percentage >= 60) return t('ratingGood');
+    if (percentage >= 50) return t('ratingPass');
+    if (percentage >= 25) return t('ratingWeak');
+    return t('ratingVeryWeak');
   }
+
+  function renderResult() {
+    const avg = overallAverage();
+    els.resultValue.textContent = avg.toFixed(2);
+    const scale = num(els.scaleInput.value) || 20;
+    const percentage = (avg / scale) * 100;
+    els.resultRating.textContent = getRatingText(percentage);
+  }
+  els.scaleInput.addEventListener('input', () => { renderResult(); saveState(); });
 
   function renderAll() {
     renderComponents();
@@ -288,9 +339,11 @@
     els.addComponentBtnText.textContent = dict.addComponentBtnText;
     els.addSubjectBtnText.textContent = dict.addSubjectBtnText;
     els.resultLabel.textContent = dict.resultLabel;
+    els.scaleLabel.textContent = dict.scaleLabel;
     els.langBtns.forEach((b) => b.classList.toggle('active', b.getAttribute('data-lang') === lang));
     localStorage.setItem('gradecalc:lang', lang);
     renderSubjects();
+    renderResult();
   }
   els.langBtns.forEach((btn) => btn.addEventListener('click', () => { lang = btn.getAttribute('data-lang'); applyLanguage(); }));
 
@@ -300,6 +353,7 @@
     if (saved && saved.subjects && saved.subjects.length && saved.components && saved.components.length) {
       components = saved.components;
       subjects = saved.subjects;
+      if (saved.scale) els.scaleInput.value = saved.scale;
     } else {
       components = defaultComponents();
       subjects = defaultSubjects();
