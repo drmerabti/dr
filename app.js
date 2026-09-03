@@ -20,6 +20,22 @@ const ICONS = {
     <path d="M25 13h10M25 17h10M25 23h10M25 27h7" stroke="#B9CEE1" stroke-width="1.6" stroke-linecap="round"/>
     <path d="M25 33h10M25 37h6" stroke="#DCE6EE" stroke-width="1.6" stroke-linecap="round"/>
   </svg>`,
+       { id: 'tool-attendance-payroll', title_ar: 'إدارة الحضور والرواتب', title_en: 'Attendance & Payroll Manager',
+      desc_ar: 'نظام متكامل لإدارة المصالح والمناصب والموظفين — يتطلب تسجيل الدخول.', desc_en: 'A complete system for managing departments, positions, and employees — requires login.',
+      url: 'tools/attendance-payroll/', icon: ICONS.attendanceApp, family: 'admin' },
+     attendanceApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="gAtt" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#F0C56B"/>
+        <stop offset="1" stop-color="#B8860B"/>
+      </linearGradient>
+    </defs>
+    <ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/>
+    <rect x="7" y="9" width="34" height="30" rx="4" fill="url(#gAtt)"/>
+    <path d="M7 17h34" stroke="#fff" stroke-width="2"/>
+    <path d="M16 6v7M32 6v7" stroke="#B8860B" stroke-width="3" stroke-linecap="round"/>
+    <path d="M16 25l4 4 8-8" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>`,
   invoiceApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <linearGradient id="gInvA" x1="0" y1="0" x2="0" y2="1">
