@@ -132,7 +132,7 @@
     lockedTitle: $('lockedTitle'), lockedSub: $('lockedSub'),
     tabLogin: $('tabLogin'), tabSignup: $('tabSignup'), authCardForm: $('authCardForm'), authCardError: $('authCardError'),
     acName: $('acName'), acEmail: $('acEmail'), acPassword: $('acPassword'), acSubmitBtn: $('acSubmitBtn'), acGoogleBtn: $('acGoogleBtn'),
-    sidebarBrand: $('sidebarBrand'), apNav: $('apNav'),
+    apNav: $('apNav'),
     navDepartments: $('navDepartments'), navPositions: $('navPositions'), navEmployees: $('navEmployees'), navAttendance: $('navAttendance'), navPayroll: $('navPayroll'),
     sectionDepartments: $('sectionDepartments'), sectionPositions: $('sectionPositions'), sectionEmployees: $('sectionEmployees'),
     sectionAttendance: $('sectionAttendance'), sectionPayroll: $('sectionPayroll'),
@@ -156,7 +156,6 @@
     importModalOverlay: $('importModalOverlay'), importModalTitle: $('importModalTitle'), importModalHint: $('importModalHint'),
     importDropZone: $('importDropZone'), importDropText: $('importDropText'), importFileInput: $('importFileInput'),
     importStatus: $('importStatus'), importCancelBtn: $('importCancelBtn'), importConfirmBtn: $('importConfirmBtn'),
-    soonAttTitle: $('attSoonTitle'), soonAttDesc: $('attSoonDesc'), soonPayTitle: $('paySoonTitle'), soonPayDesc: $('paySoonDesc'),
   };
 
   function escapeHtml(s) { return String(s || '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
@@ -212,15 +211,27 @@
   }
 
   async function loadAllData() {
-    const [dSnap, pSnap, eSnap] = await Promise.all([
+    const [dSnap, pSnap, eSnap, piSnap] = await Promise.all([
       col('departments') ? col('departments').get() : Promise.resolve({ docs: [] }),
       col('positions') ? col('positions').get() : Promise.resolve({ docs: [] }),
       col('employees') ? col('employees').get() : Promise.resolve({ docs: [] }),
+      col('payrollItems') ? col('payrollItems').get() : Promise.resolve({ docs: [] }),
     ]);
     departments = dSnap.docs.map((d) => Object.assign({ id: d.id }, d.data()));
     positions = pSnap.docs.map((d) => Object.assign({ id: d.id }, d.data()));
     employees = eSnap.docs.map((d) => Object.assign({ id: d.id }, d.data()));
+    payItems = piSnap.docs.map((d) => Object.assign({ id: d.id }, d.data()));
     renderActiveSection();
+
+    await loadOrgSettings();
+    await ensureDefaultStatuses();
+    await loadSalaryLaw();
+    populateMonthYearSelects();
+    populateDeptFilter();
+    renderStatusRow();
+    renderPayItemsChips();
+    await loadAttendanceForMonth();
+    await loadPayrollForMonth();
   }
 
   /* ================= Navigation ================= */
@@ -265,6 +276,7 @@
       </div>`;
     }).join('');
     els.deptEmptyHint.classList.toggle('hidden', departments.length > 0);
+    if (els.attDeptFilter) populateDeptFilter();
     els.departmentsList.querySelectorAll('[data-action="delete-dept"]').forEach((btn) => {
       btn.addEventListener('click', async () => {
         if (!confirm(t('confirmDelete'))) return;
@@ -376,6 +388,8 @@
         employees = employees.filter((e) => e.id !== btn.getAttribute('data-id'));
         renderEmployees();
         renderDepartments();
+        if (typeof renderAttendanceTable === 'function') renderAttendanceTable();
+        if (typeof renderPayrollTable === 'function') renderPayrollTable();
       });
     });
   }
@@ -406,6 +420,8 @@
     employees.push({ id: docRef.id, name, departmentId, positionId });
     renderEmployees();
     renderDepartments();
+    if (typeof renderAttendanceTable === 'function') renderAttendanceTable();
+    if (typeof renderPayrollTable === 'function') renderPayrollTable();
     closeEmpModal();
   });
 
@@ -500,6 +516,501 @@
     els.importConfirmBtn.disabled = false;
   });
 
+  /* ================= Org branding ================= */
+  const els2 = {
+    orgLogoBox: $('orgLogoBox'), orgLogoImg: $('orgLogoImg'), orgLogoIcon: $('orgLogoIcon'), orgLogoInput: $('orgLogoInput'),
+    orgNameInput: $('orgNameInput'),
+    attTitle: $('attTitle'), attMonthSelect: $('attMonthSelect'), attYearSelect: $('attYearSelect'), attDeptFilter: $('attDeptFilter'),
+    attStatusRow: $('attStatusRow'), addStatusBtn: $('addStatusBtn'), addStatusText: $('addStatusText'),
+    attTable: $('attTable'), attEmptyHint: $('attEmptyHint'),
+    statusModalOverlay: $('statusModalOverlay'), statusModalTitle: $('statusModalTitle'), statusModalHint: $('statusModalHint'),
+    statusNameLabel: $('statusNameLabel'), statusNameInput: $('statusNameInput'),
+    statusCodeLabel: $('statusCodeLabel'), statusCodeInput: $('statusCodeInput'),
+    statusDeductLabel: $('statusDeductLabel'), statusDeductSelect: $('statusDeductSelect'),
+    statusCancelBtn: $('statusCancelBtn'), statusSaveBtn: $('statusSaveBtn'),
+    payTitle: $('payTitle'), payMonthSelect: $('payMonthSelect'), payYearSelect: $('payYearSelect'),
+    salaryLawBtn: $('salaryLawBtn'), salaryLawBtnText: $('salaryLawBtnText'), printPayrollBtn: $('printPayrollBtn'), printPayrollText: $('printPayrollText'),
+    paySummaryCards: $('paySummaryCards'), payItemsLabel: $('payItemsLabel'), payItemsChips: $('payItemsChips'),
+    addPayItemBtn: $('addPayItemBtn'), addPayItemText: $('addPayItemText'),
+    payTable: $('payTable'), payEmptyHint: $('payEmptyHint'),
+    payItemModalOverlay: $('payItemModalOverlay'), payItemModalTitle: $('payItemModalTitle'), payItemModalHint: $('payItemModalHint'),
+    payItemNameLabel: $('payItemNameLabel'), payItemNameInput: $('payItemNameInput'),
+    payItemTypeLabel: $('payItemTypeLabel'), payItemTypeSelect: $('payItemTypeSelect'),
+    payItemAmountLabel: $('payItemAmountLabel'), payItemAmountInput: $('payItemAmountInput'),
+    payItemCancelBtn: $('payItemCancelBtn'), payItemSaveBtn: $('payItemSaveBtn'),
+    salaryLawModalOverlay: $('salaryLawModalOverlay'), salaryLawModalTitle: $('salaryLawModalTitle'), salaryLawModalHint: $('salaryLawModalHint'),
+    cnasLabel: $('cnasLabel'), cnasInput: $('cnasInput'),
+    bracketsLabel: $('bracketsLabel'), addBracketBtn: $('addBracketBtn'), addBracketText: $('addBracketText'), bracketsList: $('bracketsList'),
+    familyAllowanceLabel: $('familyAllowanceLabel'), familyAllowanceInput: $('familyAllowanceInput'),
+    salaryLawCancelBtn: $('salaryLawCancelBtn'), salaryLawSaveBtn: $('salaryLawSaveBtn'),
+    empPayDetailOverlay: $('empPayDetailOverlay'), empPayDetailTitle: $('empPayDetailTitle'), empPayDetailBreakdown: $('empPayDetailBreakdown'),
+    correctionLabel: $('correctionLabel'), correctionAmountInput: $('correctionAmountInput'), correctionReasonInput: $('correctionReasonInput'),
+    empPayDetailCloseBtn: $('empPayDetailCloseBtn'), correctionSaveBtn: $('correctionSaveBtn'),
+    downloadTemplateBtn: $('downloadTemplateBtn'), downloadTemplateText: $('downloadTemplateText'),
+  };
+  Object.assign(els, els2);
+
+  const MONTH_NAMES = {
+    ar: ['جانفي', 'فيفري', 'مارس', 'أفريل', 'ماي', 'جوان', 'جويلية', 'أوت', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'],
+    en: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    fr: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
+  };
+
+  let orgSettings = { name: 'مؤسستي', logoDataUrl: null };
+  let attStatuses = [];
+  let payItems = [];
+  let salaryLaw = { cnasRate: 9, brackets: [{ from: 0, to: 30000, rate: 0 }, { from: 30001, to: 60000, rate: 20 }, { from: 60001, to: null, rate: 30 }], familyAllowance: 600 };
+  let attMonth = new Date().getMonth() + 1;
+  let attYear = new Date().getFullYear();
+  let payMonth = attMonth;
+  let payYear = attYear;
+  let armedStatusId = null;
+  let isPainting = false;
+  let attendanceCache = {};
+  let payrollCorrections = {};
+
+  const STATUS_COLORS = ['#1E8A52', '#C9A227', '#2F5CA8', '#7A3FA8', '#B1345A', '#17879E', '#D85A30', '#4A5568'];
+  function nextStatusColor() {
+    const used = attStatuses.map((s) => s.color);
+    return STATUS_COLORS.find((c) => !used.includes(c)) || STATUS_COLORS[attStatuses.length % STATUS_COLORS.length];
+  }
+
+  function docKey(empId, y, m) { return `${empId}_${y}-${String(m).padStart(2, '0')}`; }
+  function daysInMonth(y, m) { return new Date(y, m, 0).getDate(); }
+  function isWeekend(y, m, day) { const dow = new Date(y, m - 1, day).getDay(); return dow === 5 || dow === 6; }
+
+  async function loadOrgSettings() {
+    const user = window.fbAuth && window.fbAuth.currentUser;
+    if (!user) return;
+    try {
+      const doc = await firebase.firestore().collection('users').doc(user.uid).collection('settings').doc('org').get();
+      if (doc.exists) orgSettings = Object.assign(orgSettings, doc.data());
+    } catch (e) { /* ignore */ }
+    els.orgNameInput.value = orgSettings.name || 'مؤسستي';
+    if (orgSettings.logoDataUrl) { els.orgLogoImg.src = orgSettings.logoDataUrl; els.orgLogoImg.classList.remove('hidden'); els.orgLogoIcon.classList.add('hidden'); }
+  }
+  async function saveOrgSettings() {
+    const user = window.fbAuth && window.fbAuth.currentUser;
+    if (!user) return;
+    try { await firebase.firestore().collection('users').doc(user.uid).collection('settings').doc('org').set(orgSettings, { merge: true }); } catch (e) { /* ignore */ }
+  }
+  els.orgNameInput.addEventListener('input', () => { orgSettings.name = els.orgNameInput.value; saveOrgSettings(); });
+  els.orgLogoBox.addEventListener('click', () => els.orgLogoInput.click());
+  els.orgLogoInput.addEventListener('change', () => {
+    const file = els.orgLogoInput.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      orgSettings.logoDataUrl = e.target.result;
+      els.orgLogoImg.src = e.target.result; els.orgLogoImg.classList.remove('hidden'); els.orgLogoIcon.classList.add('hidden');
+      saveOrgSettings();
+    };
+    reader.readAsDataURL(file);
+  });
+
+  function populateMonthYearSelects() {
+    const yearsNow = new Date().getFullYear();
+    [els.attMonthSelect, els.payMonthSelect].forEach((sel) => {
+      sel.innerHTML = MONTH_NAMES[lang].map((m, i) => `<option value="${i + 1}">${m}</option>`).join('');
+    });
+    [els.attYearSelect, els.payYearSelect].forEach((sel) => {
+      let opts = '';
+      for (let y = yearsNow - 5; y <= yearsNow + 1; y++) opts += `<option value="${y}">${y}</option>`;
+      sel.innerHTML = opts;
+    });
+    els.attMonthSelect.value = attMonth; els.attYearSelect.value = attYear;
+    els.payMonthSelect.value = payMonth; els.payYearSelect.value = payYear;
+  }
+  els.attMonthSelect.addEventListener('change', () => { attMonth = parseInt(els.attMonthSelect.value, 10); loadAttendanceForMonth(); });
+  els.attYearSelect.addEventListener('change', () => { attYear = parseInt(els.attYearSelect.value, 10); loadAttendanceForMonth(); });
+  els.payMonthSelect.addEventListener('change', () => { payMonth = parseInt(els.payMonthSelect.value, 10); loadPayrollForMonth(); });
+  els.payYearSelect.addEventListener('change', () => { payYear = parseInt(els.payYearSelect.value, 10); loadPayrollForMonth(); });
+
+  function populateDeptFilter() {
+    els.attDeptFilter.innerHTML = `<option value="">${lang === 'ar' ? 'كل المصالح' : lang === 'fr' ? 'Tous les services' : 'All departments'}</option>` +
+      departments.map((d) => `<option value="${d.id}">${escapeHtml(d.name)}</option>`).join('');
+  }
+  els.attDeptFilter.addEventListener('change', renderAttendanceTable);
+
+  const DEFAULT_STATUSES = [
+    { name: 'حاضر', code: 'ح', color: '#1E8A52', deductType: 'none' },
+    { name: 'مرضية', code: 'م', color: '#C9A227', deductType: 'full' },
+    { name: 'سنوية', code: 'س', color: '#2F5CA8', deductType: 'none' },
+    { name: 'استرجاع', code: 'ر', color: '#7A3FA8', deductType: 'none' },
+    { name: 'غير مبرر', code: 'غ', color: '#B1345A', deductType: 'full' },
+  ];
+  async function ensureDefaultStatuses() {
+    const c = col('attendanceStatuses'); if (!c) return;
+    const snap = await c.get();
+    if (snap.empty) {
+      for (const s of DEFAULT_STATUSES) {
+        const docRef = await c.add(s);
+        attStatuses.push(Object.assign({ id: docRef.id }, s));
+      }
+    } else {
+      attStatuses = snap.docs.map((d) => Object.assign({ id: d.id }, d.data()));
+    }
+  }
+  function renderStatusRow() {
+    els.attStatusRow.innerHTML = attStatuses.map((s) => `
+      <button type="button" class="ap-status-chip ${armedStatusId === s.id ? 'armed' : ''}" data-id="${s.id}"
+        style="background:${s.color}22; color:${s.color};">${escapeHtml(s.code)} ${escapeHtml(s.name)}</button>
+    `).join('');
+    els.attStatusRow.querySelectorAll('.ap-status-chip').forEach((chip) => {
+      chip.addEventListener('click', () => {
+        armedStatusId = armedStatusId === chip.getAttribute('data-id') ? null : chip.getAttribute('data-id');
+        renderStatusRow();
+      });
+    });
+  }
+  function openStatusModal() {
+    els.statusNameInput.value = ''; els.statusCodeInput.value = ''; els.statusDeductSelect.value = 'full';
+    els.statusModalOverlay.classList.remove('hidden');
+  }
+  els.addStatusBtn.addEventListener('click', openStatusModal);
+  els.statusCancelBtn.addEventListener('click', () => els.statusModalOverlay.classList.add('hidden'));
+  els.statusModalOverlay.addEventListener('click', (e) => { if (e.target === els.statusModalOverlay) els.statusModalOverlay.classList.add('hidden'); });
+  els.statusSaveBtn.addEventListener('click', async () => {
+    const name = els.statusNameInput.value.trim();
+    const code = els.statusCodeInput.value.trim() || name.slice(0, 1);
+    if (!name) { alert(t('needName')); return; }
+    const c = col('attendanceStatuses'); if (!c) return;
+    const status = { name, code, color: nextStatusColor(), deductType: els.statusDeductSelect.value };
+    const docRef = await c.add(status);
+    attStatuses.push(Object.assign({ id: docRef.id }, status));
+    renderStatusRow();
+    els.statusModalOverlay.classList.add('hidden');
+  });
+
+  async function loadAttendanceForMonth() {
+    const c = col('attendance'); if (!c) return;
+    attendanceCache = {};
+    for (const emp of employees) {
+      try {
+        const doc = await c.doc(docKey(emp.id, attYear, attMonth)).get();
+        attendanceCache[emp.id] = doc.exists ? doc.data() : { days: {} };
+      } catch (e) { attendanceCache[emp.id] = { days: {} }; }
+    }
+    renderAttendanceTable();
+  }
+
+  function renderAttendanceTable() {
+    const nDays = daysInMonth(attYear, attMonth);
+    const deptFilterVal = els.attDeptFilter.value;
+    const list = employees.filter((e) => !deptFilterVal || e.departmentId === deptFilterVal);
+
+    let head = `<tr><th></th>`;
+    for (let d = 1; d <= nDays; d++) head += `<th class="${isWeekend(attYear, attMonth, d) ? 'weekend' : ''}">${d}</th>`;
+    head += `</tr>`;
+
+    let rows = list.map((emp) => {
+      const data = attendanceCache[emp.id] || { days: {} };
+      let cells = `<td class="emp-name">${escapeHtml(emp.name)}</td>`;
+      for (let d = 1; d <= nDays; d++) {
+        const statusId = data.days && data.days[d];
+        const status = attStatuses.find((s) => s.id === statusId);
+        const weekendClass = isWeekend(attYear, attMonth, d) ? 'weekend' : '';
+        const cellStyle = status ? `background:${status.color}22; color:${status.color};` : '';
+        cells += `<td class="${weekendClass}"><span class="ap-day-cell" data-emp="${emp.id}" data-day="${d}" style="${cellStyle}">${status ? escapeHtml(status.code) : ''}</span></td>`;
+      }
+      return `<tr>${cells}</tr>`;
+    }).join('');
+
+    els.attTable.innerHTML = `<thead>${head}</thead><tbody>${rows}</tbody>`;
+    els.attEmptyHint.classList.toggle('hidden', list.length > 0);
+    attachDayCellEvents();
+  }
+
+  function attachDayCellEvents() {
+    let paintValue = null;
+    els.attTable.querySelectorAll('.ap-day-cell').forEach((cell) => {
+      cell.addEventListener('mousedown', (e) => {
+        if (!armedStatusId) return;
+        isPainting = true;
+        paintValue = armedStatusId;
+        applyDayStatus(cell, paintValue);
+        e.preventDefault();
+      });
+      cell.addEventListener('mouseenter', () => {
+        if (isPainting && paintValue) applyDayStatus(cell, paintValue);
+      });
+    });
+  }
+  document.addEventListener('mouseup', () => { isPainting = false; });
+
+  function applyDayStatus(cell, statusId) {
+    const empId = cell.getAttribute('data-emp');
+    const day = cell.getAttribute('data-day');
+    if (!attendanceCache[empId]) attendanceCache[empId] = { days: {} };
+    if (!attendanceCache[empId].days) attendanceCache[empId].days = {};
+    attendanceCache[empId].days[day] = statusId;
+    const status = attStatuses.find((s) => s.id === statusId);
+    cell.textContent = status ? status.code : '';
+    cell.style.background = status ? status.color + '22' : '';
+    cell.style.color = status ? status.color : '';
+    scheduleAttendanceSave(empId);
+  }
+
+  const attSaveTimers = {};
+  function scheduleAttendanceSave(empId) {
+    if (attSaveTimers[empId]) clearTimeout(attSaveTimers[empId]);
+    attSaveTimers[empId] = setTimeout(async () => {
+      const c = col('attendance'); if (!c) return;
+      try { await c.doc(docKey(empId, attYear, attMonth)).set(attendanceCache[empId], { merge: true }); } catch (e) { /* ignore */ }
+    }, 800);
+  }
+
+  function renderPayItemsChips() {
+    els.payItemsChips.innerHTML = payItems.map((it) => `
+      <span class="ap-status-chip" style="background:${it.type === 'addition' ? '#1E8A5222' : '#B1345A22'}; color:${it.type === 'addition' ? '#1E8A52' : '#B1345A'};">
+        ${it.type === 'addition' ? '+' : '−'} ${escapeHtml(it.name)} (${Number(it.amount).toLocaleString()})
+        <button type="button" data-action="del-item" data-id="${it.id}" style="border:none; background:none; color:inherit; cursor:pointer; padding:0 0 0 4px;">×</button>
+      </span>
+    `).join('');
+    els.payItemsChips.querySelectorAll('[data-action="del-item"]').forEach((btn) => {
+      btn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const c = col('payrollItems'); if (!c) return;
+        await c.doc(btn.getAttribute('data-id')).delete();
+        payItems = payItems.filter((it) => it.id !== btn.getAttribute('data-id'));
+        renderPayItemsChips();
+        renderPayrollTable();
+      });
+    });
+  }
+  els.addPayItemBtn.addEventListener('click', () => {
+    els.payItemNameInput.value = ''; els.payItemAmountInput.value = ''; els.payItemTypeSelect.value = 'addition';
+    els.payItemModalOverlay.classList.remove('hidden');
+  });
+  els.payItemCancelBtn.addEventListener('click', () => els.payItemModalOverlay.classList.add('hidden'));
+  els.payItemModalOverlay.addEventListener('click', (e) => { if (e.target === els.payItemModalOverlay) els.payItemModalOverlay.classList.add('hidden'); });
+  els.payItemSaveBtn.addEventListener('click', async () => {
+    const name = els.payItemNameInput.value.trim();
+    const amount = parseFloat(els.payItemAmountInput.value) || 0;
+    if (!name) { alert(t('needName')); return; }
+    const c = col('payrollItems'); if (!c) return;
+    const item = { name, type: els.payItemTypeSelect.value, amount };
+    const docRef = await c.add(item);
+    payItems.push(Object.assign({ id: docRef.id }, item));
+    renderPayItemsChips();
+    renderPayrollTable();
+    els.payItemModalOverlay.classList.add('hidden');
+  });
+
+  async function loadSalaryLaw() {
+    const user = window.fbAuth && window.fbAuth.currentUser;
+    if (!user) return;
+    try {
+      const doc = await firebase.firestore().collection('users').doc(user.uid).collection('settings').doc('salaryLaw').get();
+      if (doc.exists) salaryLaw = Object.assign(salaryLaw, doc.data());
+    } catch (e) { /* ignore */ }
+  }
+  async function saveSalaryLaw() {
+    const user = window.fbAuth && window.fbAuth.currentUser;
+    if (!user) return;
+    try { await firebase.firestore().collection('users').doc(user.uid).collection('settings').doc('salaryLaw').set(salaryLaw, { merge: true }); } catch (e) { /* ignore */ }
+  }
+  function renderBracketsList() {
+    els.bracketsList.innerHTML = salaryLaw.brackets.map((b, i) => `
+      <div class="ap-bracket-row" data-i="${i}">
+        <input type="number" class="bracket-from" value="${b.from}" placeholder="من">
+        <input type="number" class="bracket-to" value="${b.to === null ? '' : b.to}" placeholder="إلى">
+        <input type="number" class="bracket-rate" value="${b.rate}" placeholder="%">
+        <button type="button" class="ap-bracket-remove" data-i="${i}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
+        </button>
+      </div>`).join('');
+    els.bracketsList.querySelectorAll('.bracket-from').forEach((inp) => inp.addEventListener('input', () => { salaryLaw.brackets[+inp.closest('.ap-bracket-row').dataset.i].from = parseFloat(inp.value) || 0; }));
+    els.bracketsList.querySelectorAll('.bracket-to').forEach((inp) => inp.addEventListener('input', () => { salaryLaw.brackets[+inp.closest('.ap-bracket-row').dataset.i].to = inp.value === '' ? null : parseFloat(inp.value); }));
+    els.bracketsList.querySelectorAll('.bracket-rate').forEach((inp) => inp.addEventListener('input', () => { salaryLaw.brackets[+inp.closest('.ap-bracket-row').dataset.i].rate = parseFloat(inp.value) || 0; }));
+    els.bracketsList.querySelectorAll('.ap-bracket-remove').forEach((btn) => btn.addEventListener('click', () => {
+      salaryLaw.brackets.splice(parseInt(btn.getAttribute('data-i'), 10), 1);
+      renderBracketsList();
+    }));
+  }
+  els.addBracketBtn.addEventListener('click', () => {
+    salaryLaw.brackets.push({ from: 0, to: null, rate: 0 });
+    renderBracketsList();
+  });
+  els.salaryLawBtn.addEventListener('click', () => {
+    els.cnasInput.value = salaryLaw.cnasRate;
+    els.familyAllowanceInput.value = salaryLaw.familyAllowance;
+    renderBracketsList();
+    els.salaryLawModalOverlay.classList.remove('hidden');
+  });
+  els.salaryLawCancelBtn.addEventListener('click', () => els.salaryLawModalOverlay.classList.add('hidden'));
+  els.salaryLawModalOverlay.addEventListener('click', (e) => { if (e.target === els.salaryLawModalOverlay) els.salaryLawModalOverlay.classList.add('hidden'); });
+  els.salaryLawSaveBtn.addEventListener('click', async () => {
+    salaryLaw.cnasRate = parseFloat(els.cnasInput.value) || 0;
+    salaryLaw.familyAllowance = parseFloat(els.familyAllowanceInput.value) || 0;
+    await saveSalaryLaw();
+    els.salaryLawModalOverlay.classList.add('hidden');
+    renderPayrollTable();
+  });
+
+  function computeIRG(taxable) {
+    let tax = 0;
+    for (const b of salaryLaw.brackets) {
+      const upper = b.to === null ? Infinity : b.to;
+      if (taxable > b.from) {
+        const amountInBracket = Math.min(taxable, upper) - b.from + 1;
+        if (amountInBracket > 0) tax += amountInBracket * (b.rate / 100);
+      }
+    }
+    return Math.max(0, tax);
+  }
+
+  function computeEmployeePayroll(emp) {
+    const pos = positions.find((p) => p.id === emp.positionId);
+    const base = pos ? Number(pos.baseSalary) || 0 : 0;
+    const dailyRate = base / 30;
+
+    const attData = attendanceCache[emp.id] || { days: {} };
+    let absenceDeductionDays = 0;
+    Object.values(attData.days || {}).forEach((statusId) => {
+      const status = attStatuses.find((s) => s.id === statusId);
+      if (!status) return;
+      if (status.deductType === 'full') absenceDeductionDays += 1;
+      else if (status.deductType === 'half') absenceDeductionDays += 0.5;
+    });
+    const absenceDeduction = absenceDeductionDays * dailyRate;
+
+    let additions = 0, deductions = 0;
+    payItems.forEach((it) => { if (it.type === 'addition') additions += Number(it.amount) || 0; else deductions += Number(it.amount) || 0; });
+
+    const grossBeforeStatutory = base + additions - deductions - absenceDeduction;
+    const cnas = grossBeforeStatutory * (salaryLaw.cnasRate / 100);
+    const taxable = grossBeforeStatutory - cnas;
+    const irg = computeIRG(taxable);
+
+    const correction = payrollCorrections[emp.id];
+    const correctionAmount = correction ? Number(correction.amount) || 0 : 0;
+
+    const net = grossBeforeStatutory - cnas - irg + correctionAmount;
+
+    return { base, additions, deductions, absenceDeductionDays, absenceDeduction, cnas, irg, correctionAmount, net };
+  }
+
+  async function loadPayrollForMonth() {
+    const c = col('payrollCorrections'); if (!c) return;
+    payrollCorrections = {};
+    for (const emp of employees) {
+      try {
+        const doc = await c.doc(docKey(emp.id, payYear, payMonth)).get();
+        if (doc.exists) payrollCorrections[emp.id] = doc.data();
+      } catch (e) { /* ignore */ }
+    }
+    if (payMonth !== attMonth || payYear !== attYear) {
+      const attC = col('attendance');
+      if (attC) {
+        attendanceCache = {};
+        for (const emp of employees) {
+          try {
+            const doc = await attC.doc(docKey(emp.id, payYear, payMonth)).get();
+            attendanceCache[emp.id] = doc.exists ? doc.data() : { days: {} };
+          } catch (e) { attendanceCache[emp.id] = { days: {} }; }
+        }
+      }
+    }
+    renderPayrollTable();
+  }
+
+  function renderPayrollTable() {
+    const results = employees.map((emp) => ({ emp, calc: computeEmployeePayroll(emp) }));
+    const totalBase = results.reduce((s, r) => s + r.calc.base, 0);
+    const totalNet = results.reduce((s, r) => s + r.calc.net, 0);
+
+    els.paySummaryCards.innerHTML = `
+      <div class="ap-summary-card">
+        <p class="ap-summary-card-label">${lang === 'ar' ? 'عدد الموظفين' : lang === 'fr' ? 'Employés' : 'Employees'}</p>
+        <p class="ap-summary-card-value">${employees.length}</p>
+      </div>
+      <div class="ap-summary-card">
+        <p class="ap-summary-card-label">${lang === 'ar' ? 'إجمالي الأجور القاعدية' : lang === 'fr' ? 'Total salaires de base' : 'Total base salaries'}</p>
+        <p class="ap-summary-card-value">${totalBase.toLocaleString()}</p>
+      </div>
+      <div class="ap-summary-card highlight">
+        <p class="ap-summary-card-label">${lang === 'ar' ? 'إجمالي الصافي' : lang === 'fr' ? 'Total net' : 'Total net'}</p>
+        <p class="ap-summary-card-value">${totalNet.toLocaleString()}</p>
+      </div>`;
+
+    const headLabels = lang === 'ar'
+      ? ['الموظف', 'الأجر القاعدي', 'أيام الخصم', 'CNAS', 'IRG', 'الصافي']
+      : lang === 'fr' ? ['Employé', 'Salaire de base', 'Jours déduits', 'CNAS', 'IRG', 'Net']
+      : ['Employee', 'Base salary', 'Deducted days', 'CNAS', 'IRG', 'Net'];
+
+    let head = `<tr>${headLabels.map((h) => `<th>${h}</th>`).join('')}</tr>`;
+    let rows = results.map(({ emp, calc }) => `
+      <tr data-emp="${emp.id}">
+        <td class="emp-name">${escapeHtml(emp.name)}</td>
+        <td>${calc.base.toLocaleString()}</td>
+        <td>${calc.absenceDeductionDays}</td>
+        <td>${calc.cnas.toFixed(0)}</td>
+        <td>${calc.irg.toFixed(0)}</td>
+        <td class="ap-pay-net">${calc.net.toFixed(0)}</td>
+      </tr>`).join('');
+
+    els.payTable.innerHTML = `<thead>${head}</thead><tbody>${rows}</tbody>`;
+    els.payEmptyHint.classList.toggle('hidden', employees.length > 0);
+
+    els.payTable.querySelectorAll('tr[data-emp]').forEach((row) => {
+      row.addEventListener('click', () => openPayDetail(row.getAttribute('data-emp')));
+    });
+  }
+
+  function openPayDetail(empId) {
+    const emp = employees.find((e) => e.id === empId);
+    if (!emp) return;
+    const calc = computeEmployeePayroll(emp);
+    els.empPayDetailTitle.textContent = emp.name;
+    const rows = [
+      [lang === 'ar' ? 'الأجر القاعدي' : lang === 'fr' ? 'Salaire de base' : 'Base salary', calc.base],
+      [lang === 'ar' ? 'الإضافات' : lang === 'fr' ? 'Ajouts' : 'Additions', calc.additions],
+      [lang === 'ar' ? 'الخصومات' : lang === 'fr' ? 'Déductions' : 'Deductions', -calc.deductions],
+      [lang === 'ar' ? 'خصم الغياب' : lang === 'fr' ? 'Déduction absences' : 'Absence deduction', -calc.absenceDeduction],
+      ['CNAS', -calc.cnas],
+      ['IRG', -calc.irg],
+      [lang === 'ar' ? 'تعديل يدوي' : lang === 'fr' ? 'Correction manuelle' : 'Manual correction', calc.correctionAmount],
+    ];
+    els.empPayDetailBreakdown.innerHTML = rows.map(([label, val]) =>
+      `<div class="ap-pay-breakdown-row"><span>${label}</span><span>${val.toLocaleString()}</span></div>`
+    ).join('') + `<div class="ap-pay-breakdown-row total"><span>${lang === 'ar' ? 'الصافي' : lang === 'fr' ? 'Net' : 'Net'}</span><span>${calc.net.toFixed(0)}</span></div>`;
+
+    const correction = payrollCorrections[empId];
+    els.correctionAmountInput.value = correction ? correction.amount : '';
+    els.correctionReasonInput.value = correction ? correction.reason : '';
+    els.correctionSaveBtn.setAttribute('data-emp', empId);
+    els.empPayDetailOverlay.classList.remove('hidden');
+  }
+  els.empPayDetailCloseBtn.addEventListener('click', () => els.empPayDetailOverlay.classList.add('hidden'));
+  els.empPayDetailOverlay.addEventListener('click', (e) => { if (e.target === els.empPayDetailOverlay) els.empPayDetailOverlay.classList.add('hidden'); });
+  els.correctionSaveBtn.addEventListener('click', async () => {
+    const empId = els.correctionSaveBtn.getAttribute('data-emp');
+    const amount = parseFloat(els.correctionAmountInput.value) || 0;
+    const reason = els.correctionReasonInput.value.trim();
+    const c = col('payrollCorrections'); if (!c) return;
+    await c.doc(docKey(empId, payYear, payMonth)).set({ amount, reason }, { merge: true });
+    payrollCorrections[empId] = { amount, reason };
+    renderPayrollTable();
+    els.empPayDetailOverlay.classList.add('hidden');
+  });
+
+  els.printPayrollBtn.addEventListener('click', () => { window.print(); });
+
+  const TEMPLATE_HEADERS = {
+    departments: { ar: ['الاسم', 'الوصف'], en: ['Name', 'Description'], fr: ['Nom', 'Description'] },
+    positions: { ar: ['الاسم', 'الأجر القاعدي'], en: ['Name', 'Base salary'], fr: ['Nom', 'Salaire de base'] },
+    employees: { ar: ['الاسم', 'المصلحة', 'المنصب'], en: ['Name', 'Department', 'Position'], fr: ['Nom', 'Service', 'Poste'] },
+  };
+  els.downloadTemplateBtn.addEventListener('click', () => {
+    if (!importTarget) return;
+    const headers = TEMPLATE_HEADERS[importTarget][lang] || TEMPLATE_HEADERS[importTarget].ar;
+    const ws = XLSX.utils.aoa_to_sheet([headers]);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Template');
+    XLSX.writeFile(wb, `${importTarget}-template.xlsx`);
+  });
+
+
   /* ================= i18n apply ================= */
   function applyLanguage() {
     const dict = I18N[lang];
@@ -511,7 +1022,6 @@
     els.tabLogin.textContent = dict.tabLogin; els.tabSignup.textContent = dict.tabSignup;
     els.acName.placeholder = dict.namePh; els.acEmail.placeholder = dict.emailPh; els.acPassword.placeholder = dict.passwordPh;
     els.acGoogleBtn.querySelector('span').textContent = dict.googleBtn;
-    els.sidebarBrand.textContent = dict.sidebarBrand;
     els.navDepartments.textContent = dict.navDepartments; els.navPositions.textContent = dict.navPositions;
     els.navEmployees.textContent = dict.navEmployees; els.navAttendance.textContent = dict.navAttendance; els.navPayroll.textContent = dict.navPayroll;
     els.deptTitle.textContent = dict.deptTitle; els.posTitle.textContent = dict.posTitle; els.empTitle.textContent = dict.empTitle;
@@ -537,8 +1047,6 @@
     els.importModalTitle.textContent = dict.importModalTitle; els.importDropText.textContent = dict.importDropText;
     els.importCancelBtn.textContent = dict.cancelBtn; els.importConfirmBtn.textContent = dict.importBtn;
 
-    els.soonAttTitle.textContent = dict.soonAttTitle; els.soonAttDesc.textContent = dict.soonAttDesc;
-    els.soonPayTitle.textContent = dict.soonPayTitle; els.soonPayDesc.textContent = dict.soonPayDesc;
 
     els.langBtns.forEach((b) => b.classList.toggle('active', b.getAttribute('data-lang') === lang));
     localStorage.setItem('ap:lang', lang);

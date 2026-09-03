@@ -62,8 +62,12 @@
 
       <aside class="ap-sidebar">
         <div class="ap-sidebar-brand">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 21h18M4 21V10l8-6 8 6v11M9 21v-6h6v6"/></svg>
-          <span id="sidebarBrand">مؤسستي</span>
+          <div class="ap-org-logo" id="orgLogoBox">
+            <img id="orgLogoImg" class="ap-org-logo-img hidden" alt="">
+            <svg class="ap-org-logo-icon" id="orgLogoIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 21h18M4 21V10l8-6 8 6v11M9 21v-6h6v6"/></svg>
+            <input type="file" id="orgLogoInput" accept="image/*" hidden>
+          </div>
+          <input type="text" id="orgNameInput" class="ap-org-name-input" value="مؤسستي">
         </div>
         <nav class="ap-nav" id="apNav">
           <button type="button" class="ap-nav-item active" data-section="departments">
@@ -148,22 +152,62 @@
           <p class="ap-empty-hint hidden" id="empEmptyHint">ما فيه موظفون بعد.</p>
         </div>
 
-        <!-- ===== Attendance (placeholder, phase 2) ===== -->
+        <!-- ===== Attendance ===== -->
         <div class="ap-section hidden" id="sectionAttendance">
-          <div class="ap-soon-box">
-            <span class="ap-soon-icon ap-icon-att"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span>
-            <h2 id="attSoonTitle">قسم الحضور — قريبًا</h2>
-            <p id="attSoonDesc">جدول الحضور الشهري بنظام الفرشاة السريعة قيد الإنشاء بجلسة قادمة.</p>
+          <div class="ap-section-head">
+            <h1 id="attTitle">الحضور</h1>
+            <div class="ap-head-actions">
+              <select id="attMonthSelect" class="ap-select"></select>
+              <select id="attYearSelect" class="ap-select"></select>
+              <select id="attDeptFilter" class="ap-select"></select>
+            </div>
           </div>
+
+          <div class="ap-status-row" id="attStatusRow"></div>
+          <button type="button" class="ap-btn ap-add-status-btn" id="addStatusBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg>
+            <span id="addStatusText">إضافة حالة</span>
+          </button>
+
+          <div class="ap-table-scroll">
+            <table class="ap-att-table" id="attTable"></table>
+          </div>
+          <p class="ap-empty-hint hidden" id="attEmptyHint">أضف موظفين أولًا لتظهر هنا.</p>
         </div>
 
-        <!-- ===== Payroll (placeholder, phase 2) ===== -->
+        <!-- ===== Payroll ===== -->
         <div class="ap-section hidden" id="sectionPayroll">
-          <div class="ap-soon-box">
-            <span class="ap-soon-icon ap-icon-pay"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 7v10"/></svg></span>
-            <h2 id="paySoonTitle">قسم الرواتب — قريبًا</h2>
-            <p id="paySoonDesc">حساب الرواتب التلقائي وقانون الضريبة القابل للتعديل قيد الإنشاء بجلسة قادمة.</p>
+          <div class="ap-section-head">
+            <h1 id="payTitle">الرواتب</h1>
+            <div class="ap-head-actions">
+              <select id="payMonthSelect" class="ap-select"></select>
+              <select id="payYearSelect" class="ap-select"></select>
+              <button type="button" class="ap-btn" id="salaryLawBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                <span id="salaryLawBtnText">قانون الراتب</span>
+              </button>
+              <button type="button" class="ap-btn" id="printPayrollBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                <span id="printPayrollText">طباعة</span>
+              </button>
+            </div>
           </div>
+
+          <div class="ap-summary-cards" id="paySummaryCards"></div>
+
+          <div class="ap-items-row">
+            <p class="ap-section-label" id="payItemsLabel">بنود الراتب</p>
+            <div id="payItemsChips" class="ap-status-row"></div>
+            <button type="button" class="ap-btn ap-add-status-btn" id="addPayItemBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg>
+              <span id="addPayItemText">إضافة بند</span>
+            </button>
+          </div>
+
+          <div class="ap-table-scroll">
+            <table class="ap-pay-table" id="payTable"></table>
+          </div>
+          <p class="ap-empty-hint hidden" id="payEmptyHint">أضف موظفين أولًا لتظهر هنا.</p>
         </div>
 
       </div>
@@ -233,10 +277,95 @@
       <span id="importDropText">اضغط لاختيار ملف Excel</span>
       <input type="file" id="importFileInput" accept=".xlsx,.xls,.csv" hidden>
     </div>
+    <button type="button" class="ap-template-link" id="downloadTemplateBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M5 21h14"/></svg>
+      <span id="downloadTemplateText">تحميل قالب فارغ جاهز</span>
+    </button>
     <p class="ap-import-status" id="importStatus"></p>
     <div class="ap-modal-actions">
       <button type="button" class="ap-btn" id="importCancelBtn">إلغاء</button>
       <button type="button" class="ap-btn ap-btn-primary" id="importConfirmBtn" disabled>استيراد</button>
+    </div>
+  </div>
+</div>
+
+<div class="ap-modal-overlay hidden" id="statusModalOverlay">
+  <div class="ap-modal">
+    <h3 id="statusModalTitle">إضافة حالة حضور</h3>
+    <p class="ap-modal-hint" id="statusModalHint">أدخل اسمًا ورمزًا قصيرًا (حرف أو حرفين)</p>
+    <label id="statusNameLabel">اسم الحالة</label>
+    <input type="text" id="statusNameInput" class="cv-input" placeholder="عطلة بدون أجر">
+    <label id="statusCodeLabel">الرمز المختصر</label>
+    <input type="text" id="statusCodeInput" class="cv-input" maxlength="2" placeholder="ب">
+    <label id="statusDeductLabel">هل تُخصم من الراتب؟</label>
+    <select id="statusDeductSelect" class="cv-input">
+      <option value="full">نعم، يوم كامل</option>
+      <option value="half">نصف يوم فقط</option>
+      <option value="none">لا، مدفوعة بالكامل</option>
+    </select>
+    <div class="ap-modal-actions">
+      <button type="button" class="ap-btn" id="statusCancelBtn">إلغاء</button>
+      <button type="button" class="ap-btn ap-btn-primary" id="statusSaveBtn">حفظ الحالة</button>
+    </div>
+  </div>
+</div>
+
+<div class="ap-modal-overlay hidden" id="payItemModalOverlay">
+  <div class="ap-modal">
+    <h3 id="payItemModalTitle">إضافة بند راتب</h3>
+    <p class="ap-modal-hint" id="payItemModalHint">اسم البند، نوعه (إضافة/خصم)، وطريقة حسابه</p>
+    <label id="payItemNameLabel">اسم البند</label>
+    <input type="text" id="payItemNameInput" class="cv-input" placeholder="منحة الخبرة">
+    <label id="payItemTypeLabel">النوع</label>
+    <select id="payItemTypeSelect" class="cv-input">
+      <option value="addition">إضافة (+)</option>
+      <option value="deduction">خصم (-)</option>
+    </select>
+    <label id="payItemAmountLabel">المبلغ الافتراضي</label>
+    <input type="number" id="payItemAmountInput" class="cv-input" placeholder="3000">
+    <div class="ap-modal-actions">
+      <button type="button" class="ap-btn" id="payItemCancelBtn">إلغاء</button>
+      <button type="button" class="ap-btn ap-btn-primary" id="payItemSaveBtn">حفظ البند</button>
+    </div>
+  </div>
+</div>
+
+<div class="ap-modal-overlay hidden" id="salaryLawModalOverlay">
+  <div class="ap-modal ap-modal-wide">
+    <h3 id="salaryLawModalTitle">قانون الراتب</h3>
+    <p class="ap-modal-hint" id="salaryLawModalHint">عدّل النسب حسب آخر قرار رسمي، تنطبق على كل الموظفين</p>
+
+    <label id="cnasLabel">نسبة اشتراك الضمان الاجتماعي (%)</label>
+    <input type="number" id="cnasInput" class="cv-input" value="9" style="width:120px;">
+
+    <div class="ap-section-label-row">
+      <label id="bracketsLabel">شرائح ضريبة الدخل (IRG)</label>
+      <button type="button" class="ap-mini-btn" id="addBracketBtn">+ <span id="addBracketText">شريحة</span></button>
+    </div>
+    <div id="bracketsList"></div>
+
+    <label id="familyAllowanceLabel">المنحة العائلية (لكل طفل)</label>
+    <input type="number" id="familyAllowanceInput" class="cv-input" value="600" style="width:120px;">
+
+    <div class="ap-modal-actions">
+      <button type="button" class="ap-btn" id="salaryLawCancelBtn">إلغاء</button>
+      <button type="button" class="ap-btn ap-btn-primary" id="salaryLawSaveBtn">حفظ القانون</button>
+    </div>
+  </div>
+</div>
+
+<div class="ap-modal-overlay hidden" id="empPayDetailOverlay">
+  <div class="ap-modal ap-modal-wide">
+    <h3 id="empPayDetailTitle"></h3>
+    <div id="empPayDetailBreakdown" class="ap-pay-breakdown"></div>
+    <label id="correctionLabel">تعديل يدوي لهذا الشهر (اختياري)</label>
+    <div class="ap-correction-row">
+      <input type="number" id="correctionAmountInput" class="cv-input" placeholder="+/- المبلغ">
+      <input type="text" id="correctionReasonInput" class="cv-input" placeholder="السبب">
+    </div>
+    <div class="ap-modal-actions">
+      <button type="button" class="ap-btn" id="empPayDetailCloseBtn">إغلاق</button>
+      <button type="button" class="ap-btn ap-btn-primary" id="correctionSaveBtn">حفظ التعديل</button>
     </div>
   </div>
 </div>
