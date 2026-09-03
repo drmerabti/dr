@@ -20,9 +20,6 @@ const ICONS = {
     <path d="M25 13h10M25 17h10M25 23h10M25 27h7" stroke="#B9CEE1" stroke-width="1.6" stroke-linecap="round"/>
     <path d="M25 33h10M25 37h6" stroke="#DCE6EE" stroke-width="1.6" stroke-linecap="round"/>
   </svg>`,
-       { id: 'tool-attendance-payroll', title_ar: 'إدارة الحضور والرواتب', title_en: 'Attendance & Payroll Manager',
-      desc_ar: 'نظام متكامل لإدارة المصالح والمناصب والموظفين — يتطلب تسجيل الدخول.', desc_en: 'A complete system for managing departments, positions, and employees — requires login.',
-      url: 'tools/attendance-payroll/', icon: ICONS.attendanceApp, family: 'admin' },
      attendanceApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <linearGradient id="gAtt" x1="0" y1="0" x2="0" y2="1">
@@ -405,6 +402,9 @@ const CONTENT = {
     { id: 'tool-id-card', title_ar: 'مولّد بطاقات الهوية', title_en: 'ID Card Generator',
       desc_ar: 'أنشئ بطاقة هوية احترافية بوجهين، بعدة ثيمات ورمز QR حقيقي — يتطلب تسجيل الدخول.', desc_en: 'Generate a professional two-sided ID card with multiple themes and a real QR code — requires login.',
       url: 'tools/id-cards/', icon: ICONS.idCardApp, family: 'admin' },
+    { id: 'tool-attendance-payroll', title_ar: 'إدارة الحضور والرواتب', title_en: 'Attendance & Payroll Manager',
+      desc_ar: 'نظام متكامل لإدارة المصالح والمناصب والموظفين — يتطلب تسجيل الدخول.', desc_en: 'A complete system for managing departments, positions, and employees — requires login.',
+      url: 'tools/attendance-payroll/', icon: ICONS.attendanceApp, family: 'admin' },
 { id: 'tool-report-gen', title_ar: 'مولّد تقرير مهني', title_en: 'Professional Report Generator',
   desc_ar: 'أنشئ تقارير عمل احترافية بقوالب جاهزة (عام، حادثة، أداء دوري، محضر اجتماع)، فهرس تلقائي، وتصدير PDF متعدد الصفحات — بثلاث لغات.',
   desc_en: 'Generate professional work reports from ready templates (general, incident, periodic performance, meeting minutes), with auto table of contents and multi-page PDF export — in three languages.',
