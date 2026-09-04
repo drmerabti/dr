@@ -1,185 +1,176 @@
 /* =====================================================================
-   مولّد وصل استلام — app.js
-   No login required. Everything runs client-side.
+   مولّد بيان الإرسال — app.js
+   Requires login (Firebase Auth). Saved records live in Firestore at
+   users/{uid}/bordereaux/{id}. Continuous typing autosaves locally only;
+   Firestore is written only when the user presses "حفظ".
 ===================================================================== */
-
-/* ---------------- Amount → words (tested independently) ---------------- */
-const AR_ONES = ['', 'واحد', 'اثنان', 'ثلاثة', 'أربعة', 'خمسة', 'ستة', 'سبعة', 'ثمانية', 'تسعة'];
-const AR_TEENS = ['عشرة', 'أحد عشر', 'اثنا عشر', 'ثلاثة عشر', 'أربعة عشر', 'خمسة عشر', 'ستة عشر', 'سبعة عشر', 'ثمانية عشر', 'تسعة عشر'];
-const AR_TENS = ['', '', 'عشرون', 'ثلاثون', 'أربعون', 'خمسون', 'ستون', 'سبعون', 'ثمانون', 'تسعون'];
-const AR_HUNDREDS = ['', 'مئة', 'مئتان', 'ثلاثمئة', 'أربعمئة', 'خمسمئة', 'ستمئة', 'سبعمئة', 'ثمانمئة', 'تسعمئة'];
-
-function arUnder1000(n){
-  if (n === 0) return '';
-  const h = Math.floor(n/100), rem = n%100;
-  const parts = [];
-  if (h > 0) parts.push(AR_HUNDREDS[h]);
-  if (rem > 0){
-    if (rem < 10) parts.push(AR_ONES[rem]);
-    else if (rem < 20) parts.push(AR_TEENS[rem-10]);
-    else{
-      const t = Math.floor(rem/10), o = rem%10;
-      parts.push(o > 0 ? (AR_ONES[o] + ' و' + AR_TENS[t]) : AR_TENS[t]);
-    }
-  }
-  return parts.join(' و');
-}
-function arScale(n, forms){
-  if (n === 1) return forms[0];
-  if (n === 2) return forms[1];
-  if (n >= 3 && n <= 10) return arUnder1000(n) + ' ' + forms[2];
-  return arUnder1000(n) + ' ' + forms[3];
-}
-function numberToArabicWords(num){
-  num = Math.floor(num);
-  if (num === 0) return 'صفر';
-  const billions = Math.floor(num/1e9), millions = Math.floor((num%1e9)/1e6),
-        thousands = Math.floor((num%1e6)/1e3), rest = num%1000;
-  const parts = [];
-  if (billions > 0) parts.push(arScale(billions, ['مليار','ملياران','مليارات','مليار']));
-  if (millions > 0) parts.push(arScale(millions, ['مليون','مليونان','ملايين','مليون']));
-  if (thousands > 0) parts.push(arScale(thousands, ['ألف','ألفان','آلاف','ألف']));
-  if (rest > 0) parts.push(arUnder1000(rest));
-  return parts.join(' و');
-}
-
-const EN_ONES = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten',
-  'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
-const EN_TENS = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
-function enUnder1000(n){
-  if (n === 0) return '';
-  if (n < 20) return EN_ONES[n];
-  if (n < 100) return EN_TENS[Math.floor(n/10)] + (n % 10 ? '-' + EN_ONES[n%10].toLowerCase() : '');
-  return EN_ONES[Math.floor(n/100)] + ' Hundred' + (n % 100 ? ' ' + enUnder1000(n%100) : '');
-}
-function numberToEnglishWords(num){
-  num = Math.floor(num);
-  if (num === 0) return 'Zero';
-  const scales = [[1e9,'Billion'],[1e6,'Million'],[1e3,'Thousand']];
-  let parts = [], n = num;
-  for (const [v, name] of scales){
-    if (n >= v){ const c = Math.floor(n/v); parts.push(enUnder1000(c) + ' ' + name); n %= v; }
-  }
-  if (n > 0) parts.push(enUnder1000(n));
-  return parts.join(' ');
-}
-
-const FR_ONES = ['', 'un', 'deux', 'trois', 'quatre', 'cinq', 'six', 'sept', 'huit', 'neuf', 'dix',
-  'onze', 'douze', 'treize', 'quatorze', 'quinze', 'seize', 'dix-sept', 'dix-huit', 'dix-neuf'];
-const FR_TENS = ['', '', 'vingt', 'trente', 'quarante', 'cinquante', 'soixante', 'soixante-dix', 'quatre-vingt', 'quatre-vingt-dix'];
-function frUnder100(n){
-  if (n < 20) return FR_ONES[n];
-  if (n < 70){
-    const t = Math.floor(n/10), o = n%10;
-    if (o === 0) return FR_TENS[t];
-    if (o === 1 && t !== 8) return FR_TENS[t] + ' et un';
-    return FR_TENS[t] + '-' + FR_ONES[o];
-  }
-  if (n < 80) return n === 71 ? 'soixante et onze' : 'soixante-' + FR_ONES[n-60];
-  if (n === 80) return 'quatre-vingts';
-  if (n < 100) return 'quatre-vingt-' + FR_ONES[n-80];
-}
-function frUnder1000(n){
-  if (n === 0) return '';
-  const h = Math.floor(n/100), rem = n%100;
-  let s = '';
-  if (h > 0) s += (h===1 ? 'cent' : FR_ONES[h] + ' cent') + (h>1 && rem===0 ? 's' : '');
-  if (rem > 0) s += (s ? ' ' : '') + frUnder100(rem);
-  return s;
-}
-function numberToFrenchWords(num){
-  num = Math.floor(num);
-  if (num === 0) return 'zéro';
-  const billions = Math.floor(num/1e9), millions = Math.floor((num%1e9)/1e6),
-        thousands = Math.floor((num%1e6)/1e3), rest = num%1000;
-  const parts = [];
-  if (billions>0) parts.push(billions===1 ? 'un milliard' : frUnder1000(billions)+' milliards');
-  if (millions>0) parts.push(millions===1 ? 'un million' : frUnder1000(millions)+' millions');
-  if (thousands>0) parts.push(thousands===1 ? 'mille' : frUnder1000(thousands)+' mille');
-  if (rest>0) parts.push(frUnder1000(rest));
-  return parts.join(' ');
-}
-
-function amountToWords(amount, currencyName, lang){
-  amount = parseFloat(amount) || 0;
-  const whole = Math.floor(amount);
-  const cents = Math.round((amount - whole) * 100);
-  const currency = (currencyName || '').trim();
-
-  if (lang === 'en'){
-    let s = numberToEnglishWords(whole) + (currency ? ' ' + currency : '');
-    if (cents > 0) s += ' and ' + numberToEnglishWords(cents) + ' cents';
-    return 'Only ' + s + ' only';
-  }
-  if (lang === 'fr'){
-    let s = numberToFrenchWords(whole) + (currency ? ' ' + currency : '');
-    if (cents > 0) s += ' et ' + numberToFrenchWords(cents) + ' centimes';
-    return 'Arrêté à la somme de : ' + s;
-  }
-  // ar
-  let s = numberToArabicWords(whole) + (currency ? ' ' + currency : '');
-  if (cents > 0) s += ' و' + numberToArabicWords(cents) + ' سنتيم';
-  return 'فقط ' + s + ' لا غير';
-}
 
 /* ---------------- i18n ---------------- */
 const I18N = {
   ar: {
-    pageTitle: 'مولّد وصل استلام', topbarTitle: 'مولّد وصل استلام',
-    issuerCardTitle: 'بيانات الجهة المُصدِرة', issuerName: 'اسم الجهة أو الشخص',
-    detailsCardTitle: 'بيانات الوصل', receiptNo: 'رقم الوصل', receiptDate: 'التاريخ',
-    receivedFrom: 'استلمت من', amount: 'المبلغ', currencyName: 'اسم العملة (مثال: دينار جزائري)',
-    forWhat: 'وذلك مقابل', paymentMethod: 'طريقة الدفع',
-    payCash: 'نقدًا', payCheck: 'شيك', payTransfer: 'تحويل بنكي', payOther: 'أخرى',
-    receiverName: 'اسم المستلم (للتوقيع)',
-    downloadPdf: 'تحميل PDF', printBtn: 'طباعة',
-    receiptTitle: 'وصل استلام', noLabel: 'رقم', dateLabel: 'التاريخ',
-    receivedFromLabel: 'استلمت من', amountLabel: 'مبلغ وقدره', forLabel: 'وذلك مقابل',
-    methodLabel: 'طريقة الدفع', signLabel: 'توقيع المستلم',
-    issuerPlaceholder: 'اسم الجهة', receivedFromPlaceholder: 'الاسم الكامل',
-    forWhatPlaceholder: 'وصف مختصر (مثال: دفعة أولى)', receiverPlaceholder: 'الاسم الكامل',
+    pageTitle: 'مولّد بيان الإرسال',
+    lockedTitle: 'سجّل دخولك لاستخدام مولّد بيان الإرسال',
+    lockedSub: 'هذه الأداة، ومحفظتك الخاصة بها، متاحة للمستخدمين المسجّلين فقط.',
+    tabLogin: 'تسجيل الدخول', tabSignup: 'إنشاء حساب',
+    nameLabel: 'الاسم الكامل', emailLabel: 'البريد الإلكتروني', passwordLabel: 'كلمة المرور',
+    orDivider: 'أو', googleBtn: 'المتابعة عبر Google',
+    portfolioTitle: 'محفظتي', newBtn: 'بيان إرسال جديد',
+    portfolioEmpty: 'لا توجد بيانات إرسال محفوظة بعد. أنشئ أول واحدة الآن.',
+    openBtn: 'فتح', downloadBtn: 'تنزيل PDF', deleteBtn: 'حذف', saveBtn: 'حفظ',
+    confirmDelete: 'حذف هذا البيان نهائيًا؟',
+    formatCombined: 'مدمج بصفحة واحدة', formatBordereau: 'بيان الإرسال فقط', formatAck: 'إشعار الاستلام فقط',
+    letterheadCard: 'ترويسة الجهة المرسلة', issuerName: 'اسم الجهة أو الشخص', issuerContact: 'العنوان / الهاتف / البريد',
+    refCard: 'المرجع والوجهة', refNo: 'المرجع', refDate: 'التاريخ',
+    destinataire: 'المرسل إليه', objet: 'الموضوع',
+    docsCard: 'الوثائق المرفقة', docType: 'نوع الوثيقة', docQty: 'العدد', addDocRow: 'إضافة وثيقة',
+    signCard: 'توقيع وختم المرسل',
+    ackCard: 'إشعار الاستلام', ackTextLabel: 'نص الإقرار', receiverName: 'اسم المستلم', receiverRole: 'الصفة',
+    fontCard: 'الخط', fontModern: 'عصري', fontClassic: 'كلاسيكي', fontFormal: 'رسمي تقليدي', fontHand: 'خط اليد',
+    bordereauTitle: 'بيان إرسال', ackTitle: 'إشعار استلام',
+    refLabel: 'المرجع', dateLabel: 'التاريخ',
+    toLabel: 'إلى', subjectLabel: 'الموضوع',
+    tableNo: 'الرقم', tableType: 'نوع الوثيقة', tableQty: 'العدد',
+    signSenderLabel: 'توقيع وختم المرسل', signReceiverLabel: 'التوقيع والختم',
+    relatedTo: 'متعلق ببيان الإرسال رقم', datedOn: 'بتاريخ',
+    nameFull: 'الاسم واللقب', roleLabel: 'الصفة',
+    savedMsg: 'تم الحفظ بمحفظتك.', notLoggedInAlert: 'سجّل الدخول أولاً.',
+    defaultAckText: 'أقر أنا الموقّع أدناه باستلام كامل الوثائق المذكورة في بيان الإرسال المشار إليه أعلاه، وذلك بتاريخ استلام:',
+    exDestinataire: 'مديرية التربية — ولاية بشار', exObjet: 'إرسال ملفات تلاميذ',
+    exDoc1: 'شهادة ميلاد', exDoc2: 'كشف نقاط',
   },
   en: {
-    pageTitle: 'Receipt Generator', topbarTitle: 'Receipt Generator',
-    issuerCardTitle: 'Issuer Details', issuerName: 'Business or individual name',
-    detailsCardTitle: 'Receipt Details', receiptNo: 'Receipt No.', receiptDate: 'Date',
-    receivedFrom: 'Received From', amount: 'Amount', currencyName: 'Currency name (e.g. USD)',
-    forWhat: 'For', paymentMethod: 'Payment Method',
-    payCash: 'Cash', payCheck: 'Check', payTransfer: 'Bank Transfer', payOther: 'Other',
-    receiverName: "Receiver's name (for signature)",
-    downloadPdf: 'Download PDF', printBtn: 'Print',
-    receiptTitle: 'Receipt', noLabel: 'No.', dateLabel: 'Date',
-    receivedFromLabel: 'Received from', amountLabel: 'Amount', forLabel: 'For',
-    methodLabel: 'Payment method', signLabel: "Receiver's signature",
-    issuerPlaceholder: 'Business name', receivedFromPlaceholder: 'Full name',
-    forWhatPlaceholder: 'Short description (e.g. First payment)', receiverPlaceholder: 'Full name',
+    pageTitle: 'Transmittal Note Generator',
+    lockedTitle: 'Sign in to use the Transmittal Note Generator',
+    lockedSub: 'This tool, and your saved portfolio, are available to signed-in users only.',
+    tabLogin: 'Sign In', tabSignup: 'Sign Up',
+    nameLabel: 'Full name', emailLabel: 'Email', passwordLabel: 'Password',
+    orDivider: 'OR', googleBtn: 'Continue with Google',
+    portfolioTitle: 'My Portfolio', newBtn: 'New Transmittal Note',
+    portfolioEmpty: 'No saved transmittal notes yet. Create your first one now.',
+    openBtn: 'Open', downloadBtn: 'Download PDF', deleteBtn: 'Delete', saveBtn: 'Save',
+    confirmDelete: 'Permanently delete this note?',
+    formatCombined: 'Combined, one page', formatBordereau: 'Transmittal note only', formatAck: 'Acknowledgment only',
+    letterheadCard: 'Sender letterhead', issuerName: 'Business or individual name', issuerContact: 'Address / phone / email',
+    refCard: 'Reference & destination', refNo: 'Reference', refDate: 'Date',
+    destinataire: 'Addressed to', objet: 'Subject',
+    docsCard: 'Enclosed documents', docType: 'Document type', docQty: 'Qty', addDocRow: 'Add document',
+    signCard: "Sender's signature & stamp",
+    ackCard: 'Acknowledgment of receipt', ackTextLabel: 'Declaration text', receiverName: "Receiver's name", receiverRole: 'Role',
+    fontCard: 'Font', fontModern: 'Modern', fontClassic: 'Classic', fontFormal: 'Formal traditional', fontHand: 'Handwriting',
+    bordereauTitle: 'Transmittal Note', ackTitle: 'Acknowledgment of Receipt',
+    refLabel: 'Reference', dateLabel: 'Date',
+    toLabel: 'To', subjectLabel: 'Subject',
+    tableNo: 'No.', tableType: 'Document type', tableQty: 'Qty',
+    signSenderLabel: "Sender's signature & stamp", signReceiverLabel: 'Signature & stamp',
+    relatedTo: 'Regarding transmittal note No.', datedOn: 'dated',
+    nameFull: 'Full name', roleLabel: 'Role',
+    savedMsg: 'Saved to your portfolio.', notLoggedInAlert: 'Please sign in first.',
+    defaultAckText: 'I, the undersigned, acknowledge receipt of all the documents mentioned in the above-referenced transmittal note, on the date of receipt:',
+    exDestinataire: 'Regional Education Office — Béchar', exObjet: "Sending students' files",
+    exDoc1: 'Birth certificate', exDoc2: 'Grade transcript',
   },
   fr: {
-    pageTitle: 'Générateur de reçu', topbarTitle: 'Générateur de reçu',
-    issuerCardTitle: "Coordonnées de l'émetteur", issuerName: "Nom de l'entreprise ou de la personne",
-    detailsCardTitle: 'Détails du reçu', receiptNo: 'N° du reçu', receiptDate: 'Date',
-    receivedFrom: 'Reçu de', amount: 'Montant', currencyName: 'Nom de la devise (ex. Dinar)',
-    forWhat: 'Motif', paymentMethod: 'Mode de paiement',
-    payCash: 'Espèces', payCheck: 'Chèque', payTransfer: 'Virement bancaire', payOther: 'Autre',
-    receiverName: 'Nom du bénéficiaire (signature)',
-    downloadPdf: 'Télécharger le PDF', printBtn: 'Imprimer',
-    receiptTitle: 'Reçu', noLabel: 'N°', dateLabel: 'Date',
-    receivedFromLabel: 'Reçu de', amountLabel: 'Montant reçu', forLabel: 'Motif',
-    methodLabel: 'Mode de paiement', signLabel: 'Signature du bénéficiaire',
-    issuerPlaceholder: "Nom de l'entreprise", receivedFromPlaceholder: 'Nom complet',
-    forWhatPlaceholder: 'Brève description (ex. Premier versement)', receiverPlaceholder: 'Nom complet',
+    pageTitle: "Générateur de bordereau d'envoi",
+    lockedTitle: "Connectez-vous pour utiliser le générateur de bordereau d'envoi",
+    lockedSub: 'Cet outil, et votre portefeuille personnel, sont réservés aux utilisateurs connectés.',
+    tabLogin: 'Se connecter', tabSignup: 'Créer un compte',
+    nameLabel: 'Nom complet', emailLabel: 'E-mail', passwordLabel: 'Mot de passe',
+    orDivider: 'OU', googleBtn: 'Continuer avec Google',
+    portfolioTitle: 'Mon portefeuille', newBtn: "Nouveau bordereau d'envoi",
+    portfolioEmpty: "Aucun bordereau enregistré. Créez le premier maintenant.",
+    openBtn: 'Ouvrir', downloadBtn: 'Télécharger le PDF', deleteBtn: 'Supprimer', saveBtn: 'Enregistrer',
+    confirmDelete: 'Supprimer définitivement ce bordereau ?',
+    formatCombined: 'Combiné, une page', formatBordereau: "Bordereau d'envoi seul", formatAck: 'Accusé de réception seul',
+    letterheadCard: "En-tête de l'expéditeur", issuerName: "Nom de l'entreprise ou de la personne", issuerContact: 'Adresse / téléphone / e-mail',
+    refCard: 'Référence et destinataire', refNo: 'Référence', refDate: 'Date',
+    destinataire: 'Destinataire', objet: 'Objet',
+    docsCard: 'Documents joints', docType: 'Type de document', docQty: 'Qté', addDocRow: 'Ajouter un document',
+    signCard: "Signature et cachet de l'expéditeur",
+    ackCard: 'Accusé de réception', ackTextLabel: 'Texte de déclaration', receiverName: 'Nom du destinataire', receiverRole: 'Fonction',
+    fontCard: 'Police', fontModern: 'Moderne', fontClassic: 'Classique', fontFormal: 'Officielle traditionnelle', fontHand: 'Manuscrite',
+    bordereauTitle: "Bordereau d'Envoi", ackTitle: 'Accusé de Réception',
+    refLabel: 'Référence', dateLabel: 'Date',
+    toLabel: 'À', subjectLabel: 'Objet',
+    tableNo: 'N°', tableType: 'Type de document', tableQty: 'Qté',
+    signSenderLabel: "Signature et cachet de l'expéditeur", signReceiverLabel: 'Signature et cachet',
+    relatedTo: "Relatif au bordereau d'envoi n°", datedOn: 'daté du',
+    nameFull: 'Nom complet', roleLabel: 'Fonction',
+    savedMsg: 'Enregistré dans votre portefeuille.', notLoggedInAlert: "Veuillez vous connecter d'abord.",
+    defaultAckText: "Je soussigné(e) reconnais avoir reçu l'ensemble des documents mentionnés dans le bordereau d'envoi référencé ci-dessus, à la date de réception :",
+    exDestinataire: 'Direction régionale de l\'éducation — Béchar', exObjet: 'Envoi des dossiers des élèves',
+    exDoc1: 'Acte de naissance', exDoc2: 'Relevé de notes',
   },
 };
 
-let lang = localStorage.getItem('receipt_lang') || 'ar';
-let logoDataUrl = null;
+const FONTS = [
+  { id: 'modern', label: 'fontModern', family: "'Tajawal', sans-serif" },
+  { id: 'classic', label: 'fontClassic', family: "'Cairo', sans-serif" },
+  { id: 'formal', label: 'fontFormal', family: "'Noto Naskh Arabic', serif" },
+  { id: 'hand', label: 'fontHand', family: "'Aref Ruqaa', serif" },
+];
+
+const FORMATS = ['combined', 'bordereau', 'acknowledgment'];
+
+let lang = localStorage.getItem('be_lang') || 'ar';
+let currentUser = null;
+let portfolioItems = [];
+let currentRecordId = null; // null = unsaved new record
 
 function t(key){ return I18N[lang][key] || key; }
 function $(id){ return document.getElementById(id); }
 
-const PAY_METHODS = ['cash','check','transfer','other'];
-const PAY_LABELS = { cash: 'payCash', check: 'payCheck', transfer: 'payTransfer', other: 'payOther' };
+function defaultRecord(){
+  const today = new Date().toISOString().slice(0, 10);
+  return {
+    ref: 'BE-' + new Date().getFullYear() + '-001',
+    date: today,
+    destinataire: t('exDestinataire'), objet: t('exObjet'),
+    documents: [{ type: t('exDoc1'), qty: 1 }, { type: t('exDoc2'), qty: 1 }],
+    issuerName: '', issuerContact: '',
+    logoDataUrl: null, signDataUrl: null,
+    format: 'combined',
+    ackText: t('defaultAckText'),
+    receiverName: '', receiverRole: '',
+    fontId: 'modern',
+  };
+}
+let record = defaultRecord();
 
+/* ---------------- Image compression (keep Firestore docs well under 1MB) ---------------- */
+function readAndCompressImage(file, maxDim, quality){
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        let w = img.width, h = img.height;
+        if (w > h && w > maxDim){ h = Math.round(h * maxDim / w); w = maxDim; }
+        else if (h > maxDim){ w = Math.round(w * maxDim / h); h = maxDim; }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+/* ---------------- Local autosave (draft only, unlimited & free) ---------------- */
+function localAutosave(){
+  try { localStorage.setItem('be_draft_' + (currentRecordId || 'new'), JSON.stringify(record)); } catch (e) {}
+}
+function loadLocalDraft(id){
+  try {
+    const raw = localStorage.getItem('be_draft_' + (id || 'new'));
+    return raw ? JSON.parse(raw) : null;
+  } catch (e) { return null; }
+}
+
+/* ---------------- Language ---------------- */
 function applyLanguage(){
   document.documentElement.lang = lang;
   document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
@@ -187,99 +178,398 @@ function applyLanguage(){
   document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.getAttribute('data-i18n')); });
   document.querySelectorAll('[data-i18n-placeholder]').forEach(el => { el.placeholder = t(el.getAttribute('data-i18n-placeholder')); });
   document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
-  renderPaymentOptions();
-  localStorage.setItem('receipt_lang', lang);
+  localStorage.setItem('be_lang', lang);
+  renderFontFilter();
+  renderFormatSelector();
+  renderDocRows();
   renderPreview();
 }
 
-function renderPaymentOptions(){
-  const sel = $('paymentMethod');
-  if (!sel) return;
-  const current = sel.value || 'cash';
-  sel.innerHTML = PAY_METHODS.map(m => `<option value="${m}">${t(PAY_LABELS[m])}</option>`).join('');
-  sel.value = current;
+/* ---------------- Screens ---------------- */
+function showScreen(name){
+  ['loadingScreen','lockedScreen','portfolioScreen','editorScreen'].forEach(id => {
+    $(id).classList.toggle('hidden', id !== name);
+  });
+}
+
+/* ---------------- Auth ---------------- */
+const AUTH_ERR = {
+  ar: { 'auth/email-already-in-use': 'هذا البريد مستخدم مسبقًا.', 'auth/invalid-email': 'صيغة البريد غير صحيحة.',
+    'auth/weak-password': 'كلمة المرور ضعيفة (6 أحرف على الأقل).', 'auth/wrong-password': 'كلمة المرور غير صحيحة.',
+    'auth/user-not-found': 'لا يوجد حساب بهذا البريد.', 'auth/invalid-credential': 'البريد أو كلمة المرور غير صحيحة.',
+    default: 'حدث خطأ، حاول مرة أخرى.' },
+  en: { 'auth/email-already-in-use': 'This email is already in use.', 'auth/invalid-email': 'Invalid email.',
+    'auth/weak-password': 'Weak password (min 6 characters).', 'auth/wrong-password': 'Incorrect password.',
+    'auth/user-not-found': 'No account with this email.', 'auth/invalid-credential': 'Incorrect email or password.',
+    default: 'Something went wrong, try again.' },
+  fr: { 'auth/email-already-in-use': 'Cet e-mail est déjà utilisé.', 'auth/invalid-email': 'E-mail invalide.',
+    'auth/weak-password': 'Mot de passe trop faible (6 caractères min).', 'auth/wrong-password': 'Mot de passe incorrect.',
+    'auth/user-not-found': 'Aucun compte avec cet e-mail.', 'auth/invalid-credential': 'E-mail ou mot de passe incorrect.',
+    default: 'Une erreur est survenue, réessayez.' },
+};
+function authErrMsg(code){ const d = AUTH_ERR[lang] || AUTH_ERR.en; return d[code] || d.default; }
+
+let authMode = 'login';
+function setAuthMode(mode){
+  authMode = mode;
+  $('tabLogin').classList.toggle('active', mode === 'login');
+  $('tabSignup').classList.toggle('active', mode === 'signup');
+  $('acName').classList.toggle('hidden', mode === 'login');
+  $('acSubmitBtn').textContent = mode === 'login' ? t('tabLogin') : t('tabSignup');
+  $('authCardError').classList.add('hidden');
+}
+
+function initAuthCard(){
+  $('tabLogin').addEventListener('click', () => setAuthMode('login'));
+  $('tabSignup').addEventListener('click', () => setAuthMode('signup'));
+
+  $('authCardForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = $('acEmail').value.trim();
+    const password = $('acPassword').value;
+    const btn = $('acSubmitBtn');
+    btn.disabled = true;
+    try {
+      if (authMode === 'login'){
+        await window.fbAuth.signInWithEmailAndPassword(email, password);
+      } else {
+        const cred = await window.fbAuth.createUserWithEmailAndPassword(email, password);
+        const name = $('acName').value.trim();
+        if (name) await cred.user.updateProfile({ displayName: name });
+      }
+    } catch (err){
+      $('authCardError').textContent = authErrMsg(err.code);
+      $('authCardError').classList.remove('hidden');
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
+  $('acGoogleBtn').addEventListener('click', async () => {
+    try {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      await window.fbAuth.signInWithPopup(provider);
+    } catch (err){
+      if (err.code !== 'auth/popup-closed-by-user'){
+        $('authCardError').textContent = authErrMsg(err.code);
+        $('authCardError').classList.remove('hidden');
+      }
+    }
+  });
+}
+
+/* ---------------- Firestore portfolio ---------------- */
+function portfolioCollection(){
+  return window.fbDb.collection('users').doc(currentUser.uid).collection('bordereaux');
+}
+
+async function loadPortfolio(){
+  const snap = await portfolioCollection().orderBy('updatedAt', 'desc').get();
+  portfolioItems = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  renderPortfolio();
+}
+
+function renderPortfolio(){
+  const list = $('portfolioList');
+  const empty = $('portfolioEmpty');
+  if (portfolioItems.length === 0){
+    list.innerHTML = '';
+    empty.classList.remove('hidden');
+    return;
+  }
+  empty.classList.add('hidden');
+  list.innerHTML = portfolioItems.map(item => `
+    <div class="portfolio-item">
+      <div class="portfolio-item-main">
+        <div class="portfolio-item-title">${escapeHtml(item.ref || '—')} — ${escapeHtml(item.destinataire || '')}</div>
+        <div class="portfolio-item-sub">${escapeHtml(item.date || '')}</div>
+      </div>
+      <div class="portfolio-item-actions">
+        <button class="btn-icon-sm" data-open="${item.id}" title="${t('openBtn')}" aria-label="${t('openBtn')}">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+        </button>
+        <button class="btn-icon-sm danger" data-delete="${item.id}" title="${t('deleteBtn')}" aria-label="${t('deleteBtn')}">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+        </button>
+      </div>
+    </div>`).join('');
+
+  list.querySelectorAll('[data-open]').forEach(btn => {
+    btn.addEventListener('click', () => openRecord(btn.getAttribute('data-open')));
+  });
+  list.querySelectorAll('[data-delete]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      if (!confirm(t('confirmDelete'))) return;
+      await portfolioCollection().doc(btn.getAttribute('data-delete')).delete();
+      await loadPortfolio();
+    });
+  });
+}
+
+function escapeHtml(s){
+  return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function openRecord(id){
+  const item = portfolioItems.find(i => i.id === id);
+  if (!item) return;
+  currentRecordId = id;
+  record = Object.assign(defaultRecord(), item);
+  delete record.id; delete record.updatedAt;
+  enterEditor();
+}
+
+function newRecord(){
+  currentRecordId = null;
+  record = defaultRecord();
+  record.destinataire = record.destinataire; // keep example-free; fields start blank except ref/date
+  enterEditor();
+}
+
+async function saveRecord(){
+  if (!currentUser){ alert(t('notLoggedInAlert')); return; }
+  const payload = Object.assign({}, record, { updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+  const btn = $('saveBtn');
+  btn.disabled = true;
+  try {
+    if (currentRecordId){
+      await portfolioCollection().doc(currentRecordId).set(payload, { merge: true });
+    } else {
+      const ref = await portfolioCollection().add(payload);
+      currentRecordId = ref.id;
+    }
+    await loadPortfolio();
+    alert(t('savedMsg'));
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+/* ---------------- Editor ---------------- */
+function enterEditor(){
+  showScreen('editorScreen');
+  fillFormFromRecord();
+  renderFontFilter();
+  renderFormatSelector();
+  renderDocRows();
+  renderPreview();
+}
+
+function fillFormFromRecord(){
+  $('issuerName').value = record.issuerName || '';
+  $('issuerContact').value = record.issuerContact || '';
+  $('refNo').value = record.ref || '';
+  $('refDate').value = record.date || '';
+  $('destinataire').value = record.destinataire || '';
+  $('objet').value = record.objet || '';
+  $('ackText').value = record.ackText || t('defaultAckText');
+  $('receiverName').value = record.receiverName || '';
+  $('receiverRole').value = record.receiverRole || '';
+  renderUploadBox('logoBox', record.logoDataUrl);
+  renderUploadBox('signBox', record.signDataUrl);
+}
+
+function renderUploadBox(boxId, dataUrl){
+  const box = $(boxId);
+  box.innerHTML = dataUrl
+    ? `<img src="${dataUrl}" alt=""><span class="upload-remove" data-remove="${boxId}">&times;</span>`
+    : `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" style="color:var(--ink-soft)"><path d="M12 5v14M5 12h14"/></svg>`;
+  const rm = box.querySelector('[data-remove]');
+  if (rm) rm.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (boxId === 'logoBox') record.logoDataUrl = null; else record.signDataUrl = null;
+    renderUploadBox(boxId, null);
+    localAutosave(); renderPreview();
+  });
+}
+
+function initUploadBox(boxId, inputId, field){
+  const box = $(boxId), input = $(inputId);
+  box.addEventListener('click', (e) => { if (!e.target.closest('[data-remove]')) input.click(); });
+  input.addEventListener('change', async function(){
+    const file = this.files[0]; if (!file) return;
+    const dataUrl = await readAndCompressImage(file, 360, 0.75);
+    record[field] = dataUrl;
+    renderUploadBox(boxId, dataUrl);
+    localAutosave(); renderPreview();
+  });
+}
+
+function renderFontFilter(){
+  $('fontFilter').innerHTML = FONTS.map(f => `<button type="button" class="chip-btn ${record.fontId === f.id ? 'active' : ''}" data-font="${f.id}">${t(f.label)}</button>`).join('');
+  $('fontFilter').querySelectorAll('[data-font]').forEach(btn => {
+    btn.addEventListener('click', () => { record.fontId = btn.getAttribute('data-font'); renderFontFilter(); localAutosave(); renderPreview(); });
+  });
+}
+
+const FORMAT_ICONS = {
+  combined: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M5 13h14" stroke-dasharray="2 2"/></svg>',
+  bordereau: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>',
+  acknowledgment: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="m9 13 2 2 4-4"/></svg>',
+};
+function renderFormatSelector(){
+  const labels = { combined: 'formatCombined', bordereau: 'formatBordereau', acknowledgment: 'formatAck' };
+  $('formatSelectRow').innerHTML = FORMATS.map(f => `
+    <div class="format-card ${record.format === f ? 'active' : ''}" data-format="${f}">
+      ${FORMAT_ICONS[f]}
+      <div class="format-card-label">${t(labels[f])}</div>
+    </div>`).join('');
+  $('formatSelectRow').querySelectorAll('[data-format]').forEach(el => {
+    el.addEventListener('click', () => {
+      record.format = el.getAttribute('data-format');
+      renderFormatSelector();
+      $('ackFormCard').classList.toggle('hidden', record.format === 'bordereau');
+      $('docsFormCard').classList.toggle('hidden', record.format === 'acknowledgment');
+      $('letterheadFormCard').classList.toggle('hidden', false);
+      localAutosave(); renderPreview();
+    });
+  });
+  $('ackFormCard').classList.toggle('hidden', record.format === 'bordereau');
+  $('docsFormCard').classList.toggle('hidden', record.format === 'acknowledgment');
+}
+
+function renderDocRows(){
+  const wrap = $('docRowsList');
+  wrap.innerHTML = record.documents.map((d, i) => `
+    <div class="doc-row">
+      <input type="text" class="cv-input doc-type" data-i="${i}" value="${escapeHtml(d.type)}" placeholder="${t('docType')}">
+      <input type="number" min="1" class="cv-input doc-qty" data-i="${i}" value="${d.qty}">
+      <button type="button" class="remove-row-btn" data-remove-doc="${i}" aria-label="${t('deleteBtn')}">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>`).join('');
+
+  wrap.querySelectorAll('.doc-type').forEach(el => el.addEventListener('input', () => {
+    record.documents[+el.dataset.i].type = el.value; localAutosave(); renderPreview();
+  }));
+  wrap.querySelectorAll('.doc-qty').forEach(el => el.addEventListener('input', () => {
+    record.documents[+el.dataset.i].qty = parseInt(el.value, 10) || 1; localAutosave(); renderPreview();
+  }));
+  wrap.querySelectorAll('[data-remove-doc]').forEach(el => el.addEventListener('click', () => {
+    record.documents.splice(+el.getAttribute('data-remove-doc'), 1);
+    if (record.documents.length === 0) record.documents.push({ type: '', qty: 1 });
+    renderDocRows(); localAutosave(); renderPreview();
+  }));
+}
+
+/* ---------------- Live A4 preview ---------------- */
+function fontFamilyFor(id){ const f = FONTS.find(x => x.id === id); return f ? f.family : FONTS[0].family; }
+
+function bordereauPageHtml(){
+  const rows = record.documents.map((d, i) => `<tr><td style="text-align:center">${i+1}</td><td>${escapeHtml(d.type) || '—'}</td><td style="text-align:center">${d.qty}</td></tr>`).join('');
+  return `
+    <div class="pv-letterhead">
+      <div class="pv-logo-box">${record.logoDataUrl ? `<img src="${record.logoDataUrl}" alt="">` : ''}</div>
+      <div><div class="pv-issuer-name">${escapeHtml(record.issuerName) || '—'}</div><div class="pv-issuer-contact">${escapeHtml(record.issuerContact)}</div></div>
+    </div>
+    <div class="pv-divider"></div>
+    <div class="pv-refdate"><span>${t('refLabel')}: <b>${escapeHtml(record.ref)}</b></span><span>${t('dateLabel')}: <b>${escapeHtml(record.date)}</b></span></div>
+    <div class="pv-line"><span class="lbl">${t('toLabel')}: </span>${escapeHtml(record.destinataire) || '—'}</div>
+    <div class="pv-line" style="margin-bottom:16px;"><span class="lbl">${t('subjectLabel')}: </span>${escapeHtml(record.objet) || '—'}</div>
+    <div class="pv-title-row"><span>${t('bordereauTitle')}</span></div>
+    <table class="pv-table"><thead><tr><th>${t('tableNo')}</th><th>${t('tableType')}</th><th>${t('tableQty')}</th></tr></thead><tbody>${rows}</tbody></table>
+    <div class="pv-sign-block"><div><div class="pv-sign-label">${t('signSenderLabel')}</div><div class="pv-sign-img-box">${record.signDataUrl ? `<img src="${record.signDataUrl}" alt="">` : ''}</div></div></div>
+  `;
+}
+
+function ackPageHtml(withLetterhead){
+  return `
+    ${withLetterhead ? `
+    <div class="pv-letterhead">
+      <div class="pv-logo-box">${record.logoDataUrl ? `<img src="${record.logoDataUrl}" alt="">` : ''}</div>
+      <div><div class="pv-issuer-name">${escapeHtml(record.issuerName) || '—'}</div><div class="pv-issuer-contact">${escapeHtml(record.issuerContact)}</div></div>
+    </div>
+    <div class="pv-divider"></div>` : ''}
+    <div class="pv-title-row" style="margin-top:${withLetterhead ? '10px' : '0'};"><span>${t('ackTitle')}</span></div>
+    <div class="pv-ack-ref">${t('relatedTo')} <b>${escapeHtml(record.ref)}</b> ${t('datedOn')} <b>${escapeHtml(record.date)}</b></div>
+    <div class="pv-ack-text">${escapeHtml(record.ackText)}</div>
+    <div class="pv-ack-fields">
+      <div style="flex:1;">
+        <div style="margin-bottom:10px;">${t('nameFull')}: ${escapeHtml(record.receiverName) || '.......................'}</div>
+        <div>${t('roleLabel')}: ${escapeHtml(record.receiverRole) || '.......................'}</div>
+      </div>
+    </div>
+    <div class="pv-sign-block" style="justify-content:center;"><div><div class="pv-sign-label">${t('signReceiverLabel')}</div><div class="pv-sign-img-box">${record.signDataUrl ? `<img src="${record.signDataUrl}" alt="">` : ''}</div></div></div>
+  `;
 }
 
 function renderPreview(){
-  $('pvIssuer').textContent = $('issuerName').value || t('issuerPlaceholder');
-  $('pvLogo').src = logoDataUrl || '';
-  $('pvLogo').classList.toggle('hidden', !logoDataUrl);
-  $('pvTitle').textContent = t('receiptTitle');
-
-  $('pvNoLabel').textContent = t('noLabel');
-  $('pvNo').textContent = $('receiptNo').value || '—';
-  $('pvDateLabel').textContent = t('dateLabel');
-  $('pvDate').textContent = $('receiptDate').value || '—';
-
-  $('pvFromLabel').textContent = t('receivedFromLabel');
-  $('pvFrom').textContent = $('receivedFrom').value || '—';
-
-  const amt = parseFloat($('amountInput').value) || 0;
-  $('pvAmountLabel').textContent = t('amountLabel');
-  $('pvAmount').textContent = amt ? amt.toLocaleString(lang === 'ar' ? 'ar' : lang, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + (( $('currencyInput').value || '').trim() ? ' ' + $('currencyInput').value.trim() : '') : '—';
-  $('pvAmountWords').textContent = amountToWords($('amountInput').value, $('currencyInput').value, lang);
-
-  $('pvForLabel').textContent = t('forLabel');
-  $('pvFor').textContent = $('forWhat').value || '—';
-
-  $('pvMethodLabel').textContent = t('methodLabel');
-  $('pvMethod').textContent = t(PAY_LABELS[$('paymentMethod').value] || 'payCash');
-
-  $('pvSignLabel').textContent = t('signLabel');
-  $('pvSignName').textContent = $('receiverName').value || '';
+  const container = $('previewContainer');
+  const fontFamily = fontFamilyFor(record.fontId);
+  let pagesHtml = '';
+  if (record.format === 'bordereau'){
+    pagesHtml = `<div class="page-a4" id="pdfTarget" style="font-family:${fontFamily}">${bordereauPageHtml()}</div>`;
+  } else if (record.format === 'acknowledgment'){
+    pagesHtml = `<div class="page-a4" id="pdfTarget" style="font-family:${fontFamily}">${ackPageHtml(true)}</div>`;
+  } else {
+    pagesHtml = `<div class="page-a4" id="pdfTarget" style="font-family:${fontFamily}">
+        ${bordereauPageHtml()}
+        <div class="pv-cut"></div>
+        <div class="pv-ack-box">${ackPageHtml(false)}</div>
+      </div>`;
+  }
+  container.innerHTML = pagesHtml;
 }
 
-function initLogoUpload(){
-  const box = $('logoBox');
-  const input = $('logoInput');
-  box.addEventListener('click', (e) => {
-    if (e.target.closest('.logo-remove')) return;
-    input.click();
-  });
-  input.addEventListener('change', function(){
-    const file = this.files[0]; if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (e) => { logoDataUrl = e.target.result; renderLogoBox(); renderPreview(); };
-    reader.readAsDataURL(file);
-  });
-}
-function renderLogoBox(){
-  const box = $('logoBox');
-  box.innerHTML = logoDataUrl
-    ? `<img class="logo-preview" src="${logoDataUrl}" alt=""><span class="logo-remove" id="logoRemoveBtn">&times;</span>`
-    : `<span class="logo-placeholder">🖼️</span>`;
-  const rm = $('logoRemoveBtn');
-  if (rm) rm.addEventListener('click', (e) => { e.stopPropagation(); logoDataUrl = null; renderLogoBox(); renderPreview(); });
-}
-
+/* ---------------- PDF / print ---------------- */
 async function downloadPdf(){
-  const node = $('receiptCard');
+  const node = $('pdfTarget');
   const canvas = await html2canvas(node, { scale: 3, backgroundColor: '#ffffff', useCORS: true });
   const img = canvas.toDataURL('image/png');
   const { jsPDF } = window.jspdf;
-  const pdf = new jsPDF({ unit: 'px', format: [canvas.width, canvas.height] });
-  pdf.addImage(img, 'PNG', 0, 0, canvas.width, canvas.height);
-  pdf.save('receipt.pdf');
+  const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+  const w = pdf.internal.pageSize.getWidth(), h = pdf.internal.pageSize.getHeight();
+  pdf.addImage(img, 'PNG', 0, 0, w, h);
+  pdf.save((record.ref || 'bordereau') + '.pdf');
 }
 
+/* ---------------- Init ---------------- */
 document.addEventListener('DOMContentLoaded', () => {
-  $('backBtn').addEventListener('click', (e) => { e.preventDefault(); window.location.href = '../../tools.html'; });
-  document.querySelectorAll('.lang-btn').forEach(btn => {
-    btn.addEventListener('click', () => { lang = btn.dataset.lang; applyLanguage(); });
+  showScreen('loadingScreen');
+  setAuthMode('login');
+  initAuthCard();
+
+  document.querySelectorAll('.lang-btn').forEach(btn => btn.addEventListener('click', () => { lang = btn.dataset.lang; applyLanguage(); }));
+
+  $('backBtn').addEventListener('click', (e) => {
+    e.preventDefault();
+    if (!$('editorScreen').classList.contains('hidden')){ showScreen('portfolioScreen'); }
+    else { window.location.href = '../../tools.html'; }
   });
 
-  document.querySelectorAll('.live-field').forEach(el => el.addEventListener('input', renderPreview));
-  $('paymentMethod').addEventListener('change', renderPreview);
-
-  initLogoUpload();
-  renderLogoBox();
-
-  $('downloadBtn').addEventListener('click', downloadPdf);
+  $('newBordereauBtn').addEventListener('click', newRecord);
+  $('saveBtn').addEventListener('click', saveRecord);
+  $('downloadPdfBtn').addEventListener('click', downloadPdf);
   $('printBtn').addEventListener('click', () => window.print());
 
-  // sensible default date = today
-  const dateInput = $('receiptDate');
-  if (dateInput && !dateInput.value) dateInput.valueAsDate = new Date();
+  ['issuerName','issuerContact'].forEach(id => $(id).addEventListener('input', (e) => { record[id] = e.target.value; localAutosave(); renderPreview(); }));
+  $('refNo').addEventListener('input', (e) => { record.ref = e.target.value; localAutosave(); renderPreview(); });
+  $('refDate').addEventListener('input', (e) => { record.date = e.target.value; localAutosave(); renderPreview(); });
+  $('destinataire').addEventListener('input', (e) => { record.destinataire = e.target.value; localAutosave(); renderPreview(); });
+  $('objet').addEventListener('input', (e) => { record.objet = e.target.value; localAutosave(); renderPreview(); });
+  $('ackText').addEventListener('input', (e) => { record.ackText = e.target.value; localAutosave(); renderPreview(); });
+  $('receiverName').addEventListener('input', (e) => { record.receiverName = e.target.value; localAutosave(); renderPreview(); });
+  $('receiverRole').addEventListener('input', (e) => { record.receiverRole = e.target.value; localAutosave(); renderPreview(); });
 
-  applyLanguage();
+  $('addDocRowBtn').addEventListener('click', () => { record.documents.push({ type: '', qty: 1 }); renderDocRows(); localAutosave(); renderPreview(); });
+
+  initUploadBox('logoBox', 'logoInput', 'logoDataUrl');
+  initUploadBox('signBox', 'signInput', 'signDataUrl');
+
+  if (window.fbAuth){
+    window.fbAuth.onAuthStateChanged(async (user) => {
+      currentUser = user;
+      if (user){
+        applyLanguage();
+        showScreen('portfolioScreen');
+        $('portfolioTitleEl').textContent = t('portfolioTitle');
+        await loadPortfolio();
+      } else {
+        applyLanguage();
+        showScreen('lockedScreen');
+      }
+    });
+  } else {
+    showScreen('lockedScreen');
+  }
 });

@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>مولّد وصل استلام — أكاديمية مرابطي</title>
-<meta name="description" content="أنشئ وصل استلام احترافي في ثوانٍ، مع تحويل المبلغ إلى حروف تلقائيًا وتصدير PDF.">
+<title>مولّد بيان الإرسال — أكاديمية مرابطي</title>
+<meta name="description" content="أنشئ بيان إرسال رسمي بصيغة A4 مع إشعار استلام، واحتفظ بمحفظة من كل ما أرسلت.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Cairo:wght@400;600;800&family=Noto+Naskh+Arabic:wght@400;600;700&family=Aref+Ruqaa:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -15,7 +15,7 @@
   <a href="../../tools.html" class="icon-btn" id="backBtn" aria-label="back">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
   </a>
-  <span class="topbar-title" data-i18n="topbarTitle">مولّد وصل استلام</span>
+  <span class="topbar-title" data-i18n="pageTitle">مولّد بيان الإرسال</span>
   <div class="topbar-actions">
     <div class="lang-switch">
       <button type="button" class="lang-btn" data-lang="ar">عربي</button>
@@ -26,111 +26,148 @@
 </div>
 
 <main class="wrap">
-  <h1 class="page-title" data-i18n="pageTitle">مولّد وصل استلام</h1>
 
-  <div class="editor-grid">
-    <div class="editor-form">
+  <section id="loadingScreen" class="screen loading-screen">
+    <div class="loading-spinner"></div>
+  </section>
 
-      <div class="form-card">
-        <h2 class="form-card-title" data-i18n="issuerCardTitle">بيانات الجهة المُصدِرة</h2>
-        <div class="logo-upload-box" id="logoBox">
-          <span class="logo-placeholder">🖼️</span>
+  <!-- ============ Locked / auth screen ============ -->
+  <section id="lockedScreen" class="screen hidden">
+    <div class="locked-hero">
+      <div class="locked-icon">🔒</div>
+      <h1 data-i18n="lockedTitle">سجّل دخولك لاستخدام مولّد بيان الإرسال</h1>
+      <p data-i18n="lockedSub">هذه الأداة، ومحفظتك الخاصة بها، متاحة للمستخدمين المسجّلين فقط.</p>
+    </div>
+    <div class="auth-card">
+      <div class="auth-tabs">
+        <button type="button" class="auth-tab active" data-mode="login" id="tabLogin">تسجيل الدخول</button>
+        <button type="button" class="auth-tab" data-mode="signup" id="tabSignup">إنشاء حساب</button>
+      </div>
+      <p class="auth-card-error hidden" id="authCardError"></p>
+      <form id="authCardForm">
+        <input type="text" id="acName" class="cv-input hidden" data-i18n-placeholder="nameLabel" placeholder="الاسم الكامل">
+        <input type="email" id="acEmail" class="cv-input" required data-i18n-placeholder="emailLabel" placeholder="البريد الإلكتروني">
+        <input type="password" id="acPassword" class="cv-input" required minlength="6" data-i18n-placeholder="passwordLabel" placeholder="كلمة المرور">
+        <button type="submit" class="btn btn-primary btn-block" id="acSubmitBtn">تسجيل الدخول</button>
+      </form>
+      <div class="auth-divider" data-i18n="orDivider">أو</div>
+      <button type="button" class="auth-google-btn" id="acGoogleBtn">
+        <svg viewBox="0 0 48 48" width="18" height="18"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 8 3l6-6C34.5 5.1 29.5 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21 21-9.4 21-21c0-1.2-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.6 15.6 18.9 13 24 13c3.1 0 5.8 1.1 8 3l6-6C34.5 5.1 29.5 3 24 3c-7.6 0-14.1 4.3-17.7 10.7z"/><path fill="#4CAF50" d="M24 45c5.3 0 10.2-2 13.9-5.3l-6.4-5.4C29.3 36 26.8 37 24 37c-5.2 0-9.6-3.1-11.4-7.6l-6.6 5.1C9.8 40.6 16.3 45 24 45z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.2-4.2 5.6l6.4 5.4C40.5 36.6 43 30.8 43 24c0-1.2-.1-2.4-.4-3.5z"/></svg>
+        <span data-i18n="googleBtn">المتابعة عبر Google</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ============ Portfolio screen ============ -->
+  <section id="portfolioScreen" class="screen hidden">
+    <div class="portfolio-head">
+      <h1 id="portfolioTitleEl" data-i18n="portfolioTitle">محفظتي</h1>
+      <button type="button" class="btn btn-primary" id="newBordereauBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+        <span data-i18n="newBtn">بيان إرسال جديد</span>
+      </button>
+    </div>
+    <p class="portfolio-empty hidden" id="portfolioEmpty" data-i18n="portfolioEmpty">لا توجد بيانات إرسال محفوظة بعد.</p>
+    <div class="portfolio-list" id="portfolioList"></div>
+  </section>
+
+  <!-- ============ Editor screen ============ -->
+  <section id="editorScreen" class="screen hidden">
+    <h1 class="page-title" data-i18n="pageTitle">مولّد بيان الإرسال</h1>
+
+    <div class="format-select-row" id="formatSelectRow"></div>
+
+    <div class="editor-grid">
+      <div class="editor-form">
+
+        <div class="form-card" id="letterheadFormCard">
+          <h2 class="form-card-title" data-i18n="letterheadCard">ترويسة الجهة المرسلة</h2>
+          <div class="upload-box" id="logoBox"></div>
+          <input type="file" id="logoInput" accept="image/*" hidden>
+          <label class="field-label" data-i18n="issuerName">اسم الجهة أو الشخص</label>
+          <input type="text" id="issuerName" class="cv-input" style="margin-bottom:12px;">
+          <label class="field-label" data-i18n="issuerContact">العنوان / الهاتف / البريد</label>
+          <input type="text" id="issuerContact" class="cv-input" style="margin-bottom:0;">
         </div>
-        <input type="file" id="logoInput" accept="image/*" hidden>
-        <label class="field-label" data-i18n="issuerName">اسم الجهة أو الشخص</label>
-        <input type="text" id="issuerName" class="cv-input live-field" data-i18n-placeholder="issuerPlaceholder" placeholder="اسم الجهة">
+
+        <div class="form-card">
+          <h2 class="form-card-title" data-i18n="refCard">المرجع والوجهة</h2>
+          <div class="field-row">
+            <div>
+              <label class="field-label" data-i18n="refNo">المرجع</label>
+              <input type="text" id="refNo" class="cv-input">
+            </div>
+            <div>
+              <label class="field-label" data-i18n="refDate">التاريخ</label>
+              <input type="date" id="refDate" class="cv-input">
+            </div>
+          </div>
+          <label class="field-label" data-i18n="destinataire">المرسل إليه</label>
+          <input type="text" id="destinataire" class="cv-input">
+          <label class="field-label" data-i18n="objet">الموضوع</label>
+          <input type="text" id="objet" class="cv-input" style="margin-bottom:0;">
+        </div>
+
+        <div class="form-card" id="docsFormCard">
+          <h2 class="form-card-title" data-i18n="docsCard">الوثائق المرفقة</h2>
+          <div id="docRowsList"></div>
+          <button type="button" class="add-row-btn" id="addDocRowBtn">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+            <span data-i18n="addDocRow">إضافة وثيقة</span>
+          </button>
+        </div>
+
+        <div class="form-card">
+          <h2 class="form-card-title" data-i18n="signCard">توقيع وختم المرسل</h2>
+          <div class="upload-box" id="signBox"></div>
+          <input type="file" id="signInput" accept="image/*" hidden>
+        </div>
+
+        <div class="form-card" id="ackFormCard">
+          <h2 class="form-card-title" data-i18n="ackCard">إشعار الاستلام</h2>
+          <label class="field-label" data-i18n="ackTextLabel">نص الإقرار</label>
+          <textarea id="ackText" class="cv-textarea"></textarea>
+          <label class="field-label" data-i18n="receiverName">اسم المستلم</label>
+          <input type="text" id="receiverName" class="cv-input">
+          <label class="field-label" data-i18n="receiverRole">الصفة</label>
+          <input type="text" id="receiverRole" class="cv-input" style="margin-bottom:0;">
+        </div>
+
+        <div class="form-card">
+          <h2 class="form-card-title" data-i18n="fontCard">الخط</h2>
+          <div class="font-filter" id="fontFilter"></div>
+        </div>
+
+        <div class="btn-row">
+          <button type="button" class="btn btn-primary btn-block" id="saveBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>
+            <span data-i18n="saveBtn">حفظ</span>
+          </button>
+        </div>
+        <div class="btn-row" style="margin-top:10px;">
+          <button type="button" class="btn btn-secondary btn-block" id="downloadPdfBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M5 21h14"/></svg>
+            <span data-i18n="downloadBtn">تحميل PDF</span>
+          </button>
+          <button type="button" class="btn btn-secondary btn-block" id="printBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>
+            <span>طباعة</span>
+          </button>
+        </div>
       </div>
 
-      <div class="form-card">
-        <h2 class="form-card-title" data-i18n="detailsCardTitle">بيانات الوصل</h2>
-
-        <div class="field-row">
-          <div>
-            <label class="field-label" data-i18n="receiptNo">رقم الوصل</label>
-            <input type="text" id="receiptNo" class="cv-input live-field">
-          </div>
-          <div>
-            <label class="field-label" data-i18n="receiptDate">التاريخ</label>
-            <input type="date" id="receiptDate" class="cv-input live-field">
-          </div>
-        </div>
-
-        <label class="field-label" data-i18n="receivedFrom">استلمت من</label>
-        <input type="text" id="receivedFrom" class="cv-input live-field" data-i18n-placeholder="receivedFromPlaceholder" placeholder="الاسم الكامل">
-
-        <div class="field-row">
-          <div>
-            <label class="field-label" data-i18n="amount">المبلغ</label>
-            <input type="number" id="amountInput" class="cv-input live-field" min="0" step="0.01" placeholder="0.00">
-          </div>
-          <div>
-            <label class="field-label" data-i18n="currencyName">اسم العملة</label>
-            <input type="text" id="currencyInput" class="cv-input live-field" placeholder="دينار جزائري">
-          </div>
-        </div>
-
-        <label class="field-label" data-i18n="forWhat">وذلك مقابل</label>
-        <input type="text" id="forWhat" class="cv-input live-field" data-i18n-placeholder="forWhatPlaceholder" placeholder="وصف مختصر">
-
-        <label class="field-label" data-i18n="paymentMethod">طريقة الدفع</label>
-        <select id="paymentMethod" class="cv-select"></select>
-
-        <label class="field-label" data-i18n="receiverName">اسم المستلم (للتوقيع)</label>
-        <input type="text" id="receiverName" class="cv-input live-field" data-i18n-placeholder="receiverPlaceholder" placeholder="الاسم الكامل">
-      </div>
-
-      <div class="btn-row">
-        <button type="button" class="btn btn-primary btn-block" id="downloadBtn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M5 21h14"/></svg>
-          <span data-i18n="downloadPdf">تحميل PDF</span>
-        </button>
-        <button type="button" class="btn btn-secondary btn-block" id="printBtn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>
-          <span data-i18n="printBtn">طباعة</span>
-        </button>
+      <div class="editor-preview">
+        <div id="previewContainer"></div>
       </div>
     </div>
+  </section>
 
-    <div class="editor-preview">
-      <div>
-        <div class="receipt-card" id="receiptCard">
-          <div class="receipt-band"></div>
-          <div class="receipt-body">
-            <div class="receipt-header">
-              <img class="receipt-logo hidden" id="pvLogo" alt="">
-              <span class="receipt-issuer" id="pvIssuer"></span>
-            </div>
-
-            <div class="receipt-title-row">
-              <span class="receipt-title" id="pvTitle"></span>
-            </div>
-
-            <div class="receipt-meta">
-              <span><span id="pvNoLabel"></span>: <b id="pvNo"></b></span>
-              <span><span id="pvDateLabel"></span>: <b id="pvDate"></b></span>
-            </div>
-
-            <div class="receipt-line"><span class="lbl" id="pvFromLabel"></span><span class="val" id="pvFrom"></span></div>
-            <div class="receipt-line"><span class="lbl" id="pvAmountLabel"></span><span class="val" id="pvAmount"></span></div>
-            <div class="receipt-amount-box" id="pvAmountWords"></div>
-            <div class="receipt-line"><span class="lbl" id="pvForLabel"></span><span class="val" id="pvFor"></span></div>
-            <div class="receipt-line"><span class="lbl" id="pvMethodLabel"></span><span class="val" id="pvMethod"></span></div>
-
-            <div class="receipt-sign-row">
-              <div class="receipt-sign">
-                <div class="lbl" id="pvSignLabel"></div>
-                <div class="line"></div>
-                <div class="name" id="pvSignName"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="receipt-zigzag"></div>
-      </div>
-    </div>
-  </div>
 </main>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="../../firebase-init.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="app.js"></script>
