@@ -10,26 +10,93 @@
 </head>
 <body>
 
+<!-- ============ TOPBAR ============ -->
 <div class="topbar">
-  <div class="brand">
-    <span class="brand-mark">RG</span>
+  <div class="brand-crumb">
+    <a href="../../tools.html" class="crumb-link" id="crumbToTools">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="crumb-arrow"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      <span data-i18n="backToTools">Tools</span>
+    </a>
+    <button type="button" class="crumb-link" id="crumbToLibrary" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="crumb-arrow"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      <span data-i18n="backToLibrary">My Reports</span>
+    </button>
+    <span class="brand-sep">/</span>
     <span class="brand-name" data-i18n="appTitle">Report Generator</span>
   </div>
-  <div class="lang-switch" role="group" aria-label="Language switcher">
-    <button type="button" class="lang-btn" data-lang="ar">العربية</button>
-    <button type="button" class="lang-btn active" data-lang="en">English</button>
-    <button type="button" class="lang-btn" data-lang="fr">Français</button>
+  <div class="topbar-controls">
+    <div class="lang-switch" role="group" aria-label="Language switcher">
+      <button type="button" class="lang-btn" data-lang="ar">العربية</button>
+      <button type="button" class="lang-btn active" data-lang="en">English</button>
+      <button type="button" class="lang-btn" data-lang="fr">Français</button>
+    </div>
+    <button type="button" class="user-chip" id="userChip" hidden>
+      <span id="userChipEmail"></span>
+      <span class="user-chip-signout" data-i18n="signOut">Sign out</span>
+    </button>
   </div>
 </div>
 
-<main class="app-grid">
+<!-- ============ AUTH GATE ============ -->
+<main class="auth-shell" id="authScreen" hidden>
+  <div class="auth-card">
+    <h1 class="auth-title" data-i18n="authTitle">Sign in to build your reports</h1>
+    <p class="auth-sub" data-i18n="authSub">Sign in or create a free account to save and access your reports.</p>
+
+    <button type="button" class="btn btn-google" id="googleSignInBtn">
+      <svg viewBox="0 0 48 48" width="18" height="18"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.6 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.4 6.1 29.5 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.9 18.9 13 24 13c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.4 6.1 29.5 4 24 4c-7.5 0-14 4.2-17.3 10.4z"/><path fill="#4CAF50" d="M24 44c5.3 0 10.1-2 13.7-5.4l-6.3-5.3C29.4 35 26.8 36 24 36c-5.3 0-9.7-3.4-11.3-8.1l-6.5 5C9.9 39.6 16.4 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.2-4.3 5.6l6.3 5.3C40.9 36.2 44 30.6 44 24c0-1.3-.1-2.7-.4-3.5z"/></svg>
+      <span data-i18n="continueWithGoogle">Continue with Google</span>
+    </button>
+
+    <div class="auth-divider"><span data-i18n="orDivider">or</span></div>
+
+    <div class="field">
+      <label class="field-label" data-i18n="email">Email</label>
+      <input type="email" id="authEmail" class="input" autocomplete="email">
+    </div>
+    <div class="field">
+      <label class="field-label" data-i18n="password">Password</label>
+      <input type="password" id="authPassword" class="input" autocomplete="current-password">
+    </div>
+
+    <p class="auth-error" id="authError" hidden></p>
+
+    <div class="auth-actions">
+      <button type="button" class="btn btn-primary" id="authSignInBtn" data-i18n="signIn">Sign In</button>
+      <button type="button" class="btn btn-secondary" id="authRegisterBtn" data-i18n="createAccount">Create Account</button>
+    </div>
+  </div>
+</main>
+
+<!-- ============ REPORTS LIBRARY ============ -->
+<main class="library-shell" id="libraryScreen" hidden>
+  <div class="library-head">
+    <h1 class="col-title" data-i18n="myReports">My Reports</h1>
+    <button type="button" class="btn btn-primary" id="newReportBtn">
+      <span aria-hidden="true">+</span> <span data-i18n="newReport">New Report</span>
+    </button>
+  </div>
+
+  <div class="library-empty" id="libraryEmpty" hidden>
+    <p data-i18n="libraryEmptyText">You don't have any saved reports yet.</p>
+  </div>
+
+  <div class="library-loading" id="libraryLoading">
+    <p data-i18n="loading">Loading...</p>
+  </div>
+
+  <div class="library-grid" id="libraryGrid"></div>
+</main>
+
+<!-- ============ EDITOR ============ -->
+<main class="app-grid" id="editorScreen" hidden>
 
   <!-- ============ LEFT COLUMN: EDITOR ============ -->
   <section class="col col-form">
     <h1 class="col-title" data-i18n="reportEditor">Report Editor</h1>
 
     <div class="card templates-card">
-      <h2 class="card-title" data-i18n="chooseTemplate">Start from a Template</h2>
+      <h2 class="card-title" data-i18n="chooseTemplate">Apply a Template</h2>
       <div class="template-grid" id="templateGrid">
         <button type="button" class="template-btn" data-template="general">
           <span class="tpl-icon">📋</span>
@@ -51,6 +118,19 @@
     </div>
 
     <div class="card">
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label" data-i18n="reference">Reference Number</label>
+          <input type="text" id="referenceNumber" class="input" data-i18n-placeholder="referencePlaceholder" placeholder="RPT-2026-0001">
+        </div>
+        <div class="field">
+          <label class="field-label" data-i18n="reportDate">Date</label>
+          <input type="date" id="reportDate" class="input">
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
       <h2 class="card-title" data-i18n="coverInfo">Cover Information</h2>
 
       <div class="field-row">
@@ -63,14 +143,11 @@
               <span data-i18n="uploadLogoText">Upload Logo</span>
             </div>
             <img id="logoPreview" class="upload-img" hidden alt="Logo preview">
+            <button type="button" class="remove-img-btn" id="removeLogoBtn" hidden aria-label="Remove logo">×</button>
           </div>
         </div>
 
         <div class="field-stack">
-          <div class="field">
-            <label class="field-label" data-i18n="reportDate">Date</label>
-            <input type="date" id="reportDate" class="input">
-          </div>
           <div class="field">
             <label class="field-label" data-i18n="organization">Organization</label>
             <input type="text" id="organization" class="input" data-i18n-placeholder="organizationPlaceholder" placeholder="Organization name">
@@ -97,7 +174,7 @@
 
     <div class="card">
       <h2 class="card-title" data-i18n="execSummary">Executive Summary</h2>
-      <textarea id="execSummary" class="textarea" rows="4" data-i18n-placeholder="execSummaryPlaceholder" placeholder="A short overview of the report's purpose and key findings..."></textarea>
+      <textarea id="execSummary" class="textarea" rows="4" data-i18n-placeholder="execSummaryPlaceholder" placeholder="A short overview..."></textarea>
     </div>
 
     <div class="card">
@@ -113,7 +190,7 @@
 
     <div class="card">
       <h2 class="card-title" data-i18n="recommendations">Conclusion &amp; Recommendations</h2>
-      <textarea id="recommendations" class="textarea" rows="4" data-i18n-placeholder="recommendationsPlaceholder" placeholder="Final conclusions and recommended next steps..."></textarea>
+      <textarea id="recommendations" class="textarea" rows="4" data-i18n-placeholder="recommendationsPlaceholder" placeholder="Final conclusions..."></textarea>
     </div>
 
     <div class="card">
@@ -122,9 +199,37 @@
         <input type="file" id="signatureInput" accept=".png,.jpg,.jpeg,.svg,image/*" hidden>
         <div class="upload-placeholder" id="signaturePlaceholder">
           <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
-          <span data-i18n="uploadSignatureText">Upload Signature</span>
+              <span data-i18n="uploadSignatureText">Upload Signature</span>
         </div>
         <img id="signaturePreview" class="upload-img" hidden alt="Signature preview">
+        <button type="button" class="remove-img-btn" id="removeSignatureBtn" hidden aria-label="Remove signature">×</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 class="card-title" data-i18n="pageFrame">Page Frame</h2>
+      <div class="frame-options" id="frameOptions">
+        <label class="frame-option">
+          <input type="radio" name="frameMode" value="none" checked>
+          <span data-i18n="frameNone">No Frame</span>
+        </label>
+        <label class="frame-option">
+          <input type="radio" name="frameMode" value="simple">
+          <span data-i18n="frameSimple">Simple Frame</span>
+        </label>
+        <label class="frame-option">
+          <input type="radio" name="frameMode" value="custom">
+          <span data-i18n="frameCustom">Upload My Own</span>
+        </label>
+      </div>
+      <div class="upload-box upload-box-wide" id="frameUploadBox" hidden>
+        <input type="file" id="frameInput" accept=".png,.jpg,.jpeg,.svg,image/*" hidden>
+        <div class="upload-placeholder" id="framePlaceholder">
+          <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+          <span data-i18n="uploadFrameText">Upload Frame Image</span>
+        </div>
+        <img id="framePreview" class="upload-img" hidden alt="Frame preview">
+        <button type="button" class="remove-img-btn" id="removeFrameBtn" hidden aria-label="Remove frame">×</button>
       </div>
     </div>
 
@@ -142,54 +247,52 @@
 
     <div class="preview-shell">
       <div class="report-sheet" id="reportSheet">
+        <img id="frameLayerImg" class="frame-layer-img" hidden alt="">
+        <div class="rp-content" id="rpContent">
 
-        <!-- Cover block -->
-        <div class="rp-cover">
-          <div class="rp-logo-wrap">
-            <img id="previewLogo" class="rp-logo" hidden alt="Logo">
-            <div class="rp-logo-placeholder" id="previewLogoPlaceholder" data-i18n="companyLogo">ORGANIZATION</div>
+          <div class="rp-cover">
+            <div class="rp-logo-wrap">
+              <img id="previewLogo" class="rp-logo" hidden alt="Logo">
+              <div class="rp-logo-placeholder" id="previewLogoPlaceholder" data-i18n="companyLogo">ORGANIZATION</div>
+            </div>
+            <div class="rp-cover-meta">
+              <div class="rp-org" id="previewOrg">—</div>
+              <div class="rp-date" id="previewDate">—</div>
+              <div class="rp-ref" id="previewRef"></div>
+            </div>
           </div>
-          <div class="rp-cover-meta">
-            <div class="rp-org" id="previewOrg">—</div>
-            <div class="rp-date" id="previewDate">—</div>
+
+          <div class="rp-title-block">
+            <h2 class="rp-title" id="previewTitle" data-i18n="untitledReport">Untitled Report</h2>
+            <div class="rp-authors">
+              <span id="previewPreparedBy"></span>
+              <span id="previewPreparedFor"></span>
+            </div>
           </div>
-        </div>
 
-        <div class="rp-title-block">
-          <h2 class="rp-title" id="previewTitle" data-i18n="untitledReport">Untitled Report</h2>
-          <div class="rp-authors">
-            <span id="previewPreparedBy"></span>
-            <span id="previewPreparedFor"></span>
+          <div class="rp-toc" id="previewToc" hidden>
+            <div class="rp-block-label" data-i18n="tableOfContents">Table of Contents</div>
+            <ol class="rp-toc-list" id="previewTocList"></ol>
           </div>
+
+          <div class="rp-block" id="previewSummaryBlock" hidden>
+            <div class="rp-block-label" data-i18n="execSummary">Executive Summary</div>
+            <div class="rp-block-text" id="previewSummary"></div>
+          </div>
+
+          <div id="previewSections"></div>
+
+          <div class="rp-block" id="previewRecBlock" hidden>
+            <div class="rp-block-label" data-i18n="recommendations">Conclusion &amp; Recommendations</div>
+            <div class="rp-block-text" id="previewRec"></div>
+          </div>
+
+          <div class="rp-signature">
+            <div class="rp-signature-label" data-i18n="signature">Signature</div>
+            <img id="previewSignature" class="rp-signature-img" hidden alt="Signature">
+          </div>
+
         </div>
-
-        <!-- Table of contents -->
-        <div class="rp-toc" id="previewToc" hidden>
-          <div class="rp-block-label" data-i18n="tableOfContents">Table of Contents</div>
-          <ol class="rp-toc-list" id="previewTocList"></ol>
-        </div>
-
-        <!-- Executive summary -->
-        <div class="rp-block" id="previewSummaryBlock" hidden>
-          <div class="rp-block-label" data-i18n="execSummary">Executive Summary</div>
-          <div class="rp-block-text" id="previewSummary"></div>
-        </div>
-
-        <!-- Dynamic sections -->
-        <div id="previewSections"></div>
-
-        <!-- Recommendations -->
-        <div class="rp-block" id="previewRecBlock" hidden>
-          <div class="rp-block-label" data-i18n="recommendations">Conclusion &amp; Recommendations</div>
-          <div class="rp-block-text" id="previewRec"></div>
-        </div>
-
-        <!-- Signature -->
-        <div class="rp-signature">
-          <div class="rp-signature-label" data-i18n="signature">Signature</div>
-          <img id="previewSignature" class="rp-signature-img" hidden alt="Signature">
-        </div>
-
       </div>
     </div>
   </section>
@@ -216,6 +319,20 @@
   </div>
 </div>
 
+<div class="confirm-overlay" id="deleteReportOverlay" hidden>
+  <div class="confirm-box">
+    <p data-i18n="confirmDeleteReport">Delete this report permanently? This cannot be undone.</p>
+    <div class="confirm-actions">
+      <button type="button" class="btn btn-secondary" id="deleteReportCancel" data-i18n="cancel">Cancel</button>
+      <button type="button" class="btn btn-danger" id="deleteReportOk" data-i18n="confirmYes">Clear</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="../../firebase-init.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="script.js"></script>
