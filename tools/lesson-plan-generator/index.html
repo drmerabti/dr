@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>مولّد مذكرة تحضير الدرس — د. سفيان مرابطي</title>
-<meta name="description" content="أنشئ مذكرة تحضير درس منظمة وجاهزة للطباعة أو التصدير كـ PDF، مع فلترة حسب المستوى التعليمي.">
+<title>مولّد مذكرة تحضير الدرس — أكاديمية مرابطي</title>
+<meta name="description" content="أنشئ مذكرة تحضير درس منظمة، احفظها في حسابك وارجع إليها متى شئت، وصدّرها كـ PDF أو اطبعها مباشرة.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -18,162 +18,282 @@
     <span id="backLabel">رجوع إلى الأدوات</span>
   </a>
   <div class="topbar-actions">
-    <button class="icon-btn" id="langToggle" type="button">EN</button>
+    <div class="auth-wrap" id="authWrap">
+      <button class="auth-btn" id="authBtn" type="button"></button>
+      <div class="auth-menu hidden" id="authMenu"></div>
+    </div>
   </div>
 </div>
 
-<div class="hero">
-  <div class="hero-icon">
-    <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="gTNHero" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#7DD6C3"/><stop offset="1" stop-color="#1A8A72"/>
-        </linearGradient>
-      </defs>
-      <rect x="9" y="7" width="30" height="34" rx="4" fill="url(#gTNHero)"/>
-      <rect x="15" y="15" width="18" height="2.5" fill="#fff" opacity=".9"/>
-      <rect x="15" y="21" width="18" height="2.5" fill="#fff" opacity=".7"/>
-      <rect x="15" y="27" width="10" height="2.5" fill="#fff" opacity=".7"/>
-      <path d="M30 30l4-4 2 2-4 4z" fill="#fff"/>
-    </svg>
+<!-- ============ شاشة المعرض ============ -->
+<section id="galleryView">
+  <div class="hero">
+    <div class="hero-icon">
+      <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="gTNHero" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#7DD6C3"/><stop offset="1" stop-color="#1A8A72"/>
+          </linearGradient>
+        </defs>
+        <rect x="9" y="7" width="30" height="34" rx="4" fill="url(#gTNHero)"/>
+        <rect x="15" y="15" width="18" height="2.5" fill="#fff" opacity=".9"/>
+        <rect x="15" y="21" width="18" height="2.5" fill="#fff" opacity=".7"/>
+        <rect x="15" y="27" width="10" height="2.5" fill="#fff" opacity=".7"/>
+        <path d="M30 30l4-4 2 2-4 4z" fill="#fff"/>
+      </svg>
+    </div>
+    <h1 id="heroTitle">مولّد مذكرة تحضير الدرس</h1>
+    <p id="heroSub">مذكراتك محفوظة هنا، جاهزة للفتح والتعديل في أي وقت.</p>
   </div>
-  <h1 id="heroTitle">مولّد مذكرة تحضير الدرس</h1>
-  <p id="heroSub">اختر المستوى، عبّئ بيانات الدرس، وشاهد المذكرة تتكوّن أمامك جاهزة للطباعة أو التصدير.</p>
+
+  <div class="gallery-wrap">
+    <div class="gallery-head">
+      <div class="gallery-title" id="galleryTitle">مذكراتي</div>
+      <button type="button" class="primary-btn" id="newPlanBtn">
+        <i class="icon-plus"></i><span id="newPlanBtnLabel">إنشاء مذكرة جديدة</span>
+      </button>
+    </div>
+
+    <div class="guest-note hidden" id="guestNote">
+      <span id="guestNoteText">سجّل الدخول لحفظ مذكراتك في حسابك والوصول إليها من أي جهاز.</span>
+      <button type="button" class="text-btn" id="guestLoginBtn">تسجيل الدخول</button>
+    </div>
+
+    <div class="plans-grid" id="plansGrid"></div>
+    <div class="empty-note hidden" id="emptyNote">لا توجد مذكرات محفوظة بعد.</div>
+  </div>
+</section>
+
+<!-- ============ شاشة المحرر ============ -->
+<section id="editorView" class="hidden">
+  <div class="editor-topbar">
+    <button type="button" class="ghost-btn" id="backToGalleryBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      <span id="backToGalleryLabel">المعرض</span>
+    </button>
+    <span class="save-status" id="saveStatus"></span>
+  </div>
+
+  <main class="layout">
+
+    <section class="form-panel">
+
+      <div class="panel-card">
+        <div class="panel-title" data-i18n="sec_level">المستوى التعليمي</div>
+        <div class="level-row">
+          <select id="levelSelect" class="field-input">
+            <option value="ابتدائي">الابتدائي</option>
+            <option value="متوسط">المتوسط</option>
+            <option value="ثانوي">الثانوي</option>
+          </select>
+          <button type="button" class="ghost-btn" id="loadPresetBtn">تحميل مثال جاهز لهذا المستوى</button>
+        </div>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-title">الترويسة</div>
+        <div class="logo-row">
+          <div class="logo-box" id="logoBox">
+            <input type="file" id="logoInput" accept="image/*" class="hidden-input">
+            <img id="logoPreview" class="logo-preview hidden" alt="">
+            <i class="icon-image" id="logoPlaceholderIcon"></i>
+            <button type="button" class="logo-remove hidden" id="logoRemoveBtn">×</button>
+          </div>
+          <div class="logo-label">
+            <div class="logo-label-title">شعار المؤسسة</div>
+            <div class="logo-label-sub">اختياري، يبقى محفوظًا في جهازك فقط</div>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="field field-wide"><label>المؤسسة</label><input type="text" id="fSchool" class="field-input"></div>
+          <div class="field">
+            <label>السنة الدراسية</label>
+            <select id="fYearSelect" class="field-input"></select>
+          </div>
+          <div class="field hidden" id="fYearManualWrap"><label>السنة (يدويًا)</label><input type="text" id="fYearManual" class="field-input" placeholder="2026/2027"></div>
+          <div class="field"><label>المادة</label><input type="text" id="fSubject" class="field-input"></div>
+          <div class="field"><label>القسم</label><input type="text" id="fClass" class="field-input"></div>
+          <div class="field"><label>التاريخ</label><input type="date" id="fDate" class="field-input"></div>
+          <div class="field"><label>الأستاذ(ة)</label><input type="text" id="fTeacher" class="field-input"></div>
+        </div>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-title">بيانات الدرس</div>
+        <div class="grid-2">
+          <div class="field field-wide"><label>عنوان الدرس</label><input type="text" id="fTitle" class="field-input"></div>
+          <div class="field"><label>الوحدة / المحور</label><input type="text" id="fUnit" class="field-input"></div>
+          <div class="field"><label>رقم الحصة</label><input type="text" id="fSession" class="field-input"></div>
+          <div class="field"><label>المدة الزمنية (د)</label><input type="number" id="fDuration" class="field-input" min="1"></div>
+        </div>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-title">الأهداف / الكفاءة المستهدفة</div>
+        <div class="chip-list" id="objectivesList"></div>
+        <div class="add-row">
+          <input type="text" id="objectiveInput" class="field-input" placeholder="اكتب هدفًا واضغط إضافة">
+          <button type="button" class="add-btn" id="addObjectiveBtn">إضافة</button>
+        </div>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-title">الوسائل التعليمية</div>
+        <div class="chip-list" id="materialsList"></div>
+        <div class="add-row">
+          <input type="text" id="materialInput" class="field-input" placeholder="اكتب وسيلة واضغط إضافة">
+          <button type="button" class="add-btn" id="addMaterialBtn">إضافة</button>
+        </div>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-title">سير الدرس</div>
+        <div id="stagesList" class="stages-list"></div>
+        <button type="button" class="ghost-btn full-width" id="addStageBtn">+ إضافة مرحلة</button>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-title-row">
+          <div class="panel-title" style="margin-bottom:0;">التقويم / الواجب المنزلي</div>
+          <label class="switch">
+            <input type="checkbox" id="evalToggle" checked>
+            <span class="switch-track"><span class="switch-thumb"></span></span>
+          </label>
+        </div>
+        <textarea id="fEval" class="field-input" rows="3" style="margin-top:12px;"></textarea>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-title">إطار خلفية المذكرة (اختياري)</div>
+        <div class="frame-drop" id="frameDrop">
+          <input type="file" id="frameInput" accept="image/*" class="hidden-input">
+          <i class="icon-upload"></i>
+          <span>اسحب صورة هنا أو اضغط للرفع — تظهر خلف الكتابة</span>
+        </div>
+        <button type="button" class="text-btn hidden" id="frameRemoveBtn">إزالة الإطار</button>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-title">لون المذكرة</div>
+        <div class="color-row">
+          <input type="color" id="colorPicker" value="#1A8A72">
+          <button type="button" class="ghost-btn" id="colorResetBtn">استعادة الأخضر الافتراضي</button>
+        </div>
+      </div>
+
+      <div class="actions-row">
+        <button type="button" class="primary-btn" id="saveBtn">حفظ في حسابي</button>
+        <button type="button" class="secondary-btn" id="exportPdfBtn">تصدير PDF</button>
+        <button type="button" class="secondary-btn" id="printBtn">طباعة مباشرة</button>
+        <button type="button" class="text-btn danger-text" id="deletePlanBtn">حذف هذه المذكرة</button>
+      </div>
+
+    </section>
+
+    <section class="preview-panel">
+      <div class="preview-sticky">
+        <div class="preview-sheet" id="previewSheet">
+          <div class="ps-frame-bg" id="psFrameBg"></div>
+          <div class="ps-content">
+            <div class="ps-header">
+              <div class="ps-header-logo hidden" id="psLogoWrap"><img id="psLogo" alt=""></div>
+              <div class="ps-header-text">
+                <div class="ps-header-line" id="pSchool">—</div>
+                <div class="ps-header-sub">
+                  <span id="pYear">—</span> · <span id="pSubject">—</span> · <span id="pClass">—</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="ps-title" id="pTitle">عنوان الدرس</div>
+            <div class="ps-meta">
+              <span><b>الوحدة:</b> <span id="pUnit">—</span></span>
+              <span><b>الحصة:</b> <span id="pSession">—</span></span>
+              <span><b>المدة:</b> <span id="pDuration">—</span></span>
+              <span><b>التاريخ:</b> <span id="pDate">—</span></span>
+              <span><b>الأستاذ:</b> <span id="pTeacher">—</span></span>
+            </div>
+
+            <div class="ps-block">
+              <div class="ps-block-title">الأهداف / الكفاءة المستهدفة</div>
+              <ul class="ps-list" id="pObjectives"></ul>
+            </div>
+
+            <div class="ps-block">
+              <div class="ps-block-title">الوسائل التعليمية</div>
+              <div class="ps-tags" id="pMaterials"></div>
+            </div>
+
+            <div class="ps-block">
+              <div class="ps-block-title">سير الدرس</div>
+              <table class="ps-table">
+                <thead>
+                  <tr>
+                    <th>المرحلة</th>
+                    <th>الزمن</th>
+                    <th>نشاط الأستاذ</th>
+                    <th>نشاط التلميذ</th>
+                  </tr>
+                </thead>
+                <tbody id="pStagesBody"></tbody>
+              </table>
+            </div>
+
+            <div class="ps-block" id="pEvalBlock">
+              <div class="ps-block-title">التقويم / الواجب المنزلي</div>
+              <p class="ps-para" id="pEval">—</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</section>
+
+<footer class="site-footer">© 2026 أكاديمية مرابطي</footer>
+
+<!-- ============ نافذة تسجيل الدخول ============ -->
+<div class="modal-overlay hidden" id="authOverlay">
+  <div class="modal-card">
+    <button class="modal-close" id="authCloseBtn" type="button">×</button>
+    <h3 id="authModalTitle">تسجيل الدخول</h3>
+    <p class="modal-sub" id="authModalSub">سجّل دخولك لحفظ مذكراتك في حسابك</p>
+    <div class="auth-error hidden" id="authError"></div>
+    <form id="authForm">
+      <div class="field hidden" id="authNameField">
+        <label>الاسم</label>
+        <input type="text" id="authName">
+      </div>
+      <div class="field">
+        <label>البريد الإلكتروني</label>
+        <input type="email" id="authEmail" required class="field-input">
+      </div>
+      <div class="field">
+        <label>كلمة المرور</label>
+        <input type="password" id="authPassword" required minlength="6" class="field-input">
+      </div>
+      <button type="submit" class="primary-btn full-width" id="authSubmitBtn" style="margin-top:14px;">دخول</button>
+    </form>
+    <div class="modal-divider">أو</div>
+    <button type="button" class="google-btn" id="googleAuthBtn">
+      <svg viewBox="0 0 48 48" width="18" height="18"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 8 3l6-6C34.5 5.1 29.5 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21 21-9.4 21-21c0-1.2-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.6 15.6 18.9 13 24 13c3.1 0 5.8 1.1 8 3l6-6C34.5 5.1 29.5 3 24 3c-7.6 0-14.1 4.3-17.7 10.7z"/><path fill="#4CAF50" d="M24 45c5.3 0 10.2-2 13.9-5.3l-6.4-5.4C29.3 36 26.8 37 24 37c-5.2 0-9.6-3.1-11.4-7.6l-6.6 5.1C9.8 40.6 16.3 45 24 45z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.2-4.2 5.6l6.4 5.4C40.5 36.6 43 30.8 43 24c0-1.2-.1-2.4-.4-3.5z"/></svg>
+      المتابعة عبر Google
+    </button>
+    <div class="modal-switch">
+      <span id="authSwitchText">ليس لديك حساب؟</span>
+      <button type="button" id="authSwitchBtn">إنشاء حساب</button>
+    </div>
+  </div>
 </div>
 
-<main class="layout">
+<!-- Firebase (compat) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="../../firebase-init.js"></script>
 
-  <!-- ============ عمود النموذج ============ -->
-  <section class="form-panel">
-
-    <div class="panel-card">
-      <div class="panel-title" data-i18n="sec_level">المستوى التعليمي</div>
-      <div class="level-row">
-        <select id="levelSelect" class="field-input">
-          <option value="ابتدائي">الابتدائي</option>
-          <option value="متوسط">المتوسط</option>
-          <option value="ثانوي">الثانوي</option>
-        </select>
-        <button type="button" class="ghost-btn" id="loadPresetBtn" data-i18n="btn_load_preset">تحميل مراحل افتراضية لهذا المستوى</button>
-      </div>
-    </div>
-
-    <div class="panel-card">
-      <div class="panel-title" data-i18n="sec_header">الترويسة</div>
-      <div class="grid-2">
-        <div class="field"><label data-i18n="f_school">المؤسسة</label><input type="text" id="fSchool" class="field-input"></div>
-        <div class="field"><label data-i18n="f_year">السنة الدراسية</label><input type="text" id="fYear" class="field-input" placeholder="2026/2027"></div>
-        <div class="field"><label data-i18n="f_subject">المادة</label><input type="text" id="fSubject" class="field-input"></div>
-        <div class="field"><label data-i18n="f_class">القسم</label><input type="text" id="fClass" class="field-input"></div>
-        <div class="field"><label data-i18n="f_date">التاريخ</label><input type="date" id="fDate" class="field-input"></div>
-        <div class="field"><label data-i18n="f_teacher">الأستاذ(ة)</label><input type="text" id="fTeacher" class="field-input"></div>
-      </div>
-    </div>
-
-    <div class="panel-card">
-      <div class="panel-title" data-i18n="sec_lesson">بيانات الدرس</div>
-      <div class="grid-2">
-        <div class="field field-wide"><label data-i18n="f_title">عنوان الدرس</label><input type="text" id="fTitle" class="field-input"></div>
-        <div class="field"><label data-i18n="f_unit">الوحدة / المحور</label><input type="text" id="fUnit" class="field-input"></div>
-        <div class="field"><label data-i18n="f_session">رقم الحصة</label><input type="text" id="fSession" class="field-input"></div>
-        <div class="field"><label data-i18n="f_duration">المدة الزمنية (د)</label><input type="number" id="fDuration" class="field-input" min="1"></div>
-      </div>
-    </div>
-
-    <div class="panel-card">
-      <div class="panel-title" data-i18n="sec_objectives">الأهداف / الكفاءة المستهدفة</div>
-      <div class="chip-list" id="objectivesList"></div>
-      <div class="add-row">
-        <input type="text" id="objectiveInput" class="field-input" data-i18n-placeholder="ph_add_objective" placeholder="اكتب هدفًا واضغط إضافة">
-        <button type="button" class="add-btn" id="addObjectiveBtn" data-i18n="btn_add">إضافة</button>
-      </div>
-    </div>
-
-    <div class="panel-card">
-      <div class="panel-title" data-i18n="sec_materials">الوسائل التعليمية</div>
-      <div class="chip-list" id="materialsList"></div>
-      <div class="add-row">
-        <input type="text" id="materialInput" class="field-input" data-i18n-placeholder="ph_add_material" placeholder="اكتب وسيلة واضغط إضافة">
-        <button type="button" class="add-btn" id="addMaterialBtn" data-i18n="btn_add">إضافة</button>
-      </div>
-    </div>
-
-    <div class="panel-card">
-      <div class="panel-title" data-i18n="sec_stages">سير الدرس</div>
-      <div id="stagesList" class="stages-list"></div>
-      <button type="button" class="ghost-btn full-width" id="addStageBtn" data-i18n="btn_add_stage">+ إضافة مرحلة</button>
-    </div>
-
-    <div class="panel-card">
-      <div class="panel-title" data-i18n="sec_eval">التقويم / الواجب المنزلي</div>
-      <textarea id="fEval" class="field-input" rows="3"></textarea>
-    </div>
-
-    <div class="actions-row">
-      <button type="button" class="primary-btn" id="exportPdfBtn" data-i18n="btn_pdf">تصدير PDF</button>
-      <button type="button" class="secondary-btn" id="printBtn" data-i18n="btn_print">طباعة مباشرة</button>
-      <button type="button" class="text-btn" id="clearBtn" data-i18n="btn_clear">مسح كل البيانات</button>
-    </div>
-
-  </section>
-
-  <!-- ============ عمود المعاينة ============ -->
-  <section class="preview-panel">
-    <div class="preview-sticky">
-      <div class="preview-sheet" id="previewSheet">
-        <div class="ps-header">
-          <div class="ps-header-line" id="pSchool">—</div>
-          <div class="ps-header-sub">
-            <span id="pYear">—</span> · <span id="pSubject">—</span> · <span id="pClass">—</span>
-          </div>
-          <div class="ps-title" id="pTitle">عنوان الدرس</div>
-          <div class="ps-meta">
-            <span><b data-i18n="pm_unit">الوحدة:</b> <span id="pUnit">—</span></span>
-            <span><b data-i18n="pm_session">الحصة:</b> <span id="pSession">—</span></span>
-            <span><b data-i18n="pm_duration">المدة:</b> <span id="pDuration">—</span></span>
-            <span><b data-i18n="pm_date">التاريخ:</b> <span id="pDate">—</span></span>
-            <span><b data-i18n="pm_teacher">الأستاذ:</b> <span id="pTeacher">—</span></span>
-          </div>
-        </div>
-
-        <div class="ps-block">
-          <div class="ps-block-title" data-i18n="sec_objectives">الأهداف / الكفاءة المستهدفة</div>
-          <ul class="ps-list" id="pObjectives"></ul>
-        </div>
-
-        <div class="ps-block">
-          <div class="ps-block-title" data-i18n="sec_materials">الوسائل التعليمية</div>
-          <div class="ps-tags" id="pMaterials"></div>
-        </div>
-
-        <div class="ps-block">
-          <div class="ps-block-title" data-i18n="sec_stages">سير الدرس</div>
-          <table class="ps-table">
-            <thead>
-              <tr>
-                <th data-i18n="th_stage">المرحلة</th>
-                <th data-i18n="th_time">الزمن</th>
-                <th data-i18n="th_teacher_act">نشاط الأستاذ</th>
-                <th data-i18n="th_student_act">نشاط التلميذ</th>
-              </tr>
-            </thead>
-            <tbody id="pStagesBody"></tbody>
-          </table>
-        </div>
-
-        <div class="ps-block">
-          <div class="ps-block-title" data-i18n="sec_eval">التقويم / الواجب المنزلي</div>
-          <p class="ps-para" id="pEval">—</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-</main>
-
-<footer class="site-footer" id="footerText">© 2026 د. سفيان مرابطي</footer>
-
-<!-- مكتبات التصدير PDF (تُستخدم فقط عند الضغط على زر التصدير) -->
+<!-- تصدير PDF -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
