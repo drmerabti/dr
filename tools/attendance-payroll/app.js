@@ -26,6 +26,15 @@
       empModalTitle: 'إضافة موظف', empModalHint: 'اسم الموظف، ثم اربطه بمصلحة ومنصب',
       empNameLabel: 'اسم الموظف', empNamePh: 'أحمد بن علي',
       empDeptLabel: 'المصلحة', empPosLabel: 'المنصب',
+      empMaritalLabel: 'الحالة الاجتماعية', maritalSingleCode: 'ع', maritalMarriedCode: 'م',
+      maritalSingleText: 'عازب', maritalMarriedText: 'متزوج',
+      empChildrenLabel: 'عدد الأطفال', empExperienceLabel: 'سنوات الخبرة',
+      childrenAbbrev: 'أطفال', experienceAbbrev: 'خبرة', editBtn: 'تعديل', editEmpModalTitle: 'تعديل موظف',
+      salaryLawModalTitle: 'قانون الراتب', salaryLawModalHint: 'عدّل النسب حسب آخر قرار رسمي، تنطبق على كل الموظفين',
+      cnasLabel: 'نسبة اشتراك الضمان الاجتماعي (%)', bracketsLabel: 'شرائح ضريبة الدخل (IRG)', addBracketText: 'شريحة',
+      spouseAllowanceLabel: 'منحة الزوجة (للمتزوج فقط)', experienceRateLabel: 'منحة الخبرة (% لكل سنة خبرة)',
+      familyAllowanceLabel: 'المنحة العائلية (لكل طفل)', payItemsLabel: 'بنود الراتب الإضافية', addPayItemText: 'بند',
+      printLabel: 'طباعة', salaryLawBtnText: 'قانون الراتب', printPayslipText: 'طباعة كشف الراتب',
       cancelBtn: 'إلغاء', saveDeptBtn: 'حفظ المصلحة', savePosBtn: 'حفظ المنصب', saveEmpBtn: 'حفظ الموظف',
       confirmDelete: 'هل تريد حذف هذا العنصر نهائيًا؟',
       importModalTitle: 'استيراد من Excel', importDropText: 'اضغط لاختيار ملف Excel', importBtn: 'استيراد',
@@ -58,6 +67,15 @@
       empModalTitle: 'Add employee', empModalHint: 'Employee name, then link to a department and position',
       empNameLabel: 'Employee name', empNamePh: 'Ahmed Benali',
       empDeptLabel: 'Department', empPosLabel: 'Position',
+      empMaritalLabel: 'Marital status', maritalSingleCode: 'S', maritalMarriedCode: 'M',
+      maritalSingleText: 'Single', maritalMarriedText: 'Married',
+      empChildrenLabel: 'Number of children', empExperienceLabel: 'Years of experience',
+      childrenAbbrev: 'children', experienceAbbrev: 'exp.', editBtn: 'Edit', editEmpModalTitle: 'Edit employee',
+      salaryLawModalTitle: 'Salary law', salaryLawModalHint: 'Adjust rates per the latest official decision, applies to all employees',
+      cnasLabel: 'Social security rate (%)', bracketsLabel: 'Income tax brackets (IRG)', addBracketText: 'Bracket',
+      spouseAllowanceLabel: 'Spouse allowance (married only)', experienceRateLabel: 'Experience bonus (% per year)',
+      familyAllowanceLabel: 'Family allowance (per child)', payItemsLabel: 'Additional salary items', addPayItemText: 'Item',
+      printLabel: 'Print', salaryLawBtnText: 'Salary law', printPayslipText: 'Print payslip',
       cancelBtn: 'Cancel', saveDeptBtn: 'Save department', savePosBtn: 'Save position', saveEmpBtn: 'Save employee',
       confirmDelete: 'Delete this item permanently?',
       importModalTitle: 'Import from Excel', importDropText: 'Click to choose an Excel file', importBtn: 'Import',
@@ -90,6 +108,15 @@
       empModalTitle: 'Ajouter un employé', empModalHint: "Nom de l'employé, puis liez-le à un service et un poste",
       empNameLabel: "Nom de l'employé", empNamePh: 'Ahmed Benali',
       empDeptLabel: 'Service', empPosLabel: 'Poste',
+      empMaritalLabel: 'État civil', maritalSingleCode: 'C', maritalMarriedCode: 'M',
+      maritalSingleText: 'Célibataire', maritalMarriedText: 'Marié',
+      empChildrenLabel: "Nombre d'enfants", empExperienceLabel: "Années d'expérience",
+      childrenAbbrev: 'enfants', experienceAbbrev: 'exp.', editBtn: 'Modifier', editEmpModalTitle: "Modifier l'employé",
+      salaryLawModalTitle: 'Loi salariale', salaryLawModalHint: 'Ajustez les taux selon la dernière décision officielle, applicable à tous les employés',
+      cnasLabel: 'Taux de sécurité sociale (%)', bracketsLabel: "Tranches d'impôt sur le revenu (IRG)", addBracketText: 'Tranche',
+      spouseAllowanceLabel: 'Salaire unique (mariés seulement)', experienceRateLabel: "Prime d'expérience (% par an)",
+      familyAllowanceLabel: 'Allocation familiale (par enfant)', payItemsLabel: 'Éléments de salaire supplémentaires', addPayItemText: 'Élément',
+      printLabel: 'Imprimer', salaryLawBtnText: 'Loi salariale', printPayslipText: 'Imprimer le bulletin',
       cancelBtn: 'Annuler', saveDeptBtn: 'Enregistrer le service', savePosBtn: 'Enregistrer le poste', saveEmpBtn: "Enregistrer l'employé",
       confirmDelete: 'Supprimer définitivement cet élément ?',
       importModalTitle: 'Importer depuis Excel', importDropText: 'Cliquez pour choisir un fichier Excel', importBtn: 'Importer',
@@ -116,12 +143,8 @@
   let importTarget = null; // 'departments' | 'positions' | 'employees'
   let importParsedRows = null;
 
-  const DEPT_COLORS = ['#2F5CA8', '#1E8A52', '#7A3FA8', '#C9A227', '#B1345A', '#17879E'];
-  function colorForId(id) {
-    let hash = 0;
-    for (let i = 0; i < id.length; i++) hash = (hash * 31 + id.charCodeAt(i)) >>> 0;
-    return DEPT_COLORS[hash % DEPT_COLORS.length];
-  }
+  const DEPT_COLORS = ['#2F5CA8', '#1E8A52', '#7A3FA8', '#C9A227', '#B1345A', '#17879E', '#D85A30', '#4A5568', '#17A2A2', '#8E44AD'];
+  function colorForIndex(i) { return DEPT_COLORS[i % DEPT_COLORS.length]; }
 
   /* ================= DOM refs ================= */
   const $ = (id) => document.getElementById(id);
@@ -152,6 +175,10 @@
     empModalOverlay: $('empModalOverlay'), empModalTitle: $('empModalTitle'), empModalHint: $('empModalHint'),
     empNameLabel: $('empNameLabel'), empNameInput: $('empNameInput'),
     empDeptLabel: $('empDeptLabel'), empDeptSelect: $('empDeptSelect'), empPosLabel: $('empPosLabel'), empPosSelect: $('empPosSelect'),
+    empMaritalLabel: $('empMaritalLabel'), empMaritalSelect: $('empMaritalSelect'),
+    empMaritalSingleOpt: $('empMaritalSingleOpt'), empMaritalMarriedOpt: $('empMaritalMarriedOpt'),
+    empChildrenLabel: $('empChildrenLabel'), empChildrenInput: $('empChildrenInput'),
+    empExperienceLabel: $('empExperienceLabel'), empExperienceInput: $('empExperienceInput'),
     empCancelBtn: $('empCancelBtn'), empSaveBtn: $('empSaveBtn'),
     importModalOverlay: $('importModalOverlay'), importModalTitle: $('importModalTitle'), importModalHint: $('importModalHint'),
     importDropZone: $('importDropZone'), importDropText: $('importDropText'), importFileInput: $('importFileInput'),
@@ -254,8 +281,11 @@
 
   function renderActiveSection() {
     renderDepartments();
+    renderNotifications();
     renderPositions();
+    renderNotifications();
     renderEmployees();
+    renderNotifications();
   }
 
   /* ================= Departments ================= */
@@ -263,12 +293,12 @@
     return `<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="1"/><path d="M9 8h1M14 8h1M9 12h1M14 12h1M9 16h1M14 16h1"/></svg>`;
   }
   function renderDepartments() {
-    els.departmentsList.innerHTML = departments.map((d) => {
+    els.departmentsList.innerHTML = departments.map((d, i) => {
       const empCount = employees.filter((e) => e.departmentId === d.id).length;
       return `
       <div class="ap-list-card" data-id="${d.id}">
         <div class="ap-list-card-left">
-          <span class="ap-list-card-icon" style="background:${colorForId(d.id)};">${departmentIcon()}</span>
+          <span class="ap-list-card-icon" style="background:${colorForIndex(i)};">${departmentIcon()}</span>
           <div>
             <p class="ap-list-card-name">${escapeHtml(d.name)}</p>
             ${d.description ? `<p class="ap-list-card-sub">${escapeHtml(d.description)}</p>` : ''}
@@ -291,6 +321,7 @@
         await c.doc(btn.getAttribute('data-id')).delete();
         departments = departments.filter((d) => d.id !== btn.getAttribute('data-id'));
         renderDepartments();
+    renderNotifications();
       });
     });
   }
@@ -311,6 +342,7 @@
     const docRef = await c.add({ name, description: els.deptDescInput.value.trim() });
     departments.push({ id: docRef.id, name, description: els.deptDescInput.value.trim() });
     renderDepartments();
+    renderNotifications();
     closeDeptModal();
   });
 
@@ -319,10 +351,10 @@
     return `<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>`;
   }
   function renderPositions() {
-    els.positionsList.innerHTML = positions.map((p) => `
+    els.positionsList.innerHTML = positions.map((p, i) => `
       <div class="ap-list-card" data-id="${p.id}">
         <div class="ap-list-card-left">
-          <span class="ap-list-card-icon" style="background:${colorForId(p.id)};">${positionIcon()}</span>
+          <span class="ap-list-card-icon" style="background:${colorForIndex(i)};">${positionIcon()}</span>
           <div><p class="ap-list-card-name">${escapeHtml(p.name)}</p></div>
         </div>
         <div style="display:flex; align-items:center; gap:12px;">
@@ -340,6 +372,7 @@
         await c.doc(btn.getAttribute('data-id')).delete();
         positions = positions.filter((p) => p.id !== btn.getAttribute('data-id'));
         renderPositions();
+    renderNotifications();
       });
     });
   }
@@ -362,6 +395,7 @@
     const docRef = await c.add({ name, baseSalary: salary });
     positions.push({ id: docRef.id, name, baseSalary: salary });
     renderPositions();
+    renderNotifications();
     closePosModal();
   });
 
@@ -373,19 +407,30 @@
   function posName(id) { const p = positions.find((x) => x.id === id); return p ? p.name : '—'; }
 
   function renderEmployees() {
-    els.employeesList.innerHTML = employees.map((emp) => `
+    els.employeesList.innerHTML = employees.map((emp, i) => {
+      const maritalCode = emp.marital === 'married' ? t('maritalMarriedCode') : t('maritalSingleCode');
+      const children = emp.children || 0;
+      const experience = emp.experience || 0;
+      const metaLine = `${escapeHtml(deptName(emp.departmentId))} · ${escapeHtml(posName(emp.positionId))} · ${maritalCode} · ${t('childrenAbbrev')}: ${children} · ${t('experienceAbbrev')}: ${experience}`;
+      return `
       <div class="ap-list-card" data-id="${emp.id}">
         <div class="ap-list-card-left">
-          <span class="ap-list-card-icon" style="background:${colorForId(emp.id)};">${employeeIcon()}</span>
+          <span class="ap-list-card-icon" style="background:${colorForIndex(i)};">${employeeIcon()}</span>
           <div>
             <p class="ap-list-card-name">${escapeHtml(emp.name)}</p>
-            <p class="ap-list-card-sub">${escapeHtml(deptName(emp.departmentId))} · ${escapeHtml(posName(emp.positionId))}</p>
+            <p class="ap-list-card-sub">${metaLine}</p>
           </div>
         </div>
-        <button type="button" class="ap-list-card-delete" data-action="delete-emp" data-id="${emp.id}">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
-        </button>
-      </div>`).join('');
+        <div style="display:flex; gap:6px;">
+          <button type="button" class="ap-list-card-delete" data-action="edit-emp" data-id="${emp.id}" title="${t('editBtn')}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
+          </button>
+          <button type="button" class="ap-list-card-delete" data-action="delete-emp" data-id="${emp.id}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+          </button>
+        </div>
+      </div>`;
+    }).join('');
     els.empEmptyHint.classList.toggle('hidden', employees.length > 0);
     els.employeesList.querySelectorAll('[data-action="delete-emp"]').forEach((btn) => {
       btn.addEventListener('click', async () => {
@@ -397,7 +442,11 @@
         renderDepartments();
         if (typeof renderAttendanceTable === 'function') renderAttendanceTable();
         if (typeof renderPayrollTable === 'function') renderPayrollTable();
+        renderNotifications();
       });
+    });
+    els.employeesList.querySelectorAll('[data-action="edit-emp"]').forEach((btn) => {
+      btn.addEventListener('click', () => openEmpModal(btn.getAttribute('data-id')));
     });
   }
 
@@ -406,14 +455,31 @@
     els.empPosSelect.innerHTML = positions.map((p) => `<option value="${p.id}">${escapeHtml(p.name)}</option>`).join('');
   }
 
-  function openEmpModal() {
-    els.empNameInput.value = '';
+  let editingEmpId = null;
+  function openEmpModal(empId) {
+    editingEmpId = empId || null;
     populateEmpSelects();
+    if (empId) {
+      const emp = employees.find((e) => e.id === empId);
+      els.empModalTitle.textContent = t('editEmpModalTitle');
+      els.empNameInput.value = emp.name || '';
+      els.empDeptSelect.value = emp.departmentId || '';
+      els.empPosSelect.value = emp.positionId || '';
+      els.empMaritalSelect.value = emp.marital || 'single';
+      els.empChildrenInput.value = emp.children || 0;
+      els.empExperienceInput.value = emp.experience || 0;
+    } else {
+      els.empModalTitle.textContent = t('empModalTitle');
+      els.empNameInput.value = '';
+      els.empMaritalSelect.value = 'single';
+      els.empChildrenInput.value = 0;
+      els.empExperienceInput.value = 0;
+    }
     els.empModalOverlay.classList.remove('hidden');
     els.empNameInput.focus();
   }
-  function closeEmpModal() { els.empModalOverlay.classList.add('hidden'); }
-  els.addEmpBtn.addEventListener('click', openEmpModal);
+  function closeEmpModal() { els.empModalOverlay.classList.add('hidden'); editingEmpId = null; }
+  els.addEmpBtn.addEventListener('click', () => openEmpModal(null));
   els.empCancelBtn.addEventListener('click', closeEmpModal);
   els.empModalOverlay.addEventListener('click', (e) => { if (e.target === els.empModalOverlay) closeEmpModal(); });
   els.empSaveBtn.addEventListener('click', async () => {
@@ -422,13 +488,24 @@
     if (!departments.length || !positions.length) { alert(t('needName')); return; }
     const departmentId = els.empDeptSelect.value;
     const positionId = els.empPosSelect.value;
+    const marital = els.empMaritalSelect.value;
+    const children = parseInt(els.empChildrenInput.value, 10) || 0;
+    const experience = parseInt(els.empExperienceInput.value, 10) || 0;
     const c = col('employees'); if (!c) return;
-    const docRef = await c.add({ name, departmentId, positionId });
-    employees.push({ id: docRef.id, name, departmentId, positionId });
+    const data = { name, departmentId, positionId, marital, children, experience };
+    if (editingEmpId) {
+      await c.doc(editingEmpId).set(data, { merge: true });
+      const idx = employees.findIndex((e) => e.id === editingEmpId);
+      if (idx !== -1) employees[idx] = Object.assign({ id: editingEmpId }, data);
+    } else {
+      const docRef = await c.add(data);
+      employees.push(Object.assign({ id: docRef.id }, data));
+    }
     renderEmployees();
     renderDepartments();
     if (typeof renderAttendanceTable === 'function') renderAttendanceTable();
     if (typeof renderPayrollTable === 'function') renderPayrollTable();
+    renderNotifications();
     closeEmpModal();
   });
 
@@ -489,6 +566,7 @@
           departments.push({ id: docRef.id, name, description });
         }
         renderDepartments();
+    renderNotifications();
       } else if (importTarget === 'positions') {
         const c = col('positions');
         for (const row of importParsedRows) {
@@ -500,6 +578,7 @@
           positions.push({ id: docRef.id, name, baseSalary: isNaN(salary) ? 0 : salary });
         }
         renderPositions();
+    renderNotifications();
       } else if (importTarget === 'employees') {
         const c = col('employees');
         for (const row of importParsedRows) {
@@ -514,7 +593,9 @@
           employees.push({ id: docRef.id, name, departmentId: dept ? dept.id : '', positionId: pos ? pos.id : '' });
         }
         renderEmployees();
+    renderNotifications();
         renderDepartments();
+    renderNotifications();
       }
       closeImportModal();
     } catch (err) {
@@ -531,6 +612,7 @@
     attStatusRow: $('attStatusRow'), addStatusBtn: $('addStatusBtn'), addStatusText: $('addStatusText'),
     eraserChip: $('eraserChip'), eraserText: $('eraserText'),
     notifBellBtn: $('notifBellBtn'), notifBadge: $('notifBadge'), notifPanel: $('notifPanel'),
+    exportDataBtn: $('exportDataBtn'),
     notifPanelTitle: $('notifPanelTitle'), notifList: $('notifList'), notifEmpty: $('notifEmpty'),
     attTable: $('attTable'), attEmptyHint: $('attEmptyHint'),
     statusModalOverlay: $('statusModalOverlay'), statusModalTitle: $('statusModalTitle'), statusModalHint: $('statusModalHint'),
@@ -540,6 +622,10 @@
     statusCancelBtn: $('statusCancelBtn'), statusSaveBtn: $('statusSaveBtn'),
     payTitle: $('payTitle'), payMonthSelect: $('payMonthSelect'), payYearSelect: $('payYearSelect'),
     salaryLawBtn: $('salaryLawBtn'), salaryLawBtnText: $('salaryLawBtnText'), printPayrollBtn: $('printPayrollBtn'), printPayrollText: $('printPayrollText'),
+    printAttendanceBtn: $('printAttendanceBtn'), printAttendanceText: $('printAttendanceText'),
+    printPayslipBtn: $('printPayslipBtn'), printPayslipText: $('printPayslipText'),
+    payslipPrintContainer: $('payslipPrintContainer'), payslipOrgLogo: $('payslipOrgLogo'), payslipOrgName: $('payslipOrgName'),
+    payslipTitle: $('payslipTitle'), payslipEmpName: $('payslipEmpName'), payslipPeriod: $('payslipPeriod'), payslipTable: $('payslipTable'),
     paySummaryCards: $('paySummaryCards'), payItemsLabel: $('payItemsLabel'), payItemsChips: $('payItemsChips'),
     addPayItemBtn: $('addPayItemBtn'), addPayItemText: $('addPayItemText'),
     payTable: $('payTable'), payEmptyHint: $('payEmptyHint'),
@@ -552,6 +638,8 @@
     cnasLabel: $('cnasLabel'), cnasInput: $('cnasInput'),
     bracketsLabel: $('bracketsLabel'), addBracketBtn: $('addBracketBtn'), addBracketText: $('addBracketText'), bracketsList: $('bracketsList'),
     familyAllowanceLabel: $('familyAllowanceLabel'), familyAllowanceInput: $('familyAllowanceInput'),
+    spouseAllowanceLabel: $('spouseAllowanceLabel'), spouseAllowanceInput: $('spouseAllowanceInput'),
+    experienceRateLabel: $('experienceRateLabel'), experienceRateInput: $('experienceRateInput'),
     salaryLawCancelBtn: $('salaryLawCancelBtn'), salaryLawSaveBtn: $('salaryLawSaveBtn'),
     empPayDetailOverlay: $('empPayDetailOverlay'), empPayDetailTitle: $('empPayDetailTitle'), empPayDetailBreakdown: $('empPayDetailBreakdown'),
     correctionLabel: $('correctionLabel'), correctionAmountInput: $('correctionAmountInput'), correctionReasonInput: $('correctionReasonInput'),
@@ -569,7 +657,7 @@
   let orgSettings = { name: 'مؤسستي', logoDataUrl: null };
   let attStatuses = [];
   let payItems = [];
-  let salaryLaw = { cnasRate: 9, brackets: [{ from: 0, to: 30000, rate: 0 }, { from: 30001, to: 60000, rate: 20 }, { from: 60001, to: null, rate: 30 }], familyAllowance: 600 };
+  let salaryLaw = { cnasRate: 9, brackets: [{ from: 0, to: 30000, rate: 0 }, { from: 30001, to: 60000, rate: 20 }, { from: 60001, to: null, rate: 30 }], familyAllowance: 600, spouseAllowance: 1500, experienceRate: 2 };
   let attMonth = new Date().getMonth() + 1;
   let attYear = new Date().getFullYear();
   let payMonth = attMonth;
@@ -641,13 +729,30 @@
   }
   els.attDeptFilter.addEventListener('change', renderAttendanceTable);
 
-  const DEFAULT_STATUSES = [
-    { name: 'حاضر', code: 'ح', color: '#1E8A52', deductType: 'none' },
-    { name: 'مرضية', code: 'م', color: '#C9A227', deductType: 'full' },
-    { name: 'سنوية', code: 'س', color: '#2F5CA8', deductType: 'none' },
-    { name: 'استرجاع', code: 'ر', color: '#7A3FA8', deductType: 'none' },
-    { name: 'غير مبرر', code: 'غ', color: '#B1345A', deductType: 'full' },
-  ];
+  const DEFAULT_STATUSES_I18N = {
+    ar: [
+      { name: 'حاضر', code: 'ح', color: '#1E8A52', deductType: 'none' },
+      { name: 'مرضية', code: 'م', color: '#C9A227', deductType: 'full' },
+      { name: 'سنوية', code: 'س', color: '#2F5CA8', deductType: 'none' },
+      { name: 'استرجاع', code: 'ر', color: '#7A3FA8', deductType: 'none' },
+      { name: 'غير مبرر', code: 'غ', color: '#B1345A', deductType: 'full' },
+    ],
+    en: [
+      { name: 'Present', code: 'P', color: '#1E8A52', deductType: 'none' },
+      { name: 'Sick leave', code: 'S', color: '#C9A227', deductType: 'full' },
+      { name: 'Annual leave', code: 'A', color: '#2F5CA8', deductType: 'none' },
+      { name: 'Recovery', code: 'R', color: '#7A3FA8', deductType: 'none' },
+      { name: 'Unjustified', code: 'U', color: '#B1345A', deductType: 'full' },
+    ],
+    fr: [
+      { name: 'Présent', code: 'P', color: '#1E8A52', deductType: 'none' },
+      { name: 'Congé maladie', code: 'M', color: '#C9A227', deductType: 'full' },
+      { name: 'Congé annuel', code: 'A', color: '#2F5CA8', deductType: 'none' },
+      { name: 'Récupération', code: 'R', color: '#7A3FA8', deductType: 'none' },
+      { name: 'Non justifiée', code: 'N', color: '#B1345A', deductType: 'full' },
+    ],
+  };
+  const DEFAULT_STATUSES = DEFAULT_STATUSES_I18N[lang] || DEFAULT_STATUSES_I18N.ar;
   async function ensureDefaultStatuses() {
     const c = col('attendanceStatuses'); if (!c) return;
     try {
@@ -783,6 +888,7 @@
       cell.style.color = status ? status.color : '';
     }
     scheduleAttendanceSave(empId);
+    renderNotifications();
   }
 
   const attSaveTimers = {};
@@ -809,6 +915,7 @@
         payItems = payItems.filter((it) => it.id !== btn.getAttribute('data-id'));
         renderPayItemsChips();
         renderPayrollTable();
+    renderNotifications();
       });
     });
   }
@@ -828,6 +935,7 @@
     payItems.push(Object.assign({ id: docRef.id }, item));
     renderPayItemsChips();
     renderPayrollTable();
+    renderNotifications();
     els.payItemModalOverlay.classList.add('hidden');
   });
 
@@ -869,7 +977,10 @@
   els.salaryLawBtn.addEventListener('click', () => {
     els.cnasInput.value = salaryLaw.cnasRate;
     els.familyAllowanceInput.value = salaryLaw.familyAllowance;
+    els.spouseAllowanceInput.value = salaryLaw.spouseAllowance;
+    els.experienceRateInput.value = salaryLaw.experienceRate;
     renderBracketsList();
+    renderPayItemsChips();
     els.salaryLawModalOverlay.classList.remove('hidden');
   });
   els.salaryLawCancelBtn.addEventListener('click', () => els.salaryLawModalOverlay.classList.add('hidden'));
@@ -877,9 +988,12 @@
   els.salaryLawSaveBtn.addEventListener('click', async () => {
     salaryLaw.cnasRate = parseFloat(els.cnasInput.value) || 0;
     salaryLaw.familyAllowance = parseFloat(els.familyAllowanceInput.value) || 0;
+    salaryLaw.spouseAllowance = parseFloat(els.spouseAllowanceInput.value) || 0;
+    salaryLaw.experienceRate = parseFloat(els.experienceRateInput.value) || 0;
     await saveSalaryLaw();
     els.salaryLawModalOverlay.classList.add('hidden');
     renderPayrollTable();
+    renderNotifications();
   });
 
   function computeIRG(taxable) {
@@ -912,7 +1026,11 @@
     let additions = 0, deductions = 0;
     payItems.forEach((it) => { if (it.type === 'addition') additions += Number(it.amount) || 0; else deductions += Number(it.amount) || 0; });
 
-    const grossBeforeStatutory = base + additions - deductions - absenceDeduction;
+    const familyAllowanceTotal = (Number(emp.children) || 0) * (Number(salaryLaw.familyAllowance) || 0);
+    const spouseAllowanceTotal = emp.marital === 'married' ? (Number(salaryLaw.spouseAllowance) || 0) : 0;
+    const experienceBonus = base * ((Number(emp.experience) || 0) * (Number(salaryLaw.experienceRate) || 0) / 100);
+
+    const grossBeforeStatutory = base + additions - deductions - absenceDeduction + familyAllowanceTotal + spouseAllowanceTotal + experienceBonus;
     const cnas = grossBeforeStatutory * (salaryLaw.cnasRate / 100);
     const taxable = grossBeforeStatutory - cnas;
     const irg = computeIRG(taxable);
@@ -922,7 +1040,7 @@
 
     const net = grossBeforeStatutory - cnas - irg + correctionAmount;
 
-    return { base, additions, deductions, absenceDeductionDays, absenceDeduction, cnas, irg, correctionAmount, net };
+    return { base, additions, deductions, absenceDeductionDays, absenceDeduction, familyAllowanceTotal, spouseAllowanceTotal, experienceBonus, cnas, irg, correctionAmount, net };
   }
 
   async function loadPayrollForMonth() {
@@ -947,6 +1065,7 @@
       }
     }
     renderPayrollTable();
+    renderNotifications();
   }
 
   function renderPayrollTable() {
@@ -954,16 +1073,21 @@
     const totalBase = results.reduce((s, r) => s + r.calc.base, 0);
     const totalNet = results.reduce((s, r) => s + r.calc.net, 0);
 
+    const totalAbsenceDays = results.reduce((s, r) => s + r.calc.absenceDeductionDays, 0);
     els.paySummaryCards.innerHTML = `
-      <div class="ap-summary-card">
+      <div class="ap-summary-card" style="background:#EAF1FB;">
         <p class="ap-summary-card-label">${lang === 'ar' ? 'عدد الموظفين' : lang === 'fr' ? 'Employés' : 'Employees'}</p>
         <p class="ap-summary-card-value">${employees.length}</p>
       </div>
-      <div class="ap-summary-card">
+      <div class="ap-summary-card" style="background:#EAF6EF;">
         <p class="ap-summary-card-label">${lang === 'ar' ? 'إجمالي الأجور القاعدية' : lang === 'fr' ? 'Total salaires de base' : 'Total base salaries'}</p>
         <p class="ap-summary-card-value">${totalBase.toLocaleString()}</p>
       </div>
-      <div class="ap-summary-card highlight">
+      <div class="ap-summary-card" style="background:#FCEFEF;">
+        <p class="ap-summary-card-label">${lang === 'ar' ? 'عدد الغيابات' : lang === 'fr' ? 'Jours absence' : 'Absence days'}</p>
+        <p class="ap-summary-card-value">${totalAbsenceDays}</p>
+      </div>
+      <div class="ap-summary-card highlight" style="background:#EFEAFB;">
         <p class="ap-summary-card-label">${lang === 'ar' ? 'إجمالي الصافي' : lang === 'fr' ? 'Total net' : 'Total net'}</p>
         <p class="ap-summary-card-value">${totalNet.toLocaleString()}</p>
       </div>`;
@@ -997,20 +1121,23 @@
     if (!emp) return;
     const calc = computeEmployeePayroll(emp);
     els.empPayDetailTitle.textContent = emp.name;
+    const correction = payrollCorrections[empId];
     const rows = [
       [lang === 'ar' ? 'الأجر القاعدي' : lang === 'fr' ? 'Salaire de base' : 'Base salary', calc.base],
+      [lang === 'ar' ? 'منحة الخبرة' : lang === 'fr' ? "Prime d'expérience" : 'Experience bonus', calc.experienceBonus],
+      [lang === 'ar' ? 'المنحة العائلية' : lang === 'fr' ? 'Allocation familiale' : 'Family allowance', calc.familyAllowanceTotal],
+      [lang === 'ar' ? 'منحة الزوجة' : lang === 'fr' ? 'Salaire unique' : 'Spouse allowance', calc.spouseAllowanceTotal],
       [lang === 'ar' ? 'الإضافات' : lang === 'fr' ? 'Ajouts' : 'Additions', calc.additions],
       [lang === 'ar' ? 'الخصومات' : lang === 'fr' ? 'Déductions' : 'Deductions', -calc.deductions],
       [lang === 'ar' ? 'خصم الغياب' : lang === 'fr' ? 'Déduction absences' : 'Absence deduction', -calc.absenceDeduction],
       ['CNAS', -calc.cnas],
       ['IRG', -calc.irg],
-      [lang === 'ar' ? 'تعديل يدوي' : lang === 'fr' ? 'Correction manuelle' : 'Manual correction', calc.correctionAmount],
+      [(lang === 'ar' ? 'تعديل يدوي' : lang === 'fr' ? 'Correction manuelle' : 'Manual correction') + (correction && correction.reason ? ` (${correction.reason})` : ''), calc.correctionAmount],
     ];
     els.empPayDetailBreakdown.innerHTML = rows.map(([label, val]) =>
       `<div class="ap-pay-breakdown-row"><span>${label}</span><span>${val.toLocaleString()}</span></div>`
     ).join('') + `<div class="ap-pay-breakdown-row total"><span>${lang === 'ar' ? 'الصافي' : lang === 'fr' ? 'Net' : 'Net'}</span><span>${calc.net.toFixed(0)}</span></div>`;
 
-    const correction = payrollCorrections[empId];
     els.correctionAmountInput.value = correction ? correction.amount : '';
     els.correctionReasonInput.value = correction ? correction.reason : '';
     els.correctionSaveBtn.setAttribute('data-emp', empId);
@@ -1026,10 +1153,47 @@
     await c.doc(docKey(empId, payYear, payMonth)).set({ amount, reason }, { merge: true });
     payrollCorrections[empId] = { amount, reason };
     renderPayrollTable();
+    renderNotifications();
     els.empPayDetailOverlay.classList.add('hidden');
   });
 
+  els.printPayslipBtn.addEventListener('click', () => {
+    const empId = els.correctionSaveBtn.getAttribute('data-emp');
+    const emp = employees.find((e) => e.id === empId);
+    if (!emp) return;
+    const calc = computeEmployeePayroll(emp);
+
+    if (orgSettings.logoDataUrl) { els.payslipOrgLogo.src = orgSettings.logoDataUrl; els.payslipOrgLogo.classList.remove('hidden'); }
+    else { els.payslipOrgLogo.classList.add('hidden'); }
+    els.payslipOrgName.textContent = orgSettings.name || '';
+    els.payslipTitle.textContent = lang === 'ar' ? 'كشف الراتب' : lang === 'fr' ? 'Bulletin de paie' : 'Payslip';
+    els.payslipEmpName.textContent = emp.name;
+    els.payslipPeriod.textContent = `${MONTH_NAMES[lang][payMonth - 1]} ${payYear}`;
+
+    const rows = [
+      [lang === 'ar' ? 'الأجر القاعدي' : lang === 'fr' ? 'Salaire de base' : 'Base salary', calc.base],
+      [lang === 'ar' ? 'منحة الخبرة' : lang === 'fr' ? "Prime d'expérience" : 'Experience bonus', calc.experienceBonus],
+      [lang === 'ar' ? 'المنحة العائلية' : lang === 'fr' ? 'Allocation familiale' : 'Family allowance', calc.familyAllowanceTotal],
+      [lang === 'ar' ? 'منحة الزوجة' : lang === 'fr' ? 'Salaire unique' : 'Spouse allowance', calc.spouseAllowanceTotal],
+      [lang === 'ar' ? 'الإضافات' : lang === 'fr' ? 'Ajouts' : 'Additions', calc.additions],
+      [lang === 'ar' ? 'الخصومات' : lang === 'fr' ? 'Déductions' : 'Deductions', -calc.deductions],
+      [lang === 'ar' ? 'خصم الغياب' : lang === 'fr' ? 'Déduction absences' : 'Absence deduction', -calc.absenceDeduction],
+      ['CNAS', -calc.cnas],
+      ['IRG', -calc.irg],
+      [lang === 'ar' ? 'تعديل يدوي' : lang === 'fr' ? 'Correction manuelle' : 'Manual correction', calc.correctionAmount],
+      [lang === 'ar' ? 'الصافي' : lang === 'fr' ? 'Net' : 'Net', calc.net],
+    ];
+    els.payslipTable.innerHTML = rows.map(([label, val]) =>
+      `<tr><td>${label}</td><td style="text-align:${lang === 'ar' ? 'left' : 'right'};">${val.toLocaleString(undefined, { maximumFractionDigits: 0 })}</td></tr>`
+    ).join('');
+
+    document.body.classList.add('printing-payslip');
+    window.print();
+  });
+  window.addEventListener('afterprint', () => { document.body.classList.remove('printing-payslip'); });
+
   els.printPayrollBtn.addEventListener('click', () => { window.print(); });
+  els.printAttendanceBtn.addEventListener('click', () => { window.print(); });
 
   /* ================= Notifications ================= */
   let notifAcknowledged = [];
@@ -1165,6 +1329,29 @@
     XLSX.writeFile(wb, `${importTarget}-template.xlsx`);
   });
 
+  /* ================= Export all data ================= */
+  els.exportDataBtn.addEventListener('click', () => {
+    const h = TEMPLATE_HEADERS;
+    const wb = XLSX.utils.book_new();
+
+    const deptRows = [h.departments[lang] || h.departments.ar].concat(
+      departments.map((d) => [d.name, d.description || ''])
+    );
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(deptRows), lang === 'ar' ? 'المصالح' : lang === 'fr' ? 'Services' : 'Departments');
+
+    const posRows = [h.positions[lang] || h.positions.ar].concat(
+      positions.map((p) => [p.name, p.baseSalary || 0])
+    );
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(posRows), lang === 'ar' ? 'المناصب' : lang === 'fr' ? 'Postes' : 'Positions');
+
+    const empRows = [h.employees[lang] || h.employees.ar].concat(
+      employees.map((e) => [e.name, deptName(e.departmentId), posName(e.positionId)])
+    );
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(empRows), lang === 'ar' ? 'الموظفون' : lang === 'fr' ? 'Employés' : 'Employees');
+
+    XLSX.writeFile(wb, 'attendance-payroll-backup.xlsx');
+  });
+
 
   /* ================= i18n apply ================= */
   function applyLanguage() {
@@ -1197,6 +1384,25 @@
     els.empModalTitle.textContent = dict.empModalTitle; els.empModalHint.textContent = dict.empModalHint;
     els.empNameLabel.textContent = dict.empNameLabel; els.empNameInput.placeholder = dict.empNamePh;
     els.empDeptLabel.textContent = dict.empDeptLabel; els.empPosLabel.textContent = dict.empPosLabel;
+    els.empMaritalLabel.textContent = dict.empMaritalLabel;
+    els.empMaritalSingleOpt.textContent = `${dict.maritalSingleText} (${dict.maritalSingleCode})`;
+    els.empMaritalMarriedOpt.textContent = `${dict.maritalMarriedText} (${dict.maritalMarriedCode})`;
+    els.empChildrenLabel.textContent = dict.empChildrenLabel;
+    els.empExperienceLabel.textContent = dict.empExperienceLabel;
+    els.salaryLawModalTitle.textContent = dict.salaryLawModalTitle;
+    els.salaryLawModalHint.textContent = dict.salaryLawModalHint;
+    els.cnasLabel.textContent = dict.cnasLabel;
+    els.bracketsLabel.textContent = dict.bracketsLabel;
+    els.addBracketText.textContent = dict.addBracketText;
+    els.familyAllowanceLabel.textContent = dict.familyAllowanceLabel;
+    els.spouseAllowanceLabel.textContent = dict.spouseAllowanceLabel;
+    els.experienceRateLabel.textContent = dict.experienceRateLabel;
+    els.payItemsLabel.textContent = dict.payItemsLabel;
+    els.addPayItemText.textContent = dict.addPayItemText;
+    els.printPayrollText.textContent = dict.printLabel;
+    els.printAttendanceText.textContent = dict.printLabel;
+    els.salaryLawBtnText.textContent = dict.salaryLawBtnText;
+    els.printPayslipText.textContent = dict.printPayslipText;
     els.empCancelBtn.textContent = dict.cancelBtn; els.empSaveBtn.textContent = dict.saveEmpBtn;
 
     els.importModalTitle.textContent = dict.importModalTitle; els.importDropText.textContent = dict.importDropText;

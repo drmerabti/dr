@@ -653,6 +653,13 @@ html[dir="ltr"] .ap-nav-item:hover{ transform: translateX(4px); }
   display: flex; align-items: center; justify-content: center; color: var(--ink);
 }
 .ap-notif-bell svg{ width: 19px; height: 19px; }
+.ap-topbar-export-btn{
+  border: 1px solid var(--line); background: var(--card-bg); color: var(--ink);
+  width: 42px; height: 42px; border-radius: 999px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.ap-topbar-export-btn svg{ width: 18px; height: 18px; }
+.ap-topbar-export-btn:hover{ border-color: var(--accent); color: var(--accent); }
 .ap-notif-badge{
   position: absolute; top: -4px; inset-inline-end: -4px;
   background: #E0392B; color: #fff; font-size: .68rem; font-weight: 800;
@@ -677,4 +684,46 @@ html[dir="ltr"] .ap-nav-item:hover{ transform: translateX(4px); }
   font-size: .74rem; font-weight: 700; cursor: pointer; padding: 0;
 }
 .ap-notif-empty{ text-align: center; color: var(--ink-soft); font-size: .85rem; padding: 10px 0; margin: 0; }
+
+/* ---- Cursor fix: non-editable elements should never show a text-selection cursor ---- */
+.ap-list-card, .ap-list-card *, .ap-nav-item, .ap-nav-item *, .ap-status-chip, .ap-status-chip *,
+.ap-summary-card, .ap-summary-card *, .ap-list-card-icon, .ap-nav-icon, .ap-subject-icon,
+.ap-pay-table th, .ap-pay-table td, .ap-att-table th, .ap-att-table td, .ap-day-cell,
+.icon-btn, .icon-btn *, .ap-btn, .ap-btn *, .ap-notif-item, .ap-notif-item-text,
+.ap-notif-panel-title, .ap-section-head h1, .ap-modal h3{
+  cursor: default; -webkit-user-select: none; user-select: none;
+}
+.ap-list-card, .ap-nav-item, .ap-status-chip, .ap-btn, .ap-day-cell, .ap-pay-table tr[data-emp],
+.icon-btn, .ap-notif-bell, .ap-notif-ack-btn, .ap-add-status-btn, .ap-add-subject-btn,
+.ap-subject-delete, .ap-list-card-delete, .ap-comp-remove, .ap-bracket-remove, .ap-mini-btn,
+.ap-template-link, .ap-eraser-chip{
+  cursor: pointer;
+}
+.ap-day-cell{ cursor: pointer; }
+
+/* ---- Print ---- */
+@media print {
+  .topbar, .ap-sidebar, .ap-head-actions, .ap-status-toolbar-actions, .ap-add-subject-btn,
+  .ap-notif-panel, .site-footer, .ap-list-card-delete, .ap-subject-delete{ display: none !important; }
+  .ap-shell{ width: 100%; box-shadow: none; border-radius: 0; }
+  .ap-main{ padding: 0; }
+  .ap-section.hidden{ display: none !important; }
+  body{ background: #fff; }
+}
+
+/* ---- Individual payslip print ---- */
+.ap-payslip-print{ display: none; }
+body.printing-payslip .ap-payslip-print{
+  display: block; max-width: 480px; margin: 0 auto; padding: 30px; direction: inherit;
+}
+body.printing-payslip .ap-shell, body.printing-payslip .topbar, body.printing-payslip .site-footer{ display: none !important; }
+.ap-payslip-header{ text-align: center; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 2px solid #222; }
+.ap-payslip-header img{ max-height: 60px; margin-bottom: 8px; }
+.ap-payslip-header h2{ margin: 0; font-size: 1.2rem; }
+#payslipTitle{ text-align: center; font-size: 1rem; margin: 0 0 4px; }
+#payslipEmpName{ font-weight: 800; font-size: 1.05rem; margin: 0 0 2px; text-align: center; }
+#payslipPeriod{ text-align: center; color: #666; font-size: .85rem; margin: 0 0 20px; }
+#payslipTable{ width: 100%; border-collapse: collapse; }
+#payslipTable td{ padding: 8px 4px; border-bottom: 1px solid #ddd; }
+#payslipTable tr:last-child td{ font-weight: 800; border-bottom: none; border-top: 2px solid #222; padding-top: 12px; }
 

@@ -28,6 +28,9 @@
         <p class="ap-notif-empty hidden" id="notifEmpty">لا يوجد إشعارات حاليًا.</p>
       </div>
     </div>
+    <button type="button" class="ap-topbar-export-btn" id="exportDataBtn" title="تصدير">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 15V3m0 0l-4 4m4-4l4 4"/><path d="M20 15v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-4"/></svg>
+    </button>
     <div class="lang-switch" role="group">
       <button type="button" class="lang-btn" data-lang="ar">عربي</button>
       <button type="button" class="lang-btn" data-lang="en">EN</button>
@@ -171,6 +174,10 @@
               <select id="attMonthSelect" class="ap-select"></select>
               <select id="attYearSelect" class="ap-select"></select>
               <select id="attDeptFilter" class="ap-select"></select>
+              <button type="button" class="ap-btn" id="printAttendanceBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                <span id="printAttendanceText">طباعة</span>
+              </button>
             </div>
           </div>
 
@@ -211,15 +218,6 @@
           </div>
 
           <div class="ap-summary-cards" id="paySummaryCards"></div>
-
-          <div class="ap-items-row">
-            <p class="ap-section-label" id="payItemsLabel">بنود الراتب</p>
-            <div id="payItemsChips" class="ap-status-row"></div>
-            <button type="button" class="ap-btn ap-add-status-btn" id="addPayItemBtn">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg>
-              <span id="addPayItemText">إضافة بند</span>
-            </button>
-          </div>
 
           <div class="ap-table-scroll">
             <table class="ap-pay-table" id="payTable"></table>
@@ -278,6 +276,15 @@
     <select id="empDeptSelect" class="cv-input"></select>
     <label id="empPosLabel">المنصب</label>
     <select id="empPosSelect" class="cv-input"></select>
+    <label id="empMaritalLabel">الحالة الاجتماعية</label>
+    <select id="empMaritalSelect" class="cv-input">
+      <option value="single" id="empMaritalSingleOpt">عازب (ع)</option>
+      <option value="married" id="empMaritalMarriedOpt">متزوج (م)</option>
+    </select>
+    <label id="empChildrenLabel">عدد الأطفال</label>
+    <input type="number" id="empChildrenInput" class="cv-input" min="0" value="0">
+    <label id="empExperienceLabel">سنوات الخبرة</label>
+    <input type="number" id="empExperienceInput" class="cv-input" min="0" value="0">
     <div class="ap-modal-actions">
       <button type="button" class="ap-btn" id="empCancelBtn">إلغاء</button>
       <button type="button" class="ap-btn ap-btn-primary" id="empSaveBtn">حفظ الموظف</button>
@@ -364,6 +371,18 @@
     <label id="familyAllowanceLabel">المنحة العائلية (لكل طفل)</label>
     <input type="number" id="familyAllowanceInput" class="cv-input" value="600" style="width:120px;">
 
+    <label id="spouseAllowanceLabel">منحة الزوجة (للمتزوج فقط)</label>
+    <input type="number" id="spouseAllowanceInput" class="cv-input" value="1500" style="width:120px;">
+
+    <label id="experienceRateLabel">منحة الخبرة (% لكل سنة خبرة)</label>
+    <input type="number" id="experienceRateInput" class="cv-input" value="2" step="0.5" style="width:120px;">
+
+    <div class="ap-section-label-row">
+      <label id="payItemsLabel">بنود الراتب الإضافية</label>
+      <button type="button" class="ap-mini-btn" id="addPayItemBtn">+ <span id="addPayItemText">بند</span></button>
+    </div>
+    <div id="payItemsChips" class="ap-status-row"></div>
+
     <div class="ap-modal-actions">
       <button type="button" class="ap-btn" id="salaryLawCancelBtn">إلغاء</button>
       <button type="button" class="ap-btn ap-btn-primary" id="salaryLawSaveBtn">حفظ القانون</button>
@@ -381,10 +400,25 @@
       <input type="text" id="correctionReasonInput" class="cv-input" placeholder="السبب">
     </div>
     <div class="ap-modal-actions">
+      <button type="button" class="ap-btn" id="printPayslipBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        <span id="printPayslipText">طباعة كشف الراتب</span>
+      </button>
       <button type="button" class="ap-btn" id="empPayDetailCloseBtn">إغلاق</button>
       <button type="button" class="ap-btn ap-btn-primary" id="correctionSaveBtn">حفظ التعديل</button>
     </div>
   </div>
+</div>
+
+<div class="ap-payslip-print" id="payslipPrintContainer">
+  <div class="ap-payslip-header">
+    <img id="payslipOrgLogo" class="hidden" alt="">
+    <h2 id="payslipOrgName"></h2>
+  </div>
+  <h3 id="payslipTitle"></h3>
+  <p id="payslipEmpName"></p>
+  <p id="payslipPeriod"></p>
+  <table id="payslipTable"></table>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
