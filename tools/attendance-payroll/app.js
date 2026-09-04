@@ -211,12 +211,17 @@
   }
 
   async function loadAllData() {
-    const [dSnap, pSnap, eSnap, piSnap] = await Promise.all([
-      col('departments') ? col('departments').get() : Promise.resolve({ docs: [] }),
-      col('positions') ? col('positions').get() : Promise.resolve({ docs: [] }),
-      col('employees') ? col('employees').get() : Promise.resolve({ docs: [] }),
-      col('payrollItems') ? col('payrollItems').get() : Promise.resolve({ docs: [] }),
-    ]);
+    let dSnap = { docs: [] }, pSnap = { docs: [] }, eSnap = { docs: [] }, piSnap = { docs: [] };
+    try {
+      [dSnap, pSnap, eSnap, piSnap] = await Promise.all([
+        col('departments') ? col('departments').get() : Promise.resolve({ docs: [] }),
+        col('positions') ? col('positions').get() : Promise.resolve({ docs: [] }),
+        col('employees') ? col('employees').get() : Promise.resolve({ docs: [] }),
+        col('payrollItems') ? col('payrollItems').get() : Promise.resolve({ docs: [] }),
+      ]);
+    } catch (e) {
+      console.error('[ap] loadAllData initial fetch failed:', e);
+    }
     departments = dSnap.docs.map((d) => Object.assign({ id: d.id }, d.data()));
     positions = pSnap.docs.map((d) => Object.assign({ id: d.id }, d.data()));
     employees = eSnap.docs.map((d) => Object.assign({ id: d.id }, d.data()));
@@ -232,6 +237,8 @@
     renderPayItemsChips();
     await loadAttendanceForMonth();
     await loadPayrollForMonth();
+    await loadAcknowledged();
+    renderNotifications();
   }
 
   /* ================= Navigation ================= */
@@ -522,6 +529,9 @@
     orgNameInput: $('orgNameInput'),
     attTitle: $('attTitle'), attMonthSelect: $('attMonthSelect'), attYearSelect: $('attYearSelect'), attDeptFilter: $('attDeptFilter'),
     attStatusRow: $('attStatusRow'), addStatusBtn: $('addStatusBtn'), addStatusText: $('addStatusText'),
+    eraserChip: $('eraserChip'), eraserText: $('eraserText'),
+    notifBellBtn: $('notifBellBtn'), notifBadge: $('notifBadge'), notifPanel: $('notifPanel'),
+    notifPanelTitle: $('notifPanelTitle'), notifList: $('notifList'), notifEmpty: $('notifEmpty'),
     attTable: $('attTable'), attEmptyHint: $('attEmptyHint'),
     statusModalOverlay: $('statusModalOverlay'), statusModalTitle: $('statusModalTitle'), statusModalHint: $('statusModalHint'),
     statusNameLabel: $('statusNameLabel'), statusNameInput: $('statusNameInput'),
@@ -640,14 +650,20 @@
   ];
   async function ensureDefaultStatuses() {
     const c = col('attendanceStatuses'); if (!c) return;
-    const snap = await c.get();
-    if (snap.empty) {
-      for (const s of DEFAULT_STATUSES) {
-        const docRef = await c.add(s);
-        attStatuses.push(Object.assign({ id: docRef.id }, s));
+    try {
+      const snap = await c.get();
+      if (snap.empty) {
+        for (const s of DEFAULT_STATUSES) {
+          const docRef = await c.add(s);
+          attStatuses.push(Object.assign({ id: docRef.id }, s));
+        }
+      } else {
+        attStatuses = snap.docs.map((d) => Object.assign({ id: d.id }, d.data()));
       }
-    } else {
-      attStatuses = snap.docs.map((d) => Object.assign({ id: d.id }, d.data()));
+    } catch (e) {
+      console.error('[ap] ensureDefaultStatuses failed:', e);
+      // Fall back to in-memory defaults so the UI still works even if Firestore denies access
+      attStatuses = DEFAULT_STATUSES.map((s, i) => Object.assign({ id: 'local-' + i }, s));
     }
   }
   function renderStatusRow() {
@@ -659,7 +675,19 @@
       chip.addEventListener('click', () => {
         armedStatusId = armedStatusId === chip.getAttribute('data-id') ? null : chip.getAttribute('data-id');
         renderStatusRow();
+        renderEraserChip();
       });
+    });
+  }
+  function renderEraserChip() {
+    if (!els.eraserChip) return;
+    els.eraserChip.classList.toggle('armed', armedStatusId === 'ERASER');
+  }
+  if (els.eraserChip) {
+    els.eraserChip.addEventListener('click', () => {
+      armedStatusId = armedStatusId === 'ERASER' ? null : 'ERASER';
+      renderEraserChip();
+      renderStatusRow();
     });
   }
   function openStatusModal() {
@@ -742,11 +770,18 @@
     const day = cell.getAttribute('data-day');
     if (!attendanceCache[empId]) attendanceCache[empId] = { days: {} };
     if (!attendanceCache[empId].days) attendanceCache[empId].days = {};
-    attendanceCache[empId].days[day] = statusId;
-    const status = attStatuses.find((s) => s.id === statusId);
-    cell.textContent = status ? status.code : '';
-    cell.style.background = status ? status.color + '22' : '';
-    cell.style.color = status ? status.color : '';
+    if (statusId === 'ERASER') {
+      attendanceCache[empId].days[day] = firebase.firestore.FieldValue.delete();
+      cell.textContent = '';
+      cell.style.background = '';
+      cell.style.color = '';
+    } else {
+      attendanceCache[empId].days[day] = statusId;
+      const status = attStatuses.find((s) => s.id === statusId);
+      cell.textContent = status ? status.code : '';
+      cell.style.background = status ? status.color + '22' : '';
+      cell.style.color = status ? status.color : '';
+    }
     scheduleAttendanceSave(empId);
   }
 
@@ -995,6 +1030,126 @@
   });
 
   els.printPayrollBtn.addEventListener('click', () => { window.print(); });
+
+  /* ================= Notifications ================= */
+  let notifAcknowledged = [];
+  async function loadAcknowledged() {
+    const user = window.fbAuth && window.fbAuth.currentUser;
+    if (!user) return;
+    try {
+      const doc = await firebase.firestore().collection('users').doc(user.uid).collection('settings').doc('notifications').get();
+      if (doc.exists) notifAcknowledged = doc.data().acknowledged || [];
+    } catch (e) { /* ignore */ }
+  }
+  async function saveAcknowledged() {
+    const user = window.fbAuth && window.fbAuth.currentUser;
+    if (!user) return;
+    try { await firebase.firestore().collection('users').doc(user.uid).collection('settings').doc('notifications').set({ acknowledged: notifAcknowledged }, { merge: true }); } catch (e) { /* ignore */ }
+  }
+
+  function computeNotifications() {
+    const list = [];
+    const nDays = daysInMonth(attYear, attMonth);
+    const monthKey = `${attYear}-${attMonth}`;
+
+    // 1. Repeated absence (+3 deducted days this month)
+    employees.forEach((emp) => {
+      const data = attendanceCache[emp.id] || { days: {} };
+      const absentDays = [];
+      Object.keys(data.days || {}).forEach((day) => {
+        const statusId = data.days[day];
+        const status = attStatuses.find((s) => s.id === statusId);
+        if (status && status.deductType !== 'none') absentDays.push(day);
+      });
+      if (absentDays.length >= 3) {
+        list.push({
+          key: `absence_${emp.id}_${monthKey}`,
+          text: lang === 'ar' ? `${emp.name} غائب ${absentDays.length} أيام هذا الشهر (أيام: ${absentDays.join('، ')})`
+            : lang === 'fr' ? `${emp.name} absent ${absentDays.length} jours ce mois (jours : ${absentDays.join(', ')})`
+            : `${emp.name} was absent ${absentDays.length} days this month (days: ${absentDays.join(', ')})`,
+        });
+      }
+    });
+
+    // 2. Missing department or position
+    employees.forEach((emp) => {
+      if (!emp.departmentId || !emp.positionId) {
+        list.push({
+          key: `missing_${emp.id}`,
+          text: lang === 'ar' ? `الموظف ${emp.name} ناقصه مصلحة أو منصب`
+            : lang === 'fr' ? `${emp.name} : service ou poste manquant`
+            : `${emp.name} is missing a department or position`,
+        });
+      }
+    });
+
+    // 3 & 4. Weird net salary / large manual correction
+    employees.forEach((emp) => {
+      const calc = computeEmployeePayroll(emp);
+      if (calc.net < 0) {
+        list.push({
+          key: `negnet_${emp.id}_${payYear}-${payMonth}`,
+          text: lang === 'ar' ? `صافي راتب ${emp.name} سالب (${calc.net.toFixed(0)}) — راجع الحساب`
+            : lang === 'fr' ? `Salaire net négatif pour ${emp.name} (${calc.net.toFixed(0)})`
+            : `${emp.name}'s net salary is negative (${calc.net.toFixed(0)})`,
+        });
+      }
+      if (calc.base > 0 && Math.abs(calc.correctionAmount) > calc.base * 0.2) {
+        list.push({
+          key: `bigcorr_${emp.id}_${payYear}-${payMonth}`,
+          text: lang === 'ar' ? `تعديل يدوي كبير على راتب ${emp.name} (${calc.correctionAmount.toFixed(0)})`
+            : lang === 'fr' ? `Correction manuelle importante pour ${emp.name} (${calc.correctionAmount.toFixed(0)})`
+            : `Large manual correction for ${emp.name} (${calc.correctionAmount.toFixed(0)})`,
+        });
+      }
+    });
+
+    // 5. End of month approaching with incomplete attendance
+    const today = new Date();
+    const isCurrentMonth = today.getFullYear() === attYear && (today.getMonth() + 1) === attMonth;
+    if (isCurrentMonth && (nDays - today.getDate()) <= 3) {
+      employees.forEach((emp) => {
+        const data = attendanceCache[emp.id] || { days: {} };
+        const filled = Object.keys(data.days || {}).length;
+        if (filled < today.getDate() - 2) {
+          list.push({
+            key: `incomplete_${emp.id}_${monthKey}`,
+            text: lang === 'ar' ? `جدول حضور ${emp.name} غير مكتمل والشهر يقترب من نهايته`
+              : lang === 'fr' ? `Le tableau de présence de ${emp.name} est incomplet, fin de mois proche`
+              : `${emp.name}'s attendance sheet is incomplete, month-end approaching`,
+          });
+        }
+      });
+    }
+
+    return list.filter((n) => !notifAcknowledged.includes(n.key));
+  }
+
+  function renderNotifications() {
+    const list = computeNotifications();
+    els.notifBadge.textContent = list.length;
+    els.notifBadge.classList.toggle('hidden', list.length === 0);
+    els.notifList.innerHTML = list.map((n) => `
+      <div class="ap-notif-item" data-key="${escapeHtml(n.key)}">
+        <p class="ap-notif-item-text">${escapeHtml(n.text)}</p>
+        <button type="button" class="ap-notif-ack-btn" data-key="${escapeHtml(n.key)}">${lang === 'ar' ? 'تم الاطلاع' : lang === 'fr' ? 'Vu' : 'Acknowledge'}</button>
+      </div>`).join('');
+    els.notifEmpty.classList.toggle('hidden', list.length > 0);
+    els.notifList.querySelectorAll('.ap-notif-ack-btn').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        notifAcknowledged.push(btn.getAttribute('data-key'));
+        await saveAcknowledged();
+        renderNotifications();
+      });
+    });
+  }
+  els.notifBellBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    els.notifPanel.classList.toggle('hidden');
+  });
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.ap-notif-wrap')) els.notifPanel.classList.add('hidden');
+  });
 
   const TEMPLATE_HEADERS = {
     departments: { ar: ['الاسم', 'الوصف'], en: ['Name', 'Description'], fr: ['Nom', 'Description'] },

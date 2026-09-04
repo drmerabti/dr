@@ -584,9 +584,10 @@ html[dir="ltr"] .ap-nav-item:hover{ transform: translateX(4px); }
 .ap-day-cell{
   width: 26px; height: 26px; border-radius: 6px; display: inline-flex;
   align-items: center; justify-content: center; font-weight: 800; cursor: pointer;
-  font-size: .72rem; user-select: none;
+  font-size: .72rem; user-select: none; border: 1.5px solid var(--line);
+  transition: transform .12s ease, border-color .12s ease;
 }
-.ap-day-cell:hover{ outline: 1.5px solid var(--accent); }
+.ap-day-cell:hover{ border-color: var(--accent); transform: scale(1.15); }
 
 /* ---- Payroll summary cards ---- */
 .ap-summary-cards{ display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 20px; }
@@ -633,3 +634,47 @@ html[dir="ltr"] .ap-nav-item:hover{ transform: translateX(4px); }
 }
 .ap-template-link svg{ width: 14px; height: 14px; }
 .ap-template-link:hover{ text-decoration: underline; }
+
+/* ---- Eraser + status toolbar ---- */
+.ap-status-toolbar-actions{ display: flex; gap: 10px; align-items: center; margin-bottom: 18px; flex-wrap: wrap; }
+.ap-status-toolbar-actions .ap-add-status-btn{ margin-bottom: 0; }
+.ap-eraser-chip{
+  display: flex; align-items: center; gap: 6px;
+  background: #F4F5F6; color: var(--ink-soft); border: 2px solid transparent;
+}
+.ap-eraser-chip svg{ width: 15px; height: 15px; }
+.ap-eraser-chip.armed{ border-color: var(--ink-soft); }
+
+/* ---- Notifications ---- */
+.ap-notif-wrap{ position: relative; }
+.ap-notif-bell{
+  position: relative; border: 1px solid var(--line); background: var(--card-bg);
+  width: 42px; height: 42px; border-radius: 999px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; color: var(--ink);
+}
+.ap-notif-bell svg{ width: 19px; height: 19px; }
+.ap-notif-badge{
+  position: absolute; top: -4px; inset-inline-end: -4px;
+  background: #E0392B; color: #fff; font-size: .68rem; font-weight: 800;
+  min-width: 18px; height: 18px; border-radius: 999px;
+  display: flex; align-items: center; justify-content: center; padding: 0 4px;
+  box-shadow: 0 0 0 2px #fff;
+}
+.ap-notif-panel{
+  position: absolute; top: calc(100% + 10px); inset-inline-end: 0;
+  width: 320px; max-height: 400px; overflow-y: auto;
+  background: #fff; border-radius: 16px; box-shadow: 0 20px 50px rgba(10,20,35,.25);
+  padding: 14px; z-index: 50;
+}
+.ap-notif-panel-title{ font-size: .9rem; font-weight: 800; margin: 0 0 10px; color: var(--ink); }
+.ap-notif-item{
+  background: #FAFBFC; border-radius: 12px; padding: 10px 12px; margin-bottom: 8px;
+  border-inline-start: 3px solid #E0392B;
+}
+.ap-notif-item-text{ font-size: .8rem; color: var(--ink); margin: 0 0 6px; line-height: 1.5; }
+.ap-notif-ack-btn{
+  border: none; background: none; color: var(--accent); font-family: inherit;
+  font-size: .74rem; font-weight: 700; cursor: pointer; padding: 0;
+}
+.ap-notif-empty{ text-align: center; color: var(--ink-soft); font-size: .85rem; padding: 10px 0; margin: 0; }
+

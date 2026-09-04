@@ -17,6 +17,17 @@
   </a>
   <span class="topbar-title" id="topbarTitle">إدارة الحضور والرواتب</span>
   <div class="topbar-actions">
+    <div class="ap-notif-wrap">
+      <button type="button" class="ap-notif-bell" id="notifBellBtn" aria-label="notifications">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+        <span class="ap-notif-badge hidden" id="notifBadge">0</span>
+      </button>
+      <div class="ap-notif-panel hidden" id="notifPanel">
+        <p class="ap-notif-panel-title" id="notifPanelTitle">الإشعارات</p>
+        <div id="notifList"></div>
+        <p class="ap-notif-empty hidden" id="notifEmpty">لا يوجد إشعارات حاليًا.</p>
+      </div>
+    </div>
     <div class="lang-switch" role="group">
       <button type="button" class="lang-btn" data-lang="ar">عربي</button>
       <button type="button" class="lang-btn" data-lang="en">EN</button>
@@ -164,10 +175,16 @@
           </div>
 
           <div class="ap-status-row" id="attStatusRow"></div>
-          <button type="button" class="ap-btn ap-add-status-btn" id="addStatusBtn">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg>
-            <span id="addStatusText">إضافة حالة</span>
-          </button>
+          <div class="ap-status-toolbar-actions">
+            <button type="button" class="ap-status-chip ap-eraser-chip" id="eraserChip">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 20H8.5L3 14.5a1 1 0 0 1 0-1.4l9-9a1 1 0 0 1 1.4 0l7 7a1 1 0 0 1 0 1.4L13 20"/><path d="M9 12l6 6"/></svg>
+              <span id="eraserText">ممحاة</span>
+            </button>
+            <button type="button" class="ap-btn ap-add-status-btn" id="addStatusBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg>
+              <span id="addStatusText">إضافة حالة</span>
+            </button>
+          </div>
 
           <div class="ap-table-scroll">
             <table class="ap-att-table" id="attTable"></table>
