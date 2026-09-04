@@ -6,43 +6,27 @@ const progressFill = document.getElementById('progressFill');
 const progressLabel = document.getElementById('progressLabel');
 
 let surveyData = null;
-let allQuestionsFlat = [];
-
-const PRESET_ICONS = {
-  'الجنس': { type: 'gender' },
-};
 
 function updateProgress(){
-  const inputs = allQuestionsFlat;
+  const inputs = surveyData.questions;
   let answered = 0;
-  inputs.forEach(q => {
-    if (isAnswered(q)) answered++;
-  });
+  inputs.forEach(q => { if (isAnswered(q)) answered++; });
   const pct = inputs.length ? Math.round((answered / inputs.length) * 100) : 0;
   progressFill.style.width = pct + '%';
   progressLabel.textContent = `${answered} من ${inputs.length} أسئلة`;
 }
-
 function isAnswered(q){
   if (q.type === 'short' || q.type === 'long' || q.type === 'dropdown'){
     const el = wrap.querySelector(`[data-qid="${q.id}"]`);
     return el && el.value.trim() !== '';
   }
-  if (q.type === 'radio' || q.type === 'yesno'){
-    return !!wrap.querySelector(`input[name="${q.id}"]:checked`);
-  }
-  if (q.type === 'checkbox'){
-    return wrap.querySelectorAll(`input[name="${q.id}"]:checked`).length > 0;
-  }
-  if (q.type === 'rating'){
-    const group = wrap.querySelector(`[data-qid="${q.id}"]`);
-    return group && !!group.dataset.value;
-  }
+  if (q.type === 'radio' || q.type === 'yesno') return !!wrap.querySelector(`input[name="${q.id}"]:checked`);
+  if (q.type === 'checkbox') return wrap.querySelectorAll(`input[name="${q.id}"]:checked`).length > 0;
+  if (q.type === 'rating'){ const g = wrap.querySelector(`[data-qid="${q.id}"]`); return g && !!g.dataset.value; }
   return false;
 }
 
 const GENDER_ICONS = { 'ذكر': { icon: '🧑', bg: '#E3EEF4', color: '#2F5770' }, 'أنثى': { icon: '👩', bg: '#F6E4EE', color: '#B15C86' } };
-
 function renderChoicePills(q, opts, inputType){
   if (q.title.trim() === 'الجنس' && opts.length === 2 && opts.every(o => GENDER_ICONS[o])){
     return `<div class="sb-icon-choice-row" data-qid="${q.id}">` + opts.map(o => {
@@ -64,26 +48,12 @@ function renderQuestionField(q){
   const box = document.createElement('div');
   box.className = 'sb-card';
   let inner = `<label class="sb-label">${q.title}${q.required ? ' *' : ''}</label>`;
-
-  if (q.type === 'short'){
-    inner += `<input type="text" class="sb-input" data-qid="${q.id}" data-type="short">`;
-  } else if (q.type === 'long'){
-    inner += `<textarea class="sb-input" rows="3" data-qid="${q.id}" data-type="long"></textarea>`;
-  } else if (q.type === 'radio' || q.type === 'yesno'){
-    const opts = q.type === 'yesno' ? ['نعم', 'لا'] : q.options;
-    inner += renderChoicePills(q, opts, 'radio');
-  } else if (q.type === 'checkbox'){
-    inner += renderChoicePills(q, q.options, 'checkbox');
-  } else if (q.type === 'dropdown'){
-    inner += `<select class="sb-input" data-qid="${q.id}" data-type="dropdown">
-      <option value="">اختر...</option>
-      ${q.options.map(o => `<option value="${o}">${o}</option>`).join('')}
-    </select>`;
-  } else if (q.type === 'rating'){
-    inner += `<div class="sb-q-options" style="flex-direction:row;gap:8px;font-size:2rem;" data-qid="${q.id}" data-type="rating">
-      ${[1,2,3,4,5].map(n => `<span class="rating-star" data-val="${n}" style="cursor:pointer;">☆</span>`).join('')}
-    </div>`;
-  }
+  if (q.type === 'short') inner += `<input type="text" class="sb-input" data-qid="${q.id}" data-type="short">`;
+  else if (q.type === 'long') inner += `<textarea class="sb-input" rows="3" data-qid="${q.id}" data-type="long"></textarea>`;
+  else if (q.type === 'radio' || q.type === 'yesno') inner += renderChoicePills(q, q.type === 'yesno' ? ['نعم','لا'] : q.options, 'radio');
+  else if (q.type === 'checkbox') inner += renderChoicePills(q, q.options, 'checkbox');
+  else if (q.type === 'dropdown') inner += `<select class="sb-input" data-qid="${q.id}" data-type="dropdown"><option value="">اختر...</option>${q.options.map(o=>`<option value="${o}">${o}</option>`).join('')}</select>`;
+  else if (q.type === 'rating') inner += `<div class="sb-q-options" style="flex-direction:row;gap:8px;font-size:2rem;" data-qid="${q.id}" data-type="rating">${[1,2,3,4,5].map(n=>`<span class="rating-star" data-val="${n}" style="cursor:pointer;">☆</span>`).join('')}</div>`;
 
   box.innerHTML = inner;
   box.addEventListener('input', updateProgress);
@@ -91,44 +61,32 @@ function renderQuestionField(q){
   box.addEventListener('click', () => setTimeout(() => { syncPillSelection(box); updateProgress(); }, 0));
   return box;
 }
-
 function syncPillSelection(box){
   box.querySelectorAll('.sb-pill, .sb-icon-choice').forEach(label => {
-    const input = label.querySelector('input');
-    label.classList.toggle('selected', input.checked);
+    label.classList.toggle('selected', label.querySelector('input').checked);
   });
 }
 
 async function init(){
-  if (!surveyId){
-    wrap.innerHTML = `<div class="sb-card"><p>رابط غير صالح.</p></div>`;
-    return;
-  }
+  if (!surveyId){ wrap.innerHTML = `<div class="sb-card"><p>رابط غير صالح.</p></div>`; return; }
   wrap.innerHTML = `<div class="sb-card"><p>جارٍ التحميل...</p></div>`;
 
   try {
-    const res = await fetch(`/api/surveys/${surveyId}`);
-    const survey = await res.json();
-    if (!res.ok) throw new Error(survey.error || 'خطأ');
-    surveyData = survey;
-    allQuestionsFlat = survey.questions;
-
-    if (survey.color) document.documentElement.style.setProperty('--accent', survey.color);
+    const doc = await window.fbDb.collection('surveys').doc(surveyId).get();
+    if (!doc.exists) throw new Error('الاستبيان غير موجود');
+    surveyData = doc.data();
+    if (surveyData.color) document.documentElement.style.setProperty('--accent', surveyData.color);
 
     wrap.innerHTML = '';
-
-    // شاشة الترحيب
     const welcome = document.createElement('div');
     welcome.className = 'sb-welcome-card';
     welcome.innerHTML = `
-      <h2 style="margin:0 0 10px;">${survey.title}</h2>
-      ${survey.description ? `<p style="color:var(--ink-soft);margin:0 0 18px;">${survey.description}</p>` : ''}
-      <button id="startBtn" class="sb-publish-btn" style="width:auto;padding:12px 32px;">ابدأ الآن</button>
-    `;
+      <h2 style="margin:0 0 10px;">${surveyData.title}</h2>
+      ${surveyData.description ? `<p style="color:var(--ink-soft);margin:0 0 18px;">${surveyData.description}</p>` : ''}
+      <button id="startBtn" class="sb-publish-btn" style="width:auto;padding:12px 32px;">ابدأ الآن</button>`;
     wrap.appendChild(welcome);
     welcome.querySelector('#startBtn').addEventListener('click', showQuestions);
-
-  } catch (err) {
+  } catch (err){
     wrap.innerHTML = `<div class="sb-card"><p>تعذّر تحميل الاستبيان: ${err.message}</p></div>`;
   }
 }
@@ -136,27 +94,21 @@ async function init(){
 function showQuestions(){
   wrap.innerHTML = '';
   progressWrap.classList.remove('hidden');
-
   surveyData.questions.forEach(q => wrap.appendChild(renderQuestionField(q)));
-
   wrap.querySelectorAll('[data-type="rating"]').forEach(group => {
     group.addEventListener('click', e => {
       if (!e.target.classList.contains('rating-star')) return;
       const val = e.target.dataset.val;
       group.dataset.value = val;
-      group.querySelectorAll('.rating-star').forEach(s => {
-        s.textContent = s.dataset.val <= val ? '★' : '☆';
-      });
+      group.querySelectorAll('.rating-star').forEach(s => { s.textContent = s.dataset.val <= val ? '★' : '☆'; });
       updateProgress();
     });
   });
-
   const submitBtn = document.createElement('button');
   submitBtn.className = 'sb-publish-btn';
   submitBtn.textContent = 'إرسال الإجابات';
   submitBtn.addEventListener('click', submitAnswers);
   wrap.appendChild(submitBtn);
-
   updateProgress();
 }
 
@@ -185,21 +137,23 @@ async function submitAnswers(){
   }
 
   try {
-    const res = await fetch(`/api/surveys/${surveyId}/responses`, {
-      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ answers }),
+    const surveyRef = window.fbDb.collection('surveys').doc(surveyId);
+    let respondentNumber = null;
+    await window.fbDb.runTransaction(async (tx) => {
+      const doc = await tx.get(surveyRef);
+      const newCount = (doc.data().responseCount || 0) + 1;
+      tx.update(surveyRef, { responseCount: newCount });
+      respondentNumber = newCount;
     });
-    const data = await res.json();
-    if (!res.ok) throw new Error('فشل الإرسال');
+    await surveyRef.collection('responses').add({ answers, createdAt: new Date().toISOString() });
 
     progressWrap.classList.add('hidden');
-    const thanks = surveyData.thanksMessage && surveyData.thanksMessage.trim()
-      ? surveyData.thanksMessage : 'شكرًا لمشاركتك! 🙏';
-    wrap.innerHTML = `
-      <div class="sb-card" style="text-align:center;">
-        <h2 style="margin:0 0 10px;">${thanks}</h2>
-        <p style="color:var(--ink-soft);">أنت المُجيب رقم ${data.respondentNumber}</p>
-      </div>`;
-  } catch (err) {
+    const thanks = surveyData.thanksMessage && surveyData.thanksMessage.trim() ? surveyData.thanksMessage : 'شكرًا لمشاركتك! 🙏';
+    wrap.innerHTML = `<div class="sb-card" style="text-align:center;">
+      <h2 style="margin:0 0 10px;">${thanks}</h2>
+      <p style="color:var(--ink-soft);">أنت المُجيب رقم ${respondentNumber}</p>
+    </div>`;
+  } catch (err){
     alert('حدث خطأ أثناء الإرسال: ' + err.message);
   }
 }

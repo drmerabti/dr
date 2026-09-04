@@ -366,17 +366,41 @@ function renderCrossTab(){
   selA.addEventListener('change', draw); selB.addEventListener('change', draw); draw();
 }
 
-/* ============ INIT ============ */
+/* ============ INIT (Firestore + التحقق من الملكية) ============ */
+async function fetchRawFromFirestore(uid){
+  const surveyDoc = await window.fbDb.collection('surveys').doc(surveyId).get();
+  if (!surveyDoc.exists) throw new Error('الاستبيان غير موجود');
+  const survey = surveyDoc.data();
+  const respSnap = await window.fbDb.collection('surveys').doc(surveyId).collection('responses').get();
+  const responses = [];
+  respSnap.forEach(d => responses.push(d.data()));
+  return { title: survey.title, questions: survey.questions, responses };
+}
+
+function renderLoginPrompt(){
+  wrap.innerHTML = `<div class="sb-card" style="text-align:center;">
+    <h2 style="margin:0 0 10px;">سجّل الدخول لعرض النتائج</h2>
+    <p style="color:var(--ink-soft);margin:0 0 18px;">النتائج مرئية فقط لصاحب الاستبيان.</p>
+    <a href="index.html" class="store-btn">الذهاب لتسجيل الدخول</a>
+  </div>`;
+}
+
 async function init(){
   if (!surveyId){ wrap.innerHTML = `<div class="sb-card"><p>رابط غير صالح.</p></div>`; return; }
   wrap.innerHTML = `<div class="sb-card"><p>جارٍ التحميل...</p></div>`;
 
-  try {
-    const res = await fetch(`/api/surveys/${surveyId}/raw`);
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'خطأ');
-    RAW = data;
+  window.fbAuth.onAuthStateChanged(async (user) => {
+    if (!user){ renderLoginPrompt(); return; }
+    try {
+      RAW = await fetchRawFromFirestore(user.uid);
+      renderResultsUI();
+    } catch (err){
+      wrap.innerHTML = `<div class="sb-card"><p>تعذّر تحميل النتائج (تأكد أنك صاحب هذا الاستبيان): ${err.message}</p></div>`;
+    }
+  });
+}
 
+function renderResultsUI(){
     wrap.innerHTML = '';
     const header = document.createElement('div');
     header.className = 'sb-card';
@@ -418,10 +442,6 @@ async function init(){
 
     document.getElementById('exportBtn').addEventListener('click', openExportModal);
     document.getElementById('printBtn').addEventListener('click', () => window.print());
-
-  } catch (err) {
-    wrap.innerHTML = `<div class="sb-card"><p>تعذّر تحميل النتائج: ${err.message}</p></div>`;
-  }
 }
 
 /* ============ تصدير Excel ============ */
@@ -454,7 +474,7 @@ function exportCSV(){
     else headers.push(q.title);
   });
   const rows = RAW.responses.map((r, idx) => {
-    const row = [idx + 1, new Date(r.created_at).toLocaleString('ar')];
+    const row = [idx + 1, new Date(r.createdAt).toLocaleString('ar')];
     selectedQs.forEach(q => {
       const val = r.answers[q.id];
       if (q.type === 'checkbox'){ const arr = Array.isArray(val)?val:[]; q.options.forEach(opt => row.push(arr.includes(opt)?1:0)); }

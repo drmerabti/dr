@@ -2,6 +2,19 @@
 .hidden{ display:none !important; }
 
 .back-arrow{ font-size:1.1rem; text-decoration:none; margin-inline-end:6px; color: var(--accent); }
+.sb-user-bar{ margin-inline-start:auto; font-size:.8rem; color: var(--ink-soft); display:flex; align-items:center; gap:8px; }
+.sb-signout-btn{ border:none; background: var(--accent-soft); color: var(--accent); padding:4px 10px; border-radius:14px; cursor:pointer; font-size:.75rem; }
+
+.sb-auth-card{ max-width:400px; margin:40px auto; }
+.sb-google-btn{
+  width:100%; display:flex; align-items:center; justify-content:center; gap:10px;
+  padding:12px; border:1px solid var(--line); background:#fff; border-radius:12px;
+  cursor:pointer; font-weight:700; font-family: var(--font-ar); font-size:.95rem; color: var(--ink);
+}
+.sb-google-btn:hover{ background: var(--accent-soft); }
+.sb-auth-sep{ text-align:center; color: var(--ink-soft); font-size:.8rem; margin:16px 0; }
+.sb-auth-switch{ text-align:center; margin-top:14px; font-size:.85rem; color: var(--ink-soft); }
+.sb-auth-switch button{ border:none; background:transparent; color: var(--accent); font-weight:700; cursor:pointer; }
 
 /* ============ قائمة الاستبيانات ============ */
 .sb-new-btn{ margin-bottom: 20px; }
