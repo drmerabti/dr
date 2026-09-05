@@ -1037,7 +1037,7 @@
     const sheet = els.reportSheet;
     sheet.classList.add("pdf-capture");
     try {
-      const canvas = await html2canvas(sheet, { scale: 2, backgroundColor: "#eef1f6", useCORS: true });
+      const canvas = await html2canvas(sheet, { scale: 2, backgroundColor: "#E9F1F6", useCORS: true });
       const imgData = canvas.toDataURL("image/png");
 
       const { jsPDF } = window.jspdf;
