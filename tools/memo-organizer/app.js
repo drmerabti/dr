@@ -9,23 +9,24 @@
   const I18N = {
     ar: {
       dir: 'rtl', pageTitleTag: 'تنظيم المذكرات — أكاديمية مرابطي', topbarTitle: 'تنظيم المذكرات',
-      lockedTitle: 'سجّل دخولك لاستخدام أداة تنظيم المذكرات', lockedSub: 'هذه الأداة متاحة للمستخدمين المسجّلين فقط.',
+      lockedTitle: 'سجّل دخولك لاستخدام أداة تنظيم المذكرات', lockedSub: 'هذه الأداة متاحة للمستخدمين المسجَّلين فقط.',
       tabLogin: 'تسجيل الدخول', tabSignup: 'إنشاء حساب', namePh: 'الاسم الكامل', emailPh: 'البريد الإلكتروني', passwordPh: 'كلمة المرور',
       loginBtn: 'تسجيل الدخول', signupBtn: 'إنشاء حساب', googleBtn: 'المتابعة عبر Google',
-      uploadTitle: 'تنظيم المذكرات', uploadSubtitle: 'ارفع مذكرتك، وخلّها تنظّم تلقائيًا بمساعدة الذكاء الاصطناعي',
-      dropZoneText: 'اسحب ملف Word هنا أو اضغط للاختيار', uploadHint: 'ملفات Word (.docx) بس حاليًا',
-      analyzingText: 'جارٍ تحليل المذكرة...', errNeedDocx: 'الملف لازم يكون بصيغة .docx.',
-      errAnalyzeFailed: 'حدث خطأ أثناء التحليل، حاول مرة أخرى.', errEmptyDoc: 'ما لقيت أي نص بالملف.',
+      uploadTitle: 'تنظيم المذكرات', uploadSubtitle: 'ارفع مذكرتك، لتُنظَّم تلقائيًا بمساعدة الذكاء الاصطناعي',
+      dropZoneText: 'اسحب ملف Word هنا أو اضغط لاختياره', uploadHint: 'ملفات Word (.docx) فقط حاليًا',
+      analyzingText: 'جارٍ تحليل المذكرة...', errNeedDocx: 'يجب أن يكون الملف بصيغة .docx.',
+      errAnalyzeFailed: 'حدث خطأ أثناء التحليل، حاول مرة أخرى.', errEmptyDoc: 'لم يُعثر على أي نص في الملف.',
       reviewTitle: 'مراجعة التصنيف', newFileText: 'ملف جديد', styleLabel: 'قالب التنسيق',
       tocBtnText: 'إنشاء فهرس تلقائي', unlockBtnText: 'فتح النسخ والتحميل',
-      typeH1: 'عنوان رئيسي', typeH2: 'عنوان فرعي', typeBody: 'فقرة', typeTable: 'جدول (محفوظ)', typeImage: 'صورة (محفوظة)',
+      typeH1: 'عنوان رئيسي', typeH2: 'عنوان فرعي', typeH3: 'عنوان فرعي ثانٍ', typeBody: 'فقرة', typeTable: 'جدول (محفوظ)', typeImage: 'صورة (محفوظة)',
       tocModalTitle: 'اختر نوع الفهرس', tocHeadingsText: 'فهرس العناوين', tocTablesText: 'فهرس الجداول', tocFiguresText: 'فهرس الأشكال',
       cancelBtn: 'إلغاء', paymentModalTitle: 'فتح النسخ والتحميل',
-      paymentModalHint: 'دفعة واحدة لهذا الملف — تفتح النسخ والتحميل الكامل بصيغة PDF منسّقة.',
+      paymentModalHint: 'دفعة واحدة لهذا الملف — تفتح النسخ والتحميل الكامل.',
       priceValue: '200 دج', payNowText: 'الدفع (قريبًا)',
-      watermarkText: 'معاينة فقط', noHeadingsFound: 'ما فيه عناوين بالمستند.',
-      noTablesFound: 'ما فيه جداول بالمستند.', noFiguresFound: 'ما فيه صور بالمستند.',
+      watermarkText: 'معاينة فقط', noHeadingsFound: 'لا يوجد أي عنوان في المستند.',
+      noTablesFound: 'لا يوجد أي جدول في المستند.', noFiguresFound: 'لا يوجد أي صورة في المستند.',
       styleModern: 'عصري', styleClassic: 'كلاسيكي', styleFormal: 'رسمي',
+      fontSizeLabel: 'حجم الخط', removeTocBtn: 'حذف الفهرس', downloadWordText: 'تحميل Word', downloadPdfText: 'تحميل PDF',
     },
     en: {
       dir: 'ltr', pageTitleTag: 'Memo Organizer — Merabti Academy', topbarTitle: 'Memo Organizer',
@@ -38,7 +39,7 @@
       errAnalyzeFailed: 'Something went wrong analyzing it, try again.', errEmptyDoc: "Couldn't find any text in the file.",
       reviewTitle: 'Review classification', newFileText: 'New file', styleLabel: 'Format template',
       tocBtnText: 'Generate table of contents', unlockBtnText: 'Unlock copy & download',
-      typeH1: 'Heading 1', typeH2: 'Heading 2', typeBody: 'Body text', typeTable: 'Table (kept)', typeImage: 'Image (kept)',
+      typeH1: 'Heading 1', typeH2: 'Heading 2', typeH3: 'Heading 3', typeBody: 'Body text', typeTable: 'Table (kept)', typeImage: 'Image (kept)',
       tocModalTitle: 'Choose a list type', tocHeadingsText: 'Table of contents', tocTablesText: 'List of tables', tocFiguresText: 'List of figures',
       cancelBtn: 'Cancel', paymentModalTitle: 'Unlock copy & download',
       paymentModalHint: 'A one-time payment for this file — unlocks full copy and download as a formatted PDF.',
@@ -46,6 +47,7 @@
       watermarkText: 'Preview only', noHeadingsFound: 'No headings found in the document.',
       noTablesFound: 'No tables found in the document.', noFiguresFound: 'No images found in the document.',
       styleModern: 'Modern', styleClassic: 'Classic', styleFormal: 'Formal',
+      fontSizeLabel: 'Font size', removeTocBtn: 'Remove list', downloadWordText: 'Download Word', downloadPdfText: 'Download PDF',
     },
     fr: {
       dir: 'ltr', pageTitleTag: 'Organisateur de mémoire — Académie Merabti', topbarTitle: 'Organisateur de mémoire',
@@ -58,7 +60,7 @@
       errAnalyzeFailed: "Une erreur s'est produite pendant l'analyse, réessayez.", errEmptyDoc: "Aucun texte trouvé dans le fichier.",
       reviewTitle: 'Vérifier la classification', newFileText: 'Nouveau fichier', styleLabel: 'Modèle de mise en forme',
       tocBtnText: 'Générer une table des matières', unlockBtnText: 'Débloquer copie et téléchargement',
-      typeH1: 'Titre 1', typeH2: 'Titre 2', typeBody: 'Texte', typeTable: 'Tableau (conservé)', typeImage: 'Image (conservée)',
+      typeH1: 'Titre 1', typeH2: 'Titre 2', typeH3: 'Titre 3', typeBody: 'Texte', typeTable: 'Tableau (conservé)', typeImage: 'Image (conservée)',
       tocModalTitle: 'Choisissez un type de liste', tocHeadingsText: 'Table des matières', tocTablesText: 'Liste des tableaux', tocFiguresText: 'Liste des figures',
       cancelBtn: 'Annuler', paymentModalTitle: 'Débloquer copie et téléchargement',
       paymentModalHint: 'Un paiement unique pour ce fichier — débloque la copie et le téléchargement complet en PDF formaté.',
@@ -66,6 +68,7 @@
       watermarkText: 'Aperçu seulement', noHeadingsFound: 'Aucun titre trouvé dans le document.',
       noTablesFound: 'Aucun tableau trouvé dans le document.', noFiguresFound: 'Aucune image trouvée dans le document.',
       styleModern: 'Moderne', styleClassic: 'Classique', styleFormal: 'Formel',
+      fontSizeLabel: 'Taille de police', removeTocBtn: 'Supprimer la liste', downloadWordText: 'Télécharger Word', downloadPdfText: 'Télécharger PDF',
     },
   };
 
@@ -93,7 +96,10 @@
     uploadHint: $('uploadHint'), uploadError: $('uploadError'), analyzingBox: $('analyzingBox'), analyzingText: $('analyzingText'),
     reviewTitle: $('reviewTitle'), newFileBtn: $('newFileBtn'), newFileText: $('newFileText'),
     styleLabel: $('styleLabel'), styleRow: $('styleRow'), blocksList: $('blocksList'),
-    tocBtn: $('tocBtn'), tocBtnText: $('tocBtnText'), unlockBtn: $('unlockBtn'), unlockBtnText: $('unlockBtnText'),
+    tocBtn: $('tocBtn'), tocBtnText: $('tocBtnText'),
+    fontSizeLabel: $('fontSizeLabel'), fontSizeDownBtn: $('fontSizeDownBtn'), fontSizeValue: $('fontSizeValue'), fontSizeUpBtn: $('fontSizeUpBtn'),
+    downloadWordBtn: $('downloadWordBtn'), downloadWordText: $('downloadWordText'),
+    downloadPdfBtn: $('downloadPdfBtn'), downloadPdfText: $('downloadPdfText'),
     previewScroll: $('previewScroll'), docPreview: $('docPreview'), watermarkOverlay: $('watermarkOverlay'),
     tocModalOverlay: $('tocModalOverlay'), tocModalTitle: $('tocModalTitle'),
     tocHeadingsBtn: $('tocHeadingsBtn'), tocHeadingsText: $('tocHeadingsText'),
@@ -148,8 +154,9 @@
   });
 
   /* ================= DOCX parsing ================= */
-  let blocks = []; // { id, type: 'h1'|'h2'|'body'|'table'|'image', text, rows, dataUrl }
+  let blocks = []; // { id, type: 'h1'|'h2'|'h3'|'body'|'table'|'image'|'toc', text, rows, dataUrl }
   let unlocked = false;
+  let fontSizePt = 12;
 
   async function parseDocx(file) {
     const zip = await JSZip.loadAsync(file);
@@ -325,6 +332,7 @@
   const TYPE_ICONS = {
     h1: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h10M4 18h7"/></svg>`,
     h2: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 10h16M4 16h10"/></svg>`,
+    h3: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h16M4 17h7"/></svg>`,
     body: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg>`,
     table: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="1"/><path d="M3 10h18M9 4v16"/></svg>`,
     image: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="1"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16l-5-5-4 4-3-3-6 6"/></svg>`,
@@ -332,9 +340,19 @@
 
   function renderBlocksList() {
     els.blocksList.innerHTML = blocks.map((b) => {
+      if (b.type === 'toc') {
+        return `
+        <div class="mo-block-row type-toc" data-id="${b.id}">
+          <span class="mo-block-row-icon">${TYPE_ICONS.h1}</span>
+          <span class="mo-block-row-text">${escapeHtml(b.tocTitle)}</span>
+          <button type="button" class="mo-block-remove-toc" data-id="${b.id}" title="${t('removeTocBtn')}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
+          </button>
+        </div>`;
+      }
       const icon = TYPE_ICONS[b.type] || TYPE_ICONS.body;
       const label = b.type === 'table' ? t('typeTable') : b.type === 'image' ? t('typeImage')
-        : b.type === 'h1' ? escapeHtml(b.text) : b.type === 'h2' ? escapeHtml(b.text) : escapeHtml((b.text || '').slice(0, 40));
+        : (b.type === 'h1' || b.type === 'h2' || b.type === 'h3') ? escapeHtml(b.text) : escapeHtml((b.text || '').slice(0, 40));
       const canEditType = b.type !== 'table' && b.type !== 'image';
       return `
         <div class="mo-block-row type-${b.type}" data-id="${b.id}">
@@ -343,11 +361,15 @@
           ${canEditType ? `<select data-id="${b.id}">
             <option value="h1" ${b.type === 'h1' ? 'selected' : ''}>${t('typeH1')}</option>
             <option value="h2" ${b.type === 'h2' ? 'selected' : ''}>${t('typeH2')}</option>
+            <option value="h3" ${b.type === 'h3' ? 'selected' : ''}>${t('typeH3')}</option>
             <option value="body" ${b.type === 'body' ? 'selected' : ''}>${t('typeBody')}</option>
           </select>` : ''}
         </div>`;
     }).join('');
 
+    els.blocksList.querySelectorAll('.mo-block-remove-toc').forEach((btn) => {
+      btn.addEventListener('click', () => removeTocBlock(btn.getAttribute('data-id')));
+    });
     els.blocksList.querySelectorAll('select').forEach((sel) => {
       sel.addEventListener('change', () => {
         const b = blocks.find((x) => x.id === sel.getAttribute('data-id'));
@@ -362,16 +384,22 @@
   function renderPreview() {
     els.docPreview.style.setProperty('--mo-body-font', activeStyle.font);
     els.docPreview.style.setProperty('--mo-heading-color', activeStyle.headingColor);
+    els.docPreview.style.setProperty('--mo-body-size', fontSizePt + 'pt');
 
     els.docPreview.innerHTML = blocks.map((b) => {
       if (b.type === 'h1') return `<p class="mo-h1">${escapeHtml(b.text)}</p>`;
       if (b.type === 'h2') return `<p class="mo-h2">${escapeHtml(b.text)}</p>`;
+      if (b.type === 'h3') return `<p class="mo-h3">${escapeHtml(b.text)}</p>`;
       if (b.type === 'body') return `<p class="mo-body">${escapeHtml(b.text)}</p>`;
       if (b.type === 'table') {
         const rows = b.rows.map((r) => `<tr>${r.map((c) => `<td>${escapeHtml(c)}</td>`).join('')}</tr>`).join('');
         return `<table>${rows}</table>`;
       }
       if (b.type === 'image') return `<img src="${b.dataUrl}" alt="">`;
+      if (b.type === 'toc') {
+        const listHtml = b.items.map((it) => `<p class="mo-body mo-toc-item" style="${it.indent ? `margin-inline-start:${it.indent * 20}px;` : ''}">${escapeHtml(it.text)}</p>`).join('');
+        return `<div class="mo-toc-block"><p class="mo-h1">${escapeHtml(b.tocTitle)}</p>${listHtml}</div>`;
+      }
       return '';
     }).join('');
 
@@ -385,9 +413,9 @@
 
   function insertTocBlock(type) {
     let items = [];
-    if (type === 'headings') items = blocks.filter((b) => b.type === 'h1' || b.type === 'h2').map((b) => ({ text: b.text, indent: b.type === 'h2' }));
-    else if (type === 'tables') items = blocks.filter((b) => b.type === 'table').map((b, i) => ({ text: `${lang === 'ar' ? 'جدول' : lang === 'fr' ? 'Tableau' : 'Table'} ${i + 1}` }));
-    else if (type === 'figures') items = blocks.filter((b) => b.type === 'image').map((b, i) => ({ text: `${lang === 'ar' ? 'شكل' : lang === 'fr' ? 'Figure' : 'Figure'} ${i + 1}` }));
+    if (type === 'headings') items = blocks.filter((b) => b.type === 'h1' || b.type === 'h2' || b.type === 'h3').map((b) => ({ text: b.text, indent: b.type === 'h2' ? 1 : b.type === 'h3' ? 2 : 0 }));
+    else if (type === 'tables') items = blocks.filter((b) => b.type === 'table').map((b, i) => ({ text: `${lang === 'ar' ? 'جدول' : lang === 'fr' ? 'Tableau' : 'Table'} ${i + 1}`, indent: 0 }));
+    else if (type === 'figures') items = blocks.filter((b) => b.type === 'image').map((b, i) => ({ text: `${lang === 'ar' ? 'شكل' : lang === 'fr' ? 'Figure' : 'Figure'} ${i + 1}`, indent: 0 }));
 
     if (items.length === 0) {
       const emptyMsg = type === 'headings' ? t('noHeadingsFound') : type === 'tables' ? t('noTablesFound') : t('noFiguresFound');
@@ -395,23 +423,51 @@
       return;
     }
 
-    const listHtml = items.map((it) => `<p class="mo-body" style="${it.indent ? 'margin-inline-start:20px;' : ''}">${escapeHtml(it.text)}</p>`).join('');
     const title = type === 'headings' ? (lang === 'ar' ? 'الفهرس' : lang === 'fr' ? 'Table des matières' : 'Table of contents')
       : type === 'tables' ? t('tocTablesText') : t('tocFiguresText');
-    els.docPreview.insertAdjacentHTML('afterbegin', `<div class="mo-toc-block">${listHtml}<p class="mo-h1">${escapeHtml(title)}</p></div>`);
+
+    // Only one TOC block of this type may exist at a time — replace it if already present.
+    blocks = blocks.filter((b) => !(b.type === 'toc' && b.tocType === type));
+    blocks.unshift({ id: 'toc-' + type, type: 'toc', tocType: type, tocTitle: title, items });
+
+    renderBlocksList();
+    renderPreview();
     els.tocModalOverlay.classList.add('hidden');
+  }
+  function removeTocBlock(blockId) {
+    blocks = blocks.filter((b) => b.id !== blockId);
+    renderBlocksList();
+    renderPreview();
   }
   els.tocHeadingsBtn.addEventListener('click', () => insertTocBlock('headings'));
   els.tocTablesBtn.addEventListener('click', () => insertTocBlock('tables'));
   els.tocFiguresBtn.addEventListener('click', () => insertTocBlock('figures'));
 
   /* ================= Payment (placeholder) ================= */
-  els.unlockBtn.addEventListener('click', () => els.paymentModalOverlay.classList.remove('hidden'));
+  let requestedFormat = null; // 'word' | 'pdf' — set when a download button is clicked, used after payment
+  [els.downloadWordBtn, els.downloadPdfBtn].forEach((btn) => {
+    btn.addEventListener('click', () => {
+      requestedFormat = btn.getAttribute('data-format');
+      els.paymentModalOverlay.classList.remove('hidden');
+    });
+  });
+
+  /* ---- Font size control ---- */
+  els.fontSizeDownBtn.addEventListener('click', () => {
+    fontSizePt = Math.max(9, fontSizePt - 1);
+    els.fontSizeValue.textContent = fontSizePt;
+    renderPreview();
+  });
+  els.fontSizeUpBtn.addEventListener('click', () => {
+    fontSizePt = Math.min(20, fontSizePt + 1);
+    els.fontSizeValue.textContent = fontSizePt;
+    renderPreview();
+  });
   els.paymentCancelBtn.addEventListener('click', () => els.paymentModalOverlay.classList.add('hidden'));
   els.paymentModalOverlay.addEventListener('click', (e) => { if (e.target === els.paymentModalOverlay) els.paymentModalOverlay.classList.add('hidden'); });
   els.payNowBtn.addEventListener('click', () => {
     // Placeholder: real Chargily checkout will be wired here later.
-    alert(lang === 'ar' ? 'بوابة الدفع لسا ما اترّبطت — قريبًا.' : lang === 'fr' ? 'Le paiement sera bientôt disponible.' : 'Payment is coming soon.');
+    alert(lang === 'ar' ? 'لم تُفعَّل بوابة الدفع بعد — قريبًا.' : lang === 'fr' ? 'Le paiement sera bientôt disponible.' : 'Payment is coming soon.');
   });
 
   async function exportPdf() {
@@ -446,7 +502,8 @@
     els.analyzingText.textContent = dict.analyzingText;
     els.reviewTitle.textContent = dict.reviewTitle; els.newFileText.textContent = dict.newFileText;
     els.styleLabel.textContent = dict.styleLabel; els.tocBtnText.textContent = dict.tocBtnText;
-    els.unlockBtnText.textContent = dict.unlockBtnText;
+    els.fontSizeLabel.textContent = dict.fontSizeLabel;
+    els.downloadWordText.textContent = dict.downloadWordText; els.downloadPdfText.textContent = dict.downloadPdfText;
     els.tocModalTitle.textContent = dict.tocModalTitle;
     els.tocHeadingsText.textContent = dict.tocHeadingsText; els.tocTablesText.textContent = dict.tocTablesText; els.tocFiguresText.textContent = dict.tocFiguresText;
     els.tocCancelBtn.textContent = dict.cancelBtn;

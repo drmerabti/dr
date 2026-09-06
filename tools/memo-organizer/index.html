@@ -89,6 +89,13 @@
         <p class="mo-style-label" id="styleLabel">قالب التنسيق</p>
         <div class="mo-style-row" id="styleRow"></div>
 
+        <p class="mo-style-label" id="fontSizeLabel">حجم الخط</p>
+        <div class="mo-fontsize-row">
+          <button type="button" class="mo-fontsize-btn" id="fontSizeDownBtn">−</button>
+          <span class="mo-fontsize-value" id="fontSizeValue">12</span>
+          <button type="button" class="mo-fontsize-btn" id="fontSizeUpBtn">+</button>
+        </div>
+
         <div id="blocksList" class="mo-blocks-list"></div>
 
         <button type="button" class="mo-btn mo-toc-btn" id="tocBtn">
@@ -96,10 +103,16 @@
           <span id="tocBtnText">إنشاء فهرس تلقائي</span>
         </button>
 
-        <button type="button" class="mo-btn mo-unlock-btn" id="unlockBtn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
-          <span id="unlockBtnText">فتح النسخ والتحميل</span>
-        </button>
+        <div class="mo-download-row">
+          <button type="button" class="mo-download-btn mo-download-word" id="downloadWordBtn" data-format="word">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M7 9l2 6 2-6 2 6 2-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span id="downloadWordText">تحميل Word</span>
+          </button>
+          <button type="button" class="mo-download-btn mo-download-pdf" id="downloadPdfBtn" data-format="pdf">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2h9l5 5v15H6z"/><path d="M15 2v5h5" stroke-linejoin="round"/><text x="8" y="17" font-size="7" fill="currentColor" stroke="none" font-family="Arial">PDF</text></svg>
+            <span id="downloadPdfText">تحميل PDF</span>
+          </button>
+        </div>
       </div>
 
       <div class="mo-preview-col">
