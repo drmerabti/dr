@@ -552,12 +552,16 @@ function renderPreview(){
    on CSS aspect-ratio, which can be overridden by flex/grid min-size rules)
    so all three formats render at exactly the same page size regardless of
    how much content they hold; anything that doesn't fit is clipped by
-   overflow:hidden instead of stretching the page. */
+   overflow:hidden instead of stretching the page. Deferred to the next
+   animation frame so the width is read only after layout has fully settled
+   (avoids a stale/short measurement right after an innerHTML swap). */
 function fixPageSize(){
-  const page = $('pdfTarget');
-  if (!page) return;
-  const w = page.getBoundingClientRect().width;
-  if (w > 0) page.style.height = Math.round(w * 297 / 210) + 'px';
+  requestAnimationFrame(() => {
+    const page = $('pdfTarget');
+    if (!page) return;
+    const w = page.getBoundingClientRect().width;
+    if (w > 0) page.style.height = Math.round(w * 297 / 210) + 'px';
+  });
 }
 window.addEventListener('resize', () => { if (!$('editorScreen').classList.contains('hidden')) fixPageSize(); });
 
