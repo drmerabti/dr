@@ -35,6 +35,7 @@ const I18N = {
     relatedTo: 'متعلق ببيان الإرسال رقم', datedOn: 'بتاريخ',
     nameFull: 'الاسم واللقب', roleLabel: 'الصفة',
     savedMsg: 'تم الحفظ بمحفظتك.', notLoggedInAlert: 'سجّل الدخول أولاً.',
+    saveError: 'فشل الحفظ. تأكّد من اتصالك بالإنترنت ومن أن قواعد أمان Firestore تسمح بهذا المسار.',
     defaultAckText: 'أقر أنا الموقّع أدناه باستلام كامل الوثائق المذكورة في بيان الإرسال المشار إليه أعلاه، وذلك بتاريخ استلام:',
     exDestinataire: 'مديرية التربية — ولاية بشار', exObjet: 'إرسال ملفات تلاميذ',
     exDoc1: 'شهادة ميلاد', exDoc2: 'كشف نقاط',
@@ -67,6 +68,7 @@ const I18N = {
     relatedTo: 'Regarding transmittal note No.', datedOn: 'dated',
     nameFull: 'Full name', roleLabel: 'Role',
     savedMsg: 'Saved to your portfolio.', notLoggedInAlert: 'Please sign in first.',
+    saveError: 'Save failed. Check your internet connection and that your Firestore security rules allow this path.',
     defaultAckText: 'I, the undersigned, acknowledge receipt of all the documents mentioned in the above-referenced transmittal note, on the date of receipt:',
     exDestinataire: 'Regional Education Office — Béchar', exObjet: "Sending students' files",
     exDoc1: 'Birth certificate', exDoc2: 'Grade transcript',
@@ -99,6 +101,7 @@ const I18N = {
     relatedTo: "Relatif au bordereau d'envoi n°", datedOn: 'daté du',
     nameFull: 'Nom complet', roleLabel: 'Fonction',
     savedMsg: 'Enregistré dans votre portefeuille.', notLoggedInAlert: "Veuillez vous connecter d'abord.",
+    saveError: "L'enregistrement a échoué. Vérifiez votre connexion et vos règles de sécurité Firestore.",
     defaultAckText: "Je soussigné(e) reconnais avoir reçu l'ensemble des documents mentionnés dans le bordereau d'envoi référencé ci-dessus, à la date de réception :",
     exDestinataire: 'Direction régionale de l\'éducation — Béchar', exObjet: 'Envoi des dossiers des élèves',
     exDoc1: 'Acte de naissance', exDoc2: 'Relevé de notes',
@@ -360,6 +363,9 @@ async function saveRecord(){
     }
     await loadPortfolio();
     alert(t('savedMsg'));
+  } catch (err){
+    console.error('Bordereau save failed:', err);
+    alert(t('saveError') + (err && err.message ? '\n\n(' + err.message + ')' : ''));
   } finally {
     btn.disabled = false;
   }
@@ -532,35 +538,51 @@ function ackPageHtml(withLetterhead){
 function renderPreview(){
   const container = $('previewContainer');
   const fontFamily = fontFamilyFor(record.fontId);
-  let pagesHtml = '';
+  let inner = '';
   if (record.format === 'bordereau'){
-    pagesHtml = `<div class="page-a4" id="pdfTarget" style="font-family:${fontFamily}">${bordereauPageHtml()}</div>`;
+    inner = bordereauPageHtml();
   } else if (record.format === 'acknowledgment'){
-    pagesHtml = `<div class="page-a4" id="pdfTarget" style="font-family:${fontFamily}">${ackPageHtml(true)}</div>`;
+    inner = ackPageHtml(true);
   } else {
-    pagesHtml = `<div class="page-a4" id="pdfTarget" style="font-family:${fontFamily}">
-        ${bordereauPageHtml()}
-        <div class="pv-cut"></div>
-        <div class="pv-ack-box">${ackPageHtml(false)}</div>
-      </div>`;
+    inner = `${bordereauPageHtml()}<div class="pv-cut"></div><div class="pv-ack-box">${ackPageHtml(false)}</div>`;
   }
-  container.innerHTML = pagesHtml;
+  container.innerHTML = `<div class="page-a4" id="pdfTarget">
+      <div class="page-a4-inner" id="pdfInner" style="font-family:${fontFamily}">${inner}</div>
+    </div>`;
   fixPageSize();
 }
 
 /* A4 = 210×297mm ratio. We set an explicit pixel height (rather than relying
    on CSS aspect-ratio, which can be overridden by flex/grid min-size rules)
    so all three formats render at exactly the same page size regardless of
-   how much content they hold; anything that doesn't fit is clipped by
-   overflow:hidden instead of stretching the page. Deferred to the next
-   animation frame so the width is read only after layout has fully settled
-   (avoids a stale/short measurement right after an innerHTML swap). */
+   how much content they hold. The inner content is then measured against
+   that fixed height: if it's short, it's stretched to fill the page (so
+   "margin-top:auto" on the signature block pushes it down to the bottom
+   instead of leaving it floating under the text); if it's taller than the
+   page, the whole inner block — text, images and tables together — is
+   uniformly scaled down to fit, so nothing is ever cropped or distorted.
+   Deferred to the next animation frame so measurements happen only after
+   layout has fully settled. */
 function fixPageSize(){
   requestAnimationFrame(() => {
     const page = $('pdfTarget');
-    if (!page) return;
+    const inner = $('pdfInner');
+    if (!page || !inner) return;
     const w = page.getBoundingClientRect().width;
-    if (w > 0) page.style.height = Math.round(w * 297 / 210) + 'px';
+    if (w <= 0) return;
+    const pageH = Math.round(w * 297 / 210);
+    page.style.height = pageH + 'px';
+
+    inner.style.transform = 'none';
+    inner.style.height = 'auto';
+    const contentH = inner.scrollHeight;
+
+    if (contentH > pageH){
+      const scale = pageH / contentH;
+      inner.style.transform = 'scale(' + scale + ')';
+    } else {
+      inner.style.height = pageH + 'px';
+    }
   });
 }
 window.addEventListener('resize', () => { if (!$('editorScreen').classList.contains('hidden')) fixPageSize(); });
