@@ -6,6 +6,18 @@
 ===================================================================== */
 
 const ICONS = {
+  memoOrganizerApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="gMemoOrg" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#8FA8C7"/><stop offset="1" stop-color="#3A5A7D"/>
+      </linearGradient>
+    </defs>
+    <ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/>
+    <path d="M11 6c-1.7 0-3 1.3-3 3v30c0 1.7 1.3 3 3 3h20c1.7 0 3-1.3 3-3V15l-9-9H11z" fill="url(#gMemoOrg)"/>
+    <path d="M25 6v7c0 1.1.9 2 2 2h7z" fill="#C7D6E5" opacity=".6"/>
+    <path d="M15 22h12M15 27h12M15 32h8" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+    <path d="M30 30l3-3 2 2-3 3z" fill="#fff"/>
+  </svg>`,
   favorites: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <linearGradient id="gFavA" x1="0" y1="0" x2="0" y2="1">
@@ -428,6 +440,10 @@ const CONTENT = {
     { id: 'tool-grade-avg', title_ar: 'حاسبة المعدل', title_en: 'Grade Average Calculator',
       desc_ar: 'احسب معدلك بمرونة كاملة — مواد ومعاملات خاصة بك، بأي عدد ولأي مستوى دراسي.', desc_en: 'Calculate your average with full flexibility — your own subjects and weights, for any education level.',
       url: 'tools/grade-calculator/', icon: ICONS.gradeApp, family: 'edu' },
+    { id: 'tool-memo-organizer', title_ar: 'تنظيم المذكرات', title_en: 'Memo Organizer',
+      desc_ar: 'ارفع مذكرتك الفوضوية، وخلّها تنظّم تلقائيًا بالذكاء الاصطناعي — معاينة مجانية، والتحميل بدفعة واحدة — يتطلب تسجيل الدخول.',
+      desc_en: 'Upload your messy memo and let AI organize it automatically — free preview, one-time payment to download — requires login.',
+      url: 'tools/memo-organizer/', icon: ICONS.memoOrganizerApp, family: 'edu' },
 { id: 'tool-schedule', title_ar: 'مولّد جدول زمني', title_en: 'Schedule Generator',
   desc_ar: 'صمّم جدولك الأسبوعي بمهام ملوّنة، احفظه تلقائيًا، واطبعه بضغطة واحدة.', desc_en: 'Design your weekly schedule with color-coded tasks, auto-saved, and print it in one click.',
   url: 'tools/schedule/', icon: ICONS.scheduleApp, family: 'edu' },
