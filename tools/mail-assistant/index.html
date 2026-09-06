@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مساعد البريد المهني — أكاديمية مرابطي</title>
+<meta name="description" content="اكتب نقاطك، واختر درجة الرسمية ولغة الإيميل، ودع الذكاء الاصطناعي يصيغ لك إيميلًا احترافيًا كاملًا.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar-inner">
+  <a class="back-link" href="../../tools.html" id="backLink">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    <span id="backLabel">رجوع إلى الأدوات</span>
+  </a>
+  <div class="topbar-actions">
+    <select id="uiLangSelect" class="lang-select">
+      <option value="ar">AR</option>
+      <option value="en">EN</option>
+      <option value="fr">FR</option>
+    </select>
+    <div class="auth-wrap" id="authWrap">
+      <button class="auth-btn" id="authBtn" type="button"></button>
+      <div class="auth-menu hidden" id="authMenu"></div>
+    </div>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="hero-icon">
+    <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="gMailHero" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#F0A8B8"/><stop offset="1" stop-color="#B1345A"/>
+        </linearGradient>
+      </defs>
+      <rect x="6" y="12" width="36" height="24" rx="4" fill="url(#gMailHero)"/>
+      <path d="M6 14l18 13 18-13" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+  <h1 id="heroTitle">مساعد البريد المهني</h1>
+  <p id="heroSub">اكتب نقاطك، واختر درجة الرسمية ولغة الإيميل، ودع الذكاء الاصطناعي يصيغ لك المسودة كاملة.</p>
+</div>
+
+<main class="layout">
+
+  <section class="form-panel">
+
+    <div class="panel-card">
+      <div class="panel-title" id="secEmailInfo">بيانات الإيميل</div>
+      <div class="grid-2">
+        <div class="field"><label id="lRecipient">المستلم (اختياري)</label><input type="text" id="fRecipient" class="field-input"></div>
+        <div class="field"><label id="lSubject">الموضوع</label><input type="text" id="fSubject" class="field-input"></div>
+      </div>
+      <div class="field" style="margin-top:12px;">
+        <label id="lPurpose">الغرض من الإيميل</label>
+        <select id="fPurpose" class="field-input"></select>
+      </div>
+    </div>
+
+    <div class="panel-card">
+      <div class="panel-title" id="secPoints">النقاط الرئيسية</div>
+      <textarea id="fPoints" class="field-input" rows="4"></textarea>
+    </div>
+
+    <div class="panel-card">
+      <div class="panel-title" id="secSettings">الإعدادات</div>
+      <div class="field" style="margin-bottom:14px;">
+        <label id="lTone">درجة الرسمية</label>
+        <div class="segmented" id="toneSegmented"></div>
+      </div>
+      <div class="field">
+        <label id="lEmailLang">لغة الإيميل</label>
+        <select id="fEmailLang" class="field-input" style="max-width:220px;"></select>
+      </div>
+    </div>
+
+    <button type="button" class="primary-btn full-width" id="generateBtn">
+      <i class="icon-sparkle"></i><span id="generateBtnLabel">صياغة الإيميل بالذكاء الاصطناعي</span>
+    </button>
+    <div class="hint-note" id="authHintNote">تحتاج تسجيل الدخول لاستخدام هذه الميزة.</div>
+
+  </section>
+
+  <section class="result-panel">
+    <div class="result-card">
+      <div class="panel-title" id="secDraft">المسودة (قابلة للتعديل المباشر)</div>
+      <textarea id="draftOutput" class="draft-box" rows="12" placeholder=""></textarea>
+
+      <div class="quick-actions" id="quickActions">
+        <button type="button" class="quick-chip" data-action="rewrite"><i class="icon-refresh"></i><span id="qaRewrite">أعد الصياغة</span></button>
+        <button type="button" class="quick-chip" data-action="shorten"><i class="icon-shrink"></i><span id="qaShorten">اختصار</span></button>
+        <button type="button" class="quick-chip" data-action="more_formal"><i class="icon-formal"></i><span id="qaFormal">أكثر رسمية</span></button>
+        <button type="button" class="quick-chip" data-action="more_friendly"><i class="icon-friendly"></i><span id="qaFriendly">أكثر ودية</span></button>
+      </div>
+
+      <button type="button" class="secondary-btn full-width" id="copyBtn">
+        <i class="icon-copy"></i><span id="copyBtnLabel">نسخ الإيميل</span>
+      </button>
+      <div class="copied-note hidden" id="copiedNote">تم النسخ ✓</div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer" id="footerText">© 2026 أكاديمية مرابطي</footer>
+
+<!-- ============ نافذة تسجيل الدخول ============ -->
+<div class="modal-overlay hidden" id="authOverlay">
+  <div class="modal-card">
+    <button class="modal-close" id="authCloseBtn" type="button">×</button>
+    <h3 id="authModalTitle">تسجيل الدخول</h3>
+    <p class="modal-sub" id="authModalSub">سجّل دخولك لاستخدام مساعد البريد</p>
+    <div class="auth-error hidden" id="authError"></div>
+    <form id="authForm">
+      <div class="field hidden" id="authNameField">
+        <label id="authNameLabel">الاسم</label>
+        <input type="text" id="authName" class="field-input">
+      </div>
+      <div class="field">
+        <label id="authEmailLabel">البريد الإلكتروني</label>
+        <input type="email" id="authEmail" required class="field-input">
+      </div>
+      <div class="field">
+        <label id="authPasswordLabel">كلمة المرور</label>
+        <input type="password" id="authPassword" required minlength="6" class="field-input">
+      </div>
+      <button type="submit" class="primary-btn full-width" id="authSubmitBtn" style="margin-top:14px;">دخول</button>
+    </form>
+    <div class="modal-divider" id="authOrDivider">أو</div>
+    <button type="button" class="google-btn" id="googleAuthBtn">
+      <svg viewBox="0 0 48 48" width="18" height="18"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 8 3l6-6C34.5 5.1 29.5 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21 21-9.4 21-21c0-1.2-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.6 15.6 18.9 13 24 13c3.1 0 5.8 1.1 8 3l6-6C34.5 5.1 29.5 3 24 3c-7.6 0-14.1 4.3-17.7 10.7z"/><path fill="#4CAF50" d="M24 45c5.3 0 10.2-2 13.9-5.3l-6.4-5.4C29.3 36 26.8 37 24 37c-5.2 0-9.6-3.1-11.4-7.6l-6.6 5.1C9.8 40.6 16.3 45 24 45z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.2-4.2 5.6l6.4 5.4C40.5 36.6 43 30.8 43 24c0-1.2-.1-2.4-.4-3.5z"/></svg>
+      <span id="googleAuthLabel">المتابعة عبر Google</span>
+    </button>
+    <div class="modal-switch">
+      <span id="authSwitchText">ليس لديك حساب؟</span>
+      <button type="button" id="authSwitchBtn">إنشاء حساب</button>
+    </div>
+  </div>
+</div>
+
+<!-- Firebase (compat) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-functions-compat.js"></script>
+<script src="../../firebase-init.js"></script>
+
+<script src="app.js"></script>
+</body>
+</html>
