@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="htmlRoot">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="pageTitleTag">تنظيم المذكرات — أكاديمية مرابطي</title>
+<meta name="description" content="ارفع مذكرتك الفوضوية، وخلّها تنظّم تلقائيًا بمساعدة الذكاء الاصطناعي.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar">
+  <a href="../../tools.html" class="icon-btn" aria-label="back">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
+  </a>
+  <span class="topbar-title" id="topbarTitle">تنظيم المذكرات</span>
+  <div class="lang-switch" role="group">
+    <button type="button" class="lang-btn" data-lang="ar">عربي</button>
+    <button type="button" class="lang-btn" data-lang="en">EN</button>
+    <button type="button" class="lang-btn" data-lang="fr">FR</button>
+  </div>
+</div>
+
+<main class="mo-page">
+
+  <section id="loadingScreen" class="screen loading-screen">
+    <div class="loading-spinner"></div>
+  </section>
+
+  <section id="lockedScreen" class="screen hidden">
+    <div class="locked-hero">
+      <div class="locked-icon">🔒</div>
+      <h1 id="lockedTitle">سجّل دخولك لاستخدام أداة تنظيم المذكرات</h1>
+      <p id="lockedSub">هذه الأداة متاحة للمستخدمين المسجّلين فقط.</p>
+    </div>
+    <div class="auth-card">
+      <div class="auth-tabs">
+        <button type="button" class="auth-tab active" data-mode="login" id="tabLogin">تسجيل الدخول</button>
+        <button type="button" class="auth-tab" data-mode="signup" id="tabSignup">إنشاء حساب</button>
+      </div>
+      <p class="auth-card-error hidden" id="authCardError"></p>
+      <form id="authCardForm">
+        <input type="text" id="acName" class="cv-input hidden" placeholder="الاسم الكامل">
+        <input type="email" id="acEmail" class="cv-input" required placeholder="البريد الإلكتروني">
+        <input type="password" id="acPassword" class="cv-input" required minlength="6" placeholder="كلمة المرور">
+        <button type="submit" class="btn btn-primary btn-block" id="acSubmitBtn">تسجيل الدخول</button>
+      </form>
+      <div class="auth-divider">أو</div>
+      <button type="button" class="auth-google-btn" id="acGoogleBtn">
+        <svg viewBox="0 0 48 48" width="18" height="18"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 8 3l6-6C34.5 5.1 29.5 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21 21-9.4 21-21c0-1.2-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.6 15.6 18.9 13 24 13c3.1 0 5.8 1.1 8 3l6-6C34.5 5.1 29.5 3 24 3c-7.6 0-14.1 4.3-17.7 10.7z"/><path fill="#4CAF50" d="M24 45c5.3 0 10.2-2 13.9-5.3l-6.4-5.4C29.3 36 26.8 37 24 37c-5.2 0-9.6-3.1-11.4-7.6l-6.6 5.1C9.8 40.6 16.3 45 24 45z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.2-4.2 5.6l6.4 5.4C40.5 36.6 43 30.8 43 24c0-1.2-.1-2.4-.4-3.5z"/></svg>
+        <span>المتابعة عبر Google</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ===== Upload screen ===== -->
+  <section id="uploadScreen" class="screen hidden">
+    <h1 class="mo-title" id="uploadTitle">تنظيم المذكرات</h1>
+    <p class="mo-subtitle" id="uploadSubtitle">ارفع مذكرتك، وخلّها تنظّم تلقائيًا بمساعدة الذكاء الاصطناعي</p>
+
+    <div class="mo-drop-zone" id="dropZone">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M20 17v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2"/></svg>
+      <span id="dropZoneText">اسحب ملف Word هنا أو اضغط للاختيار</span>
+      <input type="file" id="fileInput" accept=".docx" hidden>
+    </div>
+    <p class="mo-hint" id="uploadHint">ملفات Word (.docx) بس حاليًا</p>
+    <p class="mo-error hidden" id="uploadError"></p>
+    <div class="mo-analyzing hidden" id="analyzingBox">
+      <div class="loading-spinner small"></div>
+      <span id="analyzingText">جارٍ تحليل المذكرة...</span>
+    </div>
+  </section>
+
+  <!-- ===== Review screen (two columns) ===== -->
+  <section id="reviewScreen" class="screen hidden">
+    <div class="mo-review-shell">
+
+      <div class="mo-correct-col">
+        <div class="mo-correct-head">
+          <h2 id="reviewTitle">مراجعة التصنيف</h2>
+          <button type="button" class="mo-btn" id="newFileBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+            <span id="newFileText">ملف جديد</span>
+          </button>
+        </div>
+
+        <p class="mo-style-label" id="styleLabel">قالب التنسيق</p>
+        <div class="mo-style-row" id="styleRow"></div>
+
+        <div id="blocksList" class="mo-blocks-list"></div>
+
+        <button type="button" class="mo-btn mo-toc-btn" id="tocBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h10M4 18h7"/></svg>
+          <span id="tocBtnText">إنشاء فهرس تلقائي</span>
+        </button>
+
+        <button type="button" class="mo-btn mo-unlock-btn" id="unlockBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+          <span id="unlockBtnText">فتح النسخ والتحميل</span>
+        </button>
+      </div>
+
+      <div class="mo-preview-col">
+        <div class="mo-preview-scroll" id="previewScroll">
+          <div class="mo-doc-preview" id="docPreview"></div>
+          <div class="mo-watermark" id="watermarkOverlay"></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<!-- TOC type modal -->
+<div class="mo-modal-overlay hidden" id="tocModalOverlay">
+  <div class="mo-modal">
+    <h3 id="tocModalTitle">اختر نوع الفهرس</h3>
+    <div class="mo-toc-options">
+      <button type="button" class="mo-toc-option" data-toc="headings" id="tocHeadingsBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h10M4 18h7"/></svg>
+        <span id="tocHeadingsText">فهرس العناوين</span>
+      </button>
+      <button type="button" class="mo-toc-option" data-toc="tables" id="tocTablesBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="1"/><path d="M3 10h18M9 4v16"/></svg>
+        <span id="tocTablesText">فهرس الجداول</span>
+      </button>
+      <button type="button" class="mo-toc-option" data-toc="figures" id="tocFiguresBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="1"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16l-5-5-4 4-3-3-6 6"/></svg>
+        <span id="tocFiguresText">فهرس الأشكال</span>
+      </button>
+    </div>
+    <button type="button" class="mo-btn" id="tocCancelBtn">إلغاء</button>
+  </div>
+</div>
+
+<!-- Payment modal (placeholder, wired to Chargily later) -->
+<div class="mo-modal-overlay hidden" id="paymentModalOverlay">
+  <div class="mo-modal">
+    <h3 id="paymentModalTitle">فتح النسخ والتحميل</h3>
+    <p class="mo-modal-hint" id="paymentModalHint">دفعة واحدة لهذا الملف — تفتح النسخ والتحميل الكامل بصيغة PDF منسّقة.</p>
+    <div class="mo-price-box">
+      <span class="mo-price-value" id="priceValue">200 دج</span>
+    </div>
+    <button type="button" class="mo-btn mo-pay-btn" id="payNowBtn">
+      <span id="payNowText">الدفع (قريبًا)</span>
+    </button>
+    <button type="button" class="mo-btn" id="paymentCancelBtn">إلغاء</button>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-functions-compat.js"></script>
+<script src="../../firebase-init.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
