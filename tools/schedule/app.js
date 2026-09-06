@@ -2,7 +2,7 @@
 const I18N = {
   ar: {
     backHome: 'الرئيسية', backToList: 'القائمة',
-    title: 'مولّد جدول زمني',
+    title: 'جدول زمني',
     subtitleList: 'اختر قسمًا أو أنشئ جدولًا جديدًا',
     subtitleEditor: 'اضغط أي خانة لإضافة مهمة',
     createLabel: 'إنشاء جدول جديد',
@@ -13,6 +13,7 @@ const I18N = {
     saveCloudBtn: 'حفظ', savingCloudBtn: 'جارِ الحفظ...', savedCloudBtn: 'تم الحفظ ✓',
     signInBtn: 'تسجيل الدخول بقوقل',
     emptyHint: 'يُحفظ جدولك تلقائيًا في هذا المتصفح',
+    printTip: 'لإخفاء العنوان والرابط اللي يضيفهم المتصفح تلقائيًا أعلى/أسفل الورقة، عطّل خيار "Headers and footers" من إعدادات الطباعة (More settings).',
     popoverTitle: 'إضافة مهمة', taskNameLabel: 'اسم المهمة', taskNoteLabel: 'ملاحظة (اختياري)',
     cancelBtn: 'إلغاء', saveBtn: 'حفظ',
     createTitle: 'إنشاء جدول جديد', sectionNameLabel: 'اسم القسم', createBtn: 'إنشاء',
@@ -28,7 +29,7 @@ const I18N = {
   },
   en: {
     backHome: 'Home', backToList: 'Sections',
-    title: 'Schedule Generator',
+    title: 'Schedule',
     subtitleList: 'Pick a section or create a new schedule',
     subtitleEditor: 'Click any cell to add a task',
     createLabel: 'Create new schedule',
@@ -39,6 +40,7 @@ const I18N = {
     saveCloudBtn: 'Save', savingCloudBtn: 'Saving...', savedCloudBtn: 'Saved ✓',
     signInBtn: 'Sign in with Google',
     emptyHint: 'Your schedule is saved automatically in this browser',
+    printTip: 'To hide the title and URL the browser adds at the top/bottom of the page, turn off "Headers and footers" in print settings (More settings).',
     popoverTitle: 'Add task', taskNameLabel: 'Task name', taskNoteLabel: 'Note (optional)',
     cancelBtn: 'Cancel', saveBtn: 'Save',
     createTitle: 'Create new schedule', sectionNameLabel: 'Section name', createBtn: 'Create',
@@ -54,7 +56,7 @@ const I18N = {
   },
   fr: {
     backHome: 'Accueil', backToList: 'Sections',
-    title: 'Générateur d\u2019emploi du temps',
+    title: 'Emploi du temps',
     subtitleList: 'Choisissez une section ou créez un nouvel emploi du temps',
     subtitleEditor: 'Cliquez sur une case pour ajouter une tâche',
     createLabel: 'Créer un nouvel emploi du temps',
@@ -65,6 +67,7 @@ const I18N = {
     saveCloudBtn: 'Enregistrer', savingCloudBtn: 'Enregistrement...', savedCloudBtn: 'Enregistré ✓',
     signInBtn: 'Se connecter avec Google',
     emptyHint: 'Votre emploi du temps est enregistré automatiquement dans ce navigateur',
+    printTip: 'Pour masquer le titre et le lien ajoutés automatiquement par le navigateur en haut/bas de la page, désactivez "En-têtes et pieds de page" dans les paramètres d\u2019impression (Plus de paramètres).',
     popoverTitle: 'Ajouter une tâche', taskNameLabel: 'Nom de la tâche', taskNoteLabel: 'Remarque (optionnel)',
     cancelBtn: 'Annuler', saveBtn: 'Enregistrer',
     createTitle: 'Créer un nouvel emploi du temps', sectionNameLabel: 'Nom de la section', createBtn: 'Créer',
@@ -272,6 +275,7 @@ function renderEditor(){
   document.getElementById('clearBtn').classList.toggle('hidden', isReadonly);
   document.getElementById('applyBtn').classList.toggle('hidden', isReadonly);
   document.getElementById('emptyHint').classList.toggle('hidden', isReadonly);
+  document.getElementById('printTip').classList.toggle('hidden', isReadonly);
   updateCloudButtons();
 
   if (isReadonly){

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>مولّد جدول زمني — د. سفيان مرابطي</title>
+<title>جدول زمني</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
@@ -15,11 +15,21 @@
     <svg class="back-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
     <span data-i18n="backHome">الرئيسية</span>
   </a>
-  <button id="langToggle" class="lang-toggle" type="button">EN</button>
+  <div class="topbar-actions">
+    <button class="btn btn-cloud hidden" id="saveCloudBtn">
+      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 18a4 4 0 01-.6-7.96A5.5 5.5 0 0117 9a4.5 4.5 0 01.5 8.98"/></svg>
+      <span data-i18n-inline="saveCloudBtn">حفظ</span>
+    </button>
+    <button class="btn btn-cloud hidden" id="signInBtn">
+      <svg viewBox="0 0 24 24" width="15" height="15"><path fill="currentColor" d="M21.35 11.1h-9.2v2.8h5.3c-.23 1.4-1.6 4.1-5.3 4.1-3.2 0-5.8-2.6-5.8-5.9s2.6-5.9 5.8-5.9c1.8 0 3 .76 3.7 1.42l2.5-2.42C16.7 3.6 14.6 2.6 12.15 2.6 6.9 2.6 2.7 6.8 2.7 12s4.2 9.4 9.45 9.4c5.45 0 9.06-3.83 9.06-9.23 0-.62-.07-1.1-.16-1.07z"/></svg>
+      <span data-i18n-inline="signInBtn">تسجيل الدخول</span>
+    </button>
+    <button id="langToggle" class="lang-toggle" type="button">EN</button>
+  </div>
 </header>
 
 <div class="hero">
-  <h1 class="tool-title" data-i18n="title">مولّد جدول زمني</h1>
+  <h1 class="tool-title" data-i18n="title">جدول زمني</h1>
   <p class="hero-section-name hidden" id="heroSectionName"></p>
   <p class="tool-sub" id="heroSub" data-i18n="subtitleList">اختر قسمًا أو أنشئ جدولًا جديدًا</p>
 </div>
@@ -89,14 +99,6 @@
       <button class="btn btn-ghost" id="printBtn" data-i18n="printBtn">طباعة / تصدير</button>
       <button class="btn btn-ghost" id="shareBtn" data-i18n="shareBtn">مشاركة</button>
       <button class="btn btn-primary" id="applyBtn" data-i18n="applyBtn">تحديث الجدول</button>
-      <button class="btn btn-cloud hidden" id="saveCloudBtn">
-        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 18a4 4 0 01-.6-7.96A5.5 5.5 0 0117 9a4.5 4.5 0 01.5 8.98"/></svg>
-        <span data-i18n-inline="saveCloudBtn">حفظ</span>
-      </button>
-      <button class="btn btn-cloud hidden" id="signInBtn">
-        <svg viewBox="0 0 24 24" width="15" height="15"><path fill="currentColor" d="M21.35 11.1h-9.2v2.8h5.3c-.23 1.4-1.6 4.1-5.3 4.1-3.2 0-5.8-2.6-5.8-5.9s2.6-5.9 5.8-5.9c1.8 0 3 .76 3.7 1.42l2.5-2.42C16.7 3.6 14.6 2.6 12.15 2.6 6.9 2.6 2.7 6.8 2.7 12s4.2 9.4 9.45 9.4c5.45 0 9.06-3.83 9.06-9.23 0-.62-.07-1.1-.16-1.07z"/></svg>
-        <span data-i18n-inline="signInBtn">تسجيل الدخول بقوقل</span>
-      </button>
     </div>
 
     <div class="legend" id="legend"></div>
@@ -110,6 +112,7 @@
     </div>
 
     <p class="empty-hint" id="emptyHint" data-i18n="emptyHint">يُحفظ جدولك تلقائيًا في هذا المتصفح</p>
+    <p class="print-tip" id="printTip" data-i18n="printTip">لإخفاء العنوان والرابط اللي يضيفهم المتصفح تلقائيًا أعلى/أسفل الورقة، عطّل خيار "Headers and footers" من إعدادات الطباعة (More settings).</p>
   </section>
 
 </main>
