@@ -20,6 +20,7 @@ const I18N = {
     confirmDelete: 'حذف هذا البيان نهائيًا؟',
     formatCombined: 'مدمج بصفحة واحدة', formatBordereau: 'بيان الإرسال فقط', formatAck: 'إشعار الاستلام فقط',
     letterheadCard: 'ترويسة الجهة المرسلة', issuerName: 'اسم الجهة أو الشخص', issuerContact: 'العنوان / الهاتف / البريد',
+    headerModeSimple: 'شعار واسم', headerModeImage: 'صورة كاملة',
     refCard: 'المرجع والوجهة', refNo: 'المرجع', refDate: 'التاريخ',
     destinataire: 'المرسل إليه', objet: 'الموضوع',
     docsCard: 'الوثائق المرفقة', docType: 'نوع الوثيقة', docQty: 'العدد', addDocRow: 'إضافة وثيقة',
@@ -51,6 +52,7 @@ const I18N = {
     confirmDelete: 'Permanently delete this note?',
     formatCombined: 'Combined, one page', formatBordereau: 'Transmittal note only', formatAck: 'Acknowledgment only',
     letterheadCard: 'Sender letterhead', issuerName: 'Business or individual name', issuerContact: 'Address / phone / email',
+    headerModeSimple: 'Logo & name', headerModeImage: 'Full image',
     refCard: 'Reference & destination', refNo: 'Reference', refDate: 'Date',
     destinataire: 'Addressed to', objet: 'Subject',
     docsCard: 'Enclosed documents', docType: 'Document type', docQty: 'Qty', addDocRow: 'Add document',
@@ -82,6 +84,7 @@ const I18N = {
     confirmDelete: 'Supprimer définitivement ce bordereau ?',
     formatCombined: 'Combiné, une page', formatBordereau: "Bordereau d'envoi seul", formatAck: 'Accusé de réception seul',
     letterheadCard: "En-tête de l'expéditeur", issuerName: "Nom de l'entreprise ou de la personne", issuerContact: 'Adresse / téléphone / e-mail',
+    headerModeSimple: 'Logo et nom', headerModeImage: 'Image complète',
     refCard: 'Référence et destinataire', refNo: 'Référence', refDate: 'Date',
     destinataire: 'Destinataire', objet: 'Objet',
     docsCard: 'Documents joints', docType: 'Type de document', docQty: 'Qté', addDocRow: 'Ajouter un document',
@@ -115,6 +118,7 @@ let lang = localStorage.getItem('be_lang') || 'ar';
 let currentUser = null;
 let portfolioItems = [];
 let currentRecordId = null; // null = unsaved new record
+let isExampleData = true; // becomes false the moment the user edits example-seeded fields
 
 function t(key){ return I18N[lang][key] || key; }
 function $(id){ return document.getElementById(id); }
@@ -128,6 +132,7 @@ function defaultRecord(){
     documents: [{ type: t('exDoc1'), qty: 1 }, { type: t('exDoc2'), qty: 1 }],
     issuerName: '', issuerContact: '',
     logoDataUrl: null, signDataUrl: null,
+    headerMode: 'simple', headerImgDataUrl: null,
     format: 'combined',
     ackText: t('defaultAckText'),
     receiverName: '', receiverRole: '',
@@ -179,6 +184,19 @@ function applyLanguage(){
   document.querySelectorAll('[data-i18n-placeholder]').forEach(el => { el.placeholder = t(el.getAttribute('data-i18n-placeholder')); });
   document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
   localStorage.setItem('be_lang', lang);
+
+  // Re-translate the seeded example data (only while the user hasn't
+  // started typing their own values) so switching language never leaves
+  // stale text from a different language sitting in the template.
+  if (isExampleData && record){
+    record.destinataire = t('exDestinataire');
+    record.objet = t('exObjet');
+    if (record.documents[0]) record.documents[0].type = t('exDoc1');
+    if (record.documents[1]) record.documents[1].type = t('exDoc2');
+    record.ackText = t('defaultAckText');
+    if (!$('editorScreen').classList.contains('hidden')) fillFormFromRecord();
+  }
+
   renderFontFilter();
   renderFormatSelector();
   renderDocRows();
@@ -190,6 +208,7 @@ function showScreen(name){
   ['loadingScreen','lockedScreen','portfolioScreen','editorScreen'].forEach(id => {
     $(id).classList.toggle('hidden', id !== name);
   });
+  $('topbarEditorActions').classList.toggle('hidden', name !== 'editorScreen');
 }
 
 /* ---------------- Auth ---------------- */
@@ -316,13 +335,14 @@ function openRecord(id){
   currentRecordId = id;
   record = Object.assign(defaultRecord(), item);
   delete record.id; delete record.updatedAt;
+  isExampleData = false; // this is the user's own saved data, never auto-retranslate it
   enterEditor();
 }
 
 function newRecord(){
   currentRecordId = null;
   record = defaultRecord();
-  record.destinataire = record.destinataire; // keep example-free; fields start blank except ref/date
+  isExampleData = true;
   enterEditor();
 }
 
@@ -367,6 +387,15 @@ function fillFormFromRecord(){
   $('receiverRole').value = record.receiverRole || '';
   renderUploadBox('logoBox', record.logoDataUrl);
   renderUploadBox('signBox', record.signDataUrl);
+  renderUploadBox('headerImgBox', record.headerImgDataUrl);
+  setHeaderMode(record.headerMode || 'simple');
+}
+
+function setHeaderMode(mode){
+  record.headerMode = mode;
+  document.querySelectorAll('.header-mode-btn').forEach(b => b.classList.toggle('active', b.getAttribute('data-header-mode') === mode));
+  $('headerSimpleFields').classList.toggle('hidden', mode !== 'simple');
+  $('headerImageField').classList.toggle('hidden', mode !== 'image');
 }
 
 function renderUploadBox(boxId, dataUrl){
@@ -374,21 +403,26 @@ function renderUploadBox(boxId, dataUrl){
   box.innerHTML = dataUrl
     ? `<img src="${dataUrl}" alt=""><span class="upload-remove" data-remove="${boxId}">&times;</span>`
     : `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" style="color:var(--ink-soft)"><path d="M12 5v14M5 12h14"/></svg>`;
-  const rm = box.querySelector('[data-remove]');
-  if (rm) rm.addEventListener('click', (e) => {
-    e.stopPropagation();
-    if (boxId === 'logoBox') record.logoDataUrl = null; else record.signDataUrl = null;
-    renderUploadBox(boxId, null);
-    localAutosave(); renderPreview();
-  });
 }
 
-function initUploadBox(boxId, inputId, field){
+const UPLOAD_BOX_FIELD = { logoBox: 'logoDataUrl', signBox: 'signDataUrl', headerImgBox: 'headerImgDataUrl' };
+
+function initUploadBox(boxId, inputId){
   const box = $(boxId), input = $(inputId);
-  box.addEventListener('click', (e) => { if (!e.target.closest('[data-remove]')) input.click(); });
+  const field = UPLOAD_BOX_FIELD[boxId];
+  box.addEventListener('click', (e) => {
+    if (e.target.closest('[data-remove]')){
+      e.stopPropagation();
+      record[field] = null;
+      renderUploadBox(boxId, null);
+      localAutosave(); renderPreview();
+      return;
+    }
+    input.click();
+  });
   input.addEventListener('change', async function(){
     const file = this.files[0]; if (!file) return;
-    const dataUrl = await readAndCompressImage(file, 360, 0.75);
+    const dataUrl = await readAndCompressImage(file, boxId === 'headerImgBox' ? 900 : 360, 0.75);
     record[field] = dataUrl;
     renderUploadBox(boxId, dataUrl);
     localAutosave(); renderPreview();
@@ -440,7 +474,7 @@ function renderDocRows(){
     </div>`).join('');
 
   wrap.querySelectorAll('.doc-type').forEach(el => el.addEventListener('input', () => {
-    record.documents[+el.dataset.i].type = el.value; localAutosave(); renderPreview();
+    record.documents[+el.dataset.i].type = el.value; isExampleData = false; localAutosave(); renderPreview();
   }));
   wrap.querySelectorAll('.doc-qty').forEach(el => el.addEventListener('input', () => {
     record.documents[+el.dataset.i].qty = parseInt(el.value, 10) || 1; localAutosave(); renderPreview();
@@ -455,13 +489,20 @@ function renderDocRows(){
 /* ---------------- Live A4 preview ---------------- */
 function fontFamilyFor(id){ const f = FONTS.find(x => x.id === id); return f ? f.family : FONTS[0].family; }
 
+function letterheadHtml(){
+  if (record.headerMode === 'image' && record.headerImgDataUrl){
+    return `<img class="pv-header-image" src="${record.headerImgDataUrl}" alt="">`;
+  }
+  return `<div class="pv-letterhead">
+      <div class="pv-logo-box">${record.logoDataUrl ? `<img src="${record.logoDataUrl}" alt="">` : ''}</div>
+      <div><div class="pv-issuer-name">${escapeHtml(record.issuerName) || '—'}</div><div class="pv-issuer-contact">${escapeHtml(record.issuerContact)}</div></div>
+    </div>`;
+}
+
 function bordereauPageHtml(){
   const rows = record.documents.map((d, i) => `<tr><td style="text-align:center">${i+1}</td><td>${escapeHtml(d.type) || '—'}</td><td style="text-align:center">${d.qty}</td></tr>`).join('');
   return `
-    <div class="pv-letterhead">
-      <div class="pv-logo-box">${record.logoDataUrl ? `<img src="${record.logoDataUrl}" alt="">` : ''}</div>
-      <div><div class="pv-issuer-name">${escapeHtml(record.issuerName) || '—'}</div><div class="pv-issuer-contact">${escapeHtml(record.issuerContact)}</div></div>
-    </div>
+    ${letterheadHtml()}
     <div class="pv-divider"></div>
     <div class="pv-refdate"><span>${t('refLabel')}: <b>${escapeHtml(record.ref)}</b></span><span>${t('dateLabel')}: <b>${escapeHtml(record.date)}</b></span></div>
     <div class="pv-line"><span class="lbl">${t('toLabel')}: </span>${escapeHtml(record.destinataire) || '—'}</div>
@@ -474,12 +515,7 @@ function bordereauPageHtml(){
 
 function ackPageHtml(withLetterhead){
   return `
-    ${withLetterhead ? `
-    <div class="pv-letterhead">
-      <div class="pv-logo-box">${record.logoDataUrl ? `<img src="${record.logoDataUrl}" alt="">` : ''}</div>
-      <div><div class="pv-issuer-name">${escapeHtml(record.issuerName) || '—'}</div><div class="pv-issuer-contact">${escapeHtml(record.issuerContact)}</div></div>
-    </div>
-    <div class="pv-divider"></div>` : ''}
+    ${withLetterhead ? `${letterheadHtml()}<div class="pv-divider"></div>` : ''}
     <div class="pv-title-row" style="margin-top:${withLetterhead ? '10px' : '0'};"><span>${t('ackTitle')}</span></div>
     <div class="pv-ack-ref">${t('relatedTo')} <b>${escapeHtml(record.ref)}</b> ${t('datedOn')} <b>${escapeHtml(record.date)}</b></div>
     <div class="pv-ack-text">${escapeHtml(record.ackText)}</div>
@@ -509,7 +545,21 @@ function renderPreview(){
       </div>`;
   }
   container.innerHTML = pagesHtml;
+  fixPageSize();
 }
+
+/* A4 = 210×297mm ratio. We set an explicit pixel height (rather than relying
+   on CSS aspect-ratio, which can be overridden by flex/grid min-size rules)
+   so all three formats render at exactly the same page size regardless of
+   how much content they hold; anything that doesn't fit is clipped by
+   overflow:hidden instead of stretching the page. */
+function fixPageSize(){
+  const page = $('pdfTarget');
+  if (!page) return;
+  const w = page.getBoundingClientRect().width;
+  if (w > 0) page.style.height = Math.round(w * 297 / 210) + 'px';
+}
+window.addEventListener('resize', () => { if (!$('editorScreen').classList.contains('hidden')) fixPageSize(); });
 
 /* ---------------- PDF / print ---------------- */
 async function downloadPdf(){
@@ -545,16 +595,21 @@ document.addEventListener('DOMContentLoaded', () => {
   ['issuerName','issuerContact'].forEach(id => $(id).addEventListener('input', (e) => { record[id] = e.target.value; localAutosave(); renderPreview(); }));
   $('refNo').addEventListener('input', (e) => { record.ref = e.target.value; localAutosave(); renderPreview(); });
   $('refDate').addEventListener('input', (e) => { record.date = e.target.value; localAutosave(); renderPreview(); });
-  $('destinataire').addEventListener('input', (e) => { record.destinataire = e.target.value; localAutosave(); renderPreview(); });
-  $('objet').addEventListener('input', (e) => { record.objet = e.target.value; localAutosave(); renderPreview(); });
-  $('ackText').addEventListener('input', (e) => { record.ackText = e.target.value; localAutosave(); renderPreview(); });
+  $('destinataire').addEventListener('input', (e) => { record.destinataire = e.target.value; isExampleData = false; localAutosave(); renderPreview(); });
+  $('objet').addEventListener('input', (e) => { record.objet = e.target.value; isExampleData = false; localAutosave(); renderPreview(); });
+  $('ackText').addEventListener('input', (e) => { record.ackText = e.target.value; isExampleData = false; localAutosave(); renderPreview(); });
   $('receiverName').addEventListener('input', (e) => { record.receiverName = e.target.value; localAutosave(); renderPreview(); });
   $('receiverRole').addEventListener('input', (e) => { record.receiverRole = e.target.value; localAutosave(); renderPreview(); });
 
   $('addDocRowBtn').addEventListener('click', () => { record.documents.push({ type: '', qty: 1 }); renderDocRows(); localAutosave(); renderPreview(); });
 
-  initUploadBox('logoBox', 'logoInput', 'logoDataUrl');
-  initUploadBox('signBox', 'signInput', 'signDataUrl');
+  initUploadBox('logoBox', 'logoInput');
+  initUploadBox('signBox', 'signInput');
+  initUploadBox('headerImgBox', 'headerImgInput');
+
+  document.querySelectorAll('.header-mode-btn').forEach(btn => {
+    btn.addEventListener('click', () => { setHeaderMode(btn.getAttribute('data-header-mode')); localAutosave(); renderPreview(); });
+  });
 
   if (window.fbAuth){
     window.fbAuth.onAuthStateChanged(async (user) => {
