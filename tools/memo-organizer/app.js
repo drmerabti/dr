@@ -27,6 +27,11 @@
       noTablesFound: 'لا يوجد أي جدول في المستند.', noFiguresFound: 'لا يوجد أي صورة في المستند.',
       styleModern: 'عصري', styleClassic: 'كلاسيكي', styleFormal: 'رسمي',
       fontSizeLabel: 'حجم الخط', removeTocBtn: 'حذف الفهرس', downloadWordText: 'تحميل Word', downloadPdfText: 'تحميل PDF',
+      pageNumBtnText: 'ترقيم الصفحات', pageNumModalTitle: 'ترقيم الصفحات',
+      pageNumEnableLabel: 'تفعيل الترقيم', pageNumOnOpt: 'مفعَّل', pageNumOffOpt: 'معطَّل',
+      pageNumStyleLabel: 'نمط الترقيم', pageNumStyleNumericOpt: 'أرقام عادية (1، 2، 3)',
+      pageNumStyleRomanOpt: 'أرقام رومانية (I، II، III)', pageNumStyleLettersOpt: 'حروف عربية (أ، ب، ج)',
+      pageNumRangeLabel: 'نطاق الترقيم (اختياري)', pageNumExcludeLabel: 'استثناء صفحات (اختياري، مفصولة بفاصلة)', saveBtn: 'حفظ',
     },
     en: {
       dir: 'ltr', pageTitleTag: 'Memo Organizer — Merabti Academy', topbarTitle: 'Memo Organizer',
@@ -48,6 +53,11 @@
       noTablesFound: 'No tables found in the document.', noFiguresFound: 'No images found in the document.',
       styleModern: 'Modern', styleClassic: 'Classic', styleFormal: 'Formal',
       fontSizeLabel: 'Font size', removeTocBtn: 'Remove list', downloadWordText: 'Download Word', downloadPdfText: 'Download PDF',
+      pageNumBtnText: 'Page numbering', pageNumModalTitle: 'Page numbering',
+      pageNumEnableLabel: 'Enable numbering', pageNumOnOpt: 'On', pageNumOffOpt: 'Off',
+      pageNumStyleLabel: 'Numbering style', pageNumStyleNumericOpt: 'Numeric (1, 2, 3)',
+      pageNumStyleRomanOpt: 'Roman numerals (I, II, III)', pageNumStyleLettersOpt: 'Arabic letters (أ, ب, ج)',
+      pageNumRangeLabel: 'Numbering range (optional)', pageNumExcludeLabel: 'Exclude pages (optional, comma-separated)', saveBtn: 'Save',
     },
     fr: {
       dir: 'ltr', pageTitleTag: 'Organisateur de mémoire — Académie Merabti', topbarTitle: 'Organisateur de mémoire',
@@ -69,6 +79,11 @@
       noTablesFound: 'Aucun tableau trouvé dans le document.', noFiguresFound: 'Aucune image trouvée dans le document.',
       styleModern: 'Moderne', styleClassic: 'Classique', styleFormal: 'Formel',
       fontSizeLabel: 'Taille de police', removeTocBtn: 'Supprimer la liste', downloadWordText: 'Télécharger Word', downloadPdfText: 'Télécharger PDF',
+      pageNumBtnText: 'Numérotation des pages', pageNumModalTitle: 'Numérotation des pages',
+      pageNumEnableLabel: 'Activer la numérotation', pageNumOnOpt: 'Activée', pageNumOffOpt: 'Désactivée',
+      pageNumStyleLabel: 'Style de numérotation', pageNumStyleNumericOpt: 'Numérique (1, 2, 3)',
+      pageNumStyleRomanOpt: 'Chiffres romains (I, II, III)', pageNumStyleLettersOpt: 'Lettres arabes (أ, ب, ج)',
+      pageNumRangeLabel: 'Plage de numérotation (optionnel)', pageNumExcludeLabel: 'Exclure des pages (optionnel, séparées par des virgules)', saveBtn: 'Enregistrer',
     },
   };
 
@@ -100,7 +115,19 @@
     fontSizeLabel: $('fontSizeLabel'), fontSizeDownBtn: $('fontSizeDownBtn'), fontSizeValue: $('fontSizeValue'), fontSizeUpBtn: $('fontSizeUpBtn'),
     downloadWordBtn: $('downloadWordBtn'), downloadWordText: $('downloadWordText'),
     downloadPdfBtn: $('downloadPdfBtn'), downloadPdfText: $('downloadPdfText'),
-    previewScroll: $('previewScroll'), docPreview: $('docPreview'), watermarkOverlay: $('watermarkOverlay'),
+    bookSpread: $('bookSpread'),
+    pageSheetLeft: $('pageSheetLeft'), docPreviewLeft: $('docPreviewLeft'), watermarkTextLeft: $('watermarkTextLeft'), pageNumberLeft: $('pageNumberLeft'),
+    pageSheetRight: $('pageSheetRight'), docPreviewRight: $('docPreviewRight'), watermarkTextRight: $('watermarkTextRight'), pageNumberRight: $('pageNumberRight'),
+    pageNav: $('pageNav'), measureBox: $('measureBox'),
+    pageNumBtn: $('pageNumBtn'), pageNumBtnText: $('pageNumBtnText'),
+    pageNumModalOverlay: $('pageNumModalOverlay'), pageNumModalTitle: $('pageNumModalTitle'),
+    pageNumEnableLabel: $('pageNumEnableLabel'), pageNumEnableSelect: $('pageNumEnableSelect'),
+    pageNumOnOpt: $('pageNumOnOpt'), pageNumOffOpt: $('pageNumOffOpt'),
+    pageNumStyleLabel: $('pageNumStyleLabel'), pageNumStyleSelect: $('pageNumStyleSelect'),
+    pageNumStyleNumericOpt: $('pageNumStyleNumericOpt'), pageNumStyleRomanOpt: $('pageNumStyleRomanOpt'), pageNumStyleLettersOpt: $('pageNumStyleLettersOpt'),
+    pageNumRangeLabel: $('pageNumRangeLabel'), pageNumFromInput: $('pageNumFromInput'), pageNumToInput: $('pageNumToInput'),
+    pageNumExcludeLabel: $('pageNumExcludeLabel'), pageNumExcludeInput: $('pageNumExcludeInput'),
+    pageNumCancelBtn: $('pageNumCancelBtn'), pageNumSaveBtn: $('pageNumSaveBtn'),
     tocModalOverlay: $('tocModalOverlay'), tocModalTitle: $('tocModalTitle'),
     tocHeadingsBtn: $('tocHeadingsBtn'), tocHeadingsText: $('tocHeadingsText'),
     tocTablesBtn: $('tocTablesBtn'), tocTablesText: $('tocTablesText'),
@@ -309,7 +336,7 @@
   }
 
   els.newFileBtn.addEventListener('click', () => {
-    blocks = []; unlocked = false;
+    blocks = []; unlocked = false; currentPageIndex = 0;
     els.fileInput.value = '';
     showScreen('uploadScreen');
   });
@@ -381,30 +408,154 @@
   }
 
   /* ================= Live preview ================= */
-  function renderPreview() {
-    els.docPreview.style.setProperty('--mo-body-font', activeStyle.font);
-    els.docPreview.style.setProperty('--mo-heading-color', activeStyle.headingColor);
-    els.docPreview.style.setProperty('--mo-body-size', fontSizePt + 'pt');
-
-    els.docPreview.innerHTML = blocks.map((b) => {
-      if (b.type === 'h1') return `<p class="mo-h1">${escapeHtml(b.text)}</p>`;
-      if (b.type === 'h2') return `<p class="mo-h2">${escapeHtml(b.text)}</p>`;
-      if (b.type === 'h3') return `<p class="mo-h3">${escapeHtml(b.text)}</p>`;
-      if (b.type === 'body') return `<p class="mo-body">${escapeHtml(b.text)}</p>`;
-      if (b.type === 'table') {
-        const rows = b.rows.map((r) => `<tr>${r.map((c) => `<td>${escapeHtml(c)}</td>`).join('')}</tr>`).join('');
-        return `<table>${rows}</table>`;
-      }
-      if (b.type === 'image') return `<img src="${b.dataUrl}" alt="">`;
-      if (b.type === 'toc') {
-        const listHtml = b.items.map((it) => `<p class="mo-body mo-toc-item" style="${it.indent ? `margin-inline-start:${it.indent * 20}px;` : ''}">${escapeHtml(it.text)}</p>`).join('');
-        return `<div class="mo-toc-block"><p class="mo-h1">${escapeHtml(b.tocTitle)}</p>${listHtml}</div>`;
-      }
-      return '';
-    }).join('');
-
-    els.watermarkOverlay.innerHTML = unlocked ? '' : `<span>${t('watermarkText')}</span>`;
+  function blockToHtml(b) {
+    if (b.type === 'h1') return `<p class="mo-h1">${escapeHtml(b.text)}</p>`;
+    if (b.type === 'h2') return `<p class="mo-h2">${escapeHtml(b.text)}</p>`;
+    if (b.type === 'h3') return `<p class="mo-h3">${escapeHtml(b.text)}</p>`;
+    if (b.type === 'body') return `<p class="mo-body">${escapeHtml(b.text)}</p>`;
+    if (b.type === 'table') {
+      const rows = b.rows.map((r) => `<tr>${r.map((c) => `<td>${escapeHtml(c)}</td>`).join('')}</tr>`).join('');
+      return `<table>${rows}</table>`;
+    }
+    if (b.type === 'image') return `<img src="${b.dataUrl}" alt="">`;
+    if (b.type === 'toc') {
+      const listHtml = b.items.map((it) => `<p class="mo-body mo-toc-item" style="${it.indent ? `margin-inline-start:${it.indent * 20}px;` : ''}">${escapeHtml(it.text)}</p>`).join('');
+      return `<div class="mo-toc-block"><p class="mo-h1">${escapeHtml(b.tocTitle)}</p>${listHtml}</div>`;
+    }
+    return '';
   }
+
+  /* ================= Pagination ================= */
+  const PAGE_CONTENT_HEIGHT = 535; // safe content budget inside a .mo-page-sheet (650h - padding - room for page number)
+  let pages = [[]];
+  let currentPageIndex = 0;
+
+  function paginateBlocks() {
+    const box = els.measureBox;
+    box.style.setProperty('--mo-body-font', activeStyle.font);
+    box.style.setProperty('--mo-body-size', fontSizePt + 'pt');
+
+    const newPages = [];
+    let currentPageBlocks = [];
+    let currentHeight = 0;
+
+    blocks.forEach((b) => {
+      box.innerHTML = blockToHtml(b);
+      const h = box.offsetHeight;
+      if (currentHeight + h > PAGE_CONTENT_HEIGHT && currentPageBlocks.length > 0) {
+        newPages.push(currentPageBlocks);
+        currentPageBlocks = [];
+        currentHeight = 0;
+      }
+      currentPageBlocks.push(b);
+      currentHeight += h;
+    });
+    if (currentPageBlocks.length > 0 || newPages.length === 0) newPages.push(currentPageBlocks);
+    pages = newPages;
+    if (currentPageIndex >= pages.length) currentPageIndex = Math.max(0, pages.length - (pages.length % 2 === 0 ? 2 : 1));
+  }
+
+  function renderPreview() {
+    els.docPreviewLeft.style.setProperty('--mo-body-font', activeStyle.font);
+    els.docPreviewLeft.style.setProperty('--mo-heading-color', activeStyle.headingColor);
+    els.docPreviewLeft.style.setProperty('--mo-body-size', fontSizePt + 'pt');
+    els.docPreviewRight.style.setProperty('--mo-body-font', activeStyle.font);
+    els.docPreviewRight.style.setProperty('--mo-heading-color', activeStyle.headingColor);
+    els.docPreviewRight.style.setProperty('--mo-body-size', fontSizePt + 'pt');
+
+    paginateBlocks();
+    renderCurrentSpread();
+  }
+
+  function renderCurrentSpread() {
+    const leftBlocks = pages[currentPageIndex] || [];
+    const rightBlocks = pages[currentPageIndex + 1] || [];
+    const rightExists = currentPageIndex + 1 < pages.length;
+
+    els.docPreviewLeft.innerHTML = leftBlocks.map(blockToHtml).join('');
+    els.docPreviewRight.innerHTML = rightBlocks.map(blockToHtml).join('');
+    els.pageSheetRight.classList.toggle('empty', !rightExists);
+
+    els.watermarkTextLeft.textContent = unlocked ? '' : t('watermarkText');
+    els.watermarkTextRight.textContent = (unlocked || !rightExists) ? '' : t('watermarkText');
+
+    els.pageNumberLeft.textContent = formatPageNumber(currentPageIndex + 1);
+    els.pageNumberRight.textContent = rightExists ? formatPageNumber(currentPageIndex + 2) : '';
+
+    renderPageNav();
+  }
+
+  function renderPageNav() {
+    let html = `<button type="button" class="mo-page-nav-btn" id="prevPageBtn" ${currentPageIndex <= 0 ? 'disabled' : ''}>‹</button>`;
+    for (let i = 0; i < pages.length; i++) {
+      const isActive = i === currentPageIndex || i === currentPageIndex + 1;
+      html += `<button type="button" class="mo-page-nav-btn ${isActive ? 'active' : ''}" data-page="${i}">${i + 1}</button>`;
+    }
+    html += `<button type="button" class="mo-page-nav-btn" id="nextPageBtn" ${currentPageIndex + 2 >= pages.length ? 'disabled' : ''}>›</button>`;
+    els.pageNav.innerHTML = html;
+
+    els.pageNav.querySelectorAll('[data-page]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const idx = parseInt(btn.getAttribute('data-page'), 10);
+        currentPageIndex = idx % 2 === 0 ? idx : idx - 1;
+        renderCurrentSpread();
+      });
+    });
+    const prevBtn = document.getElementById('prevPageBtn');
+    const nextBtn = document.getElementById('nextPageBtn');
+    if (prevBtn) prevBtn.addEventListener('click', () => { currentPageIndex = Math.max(0, currentPageIndex - 2); renderCurrentSpread(); });
+    if (nextBtn) nextBtn.addEventListener('click', () => { if (currentPageIndex + 2 < pages.length) { currentPageIndex += 2; renderCurrentSpread(); } });
+  }
+
+  /* ================= Page numbering ================= */
+  let pageNumSettings = { enabled: false, style: 'numeric', from: null, to: null, exclude: [] };
+
+  function toRoman(num) {
+    const romanMap = [[1000, 'M'], [900, 'CM'], [500, 'D'], [400, 'CD'], [100, 'C'], [90, 'XC'], [50, 'L'], [40, 'XL'], [10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']];
+    let result = '';
+    for (const [val, sym] of romanMap) { while (num >= val) { result += sym; num -= val; } }
+    return result;
+  }
+  function toArabicLetters(num) {
+    const letters = ['أ', 'ب', 'ج', 'د', 'ه', 'و', 'ز', 'ح', 'ط', 'ي', 'ك', 'ل', 'م', 'ن', 'س', 'ع', 'ف', 'ص', 'ق', 'ر', 'ش', 'ت', 'ث', 'خ', 'ذ', 'ض', 'ظ', 'غ'];
+    if (num <= letters.length) return letters[num - 1];
+    const first = Math.floor((num - 1) / letters.length) - 1;
+    const second = (num - 1) % letters.length;
+    return (first >= 0 ? letters[first] : '') + letters[second];
+  }
+  function formatPageNumber(pageNum) {
+    if (!pageNumSettings.enabled) return '';
+    if (pageNumSettings.exclude.includes(pageNum)) return '';
+    if (pageNumSettings.from && pageNum < pageNumSettings.from) return '';
+    if (pageNumSettings.to && pageNum > pageNumSettings.to) return '';
+    const rangeStart = pageNumSettings.from || 1;
+    const displayNum = pageNum - rangeStart + 1;
+    if (displayNum < 1) return '';
+    if (pageNumSettings.style === 'roman') return toRoman(displayNum);
+    if (pageNumSettings.style === 'arabicLetters') return toArabicLetters(displayNum);
+    return String(displayNum);
+  }
+
+  els.pageNumBtn.addEventListener('click', () => {
+    els.pageNumEnableSelect.value = pageNumSettings.enabled ? 'on' : 'off';
+    els.pageNumStyleSelect.value = pageNumSettings.style;
+    els.pageNumFromInput.value = pageNumSettings.from || '';
+    els.pageNumToInput.value = pageNumSettings.to || '';
+    els.pageNumExcludeInput.value = pageNumSettings.exclude.join(', ');
+    els.pageNumModalOverlay.classList.remove('hidden');
+  });
+  els.pageNumCancelBtn.addEventListener('click', () => els.pageNumModalOverlay.classList.add('hidden'));
+  els.pageNumModalOverlay.addEventListener('click', (e) => { if (e.target === els.pageNumModalOverlay) els.pageNumModalOverlay.classList.add('hidden'); });
+  els.pageNumSaveBtn.addEventListener('click', () => {
+    pageNumSettings.enabled = els.pageNumEnableSelect.value === 'on';
+    pageNumSettings.style = els.pageNumStyleSelect.value;
+    pageNumSettings.from = els.pageNumFromInput.value ? parseInt(els.pageNumFromInput.value, 10) : null;
+    pageNumSettings.to = els.pageNumToInput.value ? parseInt(els.pageNumToInput.value, 10) : null;
+    pageNumSettings.exclude = els.pageNumExcludeInput.value
+      .split(',').map((s) => parseInt(s.trim(), 10)).filter((n) => !isNaN(n));
+    els.pageNumModalOverlay.classList.add('hidden');
+    renderCurrentSpread();
+  });
 
   /* ================= TOC generation ================= */
   els.tocBtn.addEventListener('click', () => els.tocModalOverlay.classList.remove('hidden'));
@@ -413,7 +564,16 @@
 
   function insertTocBlock(type) {
     let items = [];
-    if (type === 'headings') items = blocks.filter((b) => b.type === 'h1' || b.type === 'h2' || b.type === 'h3').map((b) => ({ text: b.text, indent: b.type === 'h2' ? 1 : b.type === 'h3' ? 2 : 0 }));
+    if (type === 'headings') {
+      const counters = [0, 0, 0]; // h1, h2, h3
+      items = blocks.filter((b) => b.type === 'h1' || b.type === 'h2' || b.type === 'h3').map((b) => {
+        let number;
+        if (b.type === 'h1') { counters[0]++; counters[1] = 0; counters[2] = 0; number = `${counters[0]}`; }
+        else if (b.type === 'h2') { counters[1]++; counters[2] = 0; number = `${counters[0]}.${counters[1]}`; }
+        else { counters[2]++; number = `${counters[0]}.${counters[1]}.${counters[2]}`; }
+        return { text: `${number}. ${b.text}`, indent: b.type === 'h2' ? 1 : b.type === 'h3' ? 2 : 0 };
+      });
+    }
     else if (type === 'tables') items = blocks.filter((b) => b.type === 'table').map((b, i) => ({ text: `${lang === 'ar' ? 'جدول' : lang === 'fr' ? 'Tableau' : 'Table'} ${i + 1}`, indent: 0 }));
     else if (type === 'figures') items = blocks.filter((b) => b.type === 'image').map((b, i) => ({ text: `${lang === 'ar' ? 'شكل' : lang === 'fr' ? 'Figure' : 'Figure'} ${i + 1}`, indent: 0 }));
 
@@ -467,21 +627,36 @@
   els.paymentModalOverlay.addEventListener('click', (e) => { if (e.target === els.paymentModalOverlay) els.paymentModalOverlay.classList.add('hidden'); });
   els.payNowBtn.addEventListener('click', () => {
     // Placeholder: real Chargily checkout will be wired here later.
+    // Once payment succeeds, call exportPdf() when requestedFormat === 'pdf',
+    // or the future exportWord() when requestedFormat === 'word', then set unlocked = true.
     alert(lang === 'ar' ? 'لم تُفعَّل بوابة الدفع بعد — قريبًا.' : lang === 'fr' ? 'Le paiement sera bientôt disponible.' : 'Payment is coming soon.');
   });
 
   async function exportPdf() {
-    els.docPreview.style.userSelect = 'text';
-    const canvas = await html2canvas(els.docPreview, { scale: 2, useCORS: true });
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF('p', 'pt', 'a4');
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const imgProps = { width: canvas.width, height: canvas.height };
-    const ratio = pageWidth / imgProps.width;
-    const imgHeight = imgProps.height * ratio;
-    pdf.addImage(canvas.toDataURL('image/jpeg', 0.92), 'JPEG', 0, 0, pageWidth, imgHeight);
+    const pdfPageWidth = pdf.internal.pageSize.getWidth();
+    const pdfPageHeight = pdf.internal.pageSize.getHeight();
+
+    for (let i = 0; i < pages.length; i++) {
+      els.docPreviewLeft.innerHTML = pages[i].map(blockToHtml).join('');
+      els.pageNumberLeft.textContent = formatPageNumber(i + 1);
+      els.watermarkTextLeft.textContent = '';
+      els.docPreviewLeft.style.userSelect = 'text';
+
+      const canvas = await html2canvas(els.pageSheetLeft, { scale: 2, useCORS: true });
+      const ratio = Math.min(pdfPageWidth / canvas.width, pdfPageHeight / canvas.height);
+      const imgW = canvas.width * ratio;
+      const imgH = canvas.height * ratio;
+
+      if (i > 0) pdf.addPage();
+      pdf.addImage(canvas.toDataURL('image/jpeg', 0.92), 'JPEG', (pdfPageWidth - imgW) / 2, (pdfPageHeight - imgH) / 2, imgW, imgH);
+
+      els.docPreviewLeft.style.userSelect = '';
+    }
+
     pdf.save('memo-organized.pdf');
-    els.docPreview.style.userSelect = '';
+    renderCurrentSpread(); // restore the on-screen spread after using the left sheet for export rendering
   }
   // NOTE: exportPdf() is intentionally not yet wired to a button — it will
   // be called after a successful Chargily payment confirmation (next phase).
@@ -504,6 +679,16 @@
     els.styleLabel.textContent = dict.styleLabel; els.tocBtnText.textContent = dict.tocBtnText;
     els.fontSizeLabel.textContent = dict.fontSizeLabel;
     els.downloadWordText.textContent = dict.downloadWordText; els.downloadPdfText.textContent = dict.downloadPdfText;
+    els.pageNumBtnText.textContent = dict.pageNumBtnText; els.pageNumModalTitle.textContent = dict.pageNumModalTitle;
+    els.pageNumEnableLabel.textContent = dict.pageNumEnableLabel;
+    els.pageNumOnOpt.textContent = dict.pageNumOnOpt; els.pageNumOffOpt.textContent = dict.pageNumOffOpt;
+    els.pageNumStyleLabel.textContent = dict.pageNumStyleLabel;
+    els.pageNumStyleNumericOpt.textContent = dict.pageNumStyleNumericOpt;
+    els.pageNumStyleRomanOpt.textContent = dict.pageNumStyleRomanOpt;
+    els.pageNumStyleLettersOpt.textContent = dict.pageNumStyleLettersOpt;
+    els.pageNumRangeLabel.textContent = dict.pageNumRangeLabel; els.pageNumExcludeLabel.textContent = dict.pageNumExcludeLabel;
+    els.pageNumCancelBtn.textContent = dict.cancelBtn;
+    els.pageNumSaveBtn.textContent = dict.saveBtn;
     els.tocModalTitle.textContent = dict.tocModalTitle;
     els.tocHeadingsText.textContent = dict.tocHeadingsText; els.tocTablesText.textContent = dict.tocTablesText; els.tocFiguresText.textContent = dict.tocFiguresText;
     els.tocCancelBtn.textContent = dict.cancelBtn;

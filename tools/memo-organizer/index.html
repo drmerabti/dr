@@ -103,6 +103,11 @@
           <span id="tocBtnText">إنشاء فهرس تلقائي</span>
         </button>
 
+        <button type="button" class="mo-btn mo-toc-btn" id="pageNumBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 15h6"/></svg>
+          <span id="pageNumBtnText">ترقيم الصفحات</span>
+        </button>
+
         <div class="mo-download-row">
           <button type="button" class="mo-download-btn mo-download-word" id="downloadWordBtn" data-format="word">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M7 9l2 6 2-6 2 6 2-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -116,10 +121,20 @@
       </div>
 
       <div class="mo-preview-col">
-        <div class="mo-preview-scroll" id="previewScroll">
-          <div class="mo-doc-preview" id="docPreview"></div>
-          <div class="mo-watermark" id="watermarkOverlay"></div>
+        <div class="mo-book-spread" id="bookSpread">
+          <div class="mo-page-sheet" id="pageSheetLeft">
+            <div class="mo-doc-preview" id="docPreviewLeft"></div>
+            <div class="mo-watermark"><span id="watermarkTextLeft"></span></div>
+            <div class="mo-page-number" id="pageNumberLeft"></div>
+          </div>
+          <div class="mo-page-sheet" id="pageSheetRight">
+            <div class="mo-doc-preview" id="docPreviewRight"></div>
+            <div class="mo-watermark"><span id="watermarkTextRight"></span></div>
+            <div class="mo-page-number" id="pageNumberRight"></div>
+          </div>
         </div>
+        <div class="mo-page-nav" id="pageNav"></div>
+        <div class="mo-measure-box" id="measureBox" aria-hidden="true"></div>
       </div>
 
     </div>
@@ -145,6 +160,40 @@
       </button>
     </div>
     <button type="button" class="mo-btn" id="tocCancelBtn">إلغاء</button>
+  </div>
+</div>
+
+<!-- Page numbering settings modal -->
+<div class="mo-modal-overlay hidden" id="pageNumModalOverlay">
+  <div class="mo-modal">
+    <h3 id="pageNumModalTitle">ترقيم الصفحات</h3>
+
+    <label id="pageNumEnableLabel">تفعيل الترقيم</label>
+    <select id="pageNumEnableSelect" class="cv-input">
+      <option value="on" id="pageNumOnOpt">مفعّل</option>
+      <option value="off" id="pageNumOffOpt">معطّل</option>
+    </select>
+
+    <label id="pageNumStyleLabel">نمط الترقيم</label>
+    <select id="pageNumStyleSelect" class="cv-input">
+      <option value="numeric" id="pageNumStyleNumericOpt">أرقام عادية (1، 2، 3)</option>
+      <option value="roman" id="pageNumStyleRomanOpt">أرقام رومانية (I، II، III)</option>
+      <option value="arabicLetters" id="pageNumStyleLettersOpt">حروف عربية (أ، ب، ج)</option>
+    </select>
+
+    <label id="pageNumRangeLabel">نطاق الترقيم (اختياري)</label>
+    <div class="mo-correction-row">
+      <input type="number" id="pageNumFromInput" class="cv-input" min="1" placeholder="من">
+      <input type="number" id="pageNumToInput" class="cv-input" min="1" placeholder="إلى">
+    </div>
+
+    <label id="pageNumExcludeLabel">استثناء صفحات (اختياري، مفصولة بفاصلة)</label>
+    <input type="text" id="pageNumExcludeInput" class="cv-input" placeholder="مثال: 1, 2, 5">
+
+    <div class="mo-modal-actions">
+      <button type="button" class="mo-btn" id="pageNumCancelBtn">إلغاء</button>
+      <button type="button" class="mo-btn mo-pay-btn" id="pageNumSaveBtn">حفظ</button>
+    </div>
   </div>
 </div>
 
