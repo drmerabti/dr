@@ -612,7 +612,6 @@
 
     db.collection("reports")
       .where("owner", "==", currentUser.uid)
-      .orderBy("updatedAt", "desc")
       .get()
       .then((snap) => {
         els.libraryLoading.hidden = true;
@@ -620,10 +619,10 @@
           els.libraryEmpty.hidden = false;
           return;
         }
-        snap.forEach((doc) => {
-          const data = doc.data();
-          renderLibraryCard(doc.id, data);
-        });
+        const docs = [];
+        snap.forEach((doc) => docs.push({ id: doc.id, data: doc.data() }));
+        docs.sort((a, b) => (b.data.updatedAt || 0) - (a.data.updatedAt || 0));
+        docs.forEach((d) => renderLibraryCard(d.id, d.data));
       })
       .catch((err) => {
         els.libraryLoading.hidden = true;
@@ -1037,7 +1036,7 @@
     const sheet = els.reportSheet;
     sheet.classList.add("pdf-capture");
     try {
-      const canvas = await html2canvas(sheet, { scale: 2, backgroundColor: "#E9F1F6", useCORS: true });
+      const canvas = await html2canvas(sheet, { scale: 2, backgroundColor: "#ffffff", useCORS: true });
       const imgData = canvas.toDataURL("image/png");
 
       const { jsPDF } = window.jspdf;
