@@ -451,9 +451,9 @@ const CONTENT = {
       desc_ar: 'اكتب نقاطك ودع الذكاء الاصطناعي يصيغ لك إيميلًا احترافيًا كاملًا — يتطلب تسجيل الدخول.', desc_en: 'Write your key points and let AI draft a full professional email for you — requires login.',
       url: 'tools/mail-assistant/', icon: ICONS.mailAssistApp, family: 'admin' },
     { id: 'tool-pdf-services', title_ar: 'خدمات PDF', title_en: 'PDF Services',
-      desc_ar: 'دمج، فصل، ضغط ملفات PDF، وتحويل PDF/Excel/Word فيما بينها — كل شي بأداة واحدة.',
-      desc_en: 'Merge, split, compress PDFs, and convert between PDF/Excel/Word — all in one tool.',
-      icon: ICONS.pdfToImgApp, family: 'edu', comingSoon: true },
+      desc_ar: 'حوّل Word إلى PDF، ادمج أو قسّم ملفات PDF، أو حوّل بين PDF والصور — كل شي بأداة واحدة.',
+      desc_en: 'Convert Word to PDF, merge or split PDF files, or convert between PDF and images — all in one tool.',
+      url: 'tools/pdf-toolkit/', icon: ICONS.pdfToImgApp, family: 'edu' },
     // لإضافة أداة جديدة أضف سطرًا هنا بنفس الشكل:
     // { id:'tool-distance', title_ar:'حساب المسافة بين منطقتين', title_en:'Distance Calculator',
     //   desc_ar:'احسب المسافة بين نقطتين جغرافيتين بسهولة.', desc_en:'Calculate distance between two locations.',
