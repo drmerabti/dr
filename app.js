@@ -6,6 +6,28 @@
 ===================================================================== */
 
 const ICONS = {
+  memoOrganizerApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="gMemoOrg" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#8FA8C7"/><stop offset="1" stop-color="#3A5A7D"/>
+      </linearGradient>
+    </defs>
+    <ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/>
+    <path d="M11 6c-1.7 0-3 1.3-3 3v30c0 1.7 1.3 3 3 3h20c1.7 0 3-1.3 3-3V15l-9-9H11z" fill="url(#gMemoOrg)"/>
+    <path d="M25 6v7c0 1.1.9 2 2 2h7z" fill="#C7D6E5" opacity=".6"/>
+    <path d="M15 22h12M15 27h12M15 32h8" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+    <path d="M30 30l3-3 2 2-3 3z" fill="#fff"/>
+  </svg>`,
+  favorites: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="gFavA" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#FFD27A"/><stop offset="1" stop-color="#E0A020"/>
+      </linearGradient>
+    </defs>
+    <ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/>
+    <path d="M24 6l5.4 11 12.1 1.8-8.8 8.5 2 12.1L24 33.6 13.3 39.4l2-12.1-8.8-8.5L18.6 17z" fill="url(#gFavA)"/>
+    <path d="M24 6l3 8.6-6-.9z" fill="#fff" opacity=".3"/>
+  </svg>`,
   cvApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <linearGradient id="gCvA" x1="0" y1="0" x2="0" y2="1">
@@ -148,9 +170,6 @@ const ICONS = {
   pdfToImgApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gP2I" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8FA8C7"/><stop offset="1" stop-color="#3A5A7D"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="6" y="8" width="20" height="26" rx="2.5" fill="url(#gP2I)"/><rect x="22" y="16" width="20" height="24" rx="2.5" fill="#fff" stroke="#8FA8C7" stroke-width="1.5"/><circle cx="28" cy="23" r="2" fill="#F0C56B"/><path d="M24 34l4-5 4 4 5-6 5 7" fill="none" stroke="#3A5A7D" stroke-width="1.6"/></svg>`,
   excelToPdfApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gE2P" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6FCF97"/><stop offset="1" stop-color="#1D7A46"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="6" y="8" width="20" height="26" rx="2.5" fill="url(#gE2P)"/><rect x="22" y="16" width="20" height="24" rx="2.5" fill="#C0392B"/><text x="32" y="32" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" font-weight="800" fill="#fff">PDF</text></svg>`,
   wordToPdfApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gW2P" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4A9AE8"/><stop offset="1" stop-color="#1857A8"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="6" y="8" width="20" height="26" rx="2.5" fill="url(#gW2P)"/><rect x="22" y="16" width="20" height="24" rx="2.5" fill="#C0392B"/><text x="32" y="32" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" font-weight="800" fill="#fff">PDF</text></svg>`,
-  mergePdfApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gMrgA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F0A0A0"/><stop offset="1" stop-color="#C0392B"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="5" y="10" width="19" height="25" rx="2.5" fill="#DCE8F2" stroke="#8FA8C7" stroke-width="1.2" transform="rotate(-6 14 22)"/><rect x="12" y="9" width="20" height="26" rx="2.5" fill="url(#gMrgA)"/><path d="M18 22h12m0 0-4-4m4 4-4 4" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>`,
-  splitPdfApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gSplit" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F0C56B"/><stop offset="1" stop-color="#BD8A2E"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="6" y="8" width="16" height="26" rx="2.5" fill="url(#gSplit)"/><rect x="26" y="8" width="16" height="26" rx="2.5" fill="url(#gSplit)" opacity=".6"/><path d="M18 21h-4m0 0 2-2m-2 2 2 2" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M30 21h4m0 0-2-2m2 2-2 2" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>`,
-  imageToPdfApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gI2P" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C7ADF2"/><stop offset="1" stop-color="#7A4FA3"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="6" y="9" width="20" height="26" rx="2.5" fill="url(#gI2P)"/><circle cx="11.5" cy="15.5" r="1.8" fill="#fff"/><path d="M7 26l4.5-5 3.5 4 4-4.5 5.5 6.5" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><rect x="22" y="16" width="20" height="24" rx="2.5" fill="#C0392B"/><text x="32" y="32" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" font-weight="800" fill="#fff">PDF</text></svg>`,
   lessons: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <linearGradient id="gLessonsL" x1="0" y1="0" x2="0" y2="1">
@@ -357,7 +376,7 @@ const CONTENT = {
   tools: [
     { id: 'tool-text-to-numbers', title_ar: 'تحويل الأرقام إلى نص', title_en: 'Number to Words',
       desc_ar: 'حوّل أي رقم إلى نص مكتوب بالعربية أو الإنجليزية أو الفرنسية، مع إمكانية إضافة اسم العملة.', desc_en: 'Convert any number into written words in Arabic, English, or French, with an optional currency name.',
-      url: 'tools/text-to-numbers/', icon: ICONS.numbersApp, family: 'admin' },
+      url: 'tools/text-to-numbers/', icon: ICONS.numbersApp, family: ['admin', 'calc'] },
     { id: 'tool-invoice-generator', title_ar: 'مولّد الفواتير', title_en: 'Invoice Generator',
       desc_ar: 'أنشئ فاتورة احترافية مع شعار، توقيع، ضريبة، وتحويل المبلغ إلى حروف — بثلاث لغات.',
       desc_en: 'Generate a professional invoice with logo, signature, VAT, and amount-in-words — in three languages.',
@@ -368,22 +387,22 @@ const CONTENT = {
       url: 'tools/cv-builder/', icon: ICONS.cvApp, family: 'admin' },
      { id: 'tool-survey-builder', title_ar: 'مولّد الاستبيان', title_en: 'Survey Builder',
   desc_ar: 'أنشئ استبيانك الخاص وشاركه واحصل على تحليل النتائج تلقائيًا.', desc_en: 'Build your own survey, share it, and get automatic results analysis.',
-  url: 'tools/survey-builder/', icon: ICONS.numbersApp, family: 'admin' },
+  url: 'tools/survey-builder/', icon: ICONS.numbersApp, family: 'edu' },
     { id: 'tool-budget', title_ar: 'تسيير الميزانية الشهرية', title_en: 'Monthly Budget Tracker',
       desc_ar: 'وزّع دخلك على أظرف ذكية، تتبّع مصاريفك اليومية، واعرف المتاح لك كل يوم — يتطلب تسجيل الدخول.', desc_en: 'Split your income into smart envelopes, track daily spending, and see your daily allowance — requires login.',
       url: 'tools/budget/', icon: ICONS.budgetApp, family: 'home' },
     { id: 'tool-cert-gen', title_ar: 'أداة توليد الشهادات', title_en: 'Certificate Generator',
       desc_ar: 'اختر قالبًا، أضف المضمون وختمك، واحصل على شهادة جاهزة — يتطلب تسجيل الدخول.', desc_en: 'Pick a template, add your content and stamp, and get a ready certificate — requires login.',
-      icon: ICONS.certGenApp, family: 'admin', comingSoon: true },
+      icon: ICONS.certGenApp, family: 'edu', comingSoon: true },
     { id: 'tool-cover-page', title_ar: 'مولّد صفحات الغلاف', title_en: 'Cover Page Generator',
       desc_ar: 'أنشئ غلافًا احترافيًا لتقاريرك وبحوثك — 10 قوالب وإطارات اختيارية — يتطلب تسجيل الدخول.', desc_en: 'Create a professional cover page for your reports and research — 10 templates and optional frames — requires login.',
-      url: 'tools/cover-page/', icon: ICONS.coverPageApp, family: 'admin' },
+      url: 'tools/cover-page/', icon: ICONS.coverPageApp, family: 'edu' },
     { id: 'tool-admin-request', title_ar: 'مولّد الطلب الإداري', title_en: 'Administrative Request Generator',
       desc_ar: 'أنشئ طلبات رسمية جاهزة بمساعدة الذكاء الاصطناعي (إجازة، توظيف، استفادة...) — يتطلب تسجيل الدخول.', desc_en: 'Generate ready official requests with AI assistance (leave, employment, benefit...) — requires login.',
       url: 'tools/admin-request/', icon: ICONS.adminReqApp, family: 'admin' },
     { id: 'tool-salary-calc', title_ar: 'حاسبة الراتب', title_en: 'Salary Calculator',
       desc_ar: 'احسب الراتب الصافي مع IRG وCNAS والمنح العائلية، مع كشف راتب مفصل قابل للطباعة.', desc_en: 'Calculate net salary with IRG, CNAS, and family allowances, with a detailed printable payslip.',
-      url: 'tools/salary-calc/', icon: ICONS.salaryApp, family: 'calc' },
+      url: 'tools/salary-calc/', icon: ICONS.salaryApp, family: 'home' },
     { id: 'tool-date-diff', title_ar: 'حاسبة الفرق بين تاريخين', title_en: 'Date Difference Calculator',
       desc_ar: 'احسب الفرق بالأيام والأشهر والسنوات بين تاريخين، أو استخدمها لمعرفة سنّك بالضبط.', desc_en: 'Calculate the difference in days, months, and years between two dates, or use it to find your exact age.',
       url: 'tools/date-diff/', icon: ICONS.dateDiffApp, family: 'calc' },
@@ -421,30 +440,20 @@ const CONTENT = {
     { id: 'tool-grade-avg', title_ar: 'حاسبة المعدل', title_en: 'Grade Average Calculator',
       desc_ar: 'احسب معدلك بمرونة كاملة — مواد ومعاملات خاصة بك، بأي عدد ولأي مستوى دراسي.', desc_en: 'Calculate your average with full flexibility — your own subjects and weights, for any education level.',
       url: 'tools/grade-calculator/', icon: ICONS.gradeApp, family: 'edu' },
+    { id: 'tool-memo-organizer', title_ar: 'تنظيم المذكرات', title_en: 'Memo Organizer',
+      desc_ar: 'ارفع مذكرتك الفوضوية، وخلّها تنظّم تلقائيًا بالذكاء الاصطناعي — معاينة مجانية، والتحميل بدفعة واحدة — يتطلب تسجيل الدخول.',
+      desc_en: 'Upload your messy memo and let AI organize it automatically — free preview, one-time payment to download — requires login.',
+      url: 'tools/memo-organizer/', icon: ICONS.memoOrganizerApp, family: 'edu' },
 { id: 'tool-schedule', title_ar: 'مولّد جدول زمني', title_en: 'Schedule Generator',
   desc_ar: 'صمّم جدولك الأسبوعي بمهام ملوّنة، احفظه تلقائيًا، واطبعه بضغطة واحدة.', desc_en: 'Design your weekly schedule with color-coded tasks, auto-saved, and print it in one click.',
-  url: 'tools/schedule/', icon: ICONS.scheduleApp, family: 'admin' },
+  url: 'tools/schedule/', icon: ICONS.scheduleApp, family: 'edu' },
     { id: 'tool-mail-assist', title_ar: 'مساعد البريد المهني', title_en: 'Professional Email Assistant',
-      desc_ar: 'قوالب جاهزة ومساعدة اختيارية بالذكاء الاصطناعي لصياغة إيميلات احترافية.', desc_en: 'Ready templates and optional AI help for professional email writing.',
-      icon: ICONS.mailAssistApp, family: 'admin', comingSoon: true },
-    { id: 'tool-pdf-to-image', title_ar: 'PDF إلى صورة', title_en: 'PDF to Image',
-      desc_ar: 'حوّل صفحات PDF إلى صور مباشرة من متصفحك.', desc_en: 'Convert PDF pages into images directly from your browser.',
-      url: 'tools/pdf-toolkit/?tool=pdf2img', icon: ICONS.pdfToImgApp, family: 'admin' },
-    { id: 'tool-excel-to-pdf', title_ar: 'Excel إلى PDF', title_en: 'Excel to PDF',
-      desc_ar: 'حوّل ملف إكسل إلى PDF جاهز للمشاركة.', desc_en: 'Convert an Excel file into a ready-to-share PDF.',
-      icon: ICONS.excelToPdfApp, family: 'admin', comingSoon: true },
-    { id: 'tool-word-to-pdf', title_ar: 'Word إلى PDF', title_en: 'Word to PDF',
-      desc_ar: 'حوّل مستند وورد إلى PDF جاهز للمشاركة.', desc_en: 'Convert a Word document into a ready-to-share PDF.',
-      url: 'tools/pdf-toolkit/?tool=word2pdf', icon: ICONS.wordToPdfApp, family: 'admin' },
-    { id: 'tool-merge-pdf', title_ar: 'دمج ملفات PDF', title_en: 'Merge PDF',
-      desc_ar: 'ادمج ملفين أو أكثر من PDF في ملف واحد مباشرة من متصفحك.', desc_en: 'Merge two or more PDF files into one, directly from your browser.',
-      url: 'tools/pdf-toolkit/?tool=mergepdf', icon: ICONS.mergePdfApp, family: 'admin' },
-    { id: 'tool-split-pdf', title_ar: 'تقسيم ملف PDF', title_en: 'Split PDF',
-      desc_ar: 'قسّم ملف PDF إلى عدة ملفات، صفحة بصفحة أو حسب نطاق تختاره.', desc_en: 'Split a PDF file into multiple files, page by page or by a custom range.',
-      url: 'tools/pdf-toolkit/?tool=splitpdf', icon: ICONS.splitPdfApp, family: 'admin' },
-    { id: 'tool-image-to-pdf', title_ar: 'صورة إلى PDF', title_en: 'Image to PDF',
-      desc_ar: 'حوّل صورة واحدة أو أكثر إلى ملف PDF واحد مباشرة من متصفحك.', desc_en: 'Convert one or more images into a single PDF file, directly from your browser.',
-      url: 'tools/pdf-toolkit/?tool=img2pdf', icon: ICONS.imageToPdfApp, family: 'admin' },
+      desc_ar: 'اكتب نقاطك ودع الذكاء الاصطناعي يصيغ لك إيميلًا احترافيًا كاملًا — يتطلب تسجيل الدخول.', desc_en: 'Write your key points and let AI draft a full professional email for you — requires login.',
+      url: 'tools/mail-assistant/', icon: ICONS.mailAssistApp, family: 'admin' },
+    { id: 'tool-pdf-services', title_ar: 'خدمات PDF', title_en: 'PDF Services',
+      desc_ar: 'دمج، فصل، ضغط ملفات PDF، وتحويل PDF/Excel/Word فيما بينها — كل شي بأداة واحدة.',
+      desc_en: 'Merge, split, compress PDFs, and convert between PDF/Excel/Word — all in one tool.',
+      icon: ICONS.pdfToImgApp, family: 'edu', comingSoon: true },
     // لإضافة أداة جديدة أضف سطرًا هنا بنفس الشكل:
     // { id:'tool-distance', title_ar:'حساب المسافة بين منطقتين', title_en:'Distance Calculator',
     //   desc_ar:'احسب المسافة بين نقطتين جغرافيتين بسهولة.', desc_en:'Calculate distance between two locations.',
@@ -484,21 +493,25 @@ const CONTENT = {
 };
 
 /* ============ أيقونات SVG (ستايل شبه ثلاثي الأبعاد: ظلال + انعكاسات ضوء) ============ */
-const SECTIONS = [
+const SECTIONS_ROW1 = [
+  { key: 'tools',      icon: ICONS.tools,     badge: 'badge-tools',     href: 'tools.html' },
+  { key: 'apps',       icon: ICONS.apps,      badge: 'badge-apps',      href: 'apps.html' },
+  { key: 'favorites',  icon: ICONS.favorites, badge: 'badge-favorites', href: 'favorites.html' },
+];
+const SECTIONS_ROW2 = [
   { key: 'lessons',   icon: ICONS.lessons,  badge: 'badge-lessons',   href: 'lessons.html' },
-  { key: 'apps',      icon: ICONS.apps,     badge: 'badge-apps',      href: 'apps.html' },
-  { key: 'tools',     icon: ICONS.tools,    badge: 'badge-tools',     href: 'tools.html' },
   { key: 'trainings', icon: ICONS.training, badge: 'badge-training',  href: 'resources.html' },
   { key: 'services',  icon: ICONS.services, badge: 'badge-services',  href: 'services.html' },
   { key: 'about',     icon: ICONS.about,    badge: 'badge-about',     href: 'about.html' },
 ];
+const SECTIONS = [...SECTIONS_ROW1, ...SECTIONS_ROW2];
 
 /* =====================================================================
    I18N
 ===================================================================== */
 const I18N = {
   ar: {
-    site_title: 'د. سفيان مرابطي — التعلم الرقمي',
+    site_title: 'Merabti 🎀',
     brand: 'د. سفيان مرابطي',
     search_placeholder: 'ابحث عن درس، تطبيق، أداة...',
     home: 'الرئيسية',
@@ -506,10 +519,11 @@ const I18N = {
     about_body: 'أشارك دروسًا وتطبيقات عملية لتسهيل استخدام برامج مايكروسوفت للجميع.',
     footer_text: '© 2026 د. سفيان مرابطي',
     section_lessons: 'الدروس', section_apps: 'التطبيقات', section_tools: 'الأدوات',
-    section_trainings: 'تدريب', section_services: 'الخدمات', section_about: 'حول',
+    section_trainings: 'تدريب', section_services: 'الخدمات', section_about: 'حول', section_favorites: 'المفضلة',
     section_lessons_desc: 'دروس مصورة خطوة بخطوة', section_apps_desc: 'تطبيقات عملية للتنزيل',
     section_tools_desc: 'أدوات مساعدة سريعة', section_trainings_desc: 'اختبارات وتمارين تفاعلية',
     section_services_desc: 'خدمات واستشارات', section_about_desc: 'تعرّف علي',
+    section_favorites_desc: 'أدواتك وتطبيقاتك المفضّلة',
     go_to_training: 'الذهاب إلى التمرين', review_lesson: 'مراجعة الدرس',
     watch_video: 'مشاهدة الفيديو', open_app: 'فتح على Google Play',
     open_tool: 'فتح الأداة',
@@ -526,7 +540,7 @@ const I18N = {
     my_account: 'حسابي',
   },
   en: {
-    site_title: 'Dr. Sofiane Merabti — Digital Learning',
+    site_title: 'Merabti 🎀',
     brand: 'Dr. Sofiane Merabti',
     search_placeholder: 'Search lessons, apps, tools...',
     home: 'Home',
@@ -534,10 +548,11 @@ const I18N = {
     about_body: 'I share lessons and practical apps that make Microsoft tools easier for everyone.',
     footer_text: '© 2026 Dr. Sofiane Merabti',
     section_lessons: 'Lessons', section_apps: 'Apps', section_tools: 'Tools',
-    section_trainings: 'Training', section_services: 'Services', section_about: 'About',
+    section_trainings: 'Training', section_services: 'Services', section_about: 'About', section_favorites: 'Favorites',
     section_lessons_desc: 'Step-by-step video lessons', section_apps_desc: 'Practical apps to download',
     section_tools_desc: 'Quick helper tools', section_trainings_desc: 'Interactive quizzes and exercises',
     section_services_desc: 'Services and consulting', section_about_desc: 'Get to know me',
+    section_favorites_desc: 'Your favorite tools and apps',
     go_to_training: 'Go to training', review_lesson: 'Review lesson',
     watch_video: 'Watch video', open_app: 'Open on Google Play',
     open_tool: 'Open tool',
@@ -596,9 +611,11 @@ function shareButtonsHtml(title, url){
 ===================================================================== */
 function renderHomeGrid(){
   const grid = document.getElementById('sectionGrid');
+  const grid2 = document.getElementById('sectionGridRow2');
   if (!grid) return;
   grid.innerHTML = '';
-  SECTIONS.forEach(s => {
+  if (grid2) grid2.innerHTML = '';
+  SECTIONS_ROW1.forEach(s => {
     const card = document.createElement('a');
     card.className = 'section-card';
     card.href = s.href;
@@ -612,26 +629,40 @@ function renderHomeGrid(){
     `;
     grid.appendChild(card);
   });
+  SECTIONS_ROW2.forEach(s => {
+    const card = document.createElement('a');
+    card.className = 'section-card';
+    card.href = s.href;
+    card.style.textDecoration = 'none';
+    card.style.color = 'inherit';
+    card.style.display = 'block';
+    card.innerHTML = `
+      <span class="icon-badge ${s.badge}">${s.icon}</span>
+      <h3>${t('section_' + s.key)}</h3>
+      <p>${t('section_' + s.key + '_desc')}</p>
+    `;
+    (grid2 || grid).appendChild(card);
+  });
 }
 
 /* =====================================================================
    SECTION LIST + DETAIL (lessons / apps / tools / resources / services)
 ===================================================================== */
 const FAMILY_LABELS = {
-  ar: { all: 'الكل', admin: 'إدارية', edu: 'تعليمية', calc: 'حاسبات', home: 'منزلية' },
-  en: { all: 'All', admin: 'Admin', edu: 'Educational', calc: 'Calculators', home: 'Home' },
+  ar: { admin: 'إدارية', edu: 'تعليمية', calc: 'حاسبات', home: 'منزلية' },
+  en: { admin: 'Admin', edu: 'Educational', calc: 'Calculators', home: 'Home' },
 };
-let activeFamily = 'all';
+let activeFamily = null;
 
 function renderFamilyFilter(items){
   const bar = document.getElementById('familyFilter');
   if (!bar) return;
-  const families = Array.from(new Set(items.map(i => i.family).filter(Boolean)));
+  const families = Array.from(new Set(items.flatMap(i => Array.isArray(i.family) ? i.family : [i.family]).filter(Boolean)));
   if (families.length === 0){ bar.classList.add('hidden'); return; }
+  if (!activeFamily || !families.includes(activeFamily)) activeFamily = families[0];
   bar.classList.remove('hidden');
   const labels = FAMILY_LABELS[lang] || FAMILY_LABELS.ar;
-  const order = ['all', ...families];
-  bar.innerHTML = order.map(f => `<button type="button" class="family-btn ${f === activeFamily ? 'active' : ''}" data-family="${f}">${labels[f] || f}</button>`).join('');
+  bar.innerHTML = families.map(f => `<button type="button" class="family-btn ${f === activeFamily ? 'active' : ''}" data-family="${f}">${labels[f] || f}</button>`).join('');
   bar.querySelectorAll('.family-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       activeFamily = btn.getAttribute('data-family');
@@ -649,8 +680,8 @@ function renderSectionItems(){
   if (key === 'tools'){
     renderFamilyFilter(allItems);
   }
-  const items = (key === 'tools' && activeFamily !== 'all')
-    ? allItems.filter(i => i.family === activeFamily)
+  const items = (key === 'tools' && activeFamily)
+    ? allItems.filter(i => Array.isArray(i.family) ? i.family.includes(activeFamily) : i.family === activeFamily)
     : allItems;
 
   wrap.innerHTML = '';
@@ -677,17 +708,30 @@ function renderSectionItems(){
       card.style.textDecoration = 'none';
       card.style.color = 'inherit';
       card.style.display = 'block';
+      card.style.position = 'relative';
       if (item.external){
         card.target = '_blank';
         card.rel = 'noopener';
       }
+      const showFav = (key === 'tools' || key === 'apps');
       card.innerHTML = `
+        ${showFav ? `<button type="button" class="fav-star-btn ${userFavorites.has(item.id) ? 'active' : ''}" data-fav-id="${item.id}" data-fav-type="${key}" aria-label="favorite">
+          <svg viewBox="0 0 24 24" fill="${userFavorites.has(item.id) ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8l-6.2 3.3L7 14.2l-5-4.9 6.9-1z"/></svg>
+        </button>` : ''}
         ${item.icon ? `<span class="icon-badge badge-${key}">${item.icon}</span>` : ''}
         <h3>${lang === 'ar' ? item.title_ar : item.title_en}</h3>
         <p>${lang === 'ar' ? item.desc_ar : item.desc_en}</p>
-        ${shareButtonsHtml(lang === 'ar' ? item.title_ar : item.title_en, item.external ? item.url : (location.origin + location.pathname.replace(/[^/]*$/, '') + item.url))}
+        ${showFav ? shareButtonsHtml(lang === 'ar' ? item.title_ar : item.title_en, item.external ? item.url : (location.origin + location.pathname.replace(/[^/]*$/, '') + item.url)) : ''}
       `;
       wrap.appendChild(card);
+      if (showFav){
+        const favBtn = card.querySelector('.fav-star-btn');
+        favBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          toggleFavorite(item.id, key, favBtn);
+        });
+      }
     } else {
       const card = document.createElement('div');
       card.className = 'item-card';
@@ -734,7 +778,7 @@ function renderItemDetail(listKey, id){
     <h2>${lang === 'ar' ? item.title_ar : item.title_en}</h2>
     <p>${lang === 'ar' ? item.desc_ar : item.desc_en}</p>
     ${extra}
-    ${shareButtonsHtml(lang === 'ar' ? item.title_ar : item.title_en, location.href)}
+    ${(listKey === 'tools' || listKey === 'apps') ? shareButtonsHtml(lang === 'ar' ? item.title_ar : item.title_en, location.href) : ''}
   `;
 
   const relBtn = document.getElementById('relatedBtn');
@@ -826,28 +870,95 @@ function initSearch(){
 /* =====================================================================
    THEME (dark / light)
 ===================================================================== */
-function themeIcon(theme){
-  return theme === 'dark'
-    ? `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3a9 9 0 1 0 9 9c0-.3 0-.6-.1-.9A7 7 0 0 1 12 3z"/></svg>`
-    : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4" stroke-linecap="round"/></svg>`;
-}
-function initTheme(){
-  const saved = localStorage.getItem('site_theme') || 'light';
-  document.documentElement.setAttribute('data-theme', saved);
-  const btn = document.getElementById('themeToggle');
-  if (!btn) return;
-  btn.innerHTML = themeIcon(saved);
-  btn.addEventListener('click', () => {
-    const cur = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', cur);
-    localStorage.setItem('site_theme', cur);
-    btn.innerHTML = themeIcon(cur);
-  });
-}
-
 /* =====================================================================
    AUTH (Firebase — Google + Email/Password)
 ===================================================================== */
+/* =====================================================================
+   FAVORITES
+===================================================================== */
+let userFavorites = new Set();
+
+async function loadFavorites(){
+  const user = getCurrentUser();
+  userFavorites = new Set();
+  if (!user || !window.firebase || !firebase.firestore) return;
+  try {
+    const snap = await firebase.firestore().collection('users').doc(user.uid).collection('favorites').get();
+    snap.forEach(doc => userFavorites.add(doc.id));
+  } catch (e) { /* ignore */ }
+}
+
+async function toggleFavorite(itemId, itemType, btnEl){
+  const user = getCurrentUser();
+  if (!user){
+    alert(lang === 'ar' ? 'سجّل دخولك أولًا لإضافة المفضلة.' : 'Please sign in first to add favorites.');
+    return;
+  }
+  const ref = firebase.firestore().collection('users').doc(user.uid).collection('favorites').doc(itemId);
+  const isFav = userFavorites.has(itemId);
+  try {
+    if (isFav){
+      await ref.delete();
+      userFavorites.delete(itemId);
+    } else {
+      await ref.set({ type: itemType, addedAt: firebase.firestore.FieldValue.serverTimestamp() });
+      userFavorites.add(itemId);
+    }
+    if (btnEl){
+      btnEl.classList.toggle('active', !isFav);
+      btnEl.querySelector('svg').setAttribute('fill', !isFav ? 'currentColor' : 'none');
+    }
+    if (document.body.dataset.section === 'favorites') renderFavoritesPage();
+  } catch (e) { /* ignore */ }
+}
+
+async function renderFavoritesPage(){
+  const wrap = document.getElementById('sectionItems');
+  if (!wrap) return;
+  const user = getCurrentUser();
+  if (!user){
+    wrap.innerHTML = `<p>${lang === 'ar' ? 'سجّل دخولك لعرض مفضلتك.' : 'Sign in to view your favorites.'}</p>`;
+    return;
+  }
+  await loadFavorites();
+  const allItems = [...CONTENT.tools.map(i => Object.assign({}, i, { _key: 'tools' })), ...CONTENT.apps.map(i => Object.assign({}, i, { _key: 'apps' }))];
+  const favItems = allItems.filter(i => userFavorites.has(i.id));
+  wrap.innerHTML = '';
+  if (favItems.length === 0){
+    wrap.innerHTML = `<p>${lang === 'ar' ? 'ما فيه أدوات أو تطبيقات بمفضلتك بعد.' : "You don't have any favorites yet."}</p>`;
+    return;
+  }
+  favItems.forEach(item => {
+    const key = item._key;
+    const card = document.createElement('a');
+    card.className = 'item-card';
+    card.href = item.url;
+    card.style.textDecoration = 'none';
+    card.style.color = 'inherit';
+    card.style.display = 'block';
+    card.style.position = 'relative';
+    if (item.external){ card.target = '_blank'; card.rel = 'noopener'; }
+    card.innerHTML = `
+      <button type="button" class="fav-star-btn active" data-fav-id="${item.id}" aria-label="favorite">
+        <svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8l-6.2 3.3L7 14.2l-5-4.9 6.9-1z"/></svg>
+      </button>
+      ${item.icon ? `<span class="icon-badge badge-${key}">${item.icon}</span>` : ''}
+      <h3>${lang === 'ar' ? item.title_ar : item.title_en}</h3>
+      <p>${lang === 'ar' ? item.desc_ar : item.desc_en}</p>
+    `;
+    wrap.appendChild(card);
+    const favBtn = card.querySelector('.fav-star-btn');
+    favBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      toggleFavorite(item.id, key, null);
+      card.remove();
+      if (!wrap.querySelector('.item-card')) renderFavoritesPage();
+    });
+  });
+}
+
+
 function getCurrentUser(){
   try { return JSON.parse(localStorage.getItem('site_user')); } catch(e){ return null; }
 }
@@ -978,7 +1089,7 @@ function initAuth(){
   if (!wrap || !btn || !menu) return;
 
   if (window.fbAuth) {
-    window.fbAuth.onAuthStateChanged((fbUser) => {
+    window.fbAuth.onAuthStateChanged(async (fbUser) => {
       if (fbUser) {
         cacheCurrentUser({
           uid: fbUser.uid,
@@ -991,6 +1102,10 @@ function initAuth(){
       }
       renderAuth();
       menu.classList.add('hidden');
+      await loadFavorites();
+      const section = document.body.dataset.section;
+      if (section === 'favorites') renderFavoritesPage();
+      else if (section === 'tools' || section === 'apps') renderSectionItems();
     });
   } else {
     renderAuth();
@@ -1016,15 +1131,16 @@ document.addEventListener('DOMContentLoaded', () => {
       lang = lang === 'ar' ? 'en' : 'ar';
       applyLanguage();
       renderHomeGrid();
-      renderSectionItems();
+      if (document.body.dataset.section === 'favorites') renderFavoritesPage();
+      else renderSectionItems();
       handleHash();
       renderAuth();
     });
   }
-  initTheme();
   initAuth();
   renderHomeGrid();
-  renderSectionItems();
+  if (document.body.dataset.section === 'favorites') renderFavoritesPage();
+  else renderSectionItems();
   initSearch();
   handleHash();
 });
