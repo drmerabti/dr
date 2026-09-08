@@ -266,7 +266,6 @@ const ICONS = {
     <circle cx="24" cy="15" r="10" fill="url(#gAboutA)"/>
     <path d="M15.5 10.5A10 10 0 0 1 24 5v2a8 8 0 0 0-6.8 3.9z" fill="#fff" opacity=".35"/>
   </svg>`,
-  bacGameApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gBacGame" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8CEBB2"/><stop offset="1" stop-color="#2E8A5B"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="6" y="17" width="36" height="18" rx="9" fill="url(#gBacGame)"/><circle cx="16" cy="26" r="3.2" fill="#fff" opacity=".9"/><rect x="14.5" y="22.5" width="3" height="7" fill="#fff" opacity=".9"/><rect x="12.5" y="24.5" width="7" height="3" fill="#fff" opacity=".9"/><circle cx="33" cy="23" r="2.6" fill="#fff" opacity=".85"/><circle cx="38" cy="28" r="2.6" fill="#fff" opacity=".85"/><path d="M24 17c0-4 3-7 6-7" fill="none" stroke="#1E5E3D" stroke-width="2" stroke-linecap="round" opacity=".4"/></svg>`,
 };
 
 const CONTENT = {
@@ -467,15 +466,6 @@ const CONTENT = {
   resources: [],
   services: [],
   trainings: [
-    {
-      id: 'training-bac-math',
-      title_ar: 'تدريب البكالوريا — رياضيات',
-      title_en: 'Bac Training — Math',
-      desc_ar: 'تدرّب على أسئلة البكالوريا بأسلوب لعبة: مراحل، أرواح، ووقت لكل سؤال.',
-      desc_en: 'Practice bac questions as a game: stages, lives, and a timer per question.',
-      url: 'trainings/bac-training/',
-      icon: ICONS.bacGameApp,
-    },
     {
       id: 'training-word-basics',
       title_ar: 'تدريب شامل في وورد',
@@ -1101,6 +1091,20 @@ function initProBtn(){
   });
 }
 
+let cachedIsAdmin = null; // cached per page load, reset on each auth state change
+async function isAdminUser(){
+  const user = getCurrentUser();
+  if (!user || !window.firebase || !firebase.firestore) return false;
+  if (cachedIsAdmin !== null) return cachedIsAdmin;
+  try {
+    const doc = await firebase.firestore().collection('users').doc(user.uid).get();
+    cachedIsAdmin = !!(doc.exists && doc.data().isAdmin === true);
+  } catch (e) {
+    cachedIsAdmin = false;
+  }
+  return cachedIsAdmin;
+}
+
 async function refreshSubscriptionStatus(){
   const proBtn = document.getElementById('proBtn');
   if (!proBtn) return;
@@ -1109,13 +1113,20 @@ async function refreshSubscriptionStatus(){
     proBtn.classList.remove('subscribed', 'pro-max');
     return;
   }
+  if (await isAdminUser()){
+    // Admin accounts always see the fully-unlocked (Pro Max) state, bypassing
+    // subscription checks entirely — this is the single shared bypass point
+    // every future locked feature should also call isAdminUser() to honor.
+    proBtn.classList.add('subscribed', 'pro-max');
+    return;
+  }
   try {
     const doc = await firebase.firestore().collection('users').doc(user.uid).get();
     const sub = doc.exists ? doc.data().subscription : null;
     const isActive = !!(sub && sub.active && sub.expiresAt && sub.expiresAt.toMillis() > Date.now());
     proBtn.classList.toggle('subscribed', isActive);
     // Note: only the "Pro" tier is purchasable today — "Pro Max" has no separate
-    // checkout yet, so this class is never set until that tier is built.
+    // checkout yet, so this class is never set (for non-admins) until that tier is built.
     proBtn.classList.toggle('pro-max', false);
   } catch (e) {
     proBtn.classList.remove('subscribed', 'pro-max');
@@ -1130,6 +1141,7 @@ function initAuth(){
 
   if (window.fbAuth) {
     window.fbAuth.onAuthStateChanged(async (fbUser) => {
+      cachedIsAdmin = null;
       if (fbUser) {
         cacheCurrentUser({
           uid: fbUser.uid,
