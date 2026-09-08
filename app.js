@@ -376,84 +376,88 @@ const CONTENT = {
   tools: [
     { id: 'tool-text-to-numbers', title_ar: 'تحويل الأرقام إلى نص', title_en: 'Number to Words',
       desc_ar: 'حوّل أي رقم إلى نص مكتوب بالعربية أو الإنجليزية أو الفرنسية، مع إمكانية إضافة اسم العملة.', desc_en: 'Convert any number into written words in Arabic, English, or French, with an optional currency name.',
-      url: 'tools/text-to-numbers/', icon: ICONS.numbersApp, family: ['admin', 'calc'] },
+      url: 'tools/text-to-numbers/', icon: ICONS.numbersApp, family: ['admin', 'calc'], tier: 'free' },
     { id: 'tool-invoice-generator', title_ar: 'مولّد الفواتير', title_en: 'Invoice Generator',
       desc_ar: 'أنشئ فاتورة احترافية مع شعار، توقيع، ضريبة، وتحويل المبلغ إلى حروف — بثلاث لغات.',
       desc_en: 'Generate a professional invoice with logo, signature, VAT, and amount-in-words — in three languages.',
-      url: 'https://drmerabti.github.io/dr/invoice-generator/', external: true, icon: ICONS.invoiceApp, family: 'admin' },
+      url: 'https://drmerabti.github.io/dr/invoice-generator/', external: true, icon: ICONS.invoiceApp, family: 'admin', tier: 'pro' },
     { id: 'tool-cv-builder', title_ar: 'منشئ السيرة الذاتية', title_en: 'CV Builder',
       desc_ar: 'أنشئ سيرة ذاتية احترافية بمعاينة حية وتصدير PDF — يتطلب تسجيل الدخول.',
       desc_en: 'Build a professional CV with live preview and PDF export — requires login.',
-      url: 'tools/cv-builder/', icon: ICONS.cvApp, family: 'admin' },
+      url: 'tools/cv-builder/', icon: ICONS.cvApp, family: 'admin', tier: 'pro' },
      { id: 'tool-survey-builder', title_ar: 'مولّد الاستبيان', title_en: 'Survey Builder',
   desc_ar: 'أنشئ استبيانك الخاص وشاركه واحصل على تحليل النتائج تلقائيًا.', desc_en: 'Build your own survey, share it, and get automatic results analysis.',
-  url: 'tools/survey-builder/', icon: ICONS.numbersApp, family: 'edu' },
+  url: 'tools/survey-builder/', icon: ICONS.numbersApp, family: 'edu', tier: 'promax' },
     { id: 'tool-budget', title_ar: 'تسيير الميزانية الشهرية', title_en: 'Monthly Budget Tracker',
       desc_ar: 'وزّع دخلك على أظرف ذكية، تتبّع مصاريفك اليومية، واعرف المتاح لك كل يوم — يتطلب تسجيل الدخول.', desc_en: 'Split your income into smart envelopes, track daily spending, and see your daily allowance — requires login.',
-      url: 'tools/budget/', icon: ICONS.budgetApp, family: 'home' },
+      url: 'tools/budget/', icon: ICONS.budgetApp, family: 'home', tier: 'pro' },
     { id: 'tool-cert-gen', title_ar: 'أداة توليد الشهادات', title_en: 'Certificate Generator',
       desc_ar: 'اختر قالبًا، أضف المضمون وختمك، واحصل على شهادة جاهزة — يتطلب تسجيل الدخول.', desc_en: 'Pick a template, add your content and stamp, and get a ready certificate — requires login.',
-      icon: ICONS.certGenApp, family: 'edu', comingSoon: true },
+      icon: ICONS.certGenApp, family: 'edu', comingSoon: true, tier: 'pro' },
     { id: 'tool-cover-page', title_ar: 'مولّد صفحات الغلاف', title_en: 'Cover Page Generator',
       desc_ar: 'أنشئ غلافًا احترافيًا لتقاريرك وبحوثك — 10 قوالب وإطارات اختيارية — يتطلب تسجيل الدخول.', desc_en: 'Create a professional cover page for your reports and research — 10 templates and optional frames — requires login.',
-      url: 'tools/cover-page/', icon: ICONS.coverPageApp, family: 'edu' },
+      url: 'tools/cover-page/', icon: ICONS.coverPageApp, family: 'edu', tier: 'pro' },
     { id: 'tool-admin-request', title_ar: 'مولّد الطلب الإداري', title_en: 'Administrative Request Generator',
       desc_ar: 'أنشئ طلبات رسمية جاهزة بمساعدة الذكاء الاصطناعي (إجازة، توظيف، استفادة...) — يتطلب تسجيل الدخول.', desc_en: 'Generate ready official requests with AI assistance (leave, employment, benefit...) — requires login.',
-      url: 'tools/admin-request/', icon: ICONS.adminReqApp, family: 'admin' },
+      url: 'tools/admin-request/', icon: ICONS.adminReqApp, family: 'admin', tier: 'pro' },
     { id: 'tool-salary-calc', title_ar: 'حاسبة الراتب', title_en: 'Salary Calculator',
       desc_ar: 'احسب الراتب الصافي مع IRG وCNAS والمنح العائلية، مع كشف راتب مفصل قابل للطباعة.', desc_en: 'Calculate net salary with IRG, CNAS, and family allowances, with a detailed printable payslip.',
-      url: 'tools/salary-calc/', icon: ICONS.salaryApp, family: 'home' },
+      url: 'tools/salary-calc/', icon: ICONS.salaryApp, family: 'home', tier: 'free' },
     { id: 'tool-date-diff', title_ar: 'حاسبة الفرق بين تاريخين', title_en: 'Date Difference Calculator',
       desc_ar: 'احسب الفرق بالأيام والأشهر والسنوات بين تاريخين، أو استخدمها لمعرفة سنّك بالضبط.', desc_en: 'Calculate the difference in days, months, and years between two dates, or use it to find your exact age.',
-      url: 'tools/date-diff/', icon: ICONS.dateDiffApp, family: 'calc' },
+      url: 'tools/date-diff/', icon: ICONS.dateDiffApp, family: 'calc', tier: 'free' },
 { id: 'tool-receipt', title_ar: 'مولّد وصل استلام', title_en: 'Receipt Generator',
   desc_ar: 'أنشئ وصل استلام رسمي جاهز للطباعة، مع تحويل المبلغ إلى حروف تلقائيًا.', desc_en: 'Generate an official, print-ready receipt, with automatic amount-to-words.',
-  url: 'tools/receipt-generator/', icon: ICONS.receiptApp, family: 'admin' },
+  url: 'tools/receipt-generator/', icon: ICONS.receiptApp, family: 'admin', tier: 'pro' },
     { id: 'tool-unit-convert', title_ar: 'محوّل الوحدات', title_en: 'Unit Converter',
       desc_ar: 'حوّل بين وحدات الطول والوزن والحرارة والمساحة والحجم.', desc_en: 'Convert between units of length, weight, temperature, area, and volume.',
-      icon: ICONS.unitConvApp, family: 'calc', comingSoon: true },
+      icon: ICONS.unitConvApp, family: 'calc', comingSoon: true, tier: 'free' },
     { id: 'tool-sci-calc', title_ar: 'حاسبة هندسية', title_en: 'Scientific Calculator',
       desc_ar: 'عمليات رياضية وهندسية متقدمة (جذور، أسس، دوال مثلثية).', desc_en: 'Advanced math and engineering operations (roots, powers, trig functions).',
-      icon: ICONS.sciCalcApp, family: 'calc', comingSoon: true },
+      icon: ICONS.sciCalcApp, family: 'calc', comingSoon: true, tier: 'free' },
     { id: 'tool-qr', title_ar: 'مولّد QR Code', title_en: 'QR Code Generator',
       desc_ar: 'أنشئ رمز QR لبطاقة تعريفك الشخصية بسهولة، ونزّله كصورة.', desc_en: 'Easily generate a QR code for your personal contact card and download it as an image.',
-      url: 'tools/qr-generator/', icon: ICONS.qrApp, family: 'admin' },
+      url: 'tools/qr-generator/', icon: ICONS.qrApp, family: 'admin', tier: 'free' },
 { id: 'tool-teacher-note', title_ar: 'مولّد مذكرة أستاذ', title_en: 'Lesson Plan Generator',
   desc_ar: 'أنشئ مذكرة تحضير دروس منظمة وجاهزة للأساتذة.', desc_en: 'Create organized, ready lesson-preparation notes for teachers.',
-  url: 'tools/lesson-plan-generator/', icon: ICONS.teacherNoteApp, family: 'edu' },
+  url: 'tools/lesson-plan-generator/', icon: ICONS.teacherNoteApp, family: 'edu', tier: 'pro' },
     { id: 'tool-id-card', title_ar: 'مولّد بطاقات الهوية', title_en: 'ID Card Generator',
       desc_ar: 'أنشئ بطاقة هوية احترافية بوجهين، بعدة ثيمات ورمز QR حقيقي — يتطلب تسجيل الدخول.', desc_en: 'Generate a professional two-sided ID card with multiple themes and a real QR code — requires login.',
-      url: 'tools/id-cards/', icon: ICONS.idCardApp, family: 'admin' },
+      url: 'tools/id-cards/', icon: ICONS.idCardApp, family: 'admin', tier: 'pro' },
     { id: 'tool-attendance-payroll', title_ar: 'إدارة الحضور والرواتب', title_en: 'Attendance & Payroll Manager',
       desc_ar: 'نظام متكامل لإدارة المصالح والمناصب والموظفين — يتطلب تسجيل الدخول.', desc_en: 'A complete system for managing departments, positions, and employees — requires login.',
-      url: 'tools/attendance-payroll/', icon: ICONS.attendanceApp, family: 'admin' },
+      url: 'tools/attendance-payroll/', icon: ICONS.attendanceApp, family: 'admin', tier: 'promax' },
 { id: 'tool-report-gen', title_ar: 'مولّد تقرير مهني', title_en: 'Professional Report Generator',
   desc_ar: 'أنشئ تقارير عمل احترافية بقوالب جاهزة (عام، حادثة، أداء دوري، محضر اجتماع)، فهرس تلقائي، وتصدير PDF متعدد الصفحات — بثلاث لغات.',
   desc_en: 'Generate professional work reports from ready templates (general, incident, periodic performance, meeting minutes), with auto table of contents and multi-page PDF export — in three languages.',
-  url: 'tools/tool-report-gen/', icon: ICONS.reportApp, family: 'admin' },
+  url: 'tools/tool-report-gen/', icon: ICONS.reportApp, family: 'admin', tier: 'pro' },
     { id: 'tool-hours-calc', title_ar: 'حاسبة عدد الساعات', title_en: 'Hours Calculator',
       desc_ar: 'احسب عدد ساعات العمل بين وقتين.', desc_en: 'Calculate the number of work hours between two times.',
-      icon: ICONS.hoursApp, family: 'calc', comingSoon: true },
+      icon: ICONS.hoursApp, family: 'calc', comingSoon: true, tier: 'free' },
     { id: 'tool-hijri', title_ar: 'محوّل هجري/ميلادي', title_en: 'Hijri/Gregorian Converter',
       desc_ar: 'حوّل أي تاريخ بالاتجاهين بضغطة واحدة.', desc_en: 'Convert any date both ways in one click.',
-      url: 'tools/hijri/', icon: ICONS.hijriApp, family: 'calc' },
+      url: 'tools/hijri/', icon: ICONS.hijriApp, family: 'calc', tier: 'free' },
     { id: 'tool-grade-avg', title_ar: 'حاسبة المعدل', title_en: 'Grade Average Calculator',
       desc_ar: 'احسب معدلك بمرونة كاملة — مواد ومعاملات خاصة بك، بأي عدد ولأي مستوى دراسي.', desc_en: 'Calculate your average with full flexibility — your own subjects and weights, for any education level.',
-      url: 'tools/grade-calculator/', icon: ICONS.gradeApp, family: 'edu' },
+      url: 'tools/grade-calculator/', icon: ICONS.gradeApp, family: 'edu', tier: 'free' },
     { id: 'tool-memo-organizer', title_ar: 'تنظيم المذكرات', title_en: 'Memo Organizer',
       desc_ar: 'ارفع مذكرتك الفوضوية، وخلّها تنظّم تلقائيًا بالذكاء الاصطناعي — معاينة مجانية، والتحميل بدفعة واحدة — يتطلب تسجيل الدخول.',
       desc_en: 'Upload your messy memo and let AI organize it automatically — free preview, one-time payment to download — requires login.',
-      url: 'tools/memo-organizer/', icon: ICONS.memoOrganizerApp, family: 'edu' },
+      url: 'tools/memo-organizer/', icon: ICONS.memoOrganizerApp, family: 'edu', tier: 'free' },
 { id: 'tool-schedule', title_ar: 'مولّد جدول زمني', title_en: 'Schedule Generator',
   desc_ar: 'صمّم جدولك الأسبوعي بمهام ملوّنة، احفظه تلقائيًا، واطبعه بضغطة واحدة.', desc_en: 'Design your weekly schedule with color-coded tasks, auto-saved, and print it in one click.',
-  url: 'tools/schedule/', icon: ICONS.scheduleApp, family: 'edu' },
+  url: 'tools/schedule/', icon: ICONS.scheduleApp, family: 'edu', tier: 'pro' },
     { id: 'tool-mail-assist', title_ar: 'مساعد البريد المهني', title_en: 'Professional Email Assistant',
       desc_ar: 'اكتب نقاطك ودع الذكاء الاصطناعي يصيغ لك إيميلًا احترافيًا كاملًا — يتطلب تسجيل الدخول.', desc_en: 'Write your key points and let AI draft a full professional email for you — requires login.',
-      url: 'tools/mail-assistant/', icon: ICONS.mailAssistApp, family: 'admin' },
+      url: 'tools/mail-assistant/', icon: ICONS.mailAssistApp, family: 'admin', tier: 'promax' },
     { id: 'tool-pdf-services', title_ar: 'خدمات PDF', title_en: 'PDF Services',
       desc_ar: 'حوّل Word إلى PDF، ادمج أو قسّم ملفات PDF، أو حوّل بين PDF والصور — كل شي بأداة واحدة.',
       desc_en: 'Convert Word to PDF, merge or split PDF files, or convert between PDF and images — all in one tool.',
-      url: 'tools/pdf-toolkit/', icon: ICONS.pdfToImgApp, family: 'edu' },
+      url: 'tools/pdf-toolkit/', icon: ICONS.pdfToImgApp, family: 'pdf', tier: 'free' },
+    { id: 'tool-pdf-to-word', title_ar: 'تحويل PDF إلى Word', title_en: 'PDF to Word',
+      desc_ar: 'حوّل ملف PDF إلى مستند Word قابل للتعديل مباشرة.',
+      desc_en: 'Convert a PDF file into an editable Word document.',
+      icon: ICONS.pdfToImgApp, family: 'pdf', tier: 'pro', comingSoon: true },
     // لإضافة أداة جديدة أضف سطرًا هنا بنفس الشكل:
     // { id:'tool-distance', title_ar:'حساب المسافة بين منطقتين', title_en:'Distance Calculator',
     //   desc_ar:'احسب المسافة بين نقطتين جغرافيتين بسهولة.', desc_en:'Calculate distance between two locations.',
@@ -627,8 +631,8 @@ function renderHomeGrid(){
    SECTION LIST + DETAIL (lessons / apps / tools / resources / services)
 ===================================================================== */
 const FAMILY_LABELS = {
-  ar: { admin: 'إدارية', edu: 'تعليمية', calc: 'حاسبات', home: 'منزلية' },
-  en: { admin: 'Admin', edu: 'Educational', calc: 'Calculators', home: 'Home' },
+  ar: { admin: 'إدارية', edu: 'تعليمية', calc: 'حاسبات', home: 'منزلية', pdf: 'خدمات PDF' },
+  en: { admin: 'Admin', edu: 'Educational', calc: 'Calculators', home: 'Home', pdf: 'PDF Services' },
 };
 let activeFamily = null;
 
@@ -692,7 +696,10 @@ function renderSectionItems(){
         card.rel = 'noopener';
       }
       const showFav = (key === 'tools' || key === 'apps');
+      const tierBadge = item.tier === 'pro' ? `<span class="tier-badge tier-pro">Pro</span>`
+        : item.tier === 'promax' ? `<span class="tier-badge tier-promax">Pro Max</span>` : '';
       card.innerHTML = `
+        ${tierBadge}
         ${showFav ? `<button type="button" class="fav-star-btn ${userFavorites.has(item.id) ? 'active' : ''}" data-fav-id="${item.id}" data-fav-type="${key}" aria-label="favorite">
           <svg viewBox="0 0 24 24" fill="${userFavorites.has(item.id) ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8l-6.2 3.3L7 14.2l-5-4.9 6.9-1z"/></svg>
         </button>` : ''}
@@ -1067,6 +1074,7 @@ function initProBtn(){
       alert(lang === 'ar' ? 'سجّل دخولك أولًا للاشتراك.' : 'Please sign in first to subscribe.');
       return;
     }
+    if (proBtn.classList.contains('subscribed')) return; // already active, nothing to do on click
     proBtn.disabled = true;
     try {
       const fn = firebase.functions().httpsCallable('createSubscriptionCheckout');
@@ -1081,6 +1089,27 @@ function initProBtn(){
       proBtn.disabled = false;
     }
   });
+}
+
+async function refreshSubscriptionStatus(){
+  const proBtn = document.getElementById('proBtn');
+  if (!proBtn) return;
+  const user = getCurrentUser();
+  if (!user || !window.firebase || !firebase.firestore){
+    proBtn.classList.remove('subscribed', 'pro-max');
+    return;
+  }
+  try {
+    const doc = await firebase.firestore().collection('users').doc(user.uid).get();
+    const sub = doc.exists ? doc.data().subscription : null;
+    const isActive = !!(sub && sub.active && sub.expiresAt && sub.expiresAt.toMillis() > Date.now());
+    proBtn.classList.toggle('subscribed', isActive);
+    // Note: only the "Pro" tier is purchasable today — "Pro Max" has no separate
+    // checkout yet, so this class is never set until that tier is built.
+    proBtn.classList.toggle('pro-max', false);
+  } catch (e) {
+    proBtn.classList.remove('subscribed', 'pro-max');
+  }
 }
 
 function initAuth(){
@@ -1107,6 +1136,7 @@ function initAuth(){
       const section = document.body.dataset.section;
       if (section === 'favorites') renderFavoritesPage();
       else if (section === 'tools' || section === 'apps') renderSectionItems();
+      await refreshSubscriptionStatus();
     });
   } else {
     renderAuth();
