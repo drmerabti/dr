@@ -1137,9 +1137,15 @@ function initAuth(){
       if (section === 'favorites') renderFavoritesPage();
       else if (section === 'tools' || section === 'apps') renderSectionItems();
       await refreshSubscriptionStatus();
+      wrap.classList.remove('auth-pending');
+      const proBtnEl = document.getElementById('proBtn');
+      if (proBtnEl) proBtnEl.classList.remove('auth-pending');
     });
   } else {
     renderAuth();
+    wrap.classList.remove('auth-pending');
+    const proBtnEl = document.getElementById('proBtn');
+    if (proBtnEl) proBtnEl.classList.remove('auth-pending');
   }
 
   btn.addEventListener('click', (e) => {

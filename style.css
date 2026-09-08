@@ -105,28 +105,31 @@ a{ color: inherit; }
 .auth-wrap{ position: relative; }
 .pro-btn{
   display: flex; align-items: center; gap: 6px;
-  border: 1.5px solid var(--line); background: var(--card-bg);
-  color: var(--ink-soft); border-radius: 999px; padding: 8px 16px;
+  height: 42px; box-sizing: border-box;
+  border: 1.5px solid var(--accent); background: var(--accent-soft);
+  color: var(--accent); border-radius: 999px; padding: 0 16px;
   cursor: pointer; font-family: inherit; font-size: .85rem; font-weight: 800;
-  transition: transform .15s ease, background .15s ease, color .15s ease, box-shadow .15s ease;
+  transition: transform .15s ease, background .15s ease, color .15s ease;
 }
-.pro-btn:hover{ transform: translateY(-2px); border-color: #C9861B; color: #C9861B; }
+.pro-btn:hover{ transform: translateY(-2px); background: var(--accent); color: #fff; }
 .pro-btn svg{ width: 16px; height: 16px; }
 .pro-btn .pro-check{ display: none; }
 
 .pro-btn.subscribed{
   border-color: transparent; color: #fff;
   background: linear-gradient(135deg, #E8EDF2 0%, #9AA7B4 100%);
-  box-shadow: 0 4px 14px rgba(120,135,150,.4), 0 0 0 3px rgba(154,167,180,.18);
 }
 .pro-btn.subscribed svg{ fill: #fff; }
 .pro-btn.subscribed .pro-check{ display: inline-flex; }
-.pro-btn.subscribed:hover{ transform: translateY(-2px); color: #fff; }
+.pro-btn.subscribed:hover{ transform: translateY(-2px); color: #fff; background: linear-gradient(135deg, #E8EDF2 0%, #9AA7B4 100%); }
 
 .pro-btn.subscribed.pro-max{
   background: linear-gradient(135deg, #F7D989 0%, #C9861B 100%);
-  box-shadow: 0 4px 14px rgba(201,134,27,.4), 0 0 0 3px rgba(242,184,75,.22);
 }
+.pro-btn.subscribed.pro-max:hover{ background: linear-gradient(135deg, #F7D989 0%, #C9861B 100%); }
+
+.auth-pending{ opacity: 0; pointer-events: none; }
+.pro-btn, .auth-wrap{ transition: opacity .25s ease, transform .15s ease, background .15s ease, color .15s ease; }
 
 .auth-btn{
   display:flex; align-items:center; gap:8px;
@@ -440,7 +443,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, [tabindex]:focus-vis
   #sectionGrid .section-card p, .section-grid-row2 .section-card p{ display: none; }
   .auth-name-text{ display: none; }
   .pro-btn span{ display: none; }
-  .pro-btn{ padding: 8px; }
+  .pro-btn{ width: 42px; padding: 0; justify-content: center; }
 }
 
 @media (prefers-reduced-motion: reduce){
