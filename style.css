@@ -103,6 +103,17 @@ a{ color: inherit; }
 /* ---- Theme toggle ---- */
 /* ---- Auth ---- */
 .auth-wrap{ position: relative; }
+.pro-btn{
+  display: flex; align-items: center; gap: 6px;
+  border: none; background: linear-gradient(135deg, #F2B84B 0%, #C9861B 100%);
+  color: #fff; border-radius: 999px; padding: 8px 16px;
+  cursor: pointer; font-family: inherit; font-size: .85rem; font-weight: 800;
+  box-shadow: 0 4px 12px rgba(201,134,27,.3);
+  transition: transform .15s ease;
+}
+.pro-btn:hover{ transform: translateY(-2px); }
+.pro-btn svg{ width: 15px; height: 15px; }
+
 .auth-btn{
   display:flex; align-items:center; gap:8px;
   border: 1px solid var(--line);
@@ -392,6 +403,8 @@ a:focus-visible, button:focus-visible, input:focus-visible, [tabindex]:focus-vis
   #sectionGrid .section-card h3{ font-size: .8rem; }
   #sectionGrid .section-card p{ display: none; }
   .auth-name-text{ display: none; }
+  .pro-btn span{ display: none; }
+  .pro-btn{ padding: 8px; }
 }
 
 @media (prefers-reduced-motion: reduce){

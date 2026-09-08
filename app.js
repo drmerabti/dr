@@ -1058,6 +1058,31 @@ function renderAuth(){
   }
 }
 
+function initProBtn(){
+  const proBtn = document.getElementById('proBtn');
+  if (!proBtn) return;
+  proBtn.addEventListener('click', async () => {
+    const user = getCurrentUser();
+    if (!user){
+      alert(lang === 'ar' ? 'سجّل دخولك أولًا للاشتراك.' : 'Please sign in first to subscribe.');
+      return;
+    }
+    proBtn.disabled = true;
+    try {
+      const fn = firebase.functions().httpsCallable('createSubscriptionCheckout');
+      const res = await fn();
+      if (res.data && res.data.checkoutUrl){
+        window.location.href = res.data.checkoutUrl;
+      } else {
+        throw new Error('no checkout url');
+      }
+    } catch (e) {
+      alert(lang === 'ar' ? 'حدث خطأ، حاول مرة أخرى.' : 'Something went wrong, try again.');
+      proBtn.disabled = false;
+    }
+  });
+}
+
 function initAuth(){
   const wrap = document.getElementById('authWrap');
   const btn = document.getElementById('authBtn');
@@ -1114,6 +1139,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
   initAuth();
+  initProBtn();
   renderHomeGrid();
   if (document.body.dataset.section === 'favorites') renderFavoritesPage();
   else renderSectionItems();
