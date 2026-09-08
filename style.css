@@ -353,33 +353,6 @@ main{ position: relative; z-index: 2; max-width: 1080px; margin: 0 auto; padding
   text-decoration:none;
 }
 
-/* ============ Share ============ */
-.share-wrap{
-  display:flex; align-items:center; gap:8px;
-  margin-top:20px; flex-wrap:wrap;
-}
-.share-label{ font-size:.82rem; color: var(--ink-soft); font-weight:600; }
-.share-btn{
-  display:flex; align-items:center; justify-content:center;
-  width: 38px; height: 38px; border-radius:50%;
-  border: 1px solid var(--line); background: var(--card-bg);
-  cursor:pointer; text-decoration:none; color: var(--ink);
-  transition: transform .15s ease, background .15s ease;
-}
-.share-btn:hover{ background: var(--accent-soft); transform: translateY(-2px); }
-.share-btn svg{ width:18px; height:18px; }
-
-/* ============ About ============ */
-.about-card{
-  background: var(--card-bg);
-  border-radius: var(--radius); box-shadow: var(--shadow);
-  padding: 32px; max-width: 560px;
-}
-.about-links{ display:flex; gap:14px; margin-top:18px; }
-.about-links a{
-  text-decoration:none; color: var(--accent); font-weight:600; font-size:.9rem;
-}
-
 .view-title{ font-size:1.5rem; margin-bottom:20px; color: var(--ink); }
 
 /* ============ Footer ============ */
@@ -397,11 +370,12 @@ a:focus-visible, button:focus-visible, input:focus-visible, [tabindex]:focus-vis
 /* ============ Responsive ============ */
 @media (max-width: 860px){
   .section-grid, .section-grid-row2{ grid-template-columns: repeat(2, 1fr); }
+  #sectionGrid{ grid-template-columns: repeat(3, 1fr); }
 }
 @media (max-width: 640px){
   .section-grid, .section-grid-row2, .item-grid{ grid-template-columns: repeat(2, 1fr); gap: 14px; }
-  .hero{ padding: 24px 0 32px; }
-  .section-card, .item-card{
+  #sectionGrid{ grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .hero{ padding: 24px 0 32px; }  .section-card, .item-card{
     padding: 18px 14px;
     aspect-ratio: 1 / 1;
     display: flex;
@@ -409,9 +383,15 @@ a:focus-visible, button:focus-visible, input:focus-visible, [tabindex]:focus-vis
     align-items: center;
     justify-content: center;
   }
+  #sectionGrid .section-card{ padding: 10px 6px; }
   .icon-badge{ width: 72px; height: 72px; border-radius: 18px; margin-bottom: 12px; }
+  #sectionGrid .icon-badge{ width: 48px; height: 48px; border-radius: 14px; margin-bottom: 8px; }
   .icon-badge svg{ width: 52px; height: 52px; }
+  #sectionGrid .icon-badge svg{ width: 32px; height: 32px; }
   .section-card h3, .item-card h3{ font-size: 1rem; }
+  #sectionGrid .section-card h3{ font-size: .8rem; }
+  #sectionGrid .section-card p{ display: none; }
+  .auth-name-text{ display: none; }
 }
 
 @media (prefers-reduced-motion: reduce){

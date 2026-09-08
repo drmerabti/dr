@@ -502,7 +502,6 @@ const SECTIONS_ROW2 = [
   { key: 'lessons',   icon: ICONS.lessons,  badge: 'badge-lessons',   href: 'lessons.html' },
   { key: 'trainings', icon: ICONS.training, badge: 'badge-training',  href: 'resources.html' },
   { key: 'services',  icon: ICONS.services, badge: 'badge-services',  href: 'services.html' },
-  { key: 'about',     icon: ICONS.about,    badge: 'badge-about',     href: 'about.html' },
 ];
 const SECTIONS = [...SECTIONS_ROW1, ...SECTIONS_ROW2];
 
@@ -515,14 +514,12 @@ const I18N = {
     brand: 'د. سفيان مرابطي',
     search_placeholder: 'ابحث عن درس، تطبيق، أداة...',
     home: 'الرئيسية',
-    about_title: 'عن د. سفيان مرابطي',
-    about_body: 'أشارك دروسًا وتطبيقات عملية لتسهيل استخدام برامج مايكروسوفت للجميع.',
     footer_text: '© 2026 د. سفيان مرابطي',
     section_lessons: 'الدروس', section_apps: 'التطبيقات', section_tools: 'الأدوات',
-    section_trainings: 'تدريب', section_services: 'الخدمات', section_about: 'حول', section_favorites: 'المفضلة',
+    section_trainings: 'تدريب', section_services: 'الخدمات', section_favorites: 'المفضلة',
     section_lessons_desc: 'دروس مصورة خطوة بخطوة', section_apps_desc: 'تطبيقات عملية للتنزيل',
     section_tools_desc: 'أدوات مساعدة سريعة', section_trainings_desc: 'اختبارات وتمارين تفاعلية',
-    section_services_desc: 'خدمات واستشارات', section_about_desc: 'تعرّف علي',
+    section_services_desc: 'خدمات واستشارات',
     section_favorites_desc: 'أدواتك وتطبيقاتك المفضّلة',
     go_to_training: 'الذهاب إلى التمرين', review_lesson: 'مراجعة الدرس',
     watch_video: 'مشاهدة الفيديو', open_app: 'فتح على Google Play',
@@ -531,7 +528,6 @@ const I18N = {
     type_lessons: 'درس', type_apps: 'تطبيق', type_tools: 'أداة',
     type_trainings: 'تدريب', type_services: 'خدمة',
     back_to_list: 'رجوع للقائمة',
-    share_label: 'مشاركة:',
     login: 'تسجيل الدخول', signup: 'إنشاء حساب', logout: 'تسجيل الخروج',
     login_with_google: 'المتابعة عبر Google',
     email_label: 'البريد الإلكتروني', password_label: 'كلمة المرور', name_label: 'الاسم',
@@ -544,14 +540,12 @@ const I18N = {
     brand: 'Dr. Sofiane Merabti',
     search_placeholder: 'Search lessons, apps, tools...',
     home: 'Home',
-    about_title: 'About Dr. Sofiane Merabti',
-    about_body: 'I share lessons and practical apps that make Microsoft tools easier for everyone.',
     footer_text: '© 2026 Dr. Sofiane Merabti',
     section_lessons: 'Lessons', section_apps: 'Apps', section_tools: 'Tools',
-    section_trainings: 'Training', section_services: 'Services', section_about: 'About', section_favorites: 'Favorites',
+    section_trainings: 'Training', section_services: 'Services', section_favorites: 'Favorites',
     section_lessons_desc: 'Step-by-step video lessons', section_apps_desc: 'Practical apps to download',
     section_tools_desc: 'Quick helper tools', section_trainings_desc: 'Interactive quizzes and exercises',
-    section_services_desc: 'Services and consulting', section_about_desc: 'Get to know me',
+    section_services_desc: 'Services and consulting',
     section_favorites_desc: 'Your favorite tools and apps',
     go_to_training: 'Go to training', review_lesson: 'Review lesson',
     watch_video: 'Watch video', open_app: 'Open on Google Play',
@@ -560,7 +554,6 @@ const I18N = {
     type_lessons: 'Lesson', type_apps: 'App', type_tools: 'Tool',
     type_trainings: 'Training', type_services: 'Service',
     back_to_list: 'Back to list',
-    share_label: 'Share:',
     login: 'Log in', signup: 'Sign up', logout: 'Log out',
     login_with_google: 'Continue with Google',
     email_label: 'Email', password_label: 'Password', name_label: 'Name',
@@ -591,21 +584,6 @@ function applyLanguage(){
 /* =====================================================================
    SHARE
 ===================================================================== */
-function shareButtonsHtml(title, url){
-  const text = encodeURIComponent(title);
-  const link = encodeURIComponent(url);
-  return `
-    <div class="share-wrap" onclick="event.stopPropagation()">
-      <span class="share-label">${t('share_label')}</span>
-      <a class="share-btn" href="https://wa.me/?text=${text}%20${link}" target="_blank" rel="noopener" title="WhatsApp">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 5L2 22l5.2-1.4c1.4.8 3.1 1.2 4.8 1.2 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18c-1.5 0-3-.4-4.2-1.1l-.3-.2-3.1.8.8-3-.2-.3C4.4 15 4 13.5 4 12c0-4.4 3.6-8 8-8s8 3.6 8 8-3.6 8-8 8z"/></svg>
-      </a>
-      <a class="share-btn" href="https://t.me/share/url?url=${link}&text=${text}" target="_blank" rel="noopener" title="Telegram">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 2 2 10l6 2 2 7 4-4 5 4 3-17z"/></svg>
-      </a>
-    </div>`;
-}
-
 /* =====================================================================
    HOME GRID
 ===================================================================== */
@@ -721,8 +699,7 @@ function renderSectionItems(){
         ${item.icon ? `<span class="icon-badge badge-${key}">${item.icon}</span>` : ''}
         <h3>${lang === 'ar' ? item.title_ar : item.title_en}</h3>
         <p>${lang === 'ar' ? item.desc_ar : item.desc_en}</p>
-        ${showFav ? shareButtonsHtml(lang === 'ar' ? item.title_ar : item.title_en, item.external ? item.url : (location.origin + location.pathname.replace(/[^/]*$/, '') + item.url)) : ''}
-      `;
+        `;
       wrap.appendChild(card);
       if (showFav){
         const favBtn = card.querySelector('.fav-star-btn');
@@ -778,7 +755,6 @@ function renderItemDetail(listKey, id){
     <h2>${lang === 'ar' ? item.title_ar : item.title_en}</h2>
     <p>${lang === 'ar' ? item.desc_ar : item.desc_en}</p>
     ${extra}
-    ${(listKey === 'tools' || listKey === 'apps') ? shareButtonsHtml(lang === 'ar' ? item.title_ar : item.title_en, location.href) : ''}
   `;
 
   const relBtn = document.getElementById('relatedBtn');
@@ -1066,8 +1042,8 @@ function renderAuth(){
   if (user){
     const initial = (user.name || user.email || '?')[0].toUpperCase();
     btn.innerHTML = user.picture
-      ? `<img class="auth-avatar-img" src="${user.picture}" alt="">${'<span>' + (user.name || user.email) + '</span>'}`
-      : `<span class="auth-avatar">${initial}</span><span>${user.name || user.email}</span>`;
+      ? `<img class="auth-avatar-img" src="${user.picture}" alt="">${'<span class="auth-name-text">' + (user.name || user.email) + '</span>'}`
+      : `<span class="auth-avatar">${initial}</span><span class="auth-name-text">${user.name || user.email}</span>`;
     menu.innerHTML = `
       <button type="button" class="auth-menu-item" id="logoutBtn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
