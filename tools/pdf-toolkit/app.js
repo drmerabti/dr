@@ -1,6 +1,6 @@
 /* =====================================================================
    أدوات PDF — أكاديمية مرابطي
-   يعمل بالكامل داخل المتصفح (لا يحتاج تسجيل دخول ولا يرفع أي ملف لخادم)
+   يعمل بالكامل داخل المتصفح (تسجيل الدخول اختياري، لا يُرفع أي ملف لخادم)
 ===================================================================== */
 
 const $ = (id) => document.getElementById(id);
@@ -8,10 +8,7 @@ const $ = (id) => document.getElementById(id);
 /* ---------- i18n ---------- */
 const STR = {
   ar: {
-    dir: 'rtl', title: 'أدوات PDF — أكاديمية مرابطي',
-    back: 'رجوع إلى الأدوات',
-    heroTitle: 'أدوات PDF',
-    heroSub: 'تحويل، دمج، وتقسيم ملفات PDF وصور — كل شيء يتم داخل متصفحك دون رفع ملفاتك لأي خادم.',
+    dir: 'rtl', title: 'أدوات PDF — أكاديمية مرابطي', back: 'رجوع إلى الأدوات', sidebarTitle: 'أدوات PDF',
     tabs: { word2pdf: 'وورد → PDF', mergepdf: 'دمج PDF', splitpdf: 'تقسيم PDF', pdf2img: 'PDF → صورة', img2pdf: 'صورة → PDF' },
     panelTitle: {
       word2pdf: 'تحويل وورد إلى PDF', mergepdf: 'دمج ملفات PDF', splitpdf: 'تقسيم ملف PDF',
@@ -19,10 +16,10 @@ const STR = {
     },
     panelHint: {
       word2pdf: 'اختر ملف Word (‎.docx) وسيتحول إلى PDF بنفس التنسيق تقريبًا.',
-      mergepdf: 'اختر ملفين أو أكثر، ورتّبهم بالسحب حسب ترتيب الدمج.',
-      splitpdf: 'اختر ملف PDF واحد، ثم حدّد طريقة التقسيم.',
+      mergepdf: 'ارفع ملفين أو أكثر — رتّبهم بالسحب حسب ترتيب الدمج.',
+      splitpdf: 'ارفع ملف PDF واحد، ثم اضغط على الصفحات لتحديد كل مجموعة تصير ملفًا مستقلًا.',
       pdf2img: 'تُحوَّل كل صفحة إلى صورة مستقلة بالصيغة التي تختارها.',
-      img2pdf: 'اختر صورة واحدة أو أكثر، ورتّبها بالسحب — كل صورة تصبح صفحة.',
+      img2pdf: 'ارفع صورة واحدة أو أكثر — رتّبها بالسحب، كل صورة تصبح صفحة.',
     },
     dzTitle: {
       word2pdf: 'اسحب ملف Word هنا', mergepdf: 'اسحب ملفات PDF هنا', splitpdf: 'اسحب ملف PDF هنا',
@@ -33,23 +30,25 @@ const STR = {
       splitpdf: 'أو اضغط للاختيار — ملف واحد فقط', pdf2img: 'أو اضغط للاختيار — ملف واحد فقط',
       img2pdf: 'أو اضغط للاختيار — JPG أو PNG، أكثر من صورة',
     },
+    addMore: 'إضافة المزيد',
     runLabel: {
       word2pdf: 'تحويل إلى PDF', mergepdf: 'دمج الملفات', splitpdf: 'تقسيم الملف',
       pdf2img: 'تحويل إلى صور', img2pdf: 'تحويل إلى PDF',
     },
     working: 'جارٍ المعالجة…',
-    splitEach: 'كل صفحة في ملف مستقل', splitRange: 'نطاق صفحات محدد', splitRangePh: 'مثال: 1-3,5,7-9',
-    zipNote: 'إن نتج أكثر من ملف، سيتم تنزيلهم داخل ملف مضغوط (ZIP).',
+    selCount: (n) => `${n} صفحة محددة`, clearSel: 'إلغاء التحديد', addGroup: '➕ اجعلها ملفًا مستقلًا',
+    groupLabel: (i, pages) => `ملف ${i}: صفحات ${pages}`,
+    splitHint: 'اضغط على أي صفحات (تصير محددة بإطار أحمر) ثم "اجعلها ملفًا مستقلًا" — كرّر لبقية المجموعات. أي صفحة ما تُحدَّد ضمن أي مجموعة لن تظهر بالنتيجة.',
+    splitNeedGroup: 'حدّد الصفحات وكوّن ملفًا واحدًا على الأقل قبل التقسيم.',
     imgFormatLabel: 'صيغة الصورة:', imgQualityLabel: 'الجودة',
     resultOkSingle: 'تم التحويل بنجاح', resultOkMulti: (n) => `تم إنشاء ${n} ملفات بنجاح`,
     downloadFile: 'تنزيل الملف', downloadZip: 'تنزيل الملف المضغوط (ZIP)', preparingZip: 'جارٍ تجهيز الملف المضغوط…',
     resetBtn: 'تحويل ملف آخر',
     errGeneric: 'حدث خطأ أثناء التحويل، تأكد من صحة الملف وحاول مجددًا.',
-    errRange: 'الرجاء إدخال نطاق صفحات صحيح، مثل 1-3,5',
     footer: '© 2026 د. سفيان مرابطي',
     authModalTitle: 'تسجيل الدخول', authModalSub: 'تسجيل الدخول اختياري — الأدوات تعمل بدونه أيضًا',
     authNameLabel: 'الاسم', authEmailLabel: 'البريد الإلكتروني', authPasswordLabel: 'كلمة المرور',
-    authSubmitLogin: 'دخول', authSubmitSignup: 'إنشاء الحساب',
+    authSubmitLogin: 'دخول', authSubmitSignup: 'إنشاء الحساب', authModalTitleSignup: 'إنشاء حساب',
     authOrDivider: 'أو', googleAuthLabel: 'المتابعة عبر Google',
     authSwitchToSignup: 'إنشاء حساب', authSwitchToLogin: 'تسجيل الدخول',
     authNoAccount: 'ليس لديك حساب؟', authHasAccount: 'لديك حساب بالفعل؟',
@@ -62,21 +61,18 @@ const STR = {
     logout: 'تسجيل الخروج', login: 'تسجيل الدخول',
   },
   en: {
-    dir: 'ltr', title: 'PDF Tools — Merabti Academy',
-    back: 'Back to tools',
-    heroTitle: 'PDF Tools',
-    heroSub: 'Convert, merge and split PDF files and images — everything runs in your browser, nothing is uploaded to a server.',
+    dir: 'ltr', title: 'PDF Tools — Merabti Academy', back: 'Back to tools', sidebarTitle: 'PDF Tools',
     tabs: { word2pdf: 'Word → PDF', mergepdf: 'Merge PDF', splitpdf: 'Split PDF', pdf2img: 'PDF → Image', img2pdf: 'Image → PDF' },
     panelTitle: {
       word2pdf: 'Convert Word to PDF', mergepdf: 'Merge PDF files', splitpdf: 'Split a PDF file',
       pdf2img: 'Convert PDF to images', img2pdf: 'Convert images to PDF',
     },
     panelHint: {
-      word2pdf: 'Pick a Word (.docx) file and it will be converted to PDF with roughly the same formatting.',
-      mergepdf: 'Pick two or more files, then drag to reorder them before merging.',
-      splitpdf: 'Pick a single PDF file, then choose how to split it.',
+      word2pdf: 'Pick a Word (.docx) file — it will be converted to PDF with roughly the same formatting.',
+      mergepdf: 'Upload two or more files — drag to reorder them before merging.',
+      splitpdf: 'Upload a single PDF, then click pages to build each group into its own file.',
       pdf2img: 'Each page becomes a separate image in the format you choose.',
-      img2pdf: 'Pick one or more images, drag to reorder — each image becomes a page.',
+      img2pdf: 'Upload one or more images — drag to reorder, each image becomes a page.',
     },
     dzTitle: {
       word2pdf: 'Drop a Word file here', mergepdf: 'Drop PDF files here', splitpdf: 'Drop a PDF file here',
@@ -87,23 +83,25 @@ const STR = {
       splitpdf: 'or click to choose — one file only', pdf2img: 'or click to choose — one file only',
       img2pdf: 'or click to choose — JPG or PNG, multiple allowed',
     },
+    addMore: 'Add more',
     runLabel: {
       word2pdf: 'Convert to PDF', mergepdf: 'Merge files', splitpdf: 'Split file',
       pdf2img: 'Convert to images', img2pdf: 'Convert to PDF',
     },
     working: 'Processing…',
-    splitEach: 'Each page as a separate file', splitRange: 'Custom page range', splitRangePh: 'e.g. 1-3,5,7-9',
-    zipNote: 'If more than one file is produced, they will be downloaded as a ZIP.',
+    selCount: (n) => `${n} pages selected`, clearSel: 'Clear selection', addGroup: '➕ Make separate file',
+    groupLabel: (i, pages) => `File ${i}: pages ${pages}`,
+    splitHint: 'Click pages to select them (red outline), then "Make separate file" — repeat for other groups. Pages not included in any group are dropped from the result.',
+    splitNeedGroup: 'Select pages and create at least one file before splitting.',
     imgFormatLabel: 'Image format:', imgQualityLabel: 'Quality',
     resultOkSingle: 'Converted successfully', resultOkMulti: (n) => `${n} files created successfully`,
     downloadFile: 'Download file', downloadZip: 'Download ZIP', preparingZip: 'Preparing ZIP…',
     resetBtn: 'Convert another file',
     errGeneric: 'Something went wrong during conversion. Check the file and try again.',
-    errRange: 'Please enter a valid page range, e.g. 1-3,5',
     footer: '© 2026 Dr. Sofiane Merabti',
     authModalTitle: 'Sign in', authModalSub: 'Signing in is optional — the tools also work without it',
     authNameLabel: 'Name', authEmailLabel: 'Email', authPasswordLabel: 'Password',
-    authSubmitLogin: 'Sign in', authSubmitSignup: 'Create account',
+    authSubmitLogin: 'Sign in', authSubmitSignup: 'Create account', authModalTitleSignup: 'Create account',
     authOrDivider: 'or', googleAuthLabel: 'Continue with Google',
     authSwitchToSignup: 'Create account', authSwitchToLogin: 'Sign in',
     authNoAccount: "Don't have an account?", authHasAccount: 'Already have an account?',
@@ -116,21 +114,18 @@ const STR = {
     logout: 'Sign out', login: 'Sign in',
   },
   fr: {
-    dir: 'ltr', title: 'Outils PDF — Académie Merabti',
-    back: 'Retour aux outils',
-    heroTitle: 'Outils PDF',
-    heroSub: "Convertir, fusionner et diviser des PDF et des images — tout se passe dans votre navigateur, rien n'est envoyé à un serveur.",
+    dir: 'ltr', title: 'Outils PDF — Académie Merabti', back: 'Retour aux outils', sidebarTitle: 'Outils PDF',
     tabs: { word2pdf: 'Word → PDF', mergepdf: 'Fusionner', splitpdf: 'Diviser', pdf2img: 'PDF → Image', img2pdf: 'Image → PDF' },
     panelTitle: {
       word2pdf: 'Convertir Word en PDF', mergepdf: 'Fusionner des PDF', splitpdf: 'Diviser un PDF',
       pdf2img: 'Convertir un PDF en images', img2pdf: 'Convertir des images en PDF',
     },
     panelHint: {
-      word2pdf: 'Choisissez un fichier Word (.docx), il sera converti en PDF avec une mise en forme proche.',
-      mergepdf: 'Choisissez deux fichiers ou plus, puis glissez pour les réordonner avant fusion.',
-      splitpdf: 'Choisissez un seul fichier PDF, puis choisissez le mode de division.',
+      word2pdf: 'Choisissez un fichier Word (.docx) — il sera converti en PDF avec une mise en forme proche.',
+      mergepdf: 'Importez deux fichiers ou plus — glissez pour les réordonner avant fusion.',
+      splitpdf: 'Importez un seul PDF, puis cliquez sur les pages pour créer chaque groupe en fichier séparé.',
       pdf2img: 'Chaque page devient une image séparée dans le format choisi.',
-      img2pdf: 'Choisissez une ou plusieurs images, glissez pour réordonner — chaque image devient une page.',
+      img2pdf: 'Importez une ou plusieurs images — glissez pour réordonner, chaque image devient une page.',
     },
     dzTitle: {
       word2pdf: 'Déposez un fichier Word ici', mergepdf: 'Déposez des fichiers PDF ici', splitpdf: 'Déposez un fichier PDF ici',
@@ -141,23 +136,25 @@ const STR = {
       splitpdf: 'ou cliquez pour choisir — un seul fichier', pdf2img: 'ou cliquez pour choisir — un seul fichier',
       img2pdf: 'ou cliquez pour choisir — JPG ou PNG, plusieurs possibles',
     },
+    addMore: 'Ajouter',
     runLabel: {
       word2pdf: 'Convertir en PDF', mergepdf: 'Fusionner', splitpdf: 'Diviser',
       pdf2img: 'Convertir en images', img2pdf: 'Convertir en PDF',
     },
     working: 'Traitement en cours…',
-    splitEach: 'Chaque page dans un fichier séparé', splitRange: 'Plage de pages personnalisée', splitRangePh: 'ex : 1-3,5,7-9',
-    zipNote: "Si plusieurs fichiers sont produits, ils seront téléchargés dans un ZIP.",
+    selCount: (n) => `${n} pages sélectionnées`, clearSel: 'Annuler la sélection', addGroup: '➕ Fichier séparé',
+    groupLabel: (i, pages) => `Fichier ${i} : pages ${pages}`,
+    splitHint: "Cliquez sur des pages pour les sélectionner, puis « Fichier séparé » — répétez pour les autres groupes. Les pages non incluses dans un groupe seront exclues du résultat.",
+    splitNeedGroup: 'Sélectionnez des pages et créez au moins un fichier avant de diviser.',
     imgFormatLabel: "Format d'image :", imgQualityLabel: 'Qualité',
     resultOkSingle: 'Conversion réussie', resultOkMulti: (n) => `${n} fichiers créés avec succès`,
     downloadFile: 'Télécharger le fichier', downloadZip: 'Télécharger le ZIP', preparingZip: 'Préparation du ZIP…',
     resetBtn: 'Convertir un autre fichier',
     errGeneric: 'Une erreur est survenue. Vérifiez le fichier et réessayez.',
-    errRange: 'Veuillez saisir une plage de pages valide, ex : 1-3,5',
     footer: '© 2026 Académie Merabti',
     authModalTitle: 'Connexion', authModalSub: 'La connexion est facultative — les outils fonctionnent aussi sans elle',
     authNameLabel: 'Nom', authEmailLabel: 'E-mail', authPasswordLabel: 'Mot de passe',
-    authSubmitLogin: 'Connexion', authSubmitSignup: 'Créer un compte',
+    authSubmitLogin: 'Connexion', authSubmitSignup: 'Créer un compte', authModalTitleSignup: 'Créer un compte',
     authOrDivider: 'ou', googleAuthLabel: 'Continuer avec Google',
     authSwitchToSignup: 'Créer un compte', authSwitchToLogin: 'Connexion',
     authNoAccount: 'Pas de compte ?', authHasAccount: 'Déjà un compte ?',
@@ -176,21 +173,9 @@ let currentUser = null;
 let authMode = 'login';
 let activeTool = 'word2pdf';
 
-/* ---------- تعريف الأدوات الخمس ---------- */
-const TOOLS = [
-  { id: 'word2pdf', accept: ['.docx'], multiple: false, minFiles: 1, reorder: false, kind: 'docx', hasOptions: false,
-    run: (files) => convertWordToPdf(files) },
-  { id: 'mergepdf', accept: ['.pdf'], multiple: true, minFiles: 2, reorder: true, kind: 'pdf', hasOptions: false,
-    run: (files) => convertMergePdf(files) },
-  { id: 'splitpdf', accept: ['.pdf'], multiple: false, minFiles: 1, reorder: false, kind: 'pdf', hasOptions: true,
-    run: (files, opts) => convertSplitPdf(files, opts) },
-  { id: 'pdf2img', accept: ['.pdf'], multiple: false, minFiles: 1, reorder: false, kind: 'pdf', hasOptions: true,
-    run: (files, opts) => convertPdfToImages(files, opts) },
-  { id: 'img2pdf', accept: ['image/png', 'image/jpeg', 'image/webp'], multiple: true, minFiles: 1, reorder: true, kind: 'img', hasOptions: false,
-    run: (files) => convertImagesToPdf(files) },
-];
+const TOOLS = ['word2pdf', 'mergepdf', 'splitpdf', 'pdf2img', 'img2pdf'];
 
-/* ---------- تطبيق اللغة على واجهة أدوات PDF ---------- */
+/* ---------- تطبيق اللغة ---------- */
 function applyLanguage(){
   const s = STR[lang];
   document.documentElement.lang = lang;
@@ -198,40 +183,30 @@ function applyLanguage(){
   document.title = s.title;
 
   $('backLabel').textContent = s.back;
-  $('heroTitle').textContent = s.heroTitle;
-  $('heroSub').textContent = s.heroSub;
+  $('sidebarTitle').textContent = s.sidebarTitle;
   $('footerText').textContent = s.footer;
 
-  TOOLS.forEach((t) => {
-    const tabLabel = document.querySelector(`.tool-switch [data-tool="${t.id}"] .tab-label`);
-    if (tabLabel) tabLabel.textContent = s.tabs[t.id];
-
-    const panel = document.querySelector(`.tool-panel[data-panel="${t.id}"]`);
+  TOOLS.forEach((id) => {
+    const tabLabel = document.querySelector(`.side-btn[data-tool="${id}"] .tab-label`);
+    if (tabLabel) tabLabel.textContent = s.tabs[id];
+    const panel = document.querySelector(`.panel[data-panel="${id}"]`);
     if (!panel) return;
-    panel.querySelector('.panel-title').textContent = s.panelTitle[t.id];
-    panel.querySelector('.panel-hint').textContent = s.panelHint[t.id];
-    panel.querySelector('.dz-title').textContent = s.dzTitle[t.id];
-    panel.querySelector('.dz-sub').textContent = s.dzSub[t.id];
-    panel.querySelector('.run-btn-label').textContent = s.runLabel[t.id];
+    panel.querySelector('.panel-title').textContent = s.panelTitle[id];
+    panel.querySelector('.panel-hint').textContent = s.panelHint[id];
+    const dzTitle = panel.querySelector('.dz-title'); if (dzTitle) dzTitle.textContent = s.dzTitle[id];
+    const dzSub = panel.querySelector('.dz-sub'); if (dzSub) dzSub.textContent = s.dzSub[id];
+    const runLabel = panel.querySelector('.run-btn-label'); if (runLabel) runLabel.textContent = s.runLabel[id];
+    const addMore = panel.querySelector('.add-more-btn'); if (addMore) addMore.textContent = s.addMore;
   });
 
-  const splitEachLabel = document.querySelector('#splitOptions .split-each-label');
-  const splitRangeLabel = document.querySelector('#splitOptions .split-range-label');
-  const splitRangeInput = document.querySelector('#splitOptions .split-range');
-  const zipNoteSplit = document.querySelector('#splitOptions .opt-note');
-  if (splitEachLabel) splitEachLabel.textContent = s.splitEach;
-  if (splitRangeLabel) splitRangeLabel.textContent = s.splitRange;
-  if (splitRangeInput) splitRangeInput.placeholder = s.splitRangePh;
-  if (zipNoteSplit) zipNoteSplit.textContent = s.zipNote;
+  $('clearSelBtn').textContent = s.clearSel;
+  $('addGroupBtn').textContent = s.addGroup;
+  $('splitHint').textContent = s.splitHint;
 
-  const imgFormatLabel = document.querySelector('#pdf2imgOptions .img-format-label');
-  const imgQualityLabel = document.querySelector('#pdf2imgOptions .img-quality-label');
-  const zipNoteImg = document.querySelector('#pdf2imgOptions .opt-note');
-  if (imgFormatLabel) imgFormatLabel.textContent = s.imgFormatLabel;
-  if (imgQualityLabel) imgQualityLabel.textContent = s.imgQualityLabel;
-  if (zipNoteImg) zipNoteImg.textContent = s.zipNote;
+  const imgFormatLabel = document.querySelector('.img-format-label'); if (imgFormatLabel) imgFormatLabel.textContent = s.imgFormatLabel;
+  const imgQualityLabel = document.querySelector('.img-quality-label'); if (imgQualityLabel) imgQualityLabel.textContent = s.imgQualityLabel;
 
-  $('authModalTitle').textContent = authMode === 'login' ? s.authModalTitle : (lang === 'ar' ? 'إنشاء حساب' : lang === 'fr' ? 'Créer un compte' : 'Create account');
+  $('authModalTitle').textContent = authMode === 'login' ? s.authModalTitle : s.authModalTitleSignup;
   $('authModalSub').textContent = s.authModalSub;
   $('authNameLabel').textContent = s.authNameLabel;
   $('authEmailLabel').textContent = s.authEmailLabel;
@@ -245,20 +220,14 @@ function applyLanguage(){
   $('uiLangSelect').value = lang;
   localStorage.setItem('site_lang', lang);
   renderAuthUI();
+  updateSelectionBar();
+  renderGroups();
 }
 
-/* ---------- نافذة تسجيل الدخول (اختياري — منطق مطابق لباقي أدوات الموقع) ---------- */
-function openAuthModal(){
-  $('authOverlay').classList.remove('hidden');
-  $('authError').classList.add('hidden');
-  setAuthMode('login');
-}
+/* ---------- تسجيل الدخول (اختياري) ---------- */
+function openAuthModal(){ $('authOverlay').classList.remove('hidden'); $('authError').classList.add('hidden'); setAuthMode('login'); }
 function closeAuthModal(){ $('authOverlay').classList.add('hidden'); }
-function setAuthMode(mode){
-  authMode = mode;
-  applyLanguage();
-  $('authNameField').classList.toggle('hidden', mode === 'login');
-}
+function setAuthMode(mode){ authMode = mode; applyLanguage(); $('authNameField').classList.toggle('hidden', mode === 'login'); }
 
 function initAuthModal(){
   $('authCloseBtn').addEventListener('click', closeAuthModal);
@@ -344,350 +313,490 @@ function formatBytes(bytes){
 }
 function fileBaseName(name){ return name.replace(/\.[^.]+$/, ''); }
 
-/* ---------- منطق التحويل (pdf-lib / pdf.js / mammoth / html2pdf / JSZip) ---------- */
-async function convertWordToPdf(files){
-  const file = files[0];
-  const arrayBuffer = await file.arrayBuffer();
-  const result = await mammoth.convertToHtml({ arrayBuffer });
-
-  const container = document.createElement('div');
-  container.innerHTML = result.value;
-  Object.assign(container.style, {
-    position: 'fixed', left: '-99999px', top: '0', width: '780px', padding: '36px',
-    background: '#ffffff', color: '#1a1a1a', fontFamily: "'Tajawal','Arial',sans-serif",
-    lineHeight: '1.7', fontSize: '14px',
-  });
-  document.body.appendChild(container);
-  try {
-    const opt = {
-      margin: 10, filename: fileBaseName(file.name) + '.pdf',
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-    };
-    const worker = html2pdf().set(opt).from(container).toPdf();
-    const blob = await worker.output('blob');
-    return [{ blob, name: fileBaseName(file.name) + '.pdf' }];
-  } finally {
-    document.body.removeChild(container);
-  }
+function triggerDownloadAnchor(a, blob, filename){
+  const url = URL.createObjectURL(blob);
+  a.href = url; a.download = filename;
 }
 
-async function convertMergePdf(files){
-  const { PDFDocument } = PDFLib;
-  const mergedPdf = await PDFDocument.create();
-  for (const file of files) {
-    const bytes = await file.arrayBuffer();
-    const donor = await PDFDocument.load(bytes, { ignoreEncryption: true });
-    const pages = await mergedPdf.copyPages(donor, donor.getPageIndices());
-    pages.forEach((p) => mergedPdf.addPage(p));
-  }
-  const outBytes = await mergedPdf.save();
-  return [{ blob: new Blob([outBytes], { type: 'application/pdf' }), name: 'merged.pdf' }];
+function showRunError(panelId, message){
+  const el = document.querySelector(`.panel[data-panel="${panelId}"] .result`);
+  el.classList.remove('hidden');
+  el.innerHTML = `<div class="result-error">${message}</div>`;
 }
 
-function parseRangeString(str, totalPages){
+function showRunSuccess(panelId, outputs, resetFn){
   const s = STR[lang];
-  const ranges = [];
-  const parts = str.split(',').map((x) => x.trim()).filter(Boolean);
-  if (!parts.length) throw new Error(s.errRange);
-  for (const part of parts) {
-    const m = part.match(/^(\d+)(?:-(\d+))?$/);
-    if (!m) throw new Error(s.errRange);
-    let start = parseInt(m[1], 10) - 1;
-    let end = m[2] ? parseInt(m[2], 10) - 1 : start;
-    if (start > end) { const t = start; start = end; end = t; }
-    start = Math.max(0, start);
-    end = Math.min(totalPages - 1, end);
-    if (start > totalPages - 1) continue;
-    ranges.push([start, end]);
-  }
-  if (!ranges.length) throw new Error(s.errRange);
-  return ranges;
-}
+  const el = document.querySelector(`.panel[data-panel="${panelId}"] .result`);
+  el.classList.remove('hidden');
+  el.innerHTML = '';
 
-async function convertSplitPdf(files, options){
-  const { PDFDocument } = PDFLib;
-  const file = files[0];
-  const bytes = await file.arrayBuffer();
-  const srcPdf = await PDFDocument.load(bytes, { ignoreEncryption: true });
-  const totalPages = srcPdf.getPageCount();
+  const ok = document.createElement('div');
+  ok.className = 'result-ok';
+  ok.innerHTML = '<svg viewBox="0 0 24 24" fill="none"><path d="M20 6 9 17l-5-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+    (outputs.length > 1 ? s.resultOkMulti(outputs.length) : s.resultOkSingle);
+  el.appendChild(ok);
 
-  let ranges;
-  if (options.splitMode === 'each') {
-    ranges = [];
-    for (let i = 0; i < totalPages; i++) ranges.push([i, i]);
+  const actions = document.createElement('div');
+  actions.className = 'result-actions';
+
+  if (outputs.length === 1) {
+    const a = document.createElement('a');
+    a.className = 'secondary-btn';
+    a.textContent = s.downloadFile;
+    triggerDownloadAnchor(a, outputs[0].blob, outputs[0].name);
+    actions.appendChild(a);
   } else {
-    ranges = parseRangeString(options.splitRange || '', totalPages);
+    const zipBtn = document.createElement('a');
+    zipBtn.className = 'secondary-btn';
+    zipBtn.textContent = s.preparingZip;
+    actions.appendChild(zipBtn);
+    const zip = new JSZip();
+    outputs.forEach((o) => zip.file(o.name, o.blob));
+    zip.generateAsync({ type: 'blob' }).then((zipBlob) => {
+      zipBtn.textContent = s.downloadZip;
+      triggerDownloadAnchor(zipBtn, zipBlob, 'output.zip');
+    });
   }
 
-  const base = fileBaseName(file.name);
-  const outputs = [];
-  for (const [s2, e] of ranges) {
-    const newPdf = await PDFDocument.create();
-    const idxs = [];
-    for (let p = s2; p <= e; p++) idxs.push(p);
-    const pages = await newPdf.copyPages(srcPdf, idxs);
-    pages.forEach((p) => newPdf.addPage(p));
-    const outBytes = await newPdf.save();
-    const label = s2 === e ? `page-${s2 + 1}` : `pages-${s2 + 1}-${e + 1}`;
-    outputs.push({ blob: new Blob([outBytes], { type: 'application/pdf' }), name: `${base}-${label}.pdf` });
-  }
-  return outputs;
+  const resetBtn = document.createElement('button');
+  resetBtn.type = 'button';
+  resetBtn.className = 'secondary-btn';
+  resetBtn.textContent = s.resetBtn;
+  resetBtn.addEventListener('click', () => { el.classList.add('hidden'); el.innerHTML = ''; resetFn(); });
+  actions.appendChild(resetBtn);
+
+  el.appendChild(actions);
 }
 
-async function convertPdfToImages(files, options){
-  const file = files[0];
+async function runWithProgress(panelId, runBtn, task){
+  const s = STR[lang];
+  const label = runBtn.querySelector('.run-btn-label');
+  const original = label.textContent;
+  const progressWrap = document.querySelector(`.panel[data-panel="${panelId}"] .progress-wrap`);
+  runBtn.disabled = true;
+  label.textContent = s.working;
+  progressWrap.classList.remove('hidden');
+  document.querySelector(`.panel[data-panel="${panelId}"] .result`).classList.add('hidden');
+  try {
+    await task();
+  } catch(err){
+    showRunError(panelId, (err && err.message) || s.errGeneric);
+  } finally {
+    progressWrap.classList.add('hidden');
+    label.textContent = original;
+    runBtn.disabled = false;
+  }
+}
+
+/* ---------- سحب وإعادة ترتيب البطاقات ---------- */
+function wireDragReorder(grid, onReorder){
+  let dragEl = null;
+  grid.querySelectorAll('.thumb-card').forEach((card) => {
+    card.addEventListener('dragstart', () => { dragEl = card; card.classList.add('dragging'); });
+    card.addEventListener('dragend', () => card.classList.remove('dragging'));
+    card.addEventListener('dragover', (e) => e.preventDefault());
+    card.addEventListener('drop', (e) => {
+      e.preventDefault();
+      if (!dragEl || dragEl === card) return;
+      const rect = card.getBoundingClientRect();
+      const before = (e.clientX - rect.left) > rect.width / 2;
+      grid.insertBefore(dragEl, before ? card.nextSibling : card);
+      onReorder && onReorder();
+    });
+  });
+}
+
+/* =====================================================================
+   وورد → PDF
+===================================================================== */
+let word2pdfFile = null;
+function setupWord2Pdf(){
+  const panel = document.querySelector('.panel[data-panel="word2pdf"]');
+  const dz = panel.querySelector('.dropzone');
+  const input = panel.querySelector('input[type="file"]');
+  const grid = panel.querySelector('.thumb-grid');
+  const runBtn = panel.querySelector('.run-btn');
+
+  function setFile(f){
+    word2pdfFile = f;
+    grid.innerHTML = '';
+    if (f){
+      const card = document.createElement('div');
+      card.className = 'thumb-card';
+      card.innerHTML = `<div class="thumb-page generic"><div class="word-ic"><svg viewBox="0 0 48 48"><use href="#ic-word2pdf"/></svg></div><button class="thumb-del" type="button">×</button></div><div class="thumb-name">${f.name}</div>`;
+      card.querySelector('.thumb-del').addEventListener('click', () => setFile(null));
+      grid.appendChild(card);
+    }
+    runBtn.disabled = !f;
+  }
+
+  dz.addEventListener('click', () => input.click());
+  dz.addEventListener('dragover', (e) => { e.preventDefault(); dz.classList.add('dragover'); });
+  dz.addEventListener('dragleave', () => dz.classList.remove('dragover'));
+  dz.addEventListener('drop', (e) => { e.preventDefault(); dz.classList.remove('dragover'); if (e.dataTransfer.files[0]) setFile(e.dataTransfer.files[0]); });
+  input.addEventListener('change', () => { if (input.files[0]) setFile(input.files[0]); input.value = ''; });
+
+  runBtn.addEventListener('click', () => runWithProgress('word2pdf', runBtn, async () => {
+    const file = word2pdfFile;
+    const arrayBuffer = await file.arrayBuffer();
+    const result = await mammoth.convertToHtml({ arrayBuffer });
+    const container = document.createElement('div');
+    container.innerHTML = result.value;
+    Object.assign(container.style, {
+      position: 'fixed', left: '-99999px', top: '0', width: '780px', padding: '36px',
+      background: '#ffffff', color: '#1a1a1a', fontFamily: "'Tajawal','Arial',sans-serif",
+      lineHeight: '1.7', fontSize: '14px',
+    });
+    document.body.appendChild(container);
+    try {
+      const opt = {
+        margin: 10, filename: fileBaseName(file.name) + '.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      };
+      const worker = html2pdf().set(opt).from(container).toPdf();
+      const blob = await worker.output('blob');
+      showRunSuccess('word2pdf', [{ blob, name: fileBaseName(file.name) + '.pdf' }], () => setFile(null));
+    } finally {
+      document.body.removeChild(container);
+    }
+  }));
+}
+
+/* =====================================================================
+   دمج PDF
+===================================================================== */
+let mergeFiles = [];
+async function renderPdfFirstPageCanvas(file, scale){
   const bytes = await file.arrayBuffer();
   const pdf = await pdfjsLib.getDocument({ data: bytes }).promise;
-  const format = options.imgFormat === 'jpg' ? 'jpg' : 'png';
-  const mime = format === 'jpg' ? 'image/jpeg' : 'image/png';
-  const quality = options.imgQuality || 0.85;
-  const base = fileBaseName(file.name);
-  const outputs = [];
-
-  for (let i = 1; i <= pdf.numPages; i++) {
-    const page = await pdf.getPage(i);
-    const viewport = page.getViewport({ scale: 2 });
-    const canvas = document.createElement('canvas');
-    canvas.width = viewport.width;
-    canvas.height = viewport.height;
-    const ctx = canvas.getContext('2d');
-    await page.render({ canvasContext: ctx, viewport }).promise;
-    const dataUrl = format === 'jpg' ? canvas.toDataURL(mime, quality) : canvas.toDataURL(mime);
-    const blob = await (await fetch(dataUrl)).blob();
-    const name = pdf.numPages === 1 ? `${base}.${format}` : `${base}-page-${i}.${format}`;
-    outputs.push({ blob, name });
-  }
-  return outputs;
-}
-
-async function normalizeImageToPdfEmbed(pdfDoc, file){
-  if (file.type === 'image/png') return pdfDoc.embedPng(await file.arrayBuffer());
-  if (file.type === 'image/jpeg' || file.type === 'image/jpg') return pdfDoc.embedJpg(await file.arrayBuffer());
-  const bitmap = await createImageBitmap(file);
+  const page = await pdf.getPage(1);
+  const viewport = page.getViewport({ scale: scale || 0.5 });
   const canvas = document.createElement('canvas');
-  canvas.width = bitmap.width;
-  canvas.height = bitmap.height;
-  canvas.getContext('2d').drawImage(bitmap, 0, 0);
-  const pngBytes = await (await fetch(canvas.toDataURL('image/png'))).arrayBuffer();
-  return pdfDoc.embedPng(pngBytes);
+  canvas.width = viewport.width; canvas.height = viewport.height;
+  await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+  return { canvas, numPages: pdf.numPages };
 }
 
-async function convertImagesToPdf(files){
-  const { PDFDocument } = PDFLib;
-  const pdfDoc = await PDFDocument.create();
-  for (const file of files) {
-    const img = await normalizeImageToPdfEmbed(pdfDoc, file);
-    const { width, height } = img.scale(1);
-    const page = pdfDoc.addPage([width, height]);
-    page.drawImage(img, { x: 0, y: 0, width, height });
-  }
-  const outBytes = await pdfDoc.save();
-  return [{ blob: new Blob([outBytes], { type: 'application/pdf' }), name: 'images.pdf' }];
-}
-
-/* ---------- ربط كل لوحة أداة بالواجهة ---------- */
-function iconFor(kind){
-  if (kind === 'pdf') return '<svg viewBox="0 0 24 24"><rect x="3" y="2" width="18" height="20" rx="2" fill="#C0392B"/><text x="12" y="15" font-size="7" font-weight="800" fill="#fff" text-anchor="middle" font-family="Inter,sans-serif">PDF</text></svg>';
-  if (kind === 'docx') return '<svg viewBox="0 0 24 24"><rect x="3" y="2" width="18" height="20" rx="2" fill="#2F5770"/><text x="12" y="15" font-size="6.5" font-weight="800" fill="#fff" text-anchor="middle" font-family="Inter,sans-serif">DOC</text></svg>';
-  return '<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" fill="#64768A"/><circle cx="8.5" cy="9" r="1.6" fill="#fff"/><path d="M4 18l5-5.5 3.5 4L17 12l3 6z" fill="#fff" opacity=".9"/></svg>';
-}
-
-function setupPanel(config){
-  const panel = document.querySelector(`.tool-panel[data-panel="${config.id}"]`);
-  const dropzone = panel.querySelector('.dropzone');
+function setupMergePdf(){
+  const panel = document.querySelector('.panel[data-panel="mergepdf"]');
+  const dz = panel.querySelector('.dropzone');
   const input = panel.querySelector('input[type="file"]');
-  const listEl = panel.querySelector('.file-list');
+  const grid = panel.querySelector('.thumb-grid');
   const runBtn = panel.querySelector('.run-btn');
-  const progressWrap = panel.querySelector('.progress-wrap');
-  const resultEl = panel.querySelector('.result');
 
-  let files = [];
-
-  function acceptsFile(file){
-    return config.accept.some((rule) => rule.startsWith('.') ? file.name.toLowerCase().endsWith(rule) : file.type === rule);
+  function refreshOrder(){
+    mergeFiles = Array.from(grid.querySelectorAll('.thumb-card')).map((c) => mergeFiles[Number(c.dataset.fid)]);
+    grid.querySelectorAll('.thumb-card').forEach((c, i) => { c.dataset.fid = i; });
+    runBtn.disabled = mergeFiles.length < 2;
   }
 
-  function renderList(){
-    listEl.innerHTML = '';
-    files.forEach((file, idx) => {
-      const li = document.createElement('li');
-      li.className = 'file-item';
-      li.draggable = config.reorder;
-      li.dataset.idx = idx;
-      li.innerHTML =
-        (config.reorder ? '<span class="drag-handle">⠿</span>' : '') +
-        `<span class="file-icon" style="width:20px;height:20px;flex:none;">${iconFor(config.kind)}</span>` +
-        `<span class="file-name">${file.name}</span>` +
-        `<span class="file-size">${formatBytes(file.size)}</span>` +
-        '<button type="button" class="file-remove" aria-label="remove">×</button>';
-      li.querySelector('.file-remove').addEventListener('click', () => {
-        files.splice(idx, 1);
-        renderList();
-        updateRunState();
-      });
-      listEl.appendChild(li);
+  async function addFiles(files){
+    for (const f of files){
+      if (!f.name.toLowerCase().endsWith('.pdf')) continue;
+      try {
+        const { canvas, numPages } = await renderPdfFirstPageCanvas(f);
+        const idx = mergeFiles.length;
+        mergeFiles.push(f);
+        const card = document.createElement('div');
+        card.className = 'thumb-card';
+        card.draggable = true;
+        card.dataset.fid = idx;
+        card.innerHTML = `<div class="thumb-page"><button class="thumb-del" type="button">×</button><span class="thumb-pagecount">${numPages}</span></div><div class="thumb-name">${f.name}</div>`;
+        card.querySelector('.thumb-page').insertBefore(canvas, card.querySelector('.thumb-page').firstChild);
+        card.querySelector('.thumb-del').addEventListener('click', () => { card.remove(); refreshOrder(); });
+        grid.appendChild(card);
+        wireDragReorder(grid, refreshOrder);
+      } catch(e){ console.error(e); }
+    }
+    refreshOrder();
+  }
+
+  dz.addEventListener('click', () => input.click());
+  dz.addEventListener('dragover', (e) => { e.preventDefault(); dz.classList.add('dragover'); });
+  dz.addEventListener('dragleave', () => dz.classList.remove('dragover'));
+  dz.addEventListener('drop', (e) => { e.preventDefault(); dz.classList.remove('dragover'); addFiles(Array.from(e.dataTransfer.files)); });
+  input.addEventListener('change', () => { addFiles(Array.from(input.files)); input.value = ''; });
+
+  runBtn.addEventListener('click', () => runWithProgress('mergepdf', runBtn, async () => {
+    const { PDFDocument } = PDFLib;
+    const mergedPdf = await PDFDocument.create();
+    for (const file of mergeFiles) {
+      const bytes = await file.arrayBuffer();
+      const donor = await PDFDocument.load(bytes, { ignoreEncryption: true });
+      const pages = await mergedPdf.copyPages(donor, donor.getPageIndices());
+      pages.forEach((p) => mergedPdf.addPage(p));
+    }
+    const outBytes = await mergedPdf.save();
+    showRunSuccess('mergepdf', [{ blob: new Blob([outBytes], { type: 'application/pdf' }), name: 'merged.pdf' }], () => {
+      mergeFiles = []; grid.innerHTML = ''; runBtn.disabled = true;
     });
-    if (config.reorder) wireReorder();
-  }
-
-  function wireReorder(){
-    let dragIdx = null;
-    listEl.querySelectorAll('.file-item').forEach((li) => {
-      li.addEventListener('dragstart', () => { dragIdx = Number(li.dataset.idx); li.classList.add('dragging'); });
-      li.addEventListener('dragend', () => li.classList.remove('dragging'));
-      li.addEventListener('dragover', (e) => e.preventDefault());
-      li.addEventListener('drop', (e) => {
-        e.preventDefault();
-        const dropIdx = Number(li.dataset.idx);
-        if (dragIdx === null || dragIdx === dropIdx) return;
-        const moved = files.splice(dragIdx, 1)[0];
-        files.splice(dropIdx, 0, moved);
-        renderList();
-      });
-    });
-  }
-
-  function addFiles(fileListLike){
-    const incoming = Array.from(fileListLike).filter(acceptsFile);
-    if (!incoming.length) return;
-    files = config.multiple ? files.concat(incoming) : [incoming[0]];
-    renderList();
-    updateRunState();
-    resultEl.classList.add('hidden');
-    resultEl.innerHTML = '';
-  }
-
-  dropzone.addEventListener('click', () => input.click());
-  dropzone.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); input.click(); } });
-  dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('dragover'); });
-  dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
-  dropzone.addEventListener('drop', (e) => { e.preventDefault(); dropzone.classList.remove('dragover'); addFiles(e.dataTransfer.files); });
-  input.addEventListener('change', () => { addFiles(input.files); input.value = ''; });
-
-  function gatherOptions(){
-    if (config.id === 'splitpdf') {
-      const mode = panel.querySelector('input[name="splitMode"]:checked').value;
-      return { splitMode: mode, splitRange: panel.querySelector('.split-range').value };
-    }
-    if (config.id === 'pdf2img') {
-      return {
-        imgFormat: panel.querySelector('.img-format').value,
-        imgQuality: parseFloat(panel.querySelector('.img-quality').value),
-      };
-    }
-    return {};
-  }
-
-  function updateRunState(){ runBtn.disabled = files.length < config.minFiles; }
-
-  function showError(message){
-    resultEl.classList.remove('hidden');
-    resultEl.innerHTML = `<div class="result-error">${message}</div>`;
-  }
-
-  function showSuccess(outputs){
-    const s = STR[lang];
-    resultEl.classList.remove('hidden');
-    resultEl.innerHTML = '';
-
-    const ok = document.createElement('div');
-    ok.className = 'result-ok';
-    ok.innerHTML = '<svg viewBox="0 0 24 24" fill="none"><path d="M20 6 9 17l-5-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
-      (outputs.length > 1 ? s.resultOkMulti(outputs.length) : s.resultOkSingle);
-    resultEl.appendChild(ok);
-
-    const actions = document.createElement('div');
-    actions.className = 'result-actions';
-
-    if (outputs.length === 1) {
-      const a = document.createElement('a');
-      a.className = 'secondary-btn';
-      a.textContent = s.downloadFile;
-      const url = URL.createObjectURL(outputs[0].blob);
-      a.href = url; a.download = outputs[0].name;
-      actions.appendChild(a);
-    } else {
-      const zipBtn = document.createElement('a');
-      zipBtn.className = 'secondary-btn';
-      zipBtn.textContent = s.preparingZip;
-      actions.appendChild(zipBtn);
-      const zip = new JSZip();
-      outputs.forEach((o) => zip.file(o.name, o.blob));
-      zip.generateAsync({ type: 'blob' }).then((zipBlob) => {
-        zipBtn.textContent = s.downloadZip;
-        const url = URL.createObjectURL(zipBlob);
-        zipBtn.href = url; zipBtn.download = 'output.zip';
-      });
-    }
-
-    const resetBtn = document.createElement('button');
-    resetBtn.type = 'button';
-    resetBtn.className = 'secondary-btn';
-    resetBtn.textContent = s.resetBtn;
-    resetBtn.addEventListener('click', () => {
-      files = [];
-      renderList();
-      updateRunState();
-      resultEl.classList.add('hidden');
-      resultEl.innerHTML = '';
-    });
-    actions.appendChild(resetBtn);
-
-    resultEl.appendChild(actions);
-  }
-
-  if (config.id === 'splitpdf') {
-    panel.querySelectorAll('input[name="splitMode"]').forEach((r) => r.addEventListener('change', () => {
-      panel.querySelector('.split-range').disabled = r.value !== 'range' || !r.checked;
-    }));
-  }
-  if (config.id === 'pdf2img') {
-    const formatSel = panel.querySelector('.img-format');
-    const qualityRow = panel.querySelector('.img-quality-row');
-    const qualityInput = panel.querySelector('.img-quality');
-    const qualityVal = panel.querySelector('.img-quality-val');
-    const sync = () => { qualityRow.hidden = formatSel.value !== 'jpg'; };
-    formatSel.addEventListener('change', sync);
-    qualityInput.addEventListener('input', () => { qualityVal.textContent = Math.round(qualityInput.value * 100) + '%'; });
-    sync();
-  }
-
-  runBtn.addEventListener('click', async () => {
-    const s = STR[lang];
-    if (files.length < config.minFiles) return;
-    const labelEl = runBtn.querySelector('.run-btn-label');
-    const original = labelEl.textContent;
-    runBtn.disabled = true;
-    labelEl.textContent = s.working;
-    progressWrap.classList.remove('hidden');
-    resultEl.classList.add('hidden');
-    resultEl.innerHTML = '';
-    try {
-      const outputs = await config.run(files, gatherOptions());
-      showSuccess(outputs);
-    } catch (err) {
-      showError((err && err.message) || s.errGeneric);
-    } finally {
-      progressWrap.classList.add('hidden');
-      labelEl.textContent = original;
-      updateRunState();
-    }
-  });
-
-  updateRunState();
+  }));
 }
 
-function wireToolSwitch(){
-  const buttons = document.querySelectorAll('.tool-switch button');
-  buttons.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      activeTool = btn.dataset.tool;
-      buttons.forEach((b) => b.classList.toggle('active', b === btn));
-      document.querySelectorAll('.tool-panel').forEach((p) => p.classList.toggle('active', p.dataset.panel === activeTool));
-    });
+/* =====================================================================
+   تقسيم PDF (اختيار صفحات → مجموعات)
+===================================================================== */
+let splitFile = null;
+let splitTotalPages = 0;
+let splitSelection = [];
+let splitGroups = [];
+
+function updateSelectionBar(){
+  const s = STR[lang];
+  const bar = $('selectionBar');
+  if (!bar) return;
+  bar.style.display = splitSelection.length ? 'flex' : 'none';
+  $('selCount').textContent = s.selCount(splitSelection.length);
+}
+function renderGroups(){
+  const s = STR[lang];
+  const panel = $('groupsPanel');
+  if (!panel) return;
+  panel.innerHTML = '';
+  splitGroups.forEach((g, i) => {
+    const row = document.createElement('div');
+    row.className = 'group-row';
+    row.innerHTML = `<span class="gnum">${i + 1}</span><span class="gpages">${s.groupLabel(i + 1, g.join(', '))}</span><button type="button" class="gdel">×</button>`;
+    row.querySelector('.gdel').addEventListener('click', () => { splitGroups.splice(i, 1); renderGroups(); updateSplitRunState(); });
+    panel.appendChild(row);
   });
+  updateSplitRunState();
+}
+function updateSplitRunState(){
+  const runBtn = document.querySelector('.panel[data-panel="splitpdf"] .run-btn');
+  if (runBtn) runBtn.disabled = splitGroups.length === 0;
+}
+
+function setupSplitPdf(){
+  const panel = document.querySelector('.panel[data-panel="splitpdf"]');
+  const dz = panel.querySelector('.dropzone');
+  const input = panel.querySelector('input[type="file"]');
+  const grid = panel.querySelector('.thumb-grid');
+  const runBtn = panel.querySelector('.run-btn');
+
+  async function loadFile(f){
+    splitFile = f; splitSelection = []; splitGroups = [];
+    grid.innerHTML = '';
+    const bytes = await f.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: bytes }).promise;
+    splitTotalPages = pdf.numPages;
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const viewport = page.getViewport({ scale: 0.42 });
+      const canvas = document.createElement('canvas');
+      canvas.width = viewport.width; canvas.height = viewport.height;
+      await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+      const card = document.createElement('div');
+      card.className = 'thumb-card';
+      card.innerHTML = `<div class="thumb-page selectable" data-page="${i}"><span class="select-check">✓</span><span class="pnum">${i}</span></div><div class="thumb-name"></div>`;
+      const pageDiv = card.querySelector('.thumb-page');
+      pageDiv.insertBefore(canvas, pageDiv.firstChild);
+      pageDiv.addEventListener('click', () => toggleSelect(i, pageDiv));
+      grid.appendChild(card);
+    }
+    updateSelectionBar();
+    renderGroups();
+  }
+  function toggleSelect(pageNum, el){
+    const idx = splitSelection.indexOf(pageNum);
+    if (idx > -1){ splitSelection.splice(idx, 1); el.classList.remove('selected'); }
+    else { splitSelection.push(pageNum); el.classList.add('selected'); }
+    updateSelectionBar();
+  }
+
+  dz.addEventListener('click', () => input.click());
+  dz.addEventListener('dragover', (e) => { e.preventDefault(); dz.classList.add('dragover'); });
+  dz.addEventListener('dragleave', () => dz.classList.remove('dragover'));
+  dz.addEventListener('drop', (e) => { e.preventDefault(); dz.classList.remove('dragover'); if (e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]); });
+  input.addEventListener('change', () => { if (input.files[0]) loadFile(input.files[0]); input.value = ''; });
+
+  $('clearSelBtn').addEventListener('click', () => {
+    document.querySelectorAll('#gridSplitpdf .thumb-page.selected').forEach((el) => el.classList.remove('selected'));
+    splitSelection = []; updateSelectionBar();
+  });
+  $('addGroupBtn').addEventListener('click', () => {
+    if (!splitSelection.length) return;
+    splitGroups.push([...splitSelection].sort((a, b) => a - b));
+    document.querySelectorAll('#gridSplitpdf .thumb-page.selected').forEach((el) => el.classList.remove('selected'));
+    splitSelection = []; updateSelectionBar(); renderGroups();
+  });
+
+  runBtn.addEventListener('click', () => runWithProgress('splitpdf', runBtn, async () => {
+    const s = STR[lang];
+    if (!splitGroups.length) throw new Error(s.splitNeedGroup);
+    const { PDFDocument } = PDFLib;
+    const bytes = await splitFile.arrayBuffer();
+    const srcPdf = await PDFDocument.load(bytes, { ignoreEncryption: true });
+    const base = fileBaseName(splitFile.name);
+    const outputs = [];
+    for (let gi = 0; gi < splitGroups.length; gi++) {
+      const pages = splitGroups[gi];
+      const newPdf = await PDFDocument.create();
+      const idxs = pages.map((p) => p - 1);
+      const copied = await newPdf.copyPages(srcPdf, idxs);
+      copied.forEach((p) => newPdf.addPage(p));
+      const outBytes = await newPdf.save();
+      outputs.push({ blob: new Blob([outBytes], { type: 'application/pdf' }), name: `${base}-part-${gi + 1}.pdf` });
+    }
+    showRunSuccess('splitpdf', outputs, () => {
+      splitFile = null; splitGroups = []; splitSelection = []; grid.innerHTML = '';
+      updateSelectionBar(); renderGroups();
+    });
+  }));
+}
+
+/* =====================================================================
+   PDF → صورة
+===================================================================== */
+let pdf2imgFile = null;
+function setupPdf2Img(){
+  const panel = document.querySelector('.panel[data-panel="pdf2img"]');
+  const dz = panel.querySelector('.dropzone');
+  const input = panel.querySelector('input[type="file"]');
+  const grid = panel.querySelector('.thumb-grid');
+  const runBtn = panel.querySelector('.run-btn');
+  const formatSel = panel.querySelector('.img-format');
+  const qualityRow = panel.querySelector('.img-quality-row');
+  const qualityInput = panel.querySelector('.img-quality');
+  const qualityVal = panel.querySelector('.img-quality-val');
+
+  formatSel.addEventListener('change', () => { qualityRow.hidden = formatSel.value !== 'jpg'; });
+  qualityInput.addEventListener('input', () => { qualityVal.textContent = Math.round(qualityInput.value * 100) + '%'; });
+
+  async function loadFile(f){
+    pdf2imgFile = f;
+    grid.innerHTML = '';
+    const bytes = await f.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: bytes }).promise;
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const viewport = page.getViewport({ scale: 0.5 });
+      const canvas = document.createElement('canvas');
+      canvas.width = viewport.width; canvas.height = viewport.height;
+      await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+      const card = document.createElement('div');
+      card.className = 'thumb-card';
+      card.innerHTML = `<div class="thumb-page"><span class="pnum">${i}</span></div><div class="thumb-name"></div>`;
+      card.querySelector('.thumb-page').appendChild(canvas);
+      grid.appendChild(card);
+    }
+    runBtn.disabled = false;
+  }
+
+  dz.addEventListener('click', () => input.click());
+  dz.addEventListener('dragover', (e) => { e.preventDefault(); dz.classList.add('dragover'); });
+  dz.addEventListener('dragleave', () => dz.classList.remove('dragover'));
+  dz.addEventListener('drop', (e) => { e.preventDefault(); dz.classList.remove('dragover'); if (e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]); });
+  input.addEventListener('change', () => { if (input.files[0]) loadFile(input.files[0]); input.value = ''; });
+
+  runBtn.addEventListener('click', () => runWithProgress('pdf2img', runBtn, async () => {
+    const file = pdf2imgFile;
+    const bytes = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: bytes }).promise;
+    const format = formatSel.value === 'jpg' ? 'jpg' : 'png';
+    const mime = format === 'jpg' ? 'image/jpeg' : 'image/png';
+    const quality = parseFloat(qualityInput.value) || 0.85;
+    const base = fileBaseName(file.name);
+    const outputs = [];
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const viewport = page.getViewport({ scale: 2 });
+      const canvas = document.createElement('canvas');
+      canvas.width = viewport.width; canvas.height = viewport.height;
+      await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+      const dataUrl = format === 'jpg' ? canvas.toDataURL(mime, quality) : canvas.toDataURL(mime);
+      const blob = await (await fetch(dataUrl)).blob();
+      const name = pdf.numPages === 1 ? `${base}.${format}` : `${base}-page-${i}.${format}`;
+      outputs.push({ blob, name });
+    }
+    showRunSuccess('pdf2img', outputs, () => { pdf2imgFile = null; grid.innerHTML = ''; runBtn.disabled = true; });
+  }));
+}
+
+/* =====================================================================
+   صورة → PDF
+===================================================================== */
+let imgFiles = [];
+function setupImg2Pdf(){
+  const panel = document.querySelector('.panel[data-panel="img2pdf"]');
+  const dz = panel.querySelector('.dropzone');
+  const input = panel.querySelector('input[type="file"]');
+  const grid = panel.querySelector('.thumb-grid');
+  const runBtn = panel.querySelector('.run-btn');
+
+  function refreshOrder(){
+    imgFiles = Array.from(grid.querySelectorAll('.thumb-card')).map((c) => imgFiles[Number(c.dataset.fid)]);
+    grid.querySelectorAll('.thumb-card').forEach((c, i) => { c.dataset.fid = i; });
+    runBtn.disabled = imgFiles.length < 1;
+  }
+
+  function addFiles(files){
+    files.filter((f) => f.type.startsWith('image/')).forEach((f) => {
+      const idx = imgFiles.length;
+      imgFiles.push(f);
+      const url = URL.createObjectURL(f);
+      const card = document.createElement('div');
+      card.className = 'thumb-card';
+      card.draggable = true;
+      card.dataset.fid = idx;
+      card.innerHTML = `<div class="thumb-page"><button class="thumb-del" type="button">×</button></div><div class="thumb-name">${f.name}</div>`;
+      const img = document.createElement('img'); img.src = url;
+      card.querySelector('.thumb-page').insertBefore(img, card.querySelector('.thumb-page').firstChild);
+      card.querySelector('.thumb-del').addEventListener('click', () => { card.remove(); refreshOrder(); });
+      grid.appendChild(card);
+      wireDragReorder(grid, refreshOrder);
+    });
+    refreshOrder();
+  }
+
+  dz.addEventListener('click', () => input.click());
+  dz.addEventListener('dragover', (e) => { e.preventDefault(); dz.classList.add('dragover'); });
+  dz.addEventListener('dragleave', () => dz.classList.remove('dragover'));
+  dz.addEventListener('drop', (e) => { e.preventDefault(); dz.classList.remove('dragover'); addFiles(Array.from(e.dataTransfer.files)); });
+  input.addEventListener('change', () => { addFiles(Array.from(input.files)); input.value = ''; });
+
+  async function normalizeImageToPdfEmbed(pdfDoc, file){
+    if (file.type === 'image/png') return pdfDoc.embedPng(await file.arrayBuffer());
+    if (file.type === 'image/jpeg' || file.type === 'image/jpg') return pdfDoc.embedJpg(await file.arrayBuffer());
+    const bitmap = await createImageBitmap(file);
+    const canvas = document.createElement('canvas');
+    canvas.width = bitmap.width; canvas.height = bitmap.height;
+    canvas.getContext('2d').drawImage(bitmap, 0, 0);
+    const pngBytes = await (await fetch(canvas.toDataURL('image/png'))).arrayBuffer();
+    return pdfDoc.embedPng(pngBytes);
+  }
+
+  runBtn.addEventListener('click', () => runWithProgress('img2pdf', runBtn, async () => {
+    const { PDFDocument } = PDFLib;
+    const pdfDoc = await PDFDocument.create();
+    for (const file of imgFiles) {
+      const img = await normalizeImageToPdfEmbed(pdfDoc, file);
+      const { width, height } = img.scale(1);
+      const page = pdfDoc.addPage([width, height]);
+      page.drawImage(img, { x: 0, y: 0, width, height });
+    }
+    const outBytes = await pdfDoc.save();
+    showRunSuccess('img2pdf', [{ blob: new Blob([outBytes], { type: 'application/pdf' }), name: 'images.pdf' }], () => {
+      imgFiles = []; grid.innerHTML = ''; runBtn.disabled = true;
+    });
+  }));
+}
+
+/* ---------- تبديل الأدوات (الشريط الجانبي) ---------- */
+function wireSidebar(){
+  const buttons = document.querySelectorAll('.side-btn');
+  function selectTool(id){
+    activeTool = id;
+    buttons.forEach((b) => b.classList.toggle('active', b.dataset.tool === id));
+    document.querySelectorAll('.panel').forEach((p) => { p.style.display = (p.dataset.panel === id) ? 'flex' : 'none'; });
+  }
+  buttons.forEach((btn) => btn.addEventListener('click', () => selectTool(btn.dataset.tool)));
+
+  // دعم فتح أداة محددة مباشرة عبر ?tool=word2pdf (تُستخدم من بطاقات tools.html)
+  const requested = new URLSearchParams(window.location.search).get('tool');
+  selectTool(requested && TOOLS.includes(requested) ? requested : 'word2pdf');
 }
 
 /* ---------- تهيئة ---------- */
@@ -696,10 +805,17 @@ function init(){
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
   }
 
+  // ربط اختيار اللغة — هذا كان مفقودًا بالنسخة السابقة
+  $('uiLangSelect').addEventListener('change', (e) => { lang = e.target.value; applyLanguage(); });
+
   initAuthModal();
   initAuthMenu();
-  wireToolSwitch();
-  TOOLS.forEach(setupPanel);
+  wireSidebar();
+  setupWord2Pdf();
+  setupMergePdf();
+  setupSplitPdf();
+  setupPdf2Img();
+  setupImg2Pdf();
 
   if (window.fbAuth){
     window.fbAuth.onAuthStateChanged((fbUser) => {

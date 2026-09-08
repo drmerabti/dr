@@ -30,180 +30,209 @@
   </div>
 </div>
 
-<div class="hero">
-  <div class="hero-icon">
-    <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="gPdfHero" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#E28B7D"/><stop offset="1" stop-color="#C0392B"/>
-        </linearGradient>
-      </defs>
-      <path d="M11 6c-1.7 0-3 1.3-3 3v30c0 1.7 1.3 3 3 3h20c1.7 0 3-1.3 3-3V15l-9-9H11z" fill="url(#gPdfHero)"/>
-      <path d="M25 6v7c0 1.1.9 2 2 2h7z" fill="#fff" opacity=".35"/>
-      <text x="20" y="30" font-family="Inter, sans-serif" font-size="10" font-weight="800" fill="#fff" text-anchor="middle">PDF</text>
-    </svg>
-  </div>
-  <h1 id="heroTitle">أدوات PDF</h1>
-  <p id="heroSub">تحويل، دمج، وتقسيم ملفات PDF وصور — كل شيء يتم داخل متصفحك دون رفع ملفاتك لأي خادم.</p>
-</div>
+<div class="stage">
+  <div class="toolkit">
 
-<main class="layout-single">
-  <div class="panel-card">
-
-    <nav class="segmented tool-switch" id="toolSwitch" aria-label="أدوات PDF">
-      <button type="button" class="active" data-tool="word2pdf">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M6 3h8l4 4v14H6z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 3v4h4" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 17l2.2-6M13.5 17l-2.2-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    <nav class="sidebar" id="sidebar">
+      <div class="sidebar-title" id="sidebarTitle">أدوات PDF</div>
+      <button type="button" class="side-btn active" data-tool="word2pdf">
+        <svg class="ic" viewBox="0 0 48 48"><use href="#ic-word2pdf"/></svg>
         <span class="tab-label">وورد → PDF</span>
       </button>
-      <button type="button" data-tool="mergepdf">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M5 4h7l3 3v13H5z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" opacity=".55"/><path d="M9 6h7l3 3v13H9z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 13h6m0 0-2-2m2 2-2 2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <button type="button" class="side-btn" data-tool="mergepdf">
+        <svg class="ic" viewBox="0 0 48 48"><use href="#ic-merge"/></svg>
         <span class="tab-label">دمج PDF</span>
       </button>
-      <button type="button" data-tool="splitpdf">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M4 3h8l4 4v14H4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M12 7v13" stroke="currentColor" stroke-width="1.4" stroke-dasharray="2 2"/><path d="M9 12H6m0 0 1.6-1.6M6 12l1.6 1.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <button type="button" class="side-btn" data-tool="splitpdf">
+        <svg class="ic" viewBox="0 0 48 48"><use href="#ic-split"/></svg>
         <span class="tab-label">تقسيم PDF</span>
       </button>
-      <button type="button" data-tool="pdf2img">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M6 3h8l4 4v14H6z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><rect x="8.5" y="11" width="7" height="5" rx="1" stroke="currentColor" stroke-width="1.4"/><circle cx="10.2" cy="12.6" r=".7" fill="currentColor"/></svg>
+      <button type="button" class="side-btn" data-tool="pdf2img">
+        <svg class="ic" viewBox="0 0 48 48"><use href="#ic-pdf2img"/></svg>
         <span class="tab-label">PDF → صورة</span>
       </button>
-      <button type="button" data-tool="img2pdf">
-        <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="9" height="9" rx="1.4" stroke="currentColor" stroke-width="1.7"/><circle cx="6" cy="8" r=".8" fill="currentColor"/><path d="M4 12.5l2.4-2.7 1.8 2 2.2-2.4L13 12.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 15h6m0 0-2-2m2 2-2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity=".7"/><path d="M14 19h7v3h-7z" stroke="currentColor" stroke-width="1.5"/></svg>
+      <button type="button" class="side-btn" data-tool="img2pdf">
+        <svg class="ic" viewBox="0 0 48 48"><use href="#ic-img2pdf"/></svg>
         <span class="tab-label">صورة → PDF</span>
       </button>
     </nav>
 
-    <div class="tool-panels">
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+      <defs>
+        <g id="ic-word2pdf">
+          <linearGradient id="gA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5B9BE8"/><stop offset="1" stop-color="#1C4C8C"/></linearGradient>
+          <path d="M8 5c-1.4 0-2.5 1.1-2.5 2.5v25c0 1.4 1.1 2.5 2.5 2.5h17c1.4 0 2.5-1.1 2.5-2.5V14L20 5H8z" fill="url(#gA)"/>
+          <path d="M20 5v6.5c0 1 .8 1.8 1.8 1.8H27z" fill="#fff" opacity=".55"/>
+          <rect x="21" y="26" width="19" height="12" rx="3" fill="#C0392B"/>
+          <text x="30.5" y="34.5" font-family="Inter,sans-serif" font-size="8" font-weight="800" fill="#fff" text-anchor="middle">PDF</text>
+        </g>
+        <g id="ic-merge">
+          <linearGradient id="gB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F0A0A0"/><stop offset="1" stop-color="#C0392B"/></linearGradient>
+          <rect x="5" y="9" width="20" height="27" rx="3" fill="#DCE8F2" stroke="#8FA8C7" stroke-width="1.3" transform="rotate(-8 15 22)"/>
+          <rect x="13" y="7" width="21" height="28" rx="3" fill="url(#gB)"/>
+          <path d="M18 21h14m0 0-4.5-4.5M32 21l-4.5 4.5" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </g>
+        <g id="ic-split">
+          <linearGradient id="gC" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F0C56B"/><stop offset="1" stop-color="#BD8A2E"/></linearGradient>
+          <rect x="5" y="7" width="16" height="28" rx="3" fill="url(#gC)"/>
+          <rect x="27" y="7" width="16" height="28" rx="3" fill="url(#gC)" opacity=".55"/>
+          <path d="M19 21h-6m0 0 2.5-2.5M13 21l2.5 2.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <path d="M29 21h6m0 0-2.5-2.5M35 21l-2.5 2.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </g>
+        <g id="ic-pdf2img">
+          <linearGradient id="gD" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F0A8C4"/><stop offset="1" stop-color="#B1345A"/></linearGradient>
+          <path d="M8 5c-1.4 0-2.5 1.1-2.5 2.5v33c0 1.4 1.1 2.5 2.5 2.5h24c1.4 0 2.5-1.1 2.5-2.5V14L24 5H8z" fill="url(#gD)"/>
+          <path d="M24 5v7.5c0 1 .8 1.8 1.8 1.8H32z" fill="#fff" opacity=".5"/>
+          <rect x="10.5" y="22" width="21" height="14" rx="2.5" fill="#fff"/>
+          <circle cx="15.5" cy="27" r="2" fill="#B1345A"/>
+          <path d="M11 34l6-6.5 4.2 4 4.3-5 5.5 7.5z" fill="#B1345A" opacity=".85"/>
+        </g>
+        <g id="ic-img2pdf">
+          <linearGradient id="gE" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C7ADF2"/><stop offset="1" stop-color="#7A4FA3"/></linearGradient>
+          <rect x="5" y="8" width="25" height="21" rx="4" fill="url(#gE)"/>
+          <circle cx="12" cy="15" r="2.2" fill="#fff"/>
+          <path d="M6 24l6-6.5 4.5 4.5 5-5.5 7.5 8.5" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M33 19h6m0 0-2.5-2.5M39 19l-2.5 2.5" stroke="#7A4FA3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity=".75"/>
+          <rect x="27" y="26" width="16" height="17" rx="3" fill="#C0392B"/>
+          <text x="35" y="37.5" font-family="Inter,sans-serif" font-size="7.5" font-weight="800" fill="#fff" text-anchor="middle">PDF</text>
+        </g>
+      </defs>
+    </svg>
+
+    <div class="content">
 
       <!-- ============== وورد → PDF ============== -->
-      <section class="tool-panel active" data-panel="word2pdf">
-        <div class="panel-title">تحويل وورد إلى PDF</div>
-        <p class="panel-hint">اختر ملف Word (‎.docx) وسيتحول إلى PDF بنفس التنسيق تقريبًا.</p>
-
-        <div class="dropzone" tabindex="0" role="button">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M12 15V4m0 0 4 4m-4-4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <p class="dz-title">اسحب ملف Word هنا</p>
-          <p class="dz-sub">أو اضغط للاختيار — صيغة ‎.docx فقط</p>
-          <input type="file" accept=".docx" hidden>
+      <section class="panel" data-panel="word2pdf" style="display:flex;">
+        <div class="content-scroll">
+          <div class="content-head">
+            <div class="panel-title">تحويل وورد إلى PDF</div>
+            <p class="panel-hint">اختر ملف Word (‎.docx) وسيتحول إلى PDF بنفس التنسيق تقريبًا.</p>
+          </div>
+          <div class="dropzone" tabindex="0" role="button">
+            <svg class="ic" viewBox="0 0 24 24" fill="none"><path d="M12 15V4m0 0 4 4m-4-4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <p class="dz-title">اسحب ملف Word هنا</p>
+            <p class="dz-sub">أو اضغط للاختيار — صيغة ‎.docx فقط</p>
+            <input type="file" accept=".docx" hidden>
+          </div>
+          <div class="thumb-grid"></div>
+          <div class="result hidden"></div>
         </div>
-        <ul class="file-list"></ul>
-        <button type="button" class="primary-btn full-width run-btn"><span class="run-btn-label">تحويل إلى PDF</span></button>
-        <div class="progress-wrap hidden">
-          <div class="progress-track"><div class="progress-bar"></div></div>
-        </div>
-        <div class="result hidden"></div>
+        <div class="progress-wrap hidden"><div class="progress-track"><div class="progress-bar"></div></div></div>
+        <button type="button" class="primary-btn run-btn" disabled><span class="run-btn-label">تحويل إلى PDF</span></button>
       </section>
 
       <!-- ============== دمج PDF ============== -->
-      <section class="tool-panel" data-panel="mergepdf">
-        <div class="panel-title">دمج ملفات PDF</div>
-        <p class="panel-hint">اختر ملفين أو أكثر، ورتّبهم بالسحب حسب ترتيب الدمج.</p>
-
-        <div class="dropzone" tabindex="0" role="button">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M12 15V4m0 0 4 4m-4-4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <p class="dz-title">اسحب ملفات PDF هنا</p>
-          <p class="dz-sub">أو اضغط للاختيار — يمكن اختيار أكثر من ملف</p>
-          <input type="file" accept=".pdf" multiple hidden>
+      <section class="panel" data-panel="mergepdf" style="display:none;">
+        <div class="content-scroll">
+          <div class="content-head">
+            <div class="panel-title">دمج ملفات PDF</div>
+            <p class="panel-hint">ارفع ملفين أو أكثر — رتّبهم بالسحب حسب ترتيب الدمج.</p>
+          </div>
+          <div class="dropzone" tabindex="0" role="button">
+            <svg class="ic" viewBox="0 0 24 24" fill="none"><path d="M12 15V4m0 0 4 4m-4-4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <p class="dz-title">اسحب ملفات PDF هنا</p>
+            <p class="dz-sub">أو اضغط للاختيار — يمكن اختيار أكثر من ملف</p>
+            <input type="file" accept=".pdf" multiple hidden>
+          </div>
+          <div class="thumb-grid"></div>
+          <div class="result hidden"></div>
         </div>
-        <ul class="file-list"></ul>
-        <button type="button" class="primary-btn full-width run-btn"><span class="run-btn-label">دمج الملفات</span></button>
-        <div class="progress-wrap hidden">
-          <div class="progress-track"><div class="progress-bar"></div></div>
-        </div>
-        <div class="result hidden"></div>
+        <div class="progress-wrap hidden"><div class="progress-track"><div class="progress-bar"></div></div></div>
+        <button type="button" class="primary-btn run-btn" disabled><span class="run-btn-label">دمج الملفات</span></button>
       </section>
 
       <!-- ============== تقسيم PDF ============== -->
-      <section class="tool-panel" data-panel="splitpdf">
-        <div class="panel-title">تقسيم ملف PDF</div>
-        <p class="panel-hint">اختر ملف PDF واحد، ثم حدّد طريقة التقسيم.</p>
-
-        <div class="dropzone" tabindex="0" role="button">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M12 15V4m0 0 4 4m-4-4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <p class="dz-title">اسحب ملف PDF هنا</p>
-          <p class="dz-sub">أو اضغط للاختيار — ملف واحد فقط</p>
-          <input type="file" accept=".pdf" hidden>
-        </div>
-        <ul class="file-list"></ul>
-
-        <div class="tool-options" id="splitOptions">
-          <div class="opt-row">
-            <label class="field"><input type="radio" name="splitMode" value="each" checked> <span class="split-each-label">كل صفحة في ملف مستقل</span></label>
+      <section class="panel" data-panel="splitpdf" style="display:none;">
+        <div class="content-scroll">
+          <div class="content-head">
+            <div class="panel-title">تقسيم ملف PDF</div>
+            <p class="panel-hint">ارفع ملف PDF واحد، ثم اضغط على الصفحات لتحديد كل مجموعة تصير ملفًا مستقلًا.</p>
           </div>
-          <div class="opt-row">
-            <label class="field" style="flex-direction:row; align-items:center; gap:6px;"><input type="radio" name="splitMode" value="range"> <span class="split-range-label">نطاق صفحات محدد</span></label>
-            <input type="text" class="field-input split-range" style="max-width:200px;" placeholder="مثال: 1-3,5,7-9" disabled>
+          <div class="dropzone" tabindex="0" role="button">
+            <svg class="ic" viewBox="0 0 24 24" fill="none"><path d="M12 15V4m0 0 4 4m-4-4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <p class="dz-title">اسحب ملف PDF هنا</p>
+            <p class="dz-sub">أو اضغط للاختيار — ملف واحد فقط</p>
+            <input type="file" accept=".pdf" hidden>
           </div>
-          <p class="opt-note">في حال نتج أكثر من ملف، سيتم تنزيلهم داخل ملف مضغوط (ZIP).</p>
-        </div>
 
-        <button type="button" class="primary-btn full-width run-btn"><span class="run-btn-label">تقسيم الملف</span></button>
-        <div class="progress-wrap hidden">
-          <div class="progress-track"><div class="progress-bar"></div></div>
+          <div class="selection-bar" id="selectionBar" style="display:none;">
+            <span class="sel-count" id="selCount">0</span>
+            <div class="sel-actions">
+              <button type="button" class="ghost" id="clearSelBtn">إلغاء التحديد</button>
+              <button type="button" id="addGroupBtn">➕ اجعلها ملفًا مستقلًا</button>
+            </div>
+          </div>
+
+          <div class="thumb-grid" id="gridSplitpdf"></div>
+          <div class="groups-panel" id="groupsPanel"></div>
+          <p class="hint" id="splitHint"></p>
+          <div class="result hidden"></div>
         </div>
-        <div class="result hidden"></div>
+        <div class="progress-wrap hidden"><div class="progress-track"><div class="progress-bar"></div></div></div>
+        <button type="button" class="primary-btn run-btn" disabled><span class="run-btn-label">تقسيم الملف</span></button>
       </section>
 
       <!-- ============== PDF → صورة ============== -->
-      <section class="tool-panel" data-panel="pdf2img">
-        <div class="panel-title">تحويل PDF إلى صور</div>
-        <p class="panel-hint">تُحوَّل كل صفحة إلى صورة مستقلة بالصيغة التي تختارها.</p>
-
-        <div class="dropzone" tabindex="0" role="button">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M12 15V4m0 0 4 4m-4-4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <p class="dz-title">اسحب ملف PDF هنا</p>
-          <p class="dz-sub">أو اضغط للاختيار — ملف واحد فقط</p>
-          <input type="file" accept=".pdf" hidden>
-        </div>
-        <ul class="file-list"></ul>
-
-        <div class="tool-options" id="pdf2imgOptions">
-          <div class="opt-row">
-            <span class="img-format-label">صيغة الصورة:</span>
-            <select class="field-input img-format" style="max-width:180px;">
-              <option value="png">PNG</option>
-              <option value="jpg">JPG</option>
-            </select>
+      <section class="panel" data-panel="pdf2img" style="display:none;">
+        <div class="content-scroll">
+          <div class="content-head">
+            <div class="panel-title">تحويل PDF إلى صور</div>
+            <p class="panel-hint">تُحوَّل كل صفحة إلى صورة مستقلة بالصيغة التي تختارها.</p>
           </div>
-          <div class="opt-row img-quality-row" hidden>
-            <span class="img-quality-label">الجودة</span>
-            <input type="range" class="img-quality" min="0.4" max="1" step="0.05" value="0.85">
-            <span class="img-quality-val">85%</span>
+          <div class="dropzone" tabindex="0" role="button">
+            <svg class="ic" viewBox="0 0 24 24" fill="none"><path d="M12 15V4m0 0 4 4m-4-4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <p class="dz-title">اسحب ملف PDF هنا</p>
+            <p class="dz-sub">أو اضغط للاختيار — ملف واحد فقط</p>
+            <input type="file" accept=".pdf" hidden>
           </div>
-          <p class="opt-note">في حال كان الملف أكثر من صفحة، سيتم تنزيل الصور داخل ملف مضغوط (ZIP).</p>
-        </div>
 
-        <button type="button" class="primary-btn full-width run-btn"><span class="run-btn-label">تحويل إلى صور</span></button>
-        <div class="progress-wrap hidden">
-          <div class="progress-track"><div class="progress-bar"></div></div>
+          <div class="tool-options">
+            <div class="opt-row">
+              <span class="img-format-label">صيغة الصورة:</span>
+              <select class="img-format">
+                <option value="png">PNG</option>
+                <option value="jpg">JPG</option>
+              </select>
+            </div>
+            <div class="opt-row img-quality-row" hidden>
+              <span class="img-quality-label">الجودة</span>
+              <input type="range" class="img-quality" min="0.4" max="1" step="0.05" value="0.85">
+              <span class="img-quality-val">85%</span>
+            </div>
+          </div>
+
+          <div class="thumb-grid"></div>
+          <div class="result hidden"></div>
         </div>
-        <div class="result hidden"></div>
+        <div class="progress-wrap hidden"><div class="progress-track"><div class="progress-bar"></div></div></div>
+        <button type="button" class="primary-btn run-btn" disabled><span class="run-btn-label">تحويل إلى صور</span></button>
       </section>
 
       <!-- ============== صورة → PDF ============== -->
-      <section class="tool-panel" data-panel="img2pdf">
-        <div class="panel-title">تحويل الصور إلى PDF</div>
-        <p class="panel-hint">اختر صورة واحدة أو أكثر، ورتّبها بالسحب — كل صورة تصبح صفحة.</p>
-
-        <div class="dropzone" tabindex="0" role="button">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M12 15V4m0 0 4 4m-4-4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <p class="dz-title">اسحب الصور هنا</p>
-          <p class="dz-sub">أو اضغط للاختيار — JPG أو PNG، أكثر من صورة</p>
-          <input type="file" accept="image/png,image/jpeg,image/webp" multiple hidden>
+      <section class="panel" data-panel="img2pdf" style="display:none;">
+        <div class="content-scroll">
+          <div class="content-head">
+            <div class="panel-title">تحويل الصور إلى PDF</div>
+            <p class="panel-hint">ارفع صورة واحدة أو أكثر — رتّبها بالسحب، كل صورة تصبح صفحة.</p>
+          </div>
+          <div class="dropzone" tabindex="0" role="button">
+            <svg class="ic" viewBox="0 0 24 24" fill="none"><path d="M12 15V4m0 0 4 4m-4-4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <p class="dz-title">اسحب الصور هنا</p>
+            <p class="dz-sub">أو اضغط للاختيار — JPG أو PNG، أكثر من صورة</p>
+            <input type="file" accept="image/png,image/jpeg,image/webp" multiple hidden>
+          </div>
+          <div class="thumb-grid"></div>
+          <div class="result hidden"></div>
         </div>
-        <ul class="file-list"></ul>
-        <button type="button" class="primary-btn full-width run-btn"><span class="run-btn-label">تحويل إلى PDF</span></button>
-        <div class="progress-wrap hidden">
-          <div class="progress-track"><div class="progress-bar"></div></div>
-        </div>
-        <div class="result hidden"></div>
+        <div class="progress-wrap hidden"><div class="progress-track"><div class="progress-bar"></div></div></div>
+        <button type="button" class="primary-btn run-btn" disabled><span class="run-btn-label">تحويل إلى PDF</span></button>
       </section>
 
     </div>
   </div>
-</main>
+</div>
 
-<footer class="site-footer" id="footerText">© 2026 د. سفيان مرابطي</footer>
+<footer class="site-footer" id="footerText" style="text-align:center; color:var(--ink-soft); font-size:.8rem; padding:16px;">© 2026 د. سفيان مرابطي</footer>
 
 <!-- ============ نافذة تسجيل الدخول (اختياري) ============ -->
 <div class="modal-overlay hidden" id="authOverlay">
@@ -225,7 +254,7 @@
         <label id="authPasswordLabel">كلمة المرور</label>
         <input type="password" id="authPassword" required minlength="6" class="field-input">
       </div>
-      <button type="submit" class="primary-btn full-width" id="authSubmitBtn" style="margin-top:14px;">دخول</button>
+      <button type="submit" class="primary-btn full-width" id="authSubmitBtn" style="position:static; box-shadow:none; margin-top:14px;">دخول</button>
     </form>
     <div class="modal-divider" id="authOrDivider">أو</div>
     <button type="button" class="google-btn" id="googleAuthBtn">
@@ -245,7 +274,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="../../firebase-init.js"></script>
 
-<!-- مكتبات المعالجة — التحويل بالكامل يتم محليًا داخل المتصفح -->
+<!-- مكتبات المعالجة — التحويل بالكامل محليًا داخل المتصفح -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
