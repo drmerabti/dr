@@ -269,6 +269,17 @@ const ICONS = {
 };
 
 const CONTENT = {
+  trainingCourses: [
+    {
+      id: 'course-word',
+      title_ar: 'دورة Word التفاعلية',
+      title_en: 'Interactive Word Course',
+      desc_ar: 'دروس مصوّرة خطوة بخطوة، مع ألعاب تفاعلية بعد كل درس — اشتراك شهري 750 دج.',
+      desc_en: 'Step-by-step video lessons with interactive games after each one — 750 DA/month.',
+      url: 'courses/word-course/index.html',
+      icon: ICONS.wordApp,
+    },
+  ],
   lessons: [
     {
       id: 'lesson-word-shortcuts',
@@ -520,6 +531,7 @@ const I18N = {
     home: 'الرئيسية',
     footer_text: '© 2026 د. سفيان مرابطي',
     section_lessons: 'الدروس', section_apps: 'التطبيقات', section_tools: 'الأدوات',
+    courses_title: 'دورات تكوينية',
     section_trainings: 'تدريب', section_services: 'الخدمات', section_favorites: 'المفضلة',
     section_lessons_desc: 'دروس مصورة خطوة بخطوة', section_apps_desc: 'تطبيقات عملية للتنزيل',
     section_tools_desc: 'أدوات مساعدة سريعة', section_trainings_desc: 'اختبارات وتمارين تفاعلية',
@@ -546,6 +558,7 @@ const I18N = {
     home: 'Home',
     footer_text: '© 2026 Dr. Sofiane Merabti',
     section_lessons: 'Lessons', section_apps: 'Apps', section_tools: 'Tools',
+    courses_title: 'Training Courses',
     section_trainings: 'Training', section_services: 'Services', section_favorites: 'Favorites',
     section_lessons_desc: 'Step-by-step video lessons', section_apps_desc: 'Practical apps to download',
     section_tools_desc: 'Quick helper tools', section_trainings_desc: 'Interactive quizzes and exercises',
@@ -649,8 +662,22 @@ function renderFamilyFilter(items){
     btn.addEventListener('click', () => {
       activeFamily = btn.getAttribute('data-family');
       renderSectionItems();
+      renderCoursesSection();
     });
   });
+}
+
+function renderCoursesSection(){
+  const wrap = document.getElementById('coursesSection');
+  if (!wrap) return; // only present on lessons.html
+  const items = CONTENT.trainingCourses || [];
+  wrap.innerHTML = items.map((item) => `
+    <a class="item-card" href="${item.url}" style="text-decoration:none; color:inherit; display:block;">
+      ${item.icon ? `<span class="icon-badge badge-lessons">${item.icon}</span>` : ''}
+      <h3>${lang === 'ar' ? item.title_ar : item.title_en}</h3>
+      <p>${lang === 'ar' ? item.desc_ar : item.desc_en}</p>
+    </a>
+  `).join('');
 }
 
 function renderSectionItems(){
@@ -1158,6 +1185,7 @@ function initAuth(){
       const section = document.body.dataset.section;
       if (section === 'favorites') renderFavoritesPage();
       else if (section === 'tools' || section === 'apps') renderSectionItems();
+      renderCoursesSection();
       await refreshSubscriptionStatus();
       wrap.classList.remove('auth-pending');
       const proBtnEl = document.getElementById('proBtn');
@@ -1192,6 +1220,7 @@ document.addEventListener('DOMContentLoaded', () => {
       renderHomeGrid();
       if (document.body.dataset.section === 'favorites') renderFavoritesPage();
       else renderSectionItems();
+      renderCoursesSection();
       handleHash();
       renderAuth();
     });
@@ -1201,6 +1230,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderHomeGrid();
   if (document.body.dataset.section === 'favorites') renderFavoritesPage();
   else renderSectionItems();
+  renderCoursesSection();
   initSearch();
   handleHash();
 });
