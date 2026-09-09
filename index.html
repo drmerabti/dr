@@ -3,133 +3,66 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>دورة Word — أكاديمية مرابطي</title>
+<meta name="description" content="أكاديمية مرابطي — د. سفيان مرابطي: دروس، تطبيقات، أدوات، وتدريبات عملية لتسهيل استخدام برامج مايكروسوفت.">
+<title data-i18n="site_title">د. سفيان مرابطي — التعلم الرقمي</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
-<link rel="icon" type="image/x-icon" href="../../favicon.ico">
-<style>
-  :root{
-    --accent:#2F5CA8; --accent-dark:#1E3F7A; --accent-soft:#E7ECF6;
-    --ink:#1E2F40; --ink-soft:#64768A; --card-bg:#fff; --line:#E1E6EC;
-    --shadow:0 14px 34px rgba(21,36,49,.10);
-  }
-  *{box-sizing:border-box;}
-  body{
-    margin:0; font-family:'Tajawal',sans-serif; direction:rtl;
-    background:#F4F6F9; color:var(--ink); min-height:100vh;
-  }
-  .topbar{
-    background:#fff; border-bottom:1px solid var(--line); padding:14px 24px;
-    display:flex; align-items:center; justify-content:space-between;
-  }
-  .topbar a{ color:var(--ink); text-decoration:none; font-weight:800; font-size:.95rem; display:flex; align-items:center; gap:6px; }
-  .topbar svg{ width:18px; height:18px; }
-
-  .screen{ max-width:900px; margin:0 auto; padding:40px 20px; }
-  .hidden{ display:none; }
-
-  /* Locked (not signed in) */
-  .locked-hero{ text-align:center; margin-bottom:24px; }
-  .locked-icon{ font-size:40px; margin-bottom:10px; }
-  .locked-hero h1{ font-size:1.4rem; margin:0 0 6px; }
-  .locked-hero p{ color:var(--ink-soft); font-size:.92rem; margin:0; }
-  .auth-card{ max-width:360px; margin:0 auto; background:#fff; border-radius:20px; padding:26px; box-shadow:var(--shadow); }
-  .cv-input{
-    width:100%; border:1px solid var(--line); border-radius:10px; padding:11px 14px;
-    font-family:inherit; font-size:.9rem; margin-bottom:10px; background:#fff; color:var(--ink);
-  }
-  .btn{ border:none; border-radius:10px; padding:12px; font-family:inherit; font-weight:800; font-size:.9rem; cursor:pointer; width:100%; }
-  .btn-primary{ background:linear-gradient(135deg,var(--accent),var(--accent-dark)); color:#fff; }
-
-  /* Not subscribed */
-  .paywall{ text-align:center; background:#fff; border-radius:22px; padding:44px 30px; box-shadow:var(--shadow); }
-  .paywall .price{ font-size:2.2rem; font-weight:900; color:var(--accent-dark); margin:14px 0 4px; }
-  .paywall .price span{ font-size:.9rem; font-weight:700; color:var(--ink-soft); }
-  .paywall p{ color:var(--ink-soft); font-size:.9rem; max-width:420px; margin:0 auto 22px; line-height:1.7; }
-  .subscribe-btn{
-    background:linear-gradient(135deg,#FFD166,#E0A020); color:#4A2E00; border:none;
-    padding:14px 34px; border-radius:999px; font-family:inherit; font-weight:900; font-size:.95rem; cursor:pointer;
-  }
-
-  /* Lesson list */
-  .course-title{ font-size:1.5rem; font-weight:900; margin:0 0 6px; }
-  .course-sub{ color:var(--ink-soft); font-size:.9rem; margin:0 0 26px; }
-  .lesson-card{ background:#fff; border-radius:20px; padding:22px; box-shadow:var(--shadow); margin-bottom:20px; }
-  .lesson-card h2{ font-size:1.1rem; margin:0 0 14px; display:flex; align-items:center; gap:8px; }
-  .lesson-num{
-    width:30px; height:30px; border-radius:50%; background:var(--accent-soft); color:var(--accent-dark);
-    display:flex; align-items:center; justify-content:center; font-size:.85rem; font-weight:900; flex-shrink:0;
-  }
-  .video-slot{
-    background:#F0F3F7; border:2px dashed var(--line); border-radius:14px;
-    aspect-ratio:16/9; display:flex; flex-direction:column; align-items:center; justify-content:center;
-    gap:8px; color:var(--ink-soft); margin-bottom:16px;
-  }
-  .video-slot svg{ width:34px; height:34px; opacity:.5; }
-  .video-slot span{ font-size:.85rem; font-weight:700; }
-
-  .games-row{ display:flex; gap:10px; flex-wrap:wrap; }
-  .game-btn{
-    flex:1; min-width:140px; display:flex; align-items:center; gap:10px;
-    border:1px solid var(--line); background:#fff; border-radius:14px; padding:12px 14px;
-    text-decoration:none; color:var(--ink); font-weight:800; font-size:.85rem; cursor:pointer;
-  }
-  .game-btn:hover{ border-color:var(--accent); }
-  .game-btn.disabled{ opacity:.5; cursor:default; pointer-events:none; }
-  .game-icon{ width:38px; height:38px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
-  .g1{ background:#E3EEF4; } .g2{ background:#E3F5EB; } .g3{ background:#FBEAF0; }
-  .game-btn .lbl-sub{ font-size:.72rem; font-weight:600; color:var(--ink-soft); display:block; margin-top:1px; }
-</style>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@1,600;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="topbar">
-  <a href="../../index.html">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
-    <span id="topbarBackText">الرئيسية</span>
-  </a>
-  <span style="font-weight:900;">دورة Word</span>
-</div>
-
-<div class="screen" id="loadingScreen">
-  <p style="text-align:center; color:var(--ink-soft);">جارٍ التحميل...</p>
-</div>
-
-<div class="screen hidden" id="lockedScreen">
-  <div class="locked-hero">
-    <div class="locked-icon">🔒</div>
-    <h1>سجّل دخولك لعرض دورة Word</h1>
-    <p>هذه الدورة متاحة للمستخدمين المسجَّلين فقط.</p>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="index.html" class="brand" data-i18n="brand">د. سفيان مرابطي</a>
+    <div class="topbar-actions">
+      <button id="proBtn" class="pro-btn auth-pending" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 8l4 3 5-6 5 6 4-3-2 11H5L3 8z"/><circle cx="3" cy="8" r="1.4" fill="currentColor" stroke="none"/><circle cx="12" cy="5" r="1.4" fill="currentColor" stroke="none"/><circle cx="21" cy="8" r="1.4" fill="currentColor" stroke="none"/></svg>
+        <span>Pro</span>
+        <svg class="pro-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+      </button>
+      <div class="auth-wrap auth-pending" id="authWrap">
+        <button id="authBtn" class="auth-btn" type="button"></button>
+        <div id="authMenu" class="auth-menu hidden"></div>
+      </div>
+      <button id="langToggle" class="lang-toggle" type="button">EN</button>
+    </div>
   </div>
-  <div class="auth-card">
-    <form id="authForm">
-      <input type="email" id="acEmail" class="cv-input" required placeholder="البريد الإلكتروني">
-      <input type="password" id="acPassword" class="cv-input" required minlength="6" placeholder="كلمة المرور">
-      <button type="submit" class="btn btn-primary">تسجيل الدخول</button>
-    </form>
-  </div>
-</div>
+</header>
 
-<div class="screen hidden" id="paywallScreen">
-  <div class="paywall">
-    <h1>دورة Word التفاعلية</h1>
-    <p>دروس مصوّرة خطوة بخطوة، مع تمارين وألعاب تفاعلية بعد كل درس لترسيخ المعلومة.</p>
-    <div class="price">750 دج <span>/ شهريًا</span></div>
-    <button class="subscribe-btn" id="subscribeBtn">اشترك الآن</button>
-  </div>
-</div>
+<main id="app">
+  <section class="view">
+    <div class="hero">
+      <h1 class="hero-logo">Merabti academy <span class="beta-badge">Beta</span></h1>
+      <p class="hero-logo-ar">أكاديمية مرابطي</p>
 
-<div class="screen hidden" id="lessonsScreen">
-  <h1 class="course-title">دورة Word التفاعلية</h1>
-  <p class="course-sub">دروس مصوّرة، وبعد كل درس 3 ألعاب لترسيخ المعلومة</p>
-  <div id="lessonsList"></div>
-</div>
+      <div class="search-wrap">
+        <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/>
+          <line x1="16.5" y1="16.5" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <input type="text" id="searchInput" class="search-input" data-i18n-placeholder="search_placeholder" placeholder="ابحث عن درس، تطبيق، أداة...">
+        <div id="searchResults" class="search-results hidden"></div>
+      </div>
+    </div>
+
+    <div id="sectionGrid" class="section-grid"></div>
+    <div id="sectionGridRow2" class="section-grid section-grid-row2"></div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <p data-i18n="footer_text">© 2026 د. سفيان مرابطي</p>
+</footer>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-functions-compat.js"></script>
-<script src="../../firebase-init.js"></script>
+<script src="firebase-init.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
