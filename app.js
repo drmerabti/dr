@@ -525,7 +525,7 @@ const SECTIONS = [...SECTIONS_ROW1, ...SECTIONS_ROW2];
 ===================================================================== */
 const I18N = {
   ar: {
-    site_title: 'Merabti 🎀',
+    site_title: 'Merabti 🎒',
     brand: 'د. سفيان مرابطي',
     search_placeholder: 'ابحث عن درس، تطبيق، أداة...',
     home: 'الرئيسية',
@@ -552,7 +552,7 @@ const I18N = {
     my_account: 'حسابي',
   },
   en: {
-    site_title: 'Merabti 🎀',
+    site_title: 'Merabti 🎒',
     brand: 'Dr. Sofiane Merabti',
     search_placeholder: 'Search lessons, apps, tools...',
     home: 'Home',
