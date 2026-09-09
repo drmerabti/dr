@@ -452,7 +452,7 @@ function setupWord2Pdf(){
     const container = document.createElement('div');
     container.innerHTML = result.value;
     Object.assign(container.style, {
-      position: 'fixed', left: '0', top: '0', width: '780px', padding: '36px',
+      position: 'absolute', left: '0', top: '0', width: '780px', padding: '36px',
       background: '#ffffff', color: '#1a1a1a', fontFamily: "'Tajawal','Arial',sans-serif",
       lineHeight: '1.7', fontSize: '14px', zIndex: '-1', pointerEvents: 'none',
     });
