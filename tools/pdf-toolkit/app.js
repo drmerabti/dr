@@ -38,8 +38,10 @@ const STR = {
     working: 'جارٍ المعالجة…',
     selCount: (n) => `${n} صفحة محددة`, clearSel: 'إلغاء التحديد', addGroup: '➕ اجعلها ملفًا مستقلًا',
     groupLabel: (i, pages) => `ملف ${i}: صفحات ${pages}`,
-    splitHint: 'اضغط على أي صفحات (تصير محددة بإطار أحمر) ثم "اجعلها ملفًا مستقلًا" — كرّر لبقية المجموعات. أي صفحة ما تُحدَّد ضمن أي مجموعة لن تظهر بالنتيجة.',
+    splitHint: 'حدّد الصفحات بالضغط عليها ثم "اجعلها ملفًا مستقلًا"، أو استخدم خانتَي "من" و"إلى" لملف كبير — كرّر لبقية المجموعات. أي صفحة ما تدخل ضمن أي مجموعة لن تظهر بالنتيجة.',
     splitNeedGroup: 'حدّد الصفحات وكوّن ملفًا واحدًا على الأقل قبل التقسيم.',
+    rangeFromLabel: 'من صفحة', rangeToLabel: 'إلى صفحة', addRangeLabel: '➕ إضافة نطاق',
+    rangeInvalid: 'أدخل نطاق صفحات صحيح ضمن عدد صفحات الملف.',
     imgFormatLabel: 'صيغة الصورة:', imgQualityLabel: 'الجودة',
     resultOkSingle: 'تم التحويل بنجاح', resultOkMulti: (n) => `تم إنشاء ${n} ملفات بنجاح`,
     downloadFile: 'تنزيل الملف', downloadZip: 'تنزيل الملف المضغوط (ZIP)', preparingZip: 'جارٍ تجهيز الملف المضغوط…',
@@ -91,8 +93,10 @@ const STR = {
     working: 'Processing…',
     selCount: (n) => `${n} pages selected`, clearSel: 'Clear selection', addGroup: '➕ Make separate file',
     groupLabel: (i, pages) => `File ${i}: pages ${pages}`,
-    splitHint: 'Click pages to select them (red outline), then "Make separate file" — repeat for other groups. Pages not included in any group are dropped from the result.',
+    splitHint: 'Click pages to select them, then "Make separate file" — or use the "from"/"to" boxes for a large file. Repeat for other groups. Pages not included in any group are dropped from the result.',
     splitNeedGroup: 'Select pages and create at least one file before splitting.',
+    rangeFromLabel: 'From page', rangeToLabel: 'To page', addRangeLabel: '➕ Add range',
+    rangeInvalid: 'Enter a valid page range within the file\'s page count.',
     imgFormatLabel: 'Image format:', imgQualityLabel: 'Quality',
     resultOkSingle: 'Converted successfully', resultOkMulti: (n) => `${n} files created successfully`,
     downloadFile: 'Download file', downloadZip: 'Download ZIP', preparingZip: 'Preparing ZIP…',
@@ -144,8 +148,10 @@ const STR = {
     working: 'Traitement en cours…',
     selCount: (n) => `${n} pages sélectionnées`, clearSel: 'Annuler la sélection', addGroup: '➕ Fichier séparé',
     groupLabel: (i, pages) => `Fichier ${i} : pages ${pages}`,
-    splitHint: "Cliquez sur des pages pour les sélectionner, puis « Fichier séparé » — répétez pour les autres groupes. Les pages non incluses dans un groupe seront exclues du résultat.",
+    splitHint: "Cliquez sur des pages pour les sélectionner, puis « Fichier séparé » — ou utilisez les champs « de »/« à » pour un fichier volumineux. Répétez pour les autres groupes. Les pages non incluses dans un groupe seront exclues du résultat.",
     splitNeedGroup: 'Sélectionnez des pages et créez au moins un fichier avant de diviser.',
+    rangeFromLabel: 'De la page', rangeToLabel: 'À la page', addRangeLabel: '➕ Ajouter une plage',
+    rangeInvalid: 'Saisissez une plage de pages valide selon le nombre de pages du fichier.',
     imgFormatLabel: "Format d'image :", imgQualityLabel: 'Qualité',
     resultOkSingle: 'Conversion réussie', resultOkMulti: (n) => `${n} fichiers créés avec succès`,
     downloadFile: 'Télécharger le fichier', downloadZip: 'Télécharger le ZIP', preparingZip: 'Préparation du ZIP…',
@@ -202,6 +208,9 @@ function applyLanguage(){
   $('clearSelBtn').textContent = s.clearSel;
   $('addGroupBtn').textContent = s.addGroup;
   $('splitHint').textContent = s.splitHint;
+  $('rangeFromLabel').textContent = s.rangeFromLabel;
+  $('rangeToLabel').textContent = s.rangeToLabel;
+  $('addRangeBtn').textContent = s.addRangeLabel;
 
   const imgFormatLabel = document.querySelector('.img-format-label'); if (imgFormatLabel) imgFormatLabel.textContent = s.imgFormatLabel;
   const imgQualityLabel = document.querySelector('.img-quality-label'); if (imgQualityLabel) imgQualityLabel.textContent = s.imgQualityLabel;
@@ -423,7 +432,7 @@ function setupWord2Pdf(){
     if (f){
       const card = document.createElement('div');
       card.className = 'thumb-card';
-      card.innerHTML = `<div class="thumb-page generic"><div class="word-ic"><svg viewBox="0 0 48 48"><use href="#ic-word2pdf"/></svg></div><button class="thumb-del" type="button">×</button></div><div class="thumb-name">${f.name}</div>`;
+      card.innerHTML = `<div class="thumb-page generic"><div class="word-ic"><svg viewBox="0 0 48 48"><use href="#ic-word2pdf"/></svg></div></div><button class="thumb-del" type="button">×</button><div class="thumb-name">${f.name}</div>`;
       card.querySelector('.thumb-del').addEventListener('click', () => setFile(null));
       grid.appendChild(card);
     }
@@ -443,9 +452,9 @@ function setupWord2Pdf(){
     const container = document.createElement('div');
     container.innerHTML = result.value;
     Object.assign(container.style, {
-      position: 'fixed', left: '-99999px', top: '0', width: '780px', padding: '36px',
+      position: 'fixed', left: '0', top: '0', width: '780px', padding: '36px',
       background: '#ffffff', color: '#1a1a1a', fontFamily: "'Tajawal','Arial',sans-serif",
-      lineHeight: '1.7', fontSize: '14px',
+      lineHeight: '1.7', fontSize: '14px', opacity: '0.01', pointerEvents: 'none', zIndex: '-1',
     });
     document.body.appendChild(container);
     try {
@@ -503,7 +512,7 @@ function setupMergePdf(){
         card.className = 'thumb-card';
         card.draggable = true;
         card.dataset.fid = idx;
-        card.innerHTML = `<div class="thumb-page"><button class="thumb-del" type="button">×</button><span class="thumb-pagecount">${numPages}</span></div><div class="thumb-name">${f.name}</div>`;
+        card.innerHTML = `<div class="thumb-page"><span class="thumb-pagecount">${numPages}</span></div><button class="thumb-del" type="button">×</button><div class="thumb-name">${f.name}</div>`;
         card.querySelector('.thumb-page').insertBefore(canvas, card.querySelector('.thumb-page').firstChild);
         card.querySelector('.thumb-del').addEventListener('click', () => { card.remove(); refreshOrder(); });
         grid.appendChild(card);
@@ -550,6 +559,24 @@ function updateSelectionBar(){
   bar.style.display = splitSelection.length ? 'flex' : 'none';
   $('selCount').textContent = s.selCount(splitSelection.length);
 }
+function markGroupedPages(){
+  document.querySelectorAll('#gridSplitpdf .thumb-page').forEach((el) => {
+    el.classList.remove('grouped');
+    const badge = el.querySelector('.group-badge');
+    if (badge) badge.remove();
+  });
+  splitGroups.forEach((g, gi) => {
+    g.forEach((pageNum) => {
+      const el = document.querySelector(`#gridSplitpdf .thumb-page[data-page="${pageNum}"]`);
+      if (!el) return;
+      el.classList.add('grouped');
+      const badge = document.createElement('span');
+      badge.className = 'group-badge';
+      badge.textContent = gi + 1;
+      el.appendChild(badge);
+    });
+  });
+}
 function renderGroups(){
   const s = STR[lang];
   const panel = $('groupsPanel');
@@ -562,6 +589,7 @@ function renderGroups(){
     row.querySelector('.gdel').addEventListener('click', () => { splitGroups.splice(i, 1); renderGroups(); updateSplitRunState(); });
     panel.appendChild(row);
   });
+  markGroupedPages();
   updateSplitRunState();
 }
 function updateSplitRunState(){
@@ -621,6 +649,24 @@ function setupSplitPdf(){
     splitGroups.push([...splitSelection].sort((a, b) => a - b));
     document.querySelectorAll('#gridSplitpdf .thumb-page.selected').forEach((el) => el.classList.remove('selected'));
     splitSelection = []; updateSelectionBar(); renderGroups();
+  });
+
+  $('addRangeBtn').addEventListener('click', () => {
+    const s = STR[lang];
+    const fromEl = panel.querySelector('.range-from');
+    const toEl = panel.querySelector('.range-to');
+    let from = parseInt(fromEl.value, 10);
+    let to = parseInt(toEl.value, 10);
+    if (!from || !to){ showRunError('splitpdf', s.rangeInvalid); return; }
+    if (from > to) { const t = from; from = to; to = t; }
+    from = Math.max(1, from);
+    to = Math.min(splitTotalPages, to);
+    if (from > splitTotalPages || to < 1){ showRunError('splitpdf', s.rangeInvalid); return; }
+    const pages = [];
+    for (let p = from; p <= to; p++) pages.push(p);
+    splitGroups.push(pages);
+    fromEl.value = ''; toEl.value = '';
+    renderGroups();
   });
 
   runBtn.addEventListener('click', () => runWithProgress('splitpdf', runBtn, async () => {
@@ -741,7 +787,7 @@ function setupImg2Pdf(){
       card.className = 'thumb-card';
       card.draggable = true;
       card.dataset.fid = idx;
-      card.innerHTML = `<div class="thumb-page"><button class="thumb-del" type="button">×</button></div><div class="thumb-name">${f.name}</div>`;
+      card.innerHTML = `<div class="thumb-page"></div><button class="thumb-del" type="button">×</button><div class="thumb-name">${f.name}</div>`;
       const img = document.createElement('img'); img.src = url;
       card.querySelector('.thumb-page').insertBefore(img, card.querySelector('.thumb-page').firstChild);
       card.querySelector('.thumb-del').addEventListener('click', () => { card.remove(); refreshOrder(); });
