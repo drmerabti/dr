@@ -454,9 +454,10 @@ function setupWord2Pdf(){
     Object.assign(container.style, {
       position: 'fixed', left: '0', top: '0', width: '780px', padding: '36px',
       background: '#ffffff', color: '#1a1a1a', fontFamily: "'Tajawal','Arial',sans-serif",
-      lineHeight: '1.7', fontSize: '14px', opacity: '0.01', pointerEvents: 'none', zIndex: '-1',
+      lineHeight: '1.7', fontSize: '14px', zIndex: '-1', pointerEvents: 'none',
     });
     document.body.appendChild(container);
+    if (document.fonts && document.fonts.ready) { try { await document.fonts.ready; } catch(e){} }
     try {
       const opt = {
         margin: 10, filename: fileBaseName(file.name) + '.pdf',
