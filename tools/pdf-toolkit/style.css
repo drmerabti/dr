@@ -279,6 +279,19 @@ a{ color:inherit; }
 
 .hint{ font-size:11.5px; color:var(--ink-soft); margin-top:8px; }
 
+/* ===== شاشة تحميل تغطي عملية تحويل وورد (يظل المحتوى الحقيقي مرئيًا خلفها لضمان التقاط صحيح) ===== */
+.convert-overlay{
+  position:fixed; inset:0; z-index:9999; background:var(--card-bg);
+  display:flex; align-items:center; justify-content:center; flex-direction:column; gap:14px;
+}
+.convert-overlay.hidden{ display:none; }
+.convert-spinner{
+  width:40px; height:40px; border-radius:50%; border:4px solid var(--tool-soft); border-top-color:var(--tool);
+  animation:spin .8s linear infinite;
+}
+@keyframes spin{ to{ transform:rotate(360deg); } }
+.convert-overlay p{ font-size:14px; font-weight:700; color:var(--ink); margin:0; }
+
 a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible{
   outline:2px solid var(--tool); outline-offset:2px;
 }

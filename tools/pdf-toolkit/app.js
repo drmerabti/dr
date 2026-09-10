@@ -454,10 +454,13 @@ function setupWord2Pdf(){
     Object.assign(container.style, {
       position: 'absolute', left: '0', top: '0', width: '780px', padding: '36px',
       background: '#ffffff', color: '#1a1a1a', fontFamily: "'Tajawal','Arial',sans-serif",
-      lineHeight: '1.7', fontSize: '14px', zIndex: '-1', pointerEvents: 'none',
+      lineHeight: '1.7', fontSize: '14px', zIndex: '9998',
     });
     document.body.appendChild(container);
+    $('convertOverlay').classList.remove('hidden'); // يغطي المحتوى الحقيقي كي لا يظهر للمستخدم أثناء الالتقاط
+    $('convertOverlayText').textContent = STR[lang].working;
     if (document.fonts && document.fonts.ready) { try { await document.fonts.ready; } catch(e){} }
+    await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))); // يضمن أن المتصفح رسم المحتوى فعليًا قبل الالتقاط
     try {
       const opt = {
         margin: 10, filename: fileBaseName(file.name) + '.pdf',
@@ -470,6 +473,7 @@ function setupWord2Pdf(){
       showRunSuccess('word2pdf', [{ blob, name: fileBaseName(file.name) + '.pdf' }], () => setFile(null));
     } finally {
       document.body.removeChild(container);
+      $('convertOverlay').classList.add('hidden');
     }
   }));
 }
