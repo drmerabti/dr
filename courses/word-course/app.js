@@ -106,8 +106,23 @@
 
   function renderNotebook(notes) {
     $('notebookBody').innerHTML = notes.map((note, i) => `
-      <div class="note-line"><span class="note-num">${i + 1}.</span><span>${escapeHtml(note)}</span></div>
+      <div class="note-line">
+        <span class="note-num">${i + 1}.</span>
+        <span class="note-text">${escapeHtml(note)}</span>
+        <button type="button" class="note-delete" data-idx="${i}" title="حذف">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
+        </button>
+      </div>
     `).join('');
+    $('notebookBody').querySelectorAll('.note-delete').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const idx = parseInt(btn.getAttribute('data-idx'), 10);
+        const notes = getLocalNotes(currentLessonId);
+        notes.splice(idx, 1);
+        setLocalNotes(currentLessonId, notes);
+        renderNotebook(notes);
+      });
+    });
   }
 
   function loadNotebook(lessonId) {
