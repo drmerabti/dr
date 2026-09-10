@@ -78,7 +78,7 @@
   /* ================= Lesson detail (video + chat + notebook) ================= */
   // Add an entry here once a lesson's downloadable file is uploaded.
   const FILE_URLS = {
-    // 1: 'files/lesson-1-file.pdf',
+    1: 'files/lesson-1-file.pdf',
   };
 
   function renderVideo(lessonId) {
