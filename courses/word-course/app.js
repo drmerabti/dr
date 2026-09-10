@@ -57,17 +57,15 @@
 
   function renderLessons() {
     els.lessonsList.innerHTML = LESSONS.map((lesson) => `
-      <button type="button" class="lesson-list-btn" data-lesson="${lesson.id}">
-        <span class="lesson-list-icon">${lesson.icon}</span>
-        <span class="lesson-list-text">
-          <span class="lesson-list-num">الدرس ${lesson.id}</span>
-          <span class="lesson-list-title">${lesson.title}</span>
-        </span>
-      </button>
+      <div class="item-card" data-lesson="${lesson.id}" style="cursor:pointer;">
+        <span class="lesson-num-badge">الدرس ${lesson.id}</span>
+        <span class="icon-badge" style="display:flex; align-items:center; justify-content:center; font-size:34px;">${lesson.icon}</span>
+        <h3>${lesson.title}</h3>
+      </div>
     `).join('');
 
-    els.lessonsList.querySelectorAll('[data-lesson]').forEach((btn) => {
-      btn.addEventListener('click', () => openLesson(parseInt(btn.getAttribute('data-lesson'), 10)));
+    els.lessonsList.querySelectorAll('[data-lesson]').forEach((card) => {
+      card.addEventListener('click', () => openLesson(parseInt(card.getAttribute('data-lesson'), 10)));
     });
   }
 
@@ -143,10 +141,10 @@
         .collection('wordCourseNotebooks').doc('lesson-' + currentLessonId)
         .set({ notes, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true });
       btn.textContent = 'تم الحفظ ✓';
-      setTimeout(() => { btn.textContent = 'حفظ بالحساب'; btn.disabled = false; }, 1800);
+      setTimeout(() => { btn.textContent = 'حفظ'; btn.disabled = false; }, 1800);
     } catch (e) {
       btn.textContent = 'فشل الحفظ';
-      setTimeout(() => { btn.textContent = 'حفظ بالحساب'; btn.disabled = false; }, 1800);
+      setTimeout(() => { btn.textContent = 'حفظ'; btn.disabled = false; }, 1800);
     }
   });
 
@@ -246,6 +244,17 @@
   /* ================= Init ================= */
   if (window.fbAuth) {
     window.fbAuth.onAuthStateChanged(async (user) => {
+      // Minimal topbar wiring — this page only needs to show sign-in state,
+      // not the full Pro-tier logic that lives in the main site's app.js.
+      const authBtn = $('authBtn');
+      if (authBtn) {
+        authBtn.innerHTML = user
+          ? `<span class="auth-avatar">${(user.displayName || user.email || '?')[0].toUpperCase()}</span>`
+          : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>`;
+      }
+      const proBtn = $('proBtn');
+      if (proBtn) proBtn.addEventListener('click', () => { window.location.href = '../../index.html'; });
+
       if (!user) {
         showScreen('lockedScreen');
         return;

@@ -5,35 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>دورة Word — أكاديمية مرابطي</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@1,600;1,700&display=swap" rel="stylesheet">
 <link rel="icon" type="image/x-icon" href="../../favicon.ico">
+<link rel="stylesheet" href="../../style.css">
 <style>
-  :root{
-    --accent:#2F5CA8; --accent-dark:#1E3F7A; --accent-soft:#E7ECF6;
-    --ink:#1E2F40; --ink-soft:#64768A; --card-bg:#fff; --line:#E1E6EC;
-    --shadow:0 14px 34px rgba(21,36,49,.10);
-  }
-  *{box-sizing:border-box;}
-  body{
-    margin:0; font-family:'Tajawal',sans-serif; direction:rtl;
-    background:#F4F6F9; color:var(--ink); min-height:100vh;
-  }
-  .topbar{
-    background:#fff; border-bottom:1px solid var(--line); padding:14px 24px;
-    display:flex; align-items:center; justify-content:space-between;
-  }
-  .topbar a{ color:var(--ink); text-decoration:none; font-weight:800; font-size:.95rem; display:flex; align-items:center; gap:6px; }
-  .topbar svg{ width:18px; height:18px; }
-
-  .screen{ max-width:900px; margin:0 auto; padding:40px 20px; }
+  /* Page-specific additions only — topbar, background, and colors come from the real style.css */
   .hidden{ display:none; }
-
-  /* Locked (not signed in) */
-  .locked-hero{ text-align:center; margin-bottom:24px; }
-  .locked-icon{ font-size:40px; margin-bottom:10px; }
-  .locked-hero h1{ font-size:1.4rem; margin:0 0 6px; }
-  .locked-hero p{ color:var(--ink-soft); font-size:.92rem; margin:0; }
-  .auth-card{ max-width:360px; margin:0 auto; background:#fff; border-radius:20px; padding:26px; box-shadow:var(--shadow); }
+  .screen-narrow{ max-width: 480px; margin: 60px auto; text-align:center; }
+  .auth-card{ background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow); padding: 26px; margin-top: 20px; }
   .cv-input{
     width:100%; border:1px solid var(--line); border-radius:10px; padding:11px 14px;
     font-family:inherit; font-size:.9rem; margin-bottom:10px; background:#fff; color:var(--ink);
@@ -41,9 +20,8 @@
   .btn{ border:none; border-radius:10px; padding:12px; font-family:inherit; font-weight:800; font-size:.9rem; cursor:pointer; width:100%; }
   .btn-primary{ background:linear-gradient(135deg,var(--accent),var(--accent-dark)); color:#fff; }
 
-  /* Not subscribed */
-  .paywall{ text-align:center; background:#fff; border-radius:22px; padding:44px 30px; box-shadow:var(--shadow); }
-  .paywall .price{ font-size:2.2rem; font-weight:900; color:var(--accent-dark); margin:14px 0 4px; }
+  .paywall{ text-align:center; background: var(--card-bg); border-radius: var(--radius); padding:44px 30px; box-shadow: var(--shadow); max-width:480px; margin:60px auto; }
+  .paywall .price{ font-size:2.2rem; font-weight:900; color:var(--accent); margin:14px 0 4px; }
   .paywall .price span{ font-size:.9rem; font-weight:700; color:var(--ink-soft); }
   .paywall p{ color:var(--ink-soft); font-size:.9rem; max-width:420px; margin:0 auto 22px; line-height:1.7; }
   .subscribe-btn{
@@ -51,122 +29,108 @@
     padding:14px 34px; border-radius:999px; font-family:inherit; font-weight:900; font-size:.95rem; cursor:pointer;
   }
 
-  /* Lesson list */
-  .course-title{ font-size:1.5rem; font-weight:900; margin:0 0 6px; }
-  .course-sub{ color:var(--ink-soft); font-size:.9rem; margin:0 0 26px; }
-  .lesson-card{ background:#fff; border-radius:20px; padding:22px; box-shadow:var(--shadow); margin-bottom:20px; }
-  .lesson-card h2{ font-size:1.1rem; margin:0 0 14px; display:flex; align-items:center; gap:8px; }
-  .lesson-num{
-    width:30px; height:30px; border-radius:50%; background:var(--accent-soft); color:var(--accent-dark);
-    display:flex; align-items:center; justify-content:center; font-size:.85rem; font-weight:900; flex-shrink:0;
+  /* Lesson grid — same pattern as tools/apps cards */
+  .lesson-num-badge{
+    position:absolute; top:12px; inset-inline-start:12px; z-index:2;
+    background: var(--accent-soft); color: var(--accent); font-size:.7rem; font-weight:900;
+    padding:4px 10px; border-radius:999px;
   }
-  .video-slot{
-    background:#F0F3F7; border:2px dashed var(--line); border-radius:14px;
-    aspect-ratio:16/9; display:flex; flex-direction:column; align-items:center; justify-content:center;
-    gap:8px; color:var(--ink-soft); margin-bottom:16px;
-  }
-  .video-slot svg{ width:34px; height:34px; opacity:.5; }
-  .video-slot span{ font-size:.85rem; font-weight:700; }
 
-  .games-row{ display:flex; gap:10px; flex-wrap:wrap; }
-  .game-btn{
-    flex:1; min-width:140px; display:flex; align-items:center; gap:10px;
-    border:1px solid var(--line); background:#fff; border-radius:14px; padding:12px 14px;
-    text-decoration:none; color:var(--ink); font-weight:800; font-size:.85rem; cursor:pointer;
-  }
-  .game-btn:hover{ border-color:var(--accent); }
-  .game-btn.disabled{ opacity:.5; cursor:default; pointer-events:none; }
-  .game-icon{ width:38px; height:38px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
-  .g1{ background:#E3EEF4; } .g2{ background:#E3F5EB; } .g3{ background:#FBEAF0; }
-  .game-btn .lbl-sub{ font-size:.72rem; font-weight:600; color:var(--ink-soft); display:block; margin-top:1px; }
-
-  /* ---- Lesson list (new: icon + number + title rows) ---- */
-  .lesson-list{ display:flex; flex-direction:column; gap:10px; }
-  .lesson-list-btn{
-    display:flex; align-items:center; gap:14px; background:#fff; border:1px solid var(--line);
-    border-radius:14px; padding:14px 18px; cursor:pointer; text-align:right; width:100%;
-    font-family:inherit; transition:border-color .15s ease, transform .15s ease;
-  }
-  .lesson-list-btn:hover{ border-color:var(--accent); transform:translateX(-2px); }
-  .lesson-list-icon{ font-size:24px; flex-shrink:0; width:40px; text-align:center; }
-  .lesson-list-text{ display:flex; flex-direction:column; gap:2px; }
-  .lesson-list-num{ font-size:.72rem; font-weight:800; color:var(--accent); }
-  .lesson-list-title{ font-size:.9rem; font-weight:700; color:var(--ink); }
-
-  /* ---- Lesson detail: back link ---- */
+  /* Lesson detail */
   .back-link{
     display:flex; align-items:center; gap:6px; background:none; border:none; cursor:pointer;
-    color:var(--ink-soft); font-family:inherit; font-size:.85rem; font-weight:700; margin-bottom:14px; padding:0;
+    color: var(--ink-soft); font-family:inherit; font-size:.85rem; font-weight:700; margin-bottom:16px; padding:0;
   }
   .back-link svg{ width:16px; height:16px; }
-  .back-link:hover{ color:var(--accent); }
+  .back-link:hover{ color: var(--accent); }
+  .lesson-title{ font-size:1.6rem; font-weight:900; color:var(--ink); margin-bottom:22px; }
 
-  /* ---- Lesson layout: chat (right) + video (center) + notebook (left), in RTL source order ---- */
-  .lesson-layout{ display:grid; grid-template-columns:1fr 1.6fr 1fr; gap:16px; align-items:stretch; }
+  .lesson-layout{ display:grid; grid-template-columns:1fr 1.7fr 1fr; gap:20px; align-items:stretch; }
   .side-panel, .center-col{ display:flex; flex-direction:column; }
   .side-panel{
-    background:#fff; border-radius:18px; box-shadow:var(--shadow); overflow:hidden; height:520px;
+    background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow);
+    overflow:hidden; height:600px;
   }
-  .panel-header{ padding:14px 16px; font-weight:900; font-size:.88rem; border-bottom:1px solid var(--line); }
-  .chat-header{ background:#F4F8FB; color:#1E3F7A; }
+  .panel-header{ padding:16px 18px; font-weight:900; font-size:1rem; border-bottom:1px solid var(--line); }
+  .chat-header{ background: var(--accent-soft); color: var(--accent); }
   .notebook-header{ background:#FFFBF0; color:#6B4E1F; }
-  .panel-body{ flex:1; padding:14px 16px; overflow-y:auto; display:flex; flex-direction:column; gap:10px; background:#F9FBFD; }
+  .panel-body{ flex:1; padding:16px 18px; overflow-y:auto; display:flex; flex-direction:column; gap:10px; }
   .notebook-body{
     background:#FFFDF7;
-    background-image:repeating-linear-gradient(#FFFDF7 0px, #FFFDF7 30px, #F0E6C8 31px);
-    display:block;
+    background-image:repeating-linear-gradient(#FFFDF7 0px, #FFFDF7 32px, #F0E6C8 33px);
   }
-  .note-line{ font-size:.85rem; color:#4A3B1F; line-height:31px; display:flex; gap:8px; }
+  .note-line{ font-size:.9rem; color:#4A3B1F; line-height:32px; display:flex; gap:8px; }
   .note-num{ font-weight:900; color:#C9A227; flex-shrink:0; }
-  .msg{ max-width:85%; padding:8px 12px; border-radius:12px; font-size:.82rem; line-height:1.5; }
-  .msg.mine{ align-self:flex-start; background:#E7ECF6; color:var(--ink); border-bottom-right-radius:4px; }
-  .msg.teacher{ align-self:flex-end; background:linear-gradient(135deg,var(--accent),var(--accent-dark)); color:#fff; border-bottom-left-radius:4px; }
-  .panel-input-row{ display:flex; gap:8px; padding:12px 14px; border-top:1px solid var(--line); }
+  .msg{ max-width:85%; padding:9px 13px; border-radius:12px; font-size:.88rem; line-height:1.5; }
+  .msg.mine{ align-self:flex-start; background: var(--accent-soft); color:var(--ink); border-bottom-right-radius:4px; }
+  .msg.teacher{ align-self:flex-end; background: linear-gradient(135deg, var(--accent), var(--accent-dark)); color:#fff; border-bottom-left-radius:4px; }
+  .panel-input-row{ display:flex; gap:8px; padding:14px 16px; border-top:1px solid var(--line); }
   .panel-input-row .cv-input{ margin-bottom:0; }
   .send-btn, .mini-btn{
-    background:linear-gradient(135deg,var(--accent),var(--accent-dark)); color:#fff; border:none;
-    border-radius:10px; width:38px; flex-shrink:0; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:1.1rem; font-weight:900;
+    background: linear-gradient(135deg, var(--accent), var(--accent-dark)); color:#fff; border:none;
+    border-radius:10px; width:40px; flex-shrink:0; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:1.2rem; font-weight:900;
   }
-  .send-btn svg{ width:16px; height:16px; }
+  .send-btn svg{ width:17px; height:17px; }
   #notebookSaveBtn{
-    margin:0 14px 14px; background:linear-gradient(145deg,#F2B84B,#C9861B); color:#fff; border:none;
-    border-radius:10px; padding:10px; font-weight:800; font-size:.82rem; cursor:pointer;
+    margin:0 16px 16px; background: linear-gradient(145deg,#F2B84B,#C9861B); color:#fff; border:none;
+    border-radius:10px; padding:11px; font-weight:800; font-size:.88rem; cursor:pointer;
   }
 
   .center-col .video-box{
-    background:linear-gradient(135deg,#1B3A52,#2F5770); border-radius:18px;
-    height:340px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; color:#A8C6DC;
-    margin-bottom:16px;
+    background: linear-gradient(135deg, var(--accent-dark), var(--accent)); border-radius: var(--radius);
+    height:400px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; color:#fff;
+    margin-bottom:18px; box-shadow: var(--shadow);
   }
-  .center-col .video-box svg{ width:44px; height:44px; opacity:.6; }
-  .center-col .video-box span{ font-size:.85rem; font-weight:700; }
+  .center-col .video-box svg{ width:52px; height:52px; opacity:.7; }
+  .center-col .video-box span{ font-size:.9rem; font-weight:700; }
+
+  .games-row{ display:flex; gap:12px; flex-wrap:nowrap; }
+  .game-btn{
+    flex:1; min-width:0; display:flex; align-items:center; gap:10px;
+    border:1px solid var(--line); background: var(--card-bg); border-radius: var(--radius); padding:14px 16px;
+    text-decoration:none; color:var(--ink); font-weight:800; font-size:.88rem; cursor:pointer; box-shadow: var(--shadow);
+  }
+  .game-btn.disabled{ opacity:.5; cursor:default; }
+  .game-icon{ width:40px; height:40px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:19px; flex-shrink:0; }
+  .g1{ background: var(--accent-soft); } .g2{ background:#E3F5EB; } .g3{ background:#FBEAF0; }
+  .lbl-sub{ font-size:.72rem; font-weight:600; color:var(--ink-soft); display:block; margin-top:1px; }
 
   @media (max-width:980px){
     .lesson-layout{ grid-template-columns:1fr; }
-    .side-panel{ height:340px; }
+    .side-panel{ height:400px; }
+    .games-row{ flex-wrap:wrap; }
   }
 </style>
 </head>
 <body>
 
-<div class="topbar">
-  <a href="../../index.html">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
-    <span id="topbarBackText">الرئيسية</span>
-  </a>
-  <span style="font-weight:900;">دورة Word</span>
-</div>
-
-<div class="screen" id="loadingScreen">
-  <p style="text-align:center; color:var(--ink-soft);">جارٍ التحميل...</p>
-</div>
-
-<div class="screen hidden" id="lockedScreen">
-  <div class="locked-hero">
-    <div class="locked-icon">🔒</div>
-    <h1>سجّل دخولك لعرض دورة Word</h1>
-    <p>هذه الدورة متاحة للمستخدمين المسجَّلين فقط.</p>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="../../index.html" class="brand">د. سفيان مرابطي</a>
+    <div class="topbar-actions">
+      <button id="proBtn" class="pro-btn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 8l4 3 5-6 5 6 4-3-2 11H5L3 8z"/><circle cx="3" cy="8" r="1.4" fill="currentColor" stroke="none"/><circle cx="12" cy="5" r="1.4" fill="currentColor" stroke="none"/><circle cx="21" cy="8" r="1.4" fill="currentColor" stroke="none"/></svg>
+        <span>Pro</span>
+        <svg class="pro-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+      </button>
+      <div class="auth-wrap" id="authWrap">
+        <button id="authBtn" class="auth-btn" type="button"></button>
+        <div id="authMenu" class="auth-menu hidden"></div>
+      </div>
+      <button id="langToggle" class="lang-toggle" type="button">EN</button>
+    </div>
   </div>
+</header>
+
+<main>
+<div id="loadingScreen" class="screen-narrow">
+  <p style="color:var(--ink-soft);">جارٍ التحميل...</p>
+</div>
+
+<div class="screen-narrow hidden" id="lockedScreen">
+  <div style="font-size:40px; margin-bottom:10px;">🔒</div>
+  <h1 style="font-size:1.4rem; margin-bottom:6px;">سجّل دخولك لعرض دورة Word</h1>
+  <p style="color:var(--ink-soft); font-size:.92rem;">هذه الدورة متاحة للمستخدمين المسجَّلين فقط.</p>
   <div class="auth-card">
     <form id="authForm">
       <input type="email" id="acEmail" class="cv-input" required placeholder="البريد الإلكتروني">
@@ -176,7 +140,7 @@
   </div>
 </div>
 
-<div class="screen hidden" id="paywallScreen">
+<div class="hidden" id="paywallScreen">
   <div class="paywall">
     <h1>دورة Word التفاعلية</h1>
     <p>دروس مصوّرة خطوة بخطوة، مع تمارين وألعاب تفاعلية بعد كل درس لترسيخ المعلومة.</p>
@@ -185,21 +149,48 @@
   </div>
 </div>
 
-<div class="screen hidden" id="lessonsScreen">
-  <h1 class="course-title">دورة Word التفاعلية</h1>
-  <p class="course-sub">دروس مصوّرة، وبعد كل درس 3 ألعاب لترسيخ المعلومة</p>
-  <div id="lessonsList" class="lesson-list"></div>
+<div class="hidden" id="lessonsScreen">
+  <section class="view">
+    <h2 class="view-title">دورة Word التفاعلية</h2>
+    <div id="lessonsList" class="item-grid"></div>
+  </section>
 </div>
 
-<div class="screen hidden" id="lessonDetailScreen">
+<div class="hidden" id="lessonDetailScreen">
   <button type="button" class="back-link" id="backToLessonsBtn">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
     الرجوع لقائمة الدروس
   </button>
-  <h1 class="course-title" id="lessonDetailTitle" style="font-size:1.15rem;"></h1>
+  <h1 class="lesson-title" id="lessonDetailTitle"></h1>
 
   <div class="lesson-layout">
-    <!-- Right (RTL): chat with the teacher -->
+    <!-- Right (RTL): notebook -->
+    <div class="side-panel">
+      <div class="panel-header notebook-header">📓 كراستي</div>
+      <div class="panel-body notebook-body" id="notebookBody"></div>
+      <div class="panel-input-row">
+        <input type="text" id="notebookInput" class="cv-input" placeholder="أضف ملاحظة...">
+        <button type="button" class="mini-btn" id="notebookAddBtn">+</button>
+      </div>
+      <button type="button" id="notebookSaveBtn">حفظ</button>
+    </div>
+
+    <!-- Center: video + games (single row) -->
+    <div class="center-col">
+      <div class="video-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+        <span id="lessonDetailNum"></span>
+      </div>
+      <div class="games-row">
+        <button type="button" class="game-btn" id="gameMemoryBtn">
+          <span class="game-icon g1">🧠</span><span>اختبر ذاكرتك</span>
+        </button>
+        <span class="game-btn disabled"><span class="game-icon g2">🔢</span><span>ترتيب الخطوات<span class="lbl-sub">قريبًا</span></span></span>
+        <span class="game-btn disabled"><span class="game-icon g3">🎯</span><span>مسار التقدّم<span class="lbl-sub">قريبًا</span></span></span>
+      </div>
+    </div>
+
+    <!-- Left (RTL): chat -->
     <div class="side-panel">
       <div class="panel-header chat-header">💬 اسأل الأستاذ</div>
       <div class="panel-body" id="chatBody"></div>
@@ -210,34 +201,9 @@
         </button>
       </div>
     </div>
-
-    <!-- Center: video + games -->
-    <div class="center-col">
-      <div class="video-box">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
-        <span id="lessonDetailNum"></span>
-      </div>
-      <div class="games-row">
-        <button type="button" class="game-btn" id="gameMemoryBtn">
-          <span class="game-icon g1">🧠</span><span>لعبة الذاكرة</span>
-        </button>
-        <span class="game-btn disabled"><span class="game-icon g2">🔢</span><span>ترتيب الخطوات<span class="lbl-sub">قريبًا</span></span></span>
-        <span class="game-btn disabled"><span class="game-icon g3">🎯</span><span>مسار التقدّم<span class="lbl-sub">قريبًا</span></span></span>
-      </div>
-    </div>
-
-    <!-- Left (RTL): notebook -->
-    <div class="side-panel">
-      <div class="panel-header notebook-header">📓 كراستي</div>
-      <div class="panel-body notebook-body" id="notebookBody"></div>
-      <div class="panel-input-row">
-        <input type="text" id="notebookInput" class="cv-input" placeholder="أضف ملاحظة...">
-        <button type="button" class="mini-btn" id="notebookAddBtn">+</button>
-      </div>
-      <button type="button" class="save-btn" id="notebookSaveBtn">حفظ بالحساب</button>
-    </div>
   </div>
 </div>
+</main>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
