@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة الأسئلة — دورة Word</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="icon" type="image/x-icon" href="../../../favicon.ico">
+<link rel="stylesheet" href="../../../style.css">
+<style>
+  .hidden{ display:none; }
+  .admin-wrap{ max-width:900px; margin:0 auto; }
+  .thread-list{ display:flex; flex-direction:column; gap:12px; }
+  .thread-card{
+    background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow);
+    padding:18px 20px; cursor:pointer; border:2px solid transparent;
+  }
+  .thread-card.active{ border-color: var(--accent); }
+  .thread-card .meta{ display:flex; justify-content:space-between; font-size:.78rem; color:var(--ink-soft); margin-bottom:6px; }
+  .thread-card .preview{ font-size:.9rem; color:var(--ink); font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .thread-card .unread-dot{ width:9px; height:9px; border-radius:50%; background:#C0392B; display:inline-block; margin-inline-start:6px; }
+
+  .thread-detail{
+    background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow);
+    padding:0; margin-top:16px; display:flex; flex-direction:column; height:500px;
+  }
+  .thread-detail-header{ padding:16px 20px; border-bottom:1px solid var(--line); font-weight:800; }
+  .thread-detail-body{ flex:1; padding:16px 20px; overflow-y:auto; display:flex; flex-direction:column; gap:10px; }
+  .msg{ max-width:75%; padding:8px 13px; border-radius:12px; font-size:.88rem; line-height:1.5; }
+  .msg.student{ align-self:flex-start; background: var(--accent-soft); color:var(--ink); }
+  .msg.teacher{ align-self:flex-end; background: linear-gradient(135deg, var(--accent), #1B3A4D); color:#fff; }
+  .thread-reply-row{ display:flex; gap:8px; padding:14px 16px; border-top:1px solid var(--line); }
+  .thread-reply-row input{ flex:1; border:1px solid var(--line); border-radius:10px; padding:10px 14px; font-family:inherit; font-size:.88rem; }
+  .thread-reply-row button{
+    background: linear-gradient(135deg, var(--accent), #1B3A4D); color:#fff; border:none;
+    border-radius:10px; padding:0 22px; font-family:inherit; font-weight:800; cursor:pointer;
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="../../../index.html" class="brand">د. سفيان مرابطي</a>
+  </div>
+</header>
+
+<main>
+<div class="admin-wrap">
+  <div id="loadingScreen"><p style="text-align:center; color:var(--ink-soft);">جارٍ التحميل...</p></div>
+
+  <div class="hidden" id="deniedScreen">
+    <p style="text-align:center; color:var(--ink-soft); margin-top:60px;">هذه الصفحة خاصة بالمدير فقط.</p>
+  </div>
+
+  <div class="hidden" id="panelScreen">
+    <h2 class="view-title">أسئلة المتعلّمين</h2>
+    <div class="thread-list" id="threadList"></div>
+
+    <div class="thread-detail hidden" id="threadDetail">
+      <div class="thread-detail-header" id="threadDetailHeader"></div>
+      <div class="thread-detail-body" id="threadDetailBody"></div>
+      <div class="thread-reply-row">
+        <input type="text" id="replyInput" placeholder="اكتب ردّك...">
+        <button type="button" id="replySendBtn">إرسال</button>
+      </div>
+    </div>
+  </div>
+</div>
+</main>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="../../../firebase-init.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
