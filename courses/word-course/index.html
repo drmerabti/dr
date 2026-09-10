@@ -52,7 +52,7 @@
     overflow:hidden;
   }
   .panel-header{ padding:16px 18px; font-weight:900; font-size:1rem; border-bottom:1px solid var(--line); }
-  .chat-header{ background: var(--accent-soft); color: var(--accent); }
+  .chat-header{ background:#DCE9F5; color: var(--accent); }
   .notebook-header{ background:#FFFBF0; color:#6B4E1F; }
   .panel-body{ flex:1; padding:16px 18px; overflow-y:auto; display:flex; flex-direction:column; gap:10px; }
   .notebook-body{
@@ -92,6 +92,33 @@
   .center-col .video-box span{ font-size:.9rem; font-weight:700; }
 
   .games-row{ display:flex; gap:12px; flex-wrap:nowrap; }
+
+  .lesson-extras{ margin-top:24px; display:grid; grid-template-columns:1fr 1.6fr 1fr; gap:16px; align-items:stretch; }
+
+  .lesson-nav-btn{
+    display:flex; align-items:center; gap:10px; justify-content:center;
+    background: linear-gradient(135deg, var(--accent), #1B3A4D); color:#fff; border:none;
+    border-radius:16px; padding:18px 20px; font-family:inherit; font-weight:900; font-size:1.05rem;
+    cursor:pointer; box-shadow:0 8px 18px rgba(27,58,77,.28);
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .lesson-nav-btn:hover{ transform: translateY(-3px); box-shadow:0 12px 24px rgba(27,58,77,.36); }
+  .lesson-nav-btn svg{ width:20px; height:20px; flex-shrink:0; }
+
+  .lesson-file-box{
+    display:flex; align-items:center; gap:10px; justify-content:center;
+    background: linear-gradient(135deg, #E0A020, #C9861B); color:#fff; border:none;
+    border-radius:16px; padding:18px 20px; font-family:inherit; font-weight:900; font-size:1.05rem;
+    cursor:pointer; box-shadow:0 8px 18px rgba(201,134,27,.3);
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .lesson-file-box:hover{ transform: translateY(-3px); box-shadow:0 12px 24px rgba(201,134,27,.4); }
+  .lesson-file-box svg{ width:24px; height:24px; flex-shrink:0; }
+  .file-download-btn{
+    background: rgba(255,255,255,.22); color:#fff; text-decoration:none;
+    padding:8px 18px; border-radius:999px; font-weight:800; font-size:.85rem; flex-shrink:0;
+  }
+  .file-download-btn:hover{ background: rgba(255,255,255,.34); }
 
   /* Lesson detail is the one screen that breaks out of the site's normal
      1080px content width and fills the viewport instead. */
@@ -219,6 +246,22 @@
         </button>
       </div>
     </div>
+  </div>
+
+  <div class="lesson-extras">
+    <button type="button" class="lesson-nav-btn" id="nextLessonBtn">
+      <span>الدرس التالي</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+    </button>
+    <div class="lesson-file-box" id="lessonFileBox">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+      <span>ملف الدرس الأول</span>
+      <a href="#" class="file-download-btn">تحميل</a>
+    </div>
+    <button type="button" class="lesson-nav-btn" id="prevLessonBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+      <span>الدرس السابق</span>
+    </button>
   </div>
 </div>
 </main>
