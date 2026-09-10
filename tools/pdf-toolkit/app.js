@@ -449,6 +449,7 @@ function setupWord2Pdf(){
     const file = word2pdfFile;
     const arrayBuffer = await file.arrayBuffer();
     const result = await mammoth.convertToHtml({ arrayBuffer });
+    console.log('[تشخيص] طول HTML من mammoth:', result.value.length, '— رسائل:', result.messages);
     const container = document.createElement('div');
     container.innerHTML = result.value;
     Object.assign(container.style, {
@@ -470,6 +471,7 @@ function setupWord2Pdf(){
       };
       const worker = html2pdf().set(opt).from(container).toPdf();
       const blob = await worker.output('blob');
+      console.log('[تشخيص] حجم ملف PDF الناتج:', blob.size, 'بايت — عدد أحرف محتوى الحاوية:', container.textContent.trim().length);
       showRunSuccess('word2pdf', [{ blob, name: fileBaseName(file.name) + '.pdf' }], () => setFile(null));
     } finally {
       document.body.removeChild(container);
