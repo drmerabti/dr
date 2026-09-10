@@ -5,48 +5,195 @@
   const els = {
     loadingScreen: $('loadingScreen'), lockedScreen: $('lockedScreen'),
     paywallScreen: $('paywallScreen'), lessonsScreen: $('lessonsScreen'),
+    lessonDetailScreen: $('lessonDetailScreen'),
     authForm: $('authForm'), acEmail: $('acEmail'), acPassword: $('acPassword'),
     subscribeBtn: $('subscribeBtn'), lessonsList: $('lessonsList'),
   };
 
   function showScreen(name) {
-    ['loadingScreen', 'lockedScreen', 'paywallScreen', 'lessonsScreen'].forEach((s) => els[s].classList.add('hidden'));
+    ['loadingScreen', 'lockedScreen', 'paywallScreen', 'lessonsScreen', 'lessonDetailScreen'].forEach((s) => {
+      if (els[s]) els[s].classList.add('hidden');
+    });
     els[name].classList.remove('hidden');
   }
 
-  /* ================= Lesson data =================
-     Each lesson lists its games. "memory" is built and linked to a real page;
-     "sequence" and "path" are not built yet, so their buttons render disabled. */
+  /* ================= Lesson data — all 30, from day one ================= */
   const LESSONS = [
-    {
-      id: 'lesson-1',
-      title: 'الدرس الأول — مقدمة عن برنامج Word',
-      videoUrl: null, // set this once the real video is ready
-      memoryGameUrl: 'games/word-lesson1-memory.html',
-    },
-    // Add more lessons here as content becomes ready — same shape as above.
+    { id: 1, icon: '🖥️', title: 'التعرف على برنامج Word وواجهة البرنامج' },
+    { id: 2, icon: '💾', title: 'إنشاء المستندات وفتحها وحفظها' },
+    { id: 3, icon: '✍️', title: 'الكتابة والتحرير في Word' },
+    { id: 4, icon: '📋', title: 'تحديد النص ونسخه وقصه ولصقه' },
+    { id: 5, icon: '🔤', title: 'تنسيق النصوص والخطوط' },
+    { id: 6, icon: '📐', title: 'تنسيق الفقرات والمحاذاة والمسافات' },
+    { id: 7, icon: '🔢', title: 'التعداد النقطي والرقمي' },
+    { id: 8, icon: '🔍', title: 'البحث والاستبدال والتنقل داخل المستند' },
+    { id: 9, icon: 'Ω', title: 'الرموز والأحرف الخاصة والمعادلات' },
+    { id: 10, icon: '⌨️', title: 'أهم اختصارات لوحة المفاتيح في Word' },
+    { id: 11, icon: '🖼️', title: 'إدراج الصور وتنسيقها' },
+    { id: 12, icon: '🔷', title: 'إدراج الأشكال ومربع النص وWordArt' },
+    { id: 13, icon: '📊', title: 'إنشاء الجداول' },
+    { id: 14, icon: '🗂️', title: 'تنسيق الجداول وإدارتها' },
+    { id: 15, icon: '📏', title: 'إعداد الصفحة والهوامش وحجم واتجاه الورق' },
+    { id: 16, icon: '📑', title: 'الرؤوس والتذييلات وأرقام الصفحات' },
+    { id: 17, icon: '✂️', title: 'فواصل الصفحات والأقسام' },
+    { id: 18, icon: '📰', title: 'الأعمدة وحدود الصفحة والعلامة المائية' },
+    { id: 19, icon: '🔗', title: 'الروابط التشعبية والربط داخل مستند Word' },
+    { id: 20, icon: '🎨', title: 'استخدام الأنماط Styles وتنسيق المستند باحتراف' },
+    { id: 21, icon: '🗒️', title: 'إنشاء فهرس المحتويات تلقائيًا' },
+    { id: 22, icon: '📚', title: 'المراجع والاقتباسات وإدارة المصادر' },
+    { id: 23, icon: '💬', title: 'الحواشي السفلية والتعليقات التوضيحية' },
+    { id: 24, icon: '✅', title: 'التدقيق الإملائي والنحوي واللغوي' },
+    { id: 25, icon: '🔄', title: 'المراجعة وتتبع التغييرات والتعليقات' },
+    { id: 26, icon: '📧', title: 'دمج المراسلات Mail Merge' },
+    { id: 27, icon: '🧩', title: 'القوالب والنماذج في Word' },
+    { id: 28, icon: '🔒', title: 'حماية المستند والتحكم في صلاحياته' },
+    { id: 29, icon: '🖨️', title: 'الطباعة وتحويل المستند إلى PDF' },
+    { id: 30, icon: '🏆', title: 'مشروع تطبيقي شامل: إنشاء مستند Word احترافي من البداية إلى النهاية' },
   ];
+  // Only lesson 1 has a built memory game so far — others show "قريبًا" until content is ready.
+  const MEMORY_GAME_URLS = { 1: 'games/word-lesson1-memory.html' };
+
+  let currentLessonId = null;
 
   function renderLessons() {
-    els.lessonsList.innerHTML = LESSONS.map((lesson, i) => `
-      <div class="lesson-card">
-        <h2><span class="lesson-num">${i + 1}</span> ${lesson.title}</h2>
-        <div class="video-slot">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
-          <span>${lesson.videoUrl ? '' : 'الفيديو غير متاح بعد'}</span>
-        </div>
-        <div class="games-row">
-          ${lesson.memoryGameUrl
-            ? `<a class="game-btn" href="${lesson.memoryGameUrl}" target="_blank" rel="noopener">
-                <span class="game-icon g1">🧠</span>
-                <span>لعبة الذاكرة<span class="lbl-sub">طابق بين البطاقات</span></span>
-              </a>`
-            : `<span class="game-btn disabled"><span class="game-icon g1">🧠</span><span>لعبة الذاكرة<span class="lbl-sub">قريبًا</span></span></span>`}
-          <span class="game-btn disabled"><span class="game-icon g2">🔢</span><span>ترتيب الخطوات<span class="lbl-sub">قريبًا</span></span></span>
-          <span class="game-btn disabled"><span class="game-icon g3">🎯</span><span>مسار التقدّم<span class="lbl-sub">قريبًا</span></span></span>
-        </div>
-      </div>
+    els.lessonsList.innerHTML = LESSONS.map((lesson) => `
+      <button type="button" class="lesson-list-btn" data-lesson="${lesson.id}">
+        <span class="lesson-list-icon">${lesson.icon}</span>
+        <span class="lesson-list-text">
+          <span class="lesson-list-num">الدرس ${lesson.id}</span>
+          <span class="lesson-list-title">${lesson.title}</span>
+        </span>
+      </button>
     `).join('');
+
+    els.lessonsList.querySelectorAll('[data-lesson]').forEach((btn) => {
+      btn.addEventListener('click', () => openLesson(parseInt(btn.getAttribute('data-lesson'), 10)));
+    });
+  }
+
+  /* ================= Lesson detail (video + chat + notebook) ================= */
+  function openLesson(lessonId) {
+    currentLessonId = lessonId;
+    const lesson = LESSONS.find((l) => l.id === lessonId);
+    if (!lesson) return;
+
+    $('lessonDetailTitle').textContent = `الدرس ${lesson.id} — ${lesson.title}`;
+    $('lessonDetailNum').textContent = `الدرس ${lesson.id}`;
+
+    const memoryUrl = MEMORY_GAME_URLS[lessonId];
+    $('gameMemoryBtn').classList.toggle('disabled', !memoryUrl);
+    $('gameMemoryBtn').onclick = memoryUrl ? () => window.open(memoryUrl, '_blank') : null;
+
+    loadNotebook(lessonId);
+    loadChat(lessonId);
+    showScreen('lessonDetailScreen');
+    window.scrollTo(0, 0);
+  }
+
+  $('backToLessonsBtn').addEventListener('click', () => showScreen('lessonsScreen'));
+
+  /* ---- Notebook: auto-numbered notes, local-first + explicit cloud save ---- */
+  function notebookLocalKey(lessonId) {
+    const user = window.fbAuth.currentUser;
+    return `wordCourseNotebook:${user ? user.uid : 'anon'}:${lessonId}`;
+  }
+
+  function getLocalNotes(lessonId) {
+    try { return JSON.parse(localStorage.getItem(notebookLocalKey(lessonId)) || '[]'); }
+    catch (e) { return []; }
+  }
+  function setLocalNotes(lessonId, notes) {
+    localStorage.setItem(notebookLocalKey(lessonId), JSON.stringify(notes));
+  }
+
+  function renderNotebook(notes) {
+    $('notebookBody').innerHTML = notes.map((note, i) => `
+      <div class="note-line"><span class="note-num">${i + 1}.</span><span>${escapeHtml(note)}</span></div>
+    `).join('');
+  }
+
+  function loadNotebook(lessonId) {
+    renderNotebook(getLocalNotes(lessonId));
+  }
+
+  $('notebookAddBtn').addEventListener('click', () => {
+    const input = $('notebookInput');
+    const text = input.value.trim();
+    if (!text) return;
+    const notes = getLocalNotes(currentLessonId);
+    notes.push(text);
+    setLocalNotes(currentLessonId, notes);
+    renderNotebook(notes);
+    input.value = '';
+  });
+  $('notebookInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') $('notebookAddBtn').click();
+  });
+
+  $('notebookSaveBtn').addEventListener('click', async () => {
+    const user = window.fbAuth.currentUser;
+    if (!user) return;
+    const notes = getLocalNotes(currentLessonId);
+    const btn = $('notebookSaveBtn');
+    btn.disabled = true;
+    btn.textContent = 'جارٍ الحفظ...';
+    try {
+      await firebase.firestore()
+        .collection('users').doc(user.uid)
+        .collection('wordCourseNotebooks').doc('lesson-' + currentLessonId)
+        .set({ notes, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true });
+      btn.textContent = 'تم الحفظ ✓';
+      setTimeout(() => { btn.textContent = 'حفظ بالحساب'; btn.disabled = false; }, 1800);
+    } catch (e) {
+      btn.textContent = 'فشل الحفظ';
+      setTimeout(() => { btn.textContent = 'حفظ بالحساب'; btn.disabled = false; }, 1800);
+    }
+  });
+
+  /* ---- Chat: private thread per (user, lesson) — teacher replies from the admin panel ---- */
+  function loadChat(lessonId) {
+    const user = window.fbAuth.currentUser;
+    if (!user) return;
+    const ref = firebase.firestore()
+      .collection('users').doc(user.uid)
+      .collection('wordCourseQuestions').doc('lesson-' + lessonId)
+      .collection('messages').orderBy('createdAt', 'asc');
+
+    ref.onSnapshot((snap) => {
+      const msgs = snap.docs.map((d) => d.data());
+      $('chatBody').innerHTML = msgs.map((m) => `
+        <div class="msg ${m.from === 'teacher' ? 'teacher' : 'mine'}">${escapeHtml(m.text)}</div>
+      `).join('');
+      $('chatBody').scrollTop = $('chatBody').scrollHeight;
+    });
+  }
+
+  $('chatSendBtn').addEventListener('click', async () => {
+    const user = window.fbAuth.currentUser;
+    if (!user) return;
+    const input = $('chatInput');
+    const text = input.value.trim();
+    if (!text) return;
+    input.value = '';
+    await firebase.firestore()
+      .collection('users').doc(user.uid)
+      .collection('wordCourseQuestions').doc('lesson-' + currentLessonId)
+      .collection('messages').add({
+        text, from: 'student', lessonId: currentLessonId,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      });
+    // Flag this thread so it surfaces in the teacher's admin panel.
+    await firebase.firestore()
+      .collection('users').doc(user.uid)
+      .collection('wordCourseQuestions').doc('lesson-' + currentLessonId)
+      .set({ lessonId: currentLessonId, lastMessageAt: firebase.firestore.FieldValue.serverTimestamp(), studentUid: user.uid }, { merge: true });
+  });
+  $('chatInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') $('chatSendBtn').click();
+  });
+
+  function escapeHtml(s) {
+    return String(s || '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   }
 
   /* ================= Auth ================= */
