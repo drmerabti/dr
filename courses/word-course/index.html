@@ -18,7 +18,7 @@
     font-family:inherit; font-size:.9rem; margin-bottom:10px; background:#fff; color:var(--ink);
   }
   .btn{ border:none; border-radius:10px; padding:12px; font-family:inherit; font-weight:800; font-size:.9rem; cursor:pointer; width:100%; }
-  .btn-primary{ background:linear-gradient(135deg,var(--accent),var(--accent-dark)); color:#fff; }
+  .btn-primary{ background:linear-gradient(135deg,var(--accent),#1B3A4D); color:#fff; }
 
   .paywall{ text-align:center; background: var(--card-bg); border-radius: var(--radius); padding:44px 30px; box-shadow: var(--shadow); max-width:480px; margin:60px auto; }
   .paywall .price{ font-size:2.2rem; font-weight:900; color:var(--accent); margin:14px 0 4px; }
@@ -63,11 +63,11 @@
   .note-num{ font-weight:900; color:#C9A227; flex-shrink:0; }
   .msg{ max-width:85%; padding:9px 13px; border-radius:12px; font-size:.88rem; line-height:1.5; }
   .msg.mine{ align-self:flex-start; background: var(--accent-soft); color:var(--ink); border-bottom-right-radius:4px; }
-  .msg.teacher{ align-self:flex-end; background: linear-gradient(135deg, var(--accent), var(--accent-dark)); color:#fff; border-bottom-left-radius:4px; }
+  .msg.teacher{ align-self:flex-end; background: linear-gradient(135deg, var(--accent), #1B3A4D); color:#fff; border-bottom-left-radius:4px; }
   .panel-input-row{ display:flex; gap:8px; padding:14px 16px; border-top:1px solid var(--line); }
   .panel-input-row .cv-input{ margin-bottom:0; }
   .send-btn, .mini-btn{
-    background: linear-gradient(135deg, var(--accent), var(--accent-dark)); color:#fff; border:none;
+    background: linear-gradient(135deg, var(--accent), #1B3A4D); color:#fff; border:none;
     border-radius:10px; width:40px; flex-shrink:0; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:1.2rem; font-weight:900;
   }
   .send-btn svg{ width:17px; height:17px; }
@@ -77,7 +77,7 @@
   }
 
   .center-col .video-box{
-    background: linear-gradient(135deg, var(--accent-dark), var(--accent)); border-radius: var(--radius);
+    background: linear-gradient(135deg, #1B3A4D, var(--accent)); border-radius: var(--radius);
     height:400px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; color:#fff;
     margin-bottom:18px; box-shadow: var(--shadow);
   }
@@ -85,6 +85,17 @@
   .center-col .video-box span{ font-size:.9rem; font-weight:700; }
 
   .games-row{ display:flex; gap:12px; flex-wrap:nowrap; }
+
+  /* Lesson detail is the one screen that breaks out of the site's normal
+     1080px content width and fills the viewport instead. */
+  #lessonDetailScreen{
+    max-width: 100vw;
+    width: 100vw;
+    margin-inline-start: calc(50% - 50vw);
+    padding-inline: 28px;
+    box-sizing: border-box;
+  }
+
   .game-btn{
     flex:1; min-width:0; display:flex; align-items:center; gap:10px;
     border:1px solid var(--line); background: var(--card-bg); border-radius: var(--radius); padding:14px 16px;

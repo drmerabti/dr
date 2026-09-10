@@ -59,7 +59,7 @@
     els.lessonsList.innerHTML = LESSONS.map((lesson) => `
       <div class="item-card" data-lesson="${lesson.id}" style="cursor:pointer;">
         <span class="lesson-num-badge">الدرس ${lesson.id}</span>
-        <span class="icon-badge" style="display:flex; align-items:center; justify-content:center; font-size:34px;">${lesson.icon}</span>
+        <span class="icon-badge" style="display:flex; align-items:center; justify-content:center; font-size:60px;">${lesson.icon}</span>
         <h3>${lesson.title}</h3>
       </div>
     `).join('');
