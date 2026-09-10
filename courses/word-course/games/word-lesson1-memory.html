@@ -13,7 +13,7 @@
     font-family:'Tajawal',sans-serif; direction:rtl;
     display:flex; align-items:center; justify-content:center; padding:20px;
   }
-  .wrap{ max-width:80%; width:100%; }
+  .wrap{ max-width:80%; width:100%; display:flex; flex-direction:column; align-items:center; }
 
   h1{
     font-size:38px; font-weight:900; text-align:center; margin-bottom:4px;
@@ -59,6 +59,7 @@
     display:grid; grid-template-columns:repeat(5,1fr); gap:10px;
     background:#DCEEE4; padding:16px; border-radius:22px;
     box-shadow:0 4px 0 #8FC2A8, 0 16px 28px rgba(31,94,63,.18);
+    max-width:100%;
   }
   .card{
     aspect-ratio:1; border-radius:14px; cursor:pointer;
@@ -283,7 +284,25 @@ function flipCard(idx){
 }
 
 document.getElementById('restartBtn').addEventListener('click', startGame);
+function fitGridToScreen(){
+  const grid = document.getElementById('grid');
+  const wrap = document.querySelector('.wrap');
+  const above = grid.getBoundingClientRect().top; // space already used above the grid
+  const availableHeight = window.innerHeight - above - 24; // small bottom margin
+  const availableWidthForWrap = wrap.parentElement.clientWidth * 0.8; // the 80%-of-screen rule
+
+  const cols = 5, rows = 4, gap = 10, pad = 32; // 16px padding on each side
+  const maxCardFromHeight = (availableHeight - pad - gap * (rows - 1)) / rows;
+  const maxCardFromWidth = (availableWidthForWrap - pad - gap * (cols - 1)) / cols;
+  const cardSize = Math.max(60, Math.min(maxCardFromHeight, maxCardFromWidth));
+
+  const gridWidth = cardSize * cols + gap * (cols - 1) + pad;
+  grid.style.width = gridWidth + 'px';
+}
+window.addEventListener('resize', fitGridToScreen);
+
 startGame();
+fitGridToScreen();
 </script>
 
 </body>
