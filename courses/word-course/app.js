@@ -99,11 +99,11 @@
     const box = $('lessonFileBox');
     const url = FILE_URLS[lessonId];
     if (url) {
-      box.classList.remove('hidden');
+      box.style.visibility = 'visible';
       box.querySelector('.file-download-btn').href = url;
       box.querySelector('.file-download-btn').setAttribute('download', '');
     } else {
-      box.classList.add('hidden');
+      box.style.visibility = 'hidden'; // keeps its grid slot reserved, unlike display:none
     }
   }
 
@@ -118,6 +118,34 @@
     prevBtn.onclick = hasPrev ? () => openLesson(lessonId - 1) : null;
     nextBtn.onclick = hasNext ? () => openLesson(lessonId + 1) : null;
   }
+
+  function fitLessonLayoutToScreen(){
+    const layout = document.querySelector('.lesson-layout');
+    const extras = document.querySelector('.lesson-extras');
+    const gamesRow = document.querySelector('.games-row');
+    if (!layout) return;
+
+    layout.style.maxWidth = '';
+    layout.style.height = '';
+    const layoutTop = layout.getBoundingClientRect().top;
+    const extrasHeight = extras ? extras.getBoundingClientRect().height + 24 : 0;
+    const gamesRowHeight = gamesRow ? gamesRow.getBoundingClientRect().height + 16 : 0; // +margin-bottom on video-box
+    const bottomMargin = 90; // matches <main>'s own bottom padding in the site's real style.css
+    const availableHeight = Math.max(360, window.innerHeight - layoutTop - extrasHeight - bottomMargin);
+
+    layout.style.height = availableHeight + 'px';
+
+    // Video only gets the row's height minus the space games-row takes below it.
+    const videoHeightBudget = Math.max(160, availableHeight - gamesRowHeight);
+    const CENTER_FR_SHARE = 2.3 / 3.8;
+    const maxCenterWidth = videoHeightBudget * (16 / 9);
+    const maxLayoutWidth = maxCenterWidth / CENTER_FR_SHARE;
+    layout.style.maxWidth = maxLayoutWidth + 'px';
+    layout.style.marginInline = 'auto';
+  }
+  window.addEventListener('resize', () => {
+    if (!document.getElementById('lessonDetailScreen').classList.contains('hidden')) fitLessonLayoutToScreen();
+  });
 
   function openLesson(lessonId) {
     currentLessonId = lessonId;
@@ -136,6 +164,7 @@
     loadNotebook(lessonId);
     loadChat(lessonId);
     showScreen('lessonDetailScreen');
+    setTimeout(fitLessonLayoutToScreen, 0); // after layout paints, so measurements are accurate
     window.scrollTo(0, 0);
   }
 
