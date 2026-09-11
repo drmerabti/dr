@@ -279,6 +279,15 @@ const CONTENT = {
       url: 'courses/word-course/index.html',
       icon: ICONS.wordApp,
     },
+    {
+      id: 'course-excel',
+      title_ar: 'دورة Excel التفاعلية',
+      title_en: 'Interactive Excel Course',
+      desc_ar: 'دروس مصوّرة خطوة بخطوة، مع تمارين وألعاب تفاعلية بعد كل درس — اشتراك شهري 1000 دج.',
+      desc_en: 'Step-by-step video lessons with interactive exercises after each one — 1000 DA/month.',
+      url: 'courses/excel-course/index.html',
+      icon: ICONS.excelApp,
+    },
   ],
   lessons: [
     {
