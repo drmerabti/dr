@@ -269,6 +269,14 @@
       alert('تعذّر تسجيل الدخول — تأكد من البريد وكلمة المرور.');
     }
   });
+  document.getElementById('googleSignInBtn').addEventListener('click', async () => {
+    try {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      await window.fbAuth.signInWithPopup(provider);
+    } catch (err) {
+      alert('تعذّر تسجيل الدخول عبر Google.');
+    }
+  });
 
   /* ================= Access check ================= */
   async function isAdminUser(uid) {
@@ -316,7 +324,7 @@
       if (authBtn) {
         authBtn.innerHTML = user
           ? `<span class="auth-avatar">${(user.displayName || user.email || '?')[0].toUpperCase()}</span>`
-          : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>`;
+          : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg><span>تسجيل الدخول</span>`;
       }
       const proBtn = $('proBtn');
       if (proBtn) proBtn.addEventListener('click', () => { window.location.href = '../../index.html'; });
