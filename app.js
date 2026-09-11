@@ -1,3 +1,16 @@
+/* ================= Google Analytics (GA4) ================= */
+(function () {
+  var script = document.createElement('script');
+  script.async = true;
+  script.src = 'https://www.googletagmanager.com/gtag/js?id=G-6PKBD7XR0M';
+  document.head.appendChild(script);
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { window.dataLayer.push(arguments); }
+  window.gtag = gtag;
+  gtag('js', new Date());
+  gtag('config', 'G-6PKBD7XR0M');
+})();
+
 /* =====================================================================
    CONTENT STORE
    هذا هو المكان الوحيد الذي تعدّل فيه لإضافة دروس / تطبيقات / أدوات.
