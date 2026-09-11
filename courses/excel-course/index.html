@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>دورة Excel — أكاديمية مرابطي</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@1,600;1,700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/x-icon" href="../../favicon.ico">
+<link rel="stylesheet" href="../../style.css">
+<style>
+  /* Page-specific additions only — topbar, background, and colors come from the real style.css */
+  .hidden{ display:none; }
+  .screen-narrow{ max-width: 480px; margin: 60px auto; text-align:center; }
+  .auth-card{ background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow); padding: 26px; margin-top: 20px; }
+  .cv-input{
+    width:100%; border:1px solid var(--line); border-radius:10px; padding:11px 14px;
+    font-family:inherit; font-size:.9rem; margin-bottom:10px; background:#fff; color:var(--ink);
+  }
+  .btn{ border:none; border-radius:10px; padding:12px; font-family:inherit; font-weight:800; font-size:.9rem; cursor:pointer; width:100%; }
+  .btn-primary{ background:linear-gradient(135deg,var(--accent),#1B3A4D); color:#fff; }
+
+  .paywall{ text-align:center; background: var(--card-bg); border-radius: var(--radius); padding:44px 30px; box-shadow: var(--shadow); max-width:480px; margin:60px auto; }
+  .paywall .price{ font-size:2.2rem; font-weight:900; color:var(--accent); margin:14px 0 4px; }
+  .paywall .price span{ font-size:.9rem; font-weight:700; color:var(--ink-soft); }
+  .paywall p{ color:var(--ink-soft); font-size:.9rem; max-width:420px; margin:0 auto 22px; line-height:1.7; }
+  .subscribe-btn{
+    background:linear-gradient(135deg,#FFD166,#E0A020); color:#4A2E00; border:none;
+    padding:14px 34px; border-radius:999px; font-family:inherit; font-weight:900; font-size:.95rem; cursor:pointer;
+  }
+
+  /* Lesson grid — same pattern as tools/apps cards */
+  .lesson-num-badge{
+    position:absolute; top:12px; inset-inline-start:12px; z-index:2;
+    background: var(--accent-soft); color: var(--accent); font-size:.7rem; font-weight:900;
+    padding:4px 10px; border-radius:999px;
+  }
+
+  /* Lesson detail */
+  .back-link{
+    display:flex; align-items:center; gap:6px; background:none; border:none; cursor:pointer;
+    color: var(--ink-soft); font-family:inherit; font-size:.85rem; font-weight:700; margin-bottom:16px; padding:0;
+  }
+  .back-link svg{ width:16px; height:16px; }
+  .back-link:hover{ color: var(--accent); }
+  .lesson-title{ font-size:1.6rem; font-weight:900; color:var(--ink); margin-bottom:22px; }
+
+  .lesson-layout{ display:grid; grid-template-columns:0.75fr 2.3fr 0.75fr; gap:20px; align-items:stretch; }
+  .side-panel, .center-col{ display:flex; flex-direction:column; }
+  .side-panel{
+    background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow);
+    overflow:hidden;
+  }
+  .panel-header{ padding:16px 18px; font-weight:900; font-size:1rem; border-bottom:1px solid var(--line); }
+  .chat-header{ background:#fff; color: var(--accent); border-bottom:3px solid var(--accent); }
+  .notebook-header{ background:#FFFBF0; color:#6B4E1F; }
+  .panel-body{ flex:1; padding:16px 18px; overflow-y:auto; display:flex; flex-direction:column; gap:10px; }
+  .notebook-body{
+    background:#FFFDF7;
+    background-image:repeating-linear-gradient(#FFFDF7 0px, #FFFDF7 32px, #F0E6C8 33px);
+  }
+  .note-line{ font-size:.78rem; color:#4A3B1F; line-height:28px; display:flex; gap:6px; align-items:center; }
+  .note-num{ font-weight:900; color:#C9A227; flex-shrink:0; }
+  .note-text{ flex:1; }
+  .note-delete{
+    flex-shrink:0; width:20px; height:20px; border-radius:50%; border:none; background:none;
+    color:#B08A2E; cursor:pointer; display:flex; align-items:center; justify-content:center; opacity:.6;
+  }
+  .note-delete:hover{ opacity:1; background:#F5E4B8; }
+  .note-delete svg{ width:11px; height:11px; }
+  .msg{ max-width:85%; padding:7px 11px; border-radius:12px; font-size:.78rem; line-height:1.45; }
+  .msg.mine{ align-self:flex-start; background: var(--accent-soft); color:var(--ink); border-bottom-right-radius:4px; }
+  .msg.teacher{ align-self:flex-end; background: linear-gradient(135deg, var(--accent), #1B3A4D); color:#fff; border-bottom-left-radius:4px; }
+  .panel-input-row{ display:flex; gap:8px; padding:14px 16px; border-top:1px solid var(--line); }
+  .panel-input-row .cv-input{ margin-bottom:0; }
+  .send-btn, .mini-btn{
+    background: linear-gradient(135deg, var(--accent), #1B3A4D); color:#fff; border:none;
+    border-radius:10px; width:40px; flex-shrink:0; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:1.2rem; font-weight:900;
+  }
+  .send-btn svg{ width:17px; height:17px; }
+  #notebookSaveBtn{
+    margin:0 16px 16px; background: linear-gradient(145deg,#F2B84B,#C9861B); color:#fff; border:none;
+    border-radius:10px; padding:11px; font-weight:800; font-size:.88rem; cursor:pointer;
+  }
+
+  .center-col .video-box{
+    background: linear-gradient(135deg, #1B3A4D, var(--accent)); border-radius: var(--radius);
+    width:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; color:#fff;
+    margin-bottom:16px; box-shadow: var(--shadow);
+  }
+  .center-col .video-box svg{ width:52px; height:52px; opacity:.7; }
+  .center-col .video-box span{ font-size:.9rem; font-weight:700; }
+  .video-box.has-video{ padding:0; overflow:hidden; }
+  .video-box.has-video iframe{ width:100%; height:100%; border:none; border-radius: var(--radius); }
+
+  .games-row{ display:flex; gap:12px; flex-wrap:nowrap; }
+
+  .lesson-extras{ margin-top:24px; display:grid; grid-template-columns:1fr 1.6fr 1fr; gap:16px; align-items:stretch; }
+
+  .lesson-nav-btn{
+    display:flex; align-items:center; gap:10px; justify-content:center;
+    background: linear-gradient(135deg, var(--accent), #1B3A4D); color:#fff; border:none;
+    border-radius:16px; padding:18px 20px; font-family:inherit; font-weight:900; font-size:1.05rem;
+    cursor:pointer; box-shadow:0 8px 18px rgba(27,58,77,.28);
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .lesson-nav-btn:hover{ transform: translateY(-3px); box-shadow:0 12px 24px rgba(27,58,77,.36); }
+  .lesson-nav-btn svg{ width:20px; height:20px; flex-shrink:0; }
+
+  .lesson-file-box{
+    display:flex; align-items:center; gap:10px; justify-content:center;
+    background: linear-gradient(135deg, #E0A020, #C9861B); color:#fff; border:none;
+    border-radius:16px; padding:18px 20px; font-family:inherit; font-weight:900; font-size:1.05rem;
+    cursor:pointer; box-shadow:0 8px 18px rgba(201,134,27,.3);
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .lesson-file-box:hover{ transform: translateY(-3px); box-shadow:0 12px 24px rgba(201,134,27,.4); }
+  .lesson-file-box svg{ width:24px; height:24px; flex-shrink:0; }
+  .file-download-btn{
+    background: rgba(255,255,255,.22); color:#fff; text-decoration:none;
+    padding:8px 18px; border-radius:999px; font-weight:800; font-size:.85rem; flex-shrink:0;
+  }
+  .file-download-btn:hover{ background: rgba(255,255,255,.34); }
+  .lesson-file-box.hidden{ display:none; }
+
+  /* Lesson detail breaks out of the site's normal 1080px content width and
+     takes 80% of the real viewport, both width and height. */
+  #lessonDetailScreen{
+    max-width: 100vw;
+    width: 100vw;
+    margin-inline-start: calc(50% - 50vw);
+    padding-inline: 28px;
+    box-sizing: border-box;
+  }
+  .lesson-layout, .lesson-extras{ max-width:80vw; margin-inline:auto; }
+  .lesson-layout{ height: calc(100vh - 320px); }
+  .center-col .video-box{ flex:1; min-height:0; }
+
+  .game-btn{
+    flex:1; min-width:0; display:flex; align-items:center; gap:10px;
+    border:1px solid var(--line); background: var(--card-bg); border-radius: var(--radius); padding:14px 16px;
+    text-decoration:none; color:var(--ink); font-weight:800; font-size:.88rem; cursor:pointer; box-shadow: var(--shadow);
+  }
+  .game-btn.disabled{ opacity:.5; cursor:default; }
+  .game-icon{ width:40px; height:40px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:19px; flex-shrink:0; }
+  .g1{ background: var(--accent-soft); } .g2{ background:#E3F5EB; } .g3{ background:#FBEAF0; }
+  .lbl-sub{ font-size:.72rem; font-weight:600; color:var(--ink-soft); display:block; margin-top:1px; }
+
+  @media (max-width:980px){
+    .lesson-layout{ grid-template-columns:1fr; }
+    .side-panel{ height:400px; }
+    .games-row{ flex-wrap:wrap; }
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="../../index.html" class="brand">د. سفيان مرابطي</a>
+    <div class="topbar-actions">
+      <button id="proBtn" class="pro-btn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 8l4 3 5-6 5 6 4-3-2 11H5L3 8z"/><circle cx="3" cy="8" r="1.4" fill="currentColor" stroke="none"/><circle cx="12" cy="5" r="1.4" fill="currentColor" stroke="none"/><circle cx="21" cy="8" r="1.4" fill="currentColor" stroke="none"/></svg>
+        <span>Pro</span>
+        <svg class="pro-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+      </button>
+      <div class="auth-wrap" id="authWrap">
+        <button id="authBtn" class="auth-btn" type="button"></button>
+        <div id="authMenu" class="auth-menu hidden"></div>
+      </div>
+      <button id="langToggle" class="lang-toggle" type="button">EN</button>
+    </div>
+  </div>
+</header>
+
+<main>
+<div id="loadingScreen" class="screen-narrow">
+  <p style="color:var(--ink-soft);">جارٍ التحميل...</p>
+</div>
+
+<div class="screen-narrow hidden" id="lockedScreen">
+  <div style="font-size:40px; margin-bottom:10px;">🔒</div>
+  <h1 style="font-size:1.4rem; margin-bottom:6px;">سجّل دخولك لعرض دورة Excel</h1>
+  <p style="color:var(--ink-soft); font-size:.92rem;">هذه الدورة متاحة للمستخدمين المسجَّلين فقط.</p>
+  <div class="auth-card">
+    <form id="authForm">
+      <input type="email" id="acEmail" class="cv-input" required placeholder="البريد الإلكتروني">
+      <input type="password" id="acPassword" class="cv-input" required minlength="6" placeholder="كلمة المرور">
+      <button type="submit" class="btn btn-primary">تسجيل الدخول</button>
+    </form>
+  </div>
+</div>
+
+<div class="hidden" id="paywallScreen">
+  <div class="paywall">
+    <h1>دورة Excel التفاعلية</h1>
+    <p>دروس مصوّرة خطوة بخطوة، مع تمارين وألعاب تفاعلية بعد كل درس لترسيخ المعلومة.</p>
+    <div class="price">1000 دج <span>/ شهريًا</span></div>
+    <button class="subscribe-btn" id="subscribeBtn">اشترك الآن</button>
+  </div>
+</div>
+
+<div class="hidden" id="lessonsScreen">
+  <section class="view">
+    <h2 class="view-title">دورة Excel التفاعلية</h2>
+    <div id="lessonsList" class="item-grid"></div>
+  </section>
+</div>
+
+<div class="hidden" id="lessonDetailScreen">
+  <button type="button" class="back-link" id="backToLessonsBtn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
+    الرجوع لقائمة الدروس
+  </button>
+  <h1 class="lesson-title" id="lessonDetailTitle"></h1>
+
+  <div class="lesson-layout">
+    <!-- Right (RTL): notebook -->
+    <div class="side-panel">
+      <div class="panel-header notebook-header">📓 كراستي</div>
+      <div class="panel-body notebook-body" id="notebookBody"></div>
+      <div class="panel-input-row">
+        <input type="text" id="notebookInput" class="cv-input" placeholder="أضف ملاحظة...">
+        <button type="button" class="mini-btn" id="notebookAddBtn">+</button>
+      </div>
+      <button type="button" id="notebookSaveBtn">حفظ</button>
+    </div>
+
+    <!-- Center: video + games (single row) -->
+    <div class="center-col">
+      <div class="video-box" id="videoBox">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+        <span id="lessonDetailNum"></span>
+      </div>
+      <div class="games-row">
+        <button type="button" class="game-btn" id="gameMemoryBtn">
+          <span class="game-icon g1">🧠</span><span>اختبر ذاكرتك</span>
+        </button>
+        <span class="game-btn disabled"><span class="game-icon g2">🔢</span><span>ترتيب الخطوات<span class="lbl-sub">قريبًا</span></span></span>
+        <span class="game-btn disabled"><span class="game-icon g3">🎯</span><span>مسار التقدّم<span class="lbl-sub">قريبًا</span></span></span>
+      </div>
+    </div>
+
+    <!-- Left (RTL): chat -->
+    <div class="side-panel">
+      <div class="panel-header chat-header">💬 اسأل الأستاذ</div>
+      <div class="panel-body" id="chatBody"></div>
+      <div class="panel-input-row">
+        <input type="text" id="chatInput" class="cv-input" placeholder="اكتب سؤالك...">
+        <button type="button" class="send-btn" id="chatSendBtn">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="lesson-extras">
+    <button type="button" class="lesson-nav-btn" id="nextLessonBtn">
+      <span>الدرس التالي</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+    </button>
+    <div class="lesson-file-box" id="lessonFileBox" style="visibility:hidden;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+      <span>ملف الدرس الأول</span>
+      <a href="#" class="file-download-btn">تحميل</a>
+    </div>
+    <button type="button" class="lesson-nav-btn" id="prevLessonBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+      <span>الدرس السابق</span>
+    </button>
+  </div>
+</div>
+</main>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-functions-compat.js"></script>
+<script src="../../firebase-init.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
