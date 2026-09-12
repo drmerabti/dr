@@ -12,10 +12,46 @@
 </head>
 <body>
 
+<!-- ============ INVOICE LIST SCREEN ============ -->
+<div id="listScreen">
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand-group">
+        <a href="../../index.html" class="brand">Dr Soufiane Merabti</a>
+      </div>
+      <div class="topbar-actions">
+        <div class="auth-wrap" id="authWrapList"></div>
+        <div class="lang-switch" role="group" aria-label="Language switcher">
+          <button type="button" class="lang-btn list-lang-btn" data-lang="ar">العربية</button>
+          <button type="button" class="lang-btn list-lang-btn active" data-lang="en">English</button>
+          <button type="button" class="lang-btn list-lang-btn" data-lang="fr">Français</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="list-screen-body">
+    <div class="list-screen-header">
+      <h1 data-i18n="savedInvoicesTitle">Saved Invoices</h1>
+      <button type="button" class="btn-new-invoice" id="createNewInvoiceBtn">
+        <span aria-hidden="true">+</span> <span data-i18n="createNewInvoice">Create New Invoice</span>
+      </button>
+    </div>
+    <div id="invoiceListBody" class="invoice-list-body"></div>
+  </div>
+</div>
+
+<!-- ============ EDITOR SCREEN ============ -->
+<div id="editorScreen" class="hidden">
+
 <header class="topbar">
   <div class="topbar-inner">
     <div class="brand-group">
+      <button type="button" id="backToListBtn" class="back-to-list-btn" title="Back to saved invoices">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
+      </button>
       <a href="../../index.html" class="brand">Dr Soufiane Merabti</a>
+
       <button id="proBtn" class="pro-btn" type="button">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 8l4 3 5-6 5 6 4-3-2 11H5L3 8z"/><circle cx="3" cy="8" r="1.4" fill="currentColor" stroke="none"/><circle cx="12" cy="5" r="1.4" fill="currentColor" stroke="none"/><circle cx="21" cy="8" r="1.4" fill="currentColor" stroke="none"/></svg>
         <span>Pro</span>
@@ -27,10 +63,6 @@
         <button type="button" class="tbtn" id="settingsBtn" aria-label="Currency settings" title="Currency settings">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
           <span data-i18n="currencyBtnLabel">Currency</span>
-        </button>
-        <button type="button" class="tbtn" id="savedInvoicesBtn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3h18v18H3z"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
-          <span data-i18n="savedInvoices">Saved</span>
         </button>
         <button type="button" class="tbtn tbtn-save" id="saveBtn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
@@ -159,7 +191,7 @@
         <div class="totals-row totals-row-tva">
           <span class="totals-label" data-i18n="tva">TVA</span>
           <div class="tva-input-wrap">
-            <input type="number" id="tvaPercent" class="input input-tva" value="19" min="0" step="0.1">
+            <input type="number" id="tvaPercent" class="input input-tva" value="19" min="0" step="1">
             <span class="tva-suffix">%</span>
           </div>
           <span class="totals-value" id="tvaValue">$0.00</span>
@@ -297,17 +329,6 @@
   </div>
 </div>
 
-<!-- Saved invoices history -->
-<div class="overlay" id="savedInvoicesOverlay" hidden>
-  <div class="overlay-box overlay-box-wide">
-    <h3 class="overlay-title" data-i18n="savedInvoicesTitle">Saved Invoices</h3>
-    <div id="savedInvoicesList" class="saved-invoices-list"></div>
-    <div class="overlay-actions">
-      <button type="button" class="btn btn-secondary" id="savedInvoicesClose" data-i18n="cancel">Close</button>
-    </div>
-  </div>
-</div>
-
 <!-- Currency settings -->
 <div class="overlay" id="settingsOverlay" hidden>
   <div class="overlay-box">
@@ -341,6 +362,8 @@
     </div>
   </div>
 </div>
+
+</div><!-- /#editorScreen -->
 
 <div class="saved-badge" id="savedBadge" data-i18n="savedBadge">Saved</div>
 

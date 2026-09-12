@@ -127,10 +127,9 @@
     typeProformaBtn: $("#typeProformaBtn"),
     mobileActionsToggle: $("#mobileActionsToggle"),
     toolbarActionsGroup: $("#toolbarActionsGroup"),
-    savedInvoicesBtn: $("#savedInvoicesBtn"),
-    savedInvoicesOverlay: $("#savedInvoicesOverlay"),
-    savedInvoicesList: $("#savedInvoicesList"),
-    savedInvoicesClose: $("#savedInvoicesClose"),
+    backToListBtn: $("#backToListBtn"),
+    createNewInvoiceBtn: $("#createNewInvoiceBtn"),
+    invoiceListBody: $("#invoiceListBody"),
     issuerContactList: $("#issuerContactList"),
     addContactBtn: $("#addContactBtn"),
     addContactMenu: $("#addContactMenu"),
@@ -242,6 +241,14 @@
       if (usingExampleData) generateAmountWords();
       renderIssuerContacts();
       renderPreview();
+    });
+  });
+
+  document.querySelectorAll(".list-lang-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const lang = btn.getAttribute("data-lang");
+      applyLanguage(lang);
+      renderInvoiceList();
     });
   });
 
@@ -429,14 +436,24 @@
     }
   }
 
-  function renderSavedInvoices() {
+  function showListScreen() {
+    renderInvoiceList();
+    $("#editorScreen").classList.add("hidden");
+    $("#listScreen").classList.remove("hidden");
+  }
+  function showEditorScreen() {
+    $("#listScreen").classList.add("hidden");
+    $("#editorScreen").classList.remove("hidden");
+  }
+
+  function renderInvoiceList() {
     const dict = I18N[currentLang] || I18N.en;
     const history = getHistory();
     if (history.length === 0) {
-      els.savedInvoicesList.innerHTML = `<p style="color:var(--text-faint); text-align:center; padding:20px 0;">${dict.noSavedInvoices}</p>`;
+      els.invoiceListBody.innerHTML = `<div class="invoice-list-empty">${dict.noInvoicesYet}</div>`;
       return;
     }
-    els.savedInvoicesList.innerHTML = history.map((inv, idx) => {
+    els.invoiceListBody.innerHTML = history.map((inv, idx) => {
       const d = new Date(inv.archivedAt);
       const dateStr = isNaN(d) ? "" : d.toLocaleString();
       return `
@@ -454,30 +471,7 @@
     }).join("");
   }
 
-  els.savedInvoicesBtn.addEventListener("click", () => {
-    renderSavedInvoices();
-    els.savedInvoicesOverlay.hidden = false;
-  });
-  els.savedInvoicesClose.addEventListener("click", () => {
-    els.savedInvoicesOverlay.hidden = true;
-  });
-  els.savedInvoicesList.addEventListener("click", (e) => {
-    const btn = e.target.closest("button[data-action]");
-    if (!btn) return;
-    const row = btn.closest(".saved-invoice-row");
-    const idx = parseInt(row.dataset.idx, 10);
-    const history = getHistory();
-    const entry = history[idx];
-    if (!entry) return;
-
-    if (btn.dataset.action === "delete") {
-      history.splice(idx, 1);
-      setHistory(history);
-      renderSavedInvoices();
-      return;
-    }
-
-    // Restore
+  function restoreInvoice(entry) {
     usingExampleData = false;
     state.docType = entry.docType || "facture";
     state.issuerContacts = Array.isArray(entry.issuerContacts)
@@ -518,7 +512,32 @@
     renderTotals();
     renderPreview();
     saveDraft();
-    els.savedInvoicesOverlay.hidden = true;
+    showEditorScreen();
+  }
+
+  els.backToListBtn.addEventListener("click", () => {
+    showListScreen();
+  });
+  els.createNewInvoiceBtn.addEventListener("click", () => {
+    resetState({ assignNewNumber: true });
+    showEditorScreen();
+  });
+  els.invoiceListBody.addEventListener("click", (e) => {
+    const btn = e.target.closest("button[data-action]");
+    if (!btn) return;
+    const row = btn.closest(".saved-invoice-row");
+    const idx = parseInt(row.dataset.idx, 10);
+    const history = getHistory();
+    const entry = history[idx];
+    if (!entry) return;
+
+    if (btn.dataset.action === "delete") {
+      history.splice(idx, 1);
+      setHistory(history);
+      renderInvoiceList();
+      return;
+    }
+    restoreInvoice(entry);
   });
 
   /* ---------------- Issuer contact fields ---------------- */
@@ -534,9 +553,13 @@
   function nextContactId() { return "contact-" + (++contactIdCounter); }
 
   function renderIssuerContactsPreview() {
+    const dict = I18N[currentLang] || I18N.en;
     els.previewIssuerContacts.innerHTML = state.issuerContacts
       .filter((c) => c.value && c.value.trim())
-      .map((c) => `<div class="inv-contact-line">${escapeAttr(c.value)}</div>`)
+      .map((c) => {
+        const label = dict["contact" + capitalize(c.type)] || "";
+        return `<div class="inv-contact-line">${escapeAttr(label)}: <bdi>${escapeAttr(c.value)}</bdi></div>`;
+      })
       .join("");
   }
 
@@ -701,7 +724,7 @@
       tr.innerHTML = `
         <td><input type="text" class="input article-input" data-field="article" value="${escapeAttr(item.article)}" placeholder="${t("article")}"></td>
         <td><input type="number" class="input qty-input" data-field="qty" min="0" step="1" value="${item.qty}"></td>
-        <td><input type="number" class="input price-input" data-field="price" min="0" step="0.01" value="${item.price}"></td>
+        <td><input type="number" class="input price-input" data-field="price" min="0" step="1" value="${item.price}"></td>
         <td class="total-cell">${formatMoney(clampNonNegative(item.qty) * clampNonNegative(item.price))}</td>
         <td class="td-action">
           <button type="button" class="delete-row-btn" aria-label="Delete row">
@@ -1113,6 +1136,12 @@
     renderItemsForm();
     renderTotals();
     renderPreview();
+
+    if (getHistory().length > 0) {
+      showListScreen();
+    } else {
+      showEditorScreen();
+    }
   }
 
   init();

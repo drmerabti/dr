@@ -21,6 +21,34 @@
 }
 
 *{ box-sizing: border-box; }
+.hidden{ display: none !important; }
+
+/* ---------------- Invoice list screen ---------------- */
+
+.list-screen-body{ max-width: 800px; margin: 0 auto; padding: 40px 28px; }
+.list-screen-header{
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; flex-wrap: wrap; margin-bottom: 28px;
+}
+.list-screen-header h1{ font-size: 22px; font-weight: 800; color: var(--text); margin: 0; }
+.btn-new-invoice{
+  display: flex; align-items: center; gap: 8px;
+  background: var(--blue); color: #fff; border: none;
+  padding: 12px 22px; border-radius: 999px; font-weight: 800; font-size: 14px;
+  cursor: pointer; transition: background .15s ease;
+}
+.btn-new-invoice:hover{ background: var(--blue-dark); }
+
+.invoice-list-body{ display: flex; flex-direction: column; gap: 10px; }
+.invoice-list-empty{ text-align: center; color: var(--text-faint); padding: 60px 0; font-size: 14px; }
+
+.back-to-list-btn{
+  border: 1px solid var(--border); background: var(--card); border-radius: 50%;
+  width: 34px; height: 34px; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--text);
+}
+.back-to-list-btn svg{ width: 17px; height: 17px; }
+html[dir="rtl"] .back-to-list-btn svg{ transform: scaleX(-1); }
 
 html, body{
   margin:0;
@@ -210,12 +238,11 @@ button, input, textarea{ font-family: inherit; }
   display:grid;
   grid-template-columns: 1fr 1fr;
   gap: 28px;
-  max-width: 100%;
+  max-width: 1360px;
   margin: 0 auto;
   padding: 28px;
   align-items:start;
 }
-.topbar-inner{ max-width: 100% !important; }
 
 @media (max-width: 980px){
   .app-grid{
