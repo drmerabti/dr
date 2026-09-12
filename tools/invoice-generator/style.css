@@ -514,11 +514,11 @@ html[dir="rtl"] .inv-issuer-contacts{ align-items: flex-start; }
   display: grid; grid-template-columns: 78px 1fr; gap: 6px;
   width: 100%; max-width: 260px;
 }
-html[dir="rtl"] .inv-contact-line{ grid-template-columns: 1fr 78px; }
+html[dir="rtl"] .inv-contact-line{ grid-template-columns: 78px 1fr; direction: rtl; }
 .contact-label{ font-weight: 700; color: var(--text); text-align: left; }
-html[dir="rtl"] .contact-label{ text-align: right; order: 2; }
+html[dir="rtl"] .contact-label{ text-align: right; }
 .contact-value{ font-weight: 400; text-align: left; unicode-bidi: isolate; }
-html[dir="rtl"] .contact-value{ text-align: right; order: 1; }
+html[dir="rtl"] .contact-value{ text-align: right; }
 
 
 .btn-primary{
@@ -670,6 +670,27 @@ html[dir="rtl"] .input-tva{ text-align: left; }
   box-shadow: var(--shadow);
   padding: 36px;
   max-width: 620px;
+  --sheet-pad: 36px;
+  --section-gap: 20px;
+  --row-pad-v: 9px;
+  --row-font: 13px;
+  --heading-size: 32px;
+}
+.invoice-sheet.density-compact{
+  --sheet-pad: 26px;
+  --section-gap: 13px;
+  --row-pad-v: 6px;
+  --row-font: 12px;
+  --heading-size: 26px;
+  padding: var(--sheet-pad);
+}
+.invoice-sheet.density-tight{
+  --sheet-pad: 20px;
+  --section-gap: 8px;
+  --row-pad-v: 4px;
+  --row-font: 11px;
+  --heading-size: 22px;
+  padding: var(--sheet-pad);
 }
 
 .inv-header{
@@ -692,7 +713,6 @@ html[dir="rtl"] .input-tva{ text-align: left; }
   flex-shrink:0;
   position: relative;
 }
-.inv-logo-wrap.has-content:hover .inv-remove-btn{ opacity: 1; }
 .inv-remove-btn{
   position: absolute;
   top: 4px;
@@ -701,17 +721,17 @@ html[dir="rtl"] .input-tva{ text-align: left; }
   height: 22px;
   border-radius: 50%;
   border: none;
-  background: rgba(20,25,30,.65);
+  background: var(--danger);
   color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  opacity: 0;
-  transition: opacity .15s ease, background .15s ease;
+  opacity: 1;
+  transition: background .15s ease, transform .15s ease;
   z-index: 2;
 }
-.inv-remove-btn:hover{ background: var(--danger); }
+.inv-remove-btn:hover{ background: #C0392B; transform: scale(1.1); }
 .inv-remove-btn svg{ width: 12px; height: 12px; }
 
 .inv-logo{
@@ -749,11 +769,11 @@ html[dir="rtl"] .inv-meta{ text-align: left; align-items: flex-start; }
   color: var(--text);
 }
 
-.inv-customer{ margin-bottom: 20px; }
+.inv-customer{ margin-bottom: var(--section-gap, 20px); }
 
-.inv-doctype-block{ text-align: center; margin-bottom: 22px; }
+.inv-doctype-block{ text-align: center; margin-bottom: var(--section-gap, 22px); }
 .inv-doctype-heading{
-  font-size: 32px;
+  font-size: var(--heading-size, 32px);
   font-weight: 800;
   letter-spacing: 3px;
   color: var(--blue-dark);
@@ -794,6 +814,8 @@ html[dir="rtl"] .inv-meta{ text-align: left; align-items: flex-start; }
   padding: 10px 8px;
   background: var(--blue-soft);
   border-bottom: 1.5px solid var(--border);
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
 }
 .inv-table thead th:first-child{ border-start-start-radius: 6px; border-end-start-radius: 6px; }
 .inv-table thead th:last-child{ border-start-end-radius: 6px; border-end-end-radius: 6px; }
@@ -801,8 +823,8 @@ html[dir="rtl"] .inv-meta{ text-align: left; align-items: flex-start; }
 html[dir="rtl"] .inv-table thead th{ text-align:right; }
 
 .inv-table tbody td{
-  padding: 9px 4px;
-  font-size: 13px;
+  padding: var(--row-pad-v, 9px) 4px;
+  font-size: var(--row-font, 13px);
   color: var(--text);
   border-bottom: 1px solid var(--border-soft);
 }
@@ -855,9 +877,11 @@ html[dir="rtl"] .inv-table th:nth-child(4){ text-align: left; }
   background: var(--blue-soft);
   border-radius: 6px;
   padding: 9px 10px;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
 }
 
-.inv-words{ margin-bottom: 22px; }
+.inv-words{ margin-bottom: var(--section-gap, 22px); }
 
 .inv-words-label, .inv-notes-label{
   font-size: 11px;
@@ -992,8 +1016,9 @@ html[dir="rtl"] .overlay-actions{ justify-content: flex-start; }
 /* ---------------- Print ---------------- */
 
 @media print{
+  *{ -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
   .app-grid{ display: block; }
-  .topbar, .col-form, .col-preview > .col-title, .saved-badge{ display: none !important; }
+  .topbar, .col-form, .col-preview > .col-title, .saved-badge, .inv-remove-btn{ display: none !important; }
   .col-preview{ position: static; }
   .invoice-sheet{
     position: static;
@@ -1003,4 +1028,5 @@ html[dir="rtl"] .overlay-actions{ justify-content: flex-start; }
     border: none;
     margin: 0;
   }
+  .inv-logo-wrap:not(.has-logo){ border: none !important; visibility: hidden; }
 }

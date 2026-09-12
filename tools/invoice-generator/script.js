@@ -171,6 +171,7 @@
     clearBtn: $("#clearBtn"),
 
     previewLogo: $("#previewLogo"),
+    previewLogoWrap: $("#previewLogoWrap"),
     previewLogoPlaceholder: $("#previewLogoPlaceholder"),
     removeLogoBtn: $("#removeLogoBtn"),
     previewInvoiceNumber: $("#previewInvoiceNumber"),
@@ -840,6 +841,14 @@
     els.previewDocTypeRef.textContent = (dict.reference || "Reference") + ": " + (state.invoiceNumber || "—");
   }
 
+  function renderInvoiceDensity() {
+    const sheet = document.getElementById("invoiceSheet");
+    const count = state.items.length;
+    sheet.classList.remove("density-compact", "density-tight");
+    if (count >= 10) sheet.classList.add("density-tight");
+    else if (count >= 6) sheet.classList.add("density-compact");
+  }
+
   function renderPreview() {
     // Logo
     if (state.logoDataUrl) {
@@ -847,10 +856,12 @@
       els.previewLogo.hidden = false;
       els.previewLogoPlaceholder.hidden = true;
       els.removeLogoBtn.hidden = false;
+      els.previewLogoWrap.classList.add("has-logo");
     } else {
       els.previewLogo.hidden = true;
       els.previewLogoPlaceholder.hidden = false;
       els.removeLogoBtn.hidden = true;
+      els.previewLogoWrap.classList.remove("has-logo");
     }
 
     // Meta
@@ -858,6 +869,7 @@
     els.previewDate.textContent = formatDateDisplay(state.date);
     els.previewCustomer.innerHTML = state.customer ? `<bdi>${escapeAttr(state.customer)}</bdi>` : "—";
     renderDocTypeHeading();
+    renderInvoiceDensity();
 
     // Items
     els.previewItemsBody.innerHTML = "";
@@ -935,7 +947,23 @@
     if (document.fonts && document.fonts.ready) {
       await document.fonts.ready;
     }
-    return html2canvas(sheet, { scale: 2, backgroundColor: "#ffffff", useCORS: true });
+    // Hide elements that should never appear on the exported document itself
+    // (delete buttons, empty logo placeholder border) — restored right after capture.
+    const hideEls = sheet.querySelectorAll(".inv-remove-btn");
+    hideEls.forEach((el) => { el.dataset.prevDisplay = el.style.display; el.style.display = "none"; });
+    const logoWrap = els.previewLogoWrap;
+    const logoHadBorder = !logoWrap.classList.contains("has-logo");
+    if (logoHadBorder) logoWrap.style.visibility = "hidden";
+
+    try {
+      // foreignObjectRendering uses the browser's own SVG/text engine instead of
+      // html2canvas's manual glyph drawing — noticeably more reliable for complex
+      // scripts like Arabic (proper letter joining) than the default renderer.
+      return await html2canvas(sheet, { scale: 2, backgroundColor: "#ffffff", useCORS: true, foreignObjectRendering: true });
+    } finally {
+      hideEls.forEach((el) => { el.style.display = el.dataset.prevDisplay || ""; });
+      if (logoHadBorder) logoWrap.style.visibility = "";
+    }
   }
 
   function savePdfFromCanvas(canvas) {
