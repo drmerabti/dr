@@ -239,6 +239,7 @@
         renderTotals();
       }
       applyLanguage(lang);
+      if (usingExampleData) generateAmountWords();
       renderIssuerContacts();
       renderPreview();
     });
@@ -775,7 +776,7 @@
 
   /* ---------------- Amount in words ---------------- */
 
-  els.generateWordsBtn.addEventListener("click", () => {
+  function generateAmountWords() {
     const { ttc } = calcTotals();
     const customCurrency = readCurrencySettings(currentLang);
     state.wordsGenerated = amountToWords(
@@ -787,6 +788,10 @@
     state.wordsIsStale = false;
     els.amountWordsBox.textContent = state.wordsGenerated;
     els.amountWordsBox.classList.remove("is-placeholder");
+  }
+
+  els.generateWordsBtn.addEventListener("click", () => {
+    generateAmountWords();
     renderPreview();
   });
 
@@ -1104,6 +1109,7 @@
     renderIssuerContacts();
 
     applyLanguage(initialLang);
+    if (!hadDraft) generateAmountWords();
     renderItemsForm();
     renderTotals();
     renderPreview();
