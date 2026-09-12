@@ -14,12 +14,50 @@
 
 <header class="topbar">
   <div class="topbar-inner">
-    <a href="../../index.html" class="brand">د. سفيان مرابطي</a>
-    <div class="topbar-actions">
+    <div class="brand-group">
+      <a href="../../index.html" class="brand">Dr Soufiane Merabti</a>
       <button id="proBtn" class="pro-btn" type="button">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 8l4 3 5-6 5 6 4-3-2 11H5L3 8z"/><circle cx="3" cy="8" r="1.4" fill="currentColor" stroke="none"/><circle cx="12" cy="5" r="1.4" fill="currentColor" stroke="none"/><circle cx="21" cy="8" r="1.4" fill="currentColor" stroke="none"/></svg>
         <span>Pro</span>
       </button>
+    </div>
+
+    <div class="topbar-actions">
+      <div class="toolbar-actions-group" id="toolbarActionsGroup">
+        <button type="button" class="tbtn" id="settingsBtn" aria-label="Currency settings" title="Currency settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <span data-i18n="currencyBtnLabel">Currency</span>
+        </button>
+        <button type="button" class="tbtn" id="savedInvoicesBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3h18v18H3z"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+          <span data-i18n="savedInvoices">Saved</span>
+        </button>
+        <button type="button" class="tbtn tbtn-save" id="saveBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          <span data-i18n="save">Save</span>
+        </button>
+        <button type="button" class="tbtn" id="newInvoiceBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14"/></svg>
+          <span data-i18n="newInvoice">New</span>
+        </button>
+        <button type="button" class="tbtn" id="clearBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+          <span data-i18n="clear">Empty</span>
+        </button>
+        <button type="button" class="tbtn" id="printBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          <span data-i18n="print">Print</span>
+        </button>
+        <button type="button" class="tbtn" id="generatePdfBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+          <span data-i18n="generatePdf">PDF</span>
+        </button>
+      </div>
+
+      <button type="button" class="mobile-actions-toggle" id="mobileActionsToggle" aria-label="Actions">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
+      </button>
+
       <div class="auth-wrap" id="authWrap"></div>
       <div class="lang-switch" role="group" aria-label="Language switcher">
         <button type="button" class="lang-btn" data-lang="ar">العربية</button>
@@ -30,47 +68,17 @@
   </div>
 </header>
 
-<div class="action-toolbar">
-  <div class="action-toolbar-inner">
-    <div class="doc-type-toggle" role="group" aria-label="Document type">
-      <button type="button" class="doc-type-btn active" id="typeFactureBtn" data-i18n="typeFacture">Facture</button>
-      <button type="button" class="doc-type-btn" id="typeProformaBtn" data-i18n="typeProforma">Proforma</button>
-    </div>
-    <div class="action-buttons">
-      <button type="button" class="icon-btn" id="settingsBtn" aria-label="Currency settings" title="Currency settings">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-      </button>
-      <span class="tbtn-sep"></span>
-      <button type="button" class="tbtn tbtn-save" id="saveBtn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-        <span data-i18n="save">Save</span>
-      </button>
-      <button type="button" class="tbtn" id="newInvoiceBtn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14"/></svg>
-        <span data-i18n="newInvoice">New</span>
-      </button>
-      <button type="button" class="tbtn" id="clearBtn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
-        <span data-i18n="clear">Empty</span>
-      </button>
-      <span class="tbtn-sep"></span>
-      <button type="button" class="tbtn" id="printBtn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-        <span data-i18n="print">Print</span>
-      </button>
-      <button type="button" class="tbtn tbtn-primary" id="generatePdfBtn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
-        <span data-i18n="generatePdf">PDF</span>
-      </button>
-    </div>
-  </div>
-</div>
-
 <main class="app-grid">
 
   <!-- ============ LEFT COLUMN: FORM ============ -->
   <section class="col col-form">
-    <h1 class="col-title" data-i18n="invoiceForm">Invoice Form</h1>
+    <div class="form-title-row">
+      <h1 class="col-title" data-i18n="invoiceForm">Invoice Form</h1>
+      <div class="doc-type-toggle" role="group" aria-label="Document type">
+        <button type="button" class="doc-type-btn active" id="typeFactureBtn" data-i18n="typeFacture">Facture</button>
+        <button type="button" class="doc-type-btn" id="typeProformaBtn" data-i18n="typeProforma">Proforma</button>
+      </div>
+    </div>
 
     <div class="card">
       <div class="field-row">
@@ -97,11 +105,6 @@
           </div>
         </div>
       </div>
-
-      <div class="field">
-        <label class="field-label" data-i18n="customer">Customer</label>
-        <textarea id="customerName" class="input" rows="2" data-i18n-placeholder="customerPlaceholder" placeholder="Customer name"></textarea>
-      </div>
     </div>
 
     <div class="card">
@@ -118,6 +121,13 @@
           <button type="button" data-type="website" data-i18n="contactWebsite">Website</button>
           <button type="button" data-type="other" data-i18n="contactOther">Other</button>
         </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="field">
+        <label class="field-label" data-i18n="customer">Customer</label>
+        <textarea id="customerName" class="input" rows="2" data-i18n-placeholder="customerPlaceholder" placeholder="Customer name"></textarea>
       </div>
     </div>
 
@@ -214,10 +224,9 @@
               <span class="inv-meta-label" data-i18n="date">Date</span>
               <span class="inv-meta-value" id="previewDate">—</span>
             </div>
+            <div class="inv-issuer-contacts" id="previewIssuerContacts"></div>
           </div>
         </div>
-
-        <div class="inv-issuer-contacts" id="previewIssuerContacts"></div>
 
         <div class="inv-customer">
           <div class="inv-customer-label" data-i18n="customer">Customer</div>
@@ -287,6 +296,17 @@
     <div class="overlay-actions">
       <button type="button" class="btn btn-secondary" id="confirmCancel" data-i18n="cancel">Cancel</button>
       <button type="button" class="btn btn-danger" id="confirmOk" data-i18n="confirmYes">Clear</button>
+    </div>
+  </div>
+</div>
+
+<!-- Saved invoices history -->
+<div class="overlay" id="savedInvoicesOverlay" hidden>
+  <div class="overlay-box overlay-box-wide">
+    <h3 class="overlay-title" data-i18n="savedInvoicesTitle">Saved Invoices</h3>
+    <div id="savedInvoicesList" class="saved-invoices-list"></div>
+    <div class="overlay-actions">
+      <button type="button" class="btn btn-secondary" id="savedInvoicesClose" data-i18n="cancel">Close</button>
     </div>
   </div>
 </div>

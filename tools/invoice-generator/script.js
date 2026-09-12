@@ -125,6 +125,12 @@
     saveBtn: $("#saveBtn"),
     typeFactureBtn: $("#typeFactureBtn"),
     typeProformaBtn: $("#typeProformaBtn"),
+    mobileActionsToggle: $("#mobileActionsToggle"),
+    toolbarActionsGroup: $("#toolbarActionsGroup"),
+    savedInvoicesBtn: $("#savedInvoicesBtn"),
+    savedInvoicesOverlay: $("#savedInvoicesOverlay"),
+    savedInvoicesList: $("#savedInvoicesList"),
+    savedInvoicesClose: $("#savedInvoicesClose"),
     issuerContactList: $("#issuerContactList"),
     addContactBtn: $("#addContactBtn"),
     addContactMenu: $("#addContactMenu"),
@@ -228,6 +234,7 @@
       if (usingExampleData) {
         applyExampleData(lang);
         els.customerName.value = state.customer;
+        els.notesInput.value = state.notes;
         renderItemsForm();
         renderTotals();
       }
@@ -387,6 +394,131 @@
   }
   els.typeFactureBtn.addEventListener("click", () => setDocType("facture"));
   els.typeProformaBtn.addEventListener("click", () => setDocType("proforma"));
+
+  /* ---------------- Mobile actions dropdown ---------------- */
+
+  els.mobileActionsToggle.addEventListener("click", (e) => {
+    e.stopPropagation();
+    els.toolbarActionsGroup.classList.toggle("open");
+  });
+  document.addEventListener("click", (e) => {
+    if (els.toolbarActionsGroup.classList.contains("open") &&
+        !els.toolbarActionsGroup.contains(e.target) && e.target !== els.mobileActionsToggle) {
+      els.toolbarActionsGroup.classList.remove("open");
+    }
+  });
+  els.toolbarActionsGroup.querySelectorAll(".tbtn").forEach((btn) => {
+    btn.addEventListener("click", () => els.toolbarActionsGroup.classList.remove("open"));
+  });
+
+  /* ---------------- Saved invoices ---------------- */
+
+  function getHistory() {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEYS.history)) || [];
+    } catch (e) {
+      return [];
+    }
+  }
+  function setHistory(history) {
+    try {
+      localStorage.setItem(STORAGE_KEYS.history, JSON.stringify(history));
+    } catch (e) {
+      // storage full — skip silently
+    }
+  }
+
+  function renderSavedInvoices() {
+    const dict = I18N[currentLang] || I18N.en;
+    const history = getHistory();
+    if (history.length === 0) {
+      els.savedInvoicesList.innerHTML = `<p style="color:var(--text-faint); text-align:center; padding:20px 0;">${dict.noSavedInvoices}</p>`;
+      return;
+    }
+    els.savedInvoicesList.innerHTML = history.map((inv, idx) => {
+      const d = new Date(inv.archivedAt);
+      const dateStr = isNaN(d) ? "" : d.toLocaleString();
+      return `
+        <div class="saved-invoice-row" data-idx="${idx}">
+          <div class="saved-invoice-info">
+            <div class="num">${escapeAttr(inv.invoiceNumber || "—")} — ${escapeAttr(inv.customer || "")}</div>
+            <div class="date">${dateStr}</div>
+          </div>
+          <div class="saved-invoice-actions">
+            <button type="button" class="restore-btn" data-action="restore">${dict.restore}</button>
+            <button type="button" class="delete-btn" data-action="delete">${dict.delete}</button>
+          </div>
+        </div>
+      `;
+    }).join("");
+  }
+
+  els.savedInvoicesBtn.addEventListener("click", () => {
+    renderSavedInvoices();
+    els.savedInvoicesOverlay.hidden = false;
+  });
+  els.savedInvoicesClose.addEventListener("click", () => {
+    els.savedInvoicesOverlay.hidden = true;
+  });
+  els.savedInvoicesList.addEventListener("click", (e) => {
+    const btn = e.target.closest("button[data-action]");
+    if (!btn) return;
+    const row = btn.closest(".saved-invoice-row");
+    const idx = parseInt(row.dataset.idx, 10);
+    const history = getHistory();
+    const entry = history[idx];
+    if (!entry) return;
+
+    if (btn.dataset.action === "delete") {
+      history.splice(idx, 1);
+      setHistory(history);
+      renderSavedInvoices();
+      return;
+    }
+
+    // Restore
+    usingExampleData = false;
+    state.docType = entry.docType || "facture";
+    state.issuerContacts = Array.isArray(entry.issuerContacts)
+      ? entry.issuerContacts.map((c) => ({ id: nextContactId(), type: c.type, value: c.value || "" }))
+      : [];
+    state.logoDataUrl = entry.logoDataUrl || null;
+    state.signatureDataUrl = entry.signatureDataUrl || null;
+    state.date = entry.date || todayISO();
+    state.invoiceNumber = entry.invoiceNumber || "";
+    state.customer = entry.customer || "";
+    state.items = Array.isArray(entry.items) && entry.items.length
+      ? entry.items.map((it) => ({ id: nextItemId(), article: it.article || "", qty: it.qty, price: it.price }))
+      : [{ id: nextItemId(), article: "", qty: 1, price: 0 }];
+    state.tvaPercent = entry.tvaPercent != null ? entry.tvaPercent : 19;
+    state.notes = entry.notes || "";
+    state.wordsGenerated = entry.wordsGenerated || "";
+    state.wordsIsStale = true;
+
+    els.invoiceDate.value = state.date;
+    els.invoiceNumber.value = state.invoiceNumber;
+    els.customerName.value = state.customer;
+    els.tvaPercent.value = state.tvaPercent;
+    els.notesInput.value = state.notes;
+
+    els.logoPreview.hidden = !state.logoDataUrl;
+    els.logoPlaceholder.hidden = !!state.logoDataUrl;
+    if (state.logoDataUrl) els.logoPreview.src = state.logoDataUrl;
+
+    els.signaturePreview.hidden = !state.signatureDataUrl;
+    els.signaturePlaceholder.hidden = !!state.signatureDataUrl;
+    if (state.signatureDataUrl) els.signaturePreview.src = state.signatureDataUrl;
+
+    els.typeFactureBtn.classList.toggle("active", state.docType !== "proforma");
+    els.typeProformaBtn.classList.toggle("active", state.docType === "proforma");
+
+    renderIssuerContacts();
+    renderItemsForm();
+    renderTotals();
+    renderPreview();
+    saveDraft();
+    els.savedInvoicesOverlay.hidden = true;
+  });
 
   /* ---------------- Issuer contact fields ---------------- */
 
@@ -757,6 +889,11 @@
 
   async function buildPdfCanvas() {
     const sheet = document.getElementById("invoiceSheet");
+    // Wait for web fonts (Tajawal, etc.) to finish loading — otherwise html2canvas
+    // can snapshot before Arabic glyphs are ready, rendering them as disconnected/garbled text.
+    if (document.fonts && document.fonts.ready) {
+      await document.fonts.ready;
+    }
     return html2canvas(sheet, { scale: 2, backgroundColor: "#ffffff", useCORS: true });
   }
 
@@ -876,24 +1013,62 @@
   /* ---------------- Init ---------------- */
 
   const EXAMPLE_DATA = {
-    en: { customer: "Sample Client Ltd.\n123 Business Ave, New York", items: [
-      { article: "Consulting services", qty: 2, price: 150 },
-      { article: "Web design", qty: 1, price: 500 },
-    ]},
-    fr: { customer: "Client Exemple SARL\n123 Avenue des Affaires, Paris", items: [
-      { article: "Services de conseil", qty: 2, price: 150 },
-      { article: "Conception de site web", qty: 1, price: 500 },
-    ]},
-    ar: { customer: "شركة العميل التجريبي\n١٢٣ شارع الأعمال، الجزائر", items: [
-      { article: "خدمات استشارية", qty: 2, price: 150 },
-      { article: "تصميم موقع إلكتروني", qty: 1, price: 500 },
-    ]},
+    en: {
+      customer: "Atlas Trading Co.\n45 Independence Blvd, Algiers",
+      items: [
+        { article: "Website design & development", qty: 1, price: 45000 },
+        { article: "Monthly hosting & maintenance", qty: 3, price: 1500 },
+        { article: "Logo & brand identity package", qty: 1, price: 8000 },
+        { article: "SEO optimization (one-time)", qty: 1, price: 12000 },
+        { article: "Content writing (per page)", qty: 6, price: 800 },
+      ],
+      notes: "Payment due within 15 days of invoice date. Bank transfer or check accepted. Late payments subject to a 2% monthly fee.",
+      contacts: [
+        { type: "phone", value: "+213 555 12 34 56" },
+        { type: "email", value: "contact@yourcompany.com" },
+        { type: "address", value: "12 Rue des Frères Bouadou, Algiers 16000" },
+      ],
+    },
+    fr: {
+      customer: "Atlas Trading Co.\n45 Boulevard de l'Indépendance, Alger",
+      items: [
+        { article: "Conception et développement de site web", qty: 1, price: 45000 },
+        { article: "Hébergement et maintenance mensuelle", qty: 3, price: 1500 },
+        { article: "Pack logo et identité visuelle", qty: 1, price: 8000 },
+        { article: "Optimisation SEO (unique)", qty: 1, price: 12000 },
+        { article: "Rédaction de contenu (par page)", qty: 6, price: 800 },
+      ],
+      notes: "Paiement exigible sous 15 jours à compter de la date de facture. Virement bancaire ou chèque acceptés. Pénalité de 2% par mois de retard.",
+      contacts: [
+        { type: "phone", value: "+213 555 12 34 56" },
+        { type: "email", value: "contact@votreentreprise.com" },
+        { type: "address", value: "12 Rue des Frères Bouadou, Alger 16000" },
+      ],
+    },
+    ar: {
+      customer: "شركة أطلس للتجارة\n45 شارع الاستقلال، الجزائر العاصمة",
+      items: [
+        { article: "تصميم وتطوير موقع إلكتروني", qty: 1, price: 45000 },
+        { article: "استضافة وصيانة شهرية", qty: 3, price: 1500 },
+        { article: "باقة شعار وهوية بصرية", qty: 1, price: 8000 },
+        { article: "تحسين محركات البحث (مرة واحدة)", qty: 1, price: 12000 },
+        { article: "كتابة محتوى (للصفحة الواحدة)", qty: 6, price: 800 },
+      ],
+      notes: "الدفع مستحق خلال 15 يومًا من تاريخ الفاتورة. يُقبل التحويل البنكي أو الشيك. تُطبَّق غرامة تأخير 2% شهريًا.",
+      contacts: [
+        { type: "phone", value: "+213 555 12 34 56" },
+        { type: "email", value: "contact@yourcompany.com" },
+        { type: "address", value: "12 شارع الإخوة بوعدو، الجزائر العاصمة 16000" },
+      ],
+    },
   };
 
   function applyExampleData(lang) {
     const ex = EXAMPLE_DATA[lang] || EXAMPLE_DATA.en;
     state.customer = ex.customer;
     state.items = ex.items.map((it) => ({ id: nextItemId(), article: it.article, qty: it.qty, price: it.price }));
+    state.notes = ex.notes || "";
+    state.issuerContacts = (ex.contacts || []).map((c) => ({ id: nextContactId(), type: c.type, value: c.value }));
   }
 
   function init() {

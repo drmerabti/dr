@@ -187,34 +187,32 @@ function amountToWords(amount, lang, currencyMainOverride, currencySubOverride) 
   const subCurrency = currencySubOverride || t("currencySub");
 
   let intWords, decWords;
+  const ZERO_WORD = { fr: "zéro", ar: "صفر", en: "zero" };
   if (lang === "fr") {
     intWords = fr_integerToWords(intPart);
-    decWords = decPart > 0 ? fr_integerToWords(decPart) : "";
+    decWords = decPart > 0 ? fr_integerToWords(decPart) : ZERO_WORD.fr;
   } else if (lang === "ar") {
     intWords = ar_integerToWords(intPart);
-    decWords = decPart > 0 ? ar_integerToWords(decPart) : "";
+    decWords = decPart > 0 ? ar_integerToWords(decPart) : ZERO_WORD.ar;
   } else {
     intWords = en_integerToWords(intPart);
-    decWords = decPart > 0 ? en_integerToWords(decPart) : "";
+    decWords = decPart > 0 ? en_integerToWords(decPart) : ZERO_WORD.en;
   }
 
   // Capitalize first letter for en/fr
   const cap = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : s);
 
   if (lang === "ar") {
-    let sentence = `${intWords} ${mainCurrency}`;
-    if (decPart > 0) sentence += ` ${t("and")} ${decWords} ${subCurrency}`;
+    let sentence = `${intWords} ${mainCurrency} ${t("and")} ${decWords} ${subCurrency}`;
     return sentence.trim();
   }
 
   if (lang === "fr") {
-    let sentence = `${cap(intWords)} ${mainCurrency}`;
-    if (decPart > 0) sentence += ` ${t("and")} ${decWords} ${subCurrency}`;
+    let sentence = `${cap(intWords)} ${mainCurrency} ${t("and")} ${decWords} ${subCurrency}`;
     return sentence.trim();
   }
 
   // English
-  let sentence = `${cap(intWords)} ${mainCurrency}`;
-  if (decPart > 0) sentence += ` ${t("and")} ${decWords} ${subCurrency}`;
+  let sentence = `${cap(intWords)} ${mainCurrency} ${t("and")} ${decWords} ${subCurrency}`;
   return sentence.trim();
 }
