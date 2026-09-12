@@ -413,7 +413,7 @@ const CONTENT = {
     { id: 'tool-invoice-generator', title_ar: 'مولّد الفواتير', title_en: 'Invoice Generator',
       desc_ar: 'أنشئ فاتورة احترافية مع شعار، توقيع، ضريبة، وتحويل المبلغ إلى حروف — بثلاث لغات.',
       desc_en: 'Generate a professional invoice with logo, signature, VAT, and amount-in-words — in three languages.',
-      url: 'https://drmerabti.github.io/dr/invoice-generator/', external: true, icon: ICONS.invoiceApp, family: 'admin', tier: 'pro' },
+      url: 'tools/invoice-generator/', icon: ICONS.invoiceApp, family: 'admin', tier: 'pro' },
     { id: 'tool-cv-builder', title_ar: 'منشئ السيرة الذاتية', title_en: 'CV Builder',
       desc_ar: 'أنشئ سيرة ذاتية احترافية بمعاينة حية وتصدير PDF — يتطلب تسجيل الدخول.',
       desc_en: 'Build a professional CV with live preview and PDF export — requires login.',
