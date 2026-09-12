@@ -87,8 +87,14 @@
       </button>
       <input type="text" id="cvTitleInput" class="cv-title-input" placeholder="">
       <div class="editor-actions">
-        <button type="button" class="btn btn-secondary" id="clearCvBtn">🗑️ <span id="clearCvText">تفريغ</span></button>
-        <button type="button" class="btn btn-secondary" id="saveCvBtn">💾 <span id="saveCvText">حفظ</span></button>
+        <button type="button" class="btn btn-secondary icon-btn-lg" id="clearCvBtn" title="تفريغ">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M19 6l-1 14a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+          <span id="clearCvText">تفريغ</span>
+        </button>
+        <button type="button" class="btn btn-secondary icon-btn-lg" id="saveCvBtn" title="حفظ">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg>
+          <span id="saveCvText">حفظ</span>
+        </button>
         <button type="button" class="btn btn-primary" id="downloadPdfBtn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M5 21h14"/></svg>
           <span id="downloadPdfText">تحميل PDF</span>
@@ -115,11 +121,11 @@
           <div class="field-grid">
             <input type="text" id="pFullName" class="cv-input" placeholder="">
             <input type="text" id="pTitle" class="cv-input" placeholder="">
-            <input type="text" id="pPhone" class="cv-input" placeholder="">
-            <input type="email" id="pEmail" class="cv-input" placeholder="">
+            <input type="text" id="pPhone" class="cv-input" dir="ltr" placeholder="">
+            <input type="email" id="pEmail" class="cv-input" dir="ltr" placeholder="">
             <input type="text" id="pAddress" class="cv-input" placeholder="">
-            <input type="text" id="pLinkedin" class="cv-input" placeholder="">
-            <input type="text" id="pWebsite" class="cv-input" placeholder="">
+            <input type="text" id="pLinkedin" class="cv-input" dir="ltr" placeholder="">
+            <input type="text" id="pWebsite" class="cv-input" dir="ltr" placeholder="">
             <input type="text" id="pPassport" class="cv-input" placeholder="">
           </div>
           <label class="toggle-row">
@@ -127,11 +133,6 @@
             <input type="checkbox" id="pShowPassport">
             <span class="toggle-switch"></span>
           </label>
-        </div>
-
-        <div class="form-card">
-          <h2 class="form-card-title" id="templateTitle">شكل السيرة الذاتية</h2>
-          <div class="template-swatches" id="templateSwatches"></div>
         </div>
 
         <div class="form-card" id="colorCard">
@@ -151,6 +152,10 @@
 
       <!-- PREVIEW COLUMN -->
       <div class="editor-preview">
+        <div class="template-rail-wrap">
+          <p class="template-rail-title" id="templateTitle">شكل السيرة الذاتية</p>
+          <div class="template-rail" id="templateSwatches"></div>
+        </div>
         <div class="preview-shell">
           <div class="cv-sheet" id="cvSheet">
             <div class="cv-sidebar" id="cvSidebar">

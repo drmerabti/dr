@@ -152,33 +152,33 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
 
   const SAMPLE_DATA = {
     ar: {
-      fullName: 'سفيان بلعباس', title: 'مهندس سلامة صناعية',
-      phone: '0555 12 34 56', email: 'sofiane.example@mail.com', address: 'ورقلة، الجزائر',
-      summary: 'مهندس بخبرة 6 سنوات في مجال السلامة الصناعية بقطاع المناجم، متخصص في تدريب الفرق الميدانية وتطبيق معايير السلامة الدولية.',
-      exp1Title: 'مسؤول السلامة والصحة المهنية', exp1Company: 'شركة GICA', exp1Desc: 'إشراف ميداني على تطبيق بروتوكولات السلامة في مواقع استخراج المعادن، وتنظيم دورات تدريبية دورية للعمال.',
-      exp2Title: 'مهندس ميداني', exp2Company: 'S.S.C', exp2Desc: 'متابعة معدات الاستخراج الثقيلة والتأكد من مطابقتها لمعايير السلامة قبل التشغيل.',
-      eduDegree: 'ليسانس في هندسة السلامة الصناعية', eduInst: 'جامعة ورقلة',
-      skills: ['إدارة المخاطر', 'ISO 45001', 'تدريب الفرق', 'التدقيق الميداني'],
+      fullName: 'Soufiane Merabti', title: 'دكتوراه في هندسة الطاقة الصناعية',
+      phone: '0663708148', email: 'contact@merabti.com', address: 'الجزائر',
+      summary: 'دكتور في هندسة الطاقة الصناعية، متخصص في أنظمة إدارة الجودة والسلامة والبيئة والطاقة وفق المعايير الدولية (ISO)، بخبرة في الإشراف الميداني وتدريب الفرق التقنية.',
+      exp1Title: 'مهندس أول — أنظمة الجودة والسلامة', exp1Company: 'اسم الشركة', exp1Desc: 'الإشراف على تطبيق أنظمة إدارة الجودة والسلامة والبيئة والطاقة وفق معايير ISO، وقيادة عمليات التدقيق الداخلي.',
+      exp2Title: 'مهندس طاقة صناعية', exp2Company: 'اسم الشركة', exp2Desc: 'تحليل كفاءة استهلاك الطاقة في المنشآت الصناعية واقتراح حلول التحسين المطابقة لمعيار ISO 50001.',
+      eduDegree: 'دكتوراه في هندسة الطاقة الصناعية', eduInst: 'اسم الجامعة',
+      skills: ['ISO 9001', 'ISO 14001', 'ISO 45001', 'ISO 50001'],
       languages: [['العربية', 'اللغة الأم'], ['الفرنسية', 'جيد جدًا'], ['الإنجليزية', 'جيد']],
     },
     en: {
-      fullName: 'Sofiane Belabbas', title: 'Industrial Safety Engineer',
-      phone: '+213 555 12 34 56', email: 'sofiane.example@mail.com', address: 'Ouargla, Algeria',
-      summary: 'Safety engineer with 6 years of experience in the mining industry, specialized in field team training and international safety standards.',
-      exp1Title: 'Health & Safety Officer', exp1Company: 'GICA Company', exp1Desc: 'Field supervision of safety protocol implementation at mineral extraction sites, and regular worker training sessions.',
-      exp2Title: 'Field Engineer', exp2Company: 'S.S.C', exp2Desc: 'Monitoring heavy extraction equipment and ensuring safety compliance before operation.',
-      eduDegree: 'B.Sc. in Industrial Safety Engineering', eduInst: 'University of Ouargla',
-      skills: ['Risk Management', 'ISO 45001', 'Team Training', 'Field Auditing'],
+      fullName: 'Soufiane Merabti', title: 'PhD, Industrial Energy Engineering',
+      phone: '0663708148', email: 'contact@merabti.com', address: 'Algeria',
+      summary: 'PhD holder in Industrial Energy Engineering, specialized in Quality, Safety, Environment and Energy management systems (ISO standards), with field supervision and technical team training experience.',
+      exp1Title: 'Senior Engineer — Quality & Safety Systems', exp1Company: 'Company name', exp1Desc: 'Oversaw the implementation of Quality, Safety, Environmental and Energy management systems per ISO standards, and led internal audits.',
+      exp2Title: 'Industrial Energy Engineer', exp2Company: 'Company name', exp2Desc: 'Analyzed energy consumption efficiency across industrial facilities and proposed ISO 50001-compliant improvements.',
+      eduDegree: 'PhD in Industrial Energy Engineering', eduInst: 'University name',
+      skills: ['ISO 9001', 'ISO 14001', 'ISO 45001', 'ISO 50001'],
       languages: [['Arabic', 'Native'], ['French', 'Very good'], ['English', 'Good']],
     },
     fr: {
-      fullName: 'Sofiane Belabbas', title: 'Ingénieur en sécurité industrielle',
-      phone: '+213 555 12 34 56', email: 'sofiane.example@mail.com', address: 'Ouargla, Algérie',
-      summary: "Ingénieur avec 6 ans d'expérience en sécurité industrielle dans le secteur minier, spécialisé dans la formation des équipes de terrain et les normes internationales de sécurité.",
-      exp1Title: 'Responsable Santé & Sécurité', exp1Company: 'Société GICA', exp1Desc: "Supervision de terrain de l'application des protocoles de sécurité sur les sites d'extraction, et sessions de formation régulières.",
-      exp2Title: 'Ingénieur de terrain', exp2Company: 'S.S.C', exp2Desc: "Suivi des équipements lourds d'extraction et vérification de leur conformité sécuritaire avant utilisation.",
-      eduDegree: 'Licence en ingénierie de sécurité industrielle', eduInst: 'Université de Ouargla',
-      skills: ['Gestion des risques', 'ISO 45001', 'Formation d\'équipe', 'Audit de terrain'],
+      fullName: 'Soufiane Merabti', title: 'Doctorat en Génie Énergétique Industriel',
+      phone: '0663708148', email: 'contact@merabti.com', address: 'Algérie',
+      summary: "Docteur en génie énergétique industriel, spécialisé dans les systèmes de management Qualité, Sécurité, Environnement et Énergie (normes ISO), avec une expérience en supervision de terrain et formation d'équipes techniques.",
+      exp1Title: 'Ingénieur senior — Systèmes Qualité & Sécurité', exp1Company: "Nom de l'entreprise", exp1Desc: "Supervision de la mise en œuvre des systèmes de management Qualité, Sécurité, Environnement et Énergie selon les normes ISO, et pilotage des audits internes.",
+      exp2Title: 'Ingénieur en énergie industrielle', exp2Company: "Nom de l'entreprise", exp2Desc: "Analyse de l'efficacité énergétique des installations industrielles et proposition d'améliorations conformes à l'ISO 50001.",
+      eduDegree: 'Doctorat en génie énergétique industriel', eduInst: "Nom de l'université",
+      skills: ['ISO 9001', 'ISO 14001', 'ISO 45001', 'ISO 50001'],
       languages: [['Arabe', 'Langue maternelle'], ['Français', 'Très bien'], ['Anglais', 'Bien']],
     },
   };
@@ -961,13 +961,13 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
     els.cvRole.textContent = p.title || '';
 
     const contactLines = [];
-    if (p.phone) contactLines.push(p.phone);
-    if (p.email) contactLines.push(p.email);
-    if (p.address) contactLines.push(p.address);
-    if (p.linkedin) contactLines.push(p.linkedin);
-    if (p.website) contactLines.push(p.website);
-    if (p.showPassport && p.passport) contactLines.push(p.passport);
-    els.cvContact.innerHTML = contactLines.map((l) => `<div>${escapeHtml(l)}</div>`).join('');
+    if (p.phone) contactLines.push({ v: p.phone, ltr: true });
+    if (p.email) contactLines.push({ v: p.email, ltr: true });
+    if (p.address) contactLines.push({ v: p.address, ltr: false });
+    if (p.linkedin) contactLines.push({ v: p.linkedin, ltr: true });
+    if (p.website) contactLines.push({ v: p.website, ltr: true });
+    if (p.showPassport && p.passport) contactLines.push({ v: p.passport, ltr: true });
+    els.cvContact.innerHTML = contactLines.map((l) => `<div><bdi ${l.ltr ? 'dir="ltr"' : ''}>${escapeHtml(l.v)}</bdi></div>`).join('');
 
     const sidebarSecs = activeCv.sections.filter((s) => SIDEBAR_SECTION_TYPES.includes(s.type));
     const mainSecs = activeCv.sections.filter((s) => !SIDEBAR_SECTION_TYPES.includes(s.type));

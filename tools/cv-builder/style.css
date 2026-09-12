@@ -122,6 +122,8 @@ html[dir="rtl"] .user-chip{ padding: 6px 14px 6px 8px; }
 .btn-secondary{ background: var(--accent-soft); color: var(--accent-dark); }
 .btn-secondary:hover{ background: var(--line); }
 .editor-actions{ display:flex; gap: 8px; flex-wrap: wrap; margin-inline-start: auto; }
+.icon-btn-lg{ padding: 10px 16px; }
+.icon-btn-lg svg{ width: 20px; height: 20px; }
 
 .unsaved-badge{
   position: absolute; top: 14px; inset-inline-end: 14px;
@@ -294,20 +296,24 @@ html[dir="rtl"] .cv-sidebar-sections h4{ letter-spacing: 0; }
 
 .sec-icon{ margin-inline-end: 5px; }
 
-/* ---------------- Template picker ---------------- */
-.template-swatches{ display:grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-.template-swatch{
-  border: 2px solid var(--line); border-radius: 12px; background: var(--card-bg); cursor: pointer;
-  padding: 10px; display:flex; flex-direction:column; align-items:center; gap: 6px;
-  font-family: inherit; color: var(--ink);
+/* ---------------- Template picker (vertical rail beside the sheet) ---------------- */
+.editor-preview{ display:flex; align-items:flex-start; gap: 16px; }
+.template-rail-wrap{ flex-shrink:0; width: 84px; }
+.template-rail-title{ font-size:.68rem; font-weight:800; color: var(--ink-soft); text-align:center; margin:0 0 8px; }
+.template-rail{
+  display:flex; flex-direction:column; gap: 12px; max-height: 640px; overflow-y:auto; padding: 2px;
 }
-.template-swatch.active{ border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
-.template-swatch-preview{ width: 100%; height: 46px; border-radius: 6px; display:block; }
-.template-swatch-navy .template-swatch-preview{ background: linear-gradient(#2E3A50 0 40%, #F4F5F7 40% 100%); }
+.template-swatch{
+  border: 3px solid transparent; border-radius: 10px; background: var(--card-bg); cursor: pointer;
+  padding: 0; overflow:hidden; font-family: inherit; color: var(--ink); width: 84px;
+}
+.template-swatch.active{ border-color: #E23D3D; box-shadow: 0 4px 14px rgba(21,36,49,.2); }
+.template-swatch-preview{ width: 100%; aspect-ratio: 3/4; display:block; }
+.template-swatch-navy .template-swatch-preview{ background: linear-gradient(#2E3A50 0 30%, #F4F5F7 30% 100%); }
 .template-swatch-classic .template-swatch-preview{ background: linear-gradient(90deg, #22415A 0 36%, #fff 36% 100%); }
 .template-swatch-gold .template-swatch-preview{ background: linear-gradient(90deg, #173540 0 36%, #fff 36% 100%); box-shadow: inset 0 0 0 2px #C9A24B; }
-.template-swatch-rose .template-swatch-preview{ background: linear-gradient(#C27D74 0 30%, #F7F3EC 30% 100%); }
-.template-swatch-label{ font-size: .72rem; font-weight: 800; }
+.template-swatch-rose .template-swatch-preview{ background: linear-gradient(#C27D74 0 24%, #F7F3EC 24% 100%); }
+.template-swatch-label{ display:block; font-size: .64rem; font-weight: 800; padding: 5px 2px; text-align:center; }
 
 /* ---------------- Template: navy (default) ---------------- */
 .cv-sheet.template-navy{ flex-direction: row; position: relative; }
