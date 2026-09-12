@@ -520,6 +520,19 @@
   });
   els.createNewInvoiceBtn.addEventListener("click", () => {
     resetState({ assignNewNumber: true });
+    // First-ever invoice (no saved history yet) starts from the example,
+    // so a new user immediately sees what a filled-in invoice looks like.
+    if (getHistory().length === 0) {
+      usingExampleData = true;
+      applyExampleData(currentLang);
+      els.customerName.value = state.customer;
+      els.notesInput.value = state.notes;
+      renderIssuerContacts();
+      renderItemsForm();
+      renderTotals();
+      generateAmountWords();
+      renderPreview();
+    }
     showEditorScreen();
   });
   els.invoiceListBody.addEventListener("click", (e) => {
@@ -558,7 +571,7 @@
       .filter((c) => c.value && c.value.trim())
       .map((c) => {
         const label = dict["contact" + capitalize(c.type)] || "";
-        return `<div class="inv-contact-line">${escapeAttr(label)}: <bdi>${escapeAttr(c.value)}</bdi></div>`;
+        return `<div class="inv-contact-line"><span class="contact-label">${escapeAttr(label)}:</span><bdi class="contact-value">${escapeAttr(c.value)}</bdi></div>`;
       })
       .join("");
   }
@@ -843,7 +856,7 @@
     // Meta
     els.previewInvoiceNumber.textContent = state.invoiceNumber || "—";
     els.previewDate.textContent = formatDateDisplay(state.date);
-    els.previewCustomer.textContent = state.customer || "—";
+    els.previewCustomer.innerHTML = state.customer ? `<bdi>${escapeAttr(state.customer)}</bdi>` : "—";
     renderDocTypeHeading();
 
     // Items
@@ -1137,11 +1150,9 @@
     renderTotals();
     renderPreview();
 
-    if (getHistory().length > 0) {
-      showListScreen();
-    } else {
-      showEditorScreen();
-    }
+    // Always land on the list screen first, even with zero saved invoices —
+    // the "Create New Invoice" button is the entry point into the editor.
+    showListScreen();
   }
 
   init();
