@@ -70,7 +70,7 @@
   function nextInvoiceNumber() {
     const n = readCounter();
     localStorage.setItem(STORAGE_KEYS.counter, String(n + 1));
-    return String(n).padStart(6, "0");
+    return String(n).padStart(3, "0");
   }
 
   /* ---------------- Per-language currency settings ---------------- */
@@ -390,6 +390,8 @@
   });
 
   let currentUser = null;
+  let authReadyResolve;
+  const authReady = new Promise((resolve) => { authReadyResolve = resolve; });
   const authWraps = [document.getElementById("authWrap"), document.getElementById("authWrapList")].filter(Boolean);
 
   function renderAuthWraps() {
@@ -404,23 +406,37 @@
     });
   }
 
+  let authFirstFired = false;
   if (window.fbAuth) {
     window.fbAuth.onAuthStateChanged((user) => {
       currentUser = user;
       renderAuthWraps();
+      if (!authFirstFired) { authFirstFired = true; authReadyResolve(); }
+      // If the login state changes while the list screen is showing (e.g. signed
+      // in from another tab), refresh it so cloud invoices appear without a reload.
+      if (!$("#listScreen").classList.contains("hidden")) renderInvoiceList();
     });
   } else {
     renderAuthWraps();
+    authReadyResolve();
   }
+
+  let currentCloudId = null;
 
   async function saveInvoiceToAccount() {
     if (!currentUser || !window.firebase) return false;
     try {
-      await firebase.firestore().collection("invoices").add({
+      const data = {
         ...serializeState(),
         owner: currentUser.uid,
         savedAt: firebase.firestore.FieldValue.serverTimestamp(),
-      });
+      };
+      if (currentCloudId) {
+        await firebase.firestore().collection("invoices").doc(currentCloudId).set(data, { merge: true });
+      } else {
+        const ref = await firebase.firestore().collection("invoices").add(data);
+        currentCloudId = ref.id;
+      }
       return true;
     } catch (e) {
       console.error("Cloud save failed:", e);
@@ -539,6 +555,7 @@
 
   function restoreInvoice(entry) {
     usingExampleData = false;
+    currentCloudId = entry._source === "cloud" ? entry._cloudId : null;
     state.docType = entry.docType || "facture";
     state.issuerContacts = Array.isArray(entry.issuerContacts)
       ? entry.issuerContacts.map((c) => ({ id: nextContactId(), type: c.type, value: c.value || "" }))
@@ -1109,6 +1126,7 @@
   function resetState(opts) {
     opts = opts || {};
     usingExampleData = false;
+    currentCloudId = null;
     state.docType = "facture";
     state.issuerContacts = [];
     state.logoDataUrl = null;
@@ -1211,7 +1229,7 @@
     state.issuerContacts = (ex.contacts || []).map((c) => ({ id: nextContactId(), type: c.type, value: c.value }));
   }
 
-  function init() {
+  async function init() {
 
     const hadDraft = loadDraft();
     const initialLang = loadedLang || "en";
@@ -1251,6 +1269,9 @@
 
     // Always land on the list screen first, even with zero saved invoices —
     // the "Create New Invoice" button is the entry point into the editor.
+    // Wait for the first real auth check so cloud invoices aren't missed on a
+    // fast page load (auth state resolves asynchronously, after this point).
+    await authReady;
     showListScreen();
   }
 

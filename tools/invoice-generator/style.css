@@ -22,7 +22,7 @@
 
 *{ box-sizing: border-box; }
 .hidden{ display: none !important; }
-.topbar-inner{ max-width: 1320px !important; }
+.topbar-inner{ max-width: 1600px !important; }
 
 /* ---------------- Invoice list screen ---------------- */
 
@@ -40,7 +40,7 @@
 }
 .btn-new-invoice:hover{ background: var(--blue-dark); }
 
-.invoice-list-body{ display: flex; flex-direction: column; gap: 10px; }
+.invoice-list-body{ display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
 .invoice-list-empty{ text-align: center; color: var(--text-faint); padding: 60px 0; font-size: 14px; }
 
 .back-to-list-btn{
@@ -157,7 +157,7 @@ button, input, textarea{ font-family: inherit; }
 }
 .mobile-actions-toggle svg{ width: 18px; height: 18px; }
 
-@media (max-width: 1300px){
+@media (max-width: 1600px){
   .form-title-row{ flex-direction: column; align-items: flex-start; gap: 10px; }
 
   .toolbar-actions-group{
@@ -189,8 +189,9 @@ button, input, textarea{ font-family: inherit; }
 .overlay-box-wide{ max-width: 520px; width: 100%; }
 .saved-invoices-list{ max-height: 360px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin: 14px 0; }
 .saved-invoice-row{
-  display: flex; align-items: center; justify-content: space-between; gap: 10px;
-  border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 14px;
+  display: flex; flex-direction: column; align-items: stretch; justify-content: space-between; gap: 10px;
+  aspect-ratio: 1;
+  border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px;
   background: var(--card);
   box-shadow: 0 2px 6px rgba(21,36,49,.06);
   transition: box-shadow .15s ease, transform .15s ease, border-color .15s ease;
@@ -200,11 +201,12 @@ button, input, textarea{ font-family: inherit; }
   transform: translateY(-1px);
   border-color: var(--blue);
 }
-.saved-invoice-info{ font-size: 13px; }
-.saved-invoice-info .num{ font-weight: 800; color: var(--text); }
+.saved-invoice-info{ flex: 1; overflow: hidden; font-size: 13px; }
+.saved-invoice-info .num{ display: block; white-space: normal; word-break: break-word; font-weight: 800; color: var(--text); }
 .saved-invoice-info .date{ color: var(--text-faint); font-size: 11px; }
 .saved-invoice-actions{ display: flex; gap: 6px; }
 .saved-invoice-actions button{
+  flex: 1;
   border: 1px solid var(--border); background: var(--card); border-radius: var(--radius-sm);
   padding: 6px 12px; font-size: 12px; font-weight: 700; cursor: pointer;
 }
