@@ -814,3 +814,73 @@ html[dir="rtl"] .cv-sidebar-sections h4{ letter-spacing: 0; }
   .editor-grid{ grid-template-columns: 1fr; }
 }
 
+
+/* ============ LAYOUT: HEX — لوحة اسم بنفسجية + نقشة هندسية جانبية ============
+   الوجه: خلفية بيضاء، لوحة ملوّنة خلف الاسم والمسمى الوظيفي (أعلى اليسار)،
+   ونقشة مكعّبات (cubes) بديلة عن النقشة السداسية الأصلية بنفس أسلوب باقي النقشات بالموقع.
+   الظهر: لون واحد مطابق للّوحة + QR أسفل اليمين (الموضع الافتراضي لعنصر card-qr-wrap). */
+.id-card[data-layout="hex"]{ padding: 0; background: #fff; }
+.id-card[data-layout="hex"] .card-accent-shape{
+  inset: auto; position: absolute; top: 0; bottom: 0; inset-inline-end: 0; width: 46%;
+  background-color: var(--t-pattern-base); background-image: var(--t-band-gradient);
+  background-size: cover; background-position: center;
+}
+.id-card[data-layout="hex"] .card-name, .id-card[data-layout="hex"] .card-org,
+.id-card[data-layout="hex"] .card-field, .id-card[data-layout="hex"] .card-badge-year,
+.id-card[data-layout="hex"] .card-badge-logo{ display: none; }
+.id-card[data-layout="hex"] .card-photo-wrap{ display: none; }
+.id-card[data-layout="hex"] .card-front-name{
+  display: block; position: absolute; z-index: 2; top: 16px; inset-inline-start: 16px; inset-inline-end: 50%;
+  background: var(--t-accent); color: var(--t-on-accent);
+  font-size: .78rem; font-weight: 800; letter-spacing: .2px;
+  padding: 9px 10px;
+}
+.id-card[data-layout="hex"] .card-corner-tag{
+  display: block; position: absolute; z-index: 2; top: 52px; inset-inline-start: 16px; inset-inline-end: 50%;
+  background: var(--t-accent); color: #E7D2F5;
+  font-size: .6rem; font-weight: 600; letter-spacing: .3px; text-transform: uppercase;
+  padding: 0 10px 9px;
+}
+.id-card[data-layout="hex"] .card-front-rows{
+  display: block; position: absolute; z-index: 2; left: 16px; right: 50%; bottom: 16px;
+}
+.id-card[data-layout="hex"] .card-front-row-icons{ color: var(--t-accent); }
+
+.id-card-back[data-layout="hex"] .card-accent-shape{
+  position: absolute; inset: 0; width: auto; height: auto;
+  background-color: var(--t-accent); background-image: none;
+}
+.id-card-back[data-layout="hex"] .card-contact-list,
+.id-card-back[data-layout="hex"] .card-back-footer{ display: none; }
+
+/* ============ LAYOUT: SPLIT — اسم متوسّط على خلفية داكنة + صف أيقونات سفلي ============
+   الوجه: خلفية داكنة، شريط سفلي أفتح قليلًا فيه ثلاث أيقونات متباعدة أفقيًا.
+   الظهر: لون واحد مطابق لخلفية الوجه + QR أسفل اليمين. */
+.id-card[data-layout="split"]{ padding: 0; background: var(--t-bg); }
+.id-card[data-layout="split"] .card-accent-shape{
+  inset: auto; position: absolute; left: 0; right: 0; bottom: 0; height: 34%;
+  background: #292929;
+}
+.id-card[data-layout="split"] .card-name, .id-card[data-layout="split"] .card-org,
+.id-card[data-layout="split"] .card-field, .id-card[data-layout="split"] .card-badge-year,
+.id-card[data-layout="split"] .card-badge-logo{ display: none; }
+.id-card[data-layout="split"] .card-photo-wrap{ display: none; }
+.id-card[data-layout="split"] .card-front-name{
+  display: block; position: absolute; z-index: 2; top: 22px; left: 12px; right: 12px; text-align: center;
+  color: var(--t-accent); font-size: 1.05rem; font-weight: 800; letter-spacing: .3px;
+}
+.id-card[data-layout="split"] .card-corner-tag{
+  display: block; position: absolute; z-index: 2; top: 52px; left: 12px; right: 12px; text-align: center;
+  color: #8F8F8F; font-size: .62rem; font-weight: 600; letter-spacing: .5px; text-transform: uppercase;
+}
+.id-card[data-layout="split"] .card-front-rows{
+  display: flex; flex-direction: row; align-items: center; justify-content: space-around;
+  position: absolute; z-index: 2; left: 10px; right: 10px; bottom: 14px;
+}
+.id-card[data-layout="split"] .card-front-row-icons{ margin-bottom: 0; flex-direction: column; gap: 4px; text-align: center; }
+.id-card[data-layout="split"] .card-front-row-icons span:last-child{ color: #fff; font-size: .58rem; }
+
+.id-card-back[data-layout="split"] .card-accent-shape{ background: var(--t-bg); }
+.id-card-back[data-layout="split"]{ background: var(--t-bg); }
+.id-card-back[data-layout="split"] .card-contact-list,
+.id-card-back[data-layout="split"] .card-back-footer{ display: none; }

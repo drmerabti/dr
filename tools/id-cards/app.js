@@ -37,31 +37,8 @@
      QR is shown on every theme's back — it does not depend on the theme.
      THEMES[0] is the default theme shown when the tool first loads. */
   const THEMES = [
-    { id: 1, name: 'القوس الأزرق', layout: 'curve', rowStyle: 'label', accent: '#1B3A6B', onAccent: '#fff', text: '#1E2F40', bg: '#fff', gradient: ['#3FA9F5', '#1B3A6B'] },
-    { id: 2, name: 'القوس الزمردي', layout: 'curve', rowStyle: 'label', accent: '#0E9F6E', onAccent: '#fff', text: '#0B3B2C', bg: '#fff', gradient: ['#4FD8A4', '#0E9F6E'] },
-    { id: 3, name: 'القوس التركوازي بأيقونات', layout: 'curve', rowStyle: 'icons', accent: '#16181B', onAccent: '#fff', text: '#1E2F40', bg: '#fff', gradient: ['#4FCBD1', '#16181B'] },
-    { id: 4, name: 'قوس الجبال الزرقاء', layout: 'curve', rowStyle: 'icons', accent: '#1E88C7', onAccent: '#fff', text: '#0B2C40', bg: '#fff', gradient: ['#6EC6F2', '#1E88C7'] },
-    { id: 5, name: 'قوس الكريستال التركوازي', layout: 'curve', rowStyle: 'icons', accent: '#0E5C63', onAccent: '#fff', text: '#0B3B37', bg: '#fff', gradient: ['#7DE0E6', '#0E5C63'] },
-    { id: 6, name: 'الحرم الجامعي — كهرماني', layout: 'campus', rowStyle: 'label', accent: '#F5820C', onAccent: '#fff', text: '#241A12', bg: '#fff', gradient: ['#FFC94A', '#F5820C'] },
-    { id: 7, name: 'الحرم الجامعي — أزرق', layout: 'campus', rowStyle: 'label', accent: '#0F6FC5', onAccent: '#fff', text: '#14283D', bg: '#fff', gradient: ['#5FB2F0', '#0F6FC5'] },
-    { id: 8, name: 'نقشة المانْدالا', layout: 'curve', rowStyle: 'icons', accent: '#1a1a1c', onAccent: '#fff', text: '#1a1a1c', bg: '#fff', pattern: 'mandala' },
-    { id: 9, name: 'نقشة الأوراق الأنيقة', layout: 'curve', rowStyle: 'icons', accent: '#8A8478', onAccent: '#fff', text: '#3a352c', bg: '#fff', pattern: 'leaf' },
-    { id: 10, name: 'الشبكة التقنية', layout: 'curve', rowStyle: 'icons', accent: '#1F2937', onAccent: '#fff', text: '#1a1f29', bg: '#fff', pattern: 'mesh' },
-    { id: 11, name: 'المكعبات البنفسجية', layout: 'curve', rowStyle: 'icons', accent: '#4C1D95', onAccent: '#fff', text: '#2c1350', bg: '#fff', pattern: 'cubes' },
-    { id: 12, name: 'المونوجرام الداكن', layout: 'curve', rowStyle: 'icons', accent: '#0a0a0a', onAccent: '#fff', text: '#111', bg: '#fff', pattern: 'checker' },
-    { id: 13, name: 'الكريستال الوردي', layout: 'curve', rowStyle: 'icons', accent: '#BE185D', onAccent: '#fff', text: '#3a0f22', bg: '#fff', pattern: 'lowpoly' },
-    { id: 14, name: 'الأشرطة الزرقاء', layout: 'curve', rowStyle: 'icons', accent: '#0EA5E9', onAccent: '#fff', text: '#0c3a52', bg: '#fff', pattern: 'ribbon' },
-    { id: 15, name: 'المثلث الأصفر', layout: 'campus', rowStyle: 'label', accent: '#F5C518', onAccent: '#241a00', text: '#241a00', bg: '#fff', gradient: ['#FFE07A', '#F5C518'] },
-    { id: 16, name: 'الفقاعات الدافئة', layout: 'bubbles', accent: '#F59E0B', onAccent: '#fff', text: '#241A12', bg: '#fff', gradient: ['#F59E0B', '#EF4444'] },
-    { id: 17, name: 'الفقاعات الداكنة', layout: 'bubbles', accent: '#22C1C3', onAccent: '#fff', text: '#EDEDED', bg: '#15181c', gradient: ['#34D399', '#3B82F6'] },
-    { id: 18, name: 'الموجة الحمراء', layout: 'wave', accent: '#E23B3B', onAccent: '#fff', text: '#22252B', bg: '#fff', gradient: ['#E23B3B', '#B91C1C'] },
-    { id: 19, name: 'الموجة الخضراء', layout: 'wave', accent: '#16A34A', onAccent: '#fff', text: '#12331d', bg: '#fff', gradient: ['#4ADE80', '#16A34A'] },
-    { id: 20, name: 'البقعة البنفسجية', layout: 'blob', accent: '#8B5CF6', onAccent: '#fff', text: '#241539', bg: '#fff', gradient: ['#8B5CF6', '#EC4899'] },
-    { id: 21, name: 'البقعة الداكنة', layout: 'blob', accent: '#3a3a42', onAccent: '#EDEDED', text: '#EDEDED', bg: '#1b1c20', gradient: ['#4a4a54', '#1e1f24'] },
-    { id: 22, name: 'الزجاجي الغروب', layout: 'glass', accent: '#3FA9F5', onAccent: '#fff', text: '#22252B', bg: '#fff', gradient: ['#3FA9F5', '#8B5CF6', '#EC4899'] },
-    { id: 23, name: 'الزجاجي الوردي', layout: 'glass', accent: '#EC4899', onAccent: '#fff', text: '#22252B', bg: '#fff', gradient: ['#F59E0B', '#EC4899', '#8B5CF6'] },
-    { id: 24, name: 'الأسود والذهبي', layout: 'luxury', accent: '#D4AF37', onAccent: '#111', text: '#EDEDED', bg: '#0a0a0b', gradient: ['#F2D98A', '#B8860B'] },
-    { id: 25, name: 'الكبسولات المتدرجة', layout: 'pill', accent: '#7C3AED', onAccent: '#fff', text: '#22252B', bg: '#fff', gradient: ['#7C3AED', '#2563EB'] },
+    { id: 1, name: 'Violet Hexagone', layout: 'hex', rowStyle: 'icons', accent: '#390039', onAccent: '#fff', text: '#390039', bg: '#fff', pattern: 'cubes' },
+    { id: 2, name: 'Teal Sombre', layout: 'split', rowStyle: 'icons', accent: '#79CDCF', onAccent: '#232323', text: '#EDEDED', bg: '#303030', gradient: ['#79CDCF', '#303030'] },
   ];
 
   let activeTheme = THEMES[0];
@@ -70,46 +47,17 @@
   /* Front-face content plan per layout (see PATTERNS note above for why
      this stays a small config table instead of 25 bespoke blocks). */
   const FRONT_INFO = {
-    campus: { bigName: true, cornerTag: 'jobTitle', rows: ['fullName', 'jobTitle', 'phone', 'email', 'website'] },
-    curve: { bigName: true, cornerTag: null, rows: ['jobTitle', 'phone', 'email', 'website', 'facebook'] },
-    bubbles: { bigName: true, cornerTag: null, rows: ['jobTitle', 'phone', 'email', 'website', 'facebook'] },
-    wave: { bigName: true, cornerTag: null, rows: ['jobTitle', 'phone', 'email', 'website'] },
-    blob: { bigName: true, cornerTag: null, rows: ['jobTitle', 'phone', 'email', 'website'] },
-    glass: { bigName: true, cornerTag: null, rows: ['jobTitle', 'phone', 'email'] },
-    luxury: { bigName: true, cornerTag: 'jobTitle', rows: ['phone', 'email', 'website'] },
-    pill: { bigName: true, cornerTag: null, rows: ['jobTitle', 'phone', 'email', 'website'] },
+    hex: { bigName: true, cornerTag: 'jobTitle', rows: ['phone', 'email', 'website'] },
+    split: { bigName: true, cornerTag: 'jobTitle', rows: ['phone', 'website', 'facebook'] },
+  };
+  // الحقول اللي يستخدمها كل قالب فعليًا — أي حقل غير مذكور هنا يُقفل تلقائيًا من النموذج عند اختيار هذا القالب
+  const USED_FIELDS = {
+    hex: ['firstName', 'lastName', 'jobTitle', 'phone', 'email', 'website'],
+    split: ['firstName', 'lastName', 'jobTitle', 'phone', 'website', 'facebook'],
   };
 
   /* ================= i18n (Arabic / French / English) ================= */
   const I18N = {
-    ar: {
-      dir: 'rtl',
-      topbarTitle: 'مولّد بطاقات الهوية',
-      lockedTitle: 'سجّل دخولك لاستخدام مولّد بطاقات الهوية',
-      lockedSub: 'هذه الأداة متاحة للمستخدمين المسجّلين فقط.',
-      tabLogin: 'تسجيل الدخول', tabSignup: 'إنشاء حساب',
-      acNamePh: 'الاسم الكامل', acEmailPh: 'البريد الإلكتروني', acPasswordPh: 'كلمة المرور',
-      authOr: 'أو', authGoogleBtn: 'المتابعة عبر Google',
-      toolTitle: 'مولّد بطاقات الهوية',
-      photoCardTitle: 'الصورة الشخصية', removePhotoBtn: 'إزالة الصورة',
-      basicCardTitle: 'البيانات الأساسية',
-      phFirstName: 'الاسم', phLastName: 'اللقب', phJobTitle: 'الوظيفة', phOrg: 'المؤسسة',
-      phPhone: 'رقم الهاتف', phEmail: 'البريد الإلكتروني', phWebsite: 'رابط الموقع', phIdNumber: 'رقم الموظف/العضوية',
-      extraCardTitle: 'بيانات إضافية', optionalTag: '(اختياري)',
-      phDept: 'القسم/الإدارة', phAddress: 'العنوان', phIssueDate: 'تاريخ الإصدار', phExpiryDate: 'تاريخ الانتهاء', phFacebook: 'رابط فيسبوك',
-      phFreeText: 'نص حر (يظهر على حافة الظهر)',
-      downloadPdfBtn: 'تحميل PDF (الوجهين)', downloadImgBtn: 'تحميل صورة (الوجهين)',
-      faceFront: 'الوجه الأول', faceBack: 'الوجه الثاني',
-      cardNamePlaceholder: 'الاسم واللقب',
-      badgeTitleLabel: 'الوظيفة', badgeIdLabel: 'رقم العضوية',
-      labelFullName: 'الاسم الكامل', labelJobTitle: 'الوظيفة', labelPhone: 'الهاتف', labelEmail: 'البريد', labelSite: 'الموقع', labelFacebook: 'فيسبوك',
-      authErr: {
-        'auth/email-already-in-use': 'هذا البريد مستخدم مسبقًا.', 'auth/invalid-email': 'صيغة البريد غير صحيحة.',
-        'auth/weak-password': 'كلمة المرور ضعيفة (6 أحرف على الأقل).', 'auth/wrong-password': 'كلمة المرور غير صحيحة.',
-        'auth/user-not-found': 'لا يوجد حساب بهذا البريد.', 'auth/invalid-credential': 'البريد أو كلمة المرور غير صحيحة.',
-        'auth/popup-closed-by-user': '', default: 'حدث خطأ، حاول مرة أخرى.',
-      },
-    },
     fr: {
       dir: 'ltr',
       topbarTitle: 'Générateur de badges',
@@ -167,8 +115,8 @@
       },
     },
   };
-  let currentLang = localStorage.getItem('site_lang') || 'ar';
-  if (!I18N[currentLang]) currentLang = 'ar';
+  let currentLang = localStorage.getItem('site_lang') || 'fr';
+  if (!I18N[currentLang]) currentLang = 'fr';
 
   function applyLanguage(lang) {
     if (!I18N[lang]) return;
@@ -326,8 +274,40 @@
       const g = th.gradient ? th.gradient.join(',') : th.accent;
       return `position:absolute; inset:0; background: linear-gradient(160deg, ${g});`;
     }
+    if (th.layout === 'hex') {
+      return `position:absolute; inset:0; background:#fff; background-image: linear-gradient(90deg, transparent 55%, ${th.accent} 56%);`;
+    }
+    if (th.layout === 'split') {
+      const g = th.gradient ? th.gradient[0] : th.accent;
+      return `position:absolute; inset:0; background:${th.bg}; background-image: linear-gradient(180deg, transparent 65%, ${g} 66%);`;
+    }
     return `position:absolute; inset:0 55% 0 0; background:${th.accent};`;
   }
+  /* ================= قفل الحقول غير المستخدمة حسب القالب المختار ================= */
+  const ALL_FIELD_INPUTS = {
+    firstName: 'fFirstName', lastName: 'fLastName', jobTitle: 'fJobTitle', org: 'fOrg',
+    phone: 'fPhone', email: 'fEmail', website: 'fWebsite', facebook: 'fFacebook', idNumber: 'fIdNumber',
+  };
+  function applyFieldLock() {
+    const used = USED_FIELDS[activeTheme.layout] || [];
+    Object.entries(ALL_FIELD_INPUTS).forEach(([key, elId]) => {
+      const input = els[elId];
+      if (!input) return;
+      const isUsed = used.includes(key);
+      input.disabled = !isUsed;
+      input.closest('.field-grid') ? input.classList.toggle('field-disabled', !isUsed) : null;
+    });
+  }
+  // القالبان الحاليان لا يستخدمان الصورة الشخصية ولا حقول "بيانات إضافية"
+  // (القسم، العنوان، التواريخ، النص الحر، رقم الموظف) — تُخفى بطاقاتها بالكامل بدل تعطيلها حقلًا حقلًا
+  function hideUnusedFormCards() {
+    const photoCard = els.photoUploadBox && els.photoUploadBox.closest('.form-card');
+    if (photoCard) photoCard.style.display = 'none';
+    const extraCard = els.fDept && els.fDept.closest('.form-card');
+    if (extraCard) extraCard.style.display = 'none';
+    if (els.fIdNumber) { const wrap = els.fIdNumber.closest('.form-card'); if (wrap) els.fIdNumber.style.display = 'none'; }
+  }
+
   function renderThemeFilter() {
     els.themeFilter.innerHTML = THEMES.map((th) => `
       <button type="button" class="theme-swatch-btn ${th.id === activeTheme.id ? 'active' : ''}" data-id="${th.id}"
@@ -339,6 +319,7 @@
       btn.addEventListener('click', () => {
         activeTheme = THEMES.find((t) => t.id === parseInt(btn.getAttribute('data-id'), 10));
         renderThemeFilter();
+        applyFieldLock();
         renderCard();
       });
     });
@@ -606,6 +587,8 @@
   /* ================= Auth state / Init ================= */
   applyLanguage(currentLang);
   renderThemeFilter();
+  hideUnusedFormCards();
+  applyFieldLock();
   renderCard();
 
   if (window.fbAuth) {
