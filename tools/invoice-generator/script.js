@@ -121,7 +121,6 @@
     previewNotesWrap: $("#previewNotesWrap"),
     previewNotes: $("#previewNotes"),
 
-    newInvoiceBtn: $("#newInvoiceBtn"),
     saveBtn: $("#saveBtn"),
     typeFactureBtn: $("#typeFactureBtn"),
     typeProformaBtn: $("#typeProformaBtn"),
@@ -383,11 +382,6 @@
       // storage full — skip archiving silently
     }
   }
-
-  els.newInvoiceBtn.addEventListener("click", () => {
-    archiveCurrentInvoice();
-    resetState({ assignNewNumber: true });
-  });
 
   let currentUser = null;
   let authReadyResolve;
@@ -981,7 +975,7 @@
         const tr = document.createElement("tr");
         tr.innerHTML = `
           <td class="inv-num-col">${rowNum}</td>
-          <td>${escapeHtml(item.article) || "—"}</td>
+          <td><bdi>${escapeHtml(item.article) || "—"}</bdi></td>
           <td>${qty}</td>
           <td>${formatMoney(price)}</td>
           <td>${formatMoney(qty * price)}</td>
@@ -1002,7 +996,7 @@
 
     // Notes
     if (state.notes && state.notes.trim()) {
-      els.previewNotes.textContent = state.notes;
+      els.previewNotes.innerHTML = `<bdi>${escapeAttr(state.notes)}</bdi>`;
       els.previewNotesWrap.hidden = false;
     } else {
       els.previewNotesWrap.hidden = true;
