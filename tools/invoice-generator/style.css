@@ -191,6 +191,14 @@ button, input, textarea{ font-family: inherit; }
 .saved-invoice-row{
   display: flex; align-items: center; justify-content: space-between; gap: 10px;
   border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 14px;
+  background: var(--card);
+  box-shadow: 0 2px 6px rgba(21,36,49,.06);
+  transition: box-shadow .15s ease, transform .15s ease, border-color .15s ease;
+}
+.saved-invoice-row:hover{
+  box-shadow: 0 6px 16px rgba(21,36,49,.12);
+  transform: translateY(-1px);
+  border-color: var(--blue);
 }
 .saved-invoice-info{ font-size: 13px; }
 .saved-invoice-info .num{ font-weight: 800; color: var(--text); }
@@ -904,6 +912,7 @@ html[dir="rtl"] .inv-table th:nth-child(4){ text-align: left; }
 
 .inv-signature{ text-align: right; position: relative; }
 html[dir="rtl"] .inv-signature{ text-align: left; }
+#removeSignatureBtn{ top: 30px; }
 
 .inv-signature-label{
   font-size: 11px;

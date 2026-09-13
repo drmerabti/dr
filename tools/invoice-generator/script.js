@@ -389,8 +389,51 @@
     resetState({ assignNewNumber: true });
   });
 
-  els.saveBtn.addEventListener("click", () => {
+  let currentUser = null;
+  const authWraps = [document.getElementById("authWrap"), document.getElementById("authWrapList")].filter(Boolean);
+
+  function renderAuthWraps() {
+    authWraps.forEach((wrap) => {
+      wrap.innerHTML = currentUser
+        ? `<span class="auth-avatar">${(currentUser.displayName || currentUser.email || "?")[0].toUpperCase()}</span>`
+        : `<button type="button" class="tbtn" id="__loginPrompt_${wrap.id}">Sign in</button>`;
+    });
+    authWraps.forEach((wrap) => {
+      const btn = wrap.querySelector("button");
+      if (btn) btn.addEventListener("click", () => { window.location.href = "../../index.html"; });
+    });
+  }
+
+  if (window.fbAuth) {
+    window.fbAuth.onAuthStateChanged((user) => {
+      currentUser = user;
+      renderAuthWraps();
+    });
+  } else {
+    renderAuthWraps();
+  }
+
+  async function saveInvoiceToAccount() {
+    if (!currentUser || !window.firebase) return false;
+    try {
+      await firebase.firestore().collection("invoices").add({
+        ...serializeState(),
+        owner: currentUser.uid,
+        savedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      });
+      return true;
+    } catch (e) {
+      console.error("Cloud save failed:", e);
+      return false;
+    }
+  }
+
+  els.saveBtn.addEventListener("click", async () => {
     saveDraft();
+    if (currentUser) {
+      const ok = await saveInvoiceToAccount();
+      if (!ok) alert("Could not save to your account — check your connection and try again.");
+    }
     flashSavedBadge();
   });
 
@@ -447,16 +490,38 @@
     $("#editorScreen").classList.remove("hidden");
   }
 
-  function renderInvoiceList() {
+  let currentInvoiceList = [];
+
+  async function fetchCloudInvoices() {
+    if (!currentUser || !window.firebase) return [];
+    try {
+      const snap = await firebase.firestore().collection("invoices").where("owner", "==", currentUser.uid).get();
+      return snap.docs.map((d) => ({ ...d.data(), _source: "cloud", _cloudId: d.id }));
+    } catch (e) {
+      console.error("Fetching cloud invoices failed:", e);
+      return [];
+    }
+  }
+
+  async function renderInvoiceList() {
     const dict = I18N[currentLang] || I18N.en;
-    const history = getHistory();
-    if (history.length === 0) {
+    const local = getHistory().map((inv, idx) => ({ ...inv, _source: "local", _localIdx: idx }));
+    const cloud = await fetchCloudInvoices();
+    currentInvoiceList = [...local, ...cloud].sort((a, b) => {
+      const ta = a._source === "cloud" ? (a.savedAt && a.savedAt.toMillis ? a.savedAt.toMillis() : 0) : new Date(a.archivedAt || 0).getTime();
+      const tb = b._source === "cloud" ? (b.savedAt && b.savedAt.toMillis ? b.savedAt.toMillis() : 0) : new Date(b.archivedAt || 0).getTime();
+      return tb - ta;
+    });
+
+    if (currentInvoiceList.length === 0) {
       els.invoiceListBody.innerHTML = `<div class="invoice-list-empty">${dict.noInvoicesYet}</div>`;
       return;
     }
-    els.invoiceListBody.innerHTML = history.map((inv, idx) => {
-      const d = new Date(inv.archivedAt);
-      const dateStr = isNaN(d) ? "" : d.toLocaleString();
+    els.invoiceListBody.innerHTML = currentInvoiceList.map((inv, idx) => {
+      const rawDate = inv._source === "cloud"
+        ? (inv.savedAt && inv.savedAt.toDate ? inv.savedAt.toDate() : null)
+        : new Date(inv.archivedAt);
+      const dateStr = rawDate && !isNaN(rawDate) ? rawDate.toLocaleString() : "";
       return `
         <div class="saved-invoice-row" data-idx="${idx}">
           <div class="saved-invoice-info">
@@ -536,18 +601,27 @@
     }
     showEditorScreen();
   });
-  els.invoiceListBody.addEventListener("click", (e) => {
+  els.invoiceListBody.addEventListener("click", async (e) => {
     const btn = e.target.closest("button[data-action]");
     if (!btn) return;
     const row = btn.closest(".saved-invoice-row");
     const idx = parseInt(row.dataset.idx, 10);
-    const history = getHistory();
-    const entry = history[idx];
+    const entry = currentInvoiceList[idx];
     if (!entry) return;
 
     if (btn.dataset.action === "delete") {
-      history.splice(idx, 1);
-      setHistory(history);
+      if (entry._source === "local") {
+        const history = getHistory();
+        history.splice(entry._localIdx, 1);
+        setHistory(history);
+      } else {
+        try {
+          await firebase.firestore().collection("invoices").doc(entry._cloudId).delete();
+        } catch (err) {
+          alert("Could not delete from your account — check your connection and try again.");
+          return;
+        }
+      }
       renderInvoiceList();
       return;
     }
@@ -588,7 +662,7 @@
       row.dataset.id = c.id;
       row.innerHTML = `
         <span class="contact-icon">${CONTACT_ICONS[c.type] || CONTACT_ICONS.other}</span>
-        <input type="text" class="input contact-value-input" value="${escapeAttr(c.value)}" placeholder="${dict["contact" + capitalize(c.type) + "Placeholder"] || ""}">
+        <input type="text" class="input contact-value-input" ${c.type === "phone" || c.type === "website" ? 'dir="ltr"' : ""} value="${escapeAttr(c.value)}" placeholder="${dict["contact" + capitalize(c.type) + "Placeholder"] || ""}">
         <button type="button" class="contact-remove" title="Remove">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
         </button>
@@ -956,10 +1030,7 @@
     if (logoHadBorder) logoWrap.style.visibility = "hidden";
 
     try {
-      // foreignObjectRendering uses the browser's own SVG/text engine instead of
-      // html2canvas's manual glyph drawing — noticeably more reliable for complex
-      // scripts like Arabic (proper letter joining) than the default renderer.
-      return await html2canvas(sheet, { scale: 2, backgroundColor: "#ffffff", useCORS: true, foreignObjectRendering: true });
+      return await html2canvas(sheet, { scale: 2, backgroundColor: "#ffffff", useCORS: true });
     } finally {
       hideEls.forEach((el) => { el.style.display = el.dataset.prevDisplay || ""; });
       if (logoHadBorder) logoWrap.style.visibility = "";
