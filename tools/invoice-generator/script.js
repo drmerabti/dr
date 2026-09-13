@@ -929,7 +929,7 @@
     const dict = I18N[currentLang] || I18N.en;
     els.previewDocTypeHeading.textContent = state.docType === "proforma"
       ? dict.docHeadingProforma : dict.docHeadingFacture;
-    els.previewDocTypeRef.textContent = (dict.reference || "Reference") + ": " + (state.invoiceNumber || "—");
+    els.previewDocTypeRef.textContent = state.invoiceNumber || "—";
   }
 
   function renderInvoiceDensity() {

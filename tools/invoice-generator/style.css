@@ -853,12 +853,12 @@ html[dir="rtl"] .inv-table thead th{ text-align:right; }
 .inv-table th:nth-child(3),
 .inv-table th:nth-child(4){ text-align: right; }
 
-html[dir="rtl"] .inv-table td:nth-child(2),
 html[dir="rtl"] .inv-table td:nth-child(3),
 html[dir="rtl"] .inv-table td:nth-child(4),
-html[dir="rtl"] .inv-table th:nth-child(2),
+html[dir="rtl"] .inv-table td:nth-child(5),
 html[dir="rtl"] .inv-table th:nth-child(3),
-html[dir="rtl"] .inv-table th:nth-child(4){ text-align: left; }
+html[dir="rtl"] .inv-table th:nth-child(4),
+html[dir="rtl"] .inv-table th:nth-child(5){ text-align: left; }
 
 .inv-empty-row td{
   color: var(--text-faint);
