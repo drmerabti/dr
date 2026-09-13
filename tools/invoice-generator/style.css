@@ -752,7 +752,6 @@ html[dir="rtl"] .input-tva{ text-align: left; }
 .inv-logo-placeholder{
   font-size: 11px;
   font-weight: 800;
-  letter-spacing: 1px;
   color: var(--text-faint);
   text-align:center;
 }
@@ -767,7 +766,6 @@ html[dir="rtl"] .inv-meta{ text-align: left; align-items: flex-start; }
   font-weight: 700;
   color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.4px;
   margin-inline-end: 6px;
 }
 
@@ -783,7 +781,6 @@ html[dir="rtl"] .inv-meta{ text-align: left; align-items: flex-start; }
 .inv-doctype-heading{
   font-size: var(--heading-size, 32px);
   font-weight: 800;
-  letter-spacing: 3px;
   color: var(--blue-dark);
 }
 .inv-doctype-ref{
@@ -797,7 +794,6 @@ html[dir="rtl"] .inv-meta{ text-align: left; align-items: flex-start; }
   font-weight: 700;
   color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.4px;
   margin-bottom: 4px;
 }
 
@@ -896,7 +892,6 @@ html[dir="rtl"] .inv-table th:nth-child(4){ text-align: left; }
   font-weight: 700;
   color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.4px;
   margin-bottom: 4px;
 }
 
@@ -919,7 +914,6 @@ html[dir="rtl"] .inv-signature{ text-align: left; }
   font-weight: 700;
   color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.4px;
   margin-bottom: 8px;
 }
 
