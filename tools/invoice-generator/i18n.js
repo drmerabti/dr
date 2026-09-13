@@ -178,7 +178,7 @@ const I18N = {
     customer: "الزبون",
     customerPlaceholder: "اسم الزبون",
     invoiceItems: "عناصر الفاتورة",
-    itemNumber: "N°",
+    itemNumber: "رقم",
     article: "المادة",
     quantity: "الكمية",
     unitPrice: "سعر الوحدة",
