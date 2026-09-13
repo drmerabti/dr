@@ -659,11 +659,24 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
   els.clearCvBtn.addEventListener('click', clearCvFields);
 
   /* ================= Template picker ================= */
+  function swatchBodyLines(tpl) {
+    if (tpl === 'classic' || tpl === 'gold') {
+      const sideColor = 'rgba(255,255,255,.55)';
+      const mainColor = tpl === 'gold' ? '#B9C2CB' : '#AEB9C2';
+      const sideLines = [44, 54, 64].map((top) => `<span class="line" style="top:${top}px;inset-inline-start:6px;width:16px;background:${sideColor};"></span>`).join('');
+      const mainLines = [10, 18, 26, 38, 46, 54].map((top, i) => `<span class="line" style="top:${top}px;inset-inline-start:36px;width:${[42, 36, 40, 30, 34, 26][i]}px;background:${mainColor};"></span>`).join('');
+      return sideLines + mainLines;
+    }
+    const color = tpl === 'rose' ? '#C9B9AE' : '#C7D0D8';
+    const startTop = tpl === 'rose' ? 30 : 36;
+    return [0, 1, 2, 3, 4].map((i) => `<span class="line" style="top:${startTop + i * 10}px;inset-inline-start:8px;width:${[52, 44, 48, 38, 46][i]}px;background:${color};"></span>`).join('');
+  }
+
   function renderTemplateSwatches() {
     if (!activeCv) return;
     els.templateSwatches.innerHTML = TEMPLATES.map((tpl) => `
       <button type="button" class="template-swatch template-swatch-${tpl} ${activeCv.template === tpl ? 'active' : ''}" data-tpl="${tpl}">
-        <span class="template-swatch-preview"></span>
+        <span class="template-swatch-preview">${swatchBodyLines(tpl)}</span>
         <span class="template-swatch-label">${t('templateNames')[tpl]}</span>
       </button>`).join('');
     els.templateSwatches.querySelectorAll('.template-swatch').forEach((btn) => {
