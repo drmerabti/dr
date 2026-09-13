@@ -695,11 +695,19 @@ html[dir="rtl"] .input-tva{ text-align: left; }
   padding: var(--sheet-pad);
 }
 .invoice-sheet.density-tight{
-  --sheet-pad: 20px;
-  --section-gap: 8px;
-  --row-pad-v: 4px;
-  --row-font: 11px;
-  --heading-size: 22px;
+  --sheet-pad: 16px;
+  --section-gap: 6px;
+  --row-pad-v: 3px;
+  --row-font: 10.5px;
+  --heading-size: 18px;
+  padding: var(--sheet-pad);
+}
+.invoice-sheet.density-extra-tight{
+  --sheet-pad: 12px;
+  --section-gap: 4px;
+  --row-pad-v: 2px;
+  --row-font: 9.5px;
+  --heading-size: 15px;
   padding: var(--sheet-pad);
 }
 
@@ -708,7 +716,7 @@ html[dir="rtl"] .input-tva{ text-align: left; }
   align-items:flex-start;
   justify-content: space-between;
   gap: 16px;
-  margin-bottom: 22px;
+  margin-bottom: var(--section-gap, 22px);
 }
 
 .inv-logo-wrap{
@@ -834,6 +842,7 @@ html[dir="rtl"] .inv-table thead th{ text-align:right; }
   color: var(--text);
   border-bottom: 1px solid var(--border-soft);
 }
+.inv-num-col{ width: 24px; text-align: center !important; color: var(--text-faint); }
 
 .inv-table tbody tr:last-child td{ border-bottom: none; }
 

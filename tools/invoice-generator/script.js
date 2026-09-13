@@ -935,8 +935,9 @@
   function renderInvoiceDensity() {
     const sheet = document.getElementById("invoiceSheet");
     const count = state.items.length;
-    sheet.classList.remove("density-compact", "density-tight");
-    if (count >= 10) sheet.classList.add("density-tight");
+    sheet.classList.remove("density-compact", "density-tight", "density-extra-tight");
+    if (count >= 13) sheet.classList.add("density-extra-tight");
+    else if (count >= 9) sheet.classList.add("density-tight");
     else if (count >= 6) sheet.classList.add("density-compact");
   }
 
@@ -968,15 +969,18 @@
     if (validItems.length === 0) {
       const tr = document.createElement("tr");
       tr.className = "inv-empty-row";
-      tr.innerHTML = `<td colspan="4">—</td>`;
+      tr.innerHTML = `<td colspan="5">—</td>`;
       els.previewItemsBody.appendChild(tr);
     } else {
+      let rowNum = 0;
       state.items.forEach((item) => {
         if (!item.article && clampNonNegative(item.qty) === 0 && clampNonNegative(item.price) === 0) return;
+        rowNum++;
         const qty = clampNonNegative(item.qty);
         const price = clampNonNegative(item.price);
         const tr = document.createElement("tr");
         tr.innerHTML = `
+          <td class="inv-num-col">${rowNum}</td>
           <td>${escapeHtml(item.article) || "—"}</td>
           <td>${qty}</td>
           <td>${formatMoney(price)}</td>
