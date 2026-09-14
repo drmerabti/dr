@@ -1022,7 +1022,49 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
     return `<div class="cv-block"><h4>${heading}</h4>${metaLine ? `<p class="entry-meta">${escapeHtml(metaLine)}</p>` : ''}${sec.content ? `<p>${escapeHtml(sec.content)}</p>` : ''}</div>`;
   }
 
-  /* ================= PDF Export ================= */
+  /* ================= PDF Export (paid per download via Lemon Squeezy) ================= */
+  const LEMONSQUEEZY_CV_CHECKOUT = 'https://merabti.lemonsqueezy.com/checkout/buy/2126699';
+
+  function startPaidDownload() {
+    if (!currentUser) {
+      alert('سجّل دخولك أولاً لتتمكن من تحميل السيرة الذاتية.');
+      return;
+    }
+    if (!activeCvId) return;
+    // The full-page redirect to Lemon Squeezy and back loses all in-memory state
+    // (activeCv/activeCvId reset to null on reload) — persist which CV to reopen.
+    try { localStorage.setItem('cvBuilder:pendingDownloadId', activeCvId); } catch (e) { /* ignore */ }
+    const url = `${LEMONSQUEEZY_CV_CHECKOUT}?checkout[custom][user_id]=${encodeURIComponent(currentUser.uid)}`;
+    window.location.href = url;
+  }
+
+  async function checkForRecentPaidDownload() {
+    if (!currentUser || !window.fbDb) return false;
+    try {
+      // Payment confirmation (webhook) can lag a few seconds behind the redirect —
+      // poll briefly rather than giving up on the first empty check.
+      for (let attempt = 0; attempt < 6; attempt++) {
+        const snap = await window.fbDb
+          .collection('users').doc(currentUser.uid)
+          .collection('cvPurchases')
+          .orderBy('createdAt', 'desc')
+          .limit(1)
+          .get();
+        if (!snap.empty) {
+          const purchase = snap.docs[0].data();
+          const purchasedAt = purchase.createdAt && purchase.createdAt.toMillis ? purchase.createdAt.toMillis() : 0;
+          // Only treat it as "just paid" if the purchase happened in the last 10 minutes —
+          // avoids re-triggering a free download from an old purchase record.
+          if (Date.now() - purchasedAt < 10 * 60 * 1000) return true;
+        }
+        await new Promise((r) => setTimeout(r, 1500));
+      }
+    } catch (e) {
+      console.error('checkForRecentPaidDownload failed:', e);
+    }
+    return false;
+  }
+
   async function exportPdf() {
     if (!activeCv) return;
     const original = els.downloadPdfText.textContent;
@@ -1052,10 +1094,42 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
     els.downloadPdfBtn.disabled = false;
     els.downloadPdfText.textContent = original;
   }
-  els.downloadPdfBtn.addEventListener('click', exportPdf);
+  els.downloadPdfBtn.addEventListener('click', startPaidDownload);
+
+  // Returning from a successful Lemon Squeezy payment (set the product's
+  // "Button link" in the Lemon Squeezy dashboard to this page with ?paid=1).
+  if (new URLSearchParams(window.location.search).get('paid') === '1') {
+    window.addEventListener('load', async () => {
+      const originalLabel = els.downloadPdfText.textContent;
+      els.downloadPdfText.textContent = 'جارٍ التحقق من الدفع...';
+      els.downloadPdfBtn.disabled = true;
+      await authReady; // currentUser is only reliably set after the first real auth check
+      const paid = await checkForRecentPaidDownload();
+      els.downloadPdfBtn.disabled = false;
+      els.downloadPdfText.textContent = originalLabel;
+      if (paid) {
+        let pendingId = null;
+        try { pendingId = localStorage.getItem('cvBuilder:pendingDownloadId'); } catch (e) { /* ignore */ }
+        try { localStorage.removeItem('cvBuilder:pendingDownloadId'); } catch (e) { /* ignore */ }
+        if (pendingId) {
+          await openEditorThenExport(pendingId);
+        } else {
+          alert('تم تأكيد الدفع، لكن تعذّر تحديد السيرة الذاتية المطلوبة — افتحها يدويًا واضغط تحميل مرة أخرى.');
+        }
+      } else {
+        alert('لم نتمكن من تأكيد الدفع بعد. إذا خُصم المبلغ من حسابك، انتظر دقيقة وأعد المحاولة.');
+      }
+      // Clean the URL so a page refresh doesn't re-trigger this check.
+      window.history.replaceState({}, '', window.location.pathname);
+    });
+  }
 
   /* ================= Auth state / Init ================= */
   applyLanguage();
+
+  let authReadyResolve;
+  const authReady = new Promise((resolve) => { authReadyResolve = resolve; });
+  let authFirstFired = false;
 
   if (window.fbAuth) {
     window.fbAuth.onAuthStateChanged(async (fbUser) => {
@@ -1072,8 +1146,10 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
         activeCv = null; activeCvId = null;
         showScreen('lockedScreen');
       }
+      if (!authFirstFired) { authFirstFired = true; authReadyResolve(); }
     });
   } else {
     showScreen('lockedScreen');
+    authReadyResolve();
   }
 })();
