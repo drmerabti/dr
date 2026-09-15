@@ -58,14 +58,8 @@ button{ font-family: inherit; }
 html[dir="rtl"] #backBtn svg, html[dir="rtl"] #editorBackBtn svg{ transform: scaleX(-1); }
 .topbar-title{ font-size: 1.05rem; font-weight: 800; }
 .topbar-actions{ display:flex; align-items:center; gap: 10px; margin-inline-start: auto; flex-wrap: wrap; }
-
-.save-indicator{
-  font-size: .78rem; color: var(--ink-soft); font-weight: 600;
-  background: var(--card-bg); padding: 6px 12px; border-radius: 999px;
-  border: 1px solid var(--line);
-}
-.save-indicator.saving{ color: var(--accent); }
-.save-indicator.saved{ color: #2E8A5B; }
+.topbar-editor-actions{ display:flex; align-items:center; gap: 8px; }
+.btn-sm{ padding: 8px 14px; font-size: .78rem; }
 
 .lang-switch{ display:flex; gap:4px; background: var(--card-bg); padding:4px; border-radius: 999px; border:1px solid var(--line); }
 .lang-btn{ border:none; background: transparent; color: var(--ink-soft); font-size: 13px; font-weight: 700; padding: 8px 14px; border-radius: 999px; cursor:pointer; }
@@ -629,18 +623,6 @@ html[dir="rtl"] .cv-sidebar-sections h4{ letter-spacing: 0; }
 /* ============================================================
    Saved requests list + editor navigation
 ============================================================ */
-.editor-topbar-row{ display: flex; justify-content: space-between; align-items: center; max-width: 900px; margin: 10px auto 0; padding: 0 4px; }
-.back-to-list-btn, .clear-all-btn{
-  display: flex; align-items: center; gap: 6px;
-  border: 1px solid var(--line); background: #fff; color: var(--ink-soft);
-  font-family: inherit; font-size: .82rem; font-weight: 700;
-  padding: 8px 14px; border-radius: 999px; cursor: pointer;
-}
-.back-to-list-btn svg, .clear-all-btn svg{ width: 15px; height: 15px; }
-.back-to-list-btn:hover{ border-color: var(--accent); color: var(--accent); }
-.clear-all-btn:hover{ border-color: #C0392B; color: #C0392B; }
-
-.save-indicator{ text-align: center; font-size: .76rem; color: var(--ink-soft); margin: 0 0 8px; min-height: 1em; }
 
 .list-actions-row{ display: flex; justify-content: center; margin: 10px 0 26px; }
 .list-actions-row .btn{ display: flex; align-items: center; gap: 8px; }

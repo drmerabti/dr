@@ -32,6 +32,7 @@
       listTitle: 'طلباتي', newRequestBtnText: 'إنشاء طلب', backToListText: 'طلباتي',
       clearAllText: 'تفريغ الخانات', emptyListHint: 'ما عندك طلبات محفوظة بعد.',
       untitledRequest: 'طلب بدون عنوان', savingStatus: 'جارٍ الحفظ…', savedStatus: 'تم الحفظ',
+      saveBtnText: 'حفظ', notLoggedInAlert: 'سجّل الدخول أولاً.', saveErrorAlert: 'فشل الحفظ.', downloadErrorAlert: 'فشل تحميل PDF.',
       confirmClear: 'هل تريد تفريغ كل الخانات؟ لن يتأثر الطلب المحفوظ سابقًا.',
       confirmDelete: 'هل تريد حذف هذا الطلب نهائيًا؟',
     },
@@ -60,6 +61,7 @@
       listTitle: 'My Requests', newRequestBtnText: 'New request', backToListText: 'My requests',
       clearAllText: 'Clear fields', emptyListHint: "You don't have any saved requests yet.",
       untitledRequest: 'Untitled request', savingStatus: 'Saving…', savedStatus: 'Saved',
+      saveBtnText: 'Save', notLoggedInAlert: 'Please sign in first.', saveErrorAlert: 'Save failed.', downloadErrorAlert: 'PDF download failed.',
       confirmClear: 'Clear all fields? Previously saved requests are not affected.',
       confirmDelete: 'Delete this request permanently?',
     },
@@ -88,6 +90,7 @@
       listTitle: 'Mes demandes', newRequestBtnText: 'Créer une demande', backToListText: 'Mes demandes',
       clearAllText: 'Vider les champs', emptyListHint: "Vous n'avez pas encore de demandes enregistrées.",
       untitledRequest: 'Demande sans titre', savingStatus: 'Enregistrement…', savedStatus: 'Enregistré',
+      saveBtnText: 'Enregistrer', notLoggedInAlert: "Veuillez vous connecter d'abord.", saveErrorAlert: "L'enregistrement a échoué.", downloadErrorAlert: 'Le téléchargement du PDF a échoué.',
       confirmClear: 'Vider tous les champs ? Les demandes déjà enregistrées ne seront pas affectées.',
       confirmDelete: 'Supprimer définitivement cette demande ?',
     },
@@ -108,10 +111,11 @@
     langBtns: document.querySelectorAll('.lang-btn'), usageIndicator: $('usageIndicator'),
     fontSectionLabel: $('fontSectionLabel'), fontFilter: $('fontFilter'),
     loadingScreen: $('loadingScreen'), lockedScreen: $('lockedScreen'), listScreen: $('listScreen'), editorScreen: $('editorScreen'),
+    backBtn: $('backBtn'),
     listTitle: $('listTitle'), newRequestBtn: $('newRequestBtn'), newRequestBtnText: $('newRequestBtnText'),
     savedRequestsList: $('savedRequestsList'), emptyListHint: $('emptyListHint'),
-    backToListBtn: $('backToListBtn'), backToListText: $('backToListText'),
-    clearAllBtn: $('clearAllBtn'), clearAllText: $('clearAllText'), saveStatusIndicator: $('saveStatusIndicator'),
+    saveBtn: $('saveBtn'), saveBtnText: $('saveBtnText'), topbarEditorActions: $('topbarEditorActions'),
+    clearAllBtn: $('clearAllBtn'), clearAllText: $('clearAllText'),
     lockedTitle: $('lockedTitle'), lockedSub: $('lockedSub'),
     tabLogin: $('tabLogin'), tabSignup: $('tabSignup'), authCardForm: $('authCardForm'), authCardError: $('authCardError'),
     acName: $('acName'), acEmail: $('acEmail'), acPassword: $('acPassword'), acSubmitBtn: $('acSubmitBtn'), acGoogleBtn: $('acGoogleBtn'),
@@ -166,6 +170,7 @@
   function showScreen(name) {
     [els.loadingScreen, els.lockedScreen, els.listScreen, els.editorScreen].forEach((s) => s.classList.add('hidden'));
     els[name].classList.remove('hidden');
+    els.topbarEditorActions.classList.toggle('hidden', name !== 'editorScreen');
   }
 
   /* ================= Auth ================= */
@@ -219,7 +224,6 @@
       fRequestSubject: els.fRequestSubject.value, bodyText: els.reqBody.innerText, bodyIsOwned,
     };
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(draft)); } catch (e) { /* ignore */ }
-    if (!els.editorScreen.classList.contains('hidden')) scheduleCloudSave();
   }
   function loadDraft() {
     try { const raw = localStorage.getItem(STORAGE_KEY); return raw ? JSON.parse(raw) : null; }
@@ -236,8 +240,6 @@
   function clearLastOpenId() {
     try { localStorage.removeItem(LAST_OPEN_KEY); } catch (e) { /* ignore */ }
   }
-  let cloudSaveTimer = null;
-
   function requestsCollectionRef() {
     const user = window.fbAuth && window.fbAuth.currentUser;
     if (!user || !window.firebase || !firebase.firestore) return null;
@@ -277,15 +279,9 @@
     return t('untitledRequest');
   }
 
-  function scheduleCloudSave() {
-    if (cloudSaveTimer) clearTimeout(cloudSaveTimer);
-    els.saveStatusIndicator.textContent = t('savingStatus');
-    cloudSaveTimer = setTimeout(saveToCloud, 1200);
-  }
-
   async function saveToCloud() {
     const col = requestsCollectionRef();
-    if (!col) return;
+    if (!col) { alert(t('notLoggedInAlert')); return false; }
     const state = collectFullState();
     const payload = Object.assign({}, state, {
       title: deriveTitle(),
@@ -298,10 +294,11 @@
         const docRef = await col.add(Object.assign({ createdAt: firebase.firestore.FieldValue.serverTimestamp() }, payload));
         setCurrentRequestId(docRef.id);
       }
-      els.saveStatusIndicator.textContent = t('savedStatus');
+      return true;
     } catch (e) {
       console.error('[adminreq] saveToCloud failed:', e);
-      els.saveStatusIndicator.textContent = 'خطأ بالحفظ: ' + (e && e.message ? e.message : e);
+      alert(t('saveErrorAlert') + '\n(' + (e && e.message ? e.message : e) + ')');
+      return false;
     }
   }
 
@@ -321,23 +318,29 @@
     currentRequestId = null;
     clearFormFields();
     showScreen('editorScreen');
-    await saveToCloud(); // create the entry immediately so it shows in "طلباتي" right away
   }
   els.newRequestBtn.addEventListener('click', openNewRequest);
 
-  async function flushPendingSave() {
-    if (cloudSaveTimer) {
-      clearTimeout(cloudSaveTimer);
-      cloudSaveTimer = null;
-      await saveToCloud();
+  els.backBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (!els.editorScreen.classList.contains('hidden')) {
+      clearLastOpenId();
+      showScreen('listScreen');
+      renderSavedRequestsList();
+    } else {
+      window.location.href = '../../tools.html';
     }
-  }
+  });
 
-  els.backToListBtn.addEventListener('click', async () => {
-    await flushPendingSave();
-    clearLastOpenId();
-    showScreen('listScreen');
-    renderSavedRequestsList();
+  els.saveBtn.addEventListener('click', async () => {
+    els.saveBtn.disabled = true;
+    const original = els.saveBtnText.textContent;
+    const ok = await saveToCloud();
+    if (ok) {
+      els.saveBtnText.textContent = t('savedStatus');
+      setTimeout(() => { els.saveBtnText.textContent = original; }, 1500);
+    }
+    els.saveBtn.disabled = false;
   });
 
   els.clearAllBtn.addEventListener('click', () => {
@@ -380,7 +383,6 @@
           if (e.target.closest('.saved-request-delete')) return;
           setCurrentRequestId(doc.id);
           applyState(data);
-          els.saveStatusIndicator.textContent = '';
           showScreen('editorScreen');
         });
         card.querySelector('.saved-request-delete').addEventListener('click', async (e) => {
@@ -581,7 +583,10 @@
       const pdfH = (imgProps.height * pdfW) / imgProps.width;
       pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, pdfW, Math.min(pdfH, 297));
       pdf.save('admin-request.pdf');
-    } catch (e) { alert('---'); }
+    } catch (e) {
+      console.error('[adminreq] PDF export failed:', e);
+      alert(t('downloadErrorAlert') + '\n(' + (e && e.message ? e.message : e) + ')');
+    }
     els.downloadPdfBtn.disabled = false; els.downloadBtnText.textContent = original;
   });
 
@@ -618,7 +623,7 @@
     document.getElementById('reqSignatureCaption').textContent = dict.signatureCaption;
     els.listTitle.textContent = dict.listTitle;
     els.newRequestBtnText.textContent = dict.newRequestBtnText;
-    els.backToListText.textContent = dict.backToListText;
+    els.saveBtnText.textContent = dict.saveBtnText;
     els.clearAllText.textContent = dict.clearAllText;
     els.emptyListHint.textContent = dict.emptyListHint;
     els.langBtns.forEach((b) => b.classList.toggle('active', b.getAttribute('data-lang') === lang));
@@ -669,7 +674,6 @@
       if (!doc.exists) { clearLastOpenId(); return false; }
       currentRequestId = lastId;
       applyState(doc.data());
-      els.saveStatusIndicator.textContent = '';
       showScreen('editorScreen');
       return true;
     } catch (e) {
