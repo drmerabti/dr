@@ -225,6 +225,14 @@
       ex.rows = wrap ? +wrap.dataset.rows : 3;
       ex.subtype = $("#tableSubSelect").value;
       ex.headers = Array.from({ length: ex.cols }, () => "");
+      ex.cells = Array.from({ length: ex.rows }, () => Array.from({ length: ex.cols }, () => ""));
+      if (ex.subtype === "variation") {
+        ex.varCols = 3;
+        ex.xVals = ["-∞", "", "+∞"];
+        ex.signs = ["+", "-"];
+        ex.fVals = ["", "", ""];
+        ex.arrows = ["up", "down"];
+      }
     } else if (selectedType === "reading") {
       ex.passage = $("#fldPassage") ? $("#fldPassage").value : "";
     } else if (selectedType === "poetry") {
@@ -281,6 +289,35 @@
     renderTotal();
   }
 
+  function renderVariationTable(ex) {
+    if (!ex.varCols) ex.varCols = 3;
+    if (!ex.xVals) ex.xVals = ["-∞", "", "+∞"];
+    if (!ex.signs) ex.signs = ["+", "-"];
+    if (!ex.fVals) ex.fVals = ["", "", ""];
+    if (!ex.arrows) ex.arrows = ["up", "down"];
+
+    const n = ex.varCols;
+    // Every row must have the SAME number of cells for the columns to line up in the
+    // table grid (label + one cell per x-value + one narrow "gap" cell between each pair).
+    let xRow = `<tr><th>x</th>`;
+    let signRow = `<tr><th>f'(x)</th>`;
+    let fRow = `<tr><th>f(x)</th>`;
+    for (let i = 0; i < n; i++) {
+      xRow += `<td><input type="text" class="var-x-input" data-i="${i}" value="${escapeHtml(ex.xVals[i] || "")}"></td>`;
+      fRow += `<td><input type="text" class="var-f-input" data-i="${i}" value="${escapeHtml(ex.fVals[i] || "")}"></td>`;
+      signRow += `<td class="var-gap-cell"></td>`;
+      if (i < n - 1) {
+        xRow += `<td class="var-gap-cell"></td>`;
+        signRow += `<td><button type="button" class="var-sign-btn" data-i="${i}">${ex.signs[i] || "+"}</button></td>`;
+        const arrow = ex.arrows[i] === "down" ? "↘" : "↗";
+        fRow += `<td class="var-arrow-cell"><button type="button" class="var-arrow-btn" data-i="${i}">${arrow}</button></td>`;
+      }
+    }
+    xRow += "</tr>"; signRow += "</tr>"; fRow += "</tr>";
+
+    return `<table class="exam-table variation-table"><tbody>${xRow}${signRow}${fRow}</tbody></table>`;
+  }
+
   function renderExerciseBody(ex) {
     if (ex.type === "mcq") {
       return `${escapeHtml(ex.question)}` +
@@ -302,8 +339,10 @@
         : t("uploadImage");
       return `${escapeHtml(ex.question)}<div class="img-slot" data-action="upload-img" style="height:150px;">${imgContent}</div>`;
     }
+    if (ex.type === "table" && ex.subtype === "variation") {
+      return `${escapeHtml(ex.question)}${renderVariationTable(ex)}`;
+    }
     if (ex.type === "table") {
-      const cls = ex.subtype === "variation" ? "exam-table variation-table" : "exam-table";
       let thead = "<tr>";
       for (let c = 0; c < ex.cols; c++) {
         thead += `<th><input type="text" class="th-input" data-col="${c}" value="${escapeHtml(ex.headers[c] || "")}"></th>`;
@@ -311,9 +350,11 @@
       thead += "</tr>";
       let tbody = "";
       for (let r = 0; r < ex.rows; r++) {
-        tbody += "<tr>" + Array.from({ length: ex.cols }).map(() => "<td></td>").join("") + "</tr>";
+        tbody += "<tr>" + Array.from({ length: ex.cols }).map((_, c) =>
+          `<td><input type="text" class="td-input" data-row="${r}" data-col="${c}" value="${escapeHtml((ex.cells && ex.cells[r] && ex.cells[r][c]) || "")}"></td>`
+        ).join("") + "</tr>";
       }
-      return `${escapeHtml(ex.question)}<table class="${cls}"><thead>${thead}</thead><tbody>${tbody}</tbody></table>`;
+      return `${escapeHtml(ex.question)}<table class="exam-table"><thead>${thead}</thead><tbody>${tbody}</tbody></table>`;
     }
     if (ex.type === "reading") {
       return `<div class="reading-passage">${escapeHtml(ex.passage)}</div>${escapeHtml(ex.question)}`;
@@ -343,10 +384,39 @@
         });
       }
     }
-    if (ex.type === "table") {
+    if (ex.type === "table" && ex.subtype !== "variation") {
       wrap.querySelectorAll(".th-input").forEach((inp) => {
         inp.addEventListener("input", () => {
           ex.headers[+inp.dataset.col] = inp.value;
+        });
+      });
+      wrap.querySelectorAll(".td-input").forEach((inp) => {
+        inp.addEventListener("input", () => {
+          ex.cells[+inp.dataset.row][+inp.dataset.col] = inp.value;
+        });
+      });
+    }
+    if (ex.type === "table" && ex.subtype === "variation") {
+      wrap.querySelectorAll(".var-x-input").forEach((inp) => {
+        inp.addEventListener("input", () => { ex.xVals[+inp.dataset.i] = inp.value; });
+      });
+      wrap.querySelectorAll(".var-f-input").forEach((inp) => {
+        inp.addEventListener("input", () => { ex.fVals[+inp.dataset.i] = inp.value; });
+      });
+      wrap.querySelectorAll(".var-sign-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const i = +btn.dataset.i;
+          const order = ["+", "-", "0"];
+          const next = order[(order.indexOf(ex.signs[i]) + 1) % order.length];
+          ex.signs[i] = next;
+          renderExercises();
+        });
+      });
+      wrap.querySelectorAll(".var-arrow-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const i = +btn.dataset.i;
+          ex.arrows[i] = ex.arrows[i] === "down" ? "up" : "down";
+          renderExercises();
         });
       });
     }
