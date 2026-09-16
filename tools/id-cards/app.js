@@ -808,12 +808,12 @@ let activeTemplate = 't1';
 
 function getFormData(){
   return {
-    name: ($('fName').value.trim() || 'YOUR NAME'),
-    title: ($('fTitle').value.trim() || 'JOB TITLE'),
-    phone: $('fPhone').value.trim(),
-    website: $('fWebsite').value.trim(),
-    email: $('fEmail').value.trim(),
-    social: $('fSocial').value.trim(),
+    name: ($('fName').value.trim() || 'John Smith'),
+    title: ($('fTitle').value.trim() || 'Marketing Director'),
+    phone: ($('fPhone').value.trim() || '+1 202 555 0148'),
+    website: ($('fWebsite').value.trim() || 'yourwebsite.com'),
+    email: ($('fEmail').value.trim() || 'you@email.com'),
+    social: ($('fSocial').value.trim() || '#yourhandle'),
   };
 }
 
@@ -881,14 +881,18 @@ function updatePreview(){
   positionQrOverlay(overlay);
   const qrText = d.website ? (d.website.startsWith('http') ? d.website : 'https://' + d.website) : 'https://merabti.com';
   renderQrInto(overlay, qrText, tpl.qrDark);
+
+  // معاينات القوالب المصغّرة بجانب المنتقي تعكس نفس البيانات المكتوبة لحظيًا
+  if ($('pickT1')) $('pickT1').innerHTML = TEMPLATES.t1.front(d);
+  if ($('pickT2')) $('pickT2').innerHTML = TEMPLATES.t2.front(d);
 }
 
 function wireTemplatePicker(){
-  document.querySelectorAll('.template-pick-btn').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.template-pick-btn').forEach((b) => b.classList.remove('active'));
-      btn.classList.add('active');
-      activeTemplate = btn.dataset.template;
+  document.querySelectorAll('.pick-card').forEach((card) => {
+    card.addEventListener('click', () => {
+      document.querySelectorAll('.pick-card').forEach((c) => c.classList.remove('active'));
+      card.classList.add('active');
+      activeTemplate = card.dataset.template;
       applyFieldVisibility();
       updatePreview();
     });
@@ -984,7 +988,7 @@ function loadFromLocalStorage(){
     const d = JSON.parse(raw);
     if (d.template && TEMPLATES[d.template]) {
       activeTemplate = d.template;
-      document.querySelectorAll('.template-pick-btn').forEach((b) => b.classList.toggle('active', b.dataset.template === d.template));
+      document.querySelectorAll('.pick-card').forEach((c) => c.classList.toggle('active', c.dataset.template === d.template));
     }
     ['name','title','phone','website','email','social'].forEach((k) => {
       const map = { name: 'fName', title: 'fTitle', phone: 'fPhone', website: 'fWebsite', email: 'fEmail', social: 'fSocial' };

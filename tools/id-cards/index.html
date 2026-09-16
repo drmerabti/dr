@@ -40,20 +40,8 @@
   <p>Choisissez un modèle, remplissez vos informations, et téléchargez un PDF prêt à imprimer (recto + verso).</p>
 </div>
 
-<main class="layout">
+<main class="layout3">
   <section class="panel-card">
-    <div class="panel-title">Modèle</div>
-    <div class="template-picker">
-      <button type="button" class="template-pick-btn active" data-template="t1">
-        <span class="swatch t1-swatch"></span>
-        <span>Violet Hexagone</span>
-      </button>
-      <button type="button" class="template-pick-btn" data-template="t2">
-        <span class="swatch t2-swatch"></span>
-        <span>Teal Sombre</span>
-      </button>
-    </div>
-
     <div class="panel-title">Vos informations</div>
     <div class="field" data-field="name">
       <label for="fName">Nom complet</label>
@@ -97,6 +85,16 @@
       <div class="preview-card" id="previewBack"></div>
     </div>
   </section>
+
+  <div class="picker-col">
+    <div class="pick-title">Modèle</div>
+    <div class="pick-card active" data-template="t1" id="pickT1"></div>
+    <div class="pick-card" data-template="t2" id="pickT2"></div>
+    <div class="pick-soon">Bientôt<br>disponible</div>
+    <div class="pick-soon">Bientôt<br>disponible</div>
+    <div class="pick-soon">Bientôt<br>disponible</div>
+    <div class="pick-soon">Bientôt<br>disponible</div>
+  </div>
 </main>
 
 <footer class="site-footer">© 2026 Dr. Sofiane Merabti</footer>
