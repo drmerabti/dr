@@ -18,6 +18,16 @@
     <span>Retour aux outils</span>
   </a>
   <div class="topbar-actions">
+    <div class="lang-switch" id="langSwitch">
+      <button type="button" class="lang-btn active" data-lang="fr">FR</button>
+      <button type="button" class="lang-btn" data-lang="en">EN</button>
+    </div>
+    <button type="button" class="icon-btn" id="saveBtn" title="Enregistrer">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg>
+    </button>
+    <button type="button" class="icon-btn" id="topDownloadBtn" title="Télécharger le PDF">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V4m0 0 4 4m-4-4-4 4"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+    </button>
     <div class="auth-wrap" id="authWrap">
       <button class="auth-btn" id="authBtn" type="button"></button>
       <div class="auth-menu hidden" id="authMenu"></div>
@@ -63,7 +73,7 @@
     </div>
     <div class="field" data-field="email">
       <label for="fEmail">E-mail</label>
-      <input type="text" id="fEmail" class="field-input" placeholder="contact@merabti.com">
+      <input type="text" id="fEmail" class="field-input" placeholder="email@example.com">
     </div>
     <div class="field" data-field="social">
       <label for="fSocial">Réseau social</label>

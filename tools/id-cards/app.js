@@ -652,10 +652,8 @@ function template1Front(d){
 			</g>
 		</g>
 
-<!-- لوحة غامقة خلف الاسم عشان يبين النص الأبيض -->
-<rect x="14" y="14" width="130" height="53" style="fill:#390039;"/>
-<text x="27.0933" y="34" style="fill:#FFFFFF; font-weight:700; font-size:10.5px;">${esc(d.name).toUpperCase()}</text>
-<text x="27.0933" y="50" style="fill:#C9A7DE; font-weight:600; font-size:8px;">${esc(d.title).toUpperCase()}</text>
+<text x="27.0933" y="38" style="fill:#390039; font-weight:700; font-size:14px;">${esc(d.name).toUpperCase()}</text>
+<text x="25.4302" y="55" style="fill:#76489C; font-weight:600; font-size:9.5px;">${esc(d.title).toUpperCase()}</text>
 					<g>
 						<g>
 							<path style="fill-rule:evenodd;clip-rule:evenodd;fill:#390039;" d="M28.97,76.184c0.006-0.399,0.164-0.74,0.456-1.003
@@ -701,7 +699,7 @@ function template1Front(d){
 					<path style="fill:#390039;" d="M32.138,108.622l2.66,2.262v-4.573L32.138,108.622z M32.138,108.622"/>
 				</g>
 
-<text x="41.8706" y="110.3037" style="fill:#390039; font-weight:400; font-size:6.573px;">contact@${esc(d.website)}</text>
+<text x="41.8706" y="110.3037" style="fill:#390039; font-weight:400; font-size:6.573px;">${esc(d.email)}</text>
 </svg>`;
 }
 function template1Back(){
@@ -724,7 +722,7 @@ function template1Back(){
 </g>
 </svg>`;
 }
-const T1_QR_BOX = { x: 196.945, y: 105.071, w: 32, h: 32 };
+const T1_QR_BOX = { x: 188, y: 97, w: 41, h: 41 };
 const T1_VIEWBOX = [240.945, 153.071];
 
 /* ---------- قالب 2: تركوازي غامق / Oswald ---------- */
@@ -798,7 +796,7 @@ function template2Back(){
 </g>
 </svg>`;
 }
-const T2_QR_BOX = { x: 208.119, y: 94.732, w: 32, h: 32 };
+const T2_QR_BOX = { x: 198, y: 86, w: 41, h: 41 };
 const T2_VIEWBOX = [255.119, 141.732];
 
 const TEMPLATES = {
@@ -970,12 +968,70 @@ function initAuthMenu(){
   $('authOverlay').addEventListener('click', (e) => { if (e.target === $('authOverlay')) $('authOverlay').classList.add('hidden'); });
 }
 
+function saveToLocalStorage(){
+  const d = getFormData();
+  d.template = activeTemplate;
+  localStorage.setItem('bc_saved_data', JSON.stringify(d));
+  const btn = $('saveBtn');
+  const original = btn.innerHTML;
+  btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
+  setTimeout(() => { btn.innerHTML = original; }, 1200);
+}
+function loadFromLocalStorage(){
+  try {
+    const raw = localStorage.getItem('bc_saved_data');
+    if (!raw) return;
+    const d = JSON.parse(raw);
+    if (d.template && TEMPLATES[d.template]) {
+      activeTemplate = d.template;
+      document.querySelectorAll('.template-pick-btn').forEach((b) => b.classList.toggle('active', b.dataset.template === d.template));
+    }
+    ['name','title','phone','website','email','social'].forEach((k) => {
+      const map = { name: 'fName', title: 'fTitle', phone: 'fPhone', website: 'fWebsite', email: 'fEmail', social: 'fSocial' };
+      if (d[k] && $(map[k])) $(map[k]).value = d[k];
+    });
+  } catch(e){ /* تجاهل بيانات محفوظة تالفة */ }
+}
+
+const UI_STRINGS = {
+  fr: { back: 'Retour aux outils', heroTitle: 'Cartes de visite', heroSub: "Choisissez un modèle, remplissez vos informations, et téléchargez un PDF prêt à imprimer (recto + verso).", info: 'Vos informations', name: 'Nom complet', title: 'Poste', phone: 'Téléphone', website: 'Site web', email: 'E-mail', social: 'Réseau social', download: 'Télécharger le PDF (recto-verso)', qrHint: 'Le QR code (verso) pointe vers votre site web.', login: 'Connexion' },
+  en: { back: 'Back to tools', heroTitle: 'Business Cards', heroSub: 'Pick a template, fill in your details, and download a print-ready PDF (front + back).', info: 'Your details', name: 'Full name', title: 'Job title', phone: 'Phone', website: 'Website', email: 'Email', social: 'Social handle', download: 'Download the PDF (front + back)', qrHint: 'The QR code (back) links to your website.', login: 'Sign in' },
+};
+function applyUiLanguage(lang){
+  const s = UI_STRINGS[lang];
+  document.querySelector('.back-link span').textContent = s.back;
+  document.querySelector('.hero h1').textContent = s.heroTitle;
+  document.querySelector('.hero p').textContent = s.heroSub;
+  document.querySelector('[data-field="name"] label').textContent = s.name;
+  document.querySelector('[data-field="title"] label').textContent = s.title;
+  document.querySelector('[data-field="phone"] label').textContent = s.phone;
+  document.querySelector('[data-field="website"] label').textContent = s.website;
+  document.querySelector('[data-field="email"] label').textContent = s.email;
+  document.querySelector('[data-field="social"] label').textContent = s.social;
+  $('downloadBtn').lastChild.textContent = ' ' + s.download;
+  document.querySelector('.field-hint').textContent = s.qrHint;
+  document.documentElement.lang = lang;
+}
+function wireLangSwitch(){
+  document.querySelectorAll('.lang-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.lang-btn').forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      applyUiLanguage(btn.dataset.lang);
+    });
+  });
+}
+
 function init(){
   wireTemplatePicker();
   wireLiveUpdate();
+  wireLangSwitch();
   initAuthMenu();
   applyFieldVisibility();
+  loadFromLocalStorage();
   $('downloadBtn').addEventListener('click', exportPdf);
+  $('topDownloadBtn').addEventListener('click', exportPdf);
+  $('saveBtn').addEventListener('click', saveToLocalStorage);
   if (window.fbAuth){
     window.fbAuth.onAuthStateChanged((fbUser) => {
       currentUser = fbUser ? { name: fbUser.displayName || fbUser.email, email: fbUser.email, picture: fbUser.photoURL || null } : null;
