@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="مولّد الامتحانات — أنشئ ورقة امتحان احترافية بدون الحاجة لإتقان Word.">
+<title data-i18n="pageTitle">مولّد الامتحانات — أكاديمية مرابطي</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Inter:wght@400;500;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../style.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand-group">
+      <a href="../../index.html" class="brand">Dr Soufiane Merabti</a>
+      <button id="proBtn" class="pro-btn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 8l4 3 5-6 5 6 4-3-2 11H5L3 8z"/><circle cx="3" cy="8" r="1.4" fill="currentColor" stroke="none"/><circle cx="12" cy="5" r="1.4" fill="currentColor" stroke="none"/><circle cx="21" cy="8" r="1.4" fill="currentColor" stroke="none"/></svg>
+        <span>Pro</span>
+      </button>
+    </div>
+    <div class="topbar-actions">
+      <button type="button" class="tbtn" id="saveBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        <span data-i18n="save">حفظ</span>
+      </button>
+      <button type="button" class="tbtn primary" id="exportPdfBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+        <span data-i18n="exportPdf">تصدير PDF</span>
+      </button>
+      <div class="sep"></div>
+      <div class="lang-switch" role="group" aria-label="Language switcher">
+        <button type="button" class="lang-btn" data-lang="fr">Français</button>
+        <button type="button" class="lang-btn active" data-lang="ar">العربية</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="layout">
+
+  <!-- ============ FORM PANEL ============ -->
+  <section class="col-form">
+    <h1 class="panel-title" data-i18n="setupTitle">إعداد الامتحان</h1>
+
+    <div class="card open" id="headerCard">
+      <div class="card-head"><h3 data-i18n="headerData">بيانات الترويسة</h3><span class="chev">⌄</span></div>
+      <div class="card-content open">
+        <div class="field full" style="margin-bottom:12px;">
+          <label><span data-i18n="showRepublic">إظهار "الجمهورية الجزائرية..."</span>
+            <div class="mini-switch on" id="toggleRepublic"></div>
+          </label>
+        </div>
+        <div class="field-grid">
+          <div class="field">
+            <label data-i18n="schoolName">الثانوية/المؤسسة</label>
+            <input type="text" id="fSchool" placeholder="ثانوية الأمير عبد القادر">
+          </div>
+          <div class="field">
+            <label data-i18n="academicYear">السنة الدراسية</label>
+            <select id="fYear"></select>
+          </div>
+          <div class="field">
+            <label data-i18n="stage">المرحلة</label>
+            <select id="fStage">
+              <option data-i18n="stagePrimary">ابتدائي</option>
+              <option data-i18n="stageMiddle">متوسط</option>
+              <option data-i18n="stageSecondary" selected>ثانوي</option>
+            </select>
+          </div>
+          <div class="field">
+            <label data-i18n="section">المستوى/القسم</label>
+            <input type="text" id="fSection" placeholder="3 ثانوي علوم">
+          </div>
+          <div class="field">
+            <label data-i18n="subject">المادة</label>
+            <input type="text" id="fSubject" placeholder="الرياضيات">
+          </div>
+          <div class="field">
+            <label data-i18n="examType">نوع الاختبار</label>
+            <select id="fExamType">
+              <option data-i18n="typeHomework">فرض</option>
+              <option data-i18n="typeTerm" selected>اختبار فصلي</option>
+              <option data-i18n="typeExam">امتحان</option>
+            </select>
+          </div>
+          <div class="field">
+            <label data-i18n="duration">المدة</label>
+            <input type="text" id="fDuration" placeholder="ساعتان">
+          </div>
+          <div class="field">
+            <label data-i18n="teacher">الأستاذ</label>
+            <input type="text" id="fTeacher" placeholder="د. سفيان مرابطي">
+          </div>
+          <div class="field full">
+            <label><span data-i18n="instructions">تعليمات عامة (اختياري)</span>
+              <div class="mini-switch on" id="toggleInstructions"></div>
+            </label>
+            <input type="text" id="fInstructions" data-i18n-placeholder="instructionsPlaceholder" placeholder="مثال: ممنوع استعمال الآلة الحاسبة">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="exerciseCard">
+      <div class="card-head"><h3 data-i18n="addExercise">إضافة تمرين</h3><span class="chev">⌄</span></div>
+      <div class="card-content">
+        <div class="ex-type-grid" id="exTypeGrid">
+          <button class="ex-type-btn active" data-type="mcq"><span class="ic">☑</span><span data-i18n="typeMcq">اختيار من متعدد</span></button>
+          <button class="ex-type-btn" data-type="tf"><span class="ic">✓✗</span><span data-i18n="typeTf">صح أو خطأ</span></button>
+          <button class="ex-type-btn" data-type="blank"><span class="ic">▭</span><span data-i18n="typeBlank">أكمل الفراغ</span></button>
+          <button class="ex-type-btn" data-type="essay">
+            <span class="ic">✎</span><span data-i18n="typeEssay">سؤال مقالي</span>
+            <select class="inline-select" id="essayLinesSelect" onclick="event.stopPropagation()">
+              <option value="3" data-i18n="lines3">3 أسطر إجابة</option>
+              <option value="5" data-i18n="lines5">5 أسطر</option>
+              <option value="0" data-i18n="linesNone">بدون أسطر</option>
+            </select>
+          </button>
+          <button class="ex-type-btn" data-type="image"><span class="ic">🖼</span><span data-i18n="typeImage">تمرين + صورة</span></button>
+          <button class="ex-type-btn" data-type="table">
+            <span class="ic">𝄜</span><span data-i18n="typeTable">جدول</span>
+            <select class="inline-select" id="tableSubSelect" onclick="event.stopPropagation()">
+              <option value="normal" data-i18n="tableNormal">عادي (أعمدة/أسطر)</option>
+              <option value="variation" data-i18n="tableVariation">تغيرات دالة</option>
+            </select>
+          </button>
+          <button class="ex-type-btn" data-type="reading"><span class="ic">📖</span><span data-i18n="typeReading">نص قراءة</span></button>
+          <button class="ex-type-btn" data-type="poetry"><span class="ic">﴾﴿</span><span data-i18n="typePoetry">نص شعري</span></button>
+        </div>
+
+        <div id="exerciseFormFields" class="exercise-form-fields"></div>
+
+        <button class="btn-add" id="addExerciseBtn" data-i18n="addExerciseBtn">+ إضافة التمرين للورقة</button>
+        <div class="hint" data-i18n="pointsHint">↳ التنقيط يُحدَّد على الورقة نفسها بعد الإضافة مباشرة</div>
+      </div>
+    </div>
+
+    <div class="card" id="optionsCard">
+      <div class="card-head"><h3 data-i18n="extraOptions">خيارات إضافية</h3><span class="chev">⌄</span></div>
+      <div class="card-content">
+        <div class="toggle-row">
+          <span data-i18n="autoGrading">بارم التنقيط التلقائي</span>
+          <div class="switch" id="toggleAutoGrade"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PAPER PREVIEW ============ -->
+  <section class="col-preview">
+    <div class="paper-wrap">
+      <div class="paper" id="paperSheet">
+        <div class="paper-republic" id="pvRepublic">الجمهورية الجزائرية الديمقراطية الشعبية</div>
+
+        <div class="paper-header">
+          <div class="side">
+            <span><span data-i18n="academicYear">السنة الدراسية</span>: <span id="pvYear">—</span></span>
+            <span id="pvSchoolLine">—</span>
+          </div>
+          <div class="center">
+            <div class="lvl" id="pvExamType">—</div>
+            <div class="subj" id="pvSubjectLine">—</div>
+          </div>
+          <div class="side" style="text-align:left;">
+            <span><span data-i18n="duration">المدة</span>: <span id="pvDuration">—</span></span>
+            <span><span data-i18n="teacher">الأستاذ</span>: <span id="pvTeacher">—</span></span>
+          </div>
+        </div>
+
+        <div class="paper-instructions hidden-el" id="pvInstructions"></div>
+
+        <div id="exercisesContainer"></div>
+
+        <div class="paper-total hidden-el" id="pvTotal"></div>
+        <div class="paper-footer" dir="ltr">1 / 1</div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<input type="file" id="imageFileInput" accept="image/*" hidden>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="i18n.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
