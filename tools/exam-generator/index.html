@@ -3,190 +3,126 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="مولّد الامتحانات — أنشئ ورقة امتحان احترافية بدون الحاجة لإتقان Word.">
-<title data-i18n="pageTitle">مولّد الامتحانات — أكاديمية مرابطي</title>
+<title>مولّد الامتحانات</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Inter:wght@400;500;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../../style.css">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header class="topbar">
-  <div class="topbar-inner">
-    <div class="brand-group">
-      <a href="../../index.html" class="brand">Dr Soufiane Merabti</a>
-      <button id="proBtn" class="pro-btn" type="button">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 8l4 3 5-6 5 6 4-3-2 11H5L3 8z"/><circle cx="3" cy="8" r="1.4" fill="currentColor" stroke="none"/><circle cx="12" cy="5" r="1.4" fill="currentColor" stroke="none"/><circle cx="21" cy="8" r="1.4" fill="currentColor" stroke="none"/></svg>
-        <span>Pro</span>
-      </button>
-    </div>
-    <div class="topbar-actions">
-      <button type="button" class="tbtn" id="saveBtn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-        <span data-i18n="save">حفظ</span>
-      </button>
-      <button type="button" class="tbtn primary" id="exportPdfBtn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
-        <span data-i18n="exportPdf">تصدير PDF</span>
-      </button>
-      <div class="sep"></div>
-      <div class="lang-switch" role="group" aria-label="Language switcher">
-        <button type="button" class="lang-btn" data-lang="fr">Français</button>
-        <button type="button" class="lang-btn active" data-lang="ar">العربية</button>
-      </div>
-    </div>
+  <a href="../../index.html" class="brand-link">
+    <svg class="back-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+    <span data-i18n="backHome">الرئيسية</span>
+  </a>
+  <div class="topbar-actions">
+    <span class="save-status" id="saveStatus"><span class="save-dot" id="saveDot"></span><span id="saveText" data-i18n-inline="savedLocal">تم الحفظ</span></span>
+    <button class="btn btn-cloud hidden" id="saveCloudBtn">
+      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 18a4 4 0 01-.6-7.96A5.5 5.5 0 0117 9a4.5 4.5 0 01.5 8.98"/></svg>
+      <span data-i18n-inline="saveCloudBtn">حفظ في حسابي</span>
+    </button>
+    <button class="btn btn-cloud hidden" id="signInBtn">
+      <svg viewBox="0 0 24 24" width="15" height="15"><path fill="currentColor" d="M21.35 11.1h-9.2v2.8h5.3c-.23 1.4-1.6 4.1-5.3 4.1-3.2 0-5.8-2.6-5.8-5.9s2.6-5.9 5.8-5.9c1.8 0 3 .76 3.7 1.42l2.5-2.42C16.7 3.6 14.6 2.6 12.15 2.6 6.9 2.6 2.7 6.8 2.7 12s4.2 9.4 9.45 9.4c5.45 0 9.06-3.83 9.06-9.23 0-.62-.07-1.1-.16-1.07z"/></svg>
+      <span data-i18n-inline="signInBtn">تسجيل الدخول</span>
+    </button>
+    <button id="langToggle" class="lang-toggle" type="button">EN</button>
   </div>
 </header>
 
-<main class="layout">
+<div class="hero">
+  <h1 class="tool-title" data-i18n="title">مولّد الامتحانات</h1>
+  <p class="tool-sub" id="heroSub" data-i18n="subtitleList">أنشئ ورقة امتحان احترافية دون الحاجة لإتقان Word</p>
+</div>
 
-  <!-- ============ FORM PANEL ============ -->
-  <section class="col-form">
-    <h1 class="panel-title" data-i18n="setupTitle">إعداد الامتحان</h1>
+<main>
 
-    <div class="card open" id="headerCard">
-      <div class="card-head"><h3 data-i18n="headerData">بيانات الترويسة</h3><span class="chev">⌄</span></div>
-      <div class="card-content open">
-        <div class="field full" style="margin-bottom:12px;">
-          <label><span data-i18n="showRepublic">إظهار "الجمهورية الجزائرية..."</span>
-            <div class="mini-switch on" id="toggleRepublic"></div>
-          </label>
-        </div>
-        <div class="field-grid">
-          <div class="field">
-            <label data-i18n="schoolName">الثانوية/المؤسسة</label>
-            <input type="text" id="fSchool" placeholder="ثانوية الأمير عبد القادر">
-          </div>
-          <div class="field">
-            <label data-i18n="academicYear">السنة الدراسية</label>
-            <select id="fYear"></select>
-          </div>
-          <div class="field">
-            <label data-i18n="stage">المرحلة</label>
-            <select id="fStage">
-              <option data-i18n="stagePrimary">ابتدائي</option>
-              <option data-i18n="stageMiddle">متوسط</option>
-              <option data-i18n="stageSecondary" selected>ثانوي</option>
-            </select>
-          </div>
-          <div class="field">
-            <label data-i18n="section">المستوى/القسم</label>
-            <input type="text" id="fSection" placeholder="3 ثانوي علوم">
-          </div>
-          <div class="field">
-            <label data-i18n="subject">المادة</label>
-            <input type="text" id="fSubject" placeholder="الرياضيات">
-          </div>
-          <div class="field">
-            <label data-i18n="examType">نوع الاختبار</label>
-            <select id="fExamType">
-              <option data-i18n="typeHomework">فرض</option>
-              <option data-i18n="typeTerm" selected>اختبار فصلي</option>
-              <option data-i18n="typeExam">امتحان</option>
-            </select>
-          </div>
-          <div class="field">
-            <label data-i18n="duration">المدة</label>
-            <input type="text" id="fDuration" placeholder="ساعتان">
-          </div>
-          <div class="field">
-            <label data-i18n="teacher">الأستاذ</label>
-            <input type="text" id="fTeacher" placeholder="د. سفيان مرابطي">
-          </div>
-          <div class="field full">
-            <label><span data-i18n="instructions">تعليمات عامة (اختياري)</span>
-              <div class="mini-switch on" id="toggleInstructions"></div>
-            </label>
-            <input type="text" id="fInstructions" data-i18n-placeholder="instructionsPlaceholder" placeholder="مثال: ممنوع استعمال الآلة الحاسبة">
-          </div>
-        </div>
-      </div>
+  <!-- ============ LIST VIEW ============ -->
+  <section id="listView" class="view">
+    <div class="list-actions">
+      <button class="btn btn-primary" id="newExamBtn" data-i18n="newExamBtn">📝 امتحان جديد</button>
     </div>
-
-    <div class="card" id="exerciseCard">
-      <div class="card-head"><h3 data-i18n="addExercise">إضافة تمرين</h3><span class="chev">⌄</span></div>
-      <div class="card-content">
-        <div class="ex-type-grid" id="exTypeGrid">
-          <button class="ex-type-btn active" data-type="mcq"><span class="ic">☑</span><span data-i18n="typeMcq">اختيار من متعدد</span></button>
-          <button class="ex-type-btn" data-type="tf"><span class="ic">✓✗</span><span data-i18n="typeTf">صح أو خطأ</span></button>
-          <button class="ex-type-btn" data-type="blank"><span class="ic">▭</span><span data-i18n="typeBlank">أكمل الفراغ</span></button>
-          <button class="ex-type-btn" data-type="essay">
-            <span class="ic">✎</span><span data-i18n="typeEssay">سؤال مقالي</span>
-            <select class="inline-select" id="essayLinesSelect" onclick="event.stopPropagation()">
-              <option value="3" data-i18n="lines3">3 أسطر إجابة</option>
-              <option value="5" data-i18n="lines5">5 أسطر</option>
-              <option value="0" data-i18n="linesNone">بدون أسطر</option>
-            </select>
-          </button>
-          <button class="ex-type-btn" data-type="image"><span class="ic">🖼</span><span data-i18n="typeImage">تمرين + صورة</span></button>
-          <button class="ex-type-btn" data-type="table">
-            <span class="ic">𝄜</span><span data-i18n="typeTable">جدول</span>
-            <select class="inline-select" id="tableSubSelect" onclick="event.stopPropagation()">
-              <option value="normal" data-i18n="tableNormal">عادي (أعمدة/أسطر)</option>
-              <option value="variation" data-i18n="tableVariation">تغيرات دالة</option>
-            </select>
-          </button>
-          <button class="ex-type-btn" data-type="reading"><span class="ic">📖</span><span data-i18n="typeReading">نص قراءة</span></button>
-          <button class="ex-type-btn" data-type="poetry"><span class="ic">﴾﴿</span><span data-i18n="typePoetry">نص شعري</span></button>
-        </div>
-
-        <div id="exerciseFormFields" class="exercise-form-fields"></div>
-
-        <button class="btn-add" id="addExerciseBtn" data-i18n="addExerciseBtn">+ إضافة التمرين للورقة</button>
-        <div class="hint" data-i18n="pointsHint">↳ التنقيط يُحدَّد على الورقة نفسها بعد الإضافة مباشرة</div>
-      </div>
-    </div>
-
-    <div class="card" id="optionsCard">
-      <div class="card-head"><h3 data-i18n="extraOptions">خيارات إضافية</h3><span class="chev">⌄</span></div>
-      <div class="card-content">
-        <div class="toggle-row">
-          <span data-i18n="autoGrading">بارم التنقيط التلقائي</span>
-          <div class="switch" id="toggleAutoGrade"></div>
-        </div>
-      </div>
-    </div>
+    <div class="exam-grid" id="examGrid"></div>
+    <p class="empty-note hidden" id="emptyNote" data-i18n="emptyNote">لا توجد امتحانات محفوظة بعد. أنشئ أول امتحان من الأعلى.</p>
   </section>
 
-  <!-- ============ PAPER PREVIEW ============ -->
-  <section class="col-preview">
-    <div class="paper-wrap">
-      <div class="paper" id="paperSheet">
-        <div class="paper-republic" id="pvRepublic">الجمهورية الجزائرية الديمقراطية الشعبية</div>
+  <!-- ============ EDITOR VIEW ============ -->
+  <section id="editorView" class="view hidden">
+    <div class="editor-head">
+      <button class="btn btn-ghost btn-back" id="backToListBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M15 18l-6-6 6-6"/></svg>
+        <span data-i18n-inline="backToList">امتحاناتي</span>
+      </button>
+      <div class="editor-head-actions">
+        <button class="btn btn-ghost" id="shareBtn" data-i18n="shareBtn">مشاركة</button>
+        <button class="btn btn-ghost" id="printBtn" data-i18n="printBtn">طباعة / تصدير</button>
+      </div>
+    </div>
 
-        <div class="paper-header">
-          <div class="side">
-            <span><span data-i18n="academicYear">السنة الدراسية</span>: <span id="pvYear">—</span></span>
-            <span id="pvSchoolLine">—</span>
-          </div>
-          <div class="center">
-            <div class="lvl" id="pvExamType">—</div>
-            <div class="subj" id="pvSubjectLine">—</div>
-          </div>
-          <div class="side" style="text-align:left;">
-            <span><span data-i18n="duration">المدة</span>: <span id="pvDuration">—</span></span>
-            <span><span data-i18n="teacher">الأستاذ</span>: <span id="pvTeacher">—</span></span>
-          </div>
+    <div class="editor-wrap">
+      <div class="tools-col">
+        <div class="tools-title" data-i18n="toolsTitle">الأدوات</div>
+        <button class="tool-btn q-normal" data-type="normal"><span class="tool-ic">✏️</span> <span data-i18n-inline="toolNormal">سؤال عادي</span></button>
+        <button class="tool-btn q-mcq" data-type="mcq"><span class="tool-ic">✅</span> <span data-i18n-inline="toolMcq">اختيار من متعدد</span></button>
+        <button class="tool-btn q-tf" data-type="tf"><span class="tool-ic">☑️</span> <span data-i18n-inline="toolTf">صح / خطأ</span></button>
+        <button class="tool-btn q-blank" data-type="blank"><span class="tool-ic">🧩</span> <span data-i18n-inline="toolBlank">أكمل الفراغ</span></button>
+        <button class="tool-btn q-table" data-type="table"><span class="tool-ic">📊</span> <span data-i18n-inline="toolTable">جدول</span></button>
+        <button class="tool-btn q-image" id="imageToolBtn"><span class="tool-ic">🖼️</span> <span data-i18n-inline="toolImage">صورة</span></button>
+        <div id="imageHintWrap"></div>
+        <div class="tools-divider"></div>
+        <button class="lib-btn" id="libBtn" data-i18n="libBtn" title="متوفر في مرحلة لاحقة">📚 إدراج من مكتبتي</button>
+        <input type="file" id="imgFileInput" accept="image/*" class="hidden">
+      </div>
+
+      <div class="page-col">
+        <div class="totals-bar">
+          <span><span data-i18n-inline="qCountLabel">عدد التمارين:</span> <b id="qCount">0</b></span>
+          <span><span data-i18n-inline="totalLabel">المجموع:</span> <span class="points" id="totalPoints">0</span> / <input id="maxPoints" type="number" value="20"></span>
         </div>
+        <div class="a4-page" id="examPage">
+          <div class="exam-header">
+            <div class="top-line" data-i18n="repLine1">الجمهورية الجزائرية الديمقراطية الشعبية</div>
+            <div class="top-line" data-i18n="repLine2">وزارة التربية الوطنية</div>
+            <div class="school-fields">
+              <input id="hInstitution" data-i18n-placeholder="institutionPh" placeholder="اسم المؤسسة">
+              <input id="hDirectorate" data-i18n-placeholder="directoratePh" placeholder="مديرية التربية لولاية">
+            </div>
+            <input class="title-field" id="hTitle" value="اختبار الفصل الأول">
+            <div class="meta-row">
+              <span><b data-i18n-inline="subjectLabel">المادة:</b> <span class="resize-field meta-field"><input id="hSubject" placeholder="..."></span></span>
+              <span><b data-i18n-inline="gradeLabel">المستوى:</b> <span class="resize-field meta-field"><input id="hGrade" placeholder="..."></span></span>
+              <span><b data-i18n-inline="durationLabel">المدة:</b> <span class="resize-field meta-field" style="width:60px;"><input id="hDuration" placeholder="..."></span></span>
+            </div>
+          </div>
+          <div id="questionsWrap"></div>
+          <div class="empty-page-hint" id="emptyHint" data-i18n="emptyPageHint">اختر أداة من القائمة على اليمين لبدء إنشاء الامتحان</div>
+        </div>
+      </div>
 
-        <div class="paper-instructions hidden-el" id="pvInstructions"></div>
-
-        <div id="exercisesContainer"></div>
-
-        <div class="paper-total hidden-el" id="pvTotal"></div>
-        <div class="paper-footer" dir="ltr">1 / 1</div>
+      <div class="props-col">
+        <div id="propsPanel"><div class="props-empty" data-i18n="propsEmpty">اختر سؤالاً لعرض خصائصه هنا (النقاط...)</div></div>
       </div>
     </div>
   </section>
 
 </main>
 
-<input type="file" id="imageFileInput" accept="image/*" hidden>
+<!-- ============ Share link popover ============ -->
+<div class="popover-backdrop hidden" id="shareBackdrop">
+  <div class="popover">
+    <h3 data-i18n="shareTitle">رابط المشاركة</h3>
+    <p class="share-note" data-i18n="shareNote">من يفتح هذا الرابط يشاهد الامتحان فقط ولا يستطيع تعديله.</p>
+    <input type="text" id="shareLinkInput" class="share-link-input" readonly>
+    <div class="popover-actions">
+      <button class="btn btn-ghost" id="closeShareBtn" data-i18n="closeBtn">إغلاق</button>
+      <button class="btn btn-primary" id="copyShareBtn" data-i18n="copyBtn">نسخ الرابط</button>
+    </div>
+  </div>
+</div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="i18n.js"></script>
-<script src="script.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="../../firebase-init.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
