@@ -6,7 +6,8 @@ const I18N = {
     newExamBtn: '📝 امتحان جديد', emptyNote: 'لا توجد امتحانات محفوظة بعد. أنشئ أول امتحان من الأعلى.',
     backToList: 'امتحاناتي', shareBtn: 'مشاركة', printBtn: 'طباعة / تصدير',
     toolsTitle: 'الأدوات', toolNormal: 'سؤال عادي', toolMcq: 'اختيار من متعدد', toolTf: 'صح / خطأ',
-    toolBlank: 'أكمل الفراغ', toolTable: 'جدول', toolImage: 'صورة', libBtn: '📚 إدراج من مكتبتي',
+    toolBlank: 'أكمل الفراغ', toolTable: 'جدول', toolImage: 'صورة', toolSymbols: 'رموز', libBtn: '📚 إدراج من مكتبتي',
+    symbolsTitle: 'الرموز والأسهم', insertBtn: 'إدراج',
     qCountLabel: 'عدد التمارين:', totalLabel: 'المجموع:',
     repLine1: 'الجمهورية الجزائرية الديمقراطية الشعبية', repLine2: 'وزارة التربية الوطنية',
     institutionPh: 'اسم المؤسسة', teacherPh: 'أستاذ: ..............',
@@ -50,7 +51,8 @@ const I18N = {
     trueLabel: 'True', falseLabel: 'False',
     backToList: 'My exams', shareBtn: 'Share', printBtn: 'Print / Export',
     toolsTitle: 'Tools', toolNormal: 'Regular question', toolMcq: 'Multiple choice', toolTf: 'True / False',
-    toolBlank: 'Fill in the blank', toolTable: 'Table', toolImage: 'Image', libBtn: '📚 Insert from library',
+    toolBlank: 'Fill in the blank', toolTable: 'Table', toolImage: 'Image', toolSymbols: 'Symbols', libBtn: '📚 Insert from library',
+    symbolsTitle: 'Symbols & arrows', insertBtn: 'Insert',
     qCountLabel: 'Exercises:', totalLabel: 'Total:',
     repLine1: 'People\u2019s Democratic Republic of Algeria', repLine2: 'Ministry of National Education',
     institutionPh: 'Institution name', teacherPh: 'Teacher: ..............',
@@ -87,7 +89,8 @@ const I18N = {
     trueLabel: 'Vrai', falseLabel: 'Faux',
     backToList: 'Mes examens', shareBtn: 'Partager', printBtn: 'Imprimer / Exporter',
     toolsTitle: 'Outils', toolNormal: 'Question simple', toolMcq: 'Choix multiple', toolTf: 'Vrai / Faux',
-    toolBlank: 'Texte à trous', toolTable: 'Tableau', toolImage: 'Image', libBtn: '📚 Insérer depuis la bibliothèque',
+    toolBlank: 'Texte à trous', toolTable: 'Tableau', toolImage: 'Image', toolSymbols: 'Symboles', libBtn: '📚 Insérer depuis la bibliothèque',
+    symbolsTitle: 'Symboles et flèches', insertBtn: 'Insérer',
     qCountLabel: 'Exercices :', totalLabel: 'Total :',
     repLine1: 'République Algérienne Démocratique et Populaire', repLine2: 'Ministère de l\u2019Éducation Nationale',
     institutionPh: 'Nom de l\u2019établissement', teacherPh: 'Enseignant : ..............',
@@ -169,6 +172,9 @@ let exam = freshExam();
 let selectedId = null;
 let placingImage = false;
 let tableSelection = null;
+let tableAnchor = null;
+let activeEditable = null;
+let selectedSymbol = null;
 let isReadonly = false;
 let currentUser = null;
 let cloudSaveBusy = false;
@@ -398,6 +404,10 @@ function attachQuestionEvents(){
     if(ta){
       ta.addEventListener('input', e=>{ q.text = e.target.value; scheduleSave(); });
       ta.addEventListener('focus', ()=> selectQuestionLight(id));
+      const captureTa = ()=>{ activeEditable = { type:'textarea', el:ta, start:ta.selectionStart, end:ta.selectionEnd }; };
+      ta.addEventListener('focus', captureTa);
+      ta.addEventListener('click', captureTa);
+      ta.addEventListener('keyup', captureTa);
       if(!isReadonly && window.ResizeObserver){
         const robs = new ResizeObserver(()=>{
           q.textW = ta.style.width || q.textW;
@@ -448,14 +458,25 @@ function attachQuestionEvents(){
     el.querySelectorAll('td[contenteditable]').forEach(td=>{
       td.addEventListener('input', ()=>{ q.grid[+td.dataset.r][+td.dataset.c].value = td.textContent; scheduleSave(); });
       td.addEventListener('focus', ()=> selectQuestionLight(id));
-      td.addEventListener('mousedown', (e)=>{
-        if(document.activeElement===td) return;
-        tableSelection = { qid:q.id, r1:+td.dataset.r, c1:+td.dataset.c, r2:+td.dataset.r, c2:+td.dataset.c };
-      });
-      td.addEventListener('mouseover', (e)=>{
-        if(tableSelection && tableSelection.qid===q.id && e.buttons===1){
-          tableSelection.r2 = +td.dataset.r; tableSelection.c2 = +td.dataset.c;
+      const captureTd = ()=>{
+        const sel = window.getSelection();
+        activeEditable = { type:'td', el:td, range: sel.rangeCount ? sel.getRangeAt(0).cloneRange() : null };
+      };
+      td.addEventListener('focus', captureTd);
+      td.addEventListener('keyup', captureTd);
+      td.addEventListener('click', (e)=>{
+        const r = +td.dataset.r, c = +td.dataset.c;
+        if(e.shiftKey && tableAnchor && tableAnchor.qid===q.id){
+          e.preventDefault();
+          tableSelection = { qid:q.id, r1:tableAnchor.r, c1:tableAnchor.c, r2:r, c2:c };
           paintSelection(el, q);
+        } else {
+          tableAnchor = { qid:q.id, r, c };
+          tableSelection = null;
+          el.querySelectorAll('td').forEach(cell=> cell.classList.remove('cell-selected'));
+          const mergeBtn = el.querySelector('.merge-btn');
+          if(mergeBtn) mergeBtn.disabled = true;
+          captureTd();
         }
       });
     });
@@ -482,7 +503,7 @@ function attachQuestionEvents(){
         const parentRect = el.getBoundingClientRect();
         const startX=e.clientX, startY=e.clientY, ow=im.w, oh=im.h;
         function onMove(ev){
-          let nw = Math.max(30, ow - (ev.clientX-startX));
+          let nw = Math.max(30, ow + (ev.clientX-startX));
           let nh = Math.max(30, oh + (ev.clientY-startY));
           nw = Math.min(nw, parentRect.width-im.x); nh = Math.min(nh, parentRect.height-im.y);
           im.w=nw; im.h=nh; item.style.width=nw+'px'; item.style.height=nh+'px';
@@ -522,7 +543,71 @@ function mergeSelection(){
   q.grid[rmin][cmin].colspan = cmax-cmin+1;
   q.grid[rmin][cmin].value = combined;
   tableSelection = null;
+  tableAnchor = null;
   render(); scheduleSave();
+}
+
+/* ================= Symbols palette ================= */
+const SYMBOL_GROUPS = [
+  { title: { ar:'حروف يونانية', en:'Greek letters', fr:'Lettres grecques' },
+    items: ['α','β','γ','δ','Δ','θ','λ','μ','π','Σ','Ω','φ'] },
+  { title: { ar:'رياضيات', en:'Math', fr:'Mathématiques' },
+    items: ['√','±','×','÷','≤','≥','≠','≈','∞','°','²','³','½','∫','∑'] },
+  { title: { ar:'أسهم', en:'Arrows', fr:'Flèches' },
+    items: ['→','←','↔','⇒','⇐','⇔','↑','↓','↦'] },
+  { title: { ar:'مجموعات ومنطق', en:'Sets & logic', fr:'Ensembles et logique' },
+    items: ['∈','∉','⊂','∪','∩','∀','∃','¬'] },
+];
+
+function buildSymbolsPanel(){
+  const body = $('symbolsBody');
+  body.innerHTML = SYMBOL_GROUPS.map(g=>`
+    <div class="sym-group-title">${g.title[lang] || g.title.ar}</div>
+    <div class="sym-grid">${g.items.map(s=>`<button class="sym-btn" data-sym="${s}">${s}</button>`).join('')}</div>
+  `).join('');
+  body.querySelectorAll('.sym-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      body.querySelectorAll('.sym-btn').forEach(b=> b.classList.remove('sym-selected'));
+      btn.classList.add('sym-selected');
+      selectedSymbol = btn.dataset.sym;
+      $('symPreview').textContent = selectedSymbol;
+    });
+  });
+}
+$('symbolsToolBtn').addEventListener('click', ()=>{
+  const panel = $('symbolsPanel');
+  const opening = panel.classList.contains('hidden');
+  panel.classList.toggle('hidden');
+  if(opening) buildSymbolsPanel();
+});
+$('closeSymbolsBtn').addEventListener('click', ()=> $('symbolsPanel').classList.add('hidden'));
+$('insertSymbolBtn').addEventListener('click', ()=>{
+  if(!selectedSymbol || !activeEditable) return;
+  insertAtActiveEditable(selectedSymbol);
+});
+function insertAtActiveEditable(text){
+  const ae = activeEditable;
+  if(!ae) return;
+  if(ae.type==='textarea'){
+    const el = ae.el;
+    const val = el.value;
+    const start = ae.start, end = ae.end;
+    el.value = val.slice(0,start) + text + val.slice(end);
+    const newPos = start + text.length;
+    el.focus();
+    el.selectionStart = el.selectionEnd = newPos;
+    ae.start = ae.end = newPos;
+    el.dispatchEvent(new Event('input', { bubbles:true }));
+  } else if(ae.type==='td'){
+    const el = ae.el;
+    el.focus();
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    if(ae.range){ try{ sel.addRange(ae.range); }catch(e){} }
+    document.execCommand('insertText', false, text);
+    if(sel.rangeCount) ae.range = sel.getRangeAt(0).cloneRange();
+    el.dispatchEvent(new Event('input', { bubbles:true }));
+  }
 }
 
 /* ================= Image insertion ================= */

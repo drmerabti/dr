@@ -98,6 +98,7 @@
         <button class="tool-btn q-blank" data-type="blank"><span class="tool-ic">🧩</span> <span data-i18n-inline="toolBlank">أكمل الفراغ</span></button>
         <button class="tool-btn q-table" data-type="table"><span class="tool-ic">📊</span> <span data-i18n-inline="toolTable">جدول</span></button>
         <button class="tool-btn q-image" id="imageToolBtn"><span class="tool-ic">🖼️</span> <span data-i18n-inline="toolImage">صورة</span></button>
+        <button class="tool-btn q-symbols" id="symbolsToolBtn"><span class="tool-ic">🔣</span> <span data-i18n-inline="toolSymbols">رموز</span></button>
         <div id="imageHintWrap"></div>
         <div class="tools-divider"></div>
         <button class="lib-btn" id="libBtn" data-i18n="libBtn" title="متوفر في مرحلة لاحقة">📚 إدراج من مكتبتي</button>
@@ -147,6 +148,19 @@
       <button class="btn btn-ghost" id="closeShareBtn" data-i18n="closeBtn">إغلاق</button>
       <button class="btn btn-primary" id="copyShareBtn" data-i18n="copyBtn">نسخ الرابط</button>
     </div>
+  </div>
+</div>
+
+<!-- ============ Symbols floating palette ============ -->
+<div class="symbols-panel hidden" id="symbolsPanel">
+  <div class="symbols-head">
+    <h3 data-i18n="symbolsTitle">الرموز والأسهم</h3>
+    <button class="sym-close" id="closeSymbolsBtn">✕</button>
+  </div>
+  <div class="symbols-body" id="symbolsBody"></div>
+  <div class="symbols-footer">
+    <span class="sym-preview" id="symPreview">—</span>
+    <button class="btn btn-primary" id="insertSymbolBtn" data-i18n="insertBtn">إدراج</button>
   </div>
 </div>
 
