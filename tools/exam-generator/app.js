@@ -18,6 +18,13 @@ const I18N = {
     savedLocal: 'تم الحفظ', savingLocal: 'جارٍ الحفظ...', saveFailed: 'تعذر الحفظ محليًا',
     saveCloudBtn: 'حفظ في حسابي', savingCloudBtn: 'جارِ الحفظ...', savedCloudBtn: 'تم الحفظ ✓',
     signInBtn: 'تسجيل الدخول بقوقل',
+    newExamTitle: 'إنشاء امتحان جديد', newExamDesc: 'ابدأ من صفحة فارغة أو من قالب جاهز، وأضف الأسئلة بسهولة.', newExamGo: 'ابدأ الآن ←',
+    toolsCardTitle: 'أدواتي', toolsCardDesc: 'أداة المعادلات، الرسومات والمنحنيات.',
+    libraryCardTitle: 'مكتبتي', libraryCardDesc: 'المعادلات، الرسومات والجداول المحفوظة.',
+    settingsCardTitle: 'الإعدادات', settingsCardDesc: 'تخصيص التطبيق حسب حاجتك.',
+    templatesCardTitle: 'القوالب', templatesCardDesc: 'قوالب جاهزة لرأس الامتحان والتنسيق.',
+    myExamsTitle: 'امتحاناتي',
+    trueLabel: 'صح', falseLabel: 'خطأ',
     addOpt: '+ إضافة خيار', delOpt: 'حذف الخيار', addStmt: '+ إضافة عبارة', delStmt: 'حذف العبارة',
     addCorr: 'إضافة تصحيح', hideCorr: 'إخفاء التصحيح', correctionLabel: 'التصحيح:',
     moveUp: 'نقل لأعلى', moveDown: 'نقل لأسفل', delQuestion: 'حذف التمرين',
@@ -34,6 +41,13 @@ const I18N = {
     backHome: 'Home', title: 'Exam Generator',
     subtitleList: 'Create a professional exam paper without needing Word skills',
     newExamBtn: '📝 New exam', emptyNote: 'No saved exams yet. Create your first one above.',
+    newExamTitle: 'Create a new exam', newExamDesc: 'Start from a blank page or a template, and add questions easily.', newExamGo: 'Start now ←',
+    toolsCardTitle: 'My tools', toolsCardDesc: 'Equation, drawing and curve tools.',
+    libraryCardTitle: 'My library', libraryCardDesc: 'Saved equations, drawings and tables.',
+    settingsCardTitle: 'Settings', settingsCardDesc: 'Customize the app to your needs.',
+    templatesCardTitle: 'Templates', templatesCardDesc: 'Ready-made header and layout templates.',
+    myExamsTitle: 'My exams',
+    trueLabel: 'True', falseLabel: 'False',
     backToList: 'My exams', shareBtn: 'Share', printBtn: 'Print / Export',
     toolsTitle: 'Tools', toolNormal: 'Regular question', toolMcq: 'Multiple choice', toolTf: 'True / False',
     toolBlank: 'Fill in the blank', toolTable: 'Table', toolImage: 'Image', libBtn: '📚 Insert from library',
@@ -64,6 +78,13 @@ const I18N = {
     backHome: 'Accueil', title: 'Générateur d\u2019examens',
     subtitleList: 'Créez un sujet d\u2019examen professionnel sans maîtriser Word',
     newExamBtn: '📝 Nouvel examen', emptyNote: 'Aucun examen enregistré. Créez le premier ci-dessus.',
+    newExamTitle: 'Créer un nouvel examen', newExamDesc: 'Partez d\u2019une page vierge ou d\u2019un modèle, et ajoutez des questions facilement.', newExamGo: 'Commencer ←',
+    toolsCardTitle: 'Mes outils', toolsCardDesc: 'Outils d\u2019équations, de dessins et de courbes.',
+    libraryCardTitle: 'Ma bibliothèque', libraryCardDesc: 'Équations, dessins et tableaux enregistrés.',
+    settingsCardTitle: 'Paramètres', settingsCardDesc: 'Personnalisez l\u2019application selon vos besoins.',
+    templatesCardTitle: 'Modèles', templatesCardDesc: 'Modèles prêts pour l\u2019en-tête et la mise en page.',
+    myExamsTitle: 'Mes examens',
+    trueLabel: 'Vrai', falseLabel: 'Faux',
     backToList: 'Mes examens', shareBtn: 'Partager', printBtn: 'Imprimer / Exporter',
     toolsTitle: 'Outils', toolNormal: 'Question simple', toolMcq: 'Choix multiple', toolTf: 'Vrai / Faux',
     toolBlank: 'Texte à trous', toolTable: 'Tableau', toolImage: 'Image', libBtn: '📚 Insérer depuis la bibliothèque',
@@ -173,15 +194,29 @@ function renderListView(){
 }
 function escapeHtml(s){ const d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; }
 
-function showEditor(){ $('listView').classList.add('hidden'); $('editorView').classList.remove('hidden'); }
-function showList(){ $('editorView').classList.add('hidden'); $('listView').classList.remove('hidden'); renderListView(); }
+function updateHero(){
+  if(isReadonly || !$('editorView').classList.contains('hidden')){
+    $('heroTitle').textContent = exam.header.title || t('defaultTitle');
+    $('heroSub').textContent = exam.header.subject || '';
+  } else {
+    $('heroTitle').textContent = t('title');
+    $('heroSub').textContent = t('subtitleList');
+  }
+}
+function showEditor(){ $('listView').classList.add('hidden'); $('editorView').classList.remove('hidden'); updateHero(); }
+function showList(){ $('editorView').classList.add('hidden'); $('listView').classList.remove('hidden'); updateHero(); renderListView(); }
 
-$('newExamBtn').addEventListener('click', ()=>{
+$('newExamBtn') && $('newExamBtn').addEventListener('click', startNewExam);
+function startNewExam(){
   exam = freshExam(); selectedId=null; isReadonly=false;
   persistExam();
   showEditor(); render();
-});
+}
+$('newExamCard').addEventListener('click', startNewExam);
 $('backToListBtn').addEventListener('click', showList);
+['goTools','goLibrary','goSettings','goTemplates'].forEach(id=>{
+  $(id).addEventListener('click', ()=> alert(t('libSoon')));
+});
 
 /* ================= Editor logic ================= */
 function addQuestion(type){
@@ -239,7 +274,8 @@ function mcqHTML(q){
 }
 function tfHTML(q){
   const ro = isReadonly;
-  return `<div class="tf-wrap">` + q.statements.map(s=>`
+  const head = `<div class="tf-head"><span>&nbsp;</span><span>${t('trueLabel')}</span><span>${t('falseLabel')}</span><span>&nbsp;</span></div>`;
+  return `<div class="tf-wrap">` + head + q.statements.map(s=>`
     <div class="tf-row" data-sid="${s.id}">
       <input class="tf-text" data-field="text" value="${escapeHtml(s.text)}" placeholder="…" ${ro?'disabled':''}>
       <span class="tf-box"></span>
@@ -334,6 +370,7 @@ function render(){
   $('hGrade').value = exam.header.grade; $('hGrade').disabled = isReadonly;
   $('hDuration').value = exam.header.duration; $('hDuration').disabled = isReadonly;
   $('maxPoints').value = exam.maxPoints; $('maxPoints').disabled = isReadonly;
+  updateHero();
 }
 function renderTotals(){
   $('qCount').textContent = exam.questions.length;

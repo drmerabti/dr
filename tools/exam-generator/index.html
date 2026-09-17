@@ -30,7 +30,7 @@
 </header>
 
 <div class="hero">
-  <h1 class="tool-title" data-i18n="title">مولّد الامتحانات</h1>
+  <h1 class="tool-title" id="heroTitle" data-i18n="title">مولّد الامتحانات</h1>
   <p class="tool-sub" id="heroSub" data-i18n="subtitleList">أنشئ ورقة امتحان احترافية دون الحاجة لإتقان Word</p>
 </div>
 
@@ -38,11 +38,42 @@
 
   <!-- ============ LIST VIEW ============ -->
   <section id="listView" class="view">
-    <div class="list-actions">
-      <button class="btn btn-primary" id="newExamBtn" data-i18n="newExamBtn">📝 امتحان جديد</button>
+    <div class="hub-grid">
+      <div class="hub-card hub-hero" id="newExamCard">
+        <div class="hub-ic hub-ic-hero">📝</div>
+        <h2 data-i18n="newExamTitle">إنشاء امتحان جديد</h2>
+        <p data-i18n="newExamDesc">ابدأ من صفحة فارغة أو من قالب جاهز، وأضف الأسئلة بسهولة.</p>
+        <span class="hub-go" data-i18n="newExamGo">ابدأ الآن ←</span>
+      </div>
+      <div class="hub-mini-grid">
+        <div class="hub-card hub-mini" id="goTools">
+          <div class="hub-ic hub-ic-tools">🧰</div>
+          <h3 data-i18n="toolsCardTitle">أدواتي</h3>
+          <p data-i18n="toolsCardDesc">أداة المعادلات، الرسومات والمنحنيات.</p>
+        </div>
+        <div class="hub-card hub-mini" id="goLibrary">
+          <div class="hub-ic hub-ic-library">📚</div>
+          <h3 data-i18n="libraryCardTitle">مكتبتي</h3>
+          <p data-i18n="libraryCardDesc">المعادلات، الرسومات والجداول المحفوظة.</p>
+        </div>
+        <div class="hub-card hub-mini" id="goSettings">
+          <div class="hub-ic hub-ic-settings">⚙️</div>
+          <h3 data-i18n="settingsCardTitle">الإعدادات</h3>
+          <p data-i18n="settingsCardDesc">تخصيص التطبيق حسب حاجتك.</p>
+        </div>
+        <div class="hub-card hub-mini" id="goTemplates">
+          <div class="hub-ic hub-ic-templates">🎨</div>
+          <h3 data-i18n="templatesCardTitle">القوالب</h3>
+          <p data-i18n="templatesCardDesc">قوالب جاهزة لرأس الامتحان والتنسيق.</p>
+        </div>
+      </div>
     </div>
-    <div class="exam-grid" id="examGrid"></div>
-    <p class="empty-note hidden" id="emptyNote" data-i18n="emptyNote">لا توجد امتحانات محفوظة بعد. أنشئ أول امتحان من الأعلى.</p>
+
+    <div class="exam-list-section">
+      <h3 data-i18n="myExamsTitle">امتحاناتي</h3>
+      <div class="exam-grid" id="examGrid"></div>
+      <p class="empty-note hidden" id="emptyNote" data-i18n="emptyNote">لا توجد امتحانات محفوظة بعد. أنشئ أول امتحان من الأعلى.</p>
+    </div>
   </section>
 
   <!-- ============ EDITOR VIEW ============ -->
