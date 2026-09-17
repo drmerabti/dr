@@ -9,7 +9,7 @@ const I18N = {
     toolBlank: 'أكمل الفراغ', toolTable: 'جدول', toolImage: 'صورة', libBtn: '📚 إدراج من مكتبتي',
     qCountLabel: 'عدد التمارين:', totalLabel: 'المجموع:',
     repLine1: 'الجمهورية الجزائرية الديمقراطية الشعبية', repLine2: 'وزارة التربية الوطنية',
-    institutionPh: 'اسم المؤسسة', directoratePh: 'مديرية التربية لولاية',
+    institutionPh: 'اسم المؤسسة', teacherPh: 'أستاذ: ..............',
     subjectLabel: 'المادة:', gradeLabel: 'المستوى:', durationLabel: 'المدة:',
     emptyPageHint: 'اختر أداة من القائمة على اليمين لبدء إنشاء الامتحان',
     propsEmpty: 'اختر سؤالاً لعرض خصائصه هنا (النقاط...)', propsPoints: 'النقاط',
@@ -53,7 +53,7 @@ const I18N = {
     toolBlank: 'Fill in the blank', toolTable: 'Table', toolImage: 'Image', libBtn: '📚 Insert from library',
     qCountLabel: 'Exercises:', totalLabel: 'Total:',
     repLine1: 'People\u2019s Democratic Republic of Algeria', repLine2: 'Ministry of National Education',
-    institutionPh: 'Institution name', directoratePh: 'Education directorate',
+    institutionPh: 'Institution name', teacherPh: 'Teacher: ..............',
     subjectLabel: 'Subject:', gradeLabel: 'Grade:', durationLabel: 'Duration:',
     emptyPageHint: 'Pick a tool from the panel to start building the exam',
     propsEmpty: 'Select a question to see its properties (points...)', propsPoints: 'Points',
@@ -90,7 +90,7 @@ const I18N = {
     toolBlank: 'Texte à trous', toolTable: 'Tableau', toolImage: 'Image', libBtn: '📚 Insérer depuis la bibliothèque',
     qCountLabel: 'Exercices :', totalLabel: 'Total :',
     repLine1: 'République Algérienne Démocratique et Populaire', repLine2: 'Ministère de l\u2019Éducation Nationale',
-    institutionPh: 'Nom de l\u2019établissement', directoratePh: 'Direction de l\u2019éducation de la wilaya',
+    institutionPh: 'Nom de l\u2019établissement', teacherPh: 'Enseignant : ..............',
     subjectLabel: 'Matière :', gradeLabel: 'Niveau :', durationLabel: 'Durée :',
     emptyPageHint: 'Choisissez un outil dans le panneau pour commencer',
     propsEmpty: 'Sélectionnez une question pour voir ses propriétés (points...)', propsPoints: 'Points',
@@ -140,7 +140,7 @@ function uid(p){ return (p||'exam_') + Date.now().toString(36) + Math.random().t
 function freshExam(){
   return {
     id: uid(),
-    header: { institution:'', directorate:'', title: t('defaultTitle'), subject:'', grade:'', duration:'' },
+    header: { institution:'', teacher:'', title: t('defaultTitle'), subject:'', grade:'', duration:'' },
     questions: [],
     maxPoints: 20,
     updatedAt: Date.now(),
@@ -352,7 +352,7 @@ function questionHTML(q, index){
           ${controls}
         </div>
       </div>
-      <textarea class="q-text" placeholder="…" ${isReadonly?'disabled':''}>${escapeHtml(q.text)}</textarea>
+      <textarea class="q-text" placeholder="…" ${isReadonly?'disabled':''} style="${q.textW?`width:${q.textW};`:''}${q.textH?`height:${q.textH};`:''}">${escapeHtml(q.text)}</textarea>
       ${body}
       ${imagesHTML(q)}
     </div>`;
@@ -364,7 +364,7 @@ function render(){
   else{ $('emptyHint').style.display='none'; wrap.innerHTML = exam.questions.map((q,i)=>questionHTML(q,i)).join(''); attachQuestionEvents(); }
   renderTotals(); renderProps();
   $('hInstitution').value = exam.header.institution; $('hInstitution').disabled = isReadonly;
-  $('hDirectorate').value = exam.header.directorate; $('hDirectorate').disabled = isReadonly;
+  $('hTeacher').value = exam.header.teacher; $('hTeacher').disabled = isReadonly;
   $('hTitle').value = exam.header.title; $('hTitle').disabled = isReadonly;
   $('hSubject').value = exam.header.subject; $('hSubject').disabled = isReadonly;
   $('hGrade').value = exam.header.grade; $('hGrade').disabled = isReadonly;
@@ -395,7 +395,18 @@ function attachQuestionEvents(){
     });
 
     const ta = el.querySelector('.q-text');
-    if(ta){ ta.addEventListener('input', e=>{ q.text = e.target.value; scheduleSave(); }); ta.addEventListener('focus', ()=> selectQuestionLight(id)); }
+    if(ta){
+      ta.addEventListener('input', e=>{ q.text = e.target.value; scheduleSave(); });
+      ta.addEventListener('focus', ()=> selectQuestionLight(id));
+      if(!isReadonly && window.ResizeObserver){
+        const robs = new ResizeObserver(()=>{
+          q.textW = ta.style.width || q.textW;
+          q.textH = ta.style.height || q.textH;
+          scheduleSave();
+        });
+        robs.observe(ta);
+      }
+    }
 
     if(isReadonly) return;
 
@@ -547,7 +558,7 @@ function setImageTool(on){
 $('imageToolBtn').addEventListener('click', ()=> setImageTool(!placingImage));
 
 /* ================= Header inputs ================= */
-const headerMap = { hInstitution:'institution', hDirectorate:'directorate', hTitle:'title', hSubject:'subject', hGrade:'grade', hDuration:'duration' };
+const headerMap = { hInstitution:'institution', hTeacher:'teacher', hTitle:'title', hSubject:'subject', hGrade:'grade', hDuration:'duration' };
 Object.keys(headerMap).forEach(id=>{
   $(id).addEventListener('input', e=>{ exam.header[headerMap[id]] = e.target.value; scheduleSave(); });
 });
