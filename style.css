@@ -100,6 +100,67 @@ a{ color: inherit; }
   display:flex; align-items:center; gap:10px;
 }
 
+/* ---- Fixed-order topbar (logo + social cluster) ---- */
+.site-topbar .topbar-inner{
+  direction: rtl;
+}
+.brand-cluster{
+  display:flex; align-items:center; gap:16px;
+}
+.brand-logo{
+  display:inline-flex;
+  width:40px; height:40px;
+  border-radius:50%;
+  overflow:hidden;
+  flex-shrink:0;
+}
+.brand-logo img{
+  width:100%; height:100%;
+  object-fit:cover;
+  display:block;
+}
+.social-cluster{
+  position:relative;
+  width:32px; height:32px;
+}
+.social-icon{
+  position:absolute;
+  top:50%; left:50%;
+  width:32px; height:32px;
+  margin:-16px 0 0 -16px;
+  border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow: 0 2px 6px rgba(21,36,49,.2);
+  text-decoration:none;
+  transition: transform .5s cubic-bezier(.22,1,.36,1), box-shadow .3s ease;
+  transform: translate(calc(var(--i) * 3px), calc(var(--i) * -2px)) scale(.8);
+}
+.social-icon svg{ width:16px; height:16px; display:block; }
+.social-icon:nth-child(1){ z-index:7; }
+.social-icon:nth-child(2){ z-index:6; }
+.social-icon:nth-child(3){ z-index:5; }
+.social-icon:nth-child(4){ z-index:4; }
+.social-icon:nth-child(5){ z-index:3; }
+.social-icon:nth-child(6){ z-index:2; }
+.social-icon:nth-child(7){ z-index:1; }
+.social-cluster:hover .social-icon{
+  transform: translate(var(--tx), var(--ty)) scale(1.08);
+  z-index: 9;
+}
+.social-cluster:hover .social-icon:hover{ z-index:10; }
+.si-facebook{ background:#1877F2; color:#fff; }
+.si-instagram{ background:radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%); color:#fff; }
+.si-youtube{ background:#FF0000; color:#fff; }
+.si-tiktok{ background:#000; color:#fff; }
+.si-threads{ background:#000; color:#fff; }
+.si-linkedin{ background:#0A66C2; color:#fff; }
+.si-researchgate{ background:#00CCBB; color:#fff; }
+
+@media (max-width: 480px){
+  .social-icon{ width:28px; height:28px; margin:-14px 0 0 -14px; }
+  .social-icon svg{ width:14px; height:14px; }
+}
+
 /* ---- Theme toggle ---- */
 /* ---- Auth ---- */
 .auth-wrap{ position: relative; }
