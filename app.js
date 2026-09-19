@@ -291,6 +291,7 @@ const CONTENT = {
       desc_en: 'Step-by-step video lessons with interactive games after each one — 750 DA/month.',
       url: 'courses/word-course/index.html',
       icon: ICONS.wordApp,
+      comingSoon: true,
     },
     {
       id: 'course-excel',
@@ -300,6 +301,7 @@ const CONTENT = {
       desc_en: 'Step-by-step video lessons with interactive exercises after each one — 1000 DA/month.',
       url: 'courses/excel-course/index.html',
       icon: ICONS.excelApp,
+      comingSoon: true,
     },
   ],
   lessons: [
@@ -332,6 +334,7 @@ const CONTENT = {
       category: 'Access',
       url: 'lessons/access-database/',
       icon: ICONS.accessApp,
+      comingSoon: true,
     },
     {
       id: 'lesson-word-full',
@@ -342,6 +345,7 @@ const CONTENT = {
       category: 'Word',
       url: 'lessons/word-full/',
       icon: ICONS.wordApp,
+      comingSoon: true,
     },
     { id: 'lesson-excel-full', title_ar: 'دورة Excel الشاملة (مبتدئ إلى محترف)', title_en: 'Complete Excel Course (Beginner to Advanced)',
       desc_ar: 'دورة كاملة تغطي إكسل من الأساسيات إلى الدوال المتقدمة وPower Query وVBA.', desc_en: 'A complete course covering Excel from basics to advanced functions, Power Query, and VBA.',
@@ -363,11 +367,11 @@ const CONTENT = {
     { id: 'app-ai-detector', title_ar: 'كاشف النص الآلي', title_en: 'AI Text Detector', title_fr: 'Détecteur de texte IA',
       desc_ar: 'تقدير استرشادي بمساعدة الذكاء الاصطناعي لاحتمال أن يكون نص معين مولّدًا آليًا — يتطلب تسجيل الدخول.',
       desc_en: 'AI-assisted indicative estimate of how likely a text was AI-generated — requires login.',
-      url: 'tools/ai-detector/', icon: ICONS.aiDetectorApp },
+      url: 'tools/ai-detector/', icon: ICONS.aiDetectorApp, comingSoon: true },
     { id: 'app-humanizer', title_ar: 'تحويل النص من آلي إلى بشري', title_en: 'AI to Humane', title_fr: 'IA vers Humain',
       desc_ar: 'أعد صياغة نصك بأسلوب أكثر طبيعية مع الحفاظ التام على المعنى — يتطلب تسجيل الدخول.',
       desc_en: 'Rewrite your text in a more natural style while fully preserving its meaning — requires login.',
-      url: 'tools/humanizer/', icon: ICONS.humanizerApp },
+      url: 'tools/humanizer/', icon: ICONS.humanizerApp, comingSoon: true },
     {
       id: 'app-summarizer',
       title_ar: 'AI Summarizer',
@@ -384,15 +388,6 @@ const CONTENT = {
       desc_ar: 'نظّف النص من المسافات والرموز الزائدة تلقائيًا.',
       desc_en: 'Automatically clean text from extra spaces and symbols.',
       icon: ICONS.textCleanApp,
-      comingSoon: true,
-    },
-    {
-      id: 'app-mail-assist',
-      title_ar: 'مساعد البريد المهني',
-      title_en: 'Professional Email Assistant',
-      desc_ar: 'قوالب جاهزة ومساعدة اختيارية بالذكاء الاصطناعي لصياغة إيميلات احترافية.',
-      desc_en: 'Ready templates and optional AI help for professional email writing.',
-      icon: ICONS.mailAssistApp,
       comingSoon: true,
     },
   ],
@@ -421,28 +416,28 @@ const CONTENT = {
     { id: 'tool-exam-generator', title_ar: 'مولّد الامتحانات', title_en: 'Exam Generator',
       desc_ar: 'أنشئ ورقة امتحان احترافية بثمانية أنواع تمارين، ترويسة رسمية، وتصدير PDF — بدون الحاجة لإتقان Word.',
       desc_en: 'Create a professional exam paper with eight exercise types, an official header, and PDF export — no Word skills needed.',
-      url: 'tools/exam-generator/', icon: ICONS.reportApp, family: 'edu', tier: 'pro' },
+      url: 'tools/exam-generator/', icon: ICONS.reportApp, family: 'edu', tier: 'pro', comingSoon: true },
      { id: 'tool-survey-builder', title_ar: 'مولّد الاستبيان', title_en: 'Survey Builder',
   desc_ar: 'أنشئ استبيانك الخاص وشاركه واحصل على تحليل النتائج تلقائيًا.', desc_en: 'Build your own survey, share it, and get automatic results analysis.',
-  url: 'tools/survey-builder/', icon: ICONS.numbersApp, family: 'edu', tier: 'promax' },
+  url: 'tools/survey-builder/', icon: ICONS.numbersApp, family: 'edu', tier: 'promax', comingSoon: true },
     { id: 'tool-budget', title_ar: 'تسيير الميزانية الشهرية', title_en: 'Monthly Budget Tracker',
       desc_ar: 'وزّع دخلك على أظرف ذكية، تتبّع مصاريفك اليومية، واعرف المتاح لك كل يوم — يتطلب تسجيل الدخول.', desc_en: 'Split your income into smart envelopes, track daily spending, and see your daily allowance — requires login.',
-      url: 'tools/budget/', icon: ICONS.budgetApp, family: 'home', tier: 'pro' },
+      url: 'tools/budget/', icon: ICONS.budgetApp, family: 'home', tier: 'pro', comingSoon: true },
     { id: 'tool-cert-gen', title_ar: 'أداة توليد الشهادات', title_en: 'Certificate Generator',
       desc_ar: 'اختر قالبًا، أضف المضمون وختمك، واحصل على شهادة جاهزة — يتطلب تسجيل الدخول.', desc_en: 'Pick a template, add your content and stamp, and get a ready certificate — requires login.',
       icon: ICONS.certGenApp, family: 'edu', comingSoon: true, tier: 'pro' },
     { id: 'tool-cover-page', title_ar: 'مولّد صفحات الغلاف', title_en: 'Cover Page Generator',
       desc_ar: 'أنشئ غلافًا احترافيًا لتقاريرك وبحوثك — 10 قوالب وإطارات اختيارية — يتطلب تسجيل الدخول.', desc_en: 'Create a professional cover page for your reports and research — 10 templates and optional frames — requires login.',
-      url: 'tools/cover-page/', icon: ICONS.coverPageApp, family: 'edu', tier: 'pro' },
+      url: 'tools/cover-page/', icon: ICONS.coverPageApp, family: 'edu', tier: 'pro', comingSoon: true },
     { id: 'tool-admin-request', title_ar: 'مولّد الطلب الإداري', title_en: 'Administrative Request Generator',
       desc_ar: 'أنشئ طلبات رسمية جاهزة بمساعدة الذكاء الاصطناعي (إجازة، توظيف، استفادة...) — يتطلب تسجيل الدخول.', desc_en: 'Generate ready official requests with AI assistance (leave, employment, benefit...) — requires login.',
       url: 'tools/admin-request/', icon: ICONS.adminReqApp, family: 'admin', tier: 'pro' },
     { id: 'tool-salary-calc', title_ar: 'حاسبة الراتب', title_en: 'Salary Calculator',
       desc_ar: 'احسب الراتب الصافي مع IRG وCNAS والمنح العائلية، مع كشف راتب مفصل قابل للطباعة.', desc_en: 'Calculate net salary with IRG, CNAS, and family allowances, with a detailed printable payslip.',
-      url: 'tools/salary-calc/', icon: ICONS.salaryApp, family: 'home', tier: 'free' },
+      url: 'tools/salary-calc/', icon: ICONS.salaryApp, family: 'home', tier: 'free', comingSoon: true },
     { id: 'tool-date-diff', title_ar: 'حاسبة الفرق بين تاريخين', title_en: 'Date Difference Calculator',
       desc_ar: 'احسب الفرق بالأيام والأشهر والسنوات بين تاريخين، أو استخدمها لمعرفة سنّك بالضبط.', desc_en: 'Calculate the difference in days, months, and years between two dates, or use it to find your exact age.',
-      url: 'tools/date-diff/', icon: ICONS.dateDiffApp, family: 'calc', tier: 'free' },
+      url: 'tools/date-diff/', icon: ICONS.dateDiffApp, family: 'calc', tier: 'free', comingSoon: true },
 { id: 'tool-receipt', title_ar: 'مولّد وصل استلام', title_en: 'Receipt Generator',
   desc_ar: 'أنشئ وصل استلام رسمي جاهز للطباعة، مع تحويل المبلغ إلى حروف تلقائيًا.', desc_en: 'Generate an official, print-ready receipt, with automatic amount-to-words.',
   url: 'tools/receipt-generator/', icon: ICONS.receiptApp, family: 'admin', tier: 'pro' },
@@ -457,30 +452,30 @@ const CONTENT = {
       url: 'tools/qr-generator/', icon: ICONS.qrApp, family: 'admin', tier: 'free' },
 { id: 'tool-teacher-note', title_ar: 'مولّد مذكرة أستاذ', title_en: 'Lesson Plan Generator',
   desc_ar: 'أنشئ مذكرة تحضير دروس منظمة وجاهزة للأساتذة.', desc_en: 'Create organized, ready lesson-preparation notes for teachers.',
-  url: 'tools/lesson-plan-generator/', icon: ICONS.teacherNoteApp, family: 'edu', tier: 'pro' },
+  url: 'tools/lesson-plan-generator/', icon: ICONS.teacherNoteApp, family: 'edu', tier: 'pro', comingSoon: true },
     { id: 'tool-id-card', title_ar: 'مولّد بطاقات الهوية', title_en: 'ID Card Generator',
       desc_ar: 'أنشئ بطاقة هوية احترافية بوجهين، بعدة ثيمات ورمز QR حقيقي — يتطلب تسجيل الدخول.', desc_en: 'Generate a professional two-sided ID card with multiple themes and a real QR code — requires login.',
-      url: 'tools/id-cards/', icon: ICONS.idCardApp, family: 'admin', tier: 'pro' },
+      url: 'tools/id-cards/', icon: ICONS.idCardApp, family: 'admin', tier: 'pro', comingSoon: true },
     { id: 'tool-attendance-payroll', title_ar: 'إدارة الحضور والرواتب', title_en: 'Attendance & Payroll Manager',
       desc_ar: 'نظام متكامل لإدارة المصالح والمناصب والموظفين — يتطلب تسجيل الدخول.', desc_en: 'A complete system for managing departments, positions, and employees — requires login.',
-      url: 'tools/attendance-payroll/', icon: ICONS.attendanceApp, family: 'admin', tier: 'promax' },
+      url: 'tools/attendance-payroll/', icon: ICONS.attendanceApp, family: 'admin', tier: 'promax', comingSoon: true },
 { id: 'tool-report-gen', title_ar: 'مولّد تقرير مهني', title_en: 'Professional Report Generator',
   desc_ar: 'أنشئ تقارير عمل احترافية بقوالب جاهزة (عام، حادثة، أداء دوري، محضر اجتماع)، فهرس تلقائي، وتصدير PDF متعدد الصفحات — بثلاث لغات.',
   desc_en: 'Generate professional work reports from ready templates (general, incident, periodic performance, meeting minutes), with auto table of contents and multi-page PDF export — in three languages.',
-  url: 'tools/tool-report-gen/', icon: ICONS.reportApp, family: 'admin', tier: 'pro' },
+  url: 'tools/tool-report-gen/', icon: ICONS.reportApp, family: 'admin', tier: 'pro', comingSoon: true },
     { id: 'tool-hours-calc', title_ar: 'حاسبة عدد الساعات', title_en: 'Hours Calculator',
       desc_ar: 'احسب عدد ساعات العمل بين وقتين.', desc_en: 'Calculate the number of work hours between two times.',
       icon: ICONS.hoursApp, family: 'calc', comingSoon: true, tier: 'free' },
     { id: 'tool-hijri', title_ar: 'محوّل هجري/ميلادي', title_en: 'Hijri/Gregorian Converter',
       desc_ar: 'حوّل أي تاريخ بالاتجاهين بضغطة واحدة.', desc_en: 'Convert any date both ways in one click.',
-      url: 'tools/hijri/', icon: ICONS.hijriApp, family: 'calc', tier: 'free' },
+      url: 'tools/hijri/', icon: ICONS.hijriApp, family: 'calc', tier: 'free', comingSoon: true },
     { id: 'tool-grade-avg', title_ar: 'حاسبة المعدل', title_en: 'Grade Average Calculator',
       desc_ar: 'احسب معدلك بمرونة كاملة — مواد ومعاملات خاصة بك، بأي عدد ولأي مستوى دراسي.', desc_en: 'Calculate your average with full flexibility — your own subjects and weights, for any education level.',
-      url: 'tools/grade-calculator/', icon: ICONS.gradeApp, family: 'edu', tier: 'free' },
+      url: 'tools/grade-calculator/', icon: ICONS.gradeApp, family: 'edu', tier: 'free', comingSoon: true },
     { id: 'tool-memo-organizer', title_ar: 'تنظيم المذكرات', title_en: 'Memo Organizer',
       desc_ar: 'ارفع مذكرتك الفوضوية، وخلّها تنظّم تلقائيًا بالذكاء الاصطناعي — معاينة مجانية، والتحميل بدفعة واحدة — يتطلب تسجيل الدخول.',
       desc_en: 'Upload your messy memo and let AI organize it automatically — free preview, one-time payment to download — requires login.',
-      url: 'tools/memo-organizer/', icon: ICONS.memoOrganizerApp, family: 'edu', tier: 'free' },
+      url: 'tools/memo-organizer/', icon: ICONS.memoOrganizerApp, family: 'edu', tier: 'free', comingSoon: true },
 { id: 'tool-schedule', title_ar: 'مولّد جدول زمني', title_en: 'Schedule Generator',
   desc_ar: 'صمّم جدولك الأسبوعي بمهام ملوّنة، احفظه تلقائيًا، واطبعه بضغطة واحدة.', desc_en: 'Design your weekly schedule with color-coded tasks, auto-saved, and print it in one click.',
   url: 'tools/schedule/', icon: ICONS.scheduleApp, family: 'edu', tier: 'pro' },
@@ -490,7 +485,7 @@ const CONTENT = {
     { id: 'tool-pdf-services', title_ar: 'خدمات PDF', title_en: 'PDF Services',
       desc_ar: 'حوّل Word إلى PDF، ادمج أو قسّم ملفات PDF، أو حوّل بين PDF والصور — كل شي بأداة واحدة.',
       desc_en: 'Convert Word to PDF, merge or split PDF files, or convert between PDF and images — all in one tool.',
-      url: 'tools/pdf-toolkit/', icon: ICONS.pdfToImgApp, family: 'pdf', tier: 'free' },
+      url: 'tools/pdf-toolkit/', icon: ICONS.pdfToImgApp, family: 'pdf', tier: 'free', comingSoon: true },
     { id: 'tool-pdf-to-word', title_ar: 'تحويل PDF إلى Word', title_en: 'PDF to Word',
       desc_ar: 'حوّل ملف PDF إلى مستند Word قابل للتعديل مباشرة.',
       desc_en: 'Convert a PDF file into an editable Word document.',
@@ -706,7 +701,7 @@ function renderCoursesSection(){
   `).join('');
 }
 
-function renderSectionItems(){
+async function renderSectionItems(){
   const wrap = document.getElementById('sectionItems');
   if (!wrap) return;
   const key = document.body.dataset.section;
@@ -715,9 +710,15 @@ function renderSectionItems(){
   if (key === 'tools'){
     renderFamilyFilter(allItems);
   }
-  const items = (key === 'tools' && activeFamily)
+  let items = (key === 'tools' && activeFamily)
     ? allItems.filter(i => Array.isArray(i.family) ? i.family.includes(activeFamily) : i.family === activeFamily)
     : allItems;
+
+  // Ready items stay pinned above "coming soon" ones, in each section, without
+  // otherwise disturbing the order authors set in CONTENT.
+  items = [...items].sort((a, b) => (a.comingSoon ? 1 : 0) - (b.comingSoon ? 1 : 0));
+
+  const admin = await isAdminUser();
 
   wrap.innerHTML = '';
   if (items.length === 0){
@@ -726,7 +727,7 @@ function renderSectionItems(){
   }
 
   items.forEach(item => {
-    if (item.comingSoon){
+    if (item.comingSoon && !admin){
       const card = document.createElement('div');
       card.className = 'item-card coming-soon-card';
       card.innerHTML = `
@@ -751,6 +752,9 @@ function renderSectionItems(){
       const showFav = (key === 'tools' || key === 'apps');
       const tierBadge = item.tier === 'pro' ? `<span class="tier-badge tier-pro">Pro</span>`
         : item.tier === 'promax' ? `<span class="tier-badge tier-promax">Pro Max</span>` : '';
+      // Admin previewing a not-yet-launched item: keep the same "coming soon" look
+      // everyone else sees, but this instance is a real, clickable link underneath.
+      const comingSoonBadge = (item.comingSoon && admin) ? `<span class="coming-soon-badge">${lang === 'ar' ? 'قريبًا' : 'Coming soon'}</span>` : '';
       card.innerHTML = `
         ${tierBadge}
         ${showFav ? `<button type="button" class="fav-star-btn ${userFavorites.has(item.id) ? 'active' : ''}" data-fav-id="${item.id}" data-fav-type="${key}" aria-label="favorite">
@@ -759,6 +763,7 @@ function renderSectionItems(){
         ${item.icon ? `<span class="icon-badge badge-${key}">${item.icon}</span>` : ''}
         <h3>${lang === 'ar' ? item.title_ar : item.title_en}</h3>
         <p>${lang === 'ar' ? item.desc_ar : item.desc_en}</p>
+        ${comingSoonBadge}
         `;
       wrap.appendChild(card);
       if (showFav){
