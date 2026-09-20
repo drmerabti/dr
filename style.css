@@ -116,13 +116,25 @@ a{ color: inherit; }
 .social-icon{
   display: flex; align-items: center; justify-content: center;
   width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0;
-  background: var(--card-bg);
-  border: 1px solid var(--line);
-  box-shadow: 0 2px 8px rgba(21,36,49,.06);
-  transition: background .15s ease;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(21,36,49,.10);
+  transition: transform .15s ease;
 }
-.social-icon:hover{ background: var(--accent-soft); }
-.social-icon svg{ width: 20px; height: 20px; display: block; }
+.social-icon:hover{ transform: translateY(-2px); }
+.social-icon svg{ width: 42px; height: 42px; display: block; }
+
+@media (max-width: 760px){
+  main{ padding-bottom: 130px; }
+  .social-sidebar{
+    top: auto; bottom: 14px; left: 50%; right: auto;
+    transform: translateX(-50%);
+    flex-direction: row;
+    gap: 8px;
+    max-width: calc(100vw - 20px);
+  }
+  .social-icon{ width: 34px; height: 34px; }
+  .social-icon svg{ width: 34px; height: 34px; }
+}
 
 /* ---- Theme toggle ---- */
 /* ---- Auth ---- */
