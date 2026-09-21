@@ -37,6 +37,10 @@
       <button id="sfQClear" class="sf-search-x" type="button" aria-label="clear"><i data-ic="close"></i></button>
     </div>
     <div class="sf-stats" id="sfStats"></div>
+    <div class="sf-cloudrow">
+      <a id="sfCloud" class="sf-cloud out"></a>
+      <button class="sf-btn sf-btn-sm" id="sfHist" type="button" hidden><i data-ic="clock"></i><span data-i="hist" style="display:inline"></span></button>
+    </div>
     <div class="sf-sample" id="sfSample" hidden></div>
   </section>
 
@@ -148,6 +152,13 @@
 <input type="file" id="sfFile" accept=".xlsx,.xls,.xlsm,.csv,.ods" hidden>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<!-- Firebase (نفس إصدار وترتيب باقي صفحات الموقع) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="../../firebase-init.js"></script>
+
 <script src="script.js"></script>
 </body>
 </html>

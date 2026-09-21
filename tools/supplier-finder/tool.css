@@ -353,6 +353,25 @@ a.sf-ln:hover{ background:var(--sf-accent-soft); }
 .sf-side-tools .sf-btn{ width:100%; justify-content:flex-start; }
 .sf-side-tools .sf-btn span{ display:inline !important; }
 
+
+/* ---------- السحابة والسجل ---------- */
+.sf-cloudrow{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-top:12px; }
+.sf-cloud{
+  display:inline-flex; align-items:center; gap:6px; padding:7px 16px; border-radius:999px; background:rgba(255,255,255,.75);
+  border:1px solid var(--sf-line); font-size:.85rem; font-weight:700; color:var(--sf-soft); text-decoration:none;
+}
+a.sf-cloud[href]:hover{ background:var(--sf-accent-soft); }
+.sf-cloud.saved{ background:var(--sf-green-soft); color:#1E6B45; border-color:transparent; }
+.sf-cloud.saving, .sf-cloud.loading{ background:var(--sf-amber-soft); color:#7A5A08; border-color:transparent; }
+.sf-cloud.err{ background:var(--sf-red-soft); color:var(--sf-red); border-color:transparent; }
+.sf-btn-sm{ height:34px; padding:0 14px; font-size:.82rem; }
+.sf-hist-item{
+  display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
+  padding:12px 14px; margin-top:8px; border:1px solid var(--sf-line); border-radius:14px; background:#F8FBFD;
+}
+.sf-hist-info{ min-width:0; flex:1 1 260px; }
+.sf-hist-acts{ display:flex; gap:6px; flex-wrap:wrap; }
+
 /* ---------- إفلات الملفات + إشعار ---------- */
 .sf-drop{
   position:fixed; inset:0; background:rgba(47,87,112,.88); color:#fff; z-index:80;

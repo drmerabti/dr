@@ -101,6 +101,9 @@ ar:{
   popup:'اسمح بالنوافذ المنبثقة لعرض المحضر ثم أعد المحاولة.', cmpSheet:'المقارنة',
   confirmClear:'سيتم مسح كل البيانات المحفوظة على هذا الجهاز. هل تريد المتابعة؟', cleared:'تم مسح البيانات',
   storeFail:'تعذّر حفظ البيانات محليًا (الملف كبير جدًا) — ستبقى متاحة حتى تغلق الصفحة.',
+  cloudOff:'السحابة غير متاحة', cloudOut:'سجّل الدخول من الصفحة الرئيسية لحفظ بياناتك في السحابة', cloudLoading:'جارٍ تحميل بياناتك…', cloudSaving:'جارٍ الحفظ…', cloudSaved:'بياناتك محفوظة في السحابة', cloudErr:'تعذّرت المزامنة مع السحابة', cloudRules:'تحقّق من نشر قواعد Firestore',
+  cloudNeedLogin:'سجّل الدخول أولًا لاستعمال السجل.', cloudConflict:'توجد بيانات على هذا الجهاز وأخرى مختلفة في السحابة.\n\nموافق = استخدام بيانات السحابة\nإلغاء = رفع بيانات هذا الجهاز واستبدال السحابة',
+  hist:'السجل', histTitle:'سجل المحاضر والطلبات', histCmp:'محاضر المقارنة', histRfq:'طلبات عروض الأسعار', histEmpty:'لا يوجد شيء محفوظ بعد.', histDelete:'حذف', histConfirm:'حذف هذا العنصر نهائيًا؟', histSup:'مورد', saveCmp:'حفظ في السجل', cmpSaved:'تم الحفظ في السجل',
   tplName:'modele_fournisseurs', expName:'الموردون', cmpFile:'مقارنة_العروض', da:'دج'
 },
 fr:{
@@ -158,6 +161,9 @@ fr:{
   popup:'Autorisez les fenêtres pop-up pour afficher le PV puis réessayez.', cmpSheet:'Comparaison',
   confirmClear:'Toutes les données enregistrées sur cet appareil seront effacées. Continuer ?', cleared:'Données effacées',
   storeFail:'Impossible d’enregistrer localement (fichier trop volumineux) — les données restent disponibles jusqu’à la fermeture de la page.',
+  cloudOff:'Cloud indisponible', cloudOut:'Connectez-vous depuis la page d’accueil pour sauvegarder vos données dans le cloud', cloudLoading:'Chargement de vos données…', cloudSaving:'Enregistrement…', cloudSaved:'Données sauvegardées dans le cloud', cloudErr:'Échec de la synchronisation', cloudRules:'Vérifiez le déploiement des règles Firestore',
+  cloudNeedLogin:'Connectez-vous d’abord pour utiliser l’historique.', cloudConflict:'Des données existent sur cet appareil et d’autres, différentes, dans le cloud.\n\nOK = utiliser les données du cloud\nAnnuler = envoyer les données de cet appareil et remplacer le cloud',
+  hist:'Historique', histTitle:'Historique des PV et demandes', histCmp:'PV de comparaison', histRfq:'Demandes de prix', histEmpty:'Rien d’enregistré pour l’instant.', histDelete:'Supprimer', histConfirm:'Supprimer définitivement cet élément ?', histSup:'fournisseur(s)', saveCmp:'Enregistrer dans l’historique', cmpSaved:'Enregistré dans l’historique',
   tplName:'modele_fournisseurs', expName:'fournisseurs', cmpFile:'comparaison_offres', da:'DA'
 },
 en:{
@@ -215,6 +221,9 @@ en:{
   popup:'Allow pop-ups to view the report, then try again.', cmpSheet:'Comparison',
   confirmClear:'All data saved on this device will be erased. Continue?', cleared:'Data cleared',
   storeFail:'Could not save data locally (file too large) — it stays available until you close the page.',
+  cloudOff:'Cloud unavailable', cloudOut:'Sign in from the home page to save your data to the cloud', cloudLoading:'Loading your data…', cloudSaving:'Saving…', cloudSaved:'Your data is saved to the cloud', cloudErr:'Cloud sync failed', cloudRules:'Check that the Firestore rules are deployed',
+  cloudNeedLogin:'Sign in first to use the history.', cloudConflict:'This device has data and the cloud has different data.\n\nOK = use the cloud data\nCancel = upload this device’s data and replace the cloud',
+  hist:'History', histTitle:'Reports & requests history', histCmp:'Comparison reports', histRfq:'Quotation requests', histEmpty:'Nothing saved yet.', histDelete:'Delete', histConfirm:'Delete this item permanently?', histSup:'supplier(s)', saveCmp:'Save to history', cmpSaved:'Saved to history',
   tplName:'modele_fournisseurs', expName:'suppliers', cmpFile:'offers_comparison', da:'DZD'
 }};
 
@@ -235,13 +244,15 @@ const IC = {
   spark:'<path d="M12 3l2.2 5.8L20 11l-5.8 2.2L12 19l-2.2-5.8L4 11l5.8-2.2z"/>',
   send:'<path d="M4 12l16-8-6 16-3-7z"/>',
   check:'<path d="M5 12l5 5 9-10"/>',
+  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
   cols:'<rect x="3" y="4" width="7" height="16" rx="1.5"/><rect x="14" y="4" width="7" height="16" rx="1.5"/>'
 };
 function icon(name){ const i=document.createElement('i'); i.setAttribute('data-ic',name); i.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+(IC[name]||'')+'</svg>'; return i; }
 function paintIcons(root){ (root||document).querySelectorAll('i[data-ic]').forEach(i=>{ if(!i.firstChild) i.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+(IC[i.getAttribute('data-ic')]||'')+'</svg>'; }); }
 
 /* ---------------- الحالة ---------------- */
-const LS = { data:'sf_data_v2', cc:'sf_cc', me:'sf_me', lang:'sf_lang', rate:'sf_ratings' };
+const LS = { data:'sf_data_v2', cc:'sf_cc', me:'sf_me', lang:'sf_lang', rate:'sf_ratings', unsynced:'sf_unsynced' };
+const CL = { uid:null, state:'out', timers:{} };
 function initialLang(){
   const own=localStorage.getItem(LS.lang); if(LANGS.includes(own)) return own;
   const site=localStorage.getItem('site_lang'); return LANGS.includes(site) ? site : 'ar';
@@ -373,9 +384,14 @@ function sampleData(lang){
 }
 
 /* ---------------- التخزين والتقييمات ---------------- */
-function persist(){
+function persistLocal(){
   try{ localStorage.setItem(LS.data, JSON.stringify({ sample:S.sample, data: S.sample ? [] : S.data.map(baseOf) })); }
   catch(e){ toast(T('storeFail'), 3500); }
+}
+function persist(){
+  persistLocal();
+  if(S.sample) return;
+  if(CL.uid) cloudSaveData(); else { try{ localStorage.setItem(LS.unsynced,'1'); }catch(e){} }
 }
 function loadStored(){
   try{ S.ratings=JSON.parse(localStorage.getItem(LS.rate)||'{}')||{}; }catch(e){ S.ratings={}; }
@@ -389,6 +405,7 @@ function getRating(r){ const v=S.ratings[r._sk]; return v!==undefined ? v : (r.s
 function setRating(key, val){
   S.ratings[key]=val;
   try{ localStorage.setItem(LS.rate, JSON.stringify(S.ratings)); }catch(e){}
+  cloudSaveRatings();
 }
 const starText = n => n>0 ? '★'.repeat(n)+'☆'.repeat(5-n) : '—';
 
@@ -649,7 +666,7 @@ function openModal(node, wide){ const box=$('sfModalBox'); box.classList.toggle(
 function closeModal(){ $('sfModal').classList.remove('open'); $('sfModalBox').innerHTML=''; }
 function modalHead(title){ const x=h('button','sf-x',icon('close')); x.type='button'; x.addEventListener('click',closeModal); return h('div','sf-mh',[h('h2','',title),x]); }
 function meGet(){ try{ return JSON.parse(localStorage.getItem(LS.me)||'{}')||{}; }catch(e){ return {}; } }
-function meSet(o){ try{ localStorage.setItem(LS.me, JSON.stringify(Object.assign(meGet(),o))); }catch(e){} }
+function meSet(o){ try{ localStorage.setItem(LS.me, JSON.stringify(Object.assign(meGet(),o))); }catch(e){} cloudSaveSettings(); }
 
 /* ---------------- طلب عرض سعر ---------------- */
 function openRFQ(){
@@ -667,6 +684,7 @@ function openRFQ(){
   if(noMail) box.append(h('div','sf-warn',T('rfqNoMail',{n:noMail})));
   if(!withMail.length) box.append(h('div','sf-warn',T('rfqNoRecipients')));
   box.append(h('h3','',T('rfqParts')));
+  let logged=false; const logOnce=()=>{ if(logged) return; logged=true; logRfq(parts,withMail,ta.value,st); };
   const ta=h('textarea','sf-ta'); ta.addEventListener('input',()=>{ st.edited=true; });
   const build=()=>{
     const L=[T('greet'),T('hello'),'',T('intro')];
@@ -688,11 +706,12 @@ function openRFQ(){
   const foot=h('div','sf-mfoot');
   const b1=h('button','sf-btn sf-btn-primary',[icon('mail'),h('span','',T('rfqOpen'))]); b1.type='button';
   b1.addEventListener('click',()=>{
+    logOnce();
     const url='mailto:?bcc='+encodeURIComponent(allMails.join(','))+'&subject='+encodeURIComponent(T('subject'))+'&body='+encodeURIComponent(ta.value);
     if(url.length>1900){ copyText(ta.value,T('rfqLong')); if(allMails.length) location.href='mailto:?bcc='+encodeURIComponent(allMails.join(','))+'&subject='+encodeURIComponent(T('subject')); }
     else location.href=url;
   });
-  const b2=h('button','sf-btn',[icon('copy'),h('span','',T('rfqCopyMsg'))]); b2.type='button'; b2.addEventListener('click',()=>copyText(ta.value));
+  const b2=h('button','sf-btn',[icon('copy'),h('span','',T('rfqCopyMsg'))]); b2.type='button'; b2.addEventListener('click',()=>{ logOnce(); copyText(ta.value); });
   const b3=h('button','sf-btn',[icon('mail'),h('span','',T('rfqCopyMails'))]); b3.type='button'; b3.addEventListener('click',()=>copyText(allMails.join('; ')));
   foot.append(b1,b2,b3); box.append(foot);
   openModal(box);
@@ -889,7 +908,7 @@ function openCompare(){
 
   const foot=h('div','sf-mfoot');
   const mkb=(ic,label,fn,cls)=>{ const b=h('button','sf-btn '+(cls||''),[icon(ic),h('span','',label)]); b.type='button'; b.addEventListener('click',fn); return b; };
-  foot.append(mkb('copy',T('cmpCopy'),()=>copyText(cmpText(C,buildCmp(C)))), mkb('download',T('cmpXlsx'),()=>cmpXlsx(C,buildCmp(C))), mkb('print',T('cmpPdf'),()=>cmpPdf(C,buildCmp(C)),'sf-btn-primary'));
+  foot.append(mkb('check',T('saveCmp'),()=>saveComparison(C,buildCmp(C))), mkb('copy',T('cmpCopy'),()=>copyText(cmpText(C,buildCmp(C)))), mkb('download',T('cmpXlsx'),()=>cmpXlsx(C,buildCmp(C))), mkb('print',T('cmpPdf'),()=>cmpPdf(C,buildCmp(C)),'sf-btn-primary'));
   box.append(foot);
 
   function drawTable(){
@@ -1041,7 +1060,7 @@ function applyLang(){
   document.querySelectorAll('[data-i]').forEach(e=>{ e.textContent=T(e.getAttribute('data-i')); });
   document.querySelectorAll('[data-ip]').forEach(e=>{ e.placeholder=T(e.getAttribute('data-ip')); });
   document.querySelectorAll('#sfLangs button').forEach(b=>b.classList.toggle('on',b.dataset.l===S.lang));
-  render(); renderBar();
+  render(); renderBar(); setCloud(CL.state);
 }
 function setLang(l){
   if(!LANGS.includes(l)||l===S.lang) return;
@@ -1052,7 +1071,156 @@ function setLang(l){
 }
 function clearAll(){
   if(!S.data.length) return;
-  if(confirm(T('confirmClear'))){ S.data=[]; S.sample=false; S.sel.clear(); resetFiltersSilent(); try{localStorage.removeItem(LS.data);}catch(e){} render(); toast(T('cleared')); }
+  if(confirm(T('confirmClear'))){ S.data=[]; S.sample=false; S.sel.clear(); resetFiltersSilent(); persist(); render(); toast(T('cleared')); }
+}
+
+/* ---------------- السحابة (Firebase Firestore) ---------------- */
+const CLOUD_CHUNK = 250;                       // عدد العروض في كل وثيقة (لتقليل عدد القراءات)
+const fbOK = () => !!(window.fbAuth && window.fbDb && window.firebase);
+const userDoc = () => fbDb.collection('users').doc(CL.uid);
+const serverTs = () => firebase.firestore.FieldValue.serverTimestamp();
+const clean = o => JSON.parse(JSON.stringify(o));
+const sigOf = list => list.length+':'+list.reduce((a,r)=>a+(Number(r.price)||0)+String(r.part||'').length+String(r.supplier||'').length,0);
+function debounce(key,fn,ms){ clearTimeout(CL.timers[key]); CL.timers[key]=setTimeout(fn,ms||700); }
+
+function setCloud(state, extra){
+  CL.state=state;
+  const el=$('sfCloud'); if(!el) return;
+  const map={ off:'cloudOff', out:'cloudOut', loading:'cloudLoading', saving:'cloudSaving', saved:'cloudSaved', err:'cloudErr' };
+  el.className='sf-cloud '+state;
+  el.textContent='☁ '+T(map[state])+(extra?' — '+extra:'');
+  if(state==='out') el.setAttribute('href','../../'); else el.removeAttribute('href');
+}
+function cloudFail(e){ console.error(e); setCloud('err', e && e.code==='permission-denied' ? T('cloudRules') : ''); }
+
+async function cloudLoadData(){
+  const snap=await userDoc().collection('suppliers').orderBy('i').get();
+  const out=[]; snap.forEach(d=>{ (d.data().records||[]).forEach(r=>out.push(r)); }); return out;
+}
+async function cloudSaveData(){
+  if(!fbOK() || !CL.uid || S.sample) return;
+  setCloud('saving');
+  try{
+    const col=userDoc().collection('suppliers');
+    const old=await col.get();
+    const recs=clean(S.data.map(baseOf));
+    const batch=fbDb.batch(); const keep=new Set();
+    for(let i=0;i*CLOUD_CHUNK<recs.length;i++){
+      const id='c'+String(i).padStart(4,'0'); keep.add(id);
+      batch.set(col.doc(id),{ i, n:Math.min(CLOUD_CHUNK,recs.length-i*CLOUD_CHUNK), records:recs.slice(i*CLOUD_CHUNK,(i+1)*CLOUD_CHUNK), updatedAt:serverTs() });
+    }
+    old.forEach(d=>{ if(!keep.has(d.id)) batch.delete(d.ref); });
+    await batch.commit();
+    try{ localStorage.removeItem(LS.unsynced); }catch(e){}
+    setCloud('saved');
+  }catch(e){ cloudFail(e); }
+}
+async function cloudLoadRatings(){ const d=await userDoc().collection('supplierRatings').doc('all').get(); return d.exists ? (d.data().map||{}) : {}; }
+function cloudSaveRatings(){
+  if(!fbOK() || !CL.uid) return;
+  debounce('rat',async()=>{
+    try{ setCloud('saving'); await userDoc().collection('supplierRatings').doc('all').set({ map:clean(S.ratings), updatedAt:serverTs() }); setCloud('saved'); }catch(e){ cloudFail(e); }
+  });
+}
+async function cloudLoadSettings(){ const d=await userDoc().collection('settings').doc('supplierFinder').get(); return d.exists ? d.data() : {}; }
+function cloudSaveSettings(){
+  if(!fbOK() || !CL.uid) return;
+  debounce('set',async()=>{ try{ await userDoc().collection('settings').doc('supplierFinder').set({ me:meGet(), cc:S.cc, updatedAt:serverTs() },{merge:true}); }catch(e){ console.error(e); } });
+}
+
+async function cloudSync(){
+  setCloud('loading');
+  try{
+    const [remote, rat, cfg] = await Promise.all([cloudLoadData(), cloudLoadRatings(), cloudLoadSettings()]);
+    const localReal = !S.sample && S.data.length>0;
+    const unsynced = localStorage.getItem(LS.unsynced)==='1';
+    let useRemote = remote.length>0, uploadLocal = false;
+    if(remote.length && localReal && unsynced && sigOf(remote)!==sigOf(S.data)){
+      if(confirm(T('cloudConflict'))) useRemote=true; else { useRemote=false; uploadLocal=true; }
+    } else if(!remote.length && localReal){ uploadLocal=true; }
+    if(useRemote){
+      S.data=remote.map(r=>finalize(Object.assign({},r))); S.sample=false; S.sel.clear(); resetFiltersSilent();
+      persistLocal(); try{ localStorage.removeItem(LS.unsynced); }catch(e){}
+    }
+    // التقييمات: نجمع المحلي مع السحابي (السحابة تتقدّم عند التعارض)
+    const merged=Object.assign({}, S.ratings, rat); S.ratings=merged;
+    try{ localStorage.setItem(LS.rate, JSON.stringify(merged)); }catch(e){}
+    // الإعدادات (الاسم/المصلحة/مفتاح الدولة)
+    if(cfg.me){ try{ localStorage.setItem(LS.me, JSON.stringify(cfg.me)); }catch(e){} }
+    if(cfg.cc){ S.cc=String(cfg.cc); $('sfCC').value=S.cc; try{ localStorage.setItem(LS.cc,S.cc); }catch(e){} }
+    render();
+    if(uploadLocal) await cloudSaveData();
+    if(JSON.stringify(clean(rat))!==JSON.stringify(clean(merged))) cloudSaveRatings();
+    if(!uploadLocal) setCloud('saved');
+  }catch(e){ cloudFail(e); }
+}
+function initCloud(){
+  if(!fbOK()){ setCloud('off'); return; }
+  setCloud('out');
+  fbAuth.onAuthStateChanged(async u=>{
+    CL.uid = u ? u.uid : null;
+    $('sfHist').hidden = !u;
+    if(!u){ setCloud('out'); return; }
+    await cloudSync();
+  });
+}
+
+/* ---- سجل طلبات عروض الأسعار ومحاضر المقارنة ---- */
+async function cloudAdd(coll,data){
+  try{ await userDoc().collection(coll).add(Object.assign({ createdAt:serverTs(), lang:S.lang }, clean(data))); return true; }
+  catch(e){ cloudFail(e); return false; }
+}
+function logRfq(parts,sups,message,st){
+  if(!fbOK() || !CL.uid) return;                 // اختياري: يُسجَّل فقط عند تسجيل الدخول
+  cloudAdd('supplierRfqs',{
+    title:parts.map(p=>p.name).join(' / ').slice(0,300),
+    parts:parts.map(p=>({name:p.name,ref:p.ref||'',qty:String(p.qty)})),
+    suppliers:sups.map(s=>({name:s.name,emails:[...s.emails]})),
+    message, by:st.name||'', company:st.company||''
+  });
+}
+async function saveComparison(C,M){
+  if(!fbOK() || !CL.uid){ toast(T('cloudNeedLogin'),3000); return; }
+  const win=C.rows.find(r=>r.id===C.winner);
+  const ok=await cloudAdd('supplierComparisons',{
+    title:partTitle(C).slice(0,300), qty:M.qty, vat:M.vat, winner:win?win.supplier:'', winnerSk:win?win._sk:'', reason:C.reason||'',
+    by:C.name||'', dept:C.dept||'', offers:C.rows.map(r=>Object.assign(baseOf(r),{ sk:r._sk }))
+  });
+  if(ok){ toast(T('cmpSaved')); setCloud('saved'); }
+}
+function cmpFromDoc(x){
+  const rows=(x.offers||[]).map(o=>{ const b=Object.assign({},o); delete b.sk; return finalize(b); });
+  const win=rows.find(r=>r._sk===x.winnerSk);
+  return { rows, qty:x.qty||1, vat:x.vat||0, name:x.by||'', dept:x.dept||'', winner:win?win.id:null, reason:x.reason||'' };
+}
+const fmtTs = ts => (ts && ts.toDate) ? ts.toDate().toLocaleString(S.lang==='ar'?'ar-DZ':S.lang==='fr'?'fr-FR':'en-GB') : '';
+
+function histItem(doc, kind){
+  const x=doc.data();
+  const box=h('div','sf-hist-item');
+  const info=h('div','sf-hist-info',[ h('b','',x.title||'—'), h('div','sf-meta',[fmtTs(x.createdAt), kind==='cmp' ? (x.winner?'  •  ✔ '+x.winner:'') : '  •  '+((x.suppliers||[]).length)+' '+T('histSup')].join('')) ]);
+  const acts=h('div','sf-hist-acts');
+  const btn=(ic,label,fn,cls)=>{ const b=h('button','sf-btn sf-btn-sm '+(cls||''),[icon(ic),h('span','',label)]); b.type='button'; b.addEventListener('click',fn); b.querySelector('span').style.display='inline'; return b; };
+  if(kind==='cmp'){
+    acts.append(btn('print','PDF',()=>{ const C=cmpFromDoc(x); cmpPdf(C,buildCmp(C)); }),
+                btn('download','Excel',()=>{ const C=cmpFromDoc(x); cmpXlsx(C,buildCmp(C)); }),
+                btn('copy',T('cmpCopy'),()=>{ const C=cmpFromDoc(x); copyText(cmpText(C,buildCmp(C))); }));
+  } else acts.append(btn('copy',T('rfqCopyMsg'),()=>copyText(x.message||'')));
+  acts.append(btn('trash',T('histDelete'),async()=>{ if(!confirm(T('histConfirm'))) return; try{ await doc.ref.delete(); box.remove(); }catch(e){ cloudFail(e); } },'sf-btn-danger'));
+  box.append(info,acts); paintIcons(box); return box;
+}
+async function openHistory(){
+  if(!fbOK() || !CL.uid){ toast(T('cloudNeedLogin'),3000); return; }
+  const box=h('div',''); box.append(modalHead(T('histTitle')));
+  const body=h('div','sf-hist',T('cloudLoading')); box.append(body);
+  openModal(box,true);
+  try{
+    const q=c=>userDoc().collection(c).orderBy('createdAt','desc').limit(30).get();
+    const [a,b]=await Promise.all([q('supplierComparisons'),q('supplierRfqs')]);
+    body.innerHTML='';
+    body.append(h('h3','sf-h3',T('histCmp')+' ('+a.size+')')); a.forEach(d=>body.append(histItem(d,'cmp'))); if(!a.size) body.append(h('div','sf-none',T('histEmpty')));
+    body.append(h('h3','sf-h3',T('histRfq')+' ('+b.size+')')); b.forEach(d=>body.append(histItem(d,'rfq'))); if(!b.size) body.append(h('div','sf-none',T('histEmpty')));
+  }catch(e){ body.textContent=''; body.append(h('div','sf-warn',T('cloudErr')+(e&&e.code==='permission-denied'?' — '+T('cloudRules'):''))); console.error(e); }
 }
 
 /* ---------------- الأحداث ---------------- */
@@ -1072,7 +1240,7 @@ $('sfSort').addEventListener('change',e=>{ S.sort=e.target.value; renderResults(
 $('sfGroup').addEventListener('change',e=>{ S.group=e.target.checked; renderResults(); });
 $('sfAll').addEventListener('change',e=>{ const res=results(); res.forEach(r=>e.target.checked?S.sel.add(r.id):S.sel.delete(r.id)); renderResults(); });
 $('sfCC').value=S.cc;
-$('sfCC').addEventListener('input',e=>{ S.cc=e.target.value.replace(/\D/g,'')||'213'; try{localStorage.setItem(LS.cc,S.cc);}catch(x){} renderResults(); });
+$('sfCC').addEventListener('input',e=>{ S.cc=e.target.value.replace(/\D/g,'')||'213'; try{localStorage.setItem(LS.cc,S.cc);}catch(x){} cloudSaveSettings(); renderResults(); });
 
 ['sfUpload','sfPick'].forEach(id=>$(id).addEventListener('click',()=>$('sfFile').click()));
 $('sfFile').addEventListener('change',e=>{ handleFile(e.target.files[0]); e.target.value=''; });
@@ -1082,6 +1250,7 @@ $('sfExport').addEventListener('click',()=>exportXlsx());
 $('sfDemo').addEventListener('click',()=>{ S.data=sampleData(S.lang).map(finalize); S.sample=true; persist(); render(); });
 ['sfClear','sfClearS'].forEach(id=>$(id).addEventListener('click',clearAll));
 document.querySelectorAll('#sfLangs button').forEach(b=>b.addEventListener('click',()=>setLang(b.dataset.l)));
+$('sfHist').addEventListener('click',openHistory);
 
 $('sfFiltBtn').addEventListener('click',()=>$('sfSide').classList.add('open'));
 $('sfSideClose').addEventListener('click',()=>$('sfSide').classList.remove('open'));
@@ -1099,3 +1268,4 @@ window.addEventListener('drop',e=>{ if(!hasFiles(e)) return; e.preventDefault();
 loadStored();
 paintIcons();
 applyLang();
+initCloud();
