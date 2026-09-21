@@ -14,7 +14,10 @@
 
   <!-- الشريط العلوي: الاسم + الأزرار في نفس الصف -->
   <header class="sf-topbar">
-    <a class="sf-brand" href="../../">Dr Soufiane Merabti</a>
+    <a class="sf-brand" href="../../" aria-label="Dr Soufiane Merabti">
+      <img class="sf-logo" src="../../apple-touch-icon.png" alt="Dr Soufiane Merabti" onerror="this.hidden=true;this.nextElementSibling.hidden=false">
+      <span class="sf-brand-txt" hidden>Dr Soufiane Merabti</span>
+    </a>
     <div class="sf-actions">
       <button class="sf-btn sf-btn-primary" id="sfUpload" type="button"><i data-ic="upload"></i><span data-i="upload"></span></button>
       <button class="sf-btn" id="sfTpl" type="button"><i data-ic="file"></i><span data-i="template"></span></button>

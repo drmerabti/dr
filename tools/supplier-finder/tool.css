@@ -15,9 +15,9 @@
 
   margin:0; min-height:100vh;
   background:
-    radial-gradient(1100px 520px at 88% -8%, rgba(255,211,165,.38), transparent 62%),
-    radial-gradient(900px 520px at 0% 18%, rgba(140,196,228,.34), transparent 60%),
-    linear-gradient(160deg,#EEF4F8 0%,#F6F0E8 55%,#E6EEF4 100%) fixed;
+    radial-gradient(1000px 620px at 0% 0%, rgba(74,134,197,.34), transparent 62%),
+    radial-gradient(900px 560px at 100% 100%, rgba(255,214,170,.14), transparent 60%),
+    linear-gradient(160deg,#A6CBEB 0%,#C3DCF1 32%,#DCEAF6 66%,#EEF4FA 100%) fixed;
   color:var(--sf-ink); font-family:'Tajawal',sans-serif; -webkit-font-smoothing:antialiased;
 }
 html[lang="en"] .sf-body{ font-family:'Inter',sans-serif; }
@@ -34,7 +34,10 @@ html[lang="en"] .sf-body{ font-family:'Inter',sans-serif; }
   width:var(--sf-w); margin-inline:auto; padding:22px 0 0;
   display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap;
 }
-.sf-brand{ font-family:'Playfair Display',serif; font-weight:700; font-size:1.05rem; color:var(--sf-ink); text-decoration:none; white-space:nowrap; }
+.sf-brand{ display:inline-flex; align-items:center; gap:10px; font-family:'Playfair Display',serif; font-weight:700; font-size:1.05rem; color:var(--sf-ink); text-decoration:none; white-space:nowrap; }
+.sf-logo{ width:46px; height:46px; border-radius:12px; object-fit:cover; display:block; box-shadow:0 4px 12px rgba(21,36,49,.18); transition:transform .15s ease; }
+.sf-brand:hover .sf-logo{ transform:scale(1.06) rotate(-3deg); }
+.sf-brand-txt{ font-family:'Playfair Display',serif; }
 .sf-actions{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
 
 .sf-btn{
@@ -436,6 +439,16 @@ details.sf-fbox > *:last-child{ margin-bottom:14px; }
 .sf-sm-notes{ background:var(--sf-amber-soft); color:#7A5A08; border-radius:14px; padding:12px 14px; font-size:.9rem; line-height:1.7; }
 @media (max-width:600px){ .sf-tiles{ gap:8px; } .sf-sm-head{ padding:18px; } .sf-sm-body{ padding:16px 18px 22px; } }
 
+
+/* ---------- الولاية / بلد التوريد (نافذة المورد) ---------- */
+.sf-loc{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px; }
+.sf-loc-tile{ display:flex; align-items:center; gap:12px; padding:12px 14px; border-radius:14px; background:var(--sf-accent-soft); border:1px solid var(--sf-line); min-width:0; }
+.sf-loc-ic{ width:38px; height:38px; border-radius:12px; flex:none; display:flex; align-items:center; justify-content:center; background:#fff; color:var(--sf-accent); box-shadow:0 2px 8px rgba(21,36,49,.08); }
+.sf-loc-ic i{ width:20px !important; height:20px !important; }
+.sf-loc-tile div{ display:flex; flex-direction:column; gap:2px; min-width:0; }
+.sf-loc-tile b{ font-size:1.02rem; font-weight:800; overflow-wrap:anywhere; }
+@media (max-width:600px){ .sf-loc{ gap:8px; } .sf-loc-tile{ padding:10px 12px; } }
+
 /* ---------- إفلات الملفات + إشعار ---------- */
 .sf-drop{
   position:fixed; inset:0; background:rgba(47,87,112,.88); color:#fff; z-index:80;
@@ -477,6 +490,7 @@ details.sf-fbox > *:last-child{ margin-bottom:14px; }
 @media (max-width:600px){
   .sf-topbar{ flex-wrap:nowrap; gap:8px; padding-top:16px; }
   .sf-brand{ font-size:.92rem; }
+  .sf-logo{ width:38px; height:38px; border-radius:10px; }
   .sf-actions{ gap:6px; flex-wrap:nowrap; }
   .sf-topbar .sf-btn, .sf-topbar .sf-btn-round{ width:36px; height:36px; }
   #sfPrint, #sfTpl, #sfClear{ display:none; }

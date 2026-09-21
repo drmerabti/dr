@@ -25,6 +25,8 @@ const FIELDS = [
     syn:['email','e-mail','mail','courriel','البريد','الايميل','الإيميل','البريد الإلكتروني','البريد الالكتروني'] },
   { k:'city', ar:'الولاية / المدينة', fr:'Ville / Wilaya', en:'City / Wilaya',
     syn:['city','wilaya','ville','address','adresse','location','المدينة','الولاية','العنوان','الموقع','المنطقة'] },
+  { k:'country', ar:'بلد التوريد', fr:'Pays d’origine', en:'Supply country',
+    syn:['country','pays','pays d’origine','pays d origine','origin','country of origin','بلد','البلد','بلد التوريد','بلد المنشأ','الدولة','المنشأ'] },
   { k:'price', ar:'السعر', fr:'Prix unitaire', en:'Unit price',
     syn:['price','prix','unitprice','prixunitaire','prix unitaire','cost','السعر','سعر الوحدة','الثمن','السعر الوحدوي','التكلفة'] },
   { k:'currency', ar:'العملة', fr:'Devise', en:'Currency',
@@ -40,7 +42,7 @@ const FIELDS = [
   { k:'notes', ar:'ملاحظات', fr:'Remarques', en:'Notes',
     syn:['notes','note','remarque','remarques','comment','comments','ملاحظات','ملاحظة','تعليق'] }
 ];
-const FIELD_ORDER = ['ref','brand','supplier','contact','phone','email','city','price','currency','delivery','moq','payment','warranty','notes','category','part'];
+const FIELD_ORDER = ['ref','brand','supplier','contact','phone','email','country','city','price','currency','delivery','moq','payment','warranty','notes','category','part'];
 const LANGS = ['ar','fr','en'];
 
 /* ---------------- النصوص (3 لغات) ---------------- */
@@ -105,6 +107,7 @@ ar:{
   cloudNeedLogin:'سجّل الدخول أولًا لاستعمال السجل.', cloudConflict:'توجد بيانات على هذا الجهاز وأخرى مختلفة في السحابة.\n\nموافق = استخدام بيانات السحابة\nإلغاء = رفع بيانات هذا الجهاز واستبدال السحابة',
   hist:'السجل', histTitle:'سجل المحاضر والطلبات', histCmp:'محاضر المقارنة', histRfq:'طلبات عروض الأسعار', histEmpty:'لا يوجد شيء محفوظ بعد.', histDelete:'حذف', histConfirm:'حذف هذا العنصر نهائيًا؟', histSup:'مورد', saveCmp:'حفظ في السجل', cmpSaved:'تم الحفظ في السجل',
   supTip:'اضغط لعرض كل معلومات المورد', supOffer:'تفاصيل العرض', supPart:'القطعة', supContact:'بيانات الاتصال', fMore:'خيارات إضافية',
+  country:'بلد التوريد', rowLoc:'الولاية / بلد التوريد',
   tplName:'modele_fournisseurs', expName:'الموردون', cmpFile:'مقارنة_العروض', da:'دج'
 },
 fr:{
@@ -166,6 +169,7 @@ fr:{
   cloudNeedLogin:'Connectez-vous d’abord pour utiliser l’historique.', cloudConflict:'Des données existent sur cet appareil et d’autres, différentes, dans le cloud.\n\nOK = utiliser les données du cloud\nAnnuler = envoyer les données de cet appareil et remplacer le cloud',
   hist:'Historique', histTitle:'Historique des PV et demandes', histCmp:'PV de comparaison', histRfq:'Demandes de prix', histEmpty:'Rien d’enregistré pour l’instant.', histDelete:'Supprimer', histConfirm:'Supprimer définitivement cet élément ?', histSup:'fournisseur(s)', saveCmp:'Enregistrer dans l’historique', cmpSaved:'Enregistré dans l’historique',
   supTip:'Cliquez pour voir toutes les informations du fournisseur', supOffer:'Détails de l’offre', supPart:'Pièce', supContact:'Coordonnées', fMore:'Options',
+  country:'Pays d’origine', rowLoc:'Wilaya / Pays',
   tplName:'modele_fournisseurs', expName:'fournisseurs', cmpFile:'comparaison_offres', da:'DA'
 },
 en:{
@@ -227,6 +231,7 @@ en:{
   cloudNeedLogin:'Sign in first to use the history.', cloudConflict:'This device has data and the cloud has different data.\n\nOK = use the cloud data\nCancel = upload this device’s data and replace the cloud',
   hist:'History', histTitle:'Reports & requests history', histCmp:'Comparison reports', histRfq:'Quotation requests', histEmpty:'Nothing saved yet.', histDelete:'Delete', histConfirm:'Delete this item permanently?', histSup:'supplier(s)', saveCmp:'Save to history', cmpSaved:'Saved to history',
   supTip:'Click to see all supplier details', supOffer:'Offer details', supPart:'Part', supContact:'Contact details', fMore:'More options',
+  country:'Supply country', rowLoc:'Wilaya / Country',
   tplName:'modele_fournisseurs', expName:'suppliers', cmpFile:'offers_comparison', da:'DZD'
 }};
 
@@ -247,6 +252,8 @@ const IC = {
   spark:'<path d="M12 3l2.2 5.8L20 11l-5.8 2.2L12 19l-2.2-5.8L4 11l5.8-2.2z"/>',
   send:'<path d="M4 12l16-8-6 16-3-7z"/>',
   check:'<path d="M5 12l5 5 9-10"/>',
+  pin:'<path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/>',
+  globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18a14 14 0 0 1 0-18z"/>',
   clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
   cols:'<rect x="3" y="4" width="7" height="16" rx="1.5"/><rect x="14" y="4" width="7" height="16" rx="1.5"/>'
 };
@@ -327,7 +334,7 @@ const EMAIL_RE=/[^\s;,<>()\[\]"']+@[^\s;,<>()\[\]"']+\.[^\s;,<>()\[\]"']+/g;
 let _id=0;
 function finalize(r){
   r.id = ++_id;
-  ['part','supplier','ref','category','brand','contact','city','notes','moq','phone','email','payment','warranty'].forEach(k=>r[k]=txt(r[k]));
+  ['part','supplier','ref','category','brand','contact','city','country','notes','moq','phone','email','payment','warranty'].forEach(k=>r[k]=txt(r[k]));
   r.price = r.price==null||r.price==='' ? null : Number(r.price);
   r.delivery = r.delivery==null||r.delivery==='' ? null : Number(r.delivery);
   r.currency = r.currency || 'DZD';
@@ -335,7 +342,7 @@ function finalize(r){
   r._sk = r.sid || norm(r.supplier);
   r.phones = r.phone.split(/[\/;،|\n]+|\s-\s|,(?=\s*\+?\d)/).map(x=>x.trim()).filter(x=>x.replace(/\D/g,'').length>=6);
   r.emails = (r.email.match(EMAIL_RE)||[]).map(x=>x.toLowerCase());
-  r._h = norm([r.part,r.ref,r.category,r.brand,r.supplier,r.contact,r.city,r.notes,r.payment,r.warranty].join(' | '));
+  r._h = norm([r.part,r.ref,r.category,r.brand,r.supplier,r.contact,r.city,r.country,r.notes,r.payment,r.warranty].join(' | '));
   return r;
 }
 function baseOf(r){ const {id,_pk,_sk,_h,phones,emails,...b}=r; return b; }
@@ -370,10 +377,11 @@ function sampleData(lang){
   ];
   const PAY=[L3('الدفع بعد 30 يومًا','Paiement à 30 jours','Payment within 30 days'),L3('الدفع عند التسليم','Paiement à la livraison','Cash on delivery'),L3('50% مسبقًا والباقي عند التسليم','50 % à la commande, solde à la livraison','50% upfront, balance on delivery'),L3('الدفع بعد 60 يومًا','Paiement à 60 jours','Payment within 60 days'),L3('تحويل مسبق','Virement anticipé','Prepayment by transfer')];
   const WAR=[L3('سنة','1 an','1 year'),L3('6 أشهر','6 mois','6 months'),L3('سنتان','2 ans','2 years'),L3('بدون ضمان','Sans garantie','No warranty'),L3('3 أشهر','3 mois','3 months')];
+  const CTRY_DZ=L3('الجزائر','Algérie','Algeria'), CTRY_DE=L3('ألمانيا','Allemagne','Germany');
   const NOTE_TAX=L3('السعر شامل الرسوم','Prix toutes taxes comprises','Price includes taxes');
   const NOTE_IMP=L3('استيراد — السعر باليورو','Import — prix en euros','Import — price in euros');
   const mult=[1,0.94,1.08,1.03,0.97], days=[2,5,7,3,10], moq=['1','1','2','1','5'];
-  const mk=(s,p,price,cur,delivery,m,pay,war,notes)=>({ sid:s.sid, seed:s.seed, part:g(p[0]), ref:p[1], category:g(p[2]), brand:p[3], supplier:g(s.name), contact:g(s.contact), phone:s.phone, email:s.email, city:g(s.city), price, currency:cur, delivery, moq:m, payment:g(pay), warranty:g(war), notes:notes?g(notes):'' });
+  const mk=(s,p,price,cur,delivery,m,pay,war,notes,ctry)=>({ sid:s.sid, seed:s.seed, part:g(p[0]), ref:p[1], category:g(p[2]), brand:p[3], supplier:g(s.name), contact:g(s.contact), phone:s.phone, email:s.email, city:g(s.city), country:g(ctry||CTRY_DZ), price, currency:cur, delivery, moq:m, payment:g(pay), warranty:g(war), notes:notes?g(notes):'' });
   const out=[];
   PARTS.forEach((p,i)=>{
     const n=3+(i%2);
@@ -382,7 +390,7 @@ function sampleData(lang){
       out.push(mk(s,p,Math.round(p[4]*mult[(i+j)%5]/100)*100,'DZD',days[(i*2+j)%5],moq[(i+j)%5],PAY[(i+j)%5],WAR[(i*2+j)%5], j===0?NOTE_TAX:null));
     }
   });
-  out.push(mk(SUP[4],PARTS[5],9800,'EUR',21,'1',PAY[4],WAR[0],NOTE_IMP));
+  out.push(mk(SUP[4],PARTS[5],9800,'EUR',21,'1',PAY[4],WAR[0],NOTE_IMP,CTRY_DE));
   return out;
 }
 
@@ -581,7 +589,9 @@ function openSupplier(r){
   const tiles=h('div','sf-tiles',[ tile(T('rowDelivery'),fmtDays(r.delivery)), tile(T('rowMoq'),r.moq), tile(T('rowPay'),r.payment), tile(T('rowWar'),r.warranty) ]);
 
   const body=h('div','sf-sm-body');
-  body.append(priceCard, h('h3','sf-sm-h',T('supOffer')), tiles);
+  const locTile=(ic,label,val)=>{ const i=h('div','sf-loc-ic',icon(ic)); i.style.color=col.ink; return h('div','sf-loc-tile',[ i, h('div','',[ h('span','sf-sm-l',label), h('b','',val||'—') ]) ]); };
+  const loc=h('div','sf-loc',[ locTile('pin',T('fCity'),r.city), locTile('globe',T('country'),r.country) ]);
+  body.append(priceCard, loc, h('h3','sf-sm-h',T('supOffer')), tiles);
 
   // القطعة
   const tags=[]; if(r.ref) tags.push(h('span','sf-tag ref',r.ref)); if(r.brand) tags.push(h('span','sf-tag brand',r.brand));
@@ -852,7 +862,7 @@ function buildRecords(){
     const priceCell=g('price');
     out.push({
       part, supplier, ref:g('ref'), category:g('category'), brand:g('brand'), contact:g('contact'),
-      phone:cleanPhone(g('phone')), email:g('email'), city:g('city'),
+      phone:cleanPhone(g('phone')), email:g('email'), city:g('city'), country:g('country'),
       price:parsePrice(priceCell), currency:normCur(g('currency'))||curFromPriceCell(priceCell)||'DZD',
       delivery:parseDays(g('delivery')), moq:g('moq'), payment:g('payment'), warranty:g('warranty'), notes:g('notes')
     });
@@ -935,6 +945,7 @@ function buildCmp(C){
   const row=(label,fn)=>({ label, cells:R.map(fn) });
   const rows=[];
   rows.push(row(T('rowPart'),r=>cell(r.part+(r.ref?'  ['+r.ref+']':''))));
+  rows.push(row(T('rowLoc'),r=>cell([r.city,r.country].filter(Boolean).join('  •  '))));
   rows.push(row(T('rowUnit'),r=>cell(fmtPrice(r)||T('noPrice'), isMin(r)?'best':'', isMin(r)?'★ '+T('cheapest'):'')));
   rows.push(row(vat>0?T('rowHT'):T('rowTotal'),r=>cell(r.price==null?'—':fmtNum(r.price*qty)+' '+curLabel(r.currency), isMin(r)?'best':'')));
   if(vat>0) rows.push(row(T('rowTTC')+' ('+vat+'%)',r=>cell(r.price==null?'—':fmtNum(r.price*qty*(1+vat/100))+' '+curLabel(r.currency), isMin(r)?'best':'')));
@@ -1116,9 +1127,9 @@ function exportXlsx(rows){
 function downloadTemplate(){
   ensureXLSX().then(()=>{
     const aoa=[FIELDS.map(f=>f.fr),
-      ['Roulement 22320 CC/W33','22320-CC-W33','Roulements','SKF','Société Exemple SARL','M. Ahmed','0550123456','contact@exemple.dz','Sétif',48000,'DZD',5,'1','Paiement à 30 jours','1 an','Prix toutes taxes comprises'],
-      ['Courroie trapézoïdale SPB 3350','SPB-3350','Courroies et chaînes','Optibelt','Ets Modèle','Mme Sara','0661234567','ventes@modele.dz','Oran',6500,'DZD',3,'2','Paiement à la livraison','6 mois',''],
-      ['Variateur de fréquence 90 kW','ACS880-90','Électricité','ABB','Import Pro','M. Karim','0770123456','info@importpro.dz','Alger',9800,'EUR',21,'1','50 % à la commande','2 ans','Prix en euros']];
+      ['Roulement 22320 CC/W33','22320-CC-W33','Roulements','SKF','Société Exemple SARL','M. Ahmed','0550123456','contact@exemple.dz','Sétif','Algérie',48000,'DZD',5,'1','Paiement à 30 jours','1 an','Prix toutes taxes comprises'],
+      ['Courroie trapézoïdale SPB 3350','SPB-3350','Courroies et chaînes','Optibelt','Ets Modèle','Mme Sara','0661234567','ventes@modele.dz','Oran','Algérie',6500,'DZD',3,'2','Paiement à la livraison','6 mois',''],
+      ['Variateur de fréquence 90 kW','ACS880-90','Électricité','ABB','Import Pro','M. Karim','0770123456','info@importpro.dz','Alger','Allemagne',9800,'EUR',21,'1','50 % à la commande','2 ans','Prix en euros']];
     const ws=XLSX.utils.aoa_to_sheet(aoa); ws['!cols']=FIELDS.map(()=>({wch:24}));
     const help=[['Aide'],['Colonnes obligatoires : Désignation et Fournisseur.'],['Une ligne = une offre (une pièce chez un fournisseur). Un même fournisseur peut apparaître sur plusieurs lignes.'],['Devise : DZD, EUR ou USD (DZD par défaut).'],['Délai de livraison : nombre de jours.'],['Les intitulés de colonnes peuvent être en arabe, français ou anglais : ils sont détectés automatiquement.']];
     const ws2=XLSX.utils.aoa_to_sheet(help); ws2['!cols']=[{wch:110}];
