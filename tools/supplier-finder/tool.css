@@ -10,11 +10,14 @@
   --sf-green:#2E8A5B; --sf-green-soft:#DDF3E4;
   --sf-amber:#B8860B; --sf-amber-soft:#FDF0DA;
   --sf-red:#B4423C; --sf-red-soft:#FBE4E2;
-  --sf-radius:20px; --sf-shadow:0 16px 34px rgba(21,36,49,.10);
+  --sf-radius:20px; --sf-shadow:0 12px 30px rgba(21,36,49,.08);
   --sf-w:85%;
 
   margin:0; min-height:100vh;
-  background:linear-gradient(160deg,var(--sf-bg-top) 0%,var(--sf-bg-bottom) 100%) fixed;
+  background:
+    radial-gradient(1100px 520px at 88% -8%, rgba(255,211,165,.38), transparent 62%),
+    radial-gradient(900px 520px at 0% 18%, rgba(140,196,228,.34), transparent 60%),
+    linear-gradient(160deg,#EEF4F8 0%,#F6F0E8 55%,#E6EEF4 100%) fixed;
   color:var(--sf-ink); font-family:'Tajawal',sans-serif; -webkit-font-smoothing:antialiased;
 }
 html[lang="en"] .sf-body{ font-family:'Inter',sans-serif; }
@@ -89,7 +92,7 @@ html[lang="en"] .sf-body{ font-family:'Inter',sans-serif; }
 /* ---------- التخطيط الرئيسي ---------- */
 .sf-main{
   width:var(--sf-w); margin-inline:auto; padding:22px 0 0;
-  display:grid; grid-template-columns:310px minmax(0,1fr); gap:22px; align-items:start;
+  display:grid; grid-template-columns:350px minmax(0,1fr); gap:22px; align-items:start;
 }
 
 /* ---------- الفلاتر ---------- */
@@ -188,6 +191,8 @@ html[lang="en"] .sf-body{ font-family:'Inter',sans-serif; }
 }
 .sf-row:hover{ box-shadow:var(--sf-shadow); border-color:rgba(47,87,112,.35); }
 .sf-row.sel{ border-color:var(--sf-accent); background:#F3F8FB; }
+.sf-row{ border-inline-start:4px solid var(--cc,transparent); }
+.sf-row.grp{ grid-template-columns:32px minmax(110px,.7fr) minmax(170px,1.3fr) minmax(230px,1.7fr) minmax(120px,.7fr); }
 .sf-row.best{ border-inline-start:5px solid var(--sf-green); }
 .sf-rchk{ padding-top:3px; }
 .sf-rchk input{ width:18px; height:18px; accent-color:var(--sf-accent); cursor:pointer; }
@@ -225,7 +230,7 @@ a.sf-ln:hover{ background:var(--sf-accent-soft); }
 
 .sf-pricebox{ text-align:end; display:flex; flex-direction:column; align-items:flex-end; gap:6px; }
 [dir="rtl"] .sf-pricebox{ align-items:flex-start; text-align:start; }
-.sf-price{ font-family:'Inter','Tajawal',sans-serif; font-size:1.35rem; font-weight:800; color:var(--sf-ink); direction:ltr; }
+.sf-price{ font-family:'Inter','Tajawal',sans-serif; font-size:1.35rem; font-weight:800; color:var(--sf-ink); unicode-bidi:plaintext; }
 .sf-price small{ font-size:.78rem; font-weight:700; color:var(--sf-soft); }
 .sf-price.none{ font-size:.9rem; color:var(--sf-soft); font-family:inherit; }
 .sf-best{ background:var(--sf-green-soft); color:var(--sf-green); font-size:.75rem; font-weight:800; padding:3px 10px; border-radius:999px; }
@@ -372,6 +377,65 @@ a.sf-cloud[href]:hover{ background:var(--sf-accent-soft); }
 .sf-hist-info{ min-width:0; flex:1 1 260px; }
 .sf-hist-acts{ display:flex; gap:6px; flex-wrap:wrap; }
 
+
+/* ---------- أقسام الفلاتر القابلة للطي ---------- */
+details.sf-fbox{ padding:0; overflow:hidden; }
+details.sf-fbox > summary{
+  list-style:none; cursor:pointer; user-select:none; padding:12px 14px; display:flex; align-items:center; justify-content:space-between;
+  font-size:.86rem; font-weight:800; color:var(--sf-ink); transition:background .15s;
+}
+details.sf-fbox > summary::-webkit-details-marker{ display:none; }
+details.sf-fbox > summary::after{
+  content:''; width:16px; height:16px; flex:none; transition:transform .2s ease;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232F5770' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") center/contain no-repeat;
+}
+details.sf-fbox[open] > summary::after{ transform:rotate(180deg); }
+details.sf-fbox > summary:hover{ background:rgba(47,87,112,.06); }
+details.sf-fbox[open] > summary{ border-bottom:1px solid var(--sf-line); }
+details.sf-fbox > *:not(summary){ margin-inline:14px; }
+details.sf-fbox > *:not(summary):first-of-type, details.sf-fbox > summary + *{ margin-top:12px; }
+details.sf-fbox > *:last-child{ margin-bottom:14px; }
+.sf-dot{ width:10px; height:10px; border-radius:50%; flex:none; display:inline-block; }
+.sf-pitem .sf-dot{ margin-inline-end:2px; }
+.sf-pitem.on .sf-dot{ box-shadow:0 0 0 2px rgba(255,255,255,.7); }
+
+/* ---------- خلية المورد (قابلة للضغط) ---------- */
+.sf-supcell{ cursor:pointer; border-radius:12px; padding:6px 8px; margin:-6px -8px; transition:background .15s; min-width:0; }
+.sf-supcell:hover{ background:var(--sf-accent-soft); }
+.sf-supcell:focus-visible{ outline:2px solid var(--sf-accent); outline-offset:2px; }
+
+/* ---------- نافذة معلومات المورد ---------- */
+.sf-modal-box.narrow{ width:min(560px,100%); padding:0; overflow:hidden; animation:sfPop .22s ease; }
+@keyframes sfPop{ from{ opacity:0; transform:translateY(16px) scale(.97); } to{ opacity:1; transform:none; } }
+.sf-sm-head{ display:flex; align-items:center; gap:14px; padding:22px 24px; color:#fff; position:relative; }
+.sf-sm-avatar{
+  width:56px; height:56px; border-radius:18px; background:rgba(255,255,255,.22); flex:none;
+  display:flex; align-items:center; justify-content:center; font-size:1.6rem; font-weight:800; font-family:'Inter','Tajawal',sans-serif;
+}
+.sf-sm-titles{ min-width:0; flex:1; }
+.sf-sm-titles h2{ margin:0; font-size:1.3rem; font-weight:800; line-height:1.3; overflow-wrap:anywhere; }
+.sf-sm-sub{ margin-top:3px; font-size:.86rem; opacity:.9; }
+.sf-sm-head .sf-stars{ margin-top:6px; }
+.sf-sm-head .sf-star{ color:rgba(255,255,255,.4); font-size:1.3rem; }
+.sf-sm-head .sf-star.on{ color:#FFD766; }
+.sf-x-light{ background:rgba(255,255,255,.22); color:#fff; align-self:flex-start; }
+.sf-x-light:hover{ background:rgba(255,255,255,.36); }
+.sf-sm-body{ padding:20px 24px 26px; max-height:62vh; overflow:auto; }
+.sf-sm-price{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:16px 20px; border-radius:16px; }
+.sf-sm-price b{ font-family:'Inter','Tajawal',sans-serif; font-size:1.9rem; font-weight:800; unicode-bidi:plaintext; }
+.sf-sm-price b.none{ font-size:1.1rem; }
+.sf-sm-l{ font-size:.78rem; font-weight:800; color:var(--sf-soft); }
+.sf-sm-price .sf-sm-l{ color:inherit; opacity:.85; font-size:.85rem; }
+.sf-sm-h{ margin:20px 0 10px; font-size:.82rem; font-weight:800; color:var(--sf-soft); letter-spacing:.02em; }
+.sf-tiles{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.sf-tile{ background:#F4F8FB; border:1px solid var(--sf-line); border-radius:14px; padding:12px 14px; display:flex; flex-direction:column; gap:4px; }
+.sf-tile b{ font-size:.98rem; font-weight:700; overflow-wrap:anywhere; }
+.sf-sm-part{ background:#F4F8FB; border:1px solid var(--sf-line); border-radius:14px; padding:12px 14px; }
+.sf-sm-contact{ display:flex; flex-direction:column; gap:8px; }
+.sf-ln-lg{ padding:9px 14px; font-size:.92rem; flex:1 1 auto; }
+.sf-sm-notes{ background:var(--sf-amber-soft); color:#7A5A08; border-radius:14px; padding:12px 14px; font-size:.9rem; line-height:1.7; }
+@media (max-width:600px){ .sf-tiles{ gap:8px; } .sf-sm-head{ padding:18px; } .sf-sm-body{ padding:16px 18px 22px; } }
+
 /* ---------- إفلات الملفات + إشعار ---------- */
 .sf-drop{
   position:fixed; inset:0; background:rgba(47,87,112,.88); color:#fff; z-index:80;
@@ -390,7 +454,7 @@ a.sf-cloud[href]:hover{ background:var(--sf-accent-soft); }
 
 /* ---------- الشاشات المتوسطة والصغيرة ---------- */
 @media (max-width:1250px){
-  .sf-row{ grid-template-columns:32px minmax(0,1fr); }
+  .sf-row, .sf-row.grp{ grid-template-columns:32px minmax(0,1fr); }
   .sf-row > *:not(.sf-rchk){ grid-column:2; }
   .sf-pricebox, [dir="rtl"] .sf-pricebox{ flex-direction:row; align-items:center; flex-wrap:wrap; text-align:start; gap:12px; }
 }
@@ -428,7 +492,7 @@ a.sf-cloud[href]:hover{ background:var(--sf-accent-soft); }
   .sf-body{ background:#fff; }
   .sf-topbar, .sf-side, .sf-toolbar, .sf-stars, .sf-bar, .sf-search, .sf-hero-text p, .sf-rchk, .sf-ic, .sf-sample, .sf-active{ display:none !important; }
   .sf-main{ grid-template-columns:1fr; padding:0 10px; }
-  .sf-row{ box-shadow:none; break-inside:avoid; grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) minmax(0,1.4fr) auto; }
+  .sf-row, .sf-row.grp{ box-shadow:none; break-inside:avoid; grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) minmax(0,1.4fr) auto; }
   .sf-row > *:not(.sf-rchk){ grid-column:auto; }
   .sf-ghead{ background:#eee !important; color:#000 !important; }
   .sf-gpill{ background:#ddd !important; color:#000 !important; }

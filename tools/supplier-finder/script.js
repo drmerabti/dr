@@ -104,6 +104,7 @@ ar:{
   cloudOff:'السحابة غير متاحة', cloudOut:'سجّل الدخول من الصفحة الرئيسية لحفظ بياناتك في السحابة', cloudLoading:'جارٍ تحميل بياناتك…', cloudSaving:'جارٍ الحفظ…', cloudSaved:'بياناتك محفوظة في السحابة', cloudErr:'تعذّرت المزامنة مع السحابة', cloudRules:'تحقّق من نشر قواعد Firestore',
   cloudNeedLogin:'سجّل الدخول أولًا لاستعمال السجل.', cloudConflict:'توجد بيانات على هذا الجهاز وأخرى مختلفة في السحابة.\n\nموافق = استخدام بيانات السحابة\nإلغاء = رفع بيانات هذا الجهاز واستبدال السحابة',
   hist:'السجل', histTitle:'سجل المحاضر والطلبات', histCmp:'محاضر المقارنة', histRfq:'طلبات عروض الأسعار', histEmpty:'لا يوجد شيء محفوظ بعد.', histDelete:'حذف', histConfirm:'حذف هذا العنصر نهائيًا؟', histSup:'مورد', saveCmp:'حفظ في السجل', cmpSaved:'تم الحفظ في السجل',
+  supTip:'اضغط لعرض كل معلومات المورد', supOffer:'تفاصيل العرض', supPart:'القطعة', supContact:'بيانات الاتصال', fMore:'خيارات إضافية',
   tplName:'modele_fournisseurs', expName:'الموردون', cmpFile:'مقارنة_العروض', da:'دج'
 },
 fr:{
@@ -164,6 +165,7 @@ fr:{
   cloudOff:'Cloud indisponible', cloudOut:'Connectez-vous depuis la page d’accueil pour sauvegarder vos données dans le cloud', cloudLoading:'Chargement de vos données…', cloudSaving:'Enregistrement…', cloudSaved:'Données sauvegardées dans le cloud', cloudErr:'Échec de la synchronisation', cloudRules:'Vérifiez le déploiement des règles Firestore',
   cloudNeedLogin:'Connectez-vous d’abord pour utiliser l’historique.', cloudConflict:'Des données existent sur cet appareil et d’autres, différentes, dans le cloud.\n\nOK = utiliser les données du cloud\nAnnuler = envoyer les données de cet appareil et remplacer le cloud',
   hist:'Historique', histTitle:'Historique des PV et demandes', histCmp:'PV de comparaison', histRfq:'Demandes de prix', histEmpty:'Rien d’enregistré pour l’instant.', histDelete:'Supprimer', histConfirm:'Supprimer définitivement cet élément ?', histSup:'fournisseur(s)', saveCmp:'Enregistrer dans l’historique', cmpSaved:'Enregistré dans l’historique',
+  supTip:'Cliquez pour voir toutes les informations du fournisseur', supOffer:'Détails de l’offre', supPart:'Pièce', supContact:'Coordonnées', fMore:'Options',
   tplName:'modele_fournisseurs', expName:'fournisseurs', cmpFile:'comparaison_offres', da:'DA'
 },
 en:{
@@ -224,6 +226,7 @@ en:{
   cloudOff:'Cloud unavailable', cloudOut:'Sign in from the home page to save your data to the cloud', cloudLoading:'Loading your data…', cloudSaving:'Saving…', cloudSaved:'Your data is saved to the cloud', cloudErr:'Cloud sync failed', cloudRules:'Check that the Firestore rules are deployed',
   cloudNeedLogin:'Sign in first to use the history.', cloudConflict:'This device has data and the cloud has different data.\n\nOK = use the cloud data\nCancel = upload this device’s data and replace the cloud',
   hist:'History', histTitle:'Reports & requests history', histCmp:'Comparison reports', histRfq:'Quotation requests', histEmpty:'Nothing saved yet.', histDelete:'Delete', histConfirm:'Delete this item permanently?', histSup:'supplier(s)', saveCmp:'Save to history', cmpSaved:'Saved to history',
+  supTip:'Click to see all supplier details', supOffer:'Offer details', supPart:'Part', supContact:'Contact details', fMore:'More options',
   tplName:'modele_fournisseurs', expName:'suppliers', cmpFile:'offers_comparison', da:'DZD'
 }};
 
@@ -409,6 +412,25 @@ function setRating(key, val){
 }
 const starText = n => n>0 ? '★'.repeat(n)+'☆'.repeat(5-n) : '—';
 
+/* ---------------- ألوان الأصناف ---------------- */
+const PALETTE=[
+  { ink:'#2F6FB0', bg:'#DCEAFB', g1:'#4A86C5', g2:'#2F5F96' },
+  { ink:'#C2691A', bg:'#FCE9D6', g1:'#E58A3B', g2:'#B8631A' },
+  { ink:'#2E8A5B', bg:'#DDF3E4', g1:'#48A878', g2:'#2A7A52' },
+  { ink:'#7A4FA3', bg:'#EBE0F5', g1:'#9468BE', g2:'#6A409A' },
+  { ink:'#B15C86', bg:'#F6E4EE', g1:'#CC7AA3', g2:'#A04E78' },
+  { ink:'#1A8A72', bg:'#D7F1EA', g1:'#3AA890', g2:'#177A65' },
+  { ink:'#B8860B', bg:'#FDF0DA', g1:'#D9A030', g2:'#A87608' },
+  { ink:'#55636F', bg:'#E7ECEF', g1:'#71808D', g2:'#4E5C68' }
+];
+const NO_CAT={ ink:'#2F5770', bg:'#E3EEF4', g1:'#3F7392', g2:'#2F5770' };
+let catIdx=new Map();
+function buildCatMap(){
+  const cats=[...new Set(S.data.map(r=>norm(r.category||'')))].filter(Boolean).sort();
+  catIdx=new Map(cats.map((c,i)=>[c,i%PALETTE.length]));
+}
+function catColor(cat){ const k=norm(cat||''); return catIdx.has(k) ? PALETTE[catIdx.get(k)] : NO_CAT; }
+
 /* ---------------- التصفية والترتيب ---------------- */
 const num = v => (v===''||v==null||isNaN(Number(v))) ? null : Number(v);
 function baseQ(){ const t=tokens(S.q); return t.length ? S.data.filter(r=>t.every(x=>r._h.includes(x))) : S.data; }
@@ -445,8 +467,8 @@ function results(){
 
 /* ---------------- التنسيق ---------------- */
 const curLabel = c => c==='DZD' ? T('da') : c==='EUR' ? '€' : c==='USD' ? '$' : c;
-function fmtNum(n){ return Number(n).toLocaleString('fr-FR',{maximumFractionDigits:2}).replace(/\u202f|\u00a0/g,' '); }
-const fmtPrice = r => r.price==null ? null : fmtNum(r.price)+' '+curLabel(r.currency);
+function fmtNum(n){ return Number(n).toLocaleString('fr-FR',{maximumFractionDigits:2}).replace(/[\u202f\u00a0]/g,'\u00A0'); }
+const fmtPrice = r => r.price==null ? null : fmtNum(r.price)+'\u00A0'+curLabel(r.currency);
 function fmtDays(d){ return d==null ? null : d===0 ? T('instant') : d+' '+T('days'); }
 function waLink(p){
   const raw=String(p).trim(); let d=raw.replace(/\D/g,'');
@@ -499,16 +521,24 @@ function starsEl(r){
 }
 
 function rowEl(r, isBest, grouped){
-  const row=h('div','sf-row'+(S.sel.has(r.id)?' sel':'')+(isBest?' best':''));
+  const col=catColor(r.category);
+  const row=h('div','sf-row'+(grouped?' grp':'')+(S.sel.has(r.id)?' sel':'')+(isBest?' best':''));
+  row.style.setProperty('--cc',col.ink);
   const chk=h('input'); chk.type='checkbox'; chk.checked=S.sel.has(r.id);
   chk.addEventListener('change',()=>{ chk.checked ? S.sel.add(r.id) : S.sel.delete(r.id); row.classList.toggle('sel',chk.checked); renderBar(); syncAll(); });
   row.append(h('div','sf-rchk',chk));
 
-  const tags=[]; if(r.ref) tags.push(h('span','sf-tag ref',r.ref)); if(r.brand) tags.push(h('span','sf-tag brand',r.brand)); if(r.category) tags.push(h('span','sf-tag',r.category));
+  const tags=[]; if(r.ref) tags.push(h('span','sf-tag ref',r.ref)); if(r.brand) tags.push(h('span','sf-tag brand',r.brand));
+  if(r.category){ const t=h('span','sf-tag',r.category); t.style.background=col.bg; t.style.color=col.ink; tags.push(t); }
   row.append(h('div','',[ grouped?null:h('div','sf-part',r.part), tags.length?h('div','sf-tags'+(grouped?' sf-tags-top':''),tags):null, r.notes?h('div','sf-note',r.notes):null ]));
 
+  // خلية المورد: الضغط عليها يفتح نافذة كل المعلومات
   const sub=[]; if(r.contact) sub.push(h('span','',r.contact)); if(r.city) sub.push(h('span','',r.city));
-  row.append(h('div','',[ h('div','sf-sup',r.supplier), starsEl(r), sub.length?h('div','sf-sub',sub):null ]));
+  const supCell=h('div','sf-supcell',[ h('div','sf-sup',r.supplier), starsEl(r), sub.length?h('div','sf-sub',sub):null ]);
+  supCell.tabIndex=0; supCell.setAttribute('role','button'); supCell.title=T('supTip');
+  supCell.addEventListener('click',()=>openSupplier(r));
+  supCell.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); openSupplier(r); } });
+  row.append(supCell);
 
   const c=h('div','sf-contact');
   r.phones.slice(0,2).forEach(p=>{
@@ -522,16 +552,57 @@ function rowEl(r, isBest, grouped){
   }
   row.append(c);
 
+  // السعر فقط (بقية التفاصيل في نافذة المورد)
   const pb=h('div','sf-pricebox');
   const ps=fmtPrice(r);
   pb.append(ps ? h('div','sf-price',ps) : h('div','sf-price none',T('noPrice')));
   if(isBest) pb.append(h('span','sf-best','★ '+T('best')));
-  const m1=[]; const dd=fmtDays(r.delivery); if(dd) m1.push(dd); if(r.moq) m1.push(T('moq')+': '+r.moq);
-  if(m1.length) pb.append(h('div','sf-meta',m1.join(' • ')));
-  if(r.payment) pb.append(h('div','sf-meta',T('pay')+': '+r.payment));
-  if(r.warranty) pb.append(h('div','sf-meta',T('war')+': '+r.warranty));
   row.append(pb);
   return row;
+}
+
+/* ---- نافذة معلومات المورد ---- */
+function openSupplier(r){
+  const col=catColor(r.category);
+  const x=h('button','sf-x sf-x-light',icon('close')); x.type='button'; x.setAttribute('aria-label','close'); x.addEventListener('click',closeModal);
+  const sub=[r.city,r.contact].filter(Boolean).join('   •   ');
+  const head=h('div','sf-sm-head',[
+    h('div','sf-sm-avatar',(r.supplier||'?').trim().charAt(0).toUpperCase()),
+    h('div','sf-sm-titles',[ h('h2','',r.supplier), sub?h('div','sf-sm-sub',sub):null, starsEl(r) ]),
+    x
+  ]);
+  head.style.background='linear-gradient(135deg,'+col.g1+','+col.g2+')';
+
+  const ps=fmtPrice(r);
+  const priceCard=h('div','sf-sm-price',[ h('span','sf-sm-l',T('rowUnit')), ps?h('b','',ps):h('b','none',T('noPrice')) ]);
+  priceCard.style.background=col.bg; priceCard.style.color=col.ink;
+
+  const tile=(label,val)=>h('div','sf-tile',[ h('span','sf-sm-l',label), h('b','',val||'—') ]);
+  const tiles=h('div','sf-tiles',[ tile(T('rowDelivery'),fmtDays(r.delivery)), tile(T('rowMoq'),r.moq), tile(T('rowPay'),r.payment), tile(T('rowWar'),r.warranty) ]);
+
+  const body=h('div','sf-sm-body');
+  body.append(priceCard, h('h3','sf-sm-h',T('supOffer')), tiles);
+
+  // القطعة
+  const tags=[]; if(r.ref) tags.push(h('span','sf-tag ref',r.ref)); if(r.brand) tags.push(h('span','sf-tag brand',r.brand));
+  if(r.category){ const t=h('span','sf-tag',r.category); t.style.background=col.bg; t.style.color=col.ink; tags.push(t); }
+  body.append(h('h3','sf-sm-h',T('supPart')), h('div','sf-sm-part',[ h('div','sf-part',r.part), tags.length?h('div','sf-tags',tags):null ]));
+
+  // الاتصال
+  const cont=h('div','sf-sm-contact');
+  r.phones.forEach(p=>{
+    const ln=h('a','sf-ln sf-ln-lg',[icon('phone'),p]); ln.href=telHref(p);
+    cont.append(h('div','sf-line',[ ln, iconBtn('wa',T('wa'),null,waLink(p),'wa'), iconBtn('copy',T('copy'),()=>copyText(p)) ]));
+  });
+  r.emails.forEach(e=>{
+    cont.append(h('div','sf-line',[ Object.assign(h('a','sf-ln sf-ln-lg',[icon('mail'),e]),{href:'mailto:'+e}), iconBtn('copy',T('copy'),()=>copyText(e)) ]));
+  });
+  if(!r.phones.length && !r.emails.length) cont.append(h('span','sf-none','—'));
+  body.append(h('h3','sf-sm-h',T('supContact')), cont);
+
+  if(r.notes) body.append(h('h3','sf-sm-h',T('rowNotes')), h('div','sf-sm-notes',r.notes));
+
+  openModal(h('div','',[head,body]), false, true);
 }
 
 /* ---------------- العرض ---------------- */
@@ -539,7 +610,7 @@ function render(){
   const has=S.data.length>0;
   $('sfEmpty').hidden=has; $('sfMain').hidden=!has; $('sfStats').hidden=!has;
   $('sfSample').hidden=!(has&&S.sample); $('sfSample').textContent=T('sample');
-  renderStats(); renderSelects(); renderFacets(); renderResults();
+  buildCatMap(); renderStats(); renderSelects(); renderFacets(); renderResults();
 }
 function renderStats(){
   const st=$('sfStats'); st.innerHTML='';
@@ -562,25 +633,27 @@ function renderSelects(){
   [['price-asc','sPriceAsc'],['price-desc','sPriceDesc'],['rating','sRating'],['delivery','sDelivery'],['supplier','sSupplier'],['part','sPart']].forEach(([v,k])=>{ const o=h('option','',T(k)); o.value=v; so.append(o); });
   so.value=cur;
 }
-function facetList(container, items, set){
+function facetList(container, items, set, dotFn){
   container.innerHTML='';
   items.forEach(([name,count])=>{
     const cb=h('input'); cb.type='checkbox'; cb.checked=set.has(name);
     cb.addEventListener('change',()=>{ cb.checked?set.add(name):set.delete(name); renderResults(); });
-    container.append(h('label','sf-check',[cb,h('span','',name),h('em','',String(count))]));
+    const dot=dotFn?h('i','sf-dot'):null; if(dot) dot.style.background=dotFn(name).ink;
+    container.append(h('label','sf-check',[cb,dot,h('span','',name),h('em','',String(count))]));
   });
 }
 function renderFacets(){
   const base=baseQ();
   const count=fn=>{ const m=new Map(); base.forEach(r=>{ const k=fn(r); m.set(k,(m.get(k)||0)+1); }); return [...m.entries()].sort((a,b)=>b[1]-a[1]||String(a[0]).localeCompare(String(b[0]))); };
-  facetList($('sfCats'), count(r=>r.category||'—'), S.f.cats);
+  facetList($('sfCats'), count(r=>r.category||'—'), S.f.cats, n=>catColor(n==='—'?'':n));
   facetList($('sfBrands'), count(r=>r.brand||'—'), S.f.brands);
-  const pm=new Map(); base.forEach(r=>{ const e=pm.get(r._pk)||{name:r.part,sups:new Set()}; e.sups.add(r._sk); pm.set(r._pk,e); });
+  const pm=new Map(); base.forEach(r=>{ const e=pm.get(r._pk)||{name:r.part,cat:r.category,sups:new Set()}; e.sups.add(r._sk); pm.set(r._pk,e); });
   const pq=tokens(S.partQ);
   const list=[...pm.entries()].filter(([k,e])=>!pq.length || pq.every(t=>norm(e.name).includes(t))).sort((a,b)=>b[1].sups.size-a[1].sups.size||a[1].name.localeCompare(b[1].name)).slice(0,300);
   const box=$('sfParts'); box.innerHTML='';
   list.forEach(([k,e])=>{
-    const b=h('button','sf-pitem'+(S.f.part===k?' on':''),[h('span','',e.name),h('em','',String(e.sups.size))]); b.type='button'; b.title=e.name;
+    const pd=h('i','sf-dot'); pd.style.background=catColor(e.cat).ink;
+    const b=h('button','sf-pitem'+(S.f.part===k?' on':''),[pd,h('span','',e.name),h('em','',String(e.sups.size))]); b.type='button'; b.title=e.name;
     b.addEventListener('click',()=>{ S.f.part = S.f.part===k ? '' : k; renderFacets(); renderResults(); });
     box.append(b);
   });
@@ -606,7 +679,8 @@ function renderResults(){
         pills.push(h('span','sf-gpill',T('min')+': '+fmtNum(Math.min(...ps))+' '+c));
         if(prices.length>1){ pills.push(h('span','sf-gpill',T('max')+': '+fmtNum(Math.max(...ps))+' '+c)); pills.push(h('span','sf-gpill',T('avg')+': '+fmtNum(ps.reduce((a,b)=>a+b,0)/ps.length)+' '+c)); }
       }
-      list.append(h('div','sf-group',[ h('div','sf-ghead',[h('h2','',rows[0].part),h('div','sf-gmeta',pills)]), h('div','sf-rows',rows.map(r=>rowEl(r,isBest(r),true))) ]));
+      const gh=h('div','sf-ghead',[h('h2','',rows[0].part),h('div','sf-gmeta',pills)]); const gc=catColor(rows[0].category); gh.style.background='linear-gradient(135deg,'+gc.g1+','+gc.g2+')';
+      list.append(h('div','sf-group',[ gh, h('div','sf-rows',rows.map(r=>rowEl(r,isBest(r),true))) ]));
     });
   } else list.append(h('div','sf-rows',res.map(r=>rowEl(r,isBest(r),false))));
   renderBar(); syncAll(res);
@@ -662,7 +736,7 @@ function renderBar(){
 }
 
 /* ---------------- النوافذ ---------------- */
-function openModal(node, wide){ const box=$('sfModalBox'); box.classList.toggle('wide',!!wide); box.innerHTML=''; box.append(node); $('sfModal').classList.add('open'); paintIcons(box); box.querySelectorAll('.sf-btn span').forEach(s=>s.style.display='inline'); }
+function openModal(node, wide, narrow){ const box=$('sfModalBox'); box.classList.toggle('wide',!!wide); box.classList.toggle('narrow',!!narrow); box.innerHTML=''; box.append(node); $('sfModal').classList.add('open'); paintIcons(box); box.querySelectorAll('.sf-btn span').forEach(s=>s.style.display='inline'); }
 function closeModal(){ $('sfModal').classList.remove('open'); $('sfModalBox').innerHTML=''; }
 function modalHead(title){ const x=h('button','sf-x',icon('close')); x.type='button'; x.addEventListener('click',closeModal); return h('div','sf-mh',[h('h2','',title),x]); }
 function meGet(){ try{ return JSON.parse(localStorage.getItem(LS.me)||'{}')||{}; }catch(e){ return {}; } }
@@ -908,7 +982,7 @@ function openCompare(){
 
   const foot=h('div','sf-mfoot');
   const mkb=(ic,label,fn,cls)=>{ const b=h('button','sf-btn '+(cls||''),[icon(ic),h('span','',label)]); b.type='button'; b.addEventListener('click',fn); return b; };
-  foot.append(mkb('check',T('saveCmp'),()=>saveComparison(C,buildCmp(C))), mkb('copy',T('cmpCopy'),()=>copyText(cmpText(C,buildCmp(C)))), mkb('download',T('cmpXlsx'),()=>cmpXlsx(C,buildCmp(C))), mkb('print',T('cmpPdf'),()=>cmpPdf(C,buildCmp(C)),'sf-btn-primary'));
+  foot.append(mkb('copy',T('cmpCopy'),()=>copyText(cmpText(C,buildCmp(C)))), mkb('download',T('cmpXlsx'),()=>cmpXlsx(C,buildCmp(C))), mkb('print',T('cmpPdf'),()=>cmpPdf(C,buildCmp(C)),'sf-btn-primary'));
   box.append(foot);
 
   function drawTable(){
@@ -1159,7 +1233,6 @@ function initCloud(){
   setCloud('out');
   fbAuth.onAuthStateChanged(async u=>{
     CL.uid = u ? u.uid : null;
-    $('sfHist').hidden = !u;
     if(!u){ setCloud('out'); return; }
     await cloudSync();
   });
@@ -1250,7 +1323,6 @@ $('sfExport').addEventListener('click',()=>exportXlsx());
 $('sfDemo').addEventListener('click',()=>{ S.data=sampleData(S.lang).map(finalize); S.sample=true; persist(); render(); });
 ['sfClear','sfClearS'].forEach(id=>$(id).addEventListener('click',clearAll));
 document.querySelectorAll('#sfLangs button').forEach(b=>b.addEventListener('click',()=>setLang(b.dataset.l)));
-$('sfHist').addEventListener('click',openHistory);
 
 $('sfFiltBtn').addEventListener('click',()=>$('sfSide').classList.add('open'));
 $('sfSideClose').addEventListener('click',()=>$('sfSide').classList.remove('open'));
@@ -1264,7 +1336,17 @@ window.addEventListener('dragleave',e=>{ if(!hasFiles(e)) return; dragDepth=Math
 window.addEventListener('dragover',e=>{ if(hasFiles(e)) e.preventDefault(); });
 window.addEventListener('drop',e=>{ if(!hasFiles(e)) return; e.preventDefault(); dragDepth=0; $('sfDrop').classList.remove('show'); handleFile(e.dataTransfer.files[0]); });
 
+/* ---------------- طيّ أقسام الفلاتر ---------------- */
+function initFolds(){
+  let st={}; try{ st=JSON.parse(localStorage.getItem('sf_fopen')||'{}')||{}; }catch(e){}
+  document.querySelectorAll('details.sf-fbox[data-k]').forEach(d=>{
+    const k=d.dataset.k; if(k in st) d.open=!!st[k];
+    d.addEventListener('toggle',()=>{ st[k]=d.open; try{ localStorage.setItem('sf_fopen',JSON.stringify(st)); }catch(e){} });
+  });
+}
+
 /* ---------------- البداية ---------------- */
+initFolds();
 loadStored();
 paintIcons();
 applyLang();

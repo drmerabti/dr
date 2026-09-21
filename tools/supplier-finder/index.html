@@ -37,10 +37,6 @@
       <button id="sfQClear" class="sf-search-x" type="button" aria-label="clear"><i data-ic="close"></i></button>
     </div>
     <div class="sf-stats" id="sfStats"></div>
-    <div class="sf-cloudrow">
-      <a id="sfCloud" class="sf-cloud out"></a>
-      <button class="sf-btn sf-btn-sm" id="sfHist" type="button" hidden><i data-ic="clock"></i><span data-i="hist" style="display:inline"></span></button>
-    </div>
     <div class="sf-sample" id="sfSample" hidden></div>
   </section>
 
@@ -54,54 +50,67 @@
         <button class="sf-side-close" id="sfSideClose" type="button" aria-label="close"><i data-ic="close"></i></button>
       </div>
 
-      <div class="sf-fbox">
-        <h3 data-i="fParts"></h3>
+      <details class="sf-fbox" data-k="parts" open>
+        <summary data-i="fParts"></summary>
         <input id="sfPartQ" class="sf-mini" type="text" autocomplete="off" data-ip="fPartQ">
         <div class="sf-scroll sf-parts" id="sfParts"></div>
-      </div>
+      </details>
 
-      <div class="sf-fbox">
-        <h3 data-i="fCat"></h3>
+      <details class="sf-fbox" data-k="cats" open>
+        <summary data-i="fCat"></summary>
         <div class="sf-scroll sf-checks" id="sfCats"></div>
-      </div>
+      </details>
 
-      <div class="sf-fbox">
-        <h3 data-i="fBrand"></h3>
+      <details class="sf-fbox" data-k="brands">
+        <summary data-i="fBrand"></summary>
         <div class="sf-scroll sf-checks" id="sfBrands"></div>
-      </div>
+      </details>
 
-      <div class="sf-fbox">
-        <h3 data-i="fRating"></h3>
+      <details class="sf-fbox" data-k="rating" open>
+        <summary data-i="fRating"></summary>
         <select id="sfRating" class="sf-select"></select>
-      </div>
+      </details>
 
-      <div class="sf-fbox">
-        <h3 data-i="fCity"></h3>
+      <details class="sf-fbox" data-k="city">
+        <summary data-i="fCity"></summary>
         <select id="sfCity" class="sf-select"></select>
-        <h3 data-i="fSupplier"></h3>
-        <select id="sfSupplier" class="sf-select"></select>
-        <h3 data-i="fCur"></h3>
-        <select id="sfCurrency" class="sf-select"></select>
-      </div>
+      </details>
 
-      <div class="sf-fbox">
-        <h3 data-i="fPrice"></h3>
+      <details class="sf-fbox" data-k="supplier">
+        <summary data-i="fSupplier"></summary>
+        <select id="sfSupplier" class="sf-select"></select>
+      </details>
+
+      <details class="sf-fbox" data-k="cur">
+        <summary data-i="fCur"></summary>
+        <select id="sfCurrency" class="sf-select"></select>
+      </details>
+
+      <details class="sf-fbox" data-k="price" open>
+        <summary data-i="fPrice"></summary>
         <div class="sf-two">
           <input id="sfPmin" class="sf-mini" type="number" min="0" inputmode="decimal" data-ip="fMin">
           <input id="sfPmax" class="sf-mini" type="number" min="0" inputmode="decimal" data-ip="fMax">
         </div>
-        <h3 data-i="fDel"></h3>
+      </details>
+
+      <details class="sf-fbox" data-k="delivery">
+        <summary data-i="fDel"></summary>
         <input id="sfDmax" class="sf-mini" type="number" min="0" inputmode="numeric" placeholder="—">
+      </details>
+
+      <details class="sf-fbox" data-k="opts">
+        <summary data-i="fMore"></summary>
         <label class="sf-check"><input type="checkbox" id="sfHasEmail"><span data-i="fEmail"></span></label>
         <label class="sf-check"><input type="checkbox" id="sfHasPhone"><span data-i="fPhone"></span></label>
-      </div>
+      </details>
 
-      <div class="sf-fbox">
-        <h3 data-i="fCC"></h3>
+      <details class="sf-fbox" data-k="cc">
+        <summary data-i="fCC"></summary>
         <input id="sfCC" class="sf-mini" type="text" inputmode="numeric" dir="ltr" maxlength="4">
-      </div>
+      </details>
 
-      <div class="sf-fbox sf-side-tools">
+      <div class="sf-side-tools">
         <button class="sf-btn" id="sfTplS" type="button"><i data-ic="file"></i><span data-i="template"></span></button>
         <button class="sf-btn" id="sfPrintS" type="button"><i data-ic="print"></i><span data-i="print"></span></button>
         <button class="sf-btn sf-btn-danger" id="sfClearS" type="button"><i data-ic="trash"></i><span data-i="clear"></span></button>
