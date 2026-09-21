@@ -113,6 +113,7 @@ function makeNewPlan(level){
   return {
     id: newPlanId(),
     level: level,
+    template: 't1',
     color: DEFAULT_COLOR,
     school: tpl.school,
     yearSelect: currentAcademicYears()[0],
@@ -263,6 +264,7 @@ function initAuthMenu(){
 function showGallery(){
   $('galleryView').classList.remove('hidden');
   $('editorView').classList.add('hidden');
+  document.body.classList.remove('in-editor');
   currentPlanId = null;
   renderGallery();
 }
@@ -270,6 +272,7 @@ function showEditor(planId){
   currentPlanId = planId;
   $('galleryView').classList.add('hidden');
   $('editorView').classList.remove('hidden');
+  document.body.classList.add('in-editor');
   loadPlanIntoEditor(planId);
 }
 
@@ -347,6 +350,126 @@ $('newPlanBtn').addEventListener('click', () => {
 });
 $('guestLoginBtn').addEventListener('click', openAuthModal);
 
+/* =====================================================================
+   القوالب الثمانية — كلها تقرأ نفس بيانات المذكرة (الشكل فقط يختلف)
+===================================================================== */
+/* ---------- أدوات مساعدة للقوالب ---------- */
+const grow = p => p.stages.map(s => Math.max(parseInt(s.time) || 5, 5));
+const objText = p => p.objectives.join('، ');
+const act = s => `${s.teacher ? `<div><b>الأستاذ:</b> ${esc(s.teacher)}</div>` : ''}${s.student ? `<div><b>التلميذ:</b> ${esc(s.student)}</div>` : ''}`;
+const evalTxt = p => (p.evalEnabled && p.eval) ? esc(p.eval) : '';
+const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const V = s => s ? `<span class="v">${esc(s)}</span>` : '';
+const tm = t => t ? esc(t) + ' د' : '—';
+const dur = d => d ? esc(d) + ' د' : '—';
+const lg = (p, c) => p.logo ? `<img class="lg ${c}" src="${p.logo}" alt="">` : '';
+const dt = p => p.date ? p.date.split('-').reverse().join('-') : '';
+const lis = a => a.map(x => `<li>${esc(x)}</li>`).join('');
+
+function cv(c){
+  const h = c.replace('#',''), r = parseInt(h.slice(0,2),16), g = parseInt(h.slice(2,4),16), b = parseInt(h.slice(4,6),16);
+  const mix = a => '#' + [r,g,b].map(x => Math.round(x * a + 255 * (1 - a)).toString(16).padStart(2,'0')).join('');
+  return `--c:${c};` + [5,7,10,12,14,30].map(k => `--t${k}:${mix(k/100)}`).join(';');
+}
+
+/* ---------- القوالب الثمانية: كلها تقرأ نفس البيانات ---------- */
+const NAMES = {t1:'أسود كلاسيكي',t2:'أزرق مؤطّر',t3:'أخضر بالمقاطع',t4:'أحمر أنيق',t5:'الافتراضي',t6:'بسيط رسمي',t7:'شريط ملوّن',t8:'خط زمني'};
+const T = {
+t1: p => { const g = grow(p), n = p.stages.length;
+ return `<div class="paper t1">
+  <div class="box r1"><span><b>المادة:</b> ${V(p.subject)}</span><span><b>المقطع:</b> <i class="blank"></i></span><span><b>المحور:</b> ${V(p.unit)}</span>${lg(p,'lg-s')}</div>
+  <div class="box b2"><div><b>النشاط:</b> <i class="blank"></i></div><div><b>الموضوع:</b> ${V(p.title)}</div><div><b>الهدف التعلمي:</b> ${V(objText(p))}</div></div>
+  <div class="tbl"><div class="hd"><div>المراحل</div><div>الوضعية التعلمية التعليمية</div><div>التقويم</div></div>
+  ${p.stages.map((s,i) => `<div class="rw" style="--g:${g[i]}"><div class="st">${esc(s.title)}</div><div class="sit ruled">${act(s)}</div><div class="ev ruled">${i === n-1 ? evalTxt(p) : ''}</div></div>`).join('')}
+  </div></div>`; },
+
+t2: p => { const g = grow(p);
+ return `<div class="paper t2"><div class="fr">
+  <div class="top">
+   <div class="cd"><div><span class="lb">الأستاذ:</span> ${V(p.teacher)}</div><div><span class="lb">المستوى:</span> ${V(p.klass)}</div><div><span class="lb">السنة الدراسية:</span> ${V(p.year)}</div><div><span class="lb">المدة:</span> ${V(p.duration ? p.duration + ' د' : '')}</div></div>
+   <div class="mid"><div class="pl"><b>نموذج مذكرة رقم:</b> ${V(p.session)}</div><div class="pl"><span class="lb">المحور:</span> ${V(p.unit)}</div><div class="pl"><span class="lb">الموضوع:</span> ${V(p.title)}</div></div>
+   <div class="cd"><h4>الوسائل التعليمية</h4>${p.materials.map(m => `<div>• ${esc(m)}</div>`).join('')}</div>
+  </div>
+  <div class="band"><span class="lb">الكفاءات المستهدفة:</span> ${V(objText(p))}</div>
+  <div class="tbl"><div class="hd"><div>المراحل</div><div>المحتوى المعرفي</div><div>المدة</div></div>
+  ${p.stages.map((s,i) => `<div class="rw" style="--g:${g[i]}"><div class="st">${esc(s.title)}</div><div>${act(s)}</div><div class="tm">${tm(s.time)}</div></div>`).join('')}</div>
+  ${evalTxt(p) ? `<div class="ftr"><span class="lb">التقويم / الواجب:</span> ${V(p.eval)}</div>` : ''}
+ </div></div>`; },
+
+t3: p => { const g = grow(p), n = p.stages.length;
+ const it = (l, v, cls, w) => `<div class="it${w ? ' w' : ''}"><b class="${cls}">${l}:</b> ${v ? V(v) : ''}</div>`;
+ return `<div class="paper t3">
+  <div class="top">
+   ${it('الميدان', p.subject, 'g')}${it('المقطع التعلمي', '', 'r')}
+   ${it('المحتوى', p.title, 'r')}${it('النشاط', '', 'r')}
+   ${it('الأسبوع', dt(p), 'p')}${it('الحصة / المدة', [p.session, p.duration ? p.duration + ' د' : ''].filter(Boolean).join(' / '), 'p')}
+   ${it('مؤشرات الكفاءة', objText(p), 'r', 1)}
+   ${it('القيم والمواقف', '', 'g', 1)}
+   ${it('الوسائل', p.materials.join('، '), 'r', 1)}
+  </div>
+  <div class="tbl"><div class="hd"><div>المراحل</div><div>الوضعية التعلمية والنشاط المقترح</div><div>مؤشرات التقويم</div></div>
+  ${p.stages.map((s,i) => `<div class="rw" style="--g:${g[i]}"><div class="st">${esc(s.title)}</div><div class="sit ruled">${act(s)}</div><div class="ev ruled">${i === n-1 ? evalTxt(p) : ''}</div></div>`).join('')}
+  </div></div>`; },
+
+t4: p => { const g = grow(p), n = p.stages.length;
+ return `<div class="paper t4"><div class="fr"><div class="pill">مذكرة رقم ${esc(p.session)}</div>${lg(p,'lg-c')}
+  <div class="info">
+   <div><b>المؤسسة:</b> ${V(p.school)}</div><div><b>المستوى:</b> ${V(p.klass)}</div>
+   <div><b>ميدان التعلم:</b> ${V(p.subject)}</div><div><b>المادة:</b> ${V(p.subject)}</div>
+   <div><b>الوحدة التعلمية:</b> ${V(p.unit)}</div><div><b>المدة:</b> ${V(p.duration ? p.duration + ' د' : '')}</div>
+   <div><b>المحتوى المعرفي:</b> ${V(p.title)}</div><div><b>الأستاذ:</b> ${V(p.teacher)}</div>
+  </div>
+  <div class="cmp"><div><h5>الكفاءات القبلية:</h5></div><div><h5>الكفاءات المستهدفة:</h5>${V(objText(p))}</div></div>
+  <div class="tbl"><div class="hd"><div>مراحل الحصة</div><div>سير الحصة</div><div>المدة</div><div>توجيهات وتعاليق</div></div>
+  ${p.stages.map((s,i) => `<div class="rw" style="--g:${g[i]}"><div class="st">${esc(s.title)}</div><div class="sit">${act(s)}</div><div class="tm">${esc(s.time)}</div><div class="nt">${i === n-1 ? V(evalTxt(p) ? p.eval : '') : ''}</div></div>`).join('')}
+  </div></div></div>`; },
+
+t5: p => `<div class="paper t5" style="${cv(p.color)}">
+  <div class="h">${lg(p,'lg-h')}<div><div class="sc">${esc(p.school)}</div><div class="sb">${esc(p.year)} · ${esc(p.subject)} · ${esc(p.klass)}</div></div></div>
+  <div class="ti">${esc(p.title)}</div>
+  <div class="meta"><span><b>الوحدة:</b> ${esc(p.unit)}</span><span><b>الحصة:</b> ${esc(p.session)}</span><span><b>المدة:</b> ${dur(p.duration)}</span><span><b>التاريخ:</b> ${esc(dt(p))}</span><span><b>الأستاذ:</b> ${esc(p.teacher)}</span></div>
+  <div class="bt">الأهداف / الكفاءة المستهدفة</div><ul>${lis(p.objectives)}</ul>
+  <div class="bt">الوسائل التعليمية</div><div class="tags">${p.materials.map(m => `<span>${esc(m)}</span>`).join('')}</div>
+  <div class="bt">سير الدرس</div>
+  <table><thead><tr><th>المرحلة</th><th>الزمن</th><th>نشاط الأستاذ</th><th>نشاط التلميذ</th></tr></thead><tbody>
+  ${p.stages.map(s => `<tr><td><b>${esc(s.title)}</b></td><td>${tm(s.time)}</td><td>${esc(s.teacher)}</td><td>${esc(s.student)}</td></tr>`).join('')}</tbody></table>
+  ${evalTxt(p) ? `<div class="bt">التقويم / الواجب المنزلي</div><p>${evalTxt(p)}</p>` : ''}
+ </div>`,
+
+t6: p => `<div class="paper t6">
+  <div class="hd6">${lg(p,'lg-m')}<b>${esc(p.school)}</b><span>السنة الدراسية ${esc(p.year)}</span></div>
+  <div class="tl">مذكرة تحضير درس</div>
+  <div class="kv"><div><b>المادة:</b> ${esc(p.subject)}</div><div><b>القسم:</b> ${esc(p.klass)}</div><div><b>عنوان الدرس:</b> ${esc(p.title)}</div><div><b>الوحدة:</b> ${esc(p.unit)}</div><div><b>الحصة / المدة:</b> ${esc(p.session)} / ${dur(p.duration)}</div><div><b>الأستاذ:</b> ${esc(p.teacher)}</div></div>
+  <div class="sec"><h5>الأهداف / الكفاءة المستهدفة</h5><div class="bd">${p.objectives.map(o => `<div>— ${esc(o)}</div>`).join('')}</div></div>
+  <div class="sec"><h5>الوسائل التعليمية</h5><div class="bd">${esc(p.materials.join('، '))}</div></div>
+  <div class="tbw"><table><thead><tr><th style="width:150px">المراحل</th><th>نشاط الأستاذ</th><th>نشاط التلميذ</th></tr></thead><tbody>
+  ${p.stages.map(s => `<tr><td><b>${esc(s.title)}</b><br><small>${tm(s.time)}</small></td><td>${esc(s.teacher)}</td><td>${esc(s.student)}</td></tr>`).join('')}</tbody></table></div>
+  ${evalTxt(p) ? `<div class="sec"><h5>التقويم / الواجب المنزلي</h5><div class="bd">${evalTxt(p)}</div></div>` : ''}
+ </div>`,
+
+t7: p => `<div class="paper t7" style="${cv(p.color)}">
+  <div class="band7">${lg(p,'lg-b')}<small>${esc(p.school)} · ${esc(p.year)}</small><h1>${esc(p.title)}</h1>
+   <div class="chips7"><span>${esc(p.subject)}</span><span>${esc(p.klass)}</span><span>الوحدة: ${esc(p.unit)}</span><span>الحصة ${esc(p.session)}</span><span>${dur(p.duration)}</span><span>${esc(p.teacher)}</span></div></div>
+  <div class="bd7">
+   <div class="two"><div class="cd7"><h5>الأهداف / الكفاءة المستهدفة</h5><ul>${lis(p.objectives)}</ul></div><div class="cd7"><h5>الوسائل التعليمية</h5><ul>${lis(p.materials)}</ul></div></div>
+   <table><thead><tr><th style="width:170px">المرحلة</th><th style="width:70px">الزمن</th><th>نشاط الأستاذ</th><th>نشاط التلميذ</th></tr></thead><tbody>
+   ${p.stages.map(s => `<tr><td><b>${esc(s.title)}</b></td><td>${tm(s.time)}</td><td>${esc(s.teacher)}</td><td>${esc(s.student)}</td></tr>`).join('')}</tbody></table>
+   ${evalTxt(p) ? `<div class="ft7"><b>التقويم / الواجب:</b> ${evalTxt(p)}</div>` : ''}
+  </div></div>`,
+
+t8: p => `<div class="paper t8" style="${cv(p.color)}">
+  <div class="side">${lg(p,'lg-s2')}
+   <div class="kv8"><h5>المعلومات</h5><div>${esc(p.school)}</div><div>${esc(p.year)}</div><div><b>المادة:</b> ${esc(p.subject)}</div><div><b>القسم:</b> ${esc(p.klass)}</div><div><b>الأستاذ:</b> ${esc(p.teacher)}</div><div><b>الحصة:</b> ${esc(p.session)} · ${dur(p.duration)}</div></div>
+   <div><h5>الأهداف</h5><ul>${lis(p.objectives)}</ul></div>
+   <div><h5>الوسائل</h5><ul>${lis(p.materials)}</ul></div>
+  </div>
+  <div class="main"><small>${esc(p.unit)} · ${esc(dt(p))}</small><h1>${esc(p.title)}</h1>
+   <div class="tlw">${p.stages.map((s,i) => `<div class="stp"><div class="nm">${i+1}</div><h6><span>${esc(s.title)}</span><em>${tm(s.time)}</em></h6><div><b>الأستاذ:</b> ${esc(s.teacher)}</div><div><b>التلميذ:</b> ${esc(s.student)}</div></div>`).join('')}</div>
+   ${evalTxt(p) ? `<div class="ev8"><b>التقويم / الواجب:</b> ${evalTxt(p)}</div>` : ''}
+  </div></div>`
+};
+
+
 /* ---------- المحرر: مراجع العناصر ---------- */
 const els = {
   levelSelect: $('levelSelect'), loadPresetBtn: $('loadPresetBtn'),
@@ -362,7 +485,7 @@ const els = {
   frameDrop: $('frameDrop'), frameInput: $('frameInput'), frameRemoveBtn: $('frameRemoveBtn'),
   colorPicker: $('colorPicker'), colorResetBtn: $('colorResetBtn'),
   saveBtn: $('saveBtn'), exportPdfBtn: $('exportPdfBtn'), printBtn: $('printBtn'), deletePlanBtn: $('deletePlanBtn'),
-  previewSheet: $('previewSheet'), saveStatus: $('saveStatus'),
+  saveStatus: $('saveStatus'),
 };
 
 function currentPlan(){ return plansCache[currentPlanId]; }
@@ -408,7 +531,7 @@ function loadPlanIntoEditor(id){
   renderLogo();
   renderFrame();
   applyColor();
-  renderPreview();
+  renderPreviewNow();
   setSaveStatus('');
 }
 
@@ -612,7 +735,7 @@ function renderFrame(){
   const asset = assetsCache[currentPlanId];
   const frame = asset && asset.frame;
   els.frameRemoveBtn.classList.toggle('hidden', !frame);
-  $('psFrameBg').style.backgroundImage = frame ? `url(${frame})` : 'none';
+  document.documentElement.style.setProperty('--frame', frame ? `url("${frame}")` : 'none');
 }
 els.frameDrop.addEventListener('click', () => els.frameInput.click());
 els.frameInput.addEventListener('change', () => {
@@ -675,69 +798,135 @@ els.colorResetBtn.addEventListener('click', () => {
   applyColor();
 });
 
-/* ---------- المعاينة الحيّة ---------- */
-function renderPreview(){
-  const plan = currentPlan();
-  const dash = '—';
-
-  $('pSchool').textContent = plan.school || dash;
-  $('pYear').textContent = effectiveYear(plan) || dash;
-  $('pSubject').textContent = plan.subject || dash;
-  $('pClass').textContent = plan.klass || dash;
-  $('pTitle').textContent = plan.title || 'عنوان الدرس';
-  $('pUnit').textContent = plan.unit || dash;
-  $('pSession').textContent = plan.session || dash;
-  $('pDuration').textContent = plan.duration ? `${plan.duration} د` : dash;
-  $('pDate').textContent = plan.date || dash;
-  $('pTeacher').textContent = plan.teacher || dash;
-
-  const asset = assetsCache[currentPlanId];
-  const logoWrap = $('psLogoWrap');
-  if (asset && asset.logo){
-    logoWrap.classList.remove('hidden');
-    $('psLogo').src = asset.logo;
-  } else {
-    logoWrap.classList.add('hidden');
-  }
-
-  const objList = $('pObjectives');
-  objList.innerHTML = '';
-  plan.objectives.forEach(o => {
-    const li = document.createElement('li');
-    li.textContent = o;
-    objList.appendChild(li);
+/* ---------- المعاينة الحيّة: القوالب الثمانية تقرأ نفس البيانات ---------- */
+function planView(plan){
+  const a = assetsCache[currentPlanId] || {};
+  return Object.assign({}, plan, {
+    year: effectiveYear(plan),
+    logo: a.logo || '',
+    template: T[plan.template] ? plan.template : 't5', // المذكرات القديمة تبقى بتصميمها الأصلي
   });
-
-  const matWrap = $('pMaterials');
-  matWrap.innerHTML = '';
-  plan.materials.forEach(m => {
-    const tag = document.createElement('span');
-    tag.className = 'ps-tag'; tag.textContent = m;
-    matWrap.appendChild(tag);
-  });
-
-  const stagesBody = $('pStagesBody');
-  stagesBody.innerHTML = '';
-  plan.stages.forEach(stage => {
-    const tr = document.createElement('tr');
-    const tdTitle = document.createElement('td'); tdTitle.textContent = stage.title || dash;
-    const tdTime = document.createElement('td'); tdTime.className = 'time-cell'; tdTime.textContent = stage.time ? `${stage.time} د` : dash;
-    const tdTeacher = document.createElement('td'); tdTeacher.textContent = stage.teacher || dash;
-    const tdStudent = document.createElement('td'); tdStudent.textContent = stage.student || dash;
-    tr.appendChild(tdTitle); tr.appendChild(tdTime); tr.appendChild(tdTeacher); tr.appendChild(tdStudent);
-    stagesBody.appendChild(tr);
-  });
-
-  $('pEvalBlock').classList.toggle('hidden', plan.evalEnabled === false);
-  $('pEval').textContent = plan.eval || dash;
 }
+
+function renderThumbs(vm){
+  $('thumbs').innerHTML = Object.keys(T).map(k =>
+    `<button type="button" class="thumb${k === vm.template ? ' active' : ''}" data-t="${k}" aria-label="${NAMES[k]}">` +
+    `<div class="thumb-frame"><div class="thumb-scale">${T[k](vm)}</div></div>` +
+    `<span>${k.slice(1)}. ${NAMES[k]}</span></button>`).join('');
+  scaleThumbs();
+}
+function scaleThumbs(){
+  document.querySelectorAll('.thumb-frame').forEach(f => {
+    const w = f.clientWidth;
+    if (w) f.firstElementChild.style.transform = `scale(${w / 794})`;
+  });
+}
+
+let pvRaf = null;
+function renderPreview(){
+  cancelAnimationFrame(pvRaf);
+  pvRaf = requestAnimationFrame(renderPreviewNow);
+}
+function renderPreviewNow(){
+  const plan = currentPlan();
+  if (!plan) return;
+  const vm = planView(plan);
+  $('pvScale').innerHTML = T[vm.template](vm);
+  renderThumbs(vm);
+  applyZoom();
+}
+
+function initTemplates(){
+  $('thumbs').addEventListener('click', (e) => {
+    const b = e.target.closest('.thumb');
+    if (!b || !currentPlanId) return;
+    currentPlan().template = b.dataset.t;
+    touchPlan();
+    renderPreviewNow();
+  });
+}
+
+/* ---------- التكبير والتصغير (مثل وورد) ---------- */
+const ZOOM_KEY = 'lesson_plan_zoom_v1';
+let zoom = 1;
+let zoomAuto = true; // يلائم عرض العمود إلى أن يغيّره الأستاذ يدويًا
+
+function initZoom(){
+  try {
+    const z = parseFloat(localStorage.getItem(ZOOM_KEY));
+    if (z >= 0.3 && z <= 1.5){ zoom = z; zoomAuto = false; }
+  } catch(e){}
+  $('zoomOut').addEventListener('click', () => setZoom(zoom - 0.05));
+  $('zoomIn').addEventListener('click', () => setZoom(zoom + 0.05));
+  $('zoomRange').addEventListener('input', (e) => setZoom(e.target.value / 100));
+  window.addEventListener('resize', () => { applyZoom(); scaleThumbs(); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { applyZoom(); });
+}
+function setZoom(z){
+  zoom = Math.min(1.5, Math.max(0.3, Math.round(z * 20) / 20));
+  zoomAuto = false;
+  try { localStorage.setItem(ZOOM_KEY, String(zoom)); } catch(e){}
+  applyZoom();
+}
+function applyZoom(){
+  const box = $('pvBox'), wrap = $('pvWrap'), sc = $('pvScale');
+  const paper = sc.firstElementChild;
+  if (!paper || !box.clientWidth) return;
+  if (zoomAuto) zoom = Math.max(0.3, Math.min(1, (box.clientWidth - 16) / 794));
+  sc.style.transform = `scale(${zoom})`;
+  wrap.style.width = Math.round(794 * zoom) + 'px';
+  wrap.style.height = Math.round(paper.offsetHeight * zoom) + 'px';
+  $('zoomRange').value = Math.round(zoom * 100);
+  $('zoomPct').textContent = Math.round(zoom * 100) + '%';
+}
+
+/* ---------- بطاقات الملء القابلة للطيّ ---------- */
+const COLLAPSE_KEY = 'lesson_plan_collapsed_v1';
+function initCollapsibles(){
+  let state = {};
+  try { state = JSON.parse(localStorage.getItem(COLLAPSE_KEY)) || {}; } catch(e){}
+  const cards = Array.from(document.querySelectorAll('.panel-card[data-card]'));
+  const save = () => { try { localStorage.setItem(COLLAPSE_KEY, JSON.stringify(state)); } catch(e){} };
+  const setCard = (card, collapsed) => {
+    card.classList.toggle('collapsed', collapsed);
+    card.querySelector('.panel-head').setAttribute('aria-expanded', String(!collapsed));
+    state[card.dataset.card] = collapsed;
+  };
+  const updateAllBtn = () => {
+    const anyOpen = cards.some(c => !c.classList.contains('collapsed'));
+    $('collapseAllBtn').textContent = anyOpen ? 'طيّ الكل' : 'فتح الكل';
+  };
+  cards.forEach(card => {
+    setCard(card, !!state[card.dataset.card]);
+    const head = card.querySelector('.panel-head');
+    const toggle = (e) => {
+      if (e.target.closest('.switch')) return; // مفتاح التقويم لا يطوي البطاقة
+      setCard(card, !card.classList.contains('collapsed'));
+      save(); updateAllBtn();
+    };
+    head.addEventListener('click', toggle);
+    head.addEventListener('keydown', (e) => {
+      if ((e.key === 'Enter' || e.key === ' ') && e.target === head){ e.preventDefault(); toggle(e); }
+    });
+  });
+  $('collapseAllBtn').addEventListener('click', () => {
+    const collapse = cards.some(c => !c.classList.contains('collapsed'));
+    cards.forEach(c => setCard(c, collapse));
+    save(); updateAllBtn();
+  });
+  updateAllBtn();
+}
+
+/* ---------- أدوات صغيرة للأزرار (تحافظ على الأيقونة) ---------- */
+function getBtnLabel(btn){ const l = btn.querySelector('.lbl'); return l ? l.textContent : btn.textContent; }
+function setBtnLabel(btn, text){ const l = btn.querySelector('.lbl'); if (l) l.textContent = text; else btn.textContent = text; }
 
 /* ---------- الحفظ في الحساب (Firestore، نص فقط) ---------- */
 function sanitizedForFirestore(plan){
-  const { id, level, color, school, yearSelect, yearManual, subject, klass, date, teacher,
+  const { id, level, template, color, school, yearSelect, yearManual, subject, klass, date, teacher,
     title, unit, session, duration, objectives, materials, stages, evalEnabled, eval: evalText,
     createdAt, updatedAt } = plan;
-  return { id, level, color, school, yearSelect, yearManual, subject, klass, date, teacher,
+  return { id, level, template, color, school, yearSelect, yearManual, subject, klass, date, teacher,
     title, unit, session, duration, objectives, materials, stages, evalEnabled, eval: evalText,
     createdAt, updatedAt };
 }
@@ -747,8 +936,8 @@ async function performSave(){
   const plan = currentPlan();
   touchPlan();
   els.saveBtn.disabled = true;
-  const original = els.saveBtn.textContent;
-  els.saveBtn.textContent = 'جارٍ الحفظ…';
+  const original = getBtnLabel(els.saveBtn);
+  setBtnLabel(els.saveBtn, 'جارٍ الحفظ…');
   try {
     await window.fbDb.collection('users').doc(currentUser.uid).collection('lessonPlans').doc(plan.id)
       .set(sanitizedForFirestore(plan), { merge: true });
@@ -757,7 +946,7 @@ async function performSave(){
     setSaveStatus('تعذّر الحفظ، حاول مجددًا');
   } finally {
     els.saveBtn.disabled = false;
-    els.saveBtn.textContent = original;
+    setBtnLabel(els.saveBtn, original);
   }
 }
 els.saveBtn.addEventListener('click', performSave);
@@ -772,12 +961,15 @@ $('backToGalleryBtn').addEventListener('click', showGallery);
 /* ---------- تصدير PDF ---------- */
 els.exportPdfBtn.addEventListener('click', async () => {
   const btn = els.exportPdfBtn;
-  const original = btn.textContent;
+  const original = getBtnLabel(btn);
+  const sc = $('pvScale');
+  const oldTransform = sc.style.transform;
   btn.disabled = true;
-  btn.textContent = 'جارٍ التجهيز…';
+  setBtnLabel(btn, 'جارٍ التجهيز…');
   try {
-    const canvas = await html2canvas(els.previewSheet, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
-    const imgData = canvas.toDataURL('image/png');
+    sc.style.transform = 'none'; // نلتقط الورقة بحجمها الحقيقي مهما كان التكبير
+    const canvas = await html2canvas(sc.firstElementChild, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
+    const imgData = canvas.toDataURL('image/jpeg', 0.95);
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF('p', 'mm', 'a4');
     const pageWidth = pdf.internal.pageSize.getWidth();
@@ -785,12 +977,12 @@ els.exportPdfBtn.addEventListener('click', async () => {
     const imgWidth = pageWidth;
     const imgHeight = (canvas.height * imgWidth) / canvas.width;
     let heightLeft = imgHeight, position = 0;
-    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
     heightLeft -= pageHeight;
-    while (heightLeft > 0){
+    while (heightLeft > 1){
       position = heightLeft - imgHeight;
       pdf.addPage();
-      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
       heightLeft -= pageHeight;
     }
     const plan = currentPlan();
@@ -799,8 +991,9 @@ els.exportPdfBtn.addEventListener('click', async () => {
   } catch(err){
     alert('تعذّر إنشاء ملف PDF، حاول مجددًا.');
   } finally {
+    sc.style.transform = oldTransform;
     btn.disabled = false;
-    btn.textContent = original;
+    setBtnLabel(btn, original);
   }
 });
 els.printBtn.addEventListener('click', () => window.print());
@@ -831,6 +1024,9 @@ async function fetchRemotePlans(){
 function init(){
   initAuthModal();
   initAuthMenu();
+  initCollapsibles();
+  initZoom();
+  initTemplates();
 
   if (window.fbAuth){
     window.fbAuth.onAuthStateChanged((fbUser) => {
