@@ -105,18 +105,6 @@ function newPlanId(){
   return 'plan_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
 }
 
-/* ---------- ترقيم المذكرات (يحدده الأستاذ) ---------- */
-function numVal(n){
-  const s = String(n == null ? '' : n).replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
-  const m = s.match(/\d+/);
-  return m ? parseInt(m[0], 10) : null;
-}
-function nextPlanNumber(){
-  let max = 0;
-  Object.values(plansCache).forEach(p => { const v = numVal(p.number); if (v != null && v > max) max = v; });
-  return String(max + 1);
-}
-
 function makeNewPlan(level){
   const tpl = LEVEL_TEMPLATES[level];
   const now = new Date();
@@ -125,7 +113,6 @@ function makeNewPlan(level){
   return {
     id: newPlanId(),
     level: level,
-    number: nextPlanNumber(),
     template: 't1',
     color: DEFAULT_COLOR,
     school: tpl.school,
@@ -309,10 +296,6 @@ function renderGallery(){
   renderGuestNote();
   const grid = $('plansGrid');
   const ids = Object.keys(plansCache).sort((a, b) => {
-    const na = numVal(plansCache[a].number), nb = numVal(plansCache[b].number);
-    if (na != null && nb != null && na !== nb) return na - nb; // المرقّمة أولًا، تصاعديًا
-    if (na != null && nb == null) return -1;
-    if (na == null && nb != null) return 1;
     const ta = new Date(plansCache[a].updatedAt || 0).getTime();
     const tb = new Date(plansCache[b].updatedAt || 0).getTime();
     return tb - ta;
@@ -320,14 +303,14 @@ function renderGallery(){
   grid.innerHTML = '';
   $('emptyNote').classList.toggle('hidden', ids.length > 0);
 
-  ids.forEach(id => {
+  ids.forEach((id, idx) => {
     const plan = plansCache[id];
     const card = document.createElement('div');
     card.className = 'plan-card';
     card.innerHTML = `
       <button type="button" class="plan-delete-btn" title="حذف">×</button>
       <div class="plan-badges">
-        ${String(plan.number || '').trim() ? `<span class="plan-num">مذكرة رقم ${escapeHtml(String(plan.number).trim())}</span>` : ''}
+        <span class="plan-index" title="رقم المذكرة">${idx + 1}</span>
         <span class="plan-level-badge">${plan.level}</span>
       </div>
       <div class="plan-card-title">${escapeHtml(plan.title || 'مذكرة بدون عنوان')}</div>
@@ -407,7 +390,7 @@ t2: p => { const g = grow(p);
  return `<div class="paper t2"><div class="fr">
   <div class="top">
    <div class="cd"><div><span class="lb">الأستاذ:</span> ${V(p.teacher)}</div><div><span class="lb">المستوى:</span> ${V(p.klass)}</div><div><span class="lb">السنة الدراسية:</span> ${V(p.year)}</div><div><span class="lb">المدة:</span> ${V(p.duration ? p.duration + ' د' : '')}</div></div>
-   <div class="mid"><div class="pl"><b>نموذج مذكرة رقم:</b> ${V(p.number)}</div><div class="pl"><span class="lb">المحور:</span> ${V(p.unit)}</div><div class="pl"><span class="lb">الموضوع:</span> ${V(p.title)}</div></div>
+   <div class="mid"><div class="pl"><b>نموذج مذكرة رقم:</b> ${V(p.session)}</div><div class="pl"><span class="lb">المحور:</span> ${V(p.unit)}</div><div class="pl"><span class="lb">الموضوع:</span> ${V(p.title)}</div></div>
    <div class="cd"><h4>الوسائل التعليمية</h4>${p.materials.map(m => `<div>• ${esc(m)}</div>`).join('')}</div>
   </div>
   <div class="band"><span class="lb">الكفاءات المستهدفة:</span> ${V(objText(p))}</div>
@@ -432,7 +415,7 @@ t3: p => { const g = grow(p), n = p.stages.length;
   </div></div>`; },
 
 t4: p => { const g = grow(p), n = p.stages.length;
- return `<div class="paper t4"><div class="fr"><div class="pill">مذكرة رقم ${esc(p.number)}</div>${lg(p,'lg-c')}
+ return `<div class="paper t4"><div class="fr"><div class="pill">مذكرة رقم ${esc(p.session)}</div>${lg(p,'lg-c')}
   <div class="info">
    <div><b>المؤسسة:</b> ${V(p.school)}</div><div><b>المستوى:</b> ${V(p.klass)}</div>
    <div><b>ميدان التعلم:</b> ${V(p.subject)}</div><div><b>المادة:</b> ${V(p.subject)}</div>
@@ -495,7 +478,7 @@ const els = {
   levelSelect: $('levelSelect'), loadPresetBtn: $('loadPresetBtn'),
   fSchool: $('fSchool'), fYearSelect: $('fYearSelect'), fYearManualWrap: $('fYearManualWrap'), fYearManual: $('fYearManual'),
   fSubject: $('fSubject'), fClass: $('fClass'), fDate: $('fDate'), fTeacher: $('fTeacher'),
-  fTitle: $('fTitle'), fNumber: $('fNumber'), fUnit: $('fUnit'), fSession: $('fSession'), fDuration: $('fDuration'),
+  fTitle: $('fTitle'), fUnit: $('fUnit'), fSession: $('fSession'), fDuration: $('fDuration'),
   objectivesList: $('objectivesList'), objectiveInput: $('objectiveInput'), addObjectiveBtn: $('addObjectiveBtn'),
   materialsList: $('materialsList'), materialInput: $('materialInput'), addMaterialBtn: $('addMaterialBtn'),
   stagesList: $('stagesList'), addStageBtn: $('addStageBtn'),
@@ -539,7 +522,6 @@ function loadPlanIntoEditor(id){
   els.fDate.value = plan.date || '';
   els.fTeacher.value = plan.teacher || '';
   els.fTitle.value = plan.title || '';
-  els.fNumber.value = plan.number || '';
   els.fUnit.value = plan.unit || '';
   els.fSession.value = plan.session || '';
   els.fDuration.value = plan.duration || '';
@@ -584,7 +566,6 @@ bindSimple(els.fClass, 'klass');
 bindSimple(els.fDate, 'date');
 bindSimple(els.fTeacher, 'teacher');
 bindSimple(els.fTitle, 'title');
-bindSimple(els.fNumber, 'number');
 bindSimple(els.fUnit, 'unit');
 bindSimple(els.fSession, 'session');
 bindSimple(els.fDuration, 'duration');
@@ -945,10 +926,10 @@ function setBtnLabel(btn, text){ const l = btn.querySelector('.lbl'); if (l) l.t
 
 /* ---------- الحفظ في الحساب (Firestore، نص فقط) ---------- */
 function sanitizedForFirestore(plan){
-  const { id, level, template, number, color, school, yearSelect, yearManual, subject, klass, date, teacher,
+  const { id, level, template, color, school, yearSelect, yearManual, subject, klass, date, teacher,
     title, unit, session, duration, objectives, materials, stages, evalEnabled, eval: evalText,
     createdAt, updatedAt } = plan;
-  return { id, level, template, number, color, school, yearSelect, yearManual, subject, klass, date, teacher,
+  return { id, level, template, color, school, yearSelect, yearManual, subject, klass, date, teacher,
     title, unit, session, duration, objectives, materials, stages, evalEnabled, eval: evalText,
     createdAt, updatedAt };
 }
