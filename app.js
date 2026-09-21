@@ -674,6 +674,10 @@ const FAMILY_LABELS = {
   en: { admin: 'Admin', edu: 'Educational', calc: 'Calculators', home: 'Home', pdf: 'PDF Services' },
 };
 let activeFamily = null;
+try {
+  const savedFamily = sessionStorage.getItem('merabti:activeFamily');
+  if (savedFamily) activeFamily = savedFamily;
+} catch (e) { /* ignore */ }
 
 function renderFamilyFilter(items){
   const bar = document.getElementById('familyFilter');
@@ -687,6 +691,7 @@ function renderFamilyFilter(items){
   bar.querySelectorAll('.family-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       activeFamily = btn.getAttribute('data-family');
+      try { sessionStorage.setItem('merabti:activeFamily', activeFamily); } catch (e) { /* ignore */ }
       renderSectionItems();
       renderCoursesSection();
     });
@@ -722,6 +727,10 @@ async function renderSectionItems(){
   // Ready items stay pinned above "coming soon" ones, in each section, without
   // otherwise disturbing the order authors set in CONTENT.
   items = [...items].sort((a, b) => (a.comingSoon ? 1 : 0) - (b.comingSoon ? 1 : 0));
+
+  await loadUserOrder();
+  const orderKey = key === 'tools' && activeFamily ? `${key}:${activeFamily}` : key;
+  items = applyUserOrder(orderKey, items);
 
   const admin = await isAdminUser();
 
@@ -791,6 +800,8 @@ async function renderSectionItems(){
       wrap.appendChild(card);
     }
   });
+
+  enableDragReorder(wrap, orderKey, items);
 }
 
 function findItem(listKey, id){
@@ -932,6 +943,81 @@ async function loadFavorites(){
     const snap = await firebase.firestore().collection('users').doc(user.uid).collection('favorites').get();
     snap.forEach(doc => userFavorites.add(doc.id));
   } catch (e) { /* ignore */ }
+}
+
+/* =====================================================================
+   CUSTOM ITEM ORDER (drag-and-drop reordering, per user/section)
+===================================================================== */
+let userOrder = {}; // { [sectionKey]: [id, id, ...] }
+let userOrderLoaded = false;
+
+async function loadUserOrder(){
+  if (userOrderLoaded) return;
+  userOrderLoaded = true;
+  const user = getCurrentUser();
+  if (user && window.firebase && firebase.firestore){
+    try {
+      const doc = await firebase.firestore().collection('users').doc(user.uid).collection('settings').doc('itemOrder').get();
+      if (doc.exists) userOrder = doc.data() || {};
+    } catch (e) { /* ignore */ }
+  } else {
+    try {
+      const raw = localStorage.getItem('merabti:order');
+      if (raw) userOrder = JSON.parse(raw);
+    } catch (e) { /* ignore */ }
+  }
+}
+
+async function saveUserOrder(key, orderedIds){
+  userOrder[key] = orderedIds;
+  const user = getCurrentUser();
+  if (user && window.firebase && firebase.firestore){
+    try {
+      await firebase.firestore().collection('users').doc(user.uid).collection('settings').doc('itemOrder')
+        .set({ [key]: orderedIds }, { merge: true });
+    } catch (e) { /* ignore */ }
+  } else {
+    try { localStorage.setItem('merabti:order', JSON.stringify(userOrder)); } catch (e) { /* ignore */ }
+  }
+}
+
+function applyUserOrder(key, items){
+  const savedOrder = userOrder[key];
+  if (!savedOrder || !savedOrder.length) return items;
+  const byId = new Map(items.map(i => [i.id, i]));
+  const ordered = [];
+  savedOrder.forEach(id => { if (byId.has(id)){ ordered.push(byId.get(id)); byId.delete(id); } });
+  // Anything not in the saved order (new items added later) keeps its default
+  // relative position, appended after the items the user explicitly ordered.
+  items.forEach(i => { if (byId.has(i.id)) ordered.push(i); });
+  return ordered;
+}
+
+function enableDragReorder(wrap, key, items){
+  let dragEl = null;
+  wrap.querySelectorAll('.item-card').forEach((card, idx) => {
+    card.draggable = true;
+    card.dataset.itemId = items[idx].id;
+    card.addEventListener('dragstart', () => {
+      dragEl = card;
+      card.classList.add('dragging');
+      card.style.opacity = '0.4';
+    });
+    card.addEventListener('dragend', async () => {
+      card.classList.remove('dragging');
+      card.style.opacity = '';
+      dragEl = null;
+      const newOrder = Array.from(wrap.querySelectorAll('.item-card')).map(c => c.dataset.itemId);
+      await saveUserOrder(key, newOrder);
+    });
+    card.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      if (!dragEl || dragEl === card) return;
+      const rect = card.getBoundingClientRect();
+      const after = (e.clientX - rect.left) > rect.width / 2;
+      wrap.insertBefore(dragEl, after ? card.nextSibling : card);
+    });
+  });
 }
 
 async function toggleFavorite(itemId, itemType, btnEl){
