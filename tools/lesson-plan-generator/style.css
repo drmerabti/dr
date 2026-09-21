@@ -135,6 +135,12 @@ body.in-editor .save-status.editor-only{ display:block; }
   display:inline-block; font-size:11px; font-weight:800; color:var(--tool);
   background:var(--tool-soft); padding:3px 10px; border-radius:999px; margin-bottom:10px;
 }
+.plan-badges{ display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px; padding-inline-end:32px; }
+.plan-badges .plan-level-badge{ margin-bottom:0; }
+.plan-num{
+  display:inline-block; font-size:11px; font-weight:800; color:#fff; background:var(--tool);
+  padding:3px 10px; border-radius:999px;
+}
 .plan-card-title{ font-weight:800; font-size:14.5px; color:var(--ink); margin-bottom:4px; }
 .plan-card-sub{ font-size:12px; color:var(--ink-soft); }
 .plan-card-date{ font-size:11px; color:var(--ink-soft); margin-top:10px; }
@@ -497,7 +503,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .t6{padding:46px 52px;gap:14px}
 .t6 .hd6{text-align:center;border-bottom:2px solid #222;padding-bottom:12px}
 .t6 .hd6 b{font-size:22px;display:block}.t6 .hd6 span{color:#555;font-size:15px}
-.t6 .tl{text-align:center;font-size:30px;font-weight:800;border:2px solid #222;padding:10px;letter-spacing:.3px}
+.t6 .tl{text-align:center;font-size:30px;font-weight:800;border:2px solid #222;padding:10px;}
 .t6 .kv{display:grid;grid-template-columns:1fr 1fr;border:1px solid #222}
 .t6 .kv div{padding:7px 14px;border:1px solid #222;font-size:16px;margin:-.5px}
 .t6 .sec{border:1px solid #222}
