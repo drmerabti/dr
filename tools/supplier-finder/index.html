@@ -21,7 +21,7 @@
       <button class="sf-btn" id="sfExport" type="button"><i data-ic="download"></i><span data-i="export"></span></button>
       <button class="sf-btn" id="sfPrint" type="button"><i data-ic="print"></i><span data-i="print"></span></button>
       <button class="sf-btn sf-btn-danger" id="sfClear" type="button"><i data-ic="trash"></i><span data-i="clear"></span></button>
-      <button class="sf-btn sf-btn-round" id="sfLang" type="button">EN</button>
+      <div class="sf-langs" id="sfLangs" role="group" aria-label="Language"><button type="button" data-l="ar">ع</button><button type="button" data-l="fr">FR</button><button type="button" data-l="en">EN</button></div>
     </div>
   </header>
 
@@ -67,6 +67,11 @@
       </div>
 
       <div class="sf-fbox">
+        <h3 data-i="fRating"></h3>
+        <select id="sfRating" class="sf-select"></select>
+      </div>
+
+      <div class="sf-fbox">
         <h3 data-i="fCity"></h3>
         <select id="sfCity" class="sf-select"></select>
         <h3 data-i="fSupplier"></h3>
@@ -90,6 +95,12 @@
       <div class="sf-fbox">
         <h3 data-i="fCC"></h3>
         <input id="sfCC" class="sf-mini" type="text" inputmode="numeric" dir="ltr" maxlength="4">
+      </div>
+
+      <div class="sf-fbox sf-side-tools">
+        <button class="sf-btn" id="sfTplS" type="button"><i data-ic="file"></i><span data-i="template"></span></button>
+        <button class="sf-btn" id="sfPrintS" type="button"><i data-ic="print"></i><span data-i="print"></span></button>
+        <button class="sf-btn sf-btn-danger" id="sfClearS" type="button"><i data-ic="trash"></i><span data-i="clear"></span></button>
       </div>
     </aside>
 

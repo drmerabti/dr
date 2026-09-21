@@ -1,43 +1,49 @@
 /* ==========================================================
-   دليل الموردين وقطع الغيار — منطق الأداة
+   دليل الموردين وقطع الغيار — منطق الأداة  (v2)
+   3 لغات: عربي / Français / English
    - البيانات تُخزَّن محليًا على جهاز المستخدم (localStorage)
-   - قراءة Excel/CSV عبر مكتبة SheetJS
+   - قراءة Excel/CSV عبر SheetJS، وتصدير المقارنة المنسّق عبر ExcelJS
    ========================================================== */
 
 /* ---------------- الحقول ومرادفات الأعمدة ---------------- */
 const FIELDS = [
-  { k:'part',     req:true, ar:'اسم القطعة',            en:'Part name',
+  { k:'part', req:true, ar:'اسم القطعة', fr:'Désignation', en:'Part name',
     syn:['part','partname','item','itemname','product','productname','article','designation','description','قطعة','القطعة','اسم القطعة','المنتج','المادة','البيان','الاسم','piece','produit','désignation','libellé','libelle'] },
-  { k:'ref',      ar:'المرجع',                          en:'Reference / P/N',
+  { k:'ref', ar:'المرجع', fr:'Référence', en:'Reference / P/N',
     syn:['ref','reference','référence','partno','partnumber','pn','p/n','sku','code','المرجع','رقم القطعة','الرمز','الكود','n° pièce'] },
-  { k:'category', ar:'الصنف',                           en:'Category',
+  { k:'category', ar:'الصنف', fr:'Catégorie', en:'Category',
     syn:['category','famille','catégorie','categorie','type','group','الفئة','الصنف','النوع','التصنيف','العائلة'] },
-  { k:'brand',    ar:'العلامة التجارية',                en:'Brand',
+  { k:'brand', ar:'العلامة التجارية', fr:'Marque', en:'Brand',
     syn:['brand','marque','manufacturer','make','العلامة','الماركة','العلامة التجارية','الشركة المصنعة','المصنع'] },
-  { k:'supplier', req:true, ar:'المورد',                en:'Supplier',
+  { k:'supplier', req:true, ar:'المورد', fr:'Fournisseur', en:'Supplier',
     syn:['supplier','vendor','fournisseur','company','société','societe','المورد','اسم المورد','الشركة','المزود','مزود الخدمة','المؤسسة'] },
-  { k:'contact',  ar:'المسؤول',                         en:'Contact person',
+  { k:'contact', ar:'المسؤول', fr:'Contact', en:'Contact person',
     syn:['contact','contactperson','responsable','person','المسؤول','جهة الاتصال','الشخص','المسؤول التجاري','اسم المسؤول'] },
-  { k:'phone',    ar:'الهاتف',                          en:'Phone',
+  { k:'phone', ar:'الهاتف', fr:'Téléphone', en:'Phone',
     syn:['phone','tel','telephone','téléphone','mobile','gsm','هاتف','الهاتف','رقم الهاتف','جوال','النقال','الجوال','tél'] },
-  { k:'email',    ar:'البريد الإلكتروني',               en:'Email',
+  { k:'email', ar:'البريد الإلكتروني', fr:'Email', en:'Email',
     syn:['email','e-mail','mail','courriel','البريد','الايميل','الإيميل','البريد الإلكتروني','البريد الالكتروني'] },
-  { k:'city',     ar:'الولاية / المدينة',               en:'City / Wilaya',
+  { k:'city', ar:'الولاية / المدينة', fr:'Ville / Wilaya', en:'City / Wilaya',
     syn:['city','wilaya','ville','address','adresse','location','المدينة','الولاية','العنوان','الموقع','المنطقة'] },
-  { k:'price',    ar:'السعر',                           en:'Price',
+  { k:'price', ar:'السعر', fr:'Prix unitaire', en:'Unit price',
     syn:['price','prix','unitprice','prixunitaire','prix unitaire','cost','السعر','سعر الوحدة','الثمن','السعر الوحدوي','التكلفة'] },
-  { k:'currency', ar:'العملة',                          en:'Currency',
+  { k:'currency', ar:'العملة', fr:'Devise', en:'Currency',
     syn:['currency','devise','monnaie','العملة'] },
-  { k:'delivery', ar:'مدة التوصيل (أيام)',              en:'Lead time (days)',
+  { k:'delivery', ar:'مدة التوصيل (أيام)', fr:'Délai de livraison (jours)', en:'Lead time (days)',
     syn:['delivery','leadtime','lead time','délai','delai','délai de livraison','مدة التوصيل','مدة التسليم','التسليم','الأجل','الاجل','التوصيل'] },
-  { k:'moq',      ar:'الحد الأدنى للطلب',               en:'Min. order',
+  { k:'moq', ar:'الحد الأدنى للطلب', fr:'Quantité minimale', en:'Min. order',
     syn:['moq','minqty','minimum order','min order','quantité minimale','الحد الأدنى','أقل كمية','الحد الادنى للطلب','الكمية الدنيا'] },
-  { k:'notes',    ar:'ملاحظات',                         en:'Notes',
+  { k:'payment', ar:'شروط الدفع', fr:'Conditions de paiement', en:'Payment terms',
+    syn:['payment','paymentterms','payment terms','conditions de paiement','paiement','modalités de paiement','شروط الدفع','الدفع','طريقة الدفع'] },
+  { k:'warranty', ar:'الضمان', fr:'Garantie', en:'Warranty',
+    syn:['warranty','garantie','الضمان','مدة الضمان'] },
+  { k:'notes', ar:'ملاحظات', fr:'Remarques', en:'Notes',
     syn:['notes','note','remarque','remarques','comment','comments','ملاحظات','ملاحظة','تعليق'] }
 ];
-const FIELD_ORDER = ['ref','brand','supplier','contact','phone','email','city','price','currency','delivery','moq','notes','category','part'];
+const FIELD_ORDER = ['ref','brand','supplier','contact','phone','email','city','price','currency','delivery','moq','payment','warranty','notes','category','part'];
+const LANGS = ['ar','fr','en'];
 
-/* ---------------- النصوص ---------------- */
+/* ---------------- النصوص (3 لغات) ---------------- */
 const TX = {
 ar:{
   title:'دليل الموردين وقطع الغيار',
@@ -49,26 +55,26 @@ ar:{
   filters:'الفلاتر', fReset:'إعادة ضبط', fParts:'القطع', fPartQ:'ابحث في القطع…', fCat:'الصنف', fBrand:'العلامة التجارية',
   fCity:'الولاية / المدينة', fSupplier:'المورد', fCur:'العملة', fPrice:'السعر', fMin:'من', fMax:'إلى',
   fDel:'أقصى مدة توصيل (أيام)', fEmail:'يتوفر بريد إلكتروني', fPhone:'يتوفر هاتف', fCC:'مفتاح الدولة (لروابط واتساب)', all:'الكل',
+  fRating:'تقييم المورد', fRating5:'5 نجوم فقط', fRating4:'4 نجوم فأكثر', fRating3:'3 نجوم فأكثر',
   selAll:'تحديد الكل', group:'تجميع حسب القطعة', results:'نتيجة',
-  sPriceAsc:'الأرخص أولًا', sPriceDesc:'الأغلى أولًا', sDelivery:'الأسرع توصيلًا', sSupplier:'المورد (أبجدي)', sPart:'القطعة (أبجدي)',
-  best:'الأرخص', days:'يوم', instant:'فوري', moq:'أدنى طلب', noPrice:'السعر عند الطلب',
+  sPriceAsc:'الأرخص أولًا', sPriceDesc:'الأغلى أولًا', sDelivery:'الأسرع توصيلًا', sRating:'الأعلى تقييمًا', sSupplier:'المورد (أبجدي)', sPart:'القطعة (أبجدي)',
+  best:'الأرخص', days:'يوم', instant:'فوري', moq:'أدنى طلب', pay:'الدفع', war:'الضمان', noPrice:'السعر عند الطلب',
   call:'اتصال', wa:'واتساب', copy:'نسخ', mail:'مراسلة', copied:'تم النسخ', nothing:'لا يوجد ما يُنسخ',
+  rateTip:'اضغط لتقييم المورد (اضغط على نفس النجمة لإلغاء التقييم)', unrated:'بدون تقييم',
   offers:'عروض', min:'الأدنى', max:'الأعلى', avg:'المتوسط',
-  selected:'محدد', rfq:'طلب عرض سعر', copyEmails:'نسخ البريد', copyPhones:'نسخ الأرقام', exportSel:'تصدير المحدد', clearSel:'إلغاء',
+  selected:'محدد', rfq:'طلب عرض سعر', compare:'مقارنة العروض', copyEmails:'نسخ البريد', copyPhones:'نسخ الأرقام', exportSel:'تصدير المحدد', clearSel:'إلغاء',
   emptyTitle:'ابدأ برفع ملف الموردين',
   emptySub:'اسحب ملف Excel أو CSV إلى هنا أو اختره من جهازك. بياناتك لا تُرسل إلى أي خادم — تبقى محفوظة على جهازك فقط.',
   emptyPick:'اختيار ملف', emptyDemo:'جرّب ببيانات تجريبية', emptyTpl:'تحميل قالب جاهز',
-  emptyCols:'الأعمدة المدعومة: اسم القطعة، المرجع، الصنف، العلامة التجارية، المورد، المسؤول، الهاتف، البريد، الولاية، السعر، العملة، مدة التوصيل، الحد الأدنى للطلب، ملاحظات — بالعربية أو الفرنسية أو الإنجليزية، ويتعرّف عليها البرنامج تلقائيًا.',
+  emptyCols:'الأعمدة المدعومة: اسم القطعة، المرجع، الصنف، العلامة التجارية، المورد، المسؤول، الهاتف، البريد، الولاية، السعر، العملة، مدة التوصيل، الحد الأدنى للطلب، شروط الدفع، الضمان، ملاحظات — بالعربية أو الفرنسية أو الإنجليزية، ويتعرّف عليها البرنامج تلقائيًا. (القالب المرجعي بالفرنسية)',
   dropHere:'أفلت الملف هنا',
   noRes:'لا توجد نتائج مطابقة', noResSub:'جرّب كلمات أخرى أو خفّف الفلاتر.',
-  fTxt:'بحث', fPart:'القطعة', fMinP:'السعر من', fMaxP:'السعر إلى', fDelT:'التوصيل ≤',
-  // الاستيراد
+  fTxt:'بحث', fPart:'القطعة', fMinP:'السعر من', fMaxP:'السعر إلى', fDelT:'التوصيل ≤', fRatingT:'التقييم ≥',
   impTitle:'استيراد ملف الموردين', impSub:'تحقّق من ربط الأعمدة (تم التعرّف عليها تلقائيًا) ثم اضغط استيراد.',
   impSheet:'الورقة', impNone:'— بدون —', impReplace:'استبدال البيانات الحالية', impAppend:'إضافة إلى البيانات الحالية',
   impGo:'استيراد', impCancel:'إلغاء', impReady:'سيتم استيراد {n} سجل', impMissing:'حدّد عمودَي «اسم القطعة» و«المورد» على الأقل.',
   impPreview:'معاينة', impDone:'تم استيراد {n} سجل', impFail:'تعذّرت قراءة الملف', xlsxFail:'تعذّر تحميل مكتبة Excel — تأكد من الاتصال بالإنترنت.',
   impEmptyFile:'الملف فارغ أو لا يحتوي جدولًا واضحًا.',
-  // طلب عرض السعر
   rfqTitle:'طلب عرض سعر', rfqSub:'سيُرسل الطلب إلى الموردين المحددين في نسخة مخفية (BCC) حتى لا يرى أحدهم الآخر.',
   rfqParts:'القطع والكميات', rfqQty:'الكمية', rfqName:'اسمك', rfqCompany:'المؤسسة / المصلحة', rfqPlace:'مكان التسليم',
   rfqMsg:'نص الرسالة', rfqOpen:'فتح برنامج البريد', rfqCopyMsg:'نسخ الرسالة', rfqCopyMails:'نسخ البريد',
@@ -77,11 +83,82 @@ ar:{
   subject:'طلب عرض سعر', greet:'السادة المحترمون،', hello:'تحية طيبة،',
   intro:'نرجو منكم موافاتنا بعرض سعر للقطع التالية:', qtyW:'الكمية', refW:'المرجع',
   ask:'نرجو ذكر: السعر الوحدوي، مدة التوصيل، شروط الدفع، وصلاحية العرض.', placeW:'مكان التسليم', thanks:'شكرًا لتعاونكم،',
-  // أخرى
+  // المقارنة
+  cmpTitle:'مقارنة العروض', cmpSub:'قارن بين العروض المحددة، اختر المورد الفائز، ثم صدّر المحضر.',
+  cmpMin:'اختر عرضين على الأقل للمقارنة.', cmpMax:'الحد الأقصى للمقارنة 4 عروض.',
+  cmpDiffParts:'ملاحظة: العروض المحددة بأسماء قطع مختلفة — تأكد أنها متكافئة.',
+  cmpQty:'الكمية المطلوبة', cmpVat:'TVA %', cmpName:'أعدّه', cmpDept:'المؤسسة / المصلحة',
+  cmpChoose:'اختيار', cmpWinner:'المورد المختار', cmpReason:'سبب الاختيار', cmpReasonPh:'مثال: أفضل سعر مع مدة توصيل مناسبة وضمان سنة…',
+  cmpPdf:'محضر PDF', cmpXlsx:'Excel', cmpCopy:'نسخ كنص', cmpDone:'تم إنشاء الملف',
+  cmpMixed:'العروض بعملات مختلفة — لا يمكن احتساب الفرق أو تحديد الأرخص.',
+  cmpMoqWarn:'الكمية أقل من الحد الأدنى للطلب', cmpNoWinner:'لم يُحدَّد بعد',
+  cheapest:'الأرخص', fastest:'الأسرع', topRated:'الأعلى تقييمًا',
+  rowPart:'القطعة / المرجع', rowUnit:'السعر الوحدوي', rowTotal:'الإجمالي', rowHT:'الإجمالي HT', rowTTC:'الإجمالي TTC', rowDiff:'الفرق عن الأرخص',
+  rowDelivery:'مدة التوصيل', rowMoq:'الحد الأدنى للطلب', rowPay:'شروط الدفع', rowWar:'الضمان', rowRating:'التقييم',
+  rowPhone:'الهاتف', rowEmail:'البريد', rowNotes:'ملاحظات',
+  repTitle:'محضر مقارنة العروض', repDate:'التاريخ', repQty:'الكمية', repBy:'أعدّه', repDept:'المصلحة', repSigA:'أعدّه', repSigB:'لجنة الشراء', repSigC:'المدير',
+  repSign:'الاسم والتوقيع', repFoot:'أُعدّ عبر أداة دليل الموردين — merabti.com',
+  popup:'اسمح بالنوافذ المنبثقة لعرض المحضر ثم أعد المحاولة.', cmpSheet:'المقارنة',
   confirmClear:'سيتم مسح كل البيانات المحفوظة على هذا الجهاز. هل تريد المتابعة؟', cleared:'تم مسح البيانات',
   storeFail:'تعذّر حفظ البيانات محليًا (الملف كبير جدًا) — ستبقى متاحة حتى تغلق الصفحة.',
-  tplName:'قالب_الموردين', expName:'الموردون', supplierWord:'مورد', unitOffer:'عرض', rows:'صف',
-  langBtn:'EN', da:'دج'
+  tplName:'modele_fournisseurs', expName:'الموردون', cmpFile:'مقارنة_العروض', da:'دج'
+},
+fr:{
+  title:'Annuaire des fournisseurs & pièces de rechange',
+  sub:'Tapez le nom d’une pièce, comparez les prix des fournisseurs et contactez-les directement — ou importez votre fichier Excel de fournisseurs.',
+  ph:'Nom de la pièce, référence, marque ou fournisseur…',
+  upload:'Importer Excel', template:'Télécharger le modèle', export:'Exporter Excel', print:'Imprimer', clear:'Effacer les données',
+  sRecords:'offres', sParts:'pièces', sSuppliers:'fournisseurs',
+  sample:'Vous consultez des données de démonstration (noms et numéros fictifs) — importez votre fichier pour les remplacer.',
+  filters:'Filtres', fReset:'Réinitialiser', fParts:'Pièces', fPartQ:'Rechercher une pièce…', fCat:'Catégorie', fBrand:'Marque',
+  fCity:'Ville / Wilaya', fSupplier:'Fournisseur', fCur:'Devise', fPrice:'Prix', fMin:'Min', fMax:'Max',
+  fDel:'Délai de livraison max (jours)', fEmail:'Email disponible', fPhone:'Téléphone disponible', fCC:'Indicatif pays (liens WhatsApp)', all:'Tous',
+  fRating:'Note du fournisseur', fRating5:'5 étoiles uniquement', fRating4:'4 étoiles et plus', fRating3:'3 étoiles et plus',
+  selAll:'Tout sélectionner', group:'Grouper par pièce', results:'résultats',
+  sPriceAsc:'Moins cher d’abord', sPriceDesc:'Plus cher d’abord', sDelivery:'Livraison la plus rapide', sRating:'Mieux notés', sSupplier:'Fournisseur (A–Z)', sPart:'Pièce (A–Z)',
+  best:'Moins cher', days:'jours', instant:'Immédiat', moq:'Qté min.', pay:'Paiement', war:'Garantie', noPrice:'Prix sur demande',
+  call:'Appeler', wa:'WhatsApp', copy:'Copier', mail:'Écrire', copied:'Copié', nothing:'Rien à copier',
+  rateTip:'Cliquez pour noter le fournisseur (recliquez sur la même étoile pour annuler)', unrated:'Non noté',
+  offers:'offres', min:'Min', max:'Max', avg:'Moy.',
+  selected:'sélectionné(s)', rfq:'Demande de prix', compare:'Comparer les offres', copyEmails:'Copier les emails', copyPhones:'Copier les numéros', exportSel:'Exporter la sélection', clearSel:'Annuler',
+  emptyTitle:'Commencez par importer votre fichier fournisseurs',
+  emptySub:'Glissez un fichier Excel ou CSV ici ou choisissez-le sur votre appareil. Vos données ne sont envoyées à aucun serveur — elles restent sur votre appareil.',
+  emptyPick:'Choisir un fichier', emptyDemo:'Essayer avec des données de démo', emptyTpl:'Télécharger le modèle',
+  emptyCols:'Colonnes prises en charge : désignation, référence, catégorie, marque, fournisseur, contact, téléphone, email, ville, prix, devise, délai de livraison, quantité minimale, conditions de paiement, garantie, remarques — en arabe, français ou anglais, détectées automatiquement. (Le modèle de référence est en français)',
+  dropHere:'Déposez le fichier ici',
+  noRes:'Aucun résultat', noResSub:'Essayez d’autres mots ou assouplissez les filtres.',
+  fTxt:'Recherche', fPart:'Pièce', fMinP:'Prix min', fMaxP:'Prix max', fDelT:'Délai ≤', fRatingT:'Note ≥',
+  impTitle:'Importer le fichier fournisseurs', impSub:'Vérifiez la correspondance des colonnes (détectées automatiquement) puis cliquez sur Importer.',
+  impSheet:'Feuille', impNone:'— aucune —', impReplace:'Remplacer les données actuelles', impAppend:'Ajouter aux données actuelles',
+  impGo:'Importer', impCancel:'Annuler', impReady:'{n} enregistrements seront importés', impMissing:'Associez au moins « Désignation » et « Fournisseur ».',
+  impPreview:'Aperçu', impDone:'{n} enregistrements importés', impFail:'Impossible de lire le fichier', xlsxFail:'Impossible de charger la bibliothèque Excel — vérifiez votre connexion.',
+  impEmptyFile:'Le fichier est vide ou ne contient pas de tableau exploitable.',
+  rfqTitle:'Demande de prix', rfqSub:'La demande est envoyée aux fournisseurs sélectionnés en copie cachée (Cci) : aucun ne voit les autres.',
+  rfqParts:'Pièces et quantités', rfqQty:'Qté', rfqName:'Votre nom', rfqCompany:'Société / service', rfqPlace:'Lieu de livraison',
+  rfqMsg:'Message', rfqOpen:'Ouvrir la messagerie', rfqCopyMsg:'Copier le message', rfqCopyMails:'Copier les emails',
+  rfqNoMail:'{n} fournisseur(s) sans email ne seront pas inclus.', rfqSuppliers:'Destinataires', rfqNoRecipients:'Aucun email parmi les fournisseurs sélectionnés.',
+  rfqLong:'Le message est trop long pour un lien mail — il a été copié, collez-le dans votre email.',
+  subject:'Demande de prix', greet:'Madame, Monsieur,', hello:'Bonjour,',
+  intro:'Nous vous prions de bien vouloir nous adresser votre meilleure offre pour les articles suivants :', qtyW:'Quantité', refW:'Réf.',
+  ask:'Merci de préciser : prix unitaire, délai de livraison, conditions de paiement et validité de l’offre.', placeW:'Lieu de livraison', thanks:'Cordialement,',
+  cmpTitle:'Comparaison des offres', cmpSub:'Comparez les offres sélectionnées, choisissez le fournisseur retenu puis exportez le procès-verbal.',
+  cmpMin:'Sélectionnez au moins deux offres à comparer.', cmpMax:'Maximum 4 offres à comparer.',
+  cmpDiffParts:'Remarque : les offres sélectionnées portent des désignations différentes — vérifiez qu’elles sont équivalentes.',
+  cmpQty:'Quantité demandée', cmpVat:'TVA %', cmpName:'Établi par', cmpDept:'Société / service',
+  cmpChoose:'Choisir', cmpWinner:'Fournisseur retenu', cmpReason:'Motif du choix', cmpReasonPh:'Ex. : meilleur prix, délai adapté et garantie d’un an…',
+  cmpPdf:'PV en PDF', cmpXlsx:'Excel', cmpCopy:'Copier en texte', cmpDone:'Fichier généré',
+  cmpMixed:'Offres en devises différentes — écart et moins-disant non calculables.',
+  cmpMoqWarn:'Quantité inférieure au minimum de commande', cmpNoWinner:'Non défini',
+  cheapest:'Moins cher', fastest:'Plus rapide', topRated:'Mieux noté',
+  rowPart:'Pièce / Référence', rowUnit:'Prix unitaire', rowTotal:'Total', rowHT:'Total HT', rowTTC:'Total TTC', rowDiff:'Écart avec le moins cher',
+  rowDelivery:'Délai de livraison', rowMoq:'Quantité minimale', rowPay:'Conditions de paiement', rowWar:'Garantie', rowRating:'Note',
+  rowPhone:'Téléphone', rowEmail:'Email', rowNotes:'Remarques',
+  repTitle:'Procès-verbal de comparaison des offres', repDate:'Date', repQty:'Quantité', repBy:'Établi par', repDept:'Service', repSigA:'Établi par', repSigB:'Commission d’achat', repSigC:'Le Directeur',
+  repSign:'Nom et signature', repFoot:'Généré par l’outil Annuaire des fournisseurs — merabti.com',
+  popup:'Autorisez les fenêtres pop-up pour afficher le PV puis réessayez.', cmpSheet:'Comparaison',
+  confirmClear:'Toutes les données enregistrées sur cet appareil seront effacées. Continuer ?', cleared:'Données effacées',
+  storeFail:'Impossible d’enregistrer localement (fichier trop volumineux) — les données restent disponibles jusqu’à la fermeture de la page.',
+  tplName:'modele_fournisseurs', expName:'fournisseurs', cmpFile:'comparaison_offres', da:'DA'
 },
 en:{
   title:'Suppliers & Spare Parts Finder',
@@ -93,19 +170,21 @@ en:{
   filters:'Filters', fReset:'Reset', fParts:'Parts', fPartQ:'Search parts…', fCat:'Category', fBrand:'Brand',
   fCity:'City / Wilaya', fSupplier:'Supplier', fCur:'Currency', fPrice:'Price', fMin:'From', fMax:'To',
   fDel:'Max lead time (days)', fEmail:'Has email', fPhone:'Has phone', fCC:'Country code (WhatsApp links)', all:'All',
+  fRating:'Supplier rating', fRating5:'5 stars only', fRating4:'4 stars & up', fRating3:'3 stars & up',
   selAll:'Select all', group:'Group by part', results:'results',
-  sPriceAsc:'Cheapest first', sPriceDesc:'Most expensive first', sDelivery:'Fastest delivery', sSupplier:'Supplier (A–Z)', sPart:'Part (A–Z)',
-  best:'Cheapest', days:'days', instant:'Immediate', moq:'Min. order', noPrice:'Price on request',
+  sPriceAsc:'Cheapest first', sPriceDesc:'Most expensive first', sDelivery:'Fastest delivery', sRating:'Top rated', sSupplier:'Supplier (A–Z)', sPart:'Part (A–Z)',
+  best:'Cheapest', days:'days', instant:'Immediate', moq:'Min. qty', pay:'Payment', war:'Warranty', noPrice:'Price on request',
   call:'Call', wa:'WhatsApp', copy:'Copy', mail:'Email', copied:'Copied', nothing:'Nothing to copy',
+  rateTip:'Click to rate this supplier (click the same star again to clear)', unrated:'Not rated',
   offers:'offers', min:'Min', max:'Max', avg:'Avg',
-  selected:'selected', rfq:'Request quote', copyEmails:'Copy emails', copyPhones:'Copy phones', exportSel:'Export selected', clearSel:'Cancel',
+  selected:'selected', rfq:'Request quote', compare:'Compare offers', copyEmails:'Copy emails', copyPhones:'Copy phones', exportSel:'Export selected', clearSel:'Cancel',
   emptyTitle:'Start by uploading your suppliers file',
   emptySub:'Drag an Excel or CSV file here or pick one from your device. Your data is never sent to a server — it stays on your device only.',
-  emptyPick:'Choose file', emptyDemo:'Try sample data', emptyTpl:'Download ready template',
-  emptyCols:'Supported columns: part name, reference, category, brand, supplier, contact, phone, email, city, price, currency, lead time, min. order, notes — in Arabic, French or English, detected automatically.',
+  emptyPick:'Choose file', emptyDemo:'Try sample data', emptyTpl:'Download the template',
+  emptyCols:'Supported columns: part name, reference, category, brand, supplier, contact, phone, email, city, price, currency, lead time, min. order, payment terms, warranty, notes — in Arabic, French or English, detected automatically. (The reference template is in French)',
   dropHere:'Drop the file here',
   noRes:'No matching results', noResSub:'Try other words or relax the filters.',
-  fTxt:'Search', fPart:'Part', fMinP:'Price from', fMaxP:'Price to', fDelT:'Lead time ≤',
+  fTxt:'Search', fPart:'Part', fMinP:'Price from', fMaxP:'Price to', fDelT:'Lead time ≤', fRatingT:'Rating ≥',
   impTitle:'Import suppliers file', impSub:'Check the column mapping (auto-detected) then click Import.',
   impSheet:'Sheet', impNone:'— none —', impReplace:'Replace current data', impAppend:'Add to current data',
   impGo:'Import', impCancel:'Cancel', impReady:'{n} records will be imported', impMissing:'Map at least “Part name” and “Supplier”.',
@@ -117,12 +196,26 @@ en:{
   rfqNoMail:'{n} supplier(s) without email will not be included.', rfqSuppliers:'Recipients', rfqNoRecipients:'None of the selected suppliers has an email.',
   rfqLong:'The message is too long for a mail link — it was copied, paste it into your email.',
   subject:'Request for quotation', greet:'Dear Sir/Madam,', hello:'Good day,',
-  intro:'Please send us a quotation for the following items:', qtyW:'Qty', refW:'Ref',
-  ask:'Please include: unit price, lead time, payment terms and offer validity.', placeW:'Delivery place', thanks:'Thank you,',
+  intro:'Please send us your best quotation for the following items:', qtyW:'Qty', refW:'Ref',
+  ask:'Please include: unit price, lead time, payment terms and offer validity.', placeW:'Delivery place', thanks:'Kind regards,',
+  cmpTitle:'Offers comparison', cmpSub:'Compare the selected offers, pick the winning supplier, then export the report.',
+  cmpMin:'Select at least two offers to compare.', cmpMax:'You can compare up to 4 offers.',
+  cmpDiffParts:'Note: the selected offers have different part names — make sure they are equivalent.',
+  cmpQty:'Required quantity', cmpVat:'VAT %', cmpName:'Prepared by', cmpDept:'Company / department',
+  cmpChoose:'Choose', cmpWinner:'Selected supplier', cmpReason:'Reason for the choice', cmpReasonPh:'e.g. best price with suitable lead time and a 1-year warranty…',
+  cmpPdf:'PDF report', cmpXlsx:'Excel', cmpCopy:'Copy as text', cmpDone:'File generated',
+  cmpMixed:'Offers are in different currencies — difference and cheapest cannot be computed.',
+  cmpMoqWarn:'Quantity is below the minimum order', cmpNoWinner:'Not decided yet',
+  cheapest:'Cheapest', fastest:'Fastest', topRated:'Top rated',
+  rowPart:'Part / Reference', rowUnit:'Unit price', rowTotal:'Total', rowHT:'Total excl. VAT', rowTTC:'Total incl. VAT', rowDiff:'Difference vs cheapest',
+  rowDelivery:'Lead time', rowMoq:'Minimum order', rowPay:'Payment terms', rowWar:'Warranty', rowRating:'Rating',
+  rowPhone:'Phone', rowEmail:'Email', rowNotes:'Notes',
+  repTitle:'Offers Comparison Report', repDate:'Date', repQty:'Quantity', repBy:'Prepared by', repDept:'Department', repSigA:'Prepared by', repSigB:'Purchasing committee', repSigC:'Director',
+  repSign:'Name and signature', repFoot:'Generated by the Suppliers Finder tool — merabti.com',
+  popup:'Allow pop-ups to view the report, then try again.', cmpSheet:'Comparison',
   confirmClear:'All data saved on this device will be erased. Continue?', cleared:'Data cleared',
   storeFail:'Could not save data locally (file too large) — it stays available until you close the page.',
-  tplName:'suppliers_template', expName:'suppliers', supplierWord:'supplier', unitOffer:'offer', rows:'rows',
-  langBtn:'AR', da:'DZD'
+  tplName:'modele_fournisseurs', expName:'suppliers', cmpFile:'offers_comparison', da:'DZD'
 }};
 
 /* ---------------- الأيقونات ---------------- */
@@ -140,24 +233,30 @@ const IC = {
   wa:'<path d="M21 12a8.5 8.5 0 0 1-12.3 7.6L3 21l1.5-5.5A8.5 8.5 0 1 1 21 12z"/><path d="M9 9.5c.5 2.5 3 5 5.5 5.5l1.2-1.4-2-1-1 .7c-1-.5-1.9-1.4-2.4-2.4l.7-1-1-2z"/>',
   copy:'<rect x="9" y="9" width="11" height="11" rx="2.5"/><path d="M5 15V6.5A2.5 2.5 0 0 1 7.5 4H15"/>',
   spark:'<path d="M12 3l2.2 5.8L20 11l-5.8 2.2L12 19l-2.2-5.8L4 11l5.8-2.2z"/>',
-  send:'<path d="M4 12l16-8-6 16-3-7z"/>'
+  send:'<path d="M4 12l16-8-6 16-3-7z"/>',
+  check:'<path d="M5 12l5 5 9-10"/>',
+  cols:'<rect x="3" y="4" width="7" height="16" rx="1.5"/><rect x="14" y="4" width="7" height="16" rx="1.5"/>'
 };
 function icon(name){ const i=document.createElement('i'); i.setAttribute('data-ic',name); i.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+(IC[name]||'')+'</svg>'; return i; }
 function paintIcons(root){ (root||document).querySelectorAll('i[data-ic]').forEach(i=>{ if(!i.firstChild) i.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+(IC[i.getAttribute('data-ic')]||'')+'</svg>'; }); }
 
 /* ---------------- الحالة ---------------- */
-const LS = { data:'sf_data_v1', cc:'sf_cc', me:'sf_me' };
+const LS = { data:'sf_data_v2', cc:'sf_cc', me:'sf_me', lang:'sf_lang', rate:'sf_ratings' };
+function initialLang(){
+  const own=localStorage.getItem(LS.lang); if(LANGS.includes(own)) return own;
+  const site=localStorage.getItem('site_lang'); return LANGS.includes(site) ? site : 'ar';
+}
 const S = {
-  lang: localStorage.getItem('site_lang') || 'ar',
-  data: [], sample:false,
+  lang: initialLang(),
+  data: [], sample:false, ratings:{},
   q:'', sort:'price-asc', group:true,
-  f:{ part:'', cats:new Set(), brands:new Set(), city:'', supplier:'', currency:'', pmin:'', pmax:'', dmax:'', hasEmail:false, hasPhone:false },
+  f:{ part:'', cats:new Set(), brands:new Set(), city:'', supplier:'', currency:'', pmin:'', pmax:'', dmax:'', rmin:'', hasEmail:false, hasPhone:false },
   sel:new Set(), partQ:'',
   cc: localStorage.getItem(LS.cc) || '213'
 };
-if (!TX[S.lang]) S.lang = 'ar';
-const T = (k,o) => { let s=(TX[S.lang][k] ?? k); if(o) for(const x in o) s=s.replace('{'+x+'}',o[x]); return s; };
+const T = (k,o) => { let s=(TX[S.lang][k] ?? TX.en[k] ?? k); if(o) for(const x in o) s=s.replace('{'+x+'}',o[x]); return s; };
 const $ = id => document.getElementById(id);
+const locale = () => S.lang==='ar' ? 'ar' : S.lang==='fr' ? 'fr' : 'en';
 
 /* ---------------- أدوات نصية ---------------- */
 function norm(s){
@@ -169,12 +268,12 @@ function norm(s){
 const nkey = s => norm(s).replace(/[^a-z0-9\u0600-\u06FF]/g,'');
 const tokens = s => norm(s).split(' ').filter(Boolean);
 const txt = v => v==null ? '' : String(v).trim();
+const esc = s => String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function h(tag, cls, kids){
   const e=document.createElement(tag); if(cls) e.className=cls;
   (Array.isArray(kids)?kids:[kids]).forEach(k=>{ if(k==null||k===false) return; e.append(k.nodeType?k:document.createTextNode(k)); });
   return e;
 }
-const clone = o => JSON.parse(JSON.stringify(o));
 
 /* ---------------- تحليل القيم ---------------- */
 function parsePrice(v){
@@ -214,77 +313,91 @@ const EMAIL_RE=/[^\s;,<>()\[\]"']+@[^\s;,<>()\[\]"']+\.[^\s;,<>()\[\]"']+/g;
 let _id=0;
 function finalize(r){
   r.id = ++_id;
-  r.part=txt(r.part); r.supplier=txt(r.supplier); r.ref=txt(r.ref); r.category=txt(r.category); r.brand=txt(r.brand);
-  r.contact=txt(r.contact); r.city=txt(r.city); r.notes=txt(r.notes); r.moq=txt(r.moq); r.phone=txt(r.phone); r.email=txt(r.email);
+  ['part','supplier','ref','category','brand','contact','city','notes','moq','phone','email','payment','warranty'].forEach(k=>r[k]=txt(r[k]));
   r.price = r.price==null||r.price==='' ? null : Number(r.price);
   r.delivery = r.delivery==null||r.delivery==='' ? null : Number(r.delivery);
   r.currency = r.currency || 'DZD';
   r._pk = nkey(r.part);
+  r._sk = r.sid || norm(r.supplier);
   r.phones = r.phone.split(/[\/;،|\n]+|\s-\s|,(?=\s*\+?\d)/).map(x=>x.trim()).filter(x=>x.replace(/\D/g,'').length>=6);
   r.emails = (r.email.match(EMAIL_RE)||[]).map(x=>x.toLowerCase());
-  r._h = norm([r.part,r.ref,r.category,r.brand,r.supplier,r.contact,r.city,r.notes].join(' | '));
+  r._h = norm([r.part,r.ref,r.category,r.brand,r.supplier,r.contact,r.city,r.notes,r.payment,r.warranty].join(' | '));
   return r;
 }
-function baseOf(r){ const {id,_pk,_h,phones,emails,...b}=r; return b; }
+function baseOf(r){ const {id,_pk,_sk,_h,phones,emails,...b}=r; return b; }
 
-/* ---------------- بيانات تجريبية ---------------- */
-function sampleData(){
-  const sup=[
-    ['الشركة الجزائرية للتوريدات الصناعية','الجزائر العاصمة','أ. كريم','0550 00 00 01','commercial@asi-demo.example'],
-    ['SKF Distribution Sétif','سطيف','M. Amine','0660 00 00 02','ventes@skf-setif-demo.example'],
-    ['Elec Pro Oran','وهران','Mme Nadia','0770 00 00 03','contact@elecpro-demo.example'],
-    ['مؤسسة الأطلس للمعدات','قسنطينة','أ. يوسف','0555 00 00 04','atlas@atlas-demo.example'],
-    ['TechnoParts Annaba','عنابة','M. Riad','0661 00 00 05','info@technoparts-demo.example'],
-    ['Sahara Industrial Supply','ورقلة','أ. عبد الله','0771 00 00 06','sales@sahara-demo.example'],
-    ['Medea Hydraulics','المدية','M. Hakim','0552 00 00 07','hydro@medea-demo.example'],
-    ['Batna Réfractaires','باتنة','أ. سمير','0662 00 00 08','ref@batna-demo.example']
+/* ---------------- بيانات تجريبية (3 لغات) ---------------- */
+const L3 = (ar,fr,en)=>({ar,fr,en});
+function sampleData(lang){
+  const g = o => o[lang] ?? o.en;
+  const SUP=[
+    { sid:'d1', name:L3('الشركة الجزائرية للتوريدات الصناعية','Sté Algérienne de Fournitures Industrielles','Algerian Industrial Supplies Co.'), city:L3('الجزائر العاصمة','Alger','Algiers'), contact:L3('أ. كريم','M. Karim','Mr. Karim'), phone:'0550 00 00 01', email:'commercial@asi-demo.example', seed:5 },
+    { sid:'d2', name:L3('SKF Distribution Sétif','SKF Distribution Sétif','SKF Distribution Setif'), city:L3('سطيف','Sétif','Setif'), contact:L3('أ. أمين','M. Amine','Mr. Amine'), phone:'0660 00 00 02', email:'ventes@skf-setif-demo.example', seed:4 },
+    { sid:'d3', name:L3('Elec Pro Oran','Elec Pro Oran','Elec Pro Oran'), city:L3('وهران','Oran','Oran'), contact:L3('السيدة نادية','Mme Nadia','Ms. Nadia'), phone:'0770 00 00 03', email:'contact@elecpro-demo.example', seed:3 },
+    { sid:'d4', name:L3('مؤسسة الأطلس للمعدات','Ets Atlas Équipements','Atlas Equipment Est.'), city:L3('قسنطينة','Constantine','Constantine'), contact:L3('أ. يوسف','M. Youcef','Mr. Youcef'), phone:'0555 00 00 04', email:'atlas@atlas-demo.example', seed:4 },
+    { sid:'d5', name:L3('TechnoParts Annaba','TechnoParts Annaba','TechnoParts Annaba'), city:L3('عنابة','Annaba','Annaba'), contact:L3('أ. رياض','M. Riad','Mr. Riad'), phone:'0661 00 00 05', email:'info@technoparts-demo.example', seed:3 },
+    { sid:'d6', name:L3('Sahara Industrial Supply','Sahara Industrial Supply','Sahara Industrial Supply'), city:L3('ورقلة','Ouargla','Ouargla'), contact:L3('أ. عبد الله','M. Abdallah','Mr. Abdallah'), phone:'0771 00 00 06', email:'sales@sahara-demo.example', seed:5 },
+    { sid:'d7', name:L3('Medea Hydraulics','Medea Hydraulics','Medea Hydraulics'), city:L3('المدية','Médéa','Medea'), contact:L3('أ. حكيم','M. Hakim','Mr. Hakim'), phone:'0552 00 00 07', email:'hydro@medea-demo.example', seed:2 },
+    { sid:'d8', name:L3('باتنة للمواد الحرارية','Batna Réfractaires','Batna Refractories'), city:L3('باتنة','Batna','Batna'), contact:L3('أ. سمير','M. Samir','Mr. Samir'), phone:'0662 00 00 08', email:'ref@batna-demo.example', seed:4 }
   ];
-  const parts=[
-    ['رولمان 22320 CC/W33','22320-CC-W33','رولمانات','SKF',48000],
-    ['رولمان 22222 E','22222-E','رولمانات','FAG',21500],
-    ['سير مثلثي SPB 3350','SPB-3350','سيور وسلاسل','Optibelt',6500],
-    ['كونتاكتور 80A','LC1D80','كهرباء','Schneider',32000],
-    ['قاطع دارة 250A','NSX250','كهرباء','Schneider',78000],
-    ['محول تردد 90kW','ACS880-90','كهرباء','ABB',1450000],
-    ['حساس حرارة PT100','PT100-L200','أجهزة قياس','WIKA',9500],
-    ['حساس تقارب M18','IME18','أجهزة قياس','Sick',7800],
-    ['زيت علبة السرعة ISO VG 320 (برميل 208L)','VG320-208','زيوت وشحوم','Mobil',185000],
-    ['خرطوم هيدروليكي 2SN 1 بوصة (للمتر)','2SN-1','هيدروليك','Parker',4200],
-    ['بكرة ناقل Ø133','IDL-133','ميكانيك','—',14500],
-    ['طوب حراري MgO-C (للطن)','MGC-01','مواد حرارية','RHI',390000]
+  const PARTS=[
+    [L3('رولمان 22320 CC/W33','Roulement 22320 CC/W33','Bearing 22320 CC/W33'),'22320-CC-W33',L3('رولمانات','Roulements','Bearings'),'SKF',48000],
+    [L3('رولمان 22222 E','Roulement 22222 E','Bearing 22222 E'),'22222-E',L3('رولمانات','Roulements','Bearings'),'FAG',21500],
+    [L3('سير مثلثي SPB 3350','Courroie trapézoïdale SPB 3350','V-belt SPB 3350'),'SPB-3350',L3('سيور وسلاسل','Courroies et chaînes','Belts & chains'),'Optibelt',6500],
+    [L3('كونتاكتور 80A','Contacteur 80 A','Contactor 80 A'),'LC1D80',L3('كهرباء','Électricité','Electrical'),'Schneider',32000],
+    [L3('قاطع دارة 250A','Disjoncteur 250 A','Circuit breaker 250 A'),'NSX250',L3('كهرباء','Électricité','Electrical'),'Schneider',78000],
+    [L3('محول تردد 90 kW','Variateur de fréquence 90 kW','Frequency drive 90 kW'),'ACS880-90',L3('كهرباء','Électricité','Electrical'),'ABB',1450000],
+    [L3('حساس حرارة PT100','Sonde de température PT100','PT100 temperature sensor'),'PT100-L200',L3('أجهزة قياس','Instrumentation','Instruments'),'WIKA',9500],
+    [L3('حساس تقارب M18','Capteur de proximité M18','Proximity sensor M18'),'IME18',L3('أجهزة قياس','Instrumentation','Instruments'),'Sick',7800],
+    [L3('زيت علبة السرعة ISO VG 320 (برميل 208 L)','Huile réducteur ISO VG 320 (fût 208 L)','Gear oil ISO VG 320 (208 L drum)'),'VG320-208',L3('زيوت وشحوم','Huiles et graisses','Oils & greases'),'Mobil',185000],
+    [L3('خرطوم هيدروليكي 2SN 1 بوصة (للمتر)','Flexible hydraulique 2SN 1" (au mètre)','Hydraulic hose 2SN 1" (per meter)'),'2SN-1',L3('هيدروليك','Hydraulique','Hydraulics'),'Parker',4200],
+    [L3('بكرة ناقل Ø133','Rouleau de convoyeur Ø133','Conveyor idler Ø133'),'IDL-133',L3('ميكانيك','Mécanique','Mechanical'),'',14500],
+    [L3('طوب حراري MgO-C (للطن)','Briques réfractaires MgO-C (la tonne)','MgO-C refractory bricks (per ton)'),'MGC-01',L3('مواد حرارية','Réfractaires','Refractories'),'RHI',390000]
   ];
+  const PAY=[L3('الدفع بعد 30 يومًا','Paiement à 30 jours','Payment within 30 days'),L3('الدفع عند التسليم','Paiement à la livraison','Cash on delivery'),L3('50% مسبقًا والباقي عند التسليم','50 % à la commande, solde à la livraison','50% upfront, balance on delivery'),L3('الدفع بعد 60 يومًا','Paiement à 60 jours','Payment within 60 days'),L3('تحويل مسبق','Virement anticipé','Prepayment by transfer')];
+  const WAR=[L3('سنة','1 an','1 year'),L3('6 أشهر','6 mois','6 months'),L3('سنتان','2 ans','2 years'),L3('بدون ضمان','Sans garantie','No warranty'),L3('3 أشهر','3 mois','3 months')];
+  const NOTE_TAX=L3('السعر شامل الرسوم','Prix toutes taxes comprises','Price includes taxes');
+  const NOTE_IMP=L3('استيراد — السعر باليورو','Import — prix en euros','Import — price in euros');
   const mult=[1,0.94,1.08,1.03,0.97], days=[2,5,7,3,10], moq=['1','1','2','1','5'];
+  const mk=(s,p,price,cur,delivery,m,pay,war,notes)=>({ sid:s.sid, seed:s.seed, part:g(p[0]), ref:p[1], category:g(p[2]), brand:p[3], supplier:g(s.name), contact:g(s.contact), phone:s.phone, email:s.email, city:g(s.city), price, currency:cur, delivery, moq:m, payment:g(pay), warranty:g(war), notes:notes?g(notes):'' });
   const out=[];
-  parts.forEach((p,i)=>{
-    const n = 3 + (i%2);
+  PARTS.forEach((p,i)=>{
+    const n=3+(i%2);
     for(let j=0;j<n;j++){
-      const s=sup[(i+j*2)%sup.length];
-      out.push({ part:p[0], ref:p[1], category:p[2], brand:p[3]==='—'?'':p[3], supplier:s[0], contact:s[2], phone:s[3], email:s[4], city:s[1],
-        price:Math.round(p[4]*mult[(i+j)%5]/100)*100, currency:'DZD', delivery:days[(i*2+j)%5], moq:moq[(i+j)%5], notes: j===0?'السعر شامل الرسوم — الدفع بعد التسليم':'' });
+      const s=SUP[(i+j*2)%SUP.length];
+      out.push(mk(s,p,Math.round(p[4]*mult[(i+j)%5]/100)*100,'DZD',days[(i*2+j)%5],moq[(i+j)%5],PAY[(i+j)%5],WAR[(i*2+j)%5], j===0?NOTE_TAX:null));
     }
   });
-  out.push({ part:'محول تردد 90kW', ref:'ACS880-90', category:'كهرباء', brand:'ABB', supplier:sup[4][0], contact:sup[4][2], phone:sup[4][3], email:sup[4][4], city:sup[4][1], price:9800, currency:'EUR', delivery:21, moq:'1', notes:'استيراد — السعر باليورو' });
+  out.push(mk(SUP[4],PARTS[5],9800,'EUR',21,'1',PAY[4],WAR[0],NOTE_IMP));
   return out;
 }
 
-/* ---------------- التخزين ---------------- */
+/* ---------------- التخزين والتقييمات ---------------- */
 function persist(){
-  try{ localStorage.setItem(LS.data, JSON.stringify({ sample:S.sample, data:S.data.map(baseOf) })); }
+  try{ localStorage.setItem(LS.data, JSON.stringify({ sample:S.sample, data: S.sample ? [] : S.data.map(baseOf) })); }
   catch(e){ toast(T('storeFail'), 3500); }
 }
 function loadStored(){
+  try{ S.ratings=JSON.parse(localStorage.getItem(LS.rate)||'{}')||{}; }catch(e){ S.ratings={}; }
   try{
     const raw=localStorage.getItem(LS.data); if(!raw) return;
-    const o=JSON.parse(raw); S.sample=!!o.sample; S.data=(o.data||[]).map(finalize);
+    const o=JSON.parse(raw); S.sample=!!o.sample;
+    S.data = S.sample ? sampleData(S.lang).map(finalize) : (o.data||[]).map(finalize);
   }catch(e){}
 }
+function getRating(r){ const v=S.ratings[r._sk]; return v!==undefined ? v : (r.sid && r.seed ? r.seed : 0); }
+function setRating(key, val){
+  S.ratings[key]=val;
+  try{ localStorage.setItem(LS.rate, JSON.stringify(S.ratings)); }catch(e){}
+}
+const starText = n => n>0 ? '★'.repeat(n)+'☆'.repeat(5-n) : '—';
 
 /* ---------------- التصفية والترتيب ---------------- */
 const num = v => (v===''||v==null||isNaN(Number(v))) ? null : Number(v);
 function baseQ(){ const t=tokens(S.q); return t.length ? S.data.filter(r=>t.every(x=>r._h.includes(x))) : S.data; }
 function results(){
-  const f=S.f, t=tokens(S.q), pmin=num(f.pmin), pmax=num(f.pmax), dmax=num(f.dmax);
-  let arr=S.data.filter(r=>{
+  const f=S.f, t=tokens(S.q), pmin=num(f.pmin), pmax=num(f.pmax), dmax=num(f.dmax), rmin=num(f.rmin);
+  const arr=S.data.filter(r=>{
     if(t.length && !t.every(x=>r._h.includes(x))) return false;
     if(f.part && r._pk!==f.part) return false;
     if(f.cats.size && !f.cats.has(r.category||'—')) return false;
@@ -295,16 +408,18 @@ function results(){
     if(pmin!=null && (r.price==null || r.price<pmin)) return false;
     if(pmax!=null && (r.price==null || r.price>pmax)) return false;
     if(dmax!=null && (r.delivery==null || r.delivery>dmax)) return false;
+    if(rmin!=null && getRating(r)<rmin) return false;
     if(f.hasEmail && !r.emails.length) return false;
     if(f.hasPhone && !r.phones.length) return false;
     return true;
   });
   const nullLast=(a,b,dir)=> (a==null && b==null)?0 : a==null?1 : b==null?-1 : dir*(a-b);
-  const loc=S.lang==='ar'?'ar':'en';
+  const loc=locale();
   const sorters={
     'price-asc':(a,b)=>nullLast(a.price,b.price,1),
     'price-desc':(a,b)=>nullLast(a.price,b.price,-1),
     'delivery':(a,b)=>nullLast(a.delivery,b.delivery,1) || nullLast(a.price,b.price,1),
+    'rating':(a,b)=>getRating(b)-getRating(a) || nullLast(a.price,b.price,1),
     'supplier':(a,b)=>a.supplier.localeCompare(b.supplier,loc),
     'part':(a,b)=>a.part.localeCompare(b.part,loc)
   };
@@ -341,46 +456,63 @@ function copyText(text, msg){
 function fb(text,done){ const ta=document.createElement('textarea'); ta.value=text; ta.style.cssText='position:fixed;opacity:0'; document.body.appendChild(ta); ta.select(); try{document.execCommand('copy'); done();}catch(e){} document.body.removeChild(ta); }
 
 function iconBtn(name, title, onclick, href, cls){
-  const el = href ? h('a','sf-ic '+(cls||'')) : h('button','sf-ic '+(cls||'')); 
+  const el = href ? h('a','sf-ic '+(cls||'')) : h('button','sf-ic '+(cls||''));
   if(href){ el.href=href; if(/^https?:/.test(href)){ el.target='_blank'; el.rel='noopener'; } } else el.type='button';
   el.title=title; el.setAttribute('aria-label',title); el.append(icon(name)); if(onclick) el.addEventListener('click',onclick); return el;
 }
 
+/* ---- النجوم ---- */
+function paintStars(wrap,v){ wrap.querySelectorAll('.sf-star').forEach(b=>b.classList.toggle('on', Number(b.dataset.v)<=v)); }
+function paintAllStars(key){
+  const rec=S.data.find(x=>x._sk===key); const v=rec?getRating(rec):0;
+  document.querySelectorAll('.sf-stars').forEach(w=>{ if(w.dataset.k===key) paintStars(w,v); });
+}
+function starsEl(r){
+  const key=r._sk, wrap=h('span','sf-stars'); wrap.dataset.k=key; wrap.title=T('rateTip');
+  for(let i=1;i<=5;i++){
+    const b=h('button','sf-star','★'); b.type='button'; b.dataset.v=String(i); b.setAttribute('aria-label',i+'/5');
+    b.addEventListener('click',e=>{
+      e.stopPropagation();
+      const cur=getRating(r); setRating(key, cur===i ? 0 : i); paintAllStars(key);
+      if(S.f.rmin!=='' || S.sort==='rating') renderResults();
+    });
+    wrap.append(b);
+  }
+  paintStars(wrap,getRating(r)); return wrap;
+}
+
 function rowEl(r, isBest, grouped){
   const row=h('div','sf-row'+(S.sel.has(r.id)?' sel':'')+(isBest?' best':''));
-  // تحديد
   const chk=h('input'); chk.type='checkbox'; chk.checked=S.sel.has(r.id);
   chk.addEventListener('change',()=>{ chk.checked ? S.sel.add(r.id) : S.sel.delete(r.id); row.classList.toggle('sel',chk.checked); renderBar(); syncAll(); });
   row.append(h('div','sf-rchk',chk));
 
-  // القطعة
   const tags=[]; if(r.ref) tags.push(h('span','sf-tag ref',r.ref)); if(r.brand) tags.push(h('span','sf-tag brand',r.brand)); if(r.category) tags.push(h('span','sf-tag',r.category));
   row.append(h('div','',[ grouped?null:h('div','sf-part',r.part), tags.length?h('div','sf-tags'+(grouped?' sf-tags-top':''),tags):null, r.notes?h('div','sf-note',r.notes):null ]));
 
-  // المورد
   const sub=[]; if(r.contact) sub.push(h('span','',r.contact)); if(r.city) sub.push(h('span','',r.city));
-  row.append(h('div','',[ h('div','sf-sup',r.supplier), sub.length?h('div','sf-sub',sub):null ]));
+  row.append(h('div','',[ h('div','sf-sup',r.supplier), starsEl(r), sub.length?h('div','sf-sub',sub):null ]));
 
-  // الاتصال
   const c=h('div','sf-contact');
   r.phones.slice(0,2).forEach(p=>{
     const ln=h('a','sf-ln',[icon('phone'),p]); ln.href=telHref(p); ln.title=T('call');
     c.append(h('div','sf-line',[ ln, iconBtn('wa',T('wa'),null,waLink(p),'wa'), iconBtn('copy',T('copy'),()=>copyText(p)) ]));
   });
-  if(!r.phones.length) c.append(h('span','sf-none','— '+T('fPhone')));
+  if(!r.phones.length) c.append(h('span','sf-none','—'));
   if(r.emails.length){
     const e=r.emails[0];
     c.append(h('div','sf-line',[ Object.assign(h('a','sf-ln',[icon('mail'),e]),{href:'mailto:'+e,title:e}), iconBtn('copy',T('copy'),()=>copyText(r.emails.join(', '))) ]));
   }
   row.append(c);
 
-  // السعر
   const pb=h('div','sf-pricebox');
   const ps=fmtPrice(r);
   pb.append(ps ? h('div','sf-price',ps) : h('div','sf-price none',T('noPrice')));
   if(isBest) pb.append(h('span','sf-best','★ '+T('best')));
-  const metas=[]; const dd=fmtDays(r.delivery); if(dd) metas.push(dd); if(r.moq) metas.push(T('moq')+': '+r.moq);
-  if(metas.length) pb.append(h('div','sf-meta',metas.join(' • ')));
+  const m1=[]; const dd=fmtDays(r.delivery); if(dd) m1.push(dd); if(r.moq) m1.push(T('moq')+': '+r.moq);
+  if(m1.length) pb.append(h('div','sf-meta',m1.join(' • ')));
+  if(r.payment) pb.append(h('div','sf-meta',T('pay')+': '+r.payment));
+  if(r.warranty) pb.append(h('div','sf-meta',T('war')+': '+r.warranty));
   row.append(pb);
   return row;
 }
@@ -392,48 +524,43 @@ function render(){
   $('sfSample').hidden=!(has&&S.sample); $('sfSample').textContent=T('sample');
   renderStats(); renderSelects(); renderFacets(); renderResults();
 }
-
 function renderStats(){
   const st=$('sfStats'); st.innerHTML='';
-  const parts=new Set(S.data.map(r=>r._pk)).size, sups=new Set(S.data.map(r=>norm(r.supplier))).size;
+  const parts=new Set(S.data.map(r=>r._pk)).size, sups=new Set(S.data.map(r=>r._sk)).size;
   [[S.data.length,'sRecords'],[parts,'sParts'],[sups,'sSuppliers']].forEach(([n,k])=>st.append(h('span','sf-stat',[h('b','',fmtNum(n)),T(k)])));
 }
-
 function fillSelect(sel, values, cur){
   sel.innerHTML=''; const o=h('option','',T('all')); o.value=''; sel.append(o);
   values.forEach(v=>{ const x=h('option','',v.label||v); x.value=v.value||v; sel.append(x); });
   sel.value = values.some(v=>(v.value||v)===cur) ? cur : '';
 }
 function renderSelects(){
-  const uniq=(fn)=>[...new Set(S.data.map(fn).filter(Boolean))].sort((a,b)=>a.localeCompare(b,S.lang==='ar'?'ar':'en'));
+  const uniq=fn=>[...new Set(S.data.map(fn).filter(Boolean))].sort((a,b)=>a.localeCompare(b,locale()));
   fillSelect($('sfCity'), uniq(r=>r.city), S.f.city);
   fillSelect($('sfSupplier'), uniq(r=>r.supplier), S.f.supplier);
   fillSelect($('sfCurrency'), uniq(r=>r.currency).map(c=>({value:c,label:curLabel(c)+' ('+c+')'})), S.f.currency);
-  S.f.city=$('sfCity').value; S.f.supplier=$('sfSupplier').value; S.f.currency=$('sfCurrency').value;
-  // الترتيب
+  fillSelect($('sfRating'), [{value:'5',label:'★★★★★  '+T('fRating5')},{value:'4',label:'★★★★☆  '+T('fRating4')},{value:'3',label:'★★★☆☆  '+T('fRating3')}], S.f.rmin);
+  S.f.city=$('sfCity').value; S.f.supplier=$('sfSupplier').value; S.f.currency=$('sfCurrency').value; S.f.rmin=$('sfRating').value;
   const so=$('sfSort'); const cur=S.sort; so.innerHTML='';
-  [['price-asc','sPriceAsc'],['price-desc','sPriceDesc'],['delivery','sDelivery'],['supplier','sSupplier'],['part','sPart']].forEach(([v,k])=>{ const o=h('option','',T(k)); o.value=v; so.append(o); });
+  [['price-asc','sPriceAsc'],['price-desc','sPriceDesc'],['rating','sRating'],['delivery','sDelivery'],['supplier','sSupplier'],['part','sPart']].forEach(([v,k])=>{ const o=h('option','',T(k)); o.value=v; so.append(o); });
   so.value=cur;
 }
-
 function facetList(container, items, set){
   container.innerHTML='';
   items.forEach(([name,count])=>{
     const cb=h('input'); cb.type='checkbox'; cb.checked=set.has(name);
     cb.addEventListener('change',()=>{ cb.checked?set.add(name):set.delete(name); renderResults(); });
-    container.append(h('label','sf-check',[cb,h('span','',name==='—'?'—':name),h('em','',String(count))]));
+    container.append(h('label','sf-check',[cb,h('span','',name),h('em','',String(count))]));
   });
 }
 function renderFacets(){
   const base=baseQ();
-  const count=(fn)=>{ const m=new Map(); base.forEach(r=>{ const k=fn(r); m.set(k,(m.get(k)||0)+1); }); return [...m.entries()].sort((a,b)=>b[1]-a[1]||String(a[0]).localeCompare(String(b[0]))); };
+  const count=fn=>{ const m=new Map(); base.forEach(r=>{ const k=fn(r); m.set(k,(m.get(k)||0)+1); }); return [...m.entries()].sort((a,b)=>b[1]-a[1]||String(a[0]).localeCompare(String(b[0]))); };
   facetList($('sfCats'), count(r=>r.category||'—'), S.f.cats);
   facetList($('sfBrands'), count(r=>r.brand||'—'), S.f.brands);
-
-  // قائمة القطع
-  const pm=new Map(); base.forEach(r=>{ const e=pm.get(r._pk)||{name:r.part,sups:new Set()}; e.sups.add(norm(r.supplier)); pm.set(r._pk,e); });
+  const pm=new Map(); base.forEach(r=>{ const e=pm.get(r._pk)||{name:r.part,sups:new Set()}; e.sups.add(r._sk); pm.set(r._pk,e); });
   const pq=tokens(S.partQ);
-  let list=[...pm.entries()].filter(([k,e])=>!pq.length || pq.every(t=>norm(e.name).includes(t))).sort((a,b)=>b[1].sups.size-a[1].sups.size||a[1].name.localeCompare(b[1].name)).slice(0,300);
+  const list=[...pm.entries()].filter(([k,e])=>!pq.length || pq.every(t=>norm(e.name).includes(t))).sort((a,b)=>b[1].sups.size-a[1].sups.size||a[1].name.localeCompare(b[1].name)).slice(0,300);
   const box=$('sfParts'); box.innerHTML='';
   list.forEach(([k,e])=>{
     const b=h('button','sf-pitem'+(S.f.part===k?' on':''),[h('span','',e.name),h('em','',String(e.sups.size))]); b.type='button'; b.title=e.name;
@@ -441,24 +568,19 @@ function renderFacets(){
     box.append(b);
   });
 }
-
-function groupBestKey(r){ return r._pk+'|'+r.currency; }
+const groupBestKey = r => r._pk+'|'+r.currency;
 function renderResults(){
   const list=$('sfList'); list.innerHTML='';
   const res=results();
   $('sfCount').textContent=fmtNum(res.length)+' '+T('results');
   renderChips();
-
-  // أرخص سعر لكل (قطعة+عملة)
   const minMap=new Map(), cnt=new Map();
   res.forEach(r=>{ const k=groupBestKey(r); cnt.set(k,(cnt.get(k)||0)+1); if(r.price!=null && (!minMap.has(k)||r.price<minMap.get(k))) minMap.set(k,r.price); });
   const isBest=r=> r.price!=null && cnt.get(groupBestKey(r))>1 && minMap.get(groupBestKey(r))===r.price;
-
   if(!res.length){ list.append(h('div','sf-noresult',[h('h3','',T('noRes')),h('div','',T('noResSub'))])); renderBar(); syncAll(res); return; }
-
   if(S.group){
     const groups=new Map(); res.forEach(r=>{ if(!groups.has(r._pk)) groups.set(r._pk,[]); groups.get(r._pk).push(r); });
-    const arr=[...groups.values()].sort((a,b)=>a[0].part.localeCompare(b[0].part,S.lang==='ar'?'ar':'en'));
+    const arr=[...groups.values()].sort((a,b)=>a[0].part.localeCompare(b[0].part,locale()));
     arr.forEach(rows=>{
       const prices=rows.filter(r=>r.price!=null); const curs=new Set(prices.map(r=>r.currency));
       const pills=[ h('span','sf-gpill',rows.length+' '+T('offers')) ];
@@ -469,18 +591,14 @@ function renderResults(){
       }
       list.append(h('div','sf-group',[ h('div','sf-ghead',[h('h2','',rows[0].part),h('div','sf-gmeta',pills)]), h('div','sf-rows',rows.map(r=>rowEl(r,isBest(r),true))) ]));
     });
-  } else {
-    list.append(h('div','sf-rows',res.map(r=>rowEl(r,isBest(r)))));
-  }
+  } else list.append(h('div','sf-rows',res.map(r=>rowEl(r,isBest(r),false))));
   renderBar(); syncAll(res);
 }
-
 function syncAll(res){
   res = res || results();
   const all=$('sfAll'); if(!res.length){ all.checked=false; return; }
   all.checked = res.every(r=>S.sel.has(r.id));
 }
-
 function renderChips(){
   const box=$('sfChips'); box.innerHTML=''; const f=S.f;
   const add=(label,fn)=>{ const b=h('button','sf-chip',[label,icon('close')]); b.type='button'; b.addEventListener('click',()=>{ fn(); syncInputs(); renderFacets(); renderResults(); }); box.append(b); };
@@ -491,6 +609,7 @@ function renderChips(){
   if(f.city) add(T('fCity')+': '+f.city,()=>{ f.city=''; });
   if(f.supplier) add(T('fSupplier')+': '+f.supplier,()=>{ f.supplier=''; });
   if(f.currency) add(T('fCur')+': '+f.currency,()=>{ f.currency=''; });
+  if(f.rmin!=='') add(T('fRatingT')+' '+f.rmin+' ★',()=>{ f.rmin=''; });
   if(f.pmin!=='') add(T('fMinP')+': '+f.pmin,()=>{ f.pmin=''; });
   if(f.pmax!=='') add(T('fMaxP')+': '+f.pmax,()=>{ f.pmax=''; });
   if(f.dmax!=='') add(T('fDelT')+' '+f.dmax,()=>{ f.dmax=''; });
@@ -499,15 +618,15 @@ function renderChips(){
 }
 function syncInputs(){
   const f=S.f;
-  $('sfCity').value=f.city; $('sfSupplier').value=f.supplier; $('sfCurrency').value=f.currency;
+  $('sfCity').value=f.city; $('sfSupplier').value=f.supplier; $('sfCurrency').value=f.currency; $('sfRating').value=f.rmin;
   $('sfPmin').value=f.pmin; $('sfPmax').value=f.pmax; $('sfDmax').value=f.dmax;
   $('sfHasEmail').checked=f.hasEmail; $('sfHasPhone').checked=f.hasPhone;
 }
-function resetFilters(){
-  const f=S.f; f.part=''; f.cats.clear(); f.brands.clear(); f.city=f.supplier=f.currency=''; f.pmin=f.pmax=f.dmax=''; f.hasEmail=f.hasPhone=false;
-  S.q=''; $('sfQ').value=''; $('sfQClear').classList.remove('show'); S.partQ=''; $('sfPartQ').value='';
-  syncInputs(); renderFacets(); renderResults();
+function resetFiltersSilent(){
+  const f=S.f; f.part=''; f.cats.clear(); f.brands.clear(); f.city=f.supplier=f.currency=f.rmin=''; f.pmin=f.pmax=f.dmax=''; f.hasEmail=f.hasPhone=false;
+  S.q=''; S.partQ=''; $('sfQ').value=''; $('sfPartQ').value=''; $('sfQClear').classList.remove('show'); syncInputs();
 }
+function resetFilters(){ resetFiltersSilent(); renderFacets(); renderResults(); }
 
 /* ---------------- شريط التحديد ---------------- */
 const selected = () => S.data.filter(r=>S.sel.has(r.id));
@@ -517,6 +636,7 @@ function renderBar(){
   bar.innerHTML='';
   const mk=(ic,label,fn,cls)=>{ const b=h('button','sf-btn '+(cls||''),[icon(ic),h('span','',label)]); b.type='button'; b.addEventListener('click',fn); return b; };
   bar.append(h('b','',n+' '+T('selected')),
+    mk('cols',T('compare'),openCompare,'sf-btn-cmp'),
     mk('send',T('rfq'),openRFQ,'sf-btn-primary'),
     mk('mail',T('copyEmails'),()=>copyText([...new Set(selected().flatMap(r=>r.emails))].join('; '))),
     mk('phone',T('copyPhones'),()=>copyText([...new Set(selected().flatMap(r=>r.phones))].join('\n'))),
@@ -525,30 +645,27 @@ function renderBar(){
 }
 
 /* ---------------- النوافذ ---------------- */
-function openModal(node){ const box=$('sfModalBox'); box.innerHTML=''; box.append(node); $('sfModal').classList.add('open'); paintIcons(box); }
+function openModal(node, wide){ const box=$('sfModalBox'); box.classList.toggle('wide',!!wide); box.innerHTML=''; box.append(node); $('sfModal').classList.add('open'); paintIcons(box); box.querySelectorAll('.sf-btn span').forEach(s=>s.style.display='inline'); }
 function closeModal(){ $('sfModal').classList.remove('open'); $('sfModalBox').innerHTML=''; }
 function modalHead(title){ const x=h('button','sf-x',icon('close')); x.type='button'; x.addEventListener('click',closeModal); return h('div','sf-mh',[h('h2','',title),x]); }
+function meGet(){ try{ return JSON.parse(localStorage.getItem(LS.me)||'{}')||{}; }catch(e){ return {}; } }
+function meSet(o){ try{ localStorage.setItem(LS.me, JSON.stringify(Object.assign(meGet(),o))); }catch(e){} }
 
 /* ---------------- طلب عرض سعر ---------------- */
 function openRFQ(){
   const chosen=selected(); if(!chosen.length) return;
   const partMap=new Map(); chosen.forEach(r=>{ if(!partMap.has(r._pk)) partMap.set(r._pk,{name:r.part,ref:r.ref,qty:1}); });
   const parts=[...partMap.values()];
-  const supMap=new Map(); chosen.forEach(r=>{ const k=norm(r.supplier); if(!supMap.has(k)) supMap.set(k,{name:r.supplier,emails:new Set()}); r.emails.forEach(e=>supMap.get(k).emails.add(e)); });
+  const supMap=new Map(); chosen.forEach(r=>{ if(!supMap.has(r._sk)) supMap.set(r._sk,{name:r.supplier,emails:new Set()}); r.emails.forEach(e=>supMap.get(r._sk).emails.add(e)); });
   const sups=[...supMap.values()]; const withMail=sups.filter(s=>s.emails.size); const noMail=sups.length-withMail.length;
-  const me=(()=>{ try{return JSON.parse(localStorage.getItem(LS.me)||'{}');}catch(e){return {};} })();
-  const st={ name:me.name||'', company:me.company||'', place:me.place||'', edited:false };
+  const me=meGet(); const st={ name:me.name||'', company:me.company||'', place:me.place||'', edited:false };
 
   const box=h('div','');
   box.append(modalHead(T('rfqTitle')), h('p','sf-msub',T('rfqSub')));
-
-  // الموردون
   const chips=h('div','sf-stats'); withMail.forEach(s=>chips.append(h('span','sf-stat',s.name)));
   box.append(h('h3','',T('rfqSuppliers')+' ('+withMail.length+')'), chips);
   if(noMail) box.append(h('div','sf-warn',T('rfqNoMail',{n:noMail})));
   if(!withMail.length) box.append(h('div','sf-warn',T('rfqNoRecipients')));
-
-  // القطع والكميات
   box.append(h('h3','',T('rfqParts')));
   const ta=h('textarea','sf-ta'); ta.addEventListener('input',()=>{ st.edited=true; });
   const build=()=>{
@@ -563,11 +680,10 @@ function openRFQ(){
     box.append(h('div','sf-partq',[h('span','',p.name),h('label','',T('rfqQty')),q]));
   });
   const grid=h('div','sf-mgrid'); grid.style.marginTop='14px';
-  const field=(label,key)=>{ const i=h('input','sf-mini'); i.type='text'; i.value=st[key]; i.addEventListener('input',()=>{ st[key]=i.value; st.edited=false; build(); try{localStorage.setItem(LS.me,JSON.stringify({name:st.name,company:st.company,place:st.place}));}catch(e){} }); return h('div','sf-mf',[h('label','',label),i]); };
+  const field=(label,key)=>{ const i=h('input','sf-mini'); i.type='text'; i.value=st[key]; i.addEventListener('input',()=>{ st[key]=i.value; st.edited=false; build(); meSet({[key]:i.value}); }); return h('div','sf-mf',[h('label','',label),i]); };
   grid.append(field(T('rfqName'),'name'),field(T('rfqCompany'),'company'),field(T('rfqPlace'),'place'));
   box.append(grid, h('h3','',T('rfqMsg')), ta);
   build();
-
   const allMails=[...new Set(withMail.flatMap(s=>[...s.emails]))];
   const foot=h('div','sf-mfoot');
   const b1=h('button','sf-btn sf-btn-primary',[icon('mail'),h('span','',T('rfqOpen'))]); b1.type='button';
@@ -580,14 +696,18 @@ function openRFQ(){
   const b3=h('button','sf-btn',[icon('mail'),h('span','',T('rfqCopyMails'))]); b3.type='button'; b3.addEventListener('click',()=>copyText(allMails.join('; ')));
   foot.append(b1,b2,b3); box.append(foot);
   openModal(box);
-  // إظهار نصوص الأزرار داخل النافذة
-  box.querySelectorAll('.sf-btn span').forEach(s=>s.style.display='inline');
 }
 
 /* ---------------- الاستيراد ---------------- */
 const IMP = { wb:null, name:'', sheet:'', rows:[], hIdx:0, headers:[], map:{}, mode:'replace' };
-
-function ensureXLSX(){ return window.XLSX ? Promise.resolve() : new Promise((res,rej)=>{ const s=document.createElement('script'); s.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'; s.onload=res; s.onerror=rej; document.head.appendChild(s); }); }
+const loaded = {};
+function loadScript(url){
+  if(loaded[url]) return loaded[url];
+  return loaded[url]=new Promise((res,rej)=>{ const s=document.createElement('script'); s.src=url; s.onload=res; s.onerror=()=>{ delete loaded[url]; rej(); }; document.head.appendChild(s); });
+}
+const XLSX_URL='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+const EXCELJS_URL='https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js';
+const ensureXLSX = () => window.XLSX ? Promise.resolve() : loadScript(XLSX_URL);
 
 function handleFile(file){
   if(!file) return;
@@ -605,27 +725,23 @@ function handleFile(file){
     fr.readAsArrayBuffer(file);
   }).catch(()=>toast(T('xlsxFail'),3500));
 }
-
 function loadSheet(name){
   IMP.sheet=name;
   const ws=IMP.wb.Sheets[name];
   const rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:'',raw:true,blankrows:false});
-  let hIdx=rows.findIndex((r,i)=>i<15 && r.filter(c=>txt(c)!=='').length>=2);
+  const hIdx=rows.findIndex((r,i)=>i<15 && r.filter(c=>txt(c)!=='').length>=2);
   if(hIdx<0 || rows.length<2){ IMP.rows=[]; showImport(); return; }
   IMP.rows=rows; IMP.hIdx=hIdx; IMP.headers=rows[hIdx].map(c=>txt(c));
   IMP.map=autoMap(IMP.headers);
   showImport();
 }
-
 function autoMap(headers){
   const hk=headers.map(nkey), map={}, used=new Set();
-  // مرحلة 1: تطابق تام
   FIELD_ORDER.forEach(k=>{
     const f=FIELDS.find(x=>x.k===k), syn=f.syn.map(nkey);
     const i=hk.findIndex((x,idx)=>!used.has(idx) && x && syn.includes(x));
     if(i>-1){ map[k]=i; used.add(i); }
   });
-  // مرحلة 2: احتواء
   FIELD_ORDER.forEach(k=>{
     if(map[k]!=null) return;
     const f=FIELDS.find(x=>x.k===k), syn=f.syn.map(nkey).filter(s=>s.length>=3);
@@ -634,7 +750,6 @@ function autoMap(headers){
   });
   return map;
 }
-
 function buildRecords(){
   const out=[]; const m=IMP.map;
   for(let i=IMP.hIdx+1;i<IMP.rows.length;i++){
@@ -646,26 +761,22 @@ function buildRecords(){
       part, supplier, ref:g('ref'), category:g('category'), brand:g('brand'), contact:g('contact'),
       phone:cleanPhone(g('phone')), email:g('email'), city:g('city'),
       price:parsePrice(priceCell), currency:normCur(g('currency'))||curFromPriceCell(priceCell)||'DZD',
-      delivery:parseDays(g('delivery')), moq:g('moq'), notes:g('notes')
+      delivery:parseDays(g('delivery')), moq:g('moq'), payment:g('payment'), warranty:g('warranty'), notes:g('notes')
     });
   }
   return out;
 }
-
 function showImport(){
   const box=h('div',''); box.append(modalHead(T('impTitle')), h('p','sf-msub',IMP.name+' — '+T('impSub')));
   if(!IMP.rows.length){ box.append(h('div','sf-warn',T('impEmptyFile'))); const c=h('button','sf-btn',T('impCancel')); c.type='button'; c.addEventListener('click',closeModal); box.append(h('div','sf-mfoot',c)); openModal(box); return; }
-
-  // الورقة
   if(IMP.wb.SheetNames.length>1){
     const sel=h('select','sf-select'); IMP.wb.SheetNames.forEach(n=>{ const o=h('option','',n); o.value=n; sel.append(o); }); sel.value=IMP.sheet;
     sel.addEventListener('change',()=>loadSheet(sel.value));
     box.append(h('div','sf-mf',[h('label','',T('impSheet')),sel]), h('div','',' '));
   }
-
-  // ربط الأعمدة
   const grid=h('div','sf-mgrid'); grid.style.marginTop='12px';
   const status=h('div',''), prev=h('div','sf-prev');
+  const goBtn=h('button','sf-btn sf-btn-primary',[icon('check'),h('span','',T('impGo'))]); goBtn.type='button';
   const refresh=()=>{
     const recs=buildRecords(); status.innerHTML='';
     const missing=IMP.map.part==null||IMP.map.supplier==null;
@@ -687,62 +798,240 @@ function showImport(){
     grid.append(h('div','sf-mf',[h('label','',[f[S.lang],f.req?h('b','',' *'):null]),sel]));
   });
   box.append(grid);
-
-  // الوضع
   const radio=h('div','sf-radio');
   [['replace','impReplace'],['append','impAppend']].forEach(([v,k])=>{
     const r=h('input'); r.type='radio'; r.name='impmode'; r.value=v; r.checked=IMP.mode===v; r.addEventListener('change',()=>{ IMP.mode=v; });
     radio.append(h('label','',[r,T(k)]));
   });
   if(!S.data.length || S.sample){ IMP.mode='replace'; } else box.append(radio);
-
   box.append(status, h('h3','',T('impPreview')), prev);
-
-  const goBtn=h('button','sf-btn sf-btn-primary',[icon('check'),h('span','',T('impGo'))]); goBtn.type='button';
   goBtn.addEventListener('click',()=>{
     const recs=buildRecords().map(finalize);
     if(IMP.mode==='append' && S.data.length && !S.sample){
-      const seen=new Set(S.data.map(r=>[r._pk,norm(r.supplier),r.price,norm(r.ref)].join('|')));
-      recs.forEach(r=>{ const k=[r._pk,norm(r.supplier),r.price,norm(r.ref)].join('|'); if(!seen.has(k)){ seen.add(k); S.data.push(r); } });
+      const kf=r=>[r._pk,r._sk,r.price,norm(r.ref)].join('|');
+      const seen=new Set(S.data.map(kf));
+      recs.forEach(r=>{ const k=kf(r); if(!seen.has(k)){ seen.add(k); S.data.push(r); } });
     } else S.data=recs;
     S.sample=false; S.sel.clear(); resetFiltersSilent(); persist(); render(); closeModal(); toast(T('impDone',{n:fmtNum(recs.length)}),2600);
   });
   const cancel=h('button','sf-btn',T('impCancel')); cancel.type='button'; cancel.addEventListener('click',closeModal);
   box.append(h('div','sf-mfoot',[cancel,goBtn]));
   openModal(box);
-  box.querySelectorAll('.sf-btn span').forEach(s=>s.style.display='inline');
   refresh();
 }
-function resetFiltersSilent(){ const f=S.f; f.part=''; f.cats.clear(); f.brands.clear(); f.city=f.supplier=f.currency=''; f.pmin=f.pmax=f.dmax=''; f.hasEmail=f.hasPhone=false; S.q=''; S.partQ=''; $('sfQ').value=''; $('sfPartQ').value=''; $('sfQClear').classList.remove('show'); syncInputs(); }
+
+/* ---------------- مقارنة العروض ---------------- */
+function saveBlob(blob, name){
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },1500);
+}
+const dateStr = () => new Date().toLocaleDateString(S.lang==='ar'?'ar-DZ':S.lang==='fr'?'fr-FR':'en-GB');
+
+function buildCmp(C){
+  const R=C.rows, qty=Math.max(0,Number(C.qty))||1, vat=Math.max(0,Number(C.vat))||0;
+  const priced=R.filter(r=>r.price!=null);
+  const mixed=new Set(priced.map(r=>r.currency)).size>1;
+  const ps=priced.map(r=>r.price);
+  const minP=(!mixed && ps.length>1 && Math.min(...ps)!==Math.max(...ps)) ? Math.min(...ps) : null;
+  const dl=R.filter(r=>r.delivery!=null).map(r=>r.delivery);
+  const minD=(dl.length>1 && Math.min(...dl)!==Math.max(...dl)) ? Math.min(...dl) : null;
+  const rt=R.map(getRating), maxR=Math.max(...rt), topR=(maxR>0 && new Set(rt).size>1) ? maxR : null;
+  const partsDiffer=new Set(R.map(r=>r._pk)).size>1;
+  const isMin=r=>minP!=null && r.price===minP;
+  const cell=(t,cls,badge,ltr)=>({ t:(t==null||t==='')?'—':String(t), cls:cls||'', badge:badge||'', ltr:!!ltr });
+  const row=(label,fn)=>({ label, cells:R.map(fn) });
+  const rows=[];
+  rows.push(row(T('rowPart'),r=>cell(r.part+(r.ref?'  ['+r.ref+']':''))));
+  rows.push(row(T('rowUnit'),r=>cell(fmtPrice(r)||T('noPrice'), isMin(r)?'best':'', isMin(r)?'★ '+T('cheapest'):'')));
+  rows.push(row(vat>0?T('rowHT'):T('rowTotal'),r=>cell(r.price==null?'—':fmtNum(r.price*qty)+' '+curLabel(r.currency), isMin(r)?'best':'')));
+  if(vat>0) rows.push(row(T('rowTTC')+' ('+vat+'%)',r=>cell(r.price==null?'—':fmtNum(r.price*qty*(1+vat/100))+' '+curLabel(r.currency), isMin(r)?'best':'')));
+  rows.push(row(T('rowDiff'),r=>cell(r.price==null||minP==null||isMin(r)?'—':'+'+((r.price/minP-1)*100).toFixed(1)+' %')));
+  rows.push(row(T('rowDelivery'),r=>{ const fast=minD!=null && r.delivery===minD; return cell(fmtDays(r.delivery), fast?'fast':'', fast?'⚡ '+T('fastest'):''); }));
+  rows.push(row(T('rowMoq'),r=>{ const m=parseInt((String(r.moq).match(/\d+/)||[])[0],10); const warn=!isNaN(m) && qty<m; return cell(r.moq?(r.moq+(warn?'  ⚠':'')):'', warn?'warn':''); }));
+  rows.push(row(T('rowPay'),r=>cell(r.payment)));
+  rows.push(row(T('rowWar'),r=>cell(r.warranty)));
+  rows.push(row(T('rowRating'),r=>{ const v=getRating(r); const top=topR!=null && v===topR; return cell(starText(v), top?'top':'', top?T('topRated'):''); }));
+  rows.push(row(T('rowPhone'),r=>cell(r.phones[0],'','',true)));
+  rows.push(row(T('rowEmail'),r=>cell(r.emails[0],'','',true)));
+  rows.push(row(T('rowNotes'),r=>cell(r.notes)));
+  return { qty, vat, mixed, partsDiffer, moqWarn:rows.some(x=>x.cells.some(c=>c.cls==='warn')),
+    head:R.map(r=>({ id:r.id, name:r.supplier, city:r.city, contact:r.contact })), rows };
+}
+const partTitle = C => [...new Set(C.rows.map(r=>r.part))].join('  /  ');
+const winnerName = C => { const r=C.rows.find(x=>x.id===C.winner); return r ? r.supplier : T('cmpNoWinner'); };
+
+function openCompare(){
+  const sel=selected();
+  if(sel.length<2){ toast(T('cmpMin'),2600); return; }
+  if(sel.length>4){ toast(T('cmpMax'),2600); return; }
+  const rows=sel.slice().sort((a,b)=>(a.price==null)-(b.price==null) || (a.price-b.price));
+  const me=meGet();
+  const C={ rows, qty:1, vat:0, name:me.name||'', dept:me.company||'', winner:null, reason:'' };
+
+  const box=h('div','');
+  box.append(modalHead(T('cmpTitle')), h('p','sf-msub',T('cmpSub')));
+
+  const grid=h('div','sf-mgrid sf-cmp-inputs');
+  const inp=(label,key,type,extra)=>{ const i=h('input','sf-mini'); i.type=type||'text'; i.value=C[key]; if(extra) Object.assign(i,extra);
+    i.addEventListener('input',()=>{ C[key]=i.value; if(key==='name') meSet({name:i.value}); if(key==='dept') meSet({company:i.value}); if(key==='qty'||key==='vat') drawTable(); });
+    return h('div','sf-mf',[h('label','',label),i]); };
+  grid.append(inp(T('cmpQty'),'qty','number',{min:'1'}), inp(T('cmpVat'),'vat','number',{min:'0',step:'any'}), inp(T('cmpName'),'name'), inp(T('cmpDept'),'dept'));
+  box.append(grid);
+
+  const notes=h('div',''); box.append(notes);
+  const wrap=h('div','sf-cmp-wrap'); box.append(wrap);
+
+  box.append(h('h3','sf-h3',T('cmpWinner')));
+  const winEl=h('div','sf-winner'); box.append(winEl);
+  box.append(h('h3','sf-h3',T('cmpReason')));
+  const ta=h('textarea','sf-ta'); ta.style.minHeight='90px'; ta.placeholder=T('cmpReasonPh'); ta.addEventListener('input',()=>{ C.reason=ta.value; });
+  box.append(ta);
+
+  const foot=h('div','sf-mfoot');
+  const mkb=(ic,label,fn,cls)=>{ const b=h('button','sf-btn '+(cls||''),[icon(ic),h('span','',label)]); b.type='button'; b.addEventListener('click',fn); return b; };
+  foot.append(mkb('copy',T('cmpCopy'),()=>copyText(cmpText(C,buildCmp(C)))), mkb('download',T('cmpXlsx'),()=>cmpXlsx(C,buildCmp(C))), mkb('print',T('cmpPdf'),()=>cmpPdf(C,buildCmp(C)),'sf-btn-primary'));
+  box.append(foot);
+
+  function drawTable(){
+    const M=buildCmp(C);
+    notes.innerHTML='';
+    if(M.mixed) notes.append(h('div','sf-warn',T('cmpMixed')));
+    if(M.partsDiffer) notes.append(h('div','sf-warn sf-warn-soft',T('cmpDiffParts')));
+    if(M.moqWarn) notes.append(h('div','sf-warn',T('cmpMoqWarn')));
+    wrap.innerHTML='';
+    const tb=h('table','sf-cmp');
+    const trh=h('tr','',[h('th','sf-corner','')]);
+    M.head.forEach(hd=>{
+      const rad=h('input'); rad.type='radio'; rad.name='cmpwin'; rad.checked=C.winner===hd.id;
+      rad.addEventListener('change',()=>{ C.winner=hd.id; drawTable(); });
+      trh.append(h('th','sf-sup-th'+(C.winner===hd.id?' win':''),[ h('div','sf-th-name',hd.name), hd.city?h('div','sf-th-sub',hd.city):null, h('label','sf-pick',[rad,h('span','',T('cmpChoose'))]) ]));
+    });
+    tb.append(h('thead','',trh));
+    const tbody=h('tbody','');
+    M.rows.forEach(r=>tbody.append(h('tr','',[ h('th','sf-lbl',r.label), ...r.cells.map(c=>h('td','sf-c '+c.cls,[ Object.assign(h('span','sf-c-t',c.t), c.ltr?{dir:'ltr'}:{}), c.badge?h('span','sf-badge '+c.cls,c.badge):null ])) ])));
+    tb.append(tbody); wrap.append(tb);
+    winEl.textContent = C.winner ? '✔ '+winnerName(C) : winnerName(C);
+    winEl.classList.toggle('on',!!C.winner);
+  }
+  drawTable();
+  openModal(box,true);
+}
+
+function cmpText(C,M){
+  const L=[T('repTitle'),'',T('rowPart')+': '+partTitle(C),T('repQty')+': '+M.qty,T('repDate')+': '+dateStr(),''];
+  L.push([''].concat(M.head.map(h=>h.name)).join(' | '));
+  M.rows.forEach(r=>L.push(r.label+': '+r.cells.map(c=>c.t+(c.badge?' ('+c.badge.replace(/^[★⚡]\s*/,'')+')':'')).join(' | ')));
+  L.push('',T('cmpWinner')+': '+winnerName(C)); if(C.reason.trim()) L.push(T('cmpReason')+': '+C.reason.trim());
+  if(C.name) L.push(T('repBy')+': '+C.name+(C.dept?' — '+C.dept:''));
+  return L.join('\n');
+}
+
+/* ---- محضر PDF (طباعة → حفظ كـ PDF) ---- */
+function reportHTML(C,M){
+  const dir=S.lang==='ar'?'rtl':'ltr';
+  const th=M.head.map(hd=>'<th class="'+(C.winner===hd.id?'win':'')+'">'+esc(hd.name)+(hd.city?'<small>'+esc(hd.city)+'</small>':'')+(C.winner===hd.id?'<em>✔ '+esc(T('cmpWinner'))+'</em>':'')+'</th>').join('');
+  const body=M.rows.map(r=>'<tr><th>'+esc(r.label)+'</th>'+r.cells.map(c=>'<td class="'+c.cls+'">'+(c.ltr?'<span dir="ltr">'+esc(c.t)+'</span>':esc(c.t))+(c.badge?'<b>'+esc(c.badge)+'</b>':'')+'</td>').join('')+'</tr>').join('');
+  const sig=[T('repSigA')+(C.name?'<br><span>'+esc(C.name)+'</span>':''),T('repSigB'),T('repSigC')].map(s=>'<div class="sig"><p>'+s+'</p><i>'+esc(T('repSign'))+'</i></div>').join('');
+  return '<!DOCTYPE html><html lang="'+S.lang+'" dir="'+dir+'"><head><meta charset="utf-8"><title>'+esc(T('repTitle'))+'</title>'
+  +'<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">'
+  +'<style>@page{size:A4 landscape;margin:12mm}*{box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact}'
+  +'body{margin:0;font-family:'+(S.lang==='ar'?"'Tajawal'":"'Inter'")+',sans-serif;color:#1E2F40;font-size:12px}'
+  +'.head{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:3px solid #2F5770;padding-bottom:10px;margin-bottom:14px}'
+  +'h1{margin:0;font-size:22px;color:#2F5770}.meta{font-size:12px;color:#64768A;text-align:'+(dir==='rtl'?'left':'right')+';line-height:1.7}'
+  +'.info{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}.info div{background:#E3EEF4;border-radius:8px;padding:8px 12px}.info span{display:block;font-size:10px;color:#64768A;font-weight:700}.info b{font-size:13px}'
+  +'table{width:100%;border-collapse:collapse;table-layout:fixed}th,td{border:1px solid #D5DFE8;padding:7px 9px;text-align:center;vertical-align:middle;word-break:break-word}'
+  +'thead th{background:#2F5770;color:#fff;font-size:13px}thead th small{display:block;font-weight:500;opacity:.85;font-size:10px}thead th em{display:block;font-style:normal;font-size:10px;margin-top:3px}thead th.win{background:#2E8A5B}'
+  +'tbody th{background:#E3EEF4;text-align:'+(dir==='rtl'?'right':'left')+';width:17%;font-size:11px}td.best{background:#DDF3E4;font-weight:800;color:#1E6B45}td.fast{background:#DCEAFB;font-weight:700}td.top{background:#FDF0DA;font-weight:700}td.warn{background:#FBE4E2;color:#B4423C;font-weight:700}'
+  +'td b{display:block;font-size:9px;margin-top:2px}.dec{margin-top:14px;display:grid;grid-template-columns:1fr 2fr;gap:8px}.dec div{border:1px solid #D5DFE8;border-radius:8px;padding:9px 12px;min-height:44px}.dec span{display:block;font-size:10px;color:#64768A;font-weight:700;margin-bottom:3px}'
+  +'.sigs{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:18px}.sig{border:1px solid #D5DFE8;border-radius:8px;height:92px;padding:8px 12px;position:relative}.sig p{margin:0;font-weight:800;font-size:12px}.sig p span{font-weight:500;color:#64768A}.sig i{position:absolute;bottom:6px;font-size:9px;color:#9AA9B8;font-style:normal}'
+  +'.foot{margin-top:10px;font-size:9px;color:#9AA9B8;text-align:center}</style></head><body>'
+  +'<div class="head"><h1>'+esc(T('repTitle'))+'</h1><div class="meta">'+esc(T('repDate'))+': '+esc(dateStr())+(C.dept?'<br>'+esc(T('repDept'))+': '+esc(C.dept):'')+'</div></div>'
+  +'<div class="info"><div style="grid-column:span 3"><span>'+esc(T('rowPart'))+'</span><b>'+esc(partTitle(C))+'</b></div><div><span>'+esc(T('repQty'))+'</span><b>'+esc(M.qty)+(M.vat>0?'  •  TVA '+esc(M.vat)+'%':'')+'</b></div></div>'
+  +'<table><thead><tr><th style="background:#fff;border-color:#fff"></th>'+th+'</tr></thead><tbody>'+body+'</tbody></table>'
+  +'<div class="dec"><div><span>'+esc(T('cmpWinner'))+'</span><b>'+esc(winnerName(C))+'</b></div><div><span>'+esc(T('cmpReason'))+'</span>'+esc(C.reason)+'</div></div>'
+  +'<div class="sigs">'+sig+'</div><div class="foot">'+esc(T('repFoot'))+'</div>'
+  +'<script>window.addEventListener("load",function(){var go=function(){setTimeout(function(){window.print()},250)};if(document.fonts&&document.fonts.ready){document.fonts.ready.then(go)}else{go()}});<\/script></body></html>';
+}
+function cmpPdf(C,M){
+  const w=window.open('','_blank');
+  if(!w){ toast(T('popup'),3500); return; }
+  w.document.open(); w.document.write(reportHTML(C,M)); w.document.close();
+}
+
+/* ---- Excel منسّق ---- */
+async function cmpXlsx(C,M){
+  try{ await loadScript(EXCELJS_URL); }catch(e){ return cmpXlsxPlain(C,M); }
+  try{
+    const wb=new ExcelJS.Workbook();
+    const ws=wb.addWorksheet(T('cmpSheet'),{ views:[{ rightToLeft:S.lang==='ar', showGridLines:false }] });
+    const n=M.head.length+1;
+    ws.columns=[{width:28}].concat(M.head.map(()=>({width:32})));
+    const thin={style:'thin',color:{argb:'FFD5DFE8'}}, border={top:thin,left:thin,bottom:thin,right:thin};
+    const fill=argb=>({type:'pattern',pattern:'solid',fgColor:{argb}});
+    const fills={ best:['FFDDF3E4','FF1E6B45'], fast:['FFDCEAFB','FF1F4E86'], top:['FFFDF0DA','FF7A5A08'], warn:['FFFBE4E2','FFB4423C'] };
+    let r=1;
+    ws.mergeCells(r,1,r,n); const t=ws.getCell(r,1); t.value=T('repTitle'); t.font={bold:true,size:16,color:{argb:'FFFFFFFF'}}; t.fill=fill('FF2F5770'); t.alignment={vertical:'middle',horizontal:'center'}; ws.getRow(r).height=32; r++;
+    const info=[[T('repDate'),dateStr()],[T('rowPart'),partTitle(C)],[T('repQty'),M.qty+(M.vat>0?'  •  TVA '+M.vat+'%':'')]];
+    if(C.name) info.push([T('repBy'),C.name]); if(C.dept) info.push([T('repDept'),C.dept]);
+    info.forEach(([a,b])=>{ const c1=ws.getCell(r,1); c1.value=a; c1.font={bold:true,color:{argb:'FF64768A'}}; c1.fill=fill('FFE3EEF4'); ws.mergeCells(r,2,r,n); const c2=ws.getCell(r,2); c2.value=b; c2.font={bold:true}; r++; });
+    r++;
+    const hr=r; ws.getCell(hr,1).value='';
+    M.head.forEach((hd,i)=>{ const c=ws.getCell(hr,i+2); c.value=hd.name+(hd.city?'\n'+hd.city:'')+(C.winner===hd.id?'\n✔ '+T('cmpWinner'):''); c.font={bold:true,color:{argb:'FFFFFFFF'}}; c.fill=fill(C.winner===hd.id?'FF2E8A5B':'FF2F5770'); c.alignment={wrapText:true,vertical:'middle',horizontal:'center'}; c.border=border; });
+    ws.getRow(hr).height=48; r++;
+    M.rows.forEach(row=>{
+      const l=ws.getCell(r,1); l.value=row.label; l.font={bold:true}; l.fill=fill('FFE3EEF4'); l.border=border; l.alignment={vertical:'middle',wrapText:true,horizontal:S.lang==='ar'?'right':'left'};
+      row.cells.forEach((c,i)=>{
+        const cell=ws.getCell(r,i+2); cell.value=c.t+(c.badge?'\n'+c.badge:''); cell.border=border; cell.alignment={wrapText:true,vertical:'middle',horizontal:'center'};
+        const f=fills[c.cls]; if(f){ cell.fill=fill(f[0]); cell.font={bold:true,color:{argb:f[1]}}; }
+      });
+      ws.getRow(r).height=row.label===T('rowNotes')?40:26; r++;
+    });
+    r++;
+    ws.getCell(r,1).value=T('cmpWinner'); ws.getCell(r,1).font={bold:true}; ws.mergeCells(r,2,r,n); ws.getCell(r,2).value=winnerName(C); ws.getCell(r,2).font={bold:true,color:{argb:'FF2E8A5B'}}; r++;
+    ws.getCell(r,1).value=T('cmpReason'); ws.getCell(r,1).font={bold:true}; ws.mergeCells(r,2,r,n); ws.getCell(r,2).value=C.reason; ws.getCell(r,2).alignment={wrapText:true,vertical:'top'}; ws.getRow(r).height=42;
+    const buf=await wb.xlsx.writeBuffer();
+    saveBlob(new Blob([buf],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}),T('cmpFile')+'.xlsx');
+    toast(T('cmpDone'));
+  }catch(e){ console.error(e); cmpXlsxPlain(C,M); }
+}
+function cmpXlsxPlain(C,M){
+  ensureXLSX().then(()=>{
+    const aoa=[[T('repTitle')],[T('repDate'),dateStr()],[T('rowPart'),partTitle(C)],[T('repQty'),M.qty],[],[''].concat(M.head.map(h=>h.name))];
+    M.rows.forEach(r=>aoa.push([r.label].concat(r.cells.map(c=>c.t))));
+    aoa.push([],[T('cmpWinner'),winnerName(C)],[T('cmpReason'),C.reason]);
+    const ws=XLSX.utils.aoa_to_sheet(aoa); ws['!cols']=[{wch:26}].concat(M.head.map(()=>({wch:30})));
+    const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,T('cmpSheet')); XLSX.writeFile(wb,T('cmpFile')+'.xlsx');
+  }).catch(()=>toast(T('xlsxFail'),3500));
+}
 
 /* ---------------- التصدير والقالب ---------------- */
 function needXLSX(){ if(window.XLSX) return true; toast(T('xlsxFail'),3500); return false; }
 function exportXlsx(rows){
-  if(!needXLSX()) return;
-  rows = rows || results();
-  if(!rows.length){ toast(T('nothing')); return; }
-  const cols=FIELDS.map(f=>f.k);
-  const aoa=[FIELDS.map(f=>f[S.lang])];
-  rows.forEach(r=>aoa.push(cols.map(k=> k==='price'||k==='delivery' ? (r[k]==null?'':r[k]) : r[k])));
-  const ws=XLSX.utils.aoa_to_sheet(aoa); ws['!cols']=FIELDS.map(f=>({wch:f.k==='part'||f.k==='supplier'||f.k==='email'?32:16}));
-  if(S.lang==='ar') ws['!views']=[{rightToLeft:true}];
-  const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,T('expName').slice(0,30));
-  XLSX.writeFile(wb,T('expName')+'.xlsx');
+  ensureXLSX().then(()=>{
+    rows = rows || results();
+    if(!rows.length){ toast(T('nothing')); return; }
+    const cols=FIELDS.map(f=>f.k);
+    const aoa=[FIELDS.map(f=>f[S.lang]).concat([T('rowRating')])];
+    rows.forEach(r=>aoa.push(cols.map(k=> k==='price'||k==='delivery' ? (r[k]==null?'':r[k]) : r[k]).concat([getRating(r)||''])));
+    const ws=XLSX.utils.aoa_to_sheet(aoa); ws['!cols']=FIELDS.map(f=>({wch:f.k==='part'||f.k==='supplier'||f.k==='email'?32:16})).concat([{wch:10}]);
+    if(S.lang==='ar') ws['!views']=[{rightToLeft:true}];
+    const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,T('expName').slice(0,30));
+    XLSX.writeFile(wb,T('expName')+'.xlsx');
+  }).catch(()=>toast(T('xlsxFail'),3500));
 }
+/* القالب المرجعي دائمًا بالفرنسية */
 function downloadTemplate(){
-  if(!needXLSX()) return;
-  const ar=S.lang==='ar';
-  const aoa=[FIELDS.map(f=>f[S.lang])];
-  aoa.push(ar
-    ? ['رولمان 22320','22320-CC-W33','رولمانات','SKF','شركة المثال للتوريد','أ. محمد','0550123456','contact@example.com','سطيف',48000,'DZD',5,'1','السعر شامل الرسوم']
-    : ['Bearing 22320','22320-CC-W33','Bearings','SKF','Example Supply Co.','Mr. Ahmed','0550123456','contact@example.com','Setif',48000,'DZD',5,'1','Price includes taxes']);
-  aoa.push(ar
-    ? ['سير مثلثي SPB 3350','SPB-3350','سيور','Optibelt','مؤسسة النموذج','أ. سعاد','0661234567','sales@example.com','وهران',6500,'DZD',3,'2','']
-    : ['V-belt SPB 3350','SPB-3350','Belts','Optibelt','Sample Trading','Ms. Sara','0661234567','sales@example.com','Oran',6500,'DZD',3,'2','']);
-  const ws=XLSX.utils.aoa_to_sheet(aoa); ws['!cols']=FIELDS.map(()=>({wch:20}));
-  if(ar) ws['!views']=[{rightToLeft:true}];
-  const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,ar?'الموردون':'Suppliers');
-  XLSX.writeFile(wb,T('tplName')+'.xlsx');
+  ensureXLSX().then(()=>{
+    const aoa=[FIELDS.map(f=>f.fr),
+      ['Roulement 22320 CC/W33','22320-CC-W33','Roulements','SKF','Société Exemple SARL','M. Ahmed','0550123456','contact@exemple.dz','Sétif',48000,'DZD',5,'1','Paiement à 30 jours','1 an','Prix toutes taxes comprises'],
+      ['Courroie trapézoïdale SPB 3350','SPB-3350','Courroies et chaînes','Optibelt','Ets Modèle','Mme Sara','0661234567','ventes@modele.dz','Oran',6500,'DZD',3,'2','Paiement à la livraison','6 mois',''],
+      ['Variateur de fréquence 90 kW','ACS880-90','Électricité','ABB','Import Pro','M. Karim','0770123456','info@importpro.dz','Alger',9800,'EUR',21,'1','50 % à la commande','2 ans','Prix en euros']];
+    const ws=XLSX.utils.aoa_to_sheet(aoa); ws['!cols']=FIELDS.map(()=>({wch:24}));
+    const help=[['Aide'],['Colonnes obligatoires : Désignation et Fournisseur.'],['Une ligne = une offre (une pièce chez un fournisseur). Un même fournisseur peut apparaître sur plusieurs lignes.'],['Devise : DZD, EUR ou USD (DZD par défaut).'],['Délai de livraison : nombre de jours.'],['Les intitulés de colonnes peuvent être en arabe, français ou anglais : ils sont détectés automatiquement.']];
+    const ws2=XLSX.utils.aoa_to_sheet(help); ws2['!cols']=[{wch:110}];
+    const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,'Fournisseurs'); XLSX.utils.book_append_sheet(wb,ws2,'Aide');
+    XLSX.writeFile(wb,'modele_fournisseurs.xlsx');
+  }).catch(()=>toast(T('xlsxFail'),3500));
 }
 
 /* ---------------- اللغة ---------------- */
@@ -751,8 +1040,19 @@ function applyLang(){
   document.title=T('title')+' | Dr Soufiane Merabti';
   document.querySelectorAll('[data-i]').forEach(e=>{ e.textContent=T(e.getAttribute('data-i')); });
   document.querySelectorAll('[data-ip]').forEach(e=>{ e.placeholder=T(e.getAttribute('data-ip')); });
-  $('sfLang').textContent=T('langBtn');
-  render();
+  document.querySelectorAll('#sfLangs button').forEach(b=>b.classList.toggle('on',b.dataset.l===S.lang));
+  render(); renderBar();
+}
+function setLang(l){
+  if(!LANGS.includes(l)||l===S.lang) return;
+  S.lang=l; localStorage.setItem(LS.lang,l);
+  closeModal();
+  if(S.sample){ S.data=sampleData(l).map(finalize); S.sel.clear(); resetFiltersSilent(); }
+  applyLang();
+}
+function clearAll(){
+  if(!S.data.length) return;
+  if(confirm(T('confirmClear'))){ S.data=[]; S.sample=false; S.sel.clear(); resetFiltersSilent(); try{localStorage.removeItem(LS.data);}catch(e){} render(); toast(T('cleared')); }
 }
 
 /* ---------------- الأحداث ---------------- */
@@ -763,7 +1063,7 @@ $('sfQ').addEventListener('input',e=>{
 });
 $('sfQClear').addEventListener('click',()=>{ S.q=''; $('sfQ').value=''; $('sfQClear').classList.remove('show'); renderFacets(); renderResults(); $('sfQ').focus(); });
 $('sfPartQ').addEventListener('input',e=>{ S.partQ=e.target.value; renderFacets(); });
-[['sfCity','city'],['sfSupplier','supplier'],['sfCurrency','currency']].forEach(([id,k])=>$(id).addEventListener('change',e=>{ S.f[k]=e.target.value; renderResults(); }));
+[['sfCity','city'],['sfSupplier','supplier'],['sfCurrency','currency'],['sfRating','rmin']].forEach(([id,k])=>$(id).addEventListener('change',e=>{ S.f[k]=e.target.value; renderResults(); }));
 [['sfPmin','pmin'],['sfPmax','pmax'],['sfDmax','dmax']].forEach(([id,k])=>$(id).addEventListener('input',e=>{ S.f[k]=e.target.value; renderResults(); }));
 $('sfHasEmail').addEventListener('change',e=>{ S.f.hasEmail=e.target.checked; renderResults(); });
 $('sfHasPhone').addEventListener('change',e=>{ S.f.hasPhone=e.target.checked; renderResults(); });
@@ -774,26 +1074,20 @@ $('sfAll').addEventListener('change',e=>{ const res=results(); res.forEach(r=>e.
 $('sfCC').value=S.cc;
 $('sfCC').addEventListener('input',e=>{ S.cc=e.target.value.replace(/\D/g,'')||'213'; try{localStorage.setItem(LS.cc,S.cc);}catch(x){} renderResults(); });
 
-$('sfUpload').addEventListener('click',()=>$('sfFile').click());
-$('sfPick').addEventListener('click',()=>$('sfFile').click());
+['sfUpload','sfPick'].forEach(id=>$(id).addEventListener('click',()=>$('sfFile').click()));
 $('sfFile').addEventListener('change',e=>{ handleFile(e.target.files[0]); e.target.value=''; });
-$('sfTpl').addEventListener('click',downloadTemplate);
-$('sfTpl2').addEventListener('click',downloadTemplate);
+['sfTpl','sfTpl2','sfTplS'].forEach(id=>$(id).addEventListener('click',downloadTemplate));
 $('sfExport').addEventListener('click',()=>exportXlsx());
-$('sfPrint').addEventListener('click',()=>window.print());
-$('sfDemo').addEventListener('click',()=>{ S.data=sampleData().map(finalize); S.sample=true; persist(); render(); });
-$('sfClear').addEventListener('click',()=>{ if(!S.data.length){ return; } if(confirm(T('confirmClear'))){ S.data=[]; S.sample=false; S.sel.clear(); resetFiltersSilent(); try{localStorage.removeItem(LS.data);}catch(e){} render(); toast(T('cleared')); } });
-$('sfLang').addEventListener('click',()=>{ S.lang=S.lang==='ar'?'en':'ar'; localStorage.setItem('site_lang',S.lang); applyLang(); renderBar(); });
+['sfPrint','sfPrintS'].forEach(id=>$(id).addEventListener('click',()=>window.print()));
+$('sfDemo').addEventListener('click',()=>{ S.data=sampleData(S.lang).map(finalize); S.sample=true; persist(); render(); });
+['sfClear','sfClearS'].forEach(id=>$(id).addEventListener('click',clearAll));
+document.querySelectorAll('#sfLangs button').forEach(b=>b.addEventListener('click',()=>setLang(b.dataset.l)));
 
-// الفلاتر على الجوال
 $('sfFiltBtn').addEventListener('click',()=>$('sfSide').classList.add('open'));
 $('sfSideClose').addEventListener('click',()=>$('sfSide').classList.remove('open'));
-
-// النافذة
 $('sfModal').addEventListener('click',e=>{ if(e.target===$('sfModal')) closeModal(); });
 document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closeModal(); $('sfSide').classList.remove('open'); } });
 
-// السحب والإفلات
 let dragDepth=0;
 const hasFiles=e=>e.dataTransfer && [...(e.dataTransfer.types||[])].includes('Files');
 window.addEventListener('dragenter',e=>{ if(!hasFiles(e)) return; dragDepth++; $('sfDrop').classList.add('show'); });
