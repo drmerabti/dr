@@ -1214,29 +1214,60 @@ function renderAuth(){
   }
 }
 
+function showProComingSoonModal(){
+  if (document.getElementById('proComingSoonOverlay')) return;
+  const overlay = document.createElement('div');
+  overlay.id = 'proComingSoonOverlay';
+  overlay.style.cssText = `
+    position: fixed; inset: 0; background: rgba(21,36,49,.45);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 2000; opacity: 0; transition: opacity .2s ease;
+  `;
+  const isAr = lang === 'ar';
+  overlay.innerHTML = `
+    <div id="proComingSoonCard" style="
+      background: #fff; border-radius: 22px; padding: 32px 28px;
+      max-width: 340px; width: calc(100% - 40px); text-align: center;
+      box-shadow: 0 20px 60px rgba(21,36,49,.25);
+      transform: scale(.9); transition: transform .2s ease;
+      font-family: inherit;
+    ">
+      <div style="font-size: 2.2rem; margin-bottom: 10px;">🚀</div>
+      <h3 style="margin: 0 0 10px; font-size: 1.15rem; font-weight: 900; color: #1E2F40;">
+        ${isAr ? 'قريبًا' : 'Coming soon'}
+      </h3>
+      <p style="margin: 0 0 22px; font-size: .92rem; line-height: 1.7; color: #64768A;">
+        ${isAr
+          ? 'أدوات Pro قيّمة على الأبواب، بدفع سهل عبر البطاقة الذهبية.'
+          : 'Valuable Pro tools are on the way, with easy payment via Edahabia card.'}
+      </p>
+      <button type="button" id="proComingSoonClose" style="
+        background: #2F5CA8; color: #fff; border: none; border-radius: 999px;
+        padding: 11px 28px; font-family: inherit; font-weight: 700; font-size: .88rem;
+        cursor: pointer;
+      ">${isAr ? 'تمام' : 'Got it'}</button>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  requestAnimationFrame(() => {
+    overlay.style.opacity = '1';
+    overlay.querySelector('#proComingSoonCard').style.transform = 'scale(1)';
+  });
+  function close(){
+    overlay.style.opacity = '0';
+    overlay.querySelector('#proComingSoonCard').style.transform = 'scale(.9)';
+    setTimeout(() => overlay.remove(), 200);
+  }
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
+  overlay.querySelector('#proComingSoonClose').addEventListener('click', close);
+}
+
 function initProBtn(){
   const proBtn = document.getElementById('proBtn');
   if (!proBtn) return;
-  proBtn.addEventListener('click', async () => {
-    const user = getCurrentUser();
-    if (!user){
-      alert(lang === 'ar' ? 'سجّل دخولك أولًا للاشتراك.' : 'Please sign in first to subscribe.');
-      return;
-    }
+  proBtn.addEventListener('click', () => {
     if (proBtn.classList.contains('subscribed')) return; // already active, nothing to do on click
-    proBtn.disabled = true;
-    try {
-      const fn = firebase.functions().httpsCallable('createSubscriptionCheckout');
-      const res = await fn();
-      if (res.data && res.data.checkoutUrl){
-        window.location.href = res.data.checkoutUrl;
-      } else {
-        throw new Error('no checkout url');
-      }
-    } catch (e) {
-      alert(lang === 'ar' ? 'حدث خطأ، حاول مرة أخرى.' : 'Something went wrong, try again.');
-      proBtn.disabled = false;
-    }
+    showProComingSoonModal();
   });
 }
 
