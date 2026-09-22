@@ -728,11 +728,9 @@ async function renderSectionItems(){
   // otherwise disturbing the order authors set in CONTENT.
   items = [...items].sort((a, b) => (a.comingSoon ? 1 : 0) - (b.comingSoon ? 1 : 0));
 
-  await loadUserOrder();
+  const [, admin] = await Promise.all([loadUserOrder(), isAdminUser()]);
   const orderKey = key === 'tools' && activeFamily ? `${key}:${activeFamily}` : key;
   items = applyUserOrder(orderKey, items);
-
-  const admin = await isAdminUser();
 
   wrap.innerHTML = '';
   if (items.length === 0){
@@ -1226,24 +1224,35 @@ function showProComingSoonModal(){
   const isAr = lang === 'ar';
   overlay.innerHTML = `
     <div id="proComingSoonCard" style="
-      background: #fff; border-radius: 22px; padding: 32px 28px;
-      max-width: 340px; width: calc(100% - 40px); text-align: center;
+      background: #fff; border-radius: 22px; padding: 36px 30px;
+      max-width: 360px; width: calc(100% - 40px); text-align: center;
       box-shadow: 0 20px 60px rgba(21,36,49,.25);
       transform: scale(.9); transition: transform .2s ease;
       font-family: inherit;
     ">
-      <div style="font-size: 2.2rem; margin-bottom: 10px;">🚀</div>
-      <h3 style="margin: 0 0 10px; font-size: 1.15rem; font-weight: 900; color: #1E2F40;">
+      <svg width="64" height="46" viewBox="0 0 64 46" style="margin-bottom: 14px;">
+        <defs>
+          <linearGradient id="goldCardGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#F7D989"/>
+            <stop offset="1" stop-color="#C9861B"/>
+          </linearGradient>
+        </defs>
+        <rect x="2" y="2" width="60" height="42" rx="8" fill="url(#goldCardGrad)" stroke="#B8790E" stroke-width="1"/>
+        <rect x="8" y="12" width="12" height="9" rx="2" fill="#fff" opacity=".85"/>
+        <rect x="8" y="30" width="30" height="3.5" rx="1.75" fill="#fff" opacity=".7"/>
+        <rect x="8" y="36" width="18" height="3" rx="1.5" fill="#fff" opacity=".5"/>
+      </svg>
+      <h3 style="margin: 0 0 12px; font-size: 1.3rem; font-weight: 900; color: #1E2F40;">
         ${isAr ? 'قريبًا' : 'Coming soon'}
       </h3>
-      <p style="margin: 0 0 22px; font-size: .92rem; line-height: 1.7; color: #64768A;">
+      <p style="margin: 0 0 24px; font-size: 1.05rem; line-height: 1.8; color: #4A5A6B;">
         ${isAr
-          ? 'أدوات Pro قيّمة على الأبواب، بدفع سهل عبر البطاقة الذهبية.'
-          : 'Valuable Pro tools are on the way, with easy payment via Edahabia card.'}
+          ? 'أدوات Pro قيّمة على الأبواب، بدفع سهل عبر البطاقة الذهبية أو Visa.'
+          : 'Valuable Pro tools are on the way, with easy payment via Edahabia or Visa.'}
       </p>
       <button type="button" id="proComingSoonClose" style="
         background: #2F5CA8; color: #fff; border: none; border-radius: 999px;
-        padding: 11px 28px; font-family: inherit; font-weight: 700; font-size: .88rem;
+        padding: 12px 30px; font-family: inherit; font-weight: 700; font-size: .95rem;
         cursor: pointer;
       ">${isAr ? 'تمام' : 'Got it'}</button>
     </div>
