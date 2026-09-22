@@ -164,6 +164,7 @@ const ICONS = {
   unitConvApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gUC" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D6A8E8"/><stop offset="1" stop-color="#7A3FA8"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="6" y="18" width="16" height="12" rx="3" fill="url(#gUC)"/><circle cx="34" cy="24" r="10" fill="url(#gUC)" opacity=".6"/><path d="M22 24h8" stroke="#fff" stroke-width="2" stroke-linecap="round"/><path d="M27 20l4 4-4 4" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
   sciCalcApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gSC" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D6A8E8"/><stop offset="1" stop-color="#7A3FA8"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="11" y="6" width="26" height="36" rx="4" fill="url(#gSC)"/><rect x="15" y="12" width="18" height="6" rx="1.5" fill="#fff" opacity=".9"/><circle cx="18" cy="25" r="2" fill="#fff"/><circle cx="24" cy="25" r="2" fill="#fff"/><circle cx="30" cy="25" r="2" fill="#fff"/><circle cx="18" cy="32" r="2" fill="#fff"/><circle cx="24" cy="32" r="2" fill="#fff"/><circle cx="30" cy="32" r="2" fill="#fff"/></svg>`,
   qrApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gQR" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8FA8C7"/><stop offset="1" stop-color="#3A5A7D"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="6" y="6" width="36" height="36" rx="4" fill="url(#gQR)"/><rect x="11" y="11" width="8" height="8" fill="#fff"/><rect x="29" y="11" width="8" height="8" fill="#fff"/><rect x="11" y="29" width="8" height="8" fill="#fff"/><rect x="24" y="24" width="4" height="4" fill="#fff"/><rect x="31" y="31" width="6" height="6" fill="#fff"/></svg>`,
+  supplierApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gSup" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8ED1C6"/><stop offset="1" stop-color="#2B8A7E"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><path d="M7 16l17-9 17 9v18l-17 9-17-9z" fill="url(#gSup)"/><path d="M7 16l17 9 17-9" stroke="#fff" stroke-width="2" fill="none" opacity=".7" stroke-linejoin="round"/><path d="M24 25v18" stroke="#fff" stroke-width="2" opacity=".7"/><circle cx="33" cy="33" r="6.5" fill="#fff"/><circle cx="33" cy="33" r="4" fill="none" stroke="#2B8A7E" stroke-width="2"/><path d="M36 36l4 4" stroke="#2B8A7E" stroke-width="2.4" stroke-linecap="round"/></svg>`,
   teacherNoteApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gTN" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7DD6C3"/><stop offset="1" stop-color="#1A8A72"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="9" y="7" width="30" height="34" rx="3" fill="url(#gTN)"/><rect x="15" y="15" width="18" height="2.5" fill="#fff" opacity=".9"/><rect x="15" y="21" width="18" height="2.5" fill="#fff" opacity=".7"/><rect x="15" y="27" width="10" height="2.5" fill="#fff" opacity=".7"/><path d="M30 30l4-4 2 2-4 4z" fill="#fff"/></svg>`,
   idCardApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gID" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8FA8C7"/><stop offset="1" stop-color="#3A5A7D"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="5" y="12" width="38" height="24" rx="4" fill="url(#gID)"/><circle cx="15" cy="24" r="5" fill="#fff" opacity=".9"/><rect x="24" y="19" width="14" height="2.3" fill="#fff" opacity=".8"/><rect x="24" y="24" width="14" height="2.3" fill="#fff" opacity=".6"/><rect x="24" y="29" width="9" height="2.3" fill="#fff" opacity=".6"/></svg>`,
   reportApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gRep" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8FA8C7"/><stop offset="1" stop-color="#3A5A7D"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="10" y="6" width="28" height="36" rx="3" fill="url(#gRep)"/><rect x="15" y="24" width="4" height="10" fill="#fff" opacity=".85"/><rect x="21" y="18" width="4" height="16" fill="#fff" opacity=".85"/><rect x="27" y="12" width="4" height="22" fill="#fff" opacity=".85"/></svg>`,
@@ -443,13 +444,17 @@ const CONTENT = {
   url: 'tools/receipt-generator/', icon: ICONS.receiptApp, family: 'admin', tier: 'pro' },
     { id: 'tool-unit-convert', title_ar: 'محوّل الوحدات', title_en: 'Unit Converter',
       desc_ar: 'حوّل بين وحدات الطول والوزن والحرارة والمساحة والحجم.', desc_en: 'Convert between units of length, weight, temperature, area, and volume.',
-      icon: ICONS.unitConvApp, family: 'calc', comingSoon: true, tier: 'free' },
+      url: 'tools/unit-converter/', icon: ICONS.unitConvApp, family: 'calc', comingSoon: true, tier: 'free' },
     { id: 'tool-sci-calc', title_ar: 'حاسبة هندسية', title_en: 'Scientific Calculator',
       desc_ar: 'عمليات رياضية وهندسية متقدمة (جذور، أسس، دوال مثلثية).', desc_en: 'Advanced math and engineering operations (roots, powers, trig functions).',
       icon: ICONS.sciCalcApp, family: 'calc', comingSoon: true, tier: 'free' },
     { id: 'tool-qr', title_ar: 'مولّد QR Code', title_en: 'QR Code Generator',
       desc_ar: 'أنشئ رمز QR لبطاقة تعريفك الشخصية بسهولة، ونزّله كصورة.', desc_en: 'Easily generate a QR code for your personal contact card and download it as an image.',
       url: 'tools/qr-generator/', icon: ICONS.qrApp, family: 'admin', tier: 'free' },
+    { id: 'tool-supplier-finder', title_ar: 'دليل الموردين وقطع الغيار', title_en: 'Suppliers & Spare Parts Finder',
+      desc_ar: 'اكتب اسم القطعة فتظهر لك قائمة الموردين مع الهاتف والبريد والسعر، أو ارفع ملف Excel الخاص بموردينك — مع فلاتر وطلب عرض سعر.',
+      desc_en: 'Type a part name to see suppliers with phone, email and price, or upload your own suppliers Excel file — with filters and quotation requests.',
+      url: 'tools/supplier-finder/', icon: ICONS.supplierApp, family: 'admin', tier: 'pro', comingSoon: true },
 { id: 'tool-teacher-note', title_ar: 'مولّد مذكرة أستاذ', title_en: 'Lesson Plan Generator',
   desc_ar: 'أنشئ مذكرة تحضير دروس منظمة وجاهزة للأساتذة.', desc_en: 'Create organized, ready lesson-preparation notes for teachers.',
   url: 'tools/lesson-plan-generator/', icon: ICONS.teacherNoteApp, family: 'edu', tier: 'pro', comingSoon: true },
@@ -669,6 +674,10 @@ const FAMILY_LABELS = {
   en: { admin: 'Admin', edu: 'Educational', calc: 'Calculators', home: 'Home', pdf: 'PDF Services' },
 };
 let activeFamily = null;
+try {
+  const savedFamily = sessionStorage.getItem('merabti:activeFamily');
+  if (savedFamily) activeFamily = savedFamily;
+} catch (e) { /* ignore */ }
 
 function renderFamilyFilter(items){
   const bar = document.getElementById('familyFilter');
@@ -682,6 +691,7 @@ function renderFamilyFilter(items){
   bar.querySelectorAll('.family-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       activeFamily = btn.getAttribute('data-family');
+      try { sessionStorage.setItem('merabti:activeFamily', activeFamily); } catch (e) { /* ignore */ }
       renderSectionItems();
       renderCoursesSection();
     });
@@ -718,7 +728,9 @@ async function renderSectionItems(){
   // otherwise disturbing the order authors set in CONTENT.
   items = [...items].sort((a, b) => (a.comingSoon ? 1 : 0) - (b.comingSoon ? 1 : 0));
 
-  const admin = await isAdminUser();
+  const [, admin] = await Promise.all([loadUserOrder(), isAdminUser()]);
+  const orderKey = key === 'tools' && activeFamily ? `${key}:${activeFamily}` : key;
+  items = applyUserOrder(orderKey, items);
 
   wrap.innerHTML = '';
   if (items.length === 0){
@@ -786,6 +798,8 @@ async function renderSectionItems(){
       wrap.appendChild(card);
     }
   });
+
+  enableDragReorder(wrap, orderKey, items);
 }
 
 function findItem(listKey, id){
@@ -927,6 +941,81 @@ async function loadFavorites(){
     const snap = await firebase.firestore().collection('users').doc(user.uid).collection('favorites').get();
     snap.forEach(doc => userFavorites.add(doc.id));
   } catch (e) { /* ignore */ }
+}
+
+/* =====================================================================
+   CUSTOM ITEM ORDER (drag-and-drop reordering, per user/section)
+===================================================================== */
+let userOrder = {}; // { [sectionKey]: [id, id, ...] }
+let userOrderLoaded = false;
+
+async function loadUserOrder(){
+  if (userOrderLoaded) return;
+  userOrderLoaded = true;
+  const user = getCurrentUser();
+  if (user && window.firebase && firebase.firestore){
+    try {
+      const doc = await firebase.firestore().collection('users').doc(user.uid).collection('settings').doc('itemOrder').get();
+      if (doc.exists) userOrder = doc.data() || {};
+    } catch (e) { /* ignore */ }
+  } else {
+    try {
+      const raw = localStorage.getItem('merabti:order');
+      if (raw) userOrder = JSON.parse(raw);
+    } catch (e) { /* ignore */ }
+  }
+}
+
+async function saveUserOrder(key, orderedIds){
+  userOrder[key] = orderedIds;
+  const user = getCurrentUser();
+  if (user && window.firebase && firebase.firestore){
+    try {
+      await firebase.firestore().collection('users').doc(user.uid).collection('settings').doc('itemOrder')
+        .set({ [key]: orderedIds }, { merge: true });
+    } catch (e) { /* ignore */ }
+  } else {
+    try { localStorage.setItem('merabti:order', JSON.stringify(userOrder)); } catch (e) { /* ignore */ }
+  }
+}
+
+function applyUserOrder(key, items){
+  const savedOrder = userOrder[key];
+  if (!savedOrder || !savedOrder.length) return items;
+  const byId = new Map(items.map(i => [i.id, i]));
+  const ordered = [];
+  savedOrder.forEach(id => { if (byId.has(id)){ ordered.push(byId.get(id)); byId.delete(id); } });
+  // Anything not in the saved order (new items added later) keeps its default
+  // relative position, appended after the items the user explicitly ordered.
+  items.forEach(i => { if (byId.has(i.id)) ordered.push(i); });
+  return ordered;
+}
+
+function enableDragReorder(wrap, key, items){
+  let dragEl = null;
+  wrap.querySelectorAll('.item-card').forEach((card, idx) => {
+    card.draggable = true;
+    card.dataset.itemId = items[idx].id;
+    card.addEventListener('dragstart', () => {
+      dragEl = card;
+      card.classList.add('dragging');
+      card.style.opacity = '0.4';
+    });
+    card.addEventListener('dragend', async () => {
+      card.classList.remove('dragging');
+      card.style.opacity = '';
+      dragEl = null;
+      const newOrder = Array.from(wrap.querySelectorAll('.item-card')).map(c => c.dataset.itemId);
+      await saveUserOrder(key, newOrder);
+    });
+    card.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      if (!dragEl || dragEl === card) return;
+      const rect = card.getBoundingClientRect();
+      const after = (e.clientX - rect.left) > rect.width / 2;
+      wrap.insertBefore(dragEl, after ? card.nextSibling : card);
+    });
+  });
 }
 
 async function toggleFavorite(itemId, itemType, btnEl){
@@ -1123,29 +1212,71 @@ function renderAuth(){
   }
 }
 
+function showProComingSoonModal(){
+  if (document.getElementById('proComingSoonOverlay')) return;
+  const overlay = document.createElement('div');
+  overlay.id = 'proComingSoonOverlay';
+  overlay.style.cssText = `
+    position: fixed; inset: 0; background: rgba(21,36,49,.45);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 2000; opacity: 0; transition: opacity .2s ease;
+  `;
+  const isAr = lang === 'ar';
+  overlay.innerHTML = `
+    <div id="proComingSoonCard" style="
+      background: #fff; border-radius: 22px; padding: 36px 30px;
+      max-width: 360px; width: calc(100% - 40px); text-align: center;
+      box-shadow: 0 20px 60px rgba(21,36,49,.25);
+      transform: scale(.9); transition: transform .2s ease;
+      font-family: inherit;
+    ">
+      <svg width="64" height="46" viewBox="0 0 64 46" style="margin-bottom: 14px;">
+        <defs>
+          <linearGradient id="goldCardGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#F7D989"/>
+            <stop offset="1" stop-color="#C9861B"/>
+          </linearGradient>
+        </defs>
+        <rect x="2" y="2" width="60" height="42" rx="8" fill="url(#goldCardGrad)" stroke="#B8790E" stroke-width="1"/>
+        <rect x="8" y="12" width="12" height="9" rx="2" fill="#fff" opacity=".85"/>
+        <rect x="8" y="30" width="30" height="3.5" rx="1.75" fill="#fff" opacity=".7"/>
+        <rect x="8" y="36" width="18" height="3" rx="1.5" fill="#fff" opacity=".5"/>
+      </svg>
+      <h3 style="margin: 0 0 12px; font-size: 1.3rem; font-weight: 900; color: #1E2F40;">
+        ${isAr ? 'قريبًا' : 'Coming soon'}
+      </h3>
+      <p style="margin: 0 0 24px; font-size: 1.05rem; line-height: 1.8; color: #4A5A6B;">
+        ${isAr
+          ? 'أدوات Pro قيّمة على الأبواب، بدفع سهل عبر البطاقة الذهبية أو Visa.'
+          : 'Valuable Pro tools are on the way, with easy payment via Edahabia or Visa.'}
+      </p>
+      <button type="button" id="proComingSoonClose" style="
+        background: #2F5CA8; color: #fff; border: none; border-radius: 999px;
+        padding: 12px 30px; font-family: inherit; font-weight: 700; font-size: .95rem;
+        cursor: pointer;
+      ">${isAr ? 'تمام' : 'Got it'}</button>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  requestAnimationFrame(() => {
+    overlay.style.opacity = '1';
+    overlay.querySelector('#proComingSoonCard').style.transform = 'scale(1)';
+  });
+  function close(){
+    overlay.style.opacity = '0';
+    overlay.querySelector('#proComingSoonCard').style.transform = 'scale(.9)';
+    setTimeout(() => overlay.remove(), 200);
+  }
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
+  overlay.querySelector('#proComingSoonClose').addEventListener('click', close);
+}
+
 function initProBtn(){
   const proBtn = document.getElementById('proBtn');
   if (!proBtn) return;
-  proBtn.addEventListener('click', async () => {
-    const user = getCurrentUser();
-    if (!user){
-      alert(lang === 'ar' ? 'سجّل دخولك أولًا للاشتراك.' : 'Please sign in first to subscribe.');
-      return;
-    }
+  proBtn.addEventListener('click', () => {
     if (proBtn.classList.contains('subscribed')) return; // already active, nothing to do on click
-    proBtn.disabled = true;
-    try {
-      const fn = firebase.functions().httpsCallable('createSubscriptionCheckout');
-      const res = await fn();
-      if (res.data && res.data.checkoutUrl){
-        window.location.href = res.data.checkoutUrl;
-      } else {
-        throw new Error('no checkout url');
-      }
-    } catch (e) {
-      alert(lang === 'ar' ? 'حدث خطأ، حاول مرة أخرى.' : 'Something went wrong, try again.');
-      proBtn.disabled = false;
-    }
+    showProComingSoonModal();
   });
 }
 

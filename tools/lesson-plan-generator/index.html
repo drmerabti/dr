@@ -17,7 +17,31 @@
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
     <span id="backLabel">رجوع إلى الأدوات</span>
   </a>
+  <div class="topbar-spacer"></div>
+  <span class="save-status editor-only" id="saveStatus" role="status"></span>
   <div class="topbar-actions">
+    <div class="editor-actions" id="editorActions">
+      <button type="button" class="tb-btn" id="backToGalleryBtn">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+        <span class="lbl" id="backToGalleryLabel">المعرض</span>
+      </button>
+      <button type="button" class="tb-btn danger" id="deletePlanBtn">
+        <svg viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 002 2h6a2 2 0 002-2l1-12M9 7V4h6v3"/></svg>
+        <span class="lbl">حذف</span>
+      </button>
+      <button type="button" class="tb-btn" id="printBtn">
+        <svg viewBox="0 0 24 24"><path d="M7 9V3h10v6M7 17H5a2 2 0 01-2-2v-4a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2h-2M7 14h10v7H7z"/></svg>
+        <span class="lbl">طباعة</span>
+      </button>
+      <button type="button" class="tb-btn" id="exportPdfBtn">
+        <svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8zM14 3v5h5M12 11v6M9.5 14.5L12 17l2.5-2.5"/></svg>
+        <span class="lbl">تصدير PDF</span>
+      </button>
+      <button type="button" class="tb-btn primary" id="saveBtn">
+        <svg viewBox="0 0 24 24"><path d="M5 3h11l4 4v13a1 1 0 01-1 1H5a1 1 0 01-1-1V4a1 1 0 011-1zM8 3v5h7V3M8 21v-7h8v7"/></svg>
+        <span class="lbl">حفظ في حسابي</span>
+      </button>
+    </div>
     <div class="auth-wrap" id="authWrap">
       <button class="auth-btn" id="authBtn" type="button"></button>
       <div class="auth-menu hidden" id="authMenu"></div>
@@ -66,186 +90,176 @@
 
 <!-- ============ شاشة المحرر ============ -->
 <section id="editorView" class="hidden">
-  <div class="editor-topbar">
-    <button type="button" class="ghost-btn" id="backToGalleryBtn">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-      <span id="backToGalleryLabel">المعرض</span>
-    </button>
-    <span class="save-status" id="saveStatus"></span>
-  </div>
-
   <main class="layout">
 
-    <section class="form-panel">
+    <!-- عمود القوالب -->
+    <aside class="rail-col" aria-label="القوالب الجاهزة">
+      <div class="panel-card rail-card">
+        <div class="panel-title">القوالب الجاهزة</div>
+        <p class="rail-hint">اضغط على أي قالب فتتبدّل المذكرة فورًا وتبقى بياناتك كما هي.</p>
+        <div class="thumbs" id="thumbs"></div>
+      </div>
+    </aside>
 
-      <div class="panel-card">
-        <div class="panel-title" data-i18n="sec_level">المستوى التعليمي</div>
-        <div class="level-row">
-          <select id="levelSelect" class="field-input">
-            <option value="ابتدائي">الابتدائي</option>
-            <option value="متوسط">المتوسط</option>
-            <option value="ثانوي">الثانوي</option>
-          </select>
-          <button type="button" class="ghost-btn" id="loadPresetBtn">تحميل مثال جاهز لهذا المستوى</button>
-        </div>
+    <!-- عمود الملء -->
+    <section class="form-panel" id="formPanel">
+
+      <div class="form-tools">
+        <button type="button" class="text-btn" id="collapseAllBtn">طيّ الكل</button>
       </div>
 
-      <div class="panel-card">
-        <div class="panel-title">الترويسة</div>
-        <div class="logo-row">
-          <div class="logo-box" id="logoBox">
-            <input type="file" id="logoInput" accept="image/*" class="hidden-input">
-            <img id="logoPreview" class="logo-preview hidden" alt="">
-            <i class="icon-image" id="logoPlaceholderIcon"></i>
-            <button type="button" class="logo-remove hidden" id="logoRemoveBtn">×</button>
+      <div class="panel-card" data-card="level">
+        <div class="panel-head" role="button" tabindex="0" aria-expanded="true">
+          <span class="panel-title">المستوى التعليمي</span><span class="chev" aria-hidden="true"></span>
+        </div>
+        <div class="panel-body-wrap"><div class="panel-body">
+          <div class="level-row">
+            <select id="levelSelect" class="field-input">
+              <option value="ابتدائي">الابتدائي</option>
+              <option value="متوسط">المتوسط</option>
+              <option value="ثانوي">الثانوي</option>
+            </select>
+            <button type="button" class="ghost-btn" id="loadPresetBtn">تحميل مثال جاهز لهذا المستوى</button>
           </div>
-          <div class="logo-label">
-            <div class="logo-label-title">شعار المؤسسة</div>
-            <div class="logo-label-sub">اختياري، يبقى محفوظًا في جهازك فقط</div>
+        </div></div>
+      </div>
+
+      <div class="panel-card" data-card="header">
+        <div class="panel-head" role="button" tabindex="0" aria-expanded="true">
+          <span class="panel-title">الترويسة</span><span class="chev" aria-hidden="true"></span>
+        </div>
+        <div class="panel-body-wrap"><div class="panel-body">
+          <div class="logo-row">
+            <div class="logo-box" id="logoBox">
+              <input type="file" id="logoInput" accept="image/*" class="hidden-input">
+              <img id="logoPreview" class="logo-preview hidden" alt="">
+              <i class="icon-image" id="logoPlaceholderIcon"></i>
+              <button type="button" class="logo-remove hidden" id="logoRemoveBtn">×</button>
+            </div>
+            <div class="logo-label">
+              <div class="logo-label-title">شعار المؤسسة</div>
+              <div class="logo-label-sub">اختياري، يبقى محفوظًا في جهازك فقط</div>
+            </div>
           </div>
-        </div>
-        <div class="grid-2">
-          <div class="field field-wide"><label>المؤسسة</label><input type="text" id="fSchool" class="field-input"></div>
-          <div class="field">
-            <label>السنة الدراسية</label>
-            <select id="fYearSelect" class="field-input"></select>
+          <div class="grid-2">
+            <div class="field field-wide"><label>المؤسسة</label><input type="text" id="fSchool" class="field-input"></div>
+            <div class="field">
+              <label>السنة الدراسية</label>
+              <select id="fYearSelect" class="field-input"></select>
+            </div>
+            <div class="field hidden" id="fYearManualWrap"><label>السنة (يدويًا)</label><input type="text" id="fYearManual" class="field-input" placeholder="2026/2027"></div>
+            <div class="field"><label>المادة</label><input type="text" id="fSubject" class="field-input"></div>
+            <div class="field"><label>القسم</label><input type="text" id="fClass" class="field-input"></div>
+            <div class="field"><label>التاريخ</label><input type="date" id="fDate" class="field-input"></div>
+            <div class="field"><label>الأستاذ(ة)</label><input type="text" id="fTeacher" class="field-input"></div>
           </div>
-          <div class="field hidden" id="fYearManualWrap"><label>السنة (يدويًا)</label><input type="text" id="fYearManual" class="field-input" placeholder="2026/2027"></div>
-          <div class="field"><label>المادة</label><input type="text" id="fSubject" class="field-input"></div>
-          <div class="field"><label>القسم</label><input type="text" id="fClass" class="field-input"></div>
-          <div class="field"><label>التاريخ</label><input type="date" id="fDate" class="field-input"></div>
-          <div class="field"><label>الأستاذ(ة)</label><input type="text" id="fTeacher" class="field-input"></div>
+        </div></div>
+      </div>
+
+      <div class="panel-card" data-card="lesson">
+        <div class="panel-head" role="button" tabindex="0" aria-expanded="true">
+          <span class="panel-title">بيانات الدرس</span><span class="chev" aria-hidden="true"></span>
         </div>
+        <div class="panel-body-wrap"><div class="panel-body">
+          <div class="grid-2">
+            <div class="field field-wide"><label>عنوان الدرس</label><input type="text" id="fTitle" class="field-input"></div>
+            <div class="field"><label>الوحدة / المحور</label><input type="text" id="fUnit" class="field-input"></div>
+            <div class="field"><label>رقم الحصة</label><input type="text" id="fSession" class="field-input"></div>
+            <div class="field"><label>المدة الزمنية (د)</label><input type="number" id="fDuration" class="field-input" min="1"></div>
+          </div>
+        </div></div>
       </div>
 
-      <div class="panel-card">
-        <div class="panel-title">بيانات الدرس</div>
-        <div class="grid-2">
-          <div class="field field-wide"><label>عنوان الدرس</label><input type="text" id="fTitle" class="field-input"></div>
-          <div class="field"><label>الوحدة / المحور</label><input type="text" id="fUnit" class="field-input"></div>
-          <div class="field"><label>رقم الحصة</label><input type="text" id="fSession" class="field-input"></div>
-          <div class="field"><label>المدة الزمنية (د)</label><input type="number" id="fDuration" class="field-input" min="1"></div>
+      <div class="panel-card" data-card="objectives">
+        <div class="panel-head" role="button" tabindex="0" aria-expanded="true">
+          <span class="panel-title">الأهداف / الكفاءة المستهدفة</span><span class="chev" aria-hidden="true"></span>
         </div>
+        <div class="panel-body-wrap"><div class="panel-body">
+          <div class="chip-list" id="objectivesList"></div>
+          <div class="add-row">
+            <input type="text" id="objectiveInput" class="field-input" placeholder="اكتب هدفًا واضغط إضافة">
+            <button type="button" class="add-btn" id="addObjectiveBtn">إضافة</button>
+          </div>
+        </div></div>
       </div>
 
-      <div class="panel-card">
-        <div class="panel-title">الأهداف / الكفاءة المستهدفة</div>
-        <div class="chip-list" id="objectivesList"></div>
-        <div class="add-row">
-          <input type="text" id="objectiveInput" class="field-input" placeholder="اكتب هدفًا واضغط إضافة">
-          <button type="button" class="add-btn" id="addObjectiveBtn">إضافة</button>
+      <div class="panel-card" data-card="materials">
+        <div class="panel-head" role="button" tabindex="0" aria-expanded="true">
+          <span class="panel-title">الوسائل التعليمية</span><span class="chev" aria-hidden="true"></span>
         </div>
+        <div class="panel-body-wrap"><div class="panel-body">
+          <div class="chip-list" id="materialsList"></div>
+          <div class="add-row">
+            <input type="text" id="materialInput" class="field-input" placeholder="اكتب وسيلة واضغط إضافة">
+            <button type="button" class="add-btn" id="addMaterialBtn">إضافة</button>
+          </div>
+        </div></div>
       </div>
 
-      <div class="panel-card">
-        <div class="panel-title">الوسائل التعليمية</div>
-        <div class="chip-list" id="materialsList"></div>
-        <div class="add-row">
-          <input type="text" id="materialInput" class="field-input" placeholder="اكتب وسيلة واضغط إضافة">
-          <button type="button" class="add-btn" id="addMaterialBtn">إضافة</button>
+      <div class="panel-card" data-card="stages">
+        <div class="panel-head" role="button" tabindex="0" aria-expanded="true">
+          <span class="panel-title">سير الدرس</span><span class="chev" aria-hidden="true"></span>
         </div>
+        <div class="panel-body-wrap"><div class="panel-body">
+          <div id="stagesList" class="stages-list"></div>
+          <button type="button" class="ghost-btn full-width" id="addStageBtn">+ إضافة مرحلة</button>
+        </div></div>
       </div>
 
-      <div class="panel-card">
-        <div class="panel-title">سير الدرس</div>
-        <div id="stagesList" class="stages-list"></div>
-        <button type="button" class="ghost-btn full-width" id="addStageBtn">+ إضافة مرحلة</button>
-      </div>
-
-      <div class="panel-card">
-        <div class="panel-title-row">
-          <div class="panel-title" style="margin-bottom:0;">التقويم / الواجب المنزلي</div>
-          <label class="switch">
-            <input type="checkbox" id="evalToggle" checked>
-            <span class="switch-track"><span class="switch-thumb"></span></span>
-          </label>
+      <div class="panel-card" data-card="eval">
+        <div class="panel-head" role="button" tabindex="0" aria-expanded="true">
+          <span class="panel-title">التقويم / الواجب المنزلي</span>
+          <span class="head-tools">
+            <label class="switch" title="إظهار في المذكرة">
+              <input type="checkbox" id="evalToggle" checked>
+              <span class="switch-track"><span class="switch-thumb"></span></span>
+            </label>
+            <span class="chev" aria-hidden="true"></span>
+          </span>
         </div>
-        <textarea id="fEval" class="field-input" rows="3" style="margin-top:12px;"></textarea>
+        <div class="panel-body-wrap"><div class="panel-body">
+          <textarea id="fEval" class="field-input" rows="3"></textarea>
+        </div></div>
       </div>
 
-      <div class="panel-card">
-        <div class="panel-title">إطار خلفية المذكرة (اختياري)</div>
-        <div class="frame-drop" id="frameDrop">
-          <input type="file" id="frameInput" accept="image/*" class="hidden-input">
-          <i class="icon-upload"></i>
-          <span>اسحب صورة هنا أو اضغط للرفع — تظهر خلف الكتابة</span>
+      <div class="panel-card" data-card="frame">
+        <div class="panel-head" role="button" tabindex="0" aria-expanded="true">
+          <span class="panel-title">إطار خلفية المذكرة (اختياري)</span><span class="chev" aria-hidden="true"></span>
         </div>
-        <button type="button" class="text-btn hidden" id="frameRemoveBtn">إزالة الإطار</button>
+        <div class="panel-body-wrap"><div class="panel-body">
+          <div class="frame-drop" id="frameDrop">
+            <input type="file" id="frameInput" accept="image/*" class="hidden-input">
+            <i class="icon-upload"></i>
+            <span>اسحب صورة هنا أو اضغط للرفع — تظهر خلف الكتابة</span>
+          </div>
+          <button type="button" class="text-btn hidden" id="frameRemoveBtn">إزالة الإطار</button>
+        </div></div>
       </div>
 
-      <div class="panel-card">
-        <div class="panel-title">لون المذكرة</div>
-        <div class="color-row">
-          <input type="color" id="colorPicker" value="#1A8A72">
-          <button type="button" class="ghost-btn" id="colorResetBtn">استعادة الأخضر الافتراضي</button>
+      <div class="panel-card" data-card="color">
+        <div class="panel-head" role="button" tabindex="0" aria-expanded="true">
+          <span class="panel-title">لون المذكرة</span><span class="chev" aria-hidden="true"></span>
         </div>
-      </div>
-
-      <div class="actions-row">
-        <button type="button" class="primary-btn" id="saveBtn">حفظ في حسابي</button>
-        <button type="button" class="secondary-btn" id="exportPdfBtn">تصدير PDF</button>
-        <button type="button" class="secondary-btn" id="printBtn">طباعة مباشرة</button>
-        <button type="button" class="text-btn danger-text" id="deletePlanBtn">حذف هذه المذكرة</button>
+        <div class="panel-body-wrap"><div class="panel-body">
+          <div class="color-row">
+            <input type="color" id="colorPicker" value="#1A8A72">
+            <button type="button" class="ghost-btn" id="colorResetBtn">استعادة الأخضر الافتراضي</button>
+          </div>
+          <p class="rail-hint" style="margin:10px 0 0">يظهر اللون في القوالب 5 و6 و7 و8.</p>
+        </div></div>
       </div>
 
     </section>
 
-    <section class="preview-panel">
-      <div class="preview-sticky">
-        <div class="preview-sheet" id="previewSheet">
-          <div class="ps-frame-bg" id="psFrameBg"></div>
-          <div class="ps-content">
-            <div class="ps-header">
-              <div class="ps-header-logo hidden" id="psLogoWrap"><img id="psLogo" alt=""></div>
-              <div class="ps-header-text">
-                <div class="ps-header-line" id="pSchool">—</div>
-                <div class="ps-header-sub">
-                  <span id="pYear">—</span> · <span id="pSubject">—</span> · <span id="pClass">—</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="ps-title" id="pTitle">عنوان الدرس</div>
-            <div class="ps-meta">
-              <span><b>الوحدة:</b> <span id="pUnit">—</span></span>
-              <span><b>الحصة:</b> <span id="pSession">—</span></span>
-              <span><b>المدة:</b> <span id="pDuration">—</span></span>
-              <span><b>التاريخ:</b> <span id="pDate">—</span></span>
-              <span><b>الأستاذ:</b> <span id="pTeacher">—</span></span>
-            </div>
-
-            <div class="ps-block">
-              <div class="ps-block-title">الأهداف / الكفاءة المستهدفة</div>
-              <ul class="ps-list" id="pObjectives"></ul>
-            </div>
-
-            <div class="ps-block">
-              <div class="ps-block-title">الوسائل التعليمية</div>
-              <div class="ps-tags" id="pMaterials"></div>
-            </div>
-
-            <div class="ps-block">
-              <div class="ps-block-title">سير الدرس</div>
-              <table class="ps-table">
-                <thead>
-                  <tr>
-                    <th>المرحلة</th>
-                    <th>الزمن</th>
-                    <th>نشاط الأستاذ</th>
-                    <th>نشاط التلميذ</th>
-                  </tr>
-                </thead>
-                <tbody id="pStagesBody"></tbody>
-              </table>
-            </div>
-
-            <div class="ps-block" id="pEvalBlock">
-              <div class="ps-block-title">التقويم / الواجب المنزلي</div>
-              <p class="ps-para" id="pEval">—</p>
-            </div>
-          </div>
-        </div>
+    <!-- عمود المعاينة -->
+    <section class="preview-col" aria-label="معاينة المذكرة">
+      <div class="zoom-bar" dir="ltr">
+        <button type="button" class="zoom-btn" id="zoomOut" aria-label="تصغير">−</button>
+        <input type="range" id="zoomRange" min="30" max="150" step="5" value="100" aria-label="نسبة التكبير">
+        <button type="button" class="zoom-btn" id="zoomIn" aria-label="تكبير">+</button>
+        <span class="zoom-pct" id="zoomPct">100%</span>
       </div>
+      <div id="pvBox"><div id="pvWrap"><div id="pvScale"></div></div></div>
     </section>
 
   </main>

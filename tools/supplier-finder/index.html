@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>دليل الموردين وقطع الغيار | Dr Soufiane Merabti</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@700&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tool.css">
+</head>
+<body class="sf-body">
+<div class="sf-page">
+
+  <!-- الشريط العلوي: الاسم + الأزرار في نفس الصف -->
+  <header class="sf-topbar">
+    <a class="sf-brand" href="../../" aria-label="Dr Soufiane Merabti">
+      <img class="sf-logo" src="../../apple-touch-icon.png" alt="Dr Soufiane Merabti" onerror="this.hidden=true;this.nextElementSibling.hidden=false">
+      <span class="sf-brand-txt" hidden>Dr Soufiane Merabti</span>
+    </a>
+    <div class="sf-actions">
+      <button class="sf-btn sf-btn-primary" id="sfUpload" type="button"><i data-ic="upload"></i><span data-i="upload"></span></button>
+      <button class="sf-btn" id="sfTpl" type="button"><i data-ic="file"></i><span data-i="template"></span></button>
+      <button class="sf-btn" id="sfExport" type="button"><i data-ic="download"></i><span data-i="export"></span></button>
+      <button class="sf-btn" id="sfPrint" type="button"><i data-ic="print"></i><span data-i="print"></span></button>
+      <button class="sf-btn sf-btn-danger" id="sfClear" type="button"><i data-ic="trash"></i><span data-i="clear"></span></button>
+      <div class="sf-langs" id="sfLangs" role="group" aria-label="Language"><button type="button" data-l="ar">ع</button><button type="button" data-l="fr">FR</button><button type="button" data-l="en">EN</button></div>
+    </div>
+  </header>
+
+  <!-- البحث -->
+  <section class="sf-hero">
+    <div class="sf-hero-text">
+      <h1 data-i="title"></h1>
+      <p data-i="sub"></p>
+    </div>
+    <div class="sf-search">
+      <i data-ic="search" class="sf-search-ic"></i>
+      <input id="sfQ" type="text" autocomplete="off" spellcheck="false" data-ip="ph">
+      <button id="sfQClear" class="sf-search-x" type="button" aria-label="clear"><i data-ic="close"></i></button>
+    </div>
+    <div class="sf-stats" id="sfStats"></div>
+    <div class="sf-sample" id="sfSample" hidden></div>
+  </section>
+
+  <main class="sf-main" id="sfMain">
+
+    <!-- الفلاتر -->
+    <aside class="sf-side" id="sfSide">
+      <div class="sf-side-head">
+        <strong data-i="filters"></strong>
+        <button class="sf-link" id="sfResetF" type="button" data-i="fReset"></button>
+        <button class="sf-side-close" id="sfSideClose" type="button" aria-label="close"><i data-ic="close"></i></button>
+      </div>
+
+      <details class="sf-fbox" data-k="parts" open>
+        <summary data-i="fParts"></summary>
+        <input id="sfPartQ" class="sf-mini" type="text" autocomplete="off" data-ip="fPartQ">
+        <div class="sf-scroll sf-parts" id="sfParts"></div>
+      </details>
+
+      <details class="sf-fbox" data-k="cats" open>
+        <summary data-i="fCat"></summary>
+        <div class="sf-scroll sf-checks" id="sfCats"></div>
+      </details>
+
+      <details class="sf-fbox" data-k="brands">
+        <summary data-i="fBrand"></summary>
+        <div class="sf-scroll sf-checks" id="sfBrands"></div>
+      </details>
+
+      <details class="sf-fbox" data-k="rating" open>
+        <summary data-i="fRating"></summary>
+        <select id="sfRating" class="sf-select"></select>
+      </details>
+
+      <details class="sf-fbox" data-k="city">
+        <summary data-i="fCity"></summary>
+        <select id="sfCity" class="sf-select"></select>
+      </details>
+
+      <details class="sf-fbox" data-k="supplier">
+        <summary data-i="fSupplier"></summary>
+        <select id="sfSupplier" class="sf-select"></select>
+      </details>
+
+      <details class="sf-fbox" data-k="cur">
+        <summary data-i="fCur"></summary>
+        <select id="sfCurrency" class="sf-select"></select>
+      </details>
+
+      <details class="sf-fbox" data-k="price" open>
+        <summary data-i="fPrice"></summary>
+        <div class="sf-two">
+          <input id="sfPmin" class="sf-mini" type="number" min="0" inputmode="decimal" data-ip="fMin">
+          <input id="sfPmax" class="sf-mini" type="number" min="0" inputmode="decimal" data-ip="fMax">
+        </div>
+      </details>
+
+      <details class="sf-fbox" data-k="delivery">
+        <summary data-i="fDel"></summary>
+        <input id="sfDmax" class="sf-mini" type="number" min="0" inputmode="numeric" placeholder="—">
+      </details>
+
+      <details class="sf-fbox" data-k="opts">
+        <summary data-i="fMore"></summary>
+        <label class="sf-check"><input type="checkbox" id="sfHasEmail"><span data-i="fEmail"></span></label>
+        <label class="sf-check"><input type="checkbox" id="sfHasPhone"><span data-i="fPhone"></span></label>
+      </details>
+
+      <details class="sf-fbox" data-k="cc">
+        <summary data-i="fCC"></summary>
+        <input id="sfCC" class="sf-mini" type="text" inputmode="numeric" dir="ltr" maxlength="4">
+      </details>
+
+      <div class="sf-side-tools">
+        <button class="sf-btn" id="sfTplS" type="button"><i data-ic="file"></i><span data-i="template"></span></button>
+        <button class="sf-btn" id="sfPrintS" type="button"><i data-ic="print"></i><span data-i="print"></span></button>
+        <button class="sf-btn sf-btn-danger" id="sfClearS" type="button"><i data-ic="trash"></i><span data-i="clear"></span></button>
+      </div>
+    </aside>
+
+    <!-- النتائج -->
+    <section class="sf-res">
+      <div class="sf-toolbar">
+        <button class="sf-btn sf-filt-btn" id="sfFiltBtn" type="button"><i data-ic="filter"></i><span data-i="filters" style="display:inline"></span></button>
+        <label class="sf-check sf-all"><input type="checkbox" id="sfAll"><span data-i="selAll"></span></label>
+        <strong class="sf-count" id="sfCount"></strong>
+        <span class="sf-grow"></span>
+        <label class="sf-switch"><input type="checkbox" id="sfGroup" checked><span class="sf-sw"></span><em data-i="group"></em></label>
+        <select id="sfSort" class="sf-select sf-sort"></select>
+      </div>
+      <div class="sf-active" id="sfChips"></div>
+      <div id="sfList"></div>
+    </section>
+  </main>
+
+  <!-- حالة عدم وجود بيانات -->
+  <section class="sf-empty" id="sfEmpty" hidden>
+    <div class="sf-empty-card">
+      <div class="sf-empty-ic"><i data-ic="upload"></i></div>
+      <h2 data-i="emptyTitle"></h2>
+      <p data-i="emptySub"></p>
+      <div class="sf-empty-btns">
+        <button class="sf-btn sf-btn-primary sf-btn-lg" id="sfPick" type="button"><i data-ic="upload"></i><span data-i="emptyPick" style="display:inline"></span></button>
+        <button class="sf-btn sf-btn-lg" id="sfDemo" type="button"><i data-ic="spark"></i><span data-i="emptyDemo" style="display:inline"></span></button>
+        <button class="sf-btn sf-btn-lg" id="sfTpl2" type="button"><i data-ic="file"></i><span data-i="emptyTpl" style="display:inline"></span></button>
+      </div>
+      <small data-i="emptyCols"></small>
+    </div>
+  </section>
+</div>
+
+<!-- شريط التحديد -->
+<div class="sf-bar" id="sfBar"></div>
+
+<!-- نافذة منبثقة -->
+<div class="sf-modal" id="sfModal"><div class="sf-modal-box" id="sfModalBox"></div></div>
+
+<!-- إفلات الملفات -->
+<div class="sf-drop" id="sfDrop"><div><i data-ic="upload"></i><b data-i="dropHere"></b></div></div>
+
+<div class="sf-toast" id="sfToast" role="status" aria-live="polite"></div>
+<input type="file" id="sfFile" accept=".xlsx,.xls,.xlsm,.csv,.ods" hidden>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<!-- Firebase (نفس إصدار وترتيب باقي صفحات الموقع) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="../../firebase-init.js"></script>
+
+<script src="script.js"></script>
+</body>
+</html>

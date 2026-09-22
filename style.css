@@ -77,13 +77,18 @@ a{ color: inherit; }
   padding: 24px 28px 0;
   display:flex; align-items:center; justify-content: space-between;
   flex-wrap: wrap; row-gap: 12px;
+  /* Keep the topbar's visual order identical in both languages: the outer
+     row always flows left-to-right, while each child restores its own
+     script direction for its own content (text, icon mirroring, etc). */
+  direction: ltr;
 }
-.brand{
-  font-weight: 700;
-  font-size: 1rem;
-  color: var(--ink);
-  text-decoration:none;
-  white-space: nowrap;
+.topbar-inner > *{ direction: rtl; }
+.brand-logo{
+  display: flex; align-items: center; justify-content: center;
+  width: 42px; height: 42px; flex-shrink: 0;
+}
+.brand-logo img{
+  width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block;
 }
 .lang-toggle{
   border: 1px solid var(--line);
@@ -100,18 +105,50 @@ a{ color: inherit; }
   display:flex; align-items:center; gap:10px;
 }
 
+.social-sidebar{
+  position: fixed;
+  top: 50%; right: 18px;
+  transform: translateY(-50%);
+  display: flex; flex-direction: column;
+  gap: 14px;
+  z-index: 10;
+}
+.social-icon{
+  display: flex; align-items: center; justify-content: center;
+  width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(21,36,49,.10);
+  transition: transform .15s ease;
+}
+.social-icon:hover{ transform: translateY(-2px); }
+.social-icon svg{ width: 42px; height: 42px; display: block; }
+
+@media (max-width: 760px){
+  main{ padding-bottom: 130px; }
+  .social-sidebar{
+    top: auto; bottom: 14px; left: 50%; right: auto;
+    transform: translateX(-50%);
+    flex-direction: row;
+    gap: 8px;
+    max-width: calc(100vw - 20px);
+  }
+  .social-icon{ width: 34px; height: 34px; }
+  .social-icon svg{ width: 34px; height: 34px; }
+}
+
 /* ---- Theme toggle ---- */
 /* ---- Auth ---- */
 .auth-wrap{ position: relative; }
 .pro-btn{
   display: flex; align-items: center; gap: 6px;
   height: 42px; box-sizing: border-box;
-  border: 1.5px solid var(--accent); background: var(--accent-soft);
-  color: var(--accent); border-radius: 999px; padding: 0 16px;
+  border: 1px solid var(--line); background: var(--card-bg);
+  color: var(--ink); border-radius: 999px; padding: 0 16px;
   cursor: pointer; font-family: inherit; font-size: .85rem; font-weight: 800;
   transition: transform .15s ease, background .15s ease, color .15s ease;
+  box-shadow: 0 2px 8px rgba(21,36,49,.06);
 }
-.pro-btn:hover{ transform: translateY(-2px); background: var(--accent); color: #fff; }
+.pro-btn:hover{ background: var(--accent-soft); }
 .pro-btn svg{ width: 16px; height: 16px; }
 .pro-btn .pro-check{ display: none; }
 
@@ -234,13 +271,10 @@ main{ position: relative; z-index: 2; max-width: 1080px; margin: 0 auto; padding
 .beta-badge{
   font-family: 'Inter', sans-serif;
   font-style: normal;
-  font-size: .34em;
+  font-size: .28em;
   font-weight: 700;
-  color: var(--accent);
-  border: 1.5px solid var(--accent);
-  border-radius: 999px;
-  padding: 2px 10px;
-  vertical-align: middle;
+  color: var(--ink-soft);
+  vertical-align: sub;
   margin-inline-start: 8px;
   letter-spacing: .05em;
 }
@@ -506,4 +540,8 @@ a:focus-visible, button:focus-visible, input:focus-visible, [tabindex]:focus-vis
 .hero-logo-img{
   width: 64px;
   height: 64px;
+  background: #fff;
+  border-radius: 50%;
+  padding: 10px;
+  box-shadow: 0 4px 14px rgba(0,0,0,.12);
 }
