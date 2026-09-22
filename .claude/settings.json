@@ -20,5 +20,13 @@
       "Read(./.env.*)",
       "Read(./.dev.vars)"
     ]
+  },
+  "extraKnownMarketplaces": {
+    "claude-community": {
+      "source": {
+        "source": "github",
+        "repo": "anthropics/claude-plugins-community"
+      }
+    }
   }
 }
