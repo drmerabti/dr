@@ -1403,19 +1403,37 @@ async function isAdminUser(){
   return cachedIsAdmin;
 }
 
+function applyCachedSubscription(){
+  const proBtn = document.getElementById('proBtn');
+  const user = getCurrentUser();
+  if (!proBtn || !user) return;
+  try {
+    const s = JSON.parse(localStorage.getItem('site_sub'));
+    if (s && s.uid === user.uid){
+      proBtn.classList.toggle('subscribed', !!s.subscribed);
+      proBtn.classList.toggle('pro-max', !!s.proMax);
+    }
+  } catch (e) { /* ignore */ }
+}
+
 async function refreshSubscriptionStatus(){
   const proBtn = document.getElementById('proBtn');
   if (!proBtn) return;
   const user = getCurrentUser();
   if (!user || !window.firebase || !firebase.firestore){
     proBtn.classList.remove('subscribed', 'pro-max');
+    try { localStorage.removeItem('site_sub'); } catch (e) { /* ignore */ }
     return;
   }
+  const saveSub = (subscribed, proMax) => {
+    try { localStorage.setItem('site_sub', JSON.stringify({ uid: user.uid, subscribed, proMax })); } catch (e) { /* ignore */ }
+  };
   if (await isAdminUser()){
     // Admin accounts always see the fully-unlocked (Pro Max) state, bypassing
     // subscription checks entirely — this is the single shared bypass point
     // every future locked feature should also call isAdminUser() to honor.
     proBtn.classList.add('subscribed', 'pro-max');
+    saveSub(true, true);
     return;
   }
   try {
@@ -1426,6 +1444,7 @@ async function refreshSubscriptionStatus(){
     // Note: only the "Pro" tier is purchasable today — "Pro Max" has no separate
     // checkout yet, so this class is never set (for non-admins) until that tier is built.
     proBtn.classList.toggle('pro-max', false);
+    saveSub(isActive, false);
   } catch (e) {
     proBtn.classList.remove('subscribed', 'pro-max');
   }
@@ -1436,6 +1455,14 @@ function initAuth(){
   const btn = document.getElementById('authBtn');
   const menu = document.getElementById('authMenu');
   if (!wrap || !btn || !menu) return;
+
+  // First paint straight from cached data, without waiting for Firebase,
+  // so the header buttons keep a stable size and don't jump on load.
+  renderAuth();
+  applyCachedSubscription();
+  wrap.classList.remove('auth-pending');
+  const proBtnInit = document.getElementById('proBtn');
+  if (proBtnInit) proBtnInit.classList.remove('auth-pending');
 
   if (window.fbAuth) {
     window.fbAuth.onAuthStateChanged(async (fbUser) => {
