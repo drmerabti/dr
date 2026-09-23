@@ -1139,7 +1139,10 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
     els.downloadPdfBtn.disabled = false;
     els.downloadPdfText.textContent = original;
   }
-  els.downloadPdfBtn.addEventListener('click', startPaidDownload);
+  // TEMPORARY: payment is bypassed while the Paddle account is still pending
+  // approval, so downloads stay free for everyone. To re-enable payment,
+  // change this back to: els.downloadPdfBtn.addEventListener('click', startPaidDownload);
+  els.downloadPdfBtn.addEventListener('click', exportPdf);
 
   /* ================= Auth state / Init ================= */
   applyLanguage();
