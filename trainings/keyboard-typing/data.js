@@ -134,6 +134,16 @@
   /* ---------- Translations ---------- */
   var I18N = {
     ar: {
+      myProgress: 'تقدّمي', seeProgress: 'شاهد تقدمك', allStages: 'كل المراحل',
+      last7: 'آخر 7 أيام', last30: 'آخر 30 يومًا', allTime: 'الكل',
+      bestWpm: 'أفضل سرعة (كلمة/دقيقة)', avgAcc: 'متوسط الدقة', totalTime: 'وقت التدريب', attempts: 'عدد المحاولات',
+      chartSpeedErrors: 'السرعة والأخطاء في كل محاولة', errorsLbl: 'أخطاء', chartDaily: 'دقائق التدريب في اليوم',
+      weakKeys: 'الحروف الأكثر خطأ', weakHint: 'كلما كان الزر أغمق كانت الأخطاء فيه أكثر.',
+      history: 'آخر المحاولات', date: 'التاريخ', noData: 'لا توجد محاولات بعد. أنهِ تمرينًا واحدًا ليظهر تقدمك هنا.',
+      minShort: 'د', hourShort: 'س',
+      needTwoShort: 'نجمتان في كل تمارين المرحلة السابقة',
+      needTwoStars: 'تحتاج نجمتين على الأقل في كل تمارين المرحلة السابقة',
+      needTwoStarsLong: 'لفتح المرحلة التالية تحتاج نجمتين على الأقل في كل تمارين هذه المرحلة. أعد التمارين ذات النجمة الواحدة.',
       finishPrev: 'أكمل المرحلة السابقة أولا',
       layoutNames: { ar: 'العربية', fr: 'الفرنسية AZERTY', en: 'الإنجليزية QWERTY' },
       certHeading: 'شهادة إتمام', certCertifies: 'تشهد أكاديمية مرابطي بأن',
@@ -185,6 +195,16 @@
       firstName: 'الاسم', lastName: 'اللقب', cont: 'متابعة', certReady: 'شهادتك جاهزة!', close: 'إغلاق', share: 'مشاركة', download: 'تحميل'
     },
     en: {
+      myProgress: 'My progress', seeProgress: 'See your progress', allStages: 'All stages',
+      last7: 'Last 7 days', last30: 'Last 30 days', allTime: 'All time',
+      bestWpm: 'Best speed (WPM)', avgAcc: 'Average accuracy', totalTime: 'Practice time', attempts: 'Attempts',
+      chartSpeedErrors: 'Speed and errors per attempt', errorsLbl: 'Errors', chartDaily: 'Practice minutes per day',
+      weakKeys: 'Most missed keys', weakHint: 'The darker the key, the more mistakes on it.',
+      history: 'Latest attempts', date: 'Date', noData: 'No attempts yet. Finish one exercise to see your progress here.',
+      minShort: 'min', hourShort: 'h',
+      needTwoShort: '2 stars on every exercise of the previous stage',
+      needTwoStars: 'You need at least 2 stars on every exercise of the previous stage',
+      needTwoStarsLong: 'To unlock the next stage you need at least 2 stars on every exercise of this stage. Retry the ones with 1 star.',
       finishPrev: 'Complete the previous stage first',
       layoutNames: { ar: 'Arabic', fr: 'French AZERTY', en: 'English QWERTY' },
       certHeading: 'Certificate of Completion', certCertifies: 'Merabti Academy certifies that',
@@ -236,6 +256,16 @@
       firstName: 'First name', lastName: 'Last name', cont: 'Continue', certReady: 'Your certificate is ready!', close: 'Close', share: 'Share', download: 'Download'
     },
     fr: {
+      myProgress: 'Ma progression', seeProgress: 'Voir ta progression', allStages: 'Toutes les étapes',
+      last7: '7 derniers jours', last30: '30 derniers jours', allTime: 'Tout',
+      bestWpm: 'Meilleure vitesse (mots/min)', avgAcc: 'Précision moyenne', totalTime: "Temps d'entraînement", attempts: 'Tentatives',
+      chartSpeedErrors: 'Vitesse et erreurs par tentative', errorsLbl: 'Erreurs', chartDaily: "Minutes d'entraînement par jour",
+      weakKeys: 'Touches les plus ratées', weakHint: 'Plus la touche est foncée, plus il y a d\'erreurs.',
+      history: 'Dernières tentatives', date: 'Date', noData: 'Aucune tentative pour le moment. Termine un exercice pour voir ta progression ici.',
+      minShort: 'min', hourShort: 'h',
+      needTwoShort: "2 étoiles à chaque exercice de l'étape précédente",
+      needTwoStars: "Il faut au moins 2 étoiles à chaque exercice de l'étape précédente",
+      needTwoStarsLong: "Pour débloquer l'étape suivante, il faut au moins 2 étoiles à chaque exercice de cette étape. Refais ceux à 1 étoile.",
       finishPrev: "Termine d'abord l'étape précédente",
       layoutNames: { ar: 'Arabe', fr: 'Français AZERTY', en: 'Anglais QWERTY' },
       pageTitle: 'Entraînement au clavier — Académie Merabti',

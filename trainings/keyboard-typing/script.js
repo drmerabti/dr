@@ -21,6 +21,8 @@
     showKb: LS.get('tt_kb', true),
     showHands: LS.get('tt_hands', true),
     progress: LS.get('tt_progress', {}),
+    history: LS.get('tt_history', []),
+    progFilter: { stage: 'all', days: 30 },
     user: null, db: null,
     screen: 'stagesScreen',
     stageIdx: 0
@@ -182,18 +184,19 @@
   function exUnlocked(si, ei) {
     if (si === 0 && ei === 0) return true;
     if (ei > 0) return passed(si, ei - 1);
-    var prev = ST()[si - 1];
-    return passed(si - 1, prev.length - 1);
+    return stageQualified(si - 1);
   }
-  function stageDone(si) { return ST()[si].every(function (e, ei) { return passed(si, ei); }); }
+  /* a stage is complete when every exercise has at least 2 stars */
+  function stageQualified(si) { return ST()[si].every(function (e, ei) { var r = rec(si, ei); return !!(r && r.s >= 2); }); }
   function needsLogin(si) { return si >= 2 && !state.user; }
 
   function saveProgress() {
     LS.set('tt_progress', state.progress);
+    LS.set('tt_history', state.history);
     if (state.user && state.db) {
       try {
         state.db.collection('typingProgress').doc(state.user.uid)
-          .set({ progress: state.progress, updatedAt: Date.now() }, { merge: true }).catch(function () {});
+          .set({ progress: state.progress, history: state.history, updatedAt: Date.now() }, { merge: true }).catch(function () {});
       } catch (e) {}
     }
   }
@@ -207,6 +210,16 @@
     });
   }
 
+  function mergeHistory(remote) {
+    if (!Array.isArray(remote)) return;
+    var seen = {};
+    state.history.forEach(function (h) { seen[h.t + h.l] = 1; });
+    remote.forEach(function (h) { if (h && !seen[h.t + h.l]) { state.history.push(h); seen[h.t + h.l] = 1; } });
+    state.history.sort(function (a, b) { return a.t - b.t; });
+    if (state.history.length > HISTORY_MAX) state.history = state.history.slice(-HISTORY_MAX);
+  }
+  var HISTORY_MAX = 1500;
+
   function initFirebase() {
     try {
       if (typeof firebase === 'undefined' || !firebase.apps || !firebase.apps.length) return;
@@ -215,7 +228,7 @@
         state.user = u || null;
         if (u) {
           state.db.collection('typingProgress').doc(u.uid).get().then(function (doc) {
-            if (doc.exists) mergeProgress((doc.data() || {}).progress);
+            if (doc.exists) { mergeProgress((doc.data() || {}).progress); mergeHistory((doc.data() || {}).history); }
             saveProgress(); refreshScreen();
           }).catch(function () {});
         }
@@ -239,7 +252,7 @@
   }
 
   /* ---------------- screens ---------------- */
-  var SCREENS = ['stagesScreen', 'exercisesScreen', 'practiceScreen', 'resultScreen', 'lockedScreen'];
+  var SCREENS = ['stagesScreen', 'exercisesScreen', 'practiceScreen', 'resultScreen', 'lockedScreen', 'progressScreen'];
   function show(id) {
     state.screen = id;
     SCREENS.forEach(function (s) { $(s).classList.toggle('hidden', s !== id); });
@@ -251,6 +264,7 @@
   function refreshScreen() {
     if (state.screen === 'stagesScreen') renderStages();
     else if (state.screen === 'exercisesScreen') renderExercises();
+    else if (state.screen === 'progressScreen') renderProgress();
   }
 
   /* ---------------- i18n ---------------- */
@@ -270,6 +284,8 @@
     $('retryBtn').textContent = t.retry; $('resBackBtn').textContent = t.backToExercises;
     $('kbdTip').textContent = t.kbdTip; $('shareLabel').textContent = t.shareLabel;
     $('getCertText').textContent = t.getCert;
+    $('progressBtnText').textContent = t.myProgress; $('seeProgressBtn').textContent = t.seeProgress;
+    $('progTitle').textContent = t.myProgress; $('progBackBtn').textContent = t.backToStages;
     $('lockedTitle').textContent = t.lockedTitle; $('lockedMsg').textContent = t.lockedMsg;
     $('goLoginBtn').textContent = t.goLogin; $('lockedBackBtn').textContent = t.backToStages;
     $('introStartBtn').textContent = t.start; $('introPress').textContent = t.pressToStart;
@@ -292,7 +308,7 @@
     document.querySelectorAll('.layout-btn').forEach(function (b) { b.classList.toggle('active', b.dataset.layout === state.layout); });
     var currentSet = false;
     st.forEach(function (exs, si) {
-      var unlocked = exUnlocked(si, 0), login = needsLogin(si), done = stageDone(si);
+      var unlocked = exUnlocked(si, 0), login = needsLogin(si), done = stageQualified(si);
       var stars = 0; exs.forEach(function (e, ei) { var r = rec(si, ei); if (r) stars += r.s; });
       var card = document.createElement('div');
       card.className = 'level-card';
@@ -304,11 +320,13 @@
         '<div class="level-num">' + (si + 1) + '</div>' +
         '<p class="level-label"></p>' +
         '<p class="level-meta">' + exs.length + ' ' + t.exercises + '</p>' +
-        (login ? '<p class="level-locked-text">' + t.loginToOpen + '</p>' : '<p class="stage-stars">★ ' + stars + ' / ' + (exs.length * 3) + '</p>');
+        (login ? '<p class="level-locked-text">' + t.loginToOpen + '</p>' :
+          '<p class="stage-stars" dir="ltr">★ ' + stars + ' / ' + (exs.length * 3) + '</p>' +
+          (!unlocked ? '<p class="level-locked-text">' + t.needTwoShort + '</p>' : ''));
       card.querySelector('.level-label').textContent = stageName(si);
       card.addEventListener('click', function () {
         if (login) { show('lockedScreen'); return; }
-        if (!unlocked) { toast(t.finishPrev); return; }
+        if (!unlocked) { toast(t.needTwoStars); return; }
         state.stageIdx = si; renderExercises(); show('exercisesScreen');
       });
       grid.appendChild(card);
@@ -423,7 +441,7 @@
   function startExercise(si, ei) {
     var ex = ST()[si][ei];
     state.stageIdx = si;
-    P = { si: si, ei: ei, ex: ex, text: Array.from(ex.gen()), pos: 0, errors: 0, errAt: {}, start: 0, streak: 0, mismatch: 0, done: false };
+    P = { si: si, ei: ei, ex: ex, text: Array.from(ex.gen()), pos: 0, errors: 0, errAt: {}, errChars: {}, start: 0, streak: 0, mismatch: 0, done: false };
     renderKeyboard(); renderHands();
     $('keyboard').classList.toggle('plain', !!ex.blind);
     renderText();
@@ -566,6 +584,7 @@
       beep(1400, .03, 'sine', .025);
     } else {
       P.errors++; P.errAt[P.pos] = true; P.streak++;
+      P.errChars[target] = (P.errChars[target] || 0) + 1;
       var cur = P.els[P.pos];
       cur.classList.remove('bad'); void cur.offsetWidth; cur.classList.add('bad');
       flashKey(e.code, 'wrong');
@@ -594,11 +613,12 @@
     var stars = acc >= 90 ? 1 : 0;
     if (acc >= 95) stars = 2;
     if (acc >= 97 && wpm >= target) stars = 3;
-    var wasDone = stageDone(P.si);
+    state.history.push({ t: Date.now(), l: state.layout, si: P.si, ei: P.ei, w: wpm, a: acc, e: P.errors, d: Math.max(1, Math.round(mins * 60)), s: stars, k: P.errChars });
+    if (state.history.length > HISTORY_MAX) state.history = state.history.slice(-HISTORY_MAX);
     var key = P.si + '-' + P.ei, old = prog()[key];
     if (!old || stars > old.s || (stars === old.s && wpm > old.w)) prog()[key] = { s: stars, w: wpm, a: acc };
     saveProgress();
-    P.result = { wpm: wpm, acc: acc, stars: stars, secs: Math.round(mins * 60), stageJustDone: !wasDone && stageDone(P.si) };
+    P.result = { wpm: wpm, acc: acc, stars: stars, secs: Math.round(mins * 60) };
     if (stars) beep(880, .12, 'sine', .05);
     setTimeout(showResult, 250);
   }
@@ -608,15 +628,15 @@
     $('resultEmoji').textContent = r.stars === 3 ? '🏆' : r.stars ? '🎉' : '💪';
     $('resultTitle').textContent = r.stars === 3 ? t.resGreat : r.stars ? t.resGood : t.resRetry;
     $('resultStars').innerHTML = starsHtml(r.stars);
-    var sdone = stageDone(si);
-    $('resultMsg').textContent = !r.stars ? t.resMsgFail : (sdone && ei === exs.length - 1 ? t.resMsgStage : t.resMsgPass);
+    var sdone = stageQualified(si), last = ei === exs.length - 1;
+    $('resultMsg').textContent = !r.stars ? t.resMsgFail : (last ? (sdone ? t.resMsgStage : t.needTwoStarsLong) : t.resMsgPass);
     $('resWpm').textContent = r.wpm; $('resAcc').textContent = r.acc + '%';
     $('resTime').textContent = Math.floor(r.secs / 60) + ':' + String(r.secs % 60).padStart(2, '0');
 
     var next = null;
     if (r.stars) {
       if (ei + 1 < exs.length) next = { si: si, ei: ei + 1, label: t.next };
-      else if (si + 1 < ST().length) next = { si: si + 1, ei: 0, label: t.nextStage };
+      else if (si + 1 < ST().length && sdone) next = { si: si + 1, ei: 0, label: t.nextStage };
     }
     P.next = next;
     $('nextBtn').classList.toggle('hidden', !next);
@@ -765,6 +785,185 @@
     } catch (e) { downloadCert(); }
   }
 
+  /* ---------------- progress page ---------------- */
+  var SVGNS = 'http://www.w3.org/2000/svg';
+  function svgEl(tag, attrs, text) {
+    var e = document.createElementNS(SVGNS, tag);
+    for (var a in attrs) e.setAttribute(a, attrs[a]);
+    if (text != null) e.textContent = text;
+    return e;
+  }
+  function fmtDuration(sec) {
+    var t = T(), m = Math.round(sec / 60);
+    if (m < 60) return m + ' ' + t.minShort;
+    return Math.floor(m / 60) + ' ' + t.hourShort + ' ' + (m % 60) + ' ' + t.minShort;
+  }
+  function pad2(n) { return String(n).padStart(2, '0'); }
+  function dayKey(ts) { var d = new Date(ts); return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()); }
+
+  function filteredHistory() {
+    var f = state.progFilter, since = f.days ? Date.now() - f.days * 86400000 : 0;
+    return state.history.filter(function (h) {
+      return h.l === state.layout && h.t >= since && (f.stage === 'all' || String(h.si) === f.stage);
+    });
+  }
+
+  function renderProgress() {
+    var t = T(), H = filteredHistory();
+    $('progSub').textContent = t.layoutNames[state.layout];
+
+    // filters
+    var sel = $('progStage'), cur = state.progFilter.stage;
+    sel.innerHTML = '';
+    var o = document.createElement('option'); o.value = 'all'; o.textContent = t.allStages; sel.appendChild(o);
+    ST().forEach(function (s, si) { var op = document.createElement('option'); op.value = String(si); op.textContent = t.stage + ' ' + (si + 1) + ' — ' + stageName(si); sel.appendChild(op); });
+    sel.value = cur;
+    document.querySelectorAll('.period-btn').forEach(function (b) {
+      b.classList.toggle('active', +b.dataset.days === state.progFilter.days);
+      b.textContent = { 7: t.last7, 30: t.last30, 0: t.allTime }[b.dataset.days];
+    });
+
+    var empty = !H.length;
+    $('progEmpty').classList.toggle('hidden', !empty);
+    $('progEmpty').textContent = t.noData;
+    $('progBody').classList.toggle('hidden', empty);
+    if (empty) return;
+
+    // summary
+    var best = 0, accSum = 0, secs = 0;
+    H.forEach(function (h) { best = Math.max(best, h.w); accSum += h.a; secs += h.d; });
+    var cards = [[best, t.bestWpm], [Math.round(accSum / H.length) + '%', t.avgAcc], [fmtDuration(secs), t.totalTime], [H.length, t.attempts]];
+    $('progCards').innerHTML = '';
+    cards.forEach(function (c) {
+      var d = document.createElement('div'); d.className = 'prog-card';
+      var b = document.createElement('b'); b.textContent = c[0];
+      var s = document.createElement('span'); s.textContent = c[1];
+      d.appendChild(b); d.appendChild(s); $('progCards').appendChild(d);
+    });
+
+    $('chart1Title').textContent = t.chartSpeedErrors;
+    $('legendSpeed').textContent = t.wpm; $('legendErr').textContent = t.errorsLbl;
+    drawLineChart($('chart1'), H.slice(-60));
+    $('chart2Title').textContent = t.chartDaily;
+    drawDailyChart($('chart2'), H);
+    $('weakTitle').textContent = t.weakKeys; $('weakHint').textContent = t.weakHint;
+    drawWeakKeys(H);
+    $('histTitle').textContent = t.history;
+    drawHistory(H);
+  }
+
+  function drawLineChart(svg, H) {
+    svg.innerHTML = '';
+    var W = 800, Ht = 260, pl = 44, pr = 44, pt = 16, pb = 30;
+    svg.setAttribute('viewBox', '0 0 ' + W + ' ' + Ht);
+    var maxW = Math.max(10, Math.ceil(Math.max.apply(null, H.map(function (h) { return h.w; })) / 10) * 10);
+    var maxE = Math.max(5, Math.ceil(Math.max.apply(null, H.map(function (h) { return h.e; })) / 5) * 5);
+    var n = H.length, iw = W - pl - pr, ih = Ht - pt - pb;
+    var X = function (i) { return pl + (n === 1 ? iw / 2 : i * iw / (n - 1)); };
+    var YW = function (v) { return pt + ih - v / maxW * ih; };
+    var YE = function (v) { return pt + ih - v / maxE * ih; };
+    for (var g = 0; g <= 4; g++) {
+      var y = pt + ih * g / 4;
+      svg.appendChild(svgEl('line', { x1: pl, x2: W - pr, y1: y, y2: y, class: 'grid' }));
+      svg.appendChild(svgEl('text', { x: pl - 8, y: y + 4, class: 'ax ax-w', 'text-anchor': 'end' }, Math.round(maxW * (4 - g) / 4)));
+      svg.appendChild(svgEl('text', { x: W - pr + 8, y: y + 4, class: 'ax ax-e', 'text-anchor': 'start' }, Math.round(maxE * (4 - g) / 4)));
+    }
+    var step = Math.max(1, Math.ceil(n / 10));
+    H.forEach(function (h, i) {
+      if (i % step === 0 || i === n - 1) svg.appendChild(svgEl('text', { x: X(i), y: Ht - 8, class: 'ax', 'text-anchor': 'middle' }, i + 1));
+    });
+    function line(Y, key, cls) {
+      if (n > 1) svg.appendChild(svgEl('polyline', { points: H.map(function (h, i) { return X(i) + ',' + Y(h[key]); }).join(' '), class: 'ln ' + cls }));
+      H.forEach(function (h, i) {
+        var c = svgEl('circle', { cx: X(i), cy: Y(h[key]), r: 4, class: 'dot ' + cls });
+        c.appendChild(svgEl('title', {}, dateStr(h.t) + ' — ' + h.w + ' ' + T().wpm + ', ' + h.e + ' ' + T().errorsLbl));
+        svg.appendChild(c);
+      });
+    }
+    line(YE, 'e', 'err');
+    line(YW, 'w', 'spd');
+  }
+
+  function drawDailyChart(svg, H) {
+    svg.innerHTML = '';
+    var W = 800, Ht = 220, pl = 44, pr = 16, pt = 16, pb = 30;
+    svg.setAttribute('viewBox', '0 0 ' + W + ' ' + Ht);
+    var byDay = {};
+    H.forEach(function (h) { var k = dayKey(h.t); byDay[k] = (byDay[k] || 0) + h.d; });
+    var nDays = state.progFilter.days || Math.min(60, Math.max(7, Math.ceil((Date.now() - H[0].t) / 86400000) + 1));
+    var days = [];
+    for (var i = nDays - 1; i >= 0; i--) { var ts = Date.now() - i * 86400000; days.push({ k: dayKey(ts), ts: ts, m: (byDay[dayKey(ts)] || 0) / 60 }); }
+    var maxM = Math.max(5, Math.ceil(Math.max.apply(null, days.map(function (d) { return d.m; })) / 5) * 5);
+    var iw = W - pl - pr, ih = Ht - pt - pb, bw = iw / days.length;
+    for (var g = 0; g <= 4; g++) {
+      var y = pt + ih * g / 4;
+      svg.appendChild(svgEl('line', { x1: pl, x2: W - pr, y1: y, y2: y, class: 'grid' }));
+      svg.appendChild(svgEl('text', { x: pl - 8, y: y + 4, class: 'ax', 'text-anchor': 'end' }, Math.round(maxM * (4 - g) / 4)));
+    }
+    var step = Math.max(1, Math.ceil(days.length / 10));
+    days.forEach(function (d, i) {
+      var h = d.m / maxM * ih, x = pl + i * bw + bw * 0.18;
+      var r = svgEl('rect', { x: x, y: pt + ih - h, width: bw * 0.64, height: Math.max(h, d.m ? 2 : 0), rx: 3, class: 'bar-day' });
+      r.appendChild(svgEl('title', {}, dateStr(d.ts, true) + ' — ' + Math.round(d.m * 10) / 10 + ' ' + T().minShort));
+      svg.appendChild(r);
+      if (i % step === 0 || i === days.length - 1) {
+        var dt = new Date(d.ts);
+        svg.appendChild(svgEl('text', { x: pl + i * bw + bw / 2, y: Ht - 8, class: 'ax', 'text-anchor': 'middle' }, pad2(dt.getDate()) + '/' + pad2(dt.getMonth() + 1)));
+      }
+    });
+  }
+
+  function drawWeakKeys(H) {
+    var L = LAY(), counts = {};
+    H.forEach(function (h) { Object.keys(h.k || {}).forEach(function (c) { counts[c] = (counts[c] || 0) + h.k[c]; }); });
+    var byCode = {};
+    Object.keys(counts).forEach(function (c) {
+      var en = c === ' ' ? { key: L.byCode.Space } : L.map[c];
+      if (en) byCode[en.key.code] = (byCode[en.key.code] || 0) + counts[c];
+    });
+    var max = Math.max.apply(null, [1].concat(Object.keys(byCode).map(function (k) { return byCode[k]; })));
+    var box = $('weakKb'); box.innerHTML = '';
+    L.rows.forEach(function (row) {
+      var r = document.createElement('div'); r.className = 'mk-row';
+      row.forEach(function (k) {
+        var d = document.createElement('div'); d.className = 'mk' + (k.special ? ' sp' : '');
+        d.style.setProperty('--w', k.w || 1);
+        if (!k.special) d.textContent = k.space ? '' : k.base;
+        var n = byCode[k.code] || 0;
+        if (n) { d.style.background = 'rgba(192,57,43,' + (0.12 + 0.78 * n / max).toFixed(2) + ')'; if (n / max > .45) d.style.color = '#fff'; d.title = n; }
+        r.appendChild(d);
+      });
+      box.appendChild(r);
+    });
+    var top = Object.keys(counts).sort(function (a, b) { return counts[b] - counts[a]; }).slice(0, 6);
+    $('weakTop').innerHTML = '';
+    top.forEach(function (c) {
+      var s = document.createElement('span'); s.className = 'weak-chip';
+      s.textContent = (c === ' ' ? '␣' : c) + '  ' + counts[c];
+      $('weakTop').appendChild(s);
+    });
+  }
+
+  function dateStr(ts, dayOnly) {
+    var d = new Date(ts);
+    var s = pad2(d.getDate()) + '/' + pad2(d.getMonth() + 1) + '/' + d.getFullYear();
+    return dayOnly ? s : s + ' ' + pad2(d.getHours()) + ':' + pad2(d.getMinutes());
+  }
+  function drawHistory(H) {
+    var t = T(), tb = $('histTable');
+    tb.innerHTML = '';
+    var head = document.createElement('tr');
+    [t.date, t.stage, t.wpm, t.accuracy, t.errorsLbl, t.time].forEach(function (h) { var th = document.createElement('th'); th.textContent = h; head.appendChild(th); });
+    tb.appendChild(head);
+    H.slice(-20).reverse().forEach(function (h) {
+      var tr = document.createElement('tr');
+      [dateStr(h.t), (h.si + 1) + ' · ' + t.exercise + ' ' + (h.ei + 1), h.w, h.a + '%', h.e, Math.floor(h.d / 60) + ':' + pad2(h.d % 60)].forEach(function (v) {
+        var td = document.createElement('td'); td.textContent = v; tr.appendChild(td);
+      });
+      tb.appendChild(tr);
+    });
+  }
+
   /* ---------------- toast ---------------- */
   var toastTimer = null;
   function toast(msg) {
@@ -809,6 +1008,13 @@
     $('retryBtn').addEventListener('click', function () { startExercise(P.si, P.ei); });
     $('resBackBtn').addEventListener('click', function () { renderExercises(); show('exercisesScreen'); });
     $('introStartBtn').addEventListener('click', closeIntro);
+    $('progressBtn').addEventListener('click', function () { renderProgress(); show('progressScreen'); });
+    $('seeProgressBtn').addEventListener('click', function () { renderProgress(); show('progressScreen'); });
+    $('progBackBtn').addEventListener('click', function () { renderStages(); show('stagesScreen'); });
+    $('progStage').addEventListener('change', function () { state.progFilter.stage = this.value; renderProgress(); });
+    document.querySelectorAll('.period-btn').forEach(function (b) {
+      b.addEventListener('click', function () { state.progFilter.days = +b.dataset.days; renderProgress(); });
+    });
     $('getCertBtn').addEventListener('click', openCertName);
     document.querySelectorAll('.cert-lang-btn').forEach(function (b) {
       b.addEventListener('click', function () {
