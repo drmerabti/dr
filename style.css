@@ -124,13 +124,16 @@ a{ color: inherit; }
 .social-icon svg{ width: 42px; height: 42px; display: block; }
 
 @media (max-width: 760px){
-  main{ padding-bottom: 130px; }
+  main{ padding-bottom: 32px; }
   .social-sidebar{
-    top: auto; bottom: 14px; left: 50%; right: auto;
-    transform: translateX(-50%);
+    position: static;
+    transform: none;
     flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
     gap: 8px;
-    max-width: calc(100vw - 20px);
+    margin: 14px auto 0;
+    padding: 0 10px;
   }
   .social-icon{ width: 34px; height: 34px; }
   .social-icon svg{ width: 34px; height: 34px; }
