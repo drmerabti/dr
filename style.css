@@ -70,7 +70,7 @@ a{ color: inherit; }
 /* ============ Topbar ============ */
 .topbar{
   position: relative;
-  z-index: 5;
+  z-index: 50;
 }
 .topbar-inner{
   max-width: 1080px; margin-inline: auto;
@@ -179,6 +179,7 @@ a{ color: inherit; }
   font-size: .85rem; font-weight:600;
 }
 .auth-btn:hover{ background: var(--accent-soft); }
+.auth-btn{ height: 42px; box-sizing: border-box; min-width: 42px; }
 .auth-avatar{
   width: 30px; height: 30px; border-radius:50%;
   background: var(--accent); color:#fff;

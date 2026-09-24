@@ -304,6 +304,42 @@ const CONTENT = {
       icon: ICONS.excelApp,
       comingSoon: true,
     },
+    {
+      id: 'course-access',
+      title_ar: 'دورة Access التفاعلية',
+      title_en: 'Interactive Access Course',
+      desc_ar: 'دروس مصوّرة خطوة بخطوة لبناء قواعد بيانات احترافية باستخدام Access.',
+      desc_en: 'Step-by-step video lessons to build professional databases using Access.',
+      icon: ICONS.accessApp,
+      comingSoon: true,
+    },
+    {
+      id: 'course-spss',
+      title_ar: 'دورة SPSS التفاعلية',
+      title_en: 'Interactive SPSS Course',
+      desc_ar: 'دروس مصوّرة خطوة بخطوة لتعلّم التحليل الإحصائي للبيانات باستخدام SPSS.',
+      desc_en: 'Step-by-step video lessons to learn statistical data analysis using SPSS.',
+      icon: ICONS.spssApp,
+      comingSoon: true,
+    },
+    {
+      id: 'course-ppt',
+      title_ar: 'دورة PowerPoint التفاعلية',
+      title_en: 'Interactive PowerPoint Course',
+      desc_ar: 'دروس مصوّرة خطوة بخطوة لتصميم عروض تقديمية احترافية.',
+      desc_en: 'Step-by-step video lessons to design professional presentations.',
+      icon: ICONS.pptApp,
+      comingSoon: true,
+    },
+    {
+      id: 'course-powerbi',
+      title_ar: 'دورة Power BI التفاعلية',
+      title_en: 'Interactive Power BI Course',
+      desc_ar: 'دروس مصوّرة خطوة بخطوة لبناء لوحات تحليل بيانات تفاعلية احترافية.',
+      desc_en: 'Step-by-step video lessons to build professional interactive data dashboards.',
+      icon: ICONS.powerbiApp,
+      comingSoon: true,
+    },
   ],
   lessons: [
     {
@@ -698,17 +734,90 @@ function renderFamilyFilter(items){
   });
 }
 
+/* =====================================================================
+   نافذة "قريبًا" الخاصة بالدفع مقابل الدورات التكوينية
+   (البطاقة الذهبية / Visa) — أيقونات أصلية بسيطة، بدون أي شعار رسمي.
+===================================================================== */
+function showTrainingCoursePaymentModal(){
+  if (document.getElementById('coursePaymentOverlay')) return;
+  const overlay = document.createElement('div');
+  overlay.id = 'coursePaymentOverlay';
+  overlay.style.cssText = `
+    position: fixed; inset: 0; background: rgba(21,36,49,.45);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 2000; opacity: 0; transition: opacity .2s ease;
+  `;
+  overlay.innerHTML = `
+    <div id="coursePaymentCard" style="
+      background: #fff; border-radius: 22px; padding: 32px 28px;
+      max-width: 380px; width: calc(100% - 40px); text-align: center;
+      box-shadow: 0 20px 60px rgba(21,36,49,.25);
+      transform: scale(.9); transition: transform .2s ease;
+      font-family: inherit;
+    ">
+      <h3 style="margin: 0 0 8px; font-size: 1.3rem; font-weight: 900; color: #1E2F40;">قريبًا ✨</h3>
+      <p style="margin: 0 0 22px; font-size: 1rem; line-height: 1.8; color: #4A5A6B;">
+        هذه الدورة قيد الإعداد بعناية فائقة لتصل إليكم بأفضل صورة. سيُتاح الدفع قريبًا عبر البطاقة الذهبية أو بطاقة Visa. تابعونا!
+      </p>
+      <div style="display:flex; gap:14px; justify-content:center; margin-bottom:24px;">
+        <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
+          <svg viewBox="0 0 48 32" width="60" height="40">
+            <defs><linearGradient id="gGold" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#F7D989"/><stop offset="1" stop-color="#C9861B"/>
+            </linearGradient></defs>
+            <rect x="1" y="1" width="46" height="30" rx="5" fill="url(#gGold)" stroke="#B8790E"/>
+            <rect x="5" y="8" width="10" height="7" rx="1.5" fill="#fff" opacity=".85"/>
+            <rect x="5" y="21" width="22" height="2.5" rx="1.2" fill="#fff" opacity=".7"/>
+          </svg>
+          <span style="font-size:.8rem; font-weight:700; color:#8A6510;">الذهبية</span>
+        </div>
+        <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
+          <svg viewBox="0 0 48 32" width="60" height="40">
+            <defs><linearGradient id="gBlue" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#5C8DE0"/><stop offset="1" stop-color="#1A3E7A"/>
+            </linearGradient></defs>
+            <rect x="1" y="1" width="46" height="30" rx="5" fill="url(#gBlue)" stroke="#12305F"/>
+            <rect x="5" y="8" width="10" height="7" rx="1.5" fill="#fff" opacity=".85"/>
+            <rect x="5" y="21" width="22" height="2.5" rx="1.2" fill="#fff" opacity=".7"/>
+          </svg>
+          <span style="font-size:.8rem; font-weight:700; color:#1A3E7A;">Visa</span>
+        </div>
+      </div>
+      <button type="button" id="coursePaymentClose" style="
+        background: #2F5CA8; color: #fff; border: none; border-radius: 999px;
+        padding: 12px 30px; font-family: inherit; font-weight: 700; font-size: .95rem;
+        cursor: pointer;
+      ">تمام</button>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  requestAnimationFrame(() => {
+    overlay.style.opacity = '1';
+    overlay.querySelector('#coursePaymentCard').style.transform = 'scale(1)';
+  });
+  function close(){
+    overlay.style.opacity = '0';
+    overlay.querySelector('#coursePaymentCard').style.transform = 'scale(.9)';
+    setTimeout(() => overlay.remove(), 200);
+  }
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
+  overlay.querySelector('#coursePaymentClose').addEventListener('click', close);
+}
+
 function renderCoursesSection(){
   const wrap = document.getElementById('coursesSection');
   if (!wrap) return; // only present on lessons.html
   const items = CONTENT.trainingCourses || [];
   wrap.innerHTML = items.map((item) => `
-    <a class="item-card" href="${item.url}" style="text-decoration:none; color:inherit; display:block;">
+    <div class="item-card course-card" data-course-id="${item.id}" style="cursor:pointer;">
       ${item.icon ? `<span class="icon-badge badge-lessons">${item.icon}</span>` : ''}
       <h3>${lang === 'ar' ? item.title_ar : item.title_en}</h3>
       <p>${lang === 'ar' ? item.desc_ar : item.desc_en}</p>
-    </a>
+    </div>
   `).join('');
+  wrap.querySelectorAll('.course-card').forEach(card => {
+    card.addEventListener('click', () => showTrainingCoursePaymentModal());
+  });
 }
 
 async function renderSectionItems(){
@@ -1294,19 +1403,37 @@ async function isAdminUser(){
   return cachedIsAdmin;
 }
 
+function applyCachedSubscription(){
+  const proBtn = document.getElementById('proBtn');
+  const user = getCurrentUser();
+  if (!proBtn || !user) return;
+  try {
+    const s = JSON.parse(localStorage.getItem('site_sub'));
+    if (s && s.uid === user.uid){
+      proBtn.classList.toggle('subscribed', !!s.subscribed);
+      proBtn.classList.toggle('pro-max', !!s.proMax);
+    }
+  } catch (e) { /* ignore */ }
+}
+
 async function refreshSubscriptionStatus(){
   const proBtn = document.getElementById('proBtn');
   if (!proBtn) return;
   const user = getCurrentUser();
   if (!user || !window.firebase || !firebase.firestore){
     proBtn.classList.remove('subscribed', 'pro-max');
+    try { localStorage.removeItem('site_sub'); } catch (e) { /* ignore */ }
     return;
   }
+  const saveSub = (subscribed, proMax) => {
+    try { localStorage.setItem('site_sub', JSON.stringify({ uid: user.uid, subscribed, proMax })); } catch (e) { /* ignore */ }
+  };
   if (await isAdminUser()){
     // Admin accounts always see the fully-unlocked (Pro Max) state, bypassing
     // subscription checks entirely — this is the single shared bypass point
     // every future locked feature should also call isAdminUser() to honor.
     proBtn.classList.add('subscribed', 'pro-max');
+    saveSub(true, true);
     return;
   }
   try {
@@ -1317,6 +1444,7 @@ async function refreshSubscriptionStatus(){
     // Note: only the "Pro" tier is purchasable today — "Pro Max" has no separate
     // checkout yet, so this class is never set (for non-admins) until that tier is built.
     proBtn.classList.toggle('pro-max', false);
+    saveSub(isActive, false);
   } catch (e) {
     proBtn.classList.remove('subscribed', 'pro-max');
   }
@@ -1327,6 +1455,14 @@ function initAuth(){
   const btn = document.getElementById('authBtn');
   const menu = document.getElementById('authMenu');
   if (!wrap || !btn || !menu) return;
+
+  // First paint straight from cached data, without waiting for Firebase,
+  // so the header buttons keep a stable size and don't jump on load.
+  renderAuth();
+  applyCachedSubscription();
+  wrap.classList.remove('auth-pending');
+  const proBtnInit = document.getElementById('proBtn');
+  if (proBtnInit) proBtnInit.classList.remove('auth-pending');
 
   if (window.fbAuth) {
     window.fbAuth.onAuthStateChanged(async (fbUser) => {
