@@ -49,7 +49,7 @@
     }); });
   }
   Object.keys(D.LAYOUTS).forEach(function (id) { prepLayout(D.LAYOUTS[id]); });
-  function LAY() { return D.LAYOUTS[state.layout]; }
+  function LAY() { if (!D.LAYOUTS[state.layout]) state.layout = 'ar'; return D.LAYOUTS[state.layout]; }
 
   /* ---------------- helpers ---------------- */
   function rnd(a, b) { return a + Math.floor(Math.random() * (b - a + 1)); }
@@ -165,7 +165,7 @@
 
   var STAGES = {};
   Object.keys(D.LAYOUTS).forEach(function (id) { STAGES[id] = buildStages(D.LAYOUTS[id]); });
-  function ST() { return STAGES[state.layout]; }
+  function ST() { if (!STAGES[state.layout]) state.layout = 'ar'; return STAGES[state.layout]; }
 
   function exLabel(ex) {
     var t = T();
@@ -259,6 +259,7 @@
     document.body.classList.toggle('is-practice', id === 'practiceScreen');
     if (id !== 'practiceScreen') stopTimer();
     if (id === 'practiceScreen') fit();
+    if (id === 'progressScreen') { drawCharts(!animatedOnce); if (progData) animatedOnce = true; }
     window.scrollTo(0, 0);
   }
   function refreshScreen() {
@@ -305,7 +306,7 @@
   function renderStages() {
     var t = T(), grid = $('stagesGrid'), st = ST();
     grid.innerHTML = '';
-    document.querySelectorAll('.layout-btn').forEach(function (b) { b.classList.toggle('active', b.dataset.layout === state.layout); });
+    document.querySelectorAll('.layout-btn[data-layout]').forEach(function (b) { b.classList.toggle('active', b.dataset.layout === state.layout); });
     var currentSet = false;
     st.forEach(function (exs, si) {
       var unlocked = exUnlocked(si, 0), login = needsLogin(si), done = stageQualified(si);
@@ -808,11 +809,53 @@
     });
   }
 
+  function filteredPrev() {
+    var f = state.progFilter;
+    if (!f.days) return null;
+    var end = Date.now() - f.days * 86400000, start = end - f.days * 86400000;
+    return state.history.filter(function (h) {
+      return h.l === state.layout && h.t >= start && h.t < end && (f.stage === 'all' || String(h.si) === f.stage);
+    });
+  }
+  function summary(H) {
+    var s = { best: 0, acc: 0, secs: 0, n: H.length };
+    H.forEach(function (h) { s.best = Math.max(s.best, h.w); s.acc += h.a; s.secs += h.d; });
+    s.acc = H.length ? Math.round(s.acc / H.length) : 0;
+    return s;
+  }
+  function streakDays() {
+    var days = {};
+    state.history.forEach(function (h) { if (h.l === state.layout) days[dayKey(h.t)] = 1; });
+    var n = 0, ts = Date.now();
+    if (!days[dayKey(ts)]) ts -= 86400000;           // today not practised yet: count up to yesterday
+    while (days[dayKey(ts)]) { n++; ts -= 86400000; }
+    return n;
+  }
+
+  var ICON = {
+    speed: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 17a8.5 8.5 0 1 1 15 0"/><path d="M12 13l4-4"/><circle cx="12" cy="13" r="1.4" fill="currentColor"/></svg>',
+    time: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>',
+    tries: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 4v5h-5"/></svg>'
+  };
+  function ringSvg(pct) {
+    var r = 19, c = 2 * Math.PI * r, off = c * (1 - pct / 100);
+    return '<svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="' + r + '" class="ring-bg"/>' +
+      '<circle cx="24" cy="24" r="' + r + '" class="ring-fg" stroke-dasharray="' + c.toFixed(1) + '" stroke-dashoffset="' + off.toFixed(1) + '" transform="rotate(-90 24 24)"/></svg>';
+  }
+  function trendHtml(cur, prev, higherIsGood) {
+    if (prev == null || !prev) return '<em class="trend flat">—</em>';
+    var p = Math.round((cur - prev) / prev * 100);
+    if (!p) return '<em class="trend flat">= 0%</em>';
+    var good = (p > 0) === higherIsGood;
+    return '<em class="trend ' + (good ? 'up' : 'down') + '" dir="ltr">' + (p > 0 ? '↑ ' : '↓ ') + Math.abs(p) + '%</em>';
+  }
+
+  var animatedOnce = false;
   function renderProgress() {
     var t = T(), H = filteredHistory();
     $('progSub').textContent = t.layoutNames[state.layout];
+    $('progBackTop').textContent = t.backToStages;
 
-    // filters
     var sel = $('progStage'), cur = state.progFilter.stage;
     sel.innerHTML = '';
     var o = document.createElement('option'); o.value = 'all'; o.textContent = t.allStages; sel.appendChild(o);
@@ -827,88 +870,203 @@
     $('progEmpty').classList.toggle('hidden', !empty);
     $('progEmpty').textContent = t.noData;
     $('progBody').classList.toggle('hidden', empty);
-    if (empty) return;
+    if (empty) { progData = null; return; }
 
-    // summary
-    var best = 0, accSum = 0, secs = 0;
-    H.forEach(function (h) { best = Math.max(best, h.w); accSum += h.a; secs += h.d; });
-    var cards = [[best, t.bestWpm], [Math.round(accSum / H.length) + '%', t.avgAcc], [fmtDuration(secs), t.totalTime], [H.length, t.attempts]];
-    $('progCards').innerHTML = '';
+    /* summary cards */
+    var S = summary(H), prevH = filteredPrev(), PS = prevH && prevH.length ? summary(prevH) : null;
+    var cards = [
+      { cls: 'c-speed', icon: ICON.speed, val: S.best, lbl: t.bestWpm, tr: trendHtml(S.best, PS && PS.best, true) },
+      { cls: 'c-acc', icon: ringSvg(S.acc), val: S.acc + '%', lbl: t.avgAcc, tr: trendHtml(S.acc, PS && PS.acc, true), ring: true },
+      { cls: 'c-time', icon: ICON.time, val: fmtDuration(S.secs), lbl: t.totalTime, tr: trendHtml(S.secs, PS && PS.secs, true) },
+      { cls: 'c-tries', icon: ICON.tries, val: S.n, lbl: t.attempts, tr: trendHtml(S.n, PS && PS.n, true) }
+    ];
+    var box = $('progCards'); box.innerHTML = '';
     cards.forEach(function (c) {
-      var d = document.createElement('div'); d.className = 'prog-card';
-      var b = document.createElement('b'); b.textContent = c[0];
-      var s = document.createElement('span'); s.textContent = c[1];
-      d.appendChild(b); d.appendChild(s); $('progCards').appendChild(d);
+      var d = document.createElement('div'); d.className = 'prog-card ' + c.cls;
+      d.innerHTML = '<div class="pc-icon' + (c.ring ? ' ring' : '') + '">' + c.icon + '</div>' +
+        '<div class="pc-body"><b></b><span></span>' + (state.progFilter.days ? c.tr : '') + '</div>';
+      d.querySelector('b').textContent = c.val;
+      d.querySelector('span').textContent = c.lbl;
+      box.appendChild(d);
     });
+    $('trendNote').textContent = state.progFilter.days ? t.trendVsPrev : '';
 
     $('chart1Title').textContent = t.chartSpeedErrors;
     $('legendSpeed').textContent = t.wpm; $('legendErr').textContent = t.errorsLbl;
-    drawLineChart($('chart1'), H.slice(-60));
     $('chart2Title').textContent = t.chartDaily;
-    drawDailyChart($('chart2'), H);
+    var st = streakDays();
+    $('streakChip').classList.toggle('hidden', st < 2);
+    $('streakChip').textContent = '🔥 ' + fmt(t.streakDays, { n: st });
     $('weakTitle').textContent = t.weakKeys; $('weakHint').textContent = t.weakHint;
-    drawWeakKeys(H);
+    $('weakLess').textContent = t.less; $('weakMore').textContent = t.more;
     $('histTitle').textContent = t.history;
+
+    progData = H;
+    if (state.screen === 'progressScreen') drawCharts(false);
+    drawWeakKeys(H);
     drawHistory(H);
   }
+  var progData = null;
+  function drawCharts(animate) {
+    if (!progData || !progData.length) return;
+    drawLineChart($('chart1'), progData.slice(-60), animate);
+    drawDailyChart($('chart2'), progData, animate);
+  }
 
-  function drawLineChart(svg, H) {
+  /* Catmull-Rom → smooth cubic path, clamped to the chart area */
+  function smoothPath(pts, yMin, yMax) {
+    if (pts.length < 2) return '';
+    var d = 'M' + pts[0][0].toFixed(1) + ',' + pts[0][1].toFixed(1);
+    for (var i = 0; i < pts.length - 1; i++) {
+      var p0 = pts[i - 1] || pts[i], p1 = pts[i], p2 = pts[i + 1], p3 = pts[i + 2] || p2;
+      var c1x = p1[0] + (p2[0] - p0[0]) / 6, c1y = p1[1] + (p2[1] - p0[1]) / 6;
+      var c2x = p2[0] - (p3[0] - p1[0]) / 6, c2y = p2[1] - (p3[1] - p1[1]) / 6;
+      c1y = Math.min(yMax, Math.max(yMin, c1y)); c2y = Math.min(yMax, Math.max(yMin, c2y));
+      d += ' C' + c1x.toFixed(1) + ',' + c1y.toFixed(1) + ' ' + c2x.toFixed(1) + ',' + c2y.toFixed(1) + ' ' + p2[0].toFixed(1) + ',' + p2[1].toFixed(1);
+    }
+    return d;
+  }
+  function niceMax(v, step) { return Math.max(step, Math.ceil(v / step) * step); }
+
+  function drawLineChart(svg, H, animate) {
+    var t = T();
     svg.innerHTML = '';
-    var W = 800, Ht = 260, pl = 44, pr = 44, pt = 16, pb = 30;
+    var W = Math.max(320, svg.clientWidth || 800), Ht = 280, pl = 42, pr = 42, pt = 34, pb = 30;
     svg.setAttribute('viewBox', '0 0 ' + W + ' ' + Ht);
-    var maxW = Math.max(10, Math.ceil(Math.max.apply(null, H.map(function (h) { return h.w; })) / 10) * 10);
-    var maxE = Math.max(5, Math.ceil(Math.max.apply(null, H.map(function (h) { return h.e; })) / 5) * 5);
-    var n = H.length, iw = W - pl - pr, ih = Ht - pt - pb;
+    var maxW = niceMax(Math.max.apply(null, H.map(function (h) { return h.w; })), 10);
+    var maxE = niceMax(Math.max.apply(null, H.map(function (h) { return h.e; })), 5);
+    var n = H.length, iw = W - pl - pr, ih = Ht - pt - pb, base = pt + ih;
     var X = function (i) { return pl + (n === 1 ? iw / 2 : i * iw / (n - 1)); };
-    var YW = function (v) { return pt + ih - v / maxW * ih; };
-    var YE = function (v) { return pt + ih - v / maxE * ih; };
+    var YW = function (v) { return base - v / maxW * ih; };
+    var YE = function (v) { return base - v / maxE * ih; };
+
+    var defs = svgEl('defs', {});
+    var lg = svgEl('linearGradient', { id: 'gSpd', x1: 0, y1: 0, x2: 0, y2: 1 });
+    lg.appendChild(svgEl('stop', { offset: '0', 'stop-color': '#2F5770', 'stop-opacity': '.28' }));
+    lg.appendChild(svgEl('stop', { offset: '1', 'stop-color': '#2F5770', 'stop-opacity': '0' }));
+    defs.appendChild(lg); svg.appendChild(defs);
+
     for (var g = 0; g <= 4; g++) {
       var y = pt + ih * g / 4;
       svg.appendChild(svgEl('line', { x1: pl, x2: W - pr, y1: y, y2: y, class: 'grid' }));
       svg.appendChild(svgEl('text', { x: pl - 8, y: y + 4, class: 'ax ax-w', 'text-anchor': 'end' }, Math.round(maxW * (4 - g) / 4)));
       svg.appendChild(svgEl('text', { x: W - pr + 8, y: y + 4, class: 'ax ax-e', 'text-anchor': 'start' }, Math.round(maxE * (4 - g) / 4)));
     }
-    var step = Math.max(1, Math.ceil(n / 10));
+    var step = Math.max(1, Math.ceil(n / Math.max(4, Math.floor(iw / 70))));
     H.forEach(function (h, i) {
       if (i % step === 0 || i === n - 1) svg.appendChild(svgEl('text', { x: X(i), y: Ht - 8, class: 'ax', 'text-anchor': 'middle' }, i + 1));
     });
-    function line(Y, key, cls) {
-      if (n > 1) svg.appendChild(svgEl('polyline', { points: H.map(function (h, i) { return X(i) + ',' + Y(h[key]); }).join(' '), class: 'ln ' + cls }));
-      H.forEach(function (h, i) {
-        var c = svgEl('circle', { cx: X(i), cy: Y(h[key]), r: 4, class: 'dot ' + cls });
-        c.appendChild(svgEl('title', {}, dateStr(h.t) + ' — ' + h.w + ' ' + T().wpm + ', ' + h.e + ' ' + T().errorsLbl));
-        svg.appendChild(c);
+
+    var ps = H.map(function (h, i) { return [X(i), YW(h.w)]; });
+    var pe = H.map(function (h, i) { return [X(i), YE(h.e)]; });
+    var linesG = svgEl('g', { class: animate ? 'draw' : '' });
+    if (n > 1) {
+      var sp = smoothPath(ps, pt, base);
+      linesG.appendChild(svgEl('path', { d: sp + ' L' + ps[n - 1][0] + ',' + base + ' L' + ps[0][0] + ',' + base + ' Z', fill: 'url(#gSpd)', class: 'area' }));
+      linesG.appendChild(svgEl('path', { d: smoothPath(pe, pt, base), class: 'ln err' }));
+      linesG.appendChild(svgEl('path', { d: sp, class: 'ln spd' }));
+    }
+    svg.appendChild(linesG);
+    if (n <= 30) {
+      pe.forEach(function (p) { svg.appendChild(svgEl('circle', { cx: p[0], cy: p[1], r: 3, class: 'dot err' })); });
+      ps.forEach(function (p) { svg.appendChild(svgEl('circle', { cx: p[0], cy: p[1], r: 3.5, class: 'dot spd' })); });
+    }
+    // best attempt
+    var bi = 0; H.forEach(function (h, i) { if (h.w >= H[bi].w) bi = i; });
+    svg.appendChild(svgEl('circle', { cx: ps[bi][0], cy: ps[bi][1], r: 6, class: 'dot best' }));
+    svg.appendChild(svgEl('text', { x: ps[bi][0], y: ps[bi][1] - 12, 'text-anchor': 'middle', class: 'trophy' }, '🏆'));
+
+    if (animate && n > 1) {
+      linesG.querySelectorAll('.ln').forEach(function (p) {
+        var len = p.getTotalLength(); p.style.strokeDasharray = len; p.style.strokeDashoffset = len;
+        p.getBoundingClientRect(); p.style.transition = 'stroke-dashoffset 1.1s ease'; p.style.strokeDashoffset = 0;
+        setTimeout(function () { p.style.strokeDasharray = ''; }, 1200);
       });
     }
-    line(YE, 'e', 'err');
-    line(YW, 'w', 'spd');
+
+    // hover guide + tooltip
+    var guide = svgEl('line', { x1: 0, x2: 0, y1: pt, y2: base, class: 'guide hidden-guide' });
+    var hs = svgEl('circle', { r: 6, class: 'hover-dot spd hidden-guide' });
+    var he = svgEl('circle', { r: 5, class: 'hover-dot err hidden-guide' });
+    svg.appendChild(guide); svg.appendChild(he); svg.appendChild(hs);
+    var catcher = svgEl('rect', { x: pl, y: pt, width: iw, height: ih, fill: 'transparent' });
+    svg.appendChild(catcher);
+    var tip = $('chartTip');
+    function hide() { tip.classList.add('hidden'); [guide, hs, he].forEach(function (e) { e.classList.add('hidden-guide'); }); }
+    function move(ev) {
+      var r = svg.getBoundingClientRect(), x = (ev.touches ? ev.touches[0].clientX : ev.clientX) - r.left;
+      var i = n === 1 ? 0 : Math.round((x * W / r.width - pl) / iw * (n - 1));
+      i = Math.max(0, Math.min(n - 1, i));
+      var h = H[i];
+      guide.setAttribute('x1', X(i)); guide.setAttribute('x2', X(i));
+      hs.setAttribute('cx', X(i)); hs.setAttribute('cy', YW(h.w));
+      he.setAttribute('cx', X(i)); he.setAttribute('cy', YE(h.e));
+      [guide, hs, he].forEach(function (e) { e.classList.remove('hidden-guide'); });
+      tip.innerHTML = '<strong></strong><div class="tt-row"><i class="dotc spd"></i><span></span><b></b></div>' +
+        '<div class="tt-row"><i class="dotc acc"></i><span></span><b></b></div><div class="tt-row"><i class="dotc err"></i><span></span><b></b></div><small></small>';
+      tip.querySelector('strong').textContent = dateStr(h.t);
+      var rows = tip.querySelectorAll('.tt-row');
+      rows[0].querySelector('span').textContent = t.wpm; rows[0].querySelector('b').textContent = h.w;
+      rows[1].querySelector('span').textContent = t.accuracy; rows[1].querySelector('b').textContent = h.a + '%';
+      rows[2].querySelector('span').textContent = t.errorsLbl; rows[2].querySelector('b').textContent = h.e;
+      tip.querySelector('small').textContent = t.stage + ' ' + (h.si + 1) + ' · ' + t.exercise + ' ' + (h.ei + 1);
+      tip.classList.remove('hidden');
+      var card = svg.parentNode.getBoundingClientRect();
+      var px = r.left - card.left + X(i) * r.width / W, py = r.top - card.top + Math.min(YW(h.w), YE(h.e)) * r.height / Ht;
+      var tw = tip.offsetWidth;
+      tip.style.left = Math.max(6, Math.min(card.width - tw - 6, px - tw / 2)) + 'px';
+      tip.style.top = Math.max(4, py - tip.offsetHeight - 14) + 'px';
+    }
+    catcher.addEventListener('mousemove', move);
+    catcher.addEventListener('touchstart', move, { passive: true });
+    catcher.addEventListener('touchmove', move, { passive: true });
+    catcher.addEventListener('mouseleave', hide);
   }
 
-  function drawDailyChart(svg, H) {
+  function drawDailyChart(svg, H, animate) {
+    var t = T();
     svg.innerHTML = '';
-    var W = 800, Ht = 220, pl = 44, pr = 16, pt = 16, pb = 30;
+    var W = Math.max(320, svg.clientWidth || 800), Ht = 230, pl = 42, pr = 16, pt = 20, pb = 30;
     svg.setAttribute('viewBox', '0 0 ' + W + ' ' + Ht);
     var byDay = {};
     H.forEach(function (h) { var k = dayKey(h.t); byDay[k] = (byDay[k] || 0) + h.d; });
     var nDays = state.progFilter.days || Math.min(60, Math.max(7, Math.ceil((Date.now() - H[0].t) / 86400000) + 1));
-    var days = [];
+    var days = [], today = dayKey(Date.now());
     for (var i = nDays - 1; i >= 0; i--) { var ts = Date.now() - i * 86400000; days.push({ k: dayKey(ts), ts: ts, m: (byDay[dayKey(ts)] || 0) / 60 }); }
-    var maxM = Math.max(5, Math.ceil(Math.max.apply(null, days.map(function (d) { return d.m; })) / 5) * 5);
-    var iw = W - pl - pr, ih = Ht - pt - pb, bw = iw / days.length;
+    var maxM = niceMax(Math.max.apply(null, days.map(function (d) { return d.m; })), 5);
+    var iw = W - pl - pr, ih = Ht - pt - pb, bw = iw / days.length, base = pt + ih;
+
+    var defs = svgEl('defs', {});
+    [['gBar', '#7ED9AE', '#2E8A5B'], ['gBarToday', '#6E93AA', '#22415A']].forEach(function (c) {
+      var lg = svgEl('linearGradient', { id: c[0], x1: 0, y1: 0, x2: 0, y2: 1 });
+      lg.appendChild(svgEl('stop', { offset: '0', 'stop-color': c[1] }));
+      lg.appendChild(svgEl('stop', { offset: '1', 'stop-color': c[2] }));
+      defs.appendChild(lg);
+    });
+    svg.appendChild(defs);
     for (var g = 0; g <= 4; g++) {
       var y = pt + ih * g / 4;
       svg.appendChild(svgEl('line', { x1: pl, x2: W - pr, y1: y, y2: y, class: 'grid' }));
       svg.appendChild(svgEl('text', { x: pl - 8, y: y + 4, class: 'ax', 'text-anchor': 'end' }, Math.round(maxM * (4 - g) / 4)));
     }
-    var step = Math.max(1, Math.ceil(days.length / 10));
+    var step = Math.max(1, Math.ceil(days.length / Math.max(4, Math.floor(iw / 60))));
     days.forEach(function (d, i) {
-      var h = d.m / maxM * ih, x = pl + i * bw + bw * 0.18;
-      var r = svgEl('rect', { x: x, y: pt + ih - h, width: bw * 0.64, height: Math.max(h, d.m ? 2 : 0), rx: 3, class: 'bar-day' });
-      r.appendChild(svgEl('title', {}, dateStr(d.ts, true) + ' — ' + Math.round(d.m * 10) / 10 + ' ' + T().minShort));
-      svg.appendChild(r);
-      if (i % step === 0 || i === days.length - 1) {
+      var h = d.m / maxM * ih, w = Math.min(34, bw * 0.62), x = pl + i * bw + (bw - w) / 2, isToday = d.k === today;
+      if (d.m) {
+        h = Math.max(h, 4);
+        var r = Math.min(w / 2, 6, h);
+        var path = 'M' + x + ',' + base + ' V' + (base - h + r) + ' Q' + x + ',' + (base - h) + ' ' + (x + r) + ',' + (base - h) +
+          ' H' + (x + w - r) + ' Q' + (x + w) + ',' + (base - h) + ' ' + (x + w) + ',' + (base - h + r) + ' V' + base + ' Z';
+        var bar = svgEl('path', { d: path, fill: isToday ? 'url(#gBarToday)' : 'url(#gBar)', class: 'bar-day' + (animate ? ' grow' : '') });
+        bar.style.animationDelay = (i * 18) + 'ms';
+        bar.appendChild(svgEl('title', {}, dateStr(d.ts, true) + ' — ' + (Math.round(d.m * 10) / 10) + ' ' + t.minShort));
+        svg.appendChild(bar);
+      } else {
+        svg.appendChild(svgEl('rect', { x: x, y: base - 2, width: w, height: 2, rx: 1, class: 'bar-empty' }));
+      }
+      if ((i % step === 0 && days.length - 1 - i >= Math.ceil(step / 2)) || i === days.length - 1) {
         var dt = new Date(d.ts);
-        svg.appendChild(svgEl('text', { x: pl + i * bw + bw / 2, y: Ht - 8, class: 'ax', 'text-anchor': 'middle' }, pad2(dt.getDate()) + '/' + pad2(dt.getMonth() + 1)));
+        svg.appendChild(svgEl('text', { x: pl + i * bw + bw / 2, y: Ht - 8, class: 'ax' + (isToday ? ' ax-today' : ''), 'text-anchor': 'middle' }, pad2(dt.getDate()) + '/' + pad2(dt.getMonth() + 1)));
       }
     });
   }
@@ -989,8 +1147,11 @@
     document.querySelectorAll('.lang-btn').forEach(function (b) {
       b.addEventListener('click', function () { state.lang = b.dataset.lang; LS.set('tt_lang', state.lang); applyLang(); });
     });
-    document.querySelectorAll('.layout-btn').forEach(function (b) {
-      b.addEventListener('click', function () { state.layout = b.dataset.layout; LS.set('tt_layout', state.layout); renderStages(); });
+    document.querySelectorAll('.layout-btn[data-layout]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        if (!D.LAYOUTS[b.dataset.layout]) return;
+        state.layout = b.dataset.layout; LS.set('tt_layout', state.layout); renderStages();
+      });
     });
     $('kbToggle').addEventListener('click', function () { state.showKb = !state.showKb; LS.set('tt_kb', state.showKb); applyToggles(); this.blur(); });
     $('handsToggle').addEventListener('click', function () { state.showHands = !state.showHands; LS.set('tt_hands', state.showHands); applyToggles(); this.blur(); });
@@ -1011,6 +1172,14 @@
     $('progressBtn').addEventListener('click', function () { renderProgress(); show('progressScreen'); });
     $('seeProgressBtn').addEventListener('click', function () { renderProgress(); show('progressScreen'); });
     $('progBackBtn').addEventListener('click', function () { renderStages(); show('stagesScreen'); });
+    $('progBackTop').addEventListener('click', function () { renderStages(); show('stagesScreen'); });
+    $('backBtn').addEventListener('click', function (e) {
+      var sc = state.screen;
+      if (sc === 'stagesScreen') return;                 // leave the tool
+      e.preventDefault();
+      if (sc === 'resultScreen' || sc === 'practiceScreen') { P = null; renderExercises(); show('exercisesScreen'); }
+      else { renderStages(); show('stagesScreen'); }
+    });
     $('progStage').addEventListener('change', function () { state.progFilter.stage = this.value; renderProgress(); });
     document.querySelectorAll('.period-btn').forEach(function (b) {
       b.addEventListener('click', function () { state.progFilter.days = +b.dataset.days; renderProgress(); });
@@ -1054,7 +1223,7 @@
     var rz = null;
     window.addEventListener('resize', function () {
       clearTimeout(rz);
-      rz = setTimeout(function () { fit(); if (P && state.screen === 'practiceScreen') markCurrent(); if (tut) tutStep(); }, 120);
+      rz = setTimeout(function () { fit(); if (P && state.screen === 'practiceScreen') markCurrent(); if (tut) tutStep(); if (state.screen === 'progressScreen') drawCharts(false); }, 120);
     });
   }
 

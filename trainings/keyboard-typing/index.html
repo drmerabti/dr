@@ -128,6 +128,7 @@
 
   <!-- ============ PROGRESS ============ -->
   <section id="progressScreen" class="screen hidden">
+    <div class="prog-top"><button type="button" class="btn btn-secondary btn-sm" id="progBackTop"></button></div>
     <h1 class="page-title" id="progTitle"></h1>
     <p class="page-sub" id="progSub"></p>
     <div class="prog-filters">
@@ -141,21 +142,24 @@
     <p class="prog-empty hidden" id="progEmpty"></p>
     <div id="progBody" class="prog-body">
       <div class="prog-cards" id="progCards"></div>
+      <p class="trend-note" id="trendNote"></p>
       <div class="chart-card">
         <div class="chart-head">
           <h3 id="chart1Title"></h3>
           <div class="legend"><span class="lg spd"></span><span id="legendSpeed"></span><span class="lg err"></span><span id="legendErr"></span></div>
         </div>
-        <svg id="chart1" class="chart" preserveAspectRatio="none"></svg>
+        <svg id="chart1" class="chart"></svg>
+        <div class="chart-tip hidden" id="chartTip"></div>
       </div>
       <div class="chart-card">
-        <div class="chart-head"><h3 id="chart2Title"></h3></div>
-        <svg id="chart2" class="chart" preserveAspectRatio="none"></svg>
+        <div class="chart-head"><h3 id="chart2Title"></h3><span class="streak-chip hidden" id="streakChip"></span></div>
+        <svg id="chart2" class="chart chart-bars"></svg>
       </div>
       <div class="chart-card">
         <div class="chart-head"><h3 id="weakTitle"></h3></div>
         <p class="weak-hint" id="weakHint"></p>
         <div class="mini-kb" id="weakKb"></div>
+        <div class="weak-scale"><span id="weakLess"></span><i></i><span id="weakMore"></span></div>
         <div class="weak-top" id="weakTop"></div>
       </div>
       <div class="chart-card">

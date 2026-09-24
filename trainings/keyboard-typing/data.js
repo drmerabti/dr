@@ -134,6 +134,7 @@
   /* ---------- Translations ---------- */
   var I18N = {
     ar: {
+      trendVsPrev: 'الأسهم مقارنة بالفترة السابقة بنفس المدة', streakDays: '{n} أيام متتالية', less: 'قليل', more: 'كثير',
       myProgress: 'تقدّمي', seeProgress: 'شاهد تقدمك', allStages: 'كل المراحل',
       last7: 'آخر 7 أيام', last30: 'آخر 30 يومًا', allTime: 'الكل',
       bestWpm: 'أفضل سرعة (كلمة/دقيقة)', avgAcc: 'متوسط الدقة', totalTime: 'وقت التدريب', attempts: 'عدد المحاولات',
@@ -195,6 +196,7 @@
       firstName: 'الاسم', lastName: 'اللقب', cont: 'متابعة', certReady: 'شهادتك جاهزة!', close: 'إغلاق', share: 'مشاركة', download: 'تحميل'
     },
     en: {
+      trendVsPrev: 'Arrows compare with the previous period of the same length', streakDays: '{n}-day streak', less: 'Few', more: 'Many',
       myProgress: 'My progress', seeProgress: 'See your progress', allStages: 'All stages',
       last7: 'Last 7 days', last30: 'Last 30 days', allTime: 'All time',
       bestWpm: 'Best speed (WPM)', avgAcc: 'Average accuracy', totalTime: 'Practice time', attempts: 'Attempts',
@@ -256,6 +258,7 @@
       firstName: 'First name', lastName: 'Last name', cont: 'Continue', certReady: 'Your certificate is ready!', close: 'Close', share: 'Share', download: 'Download'
     },
     fr: {
+      trendVsPrev: 'Les flèches comparent avec la période précédente de même durée', streakDays: '{n} jours d\'affilée', less: 'Peu', more: 'Beaucoup',
       myProgress: 'Ma progression', seeProgress: 'Voir ta progression', allStages: 'Toutes les étapes',
       last7: '7 derniers jours', last30: '30 derniers jours', allTime: 'Tout',
       bestWpm: 'Meilleure vitesse (mots/min)', avgAcc: 'Précision moyenne', totalTime: "Temps d'entraînement", attempts: 'Tentatives',
