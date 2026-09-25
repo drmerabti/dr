@@ -92,6 +92,38 @@ const UI = {
   }
 };
 
+
+Object.assign(UI.ar, {
+  back_tools:'العودة إلى الأدوات', mine:'مطوياتي', save:'حفظ في حسابي', new_b:'مطوية جديدة', open_b:'فتح', dup_b:'نسخ', del_b:'حذف',
+  confirm_del:'حذف هذه المطوية نهائيًا من حسابك؟', login_title:'سجّل دخولك لحفظ مطوياتك',
+  login_text:'عملك محفوظ تلقائيًا في هذا الجهاز. سجّل الدخول ليُحفظ في حسابك وتفتحه من أي جهاز.',
+  login_google:'الدخول بحساب Google', login_site:'تسجيل الدخول من الموقع', cancel:'إلغاء',
+  t_saved_cloud:'تم الحفظ في حسابك', t_too_big:'المطوية كبيرة جدًا للحفظ، صغّر الصور أو احذف بعضها',
+  t_cloud_err:'تعذّر الحفظ في الحساب، عملك محفوظ في الجهاز', mine_empty:'لا توجد مطويات محفوظة في حسابك بعد',
+  loading:'جاري التحميل...', copy_suffix:' (نسخة)', t_opened:'تم فتح المطوية', t_deleted:'تم الحذف', t_dup:'تم إنشاء نسخة',
+  untitled:'بدون عنوان', current:'مفتوحة الآن', t_new:'مطوية جديدة جاهزة'
+});
+Object.assign(UI.fr, {
+  back_tools:'Retour aux outils', mine:'Mes dépliants', save:'Enregistrer dans mon compte', new_b:'Nouveau dépliant', open_b:'Ouvrir', dup_b:'Dupliquer', del_b:'Supprimer',
+  confirm_del:'Supprimer définitivement ce dépliant de votre compte ?', login_title:'Connectez-vous pour enregistrer vos dépliants',
+  login_text:'Votre travail est enregistré automatiquement sur cet appareil. Connectez-vous pour le garder dans votre compte et l’ouvrir partout.',
+  login_google:'Continuer avec Google', login_site:'Se connecter sur le site', cancel:'Annuler',
+  t_saved_cloud:'Enregistré dans votre compte', t_too_big:'Dépliant trop lourd, réduisez ou supprimez des images',
+  t_cloud_err:'Échec de l’enregistrement en ligne, votre travail reste sur l’appareil', mine_empty:'Aucun dépliant enregistré dans votre compte',
+  loading:'Chargement...', copy_suffix:' (copie)', t_opened:'Dépliant ouvert', t_deleted:'Supprimé', t_dup:'Copie créée',
+  untitled:'Sans titre', current:'Ouvert', t_new:'Nouveau dépliant prêt'
+});
+Object.assign(UI.en, {
+  back_tools:'Back to tools', mine:'My brochures', save:'Save to my account', new_b:'New brochure', open_b:'Open', dup_b:'Duplicate', del_b:'Delete',
+  confirm_del:'Delete this brochure from your account for good?', login_title:'Sign in to save your brochures',
+  login_text:'Your work is saved automatically on this device. Sign in to keep it in your account and open it anywhere.',
+  login_google:'Continue with Google', login_site:'Sign in on the site', cancel:'Cancel',
+  t_saved_cloud:'Saved to your account', t_too_big:'Brochure too large, shrink or remove some images',
+  t_cloud_err:'Could not save online, your work is kept on this device', mine_empty:'No brochures saved in your account yet',
+  loading:'Loading...', copy_suffix:' (copy)', t_opened:'Brochure opened', t_deleted:'Deleted', t_dup:'Copy created',
+  untitled:'Untitled', current:'Open now', t_new:'New brochure ready'
+});
+
 /* ---------------------------------------------------------
    Templates
 --------------------------------------------------------- */
@@ -101,7 +133,6 @@ const TEMPLATES = [
   { id:'wave', cat:'edu', font:'Tajawal',
     name:{ar:'درس تفاعلي', fr:'Leçon', en:'Lesson'},
     pal:{c1:'#2F6FB0', c2:'#8FD0F5', c3:'#FFC857', c4:'#FFFFFF', bg:'#FFFFFF', ink:'#1E2F40'},
-    t:{fr:['Les énergies renouvelables','Cours de sciences physiques — 3e année'], en:['Renewable energy','Physics lesson for grade 9']},
     s:{'cover.title':'الطاقات المتجددة','cover.sub':'درس في العلوم الفيزيائية للسنة الثالثة متوسط','cover.org':'الأستاذ: م. أحمد',
       'flap.title':'هل تعلم؟','flap.text':'تتمتع الجزائر بأكثر من 3000 ساعة من أشعة الشمس سنويًا، مما يجعلها من أغنى بلدان العالم بالطاقة الشمسية.',
       'p1.title':'ما هي الطاقة المتجددة؟','p1.text':'هي طاقة نحصل عليها من مصادر طبيعية لا تنفد، مثل الشمس والرياح والماء.\nتتجدد باستمرار ولا تلوّث البيئة كما تفعل الطاقات الأحفورية.',
@@ -112,7 +143,6 @@ const TEMPLATES = [
   { id:'note', cat:'edu', font:'Almarai', mirror:true,
     name:{ar:'ملخص مراجعة', fr:'Fiche de révision', en:'Revision notes'},
     pal:{c1:'#D64550', c2:'#FFE27A', c3:'#B9D7F2', c4:'#FFFFFF', bg:'#FFFDF4', ink:'#2B2B2B'},
-    t:{fr:['Fiche de révision','Les règles essentielles avant l’examen'], en:['Revision sheet','The key rules before the exam']},
     s:{'cover.title':'ملخص قواعد اللغة العربية','cover.sub':'مراجعة شاملة لامتحان شهادة التعليم المتوسط','cover.org':'إعداد: الأستاذة س. بن علي',
       'flap.title':'أهم القواعد','flap.text':'المبتدأ مرفوع، والفاعل مرفوع، والمفعول به منصوب. احفظ هذه الثلاثة وستتجنب أغلب الأخطاء.',
       'p1.title':'الجملة الاسمية','p1.text':'تتكون من مبتدأ وخبر، وكلاهما مرفوع.\nمثال: العلمُ نورٌ.\nقد يتقدّم الخبر على المبتدأ إذا كان شبه جملة.',
@@ -123,7 +153,6 @@ const TEMPLATES = [
   { id:'health', cat:'aware', font:'Cairo',
     name:{ar:'توعية صحية', fr:'Santé', en:'Health'},
     pal:{c1:'#1FA38A', c2:'#A8E6D6', c3:'#FF7A7A', c4:'#FFFFFF', bg:'#F3FBF8', ink:'#1D3B36'},
-    t:{fr:['Votre santé compte','Campagne pour une alimentation saine'], en:['Your health matters','A campaign for healthy living']},
     s:{'cover.title':'صحتك أمانة','cover.sub':'حملة توعوية حول التغذية السليمة ونمط الحياة الصحي','cover.org':'وحدة الكشف والمتابعة المدرسية',
       'flap.title':'هل تعلم؟','flap.text':'شرب كوبين من الماء صباحًا يساعد جسمك على النشاط ويحسّن الهضم.',
       'p1.title':'التغذية المتوازنة','p1.text':'احرص على تناول الخضر والفواكه يوميًا، وقلّل من السكريات والمشروبات الغازية.\nوجبة الفطور هي أهم وجبة في اليوم.',
@@ -134,7 +163,6 @@ const TEMPLATES = [
   { id:'eco', cat:'aware', font:'Cairo', mirror:true,
     name:{ar:'البيئة', fr:'Environnement', en:'Environment'},
     pal:{c1:'#3E7B27', c2:'#A7C957', c3:'#F6C85F', c4:'#FFFFFF', bg:'#FBFAF1', ink:'#253320'},
-    t:{fr:['Protégeons notre planète','Petit guide éco-citoyen'], en:['Protect our planet','A small guide to green habits']},
     s:{'cover.title':'لنحمِ كوكبنا','cover.sub':'دليل صغير للحفاظ على البيئة في المدرسة والبيت','cover.org':'نادي البيئة المدرسي',
       'flap.title':'شعارنا','flap.text':'مدرسة نظيفة، بيئة سليمة، مستقبل أخضر.',
       'p1.title':'لماذا نحمي البيئة؟','p1.text':'البيئة بيتنا المشترك. التلوث يهدد الماء والهواء والتربة، وكل واحد منا قادر على التغيير بخطوات بسيطة.',
@@ -145,7 +173,6 @@ const TEMPLATES = [
   { id:'event', cat:'school', font:'Tajawal',
     name:{ar:'حفل مدرسي', fr:'Fête scolaire', en:'School party'},
     pal:{c1:'#E4405F', c2:'#3FA7D6', c3:'#FAC05E', c4:'#59CD90', bg:'#FFFFFF', ink:'#2A2340'},
-    t:{fr:['Fête de fin d’année','Cérémonie de remise des prix'], en:['End of year party','Awards ceremony for our pupils']},
     s:{'cover.title':'حفل نهاية السنة','cover.sub':'يسعدنا دعوتكم لحضور حفل تكريم التلاميذ المتفوقين','cover.org':'إدارة ابتدائية الأمل',
       'flap.title':'كلمة شكر','flap.text':'شكرًا لكل الأساتذة والأولياء على مرافقة أبنائنا طوال هذه السنة الدراسية.',
       'p1.title':'برنامج الحفل','p1.text':'افتتاح بآيات من القرآن الكريم، ثم النشيد الوطني، تليها كلمة السيد المدير.',
@@ -156,7 +183,6 @@ const TEMPLATES = [
   { id:'bts', cat:'school', font:'Almarai',
     name:{ar:'الدخول المدرسي', fr:'Rentrée scolaire', en:'Back to school'},
     pal:{c1:'#F6B80C', c2:'#1E3A5F', c3:'#E94F37', c4:'#FFFFFF', bg:'#FFFFFF', ink:'#1E3A5F'},
-    t:{fr:['Bonne rentrée !','Guide de l’élève et des parents'], en:['Happy new school year!','A guide for pupils and parents']},
     s:{'cover.title':'دخول مدرسي سعيد','cover.sub':'دليل التلميذ والولي لسنة دراسية ناجحة','cover.org':'متوسطة ابن خلدون',
       'flap.title':'نصيحة للأولياء','flap.text':'تابعوا كراريس أبنائكم يوميًا، وتواصلوا مع الأساتذة كلما دعت الحاجة.',
       'p1.title':'مرحبًا بكم','p1.text':'نرحب بجميع التلاميذ في سنة دراسية جديدة مليئة بالتعلم والنشاط والنجاح.',
@@ -167,7 +193,6 @@ const TEMPLATES = [
   { id:'corp', cat:'biz', font:'Cairo', mirror:true,
     name:{ar:'تعريف بمؤسسة', fr:'Présentation d’entreprise', en:'Company profile'},
     pal:{c1:'#1B2F5B', c2:'#2EC4B6', c3:'#E9EEF5', c4:'#FFFFFF', bg:'#FFFFFF', ink:'#1B2F5B'},
-    t:{fr:['Solutions d’ingénierie','Études et maintenance industrielle'], en:['Engineering solutions','Industrial studies and maintenance']},
     s:{'cover.title':'حلول هندسية متكاملة','cover.sub':'خبرة في الدراسات والصيانة الصناعية','cover.org':'مكتب الدراسات التقنية',
       'flap.title':'لماذا نحن؟','flap.text':'فريق من المهندسين ذوي الخبرة، والتزام بالجودة واحترام المواعيد.',
       'p1.title':'من نحن','p1.text':'مكتب دراسات متخصص في الهندسة الصناعية والطاقة، نرافق المؤسسات من الدراسة إلى التنفيذ والمتابعة.',
@@ -178,7 +203,6 @@ const TEMPLATES = [
   { id:'hex', cat:'biz', font:'Cairo', mirror:true,
     name:{ar:'خدمات', fr:'Services', en:'Services'},
     pal:{c1:'#0F766E', c2:'#7DE3CF', c3:'#F59E0B', c4:'#FFFFFF', bg:'#F6FAF9', ink:'#134E4A'},
-    t:{fr:['Services de maintenance','Rapidité et qualité'], en:['Maintenance services','Fast response, quality work']},
     s:{'cover.title':'خدمات الصيانة','cover.sub':'سرعة في التدخل وجودة في العمل','cover.org':'شركة الإتقان للخدمات',
       'flap.title':'عروض المؤسسات','flap.text':'عقود صيانة سنوية بأسعار تفضيلية للمؤسسات والإدارات.',
       'p1.title':'ماذا نقدّم','p1.text':'صيانة التجهيزات الكهربائية والتبريد والتكييف للمنازل والمؤسسات، بفريق مؤهل وقطع غيار أصلية.',
@@ -189,7 +213,6 @@ const TEMPLATES = [
   { id:'promo', cat:'promo', font:'Cairo',
     name:{ar:'عروض وتخفيضات', fr:'Promotions', en:'Sale'},
     pal:{c1:'#E63946', c2:'#FFD60A', c3:'#1D1D1D', c4:'#FFFFFF', bg:'#FFFFFF', ink:'#1D1D1D'},
-    t:{fr:['Grandes soldes','Sur tous les produits, une semaine seulement'], en:['Big sale','On every product, one week only']},
     s:{'cover.title':'تخفيضات كبرى','cover.sub':'على كل المنتجات لمدة أسبوع فقط','cover.org':'متجر النور','cover.badge':'-50%',
       'flap.title':'لا تفوّت الفرصة','flap.text':'العرض ساري حتى نفاد الكمية.',
       'p1.title':'عروض الأسبوع','p1.text':'استفد من تخفيضات تصل إلى 50% على الأجهزة المنزلية والملابس والأدوات المكتبية.',
@@ -200,7 +223,6 @@ const TEMPLATES = [
   { id:'menu', cat:'promo', font:'Amiri',
     name:{ar:'قائمة مطعم', fr:'Menu de restaurant', en:'Restaurant menu'},
     pal:{c1:'#C9A227', c2:'#8C6D1F', c3:'#3A3630', c4:'#FFFFFF', bg:'#1C1B19', ink:'#EFE6D2'},
-    t:{fr:['Restaurant El Assala','Saveurs traditionnelles, touche moderne'], en:['El Assala Restaurant','Traditional flavours, modern touch']},
     s:{'cover.title':'مطعم الأصالة','cover.sub':'نكهات تقليدية بلمسة عصرية','cover.org':'قائمة الطعام',
       'flap.title':'الحلويات','flap.text':'قلب اللوز، المقروط، والشاي بالنعناع يُقدَّم مع كل وجبة.',
       'p1.title':'المقبلات','p1.text':'شوربة فريك بالدجاج، بوراك باللحم، وسلطة مشوية بزيت الزيتون.',
@@ -211,7 +233,6 @@ const TEMPLATES = [
   { id:'conf', cat:'events', font:'Tajawal', mirror:true,
     name:{ar:'ملتقى علمي', fr:'Colloque scientifique', en:'Scientific conference'},
     pal:{c1:'#5B2A86', c2:'#00B4D8', c3:'#F72585', c4:'#FFFFFF', bg:'#FFFFFF', ink:'#2B1B3D'},
-    t:{fr:['Colloque national sur l’énergie','La transition énergétique dans l’industrie'], en:['National Energy Conference','Energy transition in industry']},
     s:{'cover.title':'الملتقى الوطني للطاقة','cover.sub':'الانتقال الطاقوي في القطاع الصناعي: تحديات وآفاق','cover.org':'كلية العلوم والتكنولوجيا',
       'flap.title':'اللجنة العلمية','flap.text':'تضم أساتذة وباحثين من جامعات ومراكز بحث وطنية ودولية.',
       'p1.title':'ديباجة الملتقى','p1.text':'يهدف الملتقى إلى جمع الباحثين والمهنيين لمناقشة سبل تحسين النجاعة الطاقوية في الصناعة ودمج الطاقات المتجددة.',
@@ -222,8 +243,7 @@ const TEMPLATES = [
   { id:'ram', cat:'occ', font:'El Messiri',
     name:{ar:'رمضان', fr:'Ramadan', en:'Ramadan'},
     pal:{c1:'#E0B04F', c2:'#0F1E3D', c3:'#1E3563', c4:'#FFFFFF', bg:'#FBF6EA', ink:'#2A2A2A'},
-    t:{fr:['Ramadan Karim','Le mois du partage et de la solidarité'], en:['Ramadan Kareem','A month of giving and compassion']},
-    s:{'cover.title':'رمضان كريم','cover.sub':'شهر الخير والبركة والتراحم','cover.org':'جمعية البر والإحسان',
+    s:{'cover.title':'رمضان مبارك','cover.sub':'شهر الخير والبركة والتراحم','cover.org':'جمعية البر والإحسان',
       'flap.title':'دعاء','flap.text':'اللهم بلّغنا رمضان، وأعنّا على صيامه وقيامه، وتقبّله منا.',
       'p1.title':'فضل الشهر','p1.text':'شهر رمضان فرصة لتجديد الإيمان وتهذيب النفس، وهو شهر القرآن والصبر والتكافل.',
       'p2.title':'قفة رمضان','p2.text':'تنظم جمعيتنا حملة لتوزيع قفة رمضان على العائلات المعوزة، ونرحب بمساهماتكم.',
@@ -235,26 +255,186 @@ const CATS = ['edu','aware','school','biz','promo','events','occ'];
 const FONTS = ['Tajawal','Cairo','Almarai','El Messiri','Amiri'];
 const COLORS = ['#2F6FB0','#1FA38A','#3E7B27','#E4405F','#E63946','#F6B80C','#5B2A86','#1B2F5B','#0F766E','#C9A227'];
 
-const GENERIC = {
-  fr: {'cover.org':'Merabti Academy','flap.title':'Le saviez-vous ?','flap.text':'Ajoutez une information surprenante ou un conseil pratique pour capter l’attention du lecteur.',
-    'p1.title':'Présentation','p1.text':'Présentez votre sujet en quelques phrases claires.\nUne bonne introduction donne envie de lire la suite.',
-    'p2.title':'L’essentiel','p2.text':'Développez l’idée principale avec des exemples concrets. Restez simple et précis.',
-    'p3.title':'À retenir','p3.list':'Premier point important\nDeuxième point important\nTroisième point important\nQuatrième point important',
-    'back.title':'Contact','back.text':'Pour toute information, n’hésitez pas à nous contacter.', addr:'Algérie'},
-  en: {'cover.org':'Merabti Academy','flap.title':'Did you know?','flap.text':'Add a surprising fact or a practical tip to catch the reader’s attention.',
-    'p1.title':'Introduction','p1.text':'Introduce your topic in a few clear sentences.\nA good opening makes people want to read on.',
-    'p2.title':'The essentials','p2.text':'Develop the main idea with concrete examples. Keep it simple and precise.',
-    'p3.title':'Key points','p3.list':'First key point\nSecond key point\nThird key point\nFourth key point',
-    'back.title':'Contact us','back.text':'For any information, feel free to get in touch.', addr:'Algeria'}
+/* Full per-template samples for French and English */
+const K = ['cover.title','cover.sub','cover.org','flap.title','flap.text','p1.title','p1.text','p2.title','p2.text','p3.title','p3.list','back.title','back.text'];
+const S = arr => Object.fromEntries(K.map((k, i) => [k, arr[i]]));
+const SAMPLES_I18N = {
+  wave: {
+    fr: S(['Les énergies renouvelables','Cours de sciences physiques — 3e année moyenne','Professeur : M. Ahmed',
+      'Le saviez-vous ?','L’Algérie reçoit plus de 3000 heures d’ensoleillement par an, ce qui en fait l’un des pays les plus riches en énergie solaire.',
+      'Qu’est-ce qu’une énergie renouvelable ?','C’est une énergie issue de sources naturelles inépuisables : le soleil, le vent et l’eau.\nElle se renouvelle sans cesse et ne pollue pas comme les énergies fossiles.',
+      'Ses types','Solaire : transformer la lumière du soleil en électricité grâce aux panneaux photovoltaïques.\nÉolienne : faire tourner des turbines pour produire de l’électricité.\nHydraulique : exploiter le mouvement de l’eau dans les barrages.',
+      'Retiens','Le soleil est une source inépuisable\nLe vent fait tourner les éoliennes\nL’énergie propre protège l’environnement\nÉconomiser l’énergie, c’est l’affaire de tous',
+      'Contact','Pour toute question sur le cours ou pour des exercices supplémentaires.']),
+    en: S(['Renewable energy','Physics lesson — Year 9','Teacher: Mr. Ahmed',
+      'Did you know?','Algeria gets more than 3,000 hours of sunshine a year, making it one of the richest countries in solar energy.',
+      'What is renewable energy?','It is energy that comes from natural sources that never run out: the sun, the wind and water.\nIt renews itself constantly and does not pollute like fossil fuels.',
+      'Its types','Solar: turning sunlight into electricity with photovoltaic panels.\nWind: spinning turbines to generate electricity.\nHydro: using moving water in dams.',
+      'Remember','The sun never runs out\nWind turns the turbines\nClean energy protects nature\nSaving energy is everyone’s job',
+      'Contact','For any question about the lesson or for extra exercises.'])
+  },
+  note: {
+    fr: S(['Fiche de révision : la conjugaison','Tout pour réussir l’examen du BEM','Préparé par : Mme S. Benali',
+      'Règles clés','Le verbe s’accorde toujours avec son sujet. Retenez cette règle et vous éviterez la plupart des erreurs.',
+      'Le présent','Il exprime une action qui se déroule maintenant.\nExemple : Je lis un livre.\nLes verbes du 1er groupe se terminent par -e, -es, -e.',
+      'Le passé composé','Il se forme avec l’auxiliaire avoir ou être et le participe passé.\nExemple : Nous avons fini nos devoirs.',
+      'Conseils de révision','Révisez un peu chaque jour\nFaites des exercices variés\nÉcrivez les exemples à la main\nDormez bien avant l’examen',
+      'Bonne chance à tous','La réussite est le fruit de la persévérance, ne lâchez rien.']),
+    en: S(['Grammar revision sheet','Everything you need for the final exam','Prepared by: Mrs. S. Benali',
+      'Key rules','A verb always agrees with its subject. Remember this rule and you will avoid most mistakes.',
+      'Present simple','Used for habits and general truths.\nExample: She reads every day.\nAdd -s for he, she and it.',
+      'Past simple','Used for finished actions in the past.\nExample: We finished our homework yesterday.',
+      'Revision tips','Revise a little every day\nSolve different exercises\nWrite examples by hand\nSleep well before the exam',
+      'Good luck everyone','Success comes from perseverance, never give up.'])
+  },
+  health: {
+    fr: S(['Votre santé compte','Campagne de sensibilisation pour une alimentation saine et une vie active','Unité de dépistage et de suivi scolaire',
+      'Le saviez-vous ?','Boire deux verres d’eau le matin aide votre corps à se réveiller et facilite la digestion.',
+      'Une alimentation équilibrée','Mangez des fruits et légumes chaque jour et limitez le sucre et les boissons gazeuses.\nLe petit-déjeuner est le repas le plus important de la journée.',
+      'L’activité physique','Trente minutes de marche ou de sport par jour renforcent le cœur, améliorent la concentration et réduisent le stress.',
+      'Bonnes habitudes','Buvez de l’eau régulièrement\nLavez-vous les mains avant de manger\nDormez huit heures\nLimitez les écrans',
+      'Consultez votre médecin','Mieux vaut prévenir que guérir, et le dépistage précoce protège votre santé.']),
+    en: S(['Your health matters','An awareness campaign on healthy eating and an active lifestyle','School health and screening unit',
+      'Did you know?','Drinking two glasses of water in the morning wakes your body up and helps digestion.',
+      'A balanced diet','Eat fruit and vegetables every day and cut down on sugar and fizzy drinks.\nBreakfast is the most important meal of the day.',
+      'Physical activity','Thirty minutes of walking or sport a day strengthens the heart, improves focus and reduces stress.',
+      'Daily habits','Drink water regularly\nWash your hands before eating\nSleep eight hours\nSpend less time on screens',
+      'See your doctor','Prevention is better than cure, and early screening protects your health.'])
+  },
+  eco: {
+    fr: S(['Protégeons notre planète','Petit guide pour préserver l’environnement à l’école et à la maison','Club environnement de l’école',
+      'Notre devise','École propre, environnement sain, avenir vert.',
+      'Pourquoi protéger l’environnement ?','L’environnement est notre maison commune. La pollution menace l’eau, l’air et le sol, et chacun peut agir par des gestes simples.',
+      'Le recyclage','Triez vos déchets : papier, plastique, verre et métal.\nLe recyclage économise les matières premières et réduit les déchets.',
+      'Gestes simples','Éteignez les lumières inutiles\nFermez bien le robinet\nUtilisez un sac réutilisable\nPlantez un arbre',
+      'Rejoignez-nous','Participez aux campagnes de plantation et de nettoyage avec le club chaque jeudi.']),
+    en: S(['Let’s protect our planet','A small guide to caring for the environment at school and at home','School environment club',
+      'Our motto','A clean school, a healthy environment, a green future.',
+      'Why protect the environment?','The environment is our shared home. Pollution threatens water, air and soil, and each of us can make a difference with simple steps.',
+      'Recycling','Sort your waste: paper, plastic, glass and metal.\nRecycling saves raw materials and reduces waste.',
+      'Simple steps','Switch off unneeded lights\nTurn the tap off properly\nUse a reusable bag\nPlant a tree',
+      'Join us','Take part in tree-planting and clean-up campaigns with the club every Thursday.'])
+  },
+  event: {
+    fr: S(['Fête de fin d’année','Nous avons le plaisir de vous inviter à la cérémonie de remise des prix','École primaire El Amel',
+      'Merci','Merci à tous les enseignants et parents d’avoir accompagné nos enfants tout au long de l’année.',
+      'Programme','Ouverture par des versets du Saint Coran, puis l’hymne national, suivis du discours de M. le directeur.',
+      'Animations','Pièces de théâtre et chants présentés par nos élèves, et exposition de leurs travaux de l’année.',
+      'Infos pratiques','Date : jeudi 25 juin\nHeure : 14h00\nLieu : cour de l’école\nOuvert à tous les parents',
+      'Au plaisir de vous voir','Votre présence fera plaisir à vos enfants et les encouragera à exceller.']),
+    en: S(['End of year party','We are pleased to invite you to our top pupils’ awards ceremony','El Amel Primary School',
+      'Thank you','Thank you to all teachers and parents for supporting our children throughout the year.',
+      'Programme','Opening with verses from the Holy Quran, then the national anthem, followed by a speech from the head teacher.',
+      'Performances','Plays and songs by our pupils, plus an exhibition of their artwork from the year.',
+      'Event details','Date: Thursday 25 June\nTime: 2:00 pm\nPlace: school yard\nAll parents welcome',
+      'We look forward to seeing you','Your presence will delight your children and encourage them to keep excelling.'])
+  },
+  bts: {
+    fr: S(['Bonne rentrée !','Guide de l’élève et des parents pour une année réussie','CEM Ibn Khaldoun',
+      'Conseil aux parents','Consultez chaque jour les cahiers de vos enfants et contactez les enseignants dès que nécessaire.',
+      'Bienvenue','Nous souhaitons la bienvenue à tous les élèves pour une nouvelle année pleine d’apprentissage et de réussite.',
+      'Organisation','Les cours commencent à 8h00.\nLa ponctualité et le respect du règlement sont les clés de la réussite.',
+      'Fournitures','Cahiers de 96 pages\nStylos de plusieurs couleurs\nRègle, équerre et rapporteur\nBlouse propre',
+      'Contacter l’administration','L’accueil est ouvert du dimanche au jeudi.']),
+    en: S(['Happy new school year!','A guide for pupils and parents to a successful year','Ibn Khaldoun Middle School',
+      'Tip for parents','Check your children’s notebooks every day and contact teachers whenever needed.',
+      'Welcome','We welcome all pupils to a new school year full of learning, activity and success.',
+      'Daily routine','School starts at 8:00 am.\nBeing on time and respecting the rules are the keys to success.',
+      'What you need','96-page notebooks\nPens in different colours\nRuler, set square and protractor\nA clean school smock',
+      'Contact the office','The front office is open Sunday to Thursday.'])
+  },
+  corp: {
+    fr: S(['Solutions d’ingénierie intégrées','Expertise en études et maintenance industrielle','Bureau d’études techniques',
+      'Pourquoi nous ?','Une équipe d’ingénieurs expérimentés, engagée sur la qualité et le respect des délais.',
+      'Qui sommes-nous','Bureau d’études spécialisé en ingénierie industrielle et en énergie, nous accompagnons les entreprises de l’étude à la réalisation et au suivi.',
+      'Notre vision','Offrir des solutions fiables et efficaces qui améliorent la performance des installations et réduisent la consommation d’énergie et les coûts de maintenance.',
+      'Nos services','Études techniques\nMaintenance préventive\nAudit énergétique\nFormation et accompagnement',
+      'Contactez-nous','Nous serons ravis d’étudier votre projet et de vous faire une offre adaptée.']),
+    en: S(['Integrated engineering solutions','Expertise in industrial studies and maintenance','Technical Studies Office',
+      'Why us?','A team of experienced engineers committed to quality and deadlines.',
+      'About us','An engineering office specialised in industrial engineering and energy, supporting companies from study to delivery and follow-up.',
+      'Our vision','Delivering reliable, efficient solutions that improve plant performance and cut energy use and maintenance costs.',
+      'Our services','Technical studies\nPreventive maintenance\nEnergy audits\nTraining and support',
+      'Contact us','We will gladly study your project and send you a tailored offer.'])
+  },
+  hex: {
+    fr: S(['Services de maintenance','Rapidité d’intervention et travail de qualité','Société El Itqane Services',
+      'Offres entreprises','Contrats de maintenance annuels à tarifs préférentiels pour les entreprises et administrations.',
+      'Ce que nous offrons','Maintenance des équipements électriques, du froid et de la climatisation pour particuliers et entreprises, avec une équipe qualifiée et des pièces d’origine.',
+      'Comment ça marche','Appelez-nous, nous fixons un rendez-vous, le technicien se déplace et établit un diagnostic gratuit avant toute intervention.',
+      'Nos atouts','Intervention sous 24 heures\nGarantie sur tous les travaux\nPrix transparents\nService après-vente',
+      'À votre service','Du samedi au jeudi, de 8h00 à 18h00.']),
+    en: S(['Maintenance services','Fast response and quality work','El Itqane Services',
+      'Business plans','Annual maintenance contracts at preferential rates for companies and public offices.',
+      'What we offer','Maintenance of electrical, refrigeration and air-conditioning equipment for homes and businesses, by a qualified team with original parts.',
+      'How it works','Call us, we book a visit, and the technician comes to you with a free diagnosis before any work.',
+      'Why choose us','Response within 24 hours\nWarranty on all work\nClear prices\nAfter-sales service',
+      'At your service','Saturday to Thursday, 8:00 am to 6:00 pm.'])
+  },
+  promo: {
+    fr: S(['Grandes soldes','Sur tous les produits pendant une semaine seulement','Magasin En-Nour',
+      'Ne ratez pas l’occasion','Offre valable dans la limite des stocks disponibles.',
+      'Offres de la semaine','Profitez de réductions jusqu’à 50 % sur l’électroménager, les vêtements et les fournitures de bureau.',
+      'Cadeaux offerts','Pour tout achat de plus de 5000 DA, recevez un cadeau et participez au tirage au sort.',
+      'Prix phares','Mixeur électrique | 3900 DA\nFer à vapeur | 2500 DA\nCartable | 1800 DA\nLampe de bureau | 1200 DA',
+      'Rendez-nous visite','Ouvert tous les jours de 9h00 à 22h00.']),
+    en: S(['Big sale','On every product for one week only','En-Nour Store',
+      'Don’t miss out','Offer valid while stocks last.',
+      'This week’s deals','Enjoy up to 50% off home appliances, clothes and office supplies.',
+      'Free gifts','Spend over 5,000 DA and get a free gift plus an entry into our prize draw.',
+      'Top prices','Electric blender | 3900 DA\nSteam iron | 2500 DA\nSchool bag | 1800 DA\nDesk lamp | 1200 DA',
+      'Visit us','Open every day from 9:00 am to 10:00 pm.'])
+  },
+  menu: {
+    fr: S(['Restaurant El Assala','Saveurs traditionnelles, touche moderne','Menu',
+      'Desserts','Qalb el louz, makrout et thé à la menthe servi avec chaque repas.',
+      'Entrées','Chorba frik au poulet, bourek à la viande et salade mechouia à l’huile d’olive.',
+      'Plats principaux','Couscous aux légumes et à la viande, tajine aux olives, rechta algéroise et chtitha de poulet.',
+      'Prix','Chorba frik | 250 DA\nCouscous à la viande | 900 DA\nTajine aux olives | 750 DA\nQalb el louz | 150 DA',
+      'Réservez votre table','Nous vous accueillons tous les jours de 12h00 à 23h00.']),
+    en: S(['El Assala Restaurant','Traditional flavours with a modern touch','Menu',
+      'Desserts','Qalb el louz, makrout and mint tea served with every meal.',
+      'Starters','Chicken chorba frik, meat bourek and grilled mechouia salad with olive oil.',
+      'Main dishes','Couscous with vegetables and meat, olive tajine, rechta and chicken chtitha.',
+      'Prices','Chorba frik | 250 DA\nMeat couscous | 900 DA\nOlive tajine | 750 DA\nQalb el louz | 150 DA',
+      'Book your table','We welcome you every day from 12:00 pm to 11:00 pm.'])
+  },
+  conf: {
+    fr: S(['Colloque national sur l’énergie','La transition énergétique dans le secteur industriel : défis et perspectives','Faculté des sciences et de la technologie',
+      'Comité scientifique','Composé d’enseignants et de chercheurs d’universités et de centres de recherche nationaux et internationaux.',
+      'Présentation','Le colloque réunit chercheurs et professionnels pour débattre de l’amélioration de l’efficacité énergétique dans l’industrie et de l’intégration des énergies renouvelables.',
+      'Axes du colloque','Efficacité énergétique dans les usines.\nÉnergies renouvelables et stockage.\nÉlectronique de puissance et réseaux intelligents.',
+      'Dates importantes','Résumés : 15 novembre\nRéponse aux auteurs : 30 novembre\nArticles complets : 20 décembre\nColloque : 12 janvier',
+      'Inscription et contact','Les résumés sont envoyés par e-mail selon le modèle joint.']),
+    en: S(['National Energy Conference','Energy transition in industry: challenges and prospects','Faculty of Science and Technology',
+      'Scientific committee','Professors and researchers from national and international universities and research centres.',
+      'About the conference','The conference brings researchers and professionals together to discuss improving energy efficiency in industry and integrating renewable energy.',
+      'Conference topics','Energy efficiency in factories.\nRenewable energy and storage.\nPower electronics and smart grids.',
+      'Key dates','Abstracts due: 15 November\nNotification: 30 November\nFull papers: 20 December\nConference: 12 January',
+      'Registration and contact','Abstracts are sent by email using the attached template.'])
+  },
+  ram: {
+    fr: S(['Ramadan Moubarak','Le mois du bien, de la bénédiction et de la solidarité','Association El Birr wal Ihsane',
+      'Invocation','Ô Allah, fais-nous atteindre Ramadan, aide-nous à le jeûner et à y prier, et accepte-le de notre part.',
+      'Les vertus du mois','Ramadan est l’occasion de renouveler sa foi et de purifier son âme ; c’est le mois du Coran, de la patience et de l’entraide.',
+      'Couffin du Ramadan','Notre association organise la distribution du couffin du Ramadan aux familles démunies. Vos dons sont les bienvenus.',
+      'Programme du mois','Iftar quotidien pour les jeûneurs\nConcours de récitation du Coran\nCours et conférences\nZakat el fitr',
+      'Contribuez avec nous','Chaque don, même petit, apporte de la joie dans un foyer dans le besoin.']),
+    en: S(['Ramadan Mubarak','A month of goodness, blessing and compassion','El Birr wal Ihsane Association',
+      'Supplication','O Allah, let us reach Ramadan, help us fast and pray through it, and accept it from us.',
+      'The virtues of the month','Ramadan is a chance to renew faith and refine the soul; it is the month of the Quran, patience and solidarity.',
+      'Ramadan food baskets','Our association distributes Ramadan food baskets to families in need, and your donations are welcome.',
+      'This month’s programme','Daily iftar for those fasting\nQuran memorisation contest\nTalks and lectures\nZakat al-fitr',
+      'Give with us','Every donation, however small, brings joy to a home in need.'])
+  }
 };
+const ADDR = { ar:'الجزائر', fr:'Algérie', en:'Algeria' };
 
 function sampleFor(id, lang) {
   const t = TPL[id];
-  const base = { 'cover.badge':'', ...CONTACT_AR };
-  if (lang === 'ar') return { ...base, ...t.s };
-  const g = GENERIC[lang] || GENERIC.en;
-  const tt = t.t[lang] || t.t.en;
-  return { ...base, ...g, 'cover.title':tt[0], 'cover.sub':tt[1], 'cover.badge': t.s['cover.badge'] || '' };
+  const base = { 'cover.badge': t.s['cover.badge'] || '', ...CONTACT_AR, addr: ADDR[lang] || ADDR.ar };
+  if (lang === 'ar' || !SAMPLES_I18N[id] || !SAMPLES_I18N[id][lang]) return { ...base, ...t.s, addr: ADDR.ar };
+  return { ...base, ...SAMPLES_I18N[id][lang] };
 }
 
 /* ---------------------------------------------------------
@@ -683,7 +863,11 @@ function setZoom(dir) {
   applyZoom();
 }
 function highlight() {
-  $$('.sheet-holder .pn').forEach(p => p.classList.toggle('hl', !!openSec && p.dataset.kind === openSec));
+  $$('.sheet-holder .pn').forEach(p => {
+    const on = !!openSec && p.dataset.kind === openSec;
+    p.classList.toggle('hl', on);
+    if (on) p.style.setProperty('--hl', SEC_COLORS[openSec]);
+  });
 }
 
 /* ---------------------------------------------------------
@@ -785,6 +969,7 @@ const SEC_ICONS = {
   p3:'<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="1.5"/><path d="M9 4v16M15 4v16"/><rect x="16.5" y="6" width="3" height="12" fill="currentColor" stroke="none"/></svg>',
   back:'<svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>'
 };
+const SEC_COLORS = { style:'#64748B', cover:'#16A34A', flap:'#0891B2', p1:'#7C3AED', p2:'#D97706', p3:'#2563EB', back:'#DB2777' };
 const SECTIONS = [
   { id:'style' },
   { id:'cover', fields:[['cover.title','text','f_title'],['cover.sub','area','f_sub'],['cover.org','text','f_org'],['cover.badge','text','f_badge','f_badge_h'],['logo','img','f_logo'],['cover','img','f_cimg']] },
@@ -840,10 +1025,10 @@ function buildAccordion() {
   acc.innerHTML = SECTIONS.map((sec, i) => {
     const content = sec.id === 'style' ? styleSectionHTML() : sec.fields.map(fieldHTML).join('');
     const last = i === SECTIONS.length - 1;
-    return `<section class="acc ${openSec === sec.id ? 'open' : ''}" data-sec="${sec.id}">
-      <button type="button" class="acc-head"><span class="acc-ico">${SEC_ICONS[sec.id]}</span>
-        <span class="acc-title"><b>${T('sec_' + sec.id)}</b><small>${T('sec_' + sec.id + '_d')}</small></span>
-        ${sec.id !== 'style' ? '<span class="acc-state"></span>' : ''}${CHEV}</button>
+    const badge = sec.id === 'style' ? `<span class="acc-ico">${SEC_ICONS.style}</span>` : `<span class="acc-num">${i}</span>`;
+    return `<section class="acc ${openSec === sec.id ? 'open' : ''}" data-sec="${sec.id}" style="--sc:${SEC_COLORS[sec.id]}">
+      <button type="button" class="acc-head">${badge}
+        <span class="acc-title"><b>${T('sec_' + sec.id)}</b><small>${esc(secSummary(sec))}</small></span>${CHEV}</button>
       <div class="acc-body"><div class="acc-inner"><div class="acc-content">${content}
         <button type="button" class="acc-next" data-next="${i}">${last ? T('done') : T('next')}${last ? '' : NEXT}</button>
       </div></div></div></section>`;
@@ -857,13 +1042,19 @@ function toggleSec(id, force) {
   highlight();
 }
 
+function secSummary(sec) {
+  const cut = x => { x = String(x || '').replace(/\s+/g, ' ').trim(); return x.length > 46 ? x.slice(0, 44) + '…' : x; };
+  if (sec.id === 'style') {
+    const t = TPL[st.tpl];
+    return [t.name[uiLang] || t.name.ar, st.font === 'auto' ? t.font : st.font, {ar:'العربية', fr:'Français', en:'English'}[st.clang]].join(' · ');
+  }
+  const parts = sec.fields.filter(f => f[1] === 'text' || f[1] === 'area').map(f => st.c[f[0]]).filter(v => (v || '').trim());
+  return parts.length ? cut(parts.slice(0, 2).join(' · ')) : T('sec_' + sec.id + '_d');
+}
 function updateStates() {
   SECTIONS.forEach(sec => {
-    if (!sec.fields) return;
-    const keys = sec.fields.filter(f => f[1] === 'text' || f[1] === 'area').filter(f => f[0] !== 'cover.badge').map(f => f[0]);
-    const n = keys.filter(k => (st.c[k] || '').trim()).length;
-    const dot = $(`.acc[data-sec="${sec.id}"] .acc-state`);
-    if (dot) dot.className = 'acc-state' + (n === 0 ? '' : n === keys.length ? ' full' : ' part');
+    const el = $(`.acc[data-sec="${sec.id}"] .acc-title small`);
+    if (el) el.textContent = secSummary(sec);
   });
 }
 
@@ -1072,6 +1263,138 @@ async function doPdf() {
 }
 window.addEventListener('afterprint', () => { $('#printRoot').innerHTML = ''; });
 
+
+/* ---------------------------------------------------------
+   Account (Firebase): Save button -> users/{uid}/brochures
+--------------------------------------------------------- */
+const hasFb = () => typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length && firebase.auth && firebase.firestore;
+const fbUser = () => (hasFb() ? firebase.auth().currentUser : null);
+const brochuresCol = uidv => firebase.firestore().collection('users').doc(uidv).collection('brochures');
+let pendingAfterLogin = null;
+
+function openLogin(after) {
+  pendingAfterLogin = after || null;
+  $('#login').classList.remove('hidden');
+}
+function closeLogin() { $('#login').classList.add('hidden'); }
+$('#loginCancel').addEventListener('click', () => { pendingAfterLogin = null; closeLogin(); });
+$('#login').addEventListener('click', e => { if (e.target.id === 'login') { pendingAfterLogin = null; closeLogin(); } });
+$('#loginGoogle').addEventListener('click', async () => {
+  if (!hasFb()) { toast(T('t_cloud_err')); return; }
+  try {
+    await firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
+    closeLogin();
+    const fn = pendingAfterLogin; pendingAfterLogin = null;
+    if (fn) fn();
+  } catch (e) { console.error(e); }
+});
+
+function cloudPayload() {
+  const copy = { ...st }; delete copy.docId;
+  return {
+    title: (st.c['cover.title'] || '').slice(0, 200),
+    tpl: st.tpl, clang: st.clang,
+    state: JSON.stringify(copy),
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  };
+}
+async function saveToAccount() {
+  saveNow(false);
+  const user = fbUser();
+  if (!user) { openLogin(saveToAccount); return; }
+  try {
+    const data = cloudPayload();
+    if (data.state.length > 950000) { toast(T('t_too_big')); return; }
+    const col = brochuresCol(user.uid);
+    if (st.docId) await col.doc(st.docId).set(data, { merge: true });
+    else { data.createdAt = firebase.firestore.FieldValue.serverTimestamp(); const ref = await col.add(data); st.docId = ref.id; }
+    saveNow(false);
+    toast(T('t_saved_cloud'));
+  } catch (e) { console.error(e); toast(T('t_cloud_err')); }
+}
+
+const IC_OPEN = '<svg viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>';
+const IC_DUP = '<svg viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg>';
+const IC_DEL = '<svg viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>';
+const IC_PLUS = '<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>';
+let mineDocs = [];
+
+function openMine() {
+  const user = fbUser();
+  if (!user) { openLogin(openMine); return; }
+  $('#mine').classList.remove('hidden');
+  loadMine();
+}
+function closeMine() { $('#mine').classList.add('hidden'); }
+async function loadMine() {
+  const grid = $('#mGrid');
+  grid.innerHTML = `<div class="g-empty">${T('loading')}</div>`;
+  try {
+    const snap = await brochuresCol(fbUser().uid).orderBy('updatedAt', 'desc').get();
+    mineDocs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderMine();
+  } catch (e) { console.error(e); grid.innerHTML = `<div class="g-empty">${T('t_cloud_err')}</div>`; }
+}
+function renderMine() {
+  const grid = $('#mGrid');
+  const fmt = ts => { try { return ts && ts.toDate ? ts.toDate().toLocaleDateString(uiLang === 'ar' ? 'ar-DZ' : uiLang) : ''; } catch (e) { return ''; } };
+  const cards = mineDocs.map(d => {
+    let parsed = null; try { parsed = JSON.parse(d.state); } catch (e) {}
+    if (!parsed || !TPL[parsed.tpl]) return '';
+    const ctx = ctxFor(parsed.tpl, parsed.c || {}, parsed.img || {}, { color: parsed.color, font: parsed.font, clang: parsed.clang || 'ar', qr: '' });
+    return `<div class="g-card m-card" data-mid="${d.id}">
+      ${d.id === st.docId ? `<span class="m-tag">${T('current')}</span>` : ''}
+      <div class="g-thumb"><div class="mini">${sheetHTML('out', ctx)}</div></div>
+      <div class="g-meta"><b>${esc(d.title || T('untitled'))}</b><span>${esc(TPL[parsed.tpl].name[uiLang] || TPL[parsed.tpl].name.ar)}</span></div>
+      <div class="m-date">${fmt(d.updatedAt)}</div>
+      <div class="m-actions">
+        <button type="button" class="primary" data-act="open">${IC_OPEN}${T('open_b')}</button>
+        <button type="button" data-act="dup">${IC_DUP}${T('dup_b')}</button>
+        <button type="button" class="danger" data-act="del">${IC_DEL}${T('del_b')}</button>
+      </div></div>`;
+  }).join('');
+  grid.innerHTML = `<button type="button" class="g-card m-new" data-act="new">${IC_PLUS}<span>${T('new_b')}</span></button>` +
+    (cards || `<div class="g-empty">${T('mine_empty')}</div>`);
+  requestAnimationFrame(() => $$('.g-thumb', grid).forEach(th => {
+    const mini = th.querySelector('.mini'); fitThumbs(mini); mini.style.transform = `scale(${th.clientWidth / SW})`;
+  }));
+}
+$('#btnMine').addEventListener('click', openMine);
+$('#mClose').addEventListener('click', closeMine);
+$('#mine').addEventListener('click', async e => {
+  if (e.target.id === 'mine') { closeMine(); return; }
+  const btn = e.target.closest('[data-act]'); if (!btn) return;
+  const act = btn.dataset.act;
+  if (act === 'new') {
+    st = freshState(); st.clang = uiLang; st.c = sampleFor(st.tpl, uiLang);
+    openSec = null; closeMine(); rebuildKeepOpen(); renderAll(); toast(T('t_new'));
+    return;
+  }
+  const card = btn.closest('[data-mid]'); if (!card) return;
+  const id = card.dataset.mid;
+  const doc = mineDocs.find(d => d.id === id); if (!doc) return;
+  const col = brochuresCol(fbUser().uid);
+  try {
+    if (act === 'open') {
+      const parsed = JSON.parse(doc.state);
+      st = Object.assign(freshState(), parsed, { docId: id });
+      openSec = null; closeMine(); rebuildKeepOpen(); renderAll(); toast(T('t_opened'));
+    } else if (act === 'dup') {
+      const parsed = JSON.parse(doc.state);
+      parsed.c = { ...(parsed.c || {}), 'cover.title': (parsed.c && parsed.c['cover.title'] || T('untitled')) + T('copy_suffix') };
+      await col.add({ title: parsed.c['cover.title'].slice(0, 200), tpl: parsed.tpl, clang: parsed.clang, state: JSON.stringify(parsed),
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(), updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+      toast(T('t_dup')); loadMine();
+    } else if (act === 'del') {
+      if (!confirm(T('confirm_del'))) return;
+      await col.doc(id).delete();
+      if (st.docId === id) { delete st.docId; saveNow(false); }
+      toast(T('t_deleted')); loadMine();
+    }
+  } catch (err) { console.error(err); toast(T('t_cloud_err')); }
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeMine(); closeLogin(); } });
+
 /* ---------------------------------------------------------
    Toast
 --------------------------------------------------------- */
@@ -1105,14 +1428,19 @@ $('#langMenu').addEventListener('click', e => {
   uiLang = b.dataset.lang;
   localStorage.setItem(UI_KEY, uiLang);
   $('#langMenu').classList.add('hidden');
+  if (st.clang !== uiLang) {
+    st.clang = uiLang;
+    if (!st.dirty) st.c = sampleFor(st.tpl, uiLang);
+  }
   applyUiLang();
+  renderAll();
 });
 document.addEventListener('click', e => { if (!e.target.closest('.lang-wrap')) $('#langMenu').classList.add('hidden'); });
 
 /* ---------------------------------------------------------
    Toolbar wiring
 --------------------------------------------------------- */
-$('#btnSave').addEventListener('click', () => saveNow(true));
+$('#btnSave').addEventListener('click', saveToAccount);
 $('#btnPrint').addEventListener('click', doPrint);
 $('#btnPdf').addEventListener('click', doPdf);
 $('#btnFullscreen').addEventListener('click', () => {

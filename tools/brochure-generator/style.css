@@ -316,6 +316,43 @@ html[dir="rtl"] .acc-next svg{ transform: scaleX(-1); }
 .g-meta span{ font-size:.72rem; font-weight:700; padding:3px 9px; border-radius:999px; background: var(--accent-soft); color: var(--accent); white-space:nowrap; }
 .g-empty{ grid-column:1/-1; text-align:center; color: var(--ink-soft); padding:60px 0; font-weight:600; }
 
+/* ---------- My brochures & login ---------- */
+.m-card{ position:relative; }
+.m-card .m-date{ font-size:.72rem; color: var(--ink-soft); padding: 0 4px; }
+.m-actions{ display:flex; gap:6px; padding:8px 2px 0; }
+.m-actions button{ flex:1; border:1px solid var(--line); background:#F5F8FA; border-radius:10px; padding:7px 4px; font-size:.8rem; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:5px; }
+.m-actions button:hover{ background: var(--accent-soft); }
+.m-actions button.primary{ background: var(--accent); color:#fff; border-color: var(--accent); }
+.m-actions button.danger:hover{ background:#FDECEC; color:#C0392B; }
+.m-actions svg{ width:15px; height:15px; }
+.m-new{ display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; min-height:230px; border:2px dashed rgba(47,87,112,.35); background: transparent; box-shadow:none; color: var(--accent); font-weight:800; }
+.m-new svg{ width:40px; height:40px; }
+.m-tag{ position:absolute; top:16px; inset-inline-start:16px; z-index:2; background: var(--accent); color:#fff; font-size:.7rem; font-weight:700; padding:3px 9px; border-radius:999px; }
+.login-box{ width:min(420px, 100%); background:#fff; border-radius:22px; padding:28px 26px 20px; text-align:center; box-shadow: 0 30px 80px rgba(0,0,0,.35); animation: gIn .25s ease; }
+.login-ico{ width:62px; height:62px; margin:0 auto 12px; border-radius:50%; background: var(--accent-soft); color: var(--accent); display:grid; place-items:center; }
+.login-ico svg{ width:30px; height:30px; }
+.login-box h3{ margin:0 0 8px; font-size:1.15rem; }
+.login-box p{ margin:0 0 18px; color: var(--ink-soft); font-size:.9rem; line-height:1.7; }
+.login-google{ width:100%; display:flex; align-items:center; justify-content:center; gap:10px; padding:12px; border:1px solid var(--line); border-radius:12px; background:#fff; font-weight:700; cursor:pointer; font-size:.95rem; }
+.login-google:hover{ background:#F5F8FA; }
+.login-google svg{ width:22px; height:22px; }
+.login-site{ display:block; margin-top:12px; color: var(--accent); font-weight:700; font-size:.88rem; }
+.login-cancel{ margin-top:10px; border:0; background:none; color: var(--ink-soft); cursor:pointer; font-size:.85rem; padding:6px; }
+
+/* back button arrow follows reading direction, position never moves */
+html[dir="rtl"] .back-btn svg{ transform: scaleX(-1); }
+
+/* colored sections */
+.acc{ border-inline-start: 4px solid var(--sc, var(--accent)); }
+.acc.open{ border-color: var(--line); border-inline-start-color: var(--sc); box-shadow: 0 8px 22px rgba(21,36,49,.08); }
+.acc-num{ width:34px; height:34px; flex:none; border-radius:50%; display:grid; place-items:center; background: var(--sc); color:#fff; font-weight:800; font-size:.92rem; font-family:'Inter',sans-serif; }
+.acc .acc-ico{ background: color-mix(in srgb, var(--sc) 14%, #fff); color: var(--sc); }
+.acc.open .acc-ico{ background: var(--sc); color:#fff; }
+.acc-title small{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.acc .acc-next{ background: var(--sc); }
+.acc .acc-next:hover{ filter: brightness(.92); background: var(--sc); }
+.sheet-holder .pn.hl::after, .sheet-holder .pn.hl:hover::after{ box-shadow: inset 0 0 0 5px var(--hl, rgba(47,87,112,.75)); }
+
 /* ---------- Toast ---------- */
 .toast{
   position:fixed; bottom:24px; left:50%; transform: translate(-50%, 30px); opacity:0;
