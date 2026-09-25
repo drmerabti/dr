@@ -19,7 +19,7 @@ const UI = {
     tool_name:'مولّد المطويات', gallery:'معرض القوالب', search:'ابحث عن قالب...',
     cat_all:'الكل', cat_edu:'تعليمية', cat_aware:'توعوية', cat_school:'مدرسية', cat_biz:'مؤسسات وشركات',
     cat_promo:'إشهار ومحلات', cat_events:'تظاهرات علمية', cat_occ:'مناسبات ودينية',
-    fold3:'ثلاثية الطيّ', fold2:'ثنائية', foldZ:'رباعية Z', foldA5:'نصف A5', soon:'قريبًا',
+    fold3:'ثلاثية الطيّ', fold2:'ثنائية', foldZ:'رباعية (Z)', foldA5:'نصف A5', soon:'قريبًا',
     view_flat:'مسطّحة', view_3d:'ثلاثية الأبعاد', outside:'الوجه الخارجي', inside:'الوجه الداخلي',
     fold:'طيّ', unfold:'فتح', flip:'اقلب', reset:'إعادة', hint3d:'اسحب بالفأرة لتدوير المطوية', fit:'ملاءمة الشاشة',
     fullscreen:'ملء الشاشة', save:'حفظ', print:'طباعة', pdf:'تحميل PDF', toggle_panel:'إظهار / إخفاء حيّز التعبئة',
@@ -94,6 +94,7 @@ const UI = {
 
 
 Object.assign(UI.ar, {
+  fold_type:'نوع الطيّ', sec_inner:'الصفحة الداخلية', sec_inner_d:'عنوان، نص وصورة', side_front:'الوجه الأمامي', side_back:'الوجه الخلفي', foldA5:'ورقة A5',
   back_tools:'العودة إلى الأدوات', mine:'مطوياتي', save:'حفظ في حسابي', new_b:'مطوية جديدة', open_b:'فتح', dup_b:'نسخ', del_b:'حذف',
   confirm_del:'حذف هذه المطوية نهائيًا من حسابك؟', login_title:'سجّل دخولك لحفظ مطوياتك',
   login_text:'عملك محفوظ تلقائيًا في هذا الجهاز. سجّل الدخول ليُحفظ في حسابك وتفتحه من أي جهاز.',
@@ -104,6 +105,7 @@ Object.assign(UI.ar, {
   untitled:'بدون عنوان', current:'مفتوحة الآن', t_new:'مطوية جديدة جاهزة'
 });
 Object.assign(UI.fr, {
+  fold_type:'Type de pliage', sec_inner:'Page intérieure', sec_inner_d:'Titre, texte et image', side_front:'Recto', side_back:'Verso', foldA5:'Feuille A5',
   back_tools:'Retour aux outils', mine:'Mes dépliants', save:'Enregistrer dans mon compte', new_b:'Nouveau dépliant', open_b:'Ouvrir', dup_b:'Dupliquer', del_b:'Supprimer',
   confirm_del:'Supprimer définitivement ce dépliant de votre compte ?', login_title:'Connectez-vous pour enregistrer vos dépliants',
   login_text:'Votre travail est enregistré automatiquement sur cet appareil. Connectez-vous pour le garder dans votre compte et l’ouvrir partout.',
@@ -114,6 +116,7 @@ Object.assign(UI.fr, {
   untitled:'Sans titre', current:'Ouvert', t_new:'Nouveau dépliant prêt'
 });
 Object.assign(UI.en, {
+  fold_type:'Fold type', sec_inner:'Inside page', sec_inner_d:'Heading, text and image', side_front:'Front', side_back:'Back', foldA5:'A5 sheet',
   back_tools:'Back to tools', mine:'My brochures', save:'Save to my account', new_b:'New brochure', open_b:'Open', dup_b:'Duplicate', del_b:'Delete',
   confirm_del:'Delete this brochure from your account for good?', login_title:'Sign in to save your brochures',
   login_text:'Your work is saved automatically on this device. Sign in to keep it in your account and open it anywhere.',
@@ -429,10 +432,15 @@ const SAMPLES_I18N = {
   }
 };
 const ADDR = { ar:'الجزائر', fr:'Algérie', en:'Algeria' };
+const EXTRA_P = {
+  ar:{'p4.title':'معلومات إضافية','p4.text':'أضف هنا معلومات مكمّلة أو صورة توضيحية تدعم محتوى المطوية.','p5.title':'كلمة أخيرة','p5.text':'اختم برسالة قصيرة تبقى في ذهن القارئ.'},
+  fr:{'p4.title':'Informations complémentaires','p4.text':'Ajoutez ici des informations utiles ou une image qui illustre votre contenu.','p5.title':'Le mot de la fin','p5.text':'Terminez par un message court qui restera dans l’esprit du lecteur.'},
+  en:{'p4.title':'More information','p4.text':'Add useful extra details or an image that illustrates your content.','p5.title':'Final word','p5.text':'End with a short message your reader will remember.'}
+};
 
 function sampleFor(id, lang) {
   const t = TPL[id];
-  const base = { 'cover.badge': t.s['cover.badge'] || '', ...CONTACT_AR, addr: ADDR[lang] || ADDR.ar };
+  const base = { 'cover.badge': t.s['cover.badge'] || '', ...CONTACT_AR, addr: ADDR[lang] || ADDR.ar, ...(EXTRA_P[lang] || EXTRA_P.ar) };
   if (lang === 'ar' || !SAMPLES_I18N[id] || !SAMPLES_I18N[id][lang]) return { ...base, ...t.s, addr: ADDR.ar };
   return { ...base, ...SAMPLES_I18N[id][lang] };
 }
@@ -445,12 +453,13 @@ if (!UI[uiLang]) uiLang = 'ar';
 const T = k => (UI[uiLang] && UI[uiLang][k]) || UI.ar[k] || k;
 
 function freshState() {
-  return { tpl:'wave', color:null, font:'auto', clang: uiLang, dirty:false, qr:true, c: sampleFor('wave', uiLang), img:{} };
+  return { tpl:'wave', fmt:'tri', color:null, font:'auto', clang: uiLang, dirty:false, qr:true, c: sampleFor('wave', uiLang), img:{} };
 }
+const FMT_OK = f => ['tri','bi','z','a5'].includes(f);
 function loadState() {
   try {
     const s = JSON.parse(localStorage.getItem(STORE_KEY));
-    if (s && TPL[s.tpl] && s.c) return Object.assign(freshState(), s);
+    if (s && TPL[s.tpl] && s.c) { const f = Object.assign(freshState(), s); f.c = { ...sampleFor(f.tpl, f.clang), ...s.c }; if (!FMT_OK(f.fmt)) f.fmt = 'tri'; return f; }
   } catch (e) {}
   return null;
 }
@@ -495,235 +504,262 @@ const leaf = (x, y, a, s, fill) =>
 /* ---------------------------------------------------------
    Decorations (SVG, literal colors so PDF export keeps them)
 --------------------------------------------------------- */
-const DECO = {
-  wave(kind, P) {
-    let s = `<rect width="374" height="794" fill="${P.bg}"/>`;
-    if (kind === 'cover') s += `
-      <path d="M0 0H374V372C318 410 262 356 196 384C128 413 64 396 0 424Z" fill="${P.c2}"/>
-      <path d="M0 0H374V340C314 380 256 322 188 352C122 381 58 366 0 392Z" fill="${P.c1}"/>
-      <circle cx="312" cy="92" r="52" fill="#fff" opacity=".10"/><circle cx="52" cy="262" r="24" fill="#fff" opacity=".13"/>
-      <circle cx="330" cy="292" r="11" fill="${P.c3}"/><circle cx="84" cy="120" r="6" fill="${P.c3}"/>
-      <path d="M0 794V744C70 726 132 766 202 748C272 730 322 748 374 736V794Z" fill="${P.c2}"/>
-      <path d="M0 794V768C80 750 150 788 230 770C300 755 340 770 374 762V794Z" fill="${P.c1}"/>`;
-    else if (kind === 'back') s += `
-      <path d="M0 0H374V40C300 62 240 26 170 44C100 62 50 50 0 60Z" fill="${P.c2}"/>
-      <path d="M0 794V690C70 664 140 712 214 688C286 664 330 684 374 670V794Z" fill="${P.c1}"/>
-      <circle cx="320" cy="740" r="22" fill="#fff" opacity=".14"/><circle cx="60" cy="760" r="9" fill="${P.c3}"/>`;
-    else if (kind === 'flap') s += `
-      <circle cx="360" cy="30" r="120" fill="${P.c2}" opacity=".45"/><circle cx="20" cy="770" r="90" fill="${P.c2}" opacity=".35"/>
-      <circle cx="300" cy="150" r="10" fill="${P.c3}"/><circle cx="60" cy="640" r="16" fill="${P.c1}" opacity=".18"/>`;
-    else s += `
-      <path d="M0 0H374V64C310 92 250 52 186 74C120 96 60 78 0 96Z" fill="${P.c1}"/>
-      <path d="M0 96C60 78 120 96 186 74C250 52 310 92 374 64V76C310 104 250 64 186 86C120 108 60 90 0 108Z" fill="${P.c2}"/>
-      <circle cx="340" cy="760" r="36" fill="${P.c2}" opacity=".35"/><circle cx="300" cy="770" r="8" fill="${P.c3}"/>`;
-    return s;
-  },
-
-  note(kind, P) {
-    let s = `<rect width="374" height="794" fill="${P.bg}"/>`;
-    for (let y = 96; y < 780; y += 32) s += `<line x1="0" y1="${y}" x2="374" y2="${y}" stroke="${P.c3}" stroke-width="1.2"/>`;
-    s += `<line x1="62" y1="0" x2="62" y2="794" stroke="${P.c1}" stroke-width="2"/><line x1="67" y1="0" x2="67" y2="794" stroke="${P.c1}" stroke-width="1" opacity=".4"/>`;
-    if (kind === 'cover') {
-      for (let y = 60; y < 794; y += 90) s += `<circle cx="30" cy="${y}" r="9" fill="#E9E4D6"/><circle cx="30" cy="${y}" r="9" fill="none" stroke="#D5CFBE"/>`;
-      s += `<path d="M300 690l8 16 18 3-13 12 3 18-16-9-16 9 3-18-13-12 18-3z" fill="none" stroke="${P.c1}" stroke-width="2.4" opacity=".7"/>
-            <path d="M100 120c30-18 70-18 100 0" stroke="${P.c1}" stroke-width="2.4" fill="none" opacity=".5"/>`;
-    } else if (kind === 'flap' || kind === 'back') {
-      s += `<path d="M110 730c20 10 40-10 60 0s40-10 60 0 40-10 60 0" stroke="${P.c1}" stroke-width="2.4" fill="none" opacity=".45"/>`;
-    }
-    return s;
-  },
-
-  health(kind, P) {
-    let s = `<rect width="374" height="794" fill="${P.bg}"/>`;
-    if (kind === 'cover') s += `
-      <circle cx="360" cy="60" r="232" fill="none" stroke="${P.c2}" stroke-width="10"/>
-      <circle cx="360" cy="60" r="200" fill="${P.c1}"/>
-      <g transform="translate(286 108)" fill="#fff" opacity=".9"><rect x="-12" y="-36" width="24" height="72" rx="6"/><rect x="-36" y="-12" width="72" height="24" rx="6"/></g>
-      <circle cx="0" cy="770" r="160" fill="${P.c2}" opacity=".7"/><circle cx="64" cy="640" r="16" fill="${P.c3}"/>
-      <circle cx="330" cy="700" r="40" fill="${P.c1}" opacity=".12"/>`;
-    else if (kind === 'back' || kind === 'flap') s += `
-      <circle cx="374" cy="794" r="190" fill="${P.c1}" opacity=".14"/><circle cx="0" cy="0" r="110" fill="${P.c2}" opacity=".6"/>
-      <circle cx="320" cy="120" r="10" fill="${P.c3}"/>`;
-    else s += `
-      <circle cx="380" cy="-10" r="100" fill="${P.c2}" opacity=".55"/><circle cx="-20" cy="810" r="120" fill="${P.c1}" opacity=".12"/>
-      <circle cx="320" cy="120" r="7" fill="${P.c3}"/>`;
-    return s;
-  },
-
-  eco(kind, P) {
-    let s = `<rect width="374" height="794" fill="${P.bg}"/>`;
-    if (kind === 'cover') s += `
-      <circle cx="300" cy="520" r="62" fill="${P.c3}" opacity=".9"/>
-      <path d="M0 590C80 548 150 580 222 548C292 518 342 548 374 532V794H0Z" fill="${P.c2}"/>
-      <path d="M0 660C90 618 170 680 262 638C322 612 352 628 374 618V794H0Z" fill="${P.c1}"/>
-      ${leaf(330, 20, 120, 1.3, P.c2)}${leaf(360, 70, 150, 1, P.c1)}${leaf(20, 30, 40, .9, P.c2)}`;
-    else if (kind === 'back' || kind === 'flap') s += `
-      <path d="M0 690C90 660 170 700 262 672C322 654 352 664 374 656V794H0Z" fill="${P.c2}"/>
-      <path d="M0 734C100 708 180 750 280 720C330 706 356 712 374 708V794H0Z" fill="${P.c1}"/>
-      ${leaf(340, 30, 130, 1, P.c2)}`;
-    else s += `
-      ${leaf(350, 18, 128, 1.1, P.c2)}${leaf(372, 70, 160, .8, P.c1)}
-      <path d="M0 754C100 734 180 766 280 742C330 730 356 736 374 732V794H0Z" fill="${P.c2}" opacity=".7"/>`;
-    return s;
-  },
-
-  event(kind, P, seed) {
-    const cols = [P.c1, P.c2, P.c3, P.c4];
-    const r = rng(seed || 7);
-    let s = `<rect width="374" height="794" fill="${P.bg}"/>`;
-    const n = kind === 'cover' ? 56 : 22;
-    for (let i = 0; i < n; i++) {
-      const x = r() * 374; let y = r() * 794;
-      if (kind === 'cover') { if (y > 230 && y < 560) y = y < 395 ? y - 170 : y + 170; }
-      else { y = r() < .5 ? r() * 60 : 740 + r() * 54; }
-      const c = cols[Math.floor(r() * cols.length)];
-      const t = r();
-      if (t < .4) s += `<rect x="${x.toFixed(0)}" y="${y.toFixed(0)}" width="${(6 + r() * 8).toFixed(0)}" height="${(12 + r() * 10).toFixed(0)}" rx="2" fill="${c}" transform="rotate(${(r() * 180).toFixed(0)} ${x.toFixed(0)} ${y.toFixed(0)})"/>`;
-      else if (t < .75) s += `<circle cx="${x.toFixed(0)}" cy="${y.toFixed(0)}" r="${(3 + r() * 6).toFixed(1)}" fill="${c}"/>`;
-      else s += `<polygon points="${starPts(x, y, 9, 4, 5)}" fill="${c}"/>`;
-    }
-    if (kind === 'cover') s += `
-      <path d="M-10 40C60 90 120 10 190 60S320 20 390 70" stroke="${P.c2}" stroke-width="5" fill="none" stroke-linecap="round"/>
-      <path d="M-10 740C60 700 130 770 200 730S320 760 390 720" stroke="${P.c1}" stroke-width="5" fill="none" stroke-linecap="round"/>`;
-    return s;
-  },
-
-  bts(kind, P) {
-    let s = `<rect width="374" height="794" fill="${P.bg}"/>`;
-    const ruler = (y, h) => {
-      let r = `<rect x="0" y="${y}" width="374" height="${h}" fill="#fff"/><rect x="0" y="${y}" width="374" height="${h}" fill="${P.c1}" opacity=".18"/>`;
-      for (let x = 8, i = 0; x < 374; x += 12, i++) r += `<line x1="${x}" y1="${y}" x2="${x}" y2="${y + (i % 5 === 0 ? h * .6 : h * .32)}" stroke="${P.c2}" stroke-width="1.6"/>`;
-      return r;
-    };
-    if (kind === 'cover') {
-      s += `<rect width="374" height="480" fill="${P.c1}"/>`;
-      for (let i = -10; i < 30; i++) s += `<line x1="${i * 26}" y1="480" x2="${i * 26 + 480}" y2="0" stroke="#fff" stroke-opacity=".12" stroke-width="7"/>`;
-      s += `<g transform="translate(20 610) rotate(-10)">
-          <rect x="40" y="0" width="230" height="34" fill="${P.c1}"/><rect x="40" y="0" width="230" height="11" fill="#fff" opacity=".35"/>
-          <polygon points="270,0 318,17 270,34" fill="#F1C68A"/><polygon points="302,11 318,17 302,23" fill="${P.c2}"/>
-          <rect x="18" y="0" width="22" height="34" fill="#B9C2CC"/><rect x="0" y="0" width="20" height="34" rx="6" fill="${P.c3}"/></g>
-        ${ruler(744, 50)}`;
-    } else if (kind === 'back' || kind === 'flap') {
-      s += `${ruler(0, 34)}<circle cx="330" cy="730" r="60" fill="${P.c1}" opacity=".25"/><circle cx="40" cy="700" r="14" fill="${P.c3}" opacity=".8"/>`;
-    } else {
-      s += `${ruler(0, 34)}<rect x="0" y="770" width="374" height="24" fill="${P.c1}"/>`;
-    }
-    return s;
-  },
-
-  corp(kind, P) {
-    let s = `<rect width="374" height="794" fill="${P.bg}"/>`;
-    if (kind === 'cover') {
-      s += `<path d="M0 0H374V500L0 590Z" fill="${P.c1}"/><path d="M0 590L374 500V516L0 606Z" fill="${P.c2}"/>`;
-      for (let i = 0; i < 9; i++) s += `<line x1="${-40 + i * 60}" y1="0" x2="${160 + i * 60}" y2="560" stroke="#fff" stroke-opacity=".05" stroke-width="18"/>`;
-      for (let x = 0; x < 4; x++) for (let y = 0; y < 3; y++) s += `<rect x="${270 + x * 22}" y="${700 + y * 22}" width="10" height="10" fill="${P.c1}" opacity=".12"/>`;
-    } else if (kind === 'back') {
-      s += `<rect width="374" height="126" fill="${P.c1}"/><rect y="126" width="374" height="6" fill="${P.c2}"/>
-            <rect x="0" y="760" width="374" height="34" fill="${P.c3}"/>`;
-    } else {
-      s += `<rect x="0" y="0" width="14" height="794" fill="${P.c1}"/><rect x="0" y="60" width="14" height="70" fill="${P.c2}"/>
-            <rect x="0" y="760" width="374" height="34" fill="${P.c3}"/>`;
-    }
-    return s;
-  },
-
-  hex(kind, P) {
-    let s = `<rect width="374" height="794" fill="${P.bg}"/>`;
-    const hx = (cx, cy, r, fill, op = 1, line) => line
-      ? `<polygon points="${hexPts(cx, cy, r)}" fill="none" stroke="${fill}" stroke-width="3" opacity="${op}"/>`
-      : `<polygon points="${hexPts(cx, cy, r)}" fill="${fill}" opacity="${op}"/>`;
-    if (kind === 'cover') {
-      const R = 40, w = R * Math.sqrt(3);
-      const map = [[0,0,'c1'],[1,0,'c2'],[2,0,'l'],[3,0,'c1'],[0,1,'c2'],[1,1,'c1'],[2,1,'c3'],[3,1,'c2'],[1,2,'l'],[2,2,'c1'],[3,2,'c2'],[2,3,'l'],[3,3,'c1'],[3,4,'c2']];
-      map.forEach(([c, r, k]) => {
-        const cx = 60 + c * w + (r % 2 ? w / 2 : 0), cy = 30 + r * R * 1.5;
-        s += k === 'l' ? hx(cx, cy, R - 4, P.c1, .5, true) : hx(cx, cy, R - 4, P[k], k === 'c2' ? .8 : 1);
-      });
-      s += hx(40, 760, 60, P.c2, .35) + hx(100, 790, 30, P.c1, .6, true);
-    } else {
-      s += hx(350, 20, 60, P.c2, .6) + hx(300, 70, 26, P.c1, .9) + hx(356, 118, 22, P.c3, .9);
-      s += hx(20, 770, 50, P.c1, .12) + hx(80, 780, 24, P.c1, .4, true);
-    }
-    return s;
-  },
-
-  promo(kind, P) {
-    let s = '';
-    if (kind === 'cover') {
-      s += `<rect width="374" height="794" fill="${P.c1}"/>`;
-      for (let i = 0; i < 24; i++) { const a = i * 15 * Math.PI / 180; s += `<line x1="187" y1="397" x2="${(187 + 700 * Math.cos(a)).toFixed(0)}" y2="${(397 + 700 * Math.sin(a)).toFixed(0)}" stroke="#fff" stroke-opacity=".06" stroke-width="30"/>`; }
-      s += `<path d="M0 640L374 520V600L0 720Z" fill="${P.c2}"/><path d="M0 734L374 614V630L0 750Z" fill="${P.c3}"/>
-            <path d="M0 0L150 0L0 90Z" fill="${P.c2}" opacity=".9"/>`;
-      const r = rng(11);
-      for (let i = 0; i < 26; i++) s += `<circle cx="${(r() * 374).toFixed(0)}" cy="${(r() * 794).toFixed(0)}" r="${(2 + r() * 4).toFixed(1)}" fill="#fff" opacity=".35"/>`;
-    } else if (kind === 'flap') {
-      s += `<rect width="374" height="794" fill="${P.c2}"/>`;
-      for (let i = -4; i < 20; i++) s += `<path d="M${i * 30} 0l20 0l-60 60l-20 0z" fill="${P.c1}"/><path d="M${i * 30} 734l20 0l-60 60l-20 0z" fill="${P.c3}"/>`;
-    } else {
-      s += `<rect width="374" height="794" fill="${P.bg}"/><path d="M0 0H190L0 110Z" fill="${P.c1}"/><path d="M0 110L190 0H220L0 128Z" fill="${P.c2}"/>
-            <path d="M374 794V700L270 794Z" fill="${P.c2}"/>`;
-      if (kind === 'back') s += `<rect y="760" width="374" height="34" fill="${P.c1}"/>`;
-    }
-    return s;
-  },
-
-  menu(kind, P) {
-    let s = `<rect width="374" height="794" fill="${P.bg}"/>
-      <rect x="16" y="16" width="342" height="762" fill="none" stroke="${P.c1}" stroke-width="1.6"/>
-      <rect x="24" y="24" width="326" height="746" fill="none" stroke="${P.c1}" stroke-width=".7" opacity=".6"/>`;
-    [[16,16],[358,16],[16,778],[358,778]].forEach(([x, y]) => s += `<rect x="${x - 6}" y="${y - 6}" width="12" height="12" fill="${P.c1}" transform="rotate(45 ${x} ${y})"/>`);
-    if (kind === 'cover') s += `
-      <g fill="none" stroke="${P.c1}" stroke-width="1.4">
-        <path d="M100 150H160M214 150H274"/><path d="M100 650H160M214 650H274"/></g>
-      <polygon points="${starPts(187, 150, 16, 6, 4)}" fill="${P.c1}"/><polygon points="${starPts(187, 650, 16, 6, 4)}" fill="${P.c1}"/>
-      <circle cx="187" cy="150" r="26" fill="none" stroke="${P.c1}" stroke-width=".8" opacity=".6"/><circle cx="187" cy="650" r="26" fill="none" stroke="${P.c1}" stroke-width=".8" opacity=".6"/>`;
-    else s += `<polygon points="${starPts(187, 740, 10, 4, 4)}" fill="${P.c1}" opacity=".8"/><path d="M130 740H170M204 740H244" stroke="${P.c1}" stroke-width="1"/>`;
-    return s;
-  },
-
-  conf(kind, P, seed) {
-    const id = 'g' + (++uid);
-    const net = (x0, y0, w, h, n, col, op, sd) => {
-      const r = rng(sd); const pts = [];
-      for (let i = 0; i < n; i++) pts.push([x0 + r() * w, y0 + r() * h]);
-      let o = '';
-      pts.forEach((a, i) => pts.slice(i + 1).forEach(b => { const d = Math.hypot(a[0] - b[0], a[1] - b[1]); if (d < 110) o += `<line x1="${a[0].toFixed(0)}" y1="${a[1].toFixed(0)}" x2="${b[0].toFixed(0)}" y2="${b[1].toFixed(0)}" stroke="${col}" stroke-opacity="${op}" stroke-width="1.2"/>`; }));
-      pts.forEach((a, i) => o += `<circle cx="${a[0].toFixed(0)}" cy="${a[1].toFixed(0)}" r="${i % 5 === 0 ? 5 : 2.6}" fill="${i % 7 === 0 ? P.c3 : col}" opacity="${i % 5 === 0 ? 1 : .8}"/>`);
-      return o;
-    };
-    if (kind === 'cover') return `<defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${P.c1}"/><stop offset="1" stop-color="${shade(P.c1, -.55)}"/></linearGradient></defs>
-      <rect width="374" height="794" fill="url(#${id})"/>${net(0, 360, 374, 440, 34, P.c2, .35, 5)}
-      <circle cx="330" cy="70" r="120" fill="${P.c2}" opacity=".10"/>`;
-    if (kind === 'back') return `<defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${P.c1}"/><stop offset="1" stop-color="${shade(P.c1, -.5)}"/></linearGradient></defs>
-      <rect width="374" height="794" fill="${P.bg}"/><rect y="640" width="374" height="154" fill="url(#${id})"/>${net(0, 650, 374, 140, 16, P.c2, .35, 9)}`;
-    return `<rect width="374" height="794" fill="${P.bg}"/>${net(200, 0, 174, 150, 14, P.c1, .22, (seed || 3) + 2)}`;
-  },
-
-  ram(kind, P, seed) {
-    const r = rng(seed || 21);
-    const lantern = (x, len, sc) => `<line x1="${x}" y1="0" x2="${x}" y2="${len}" stroke="${P.c1}" stroke-width="1.2"/>
-      <g transform="translate(${x} ${len}) scale(${sc})" fill="${P.c1}">
-        <path d="M-10 0H10L14 8H-14Z"/><path d="M-16 8H16L20 48L0 64L-20 48Z" fill-opacity=".92"/>
-        <path d="M-9 16H9L11 44L0 54L-11 44Z" fill="${P.c2}" fill-opacity=".55"/><circle cx="0" cy="70" r="4"/></g>`;
-    const stars = (n, y0, y1, col) => { let o = ''; for (let i = 0; i < n; i++) o += `<circle cx="${(r() * 374).toFixed(0)}" cy="${(y0 + r() * (y1 - y0)).toFixed(0)}" r="${(0.8 + r() * 1.8).toFixed(1)}" fill="${col}" opacity="${(.5 + r() * .5).toFixed(2)}"/>`; return o; };
-    if (kind === 'cover') {
-      const g = 'g' + (++uid), m = 'm' + uid;
-      return `<defs><linearGradient id="${g}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${P.c2}"/><stop offset="1" stop-color="${P.c3}"/></linearGradient>
-        <mask id="${m}"><rect width="374" height="794" fill="#fff"/><circle cx="209" cy="118" r="50" fill="#000"/></mask></defs>
-        <rect width="374" height="794" fill="url(#${g})"/>${stars(60, 0, 620, '#fff')}
-        <circle cx="187" cy="130" r="56" fill="${P.c1}" mask="url(#${m})"/>
-        <polygon points="${starPts(250, 90, 9, 3.5, 5)}" fill="${P.c1}"/>
-        ${lantern(56, 150, 1)}${lantern(318, 110, .85)}
-        <path d="M0 794V720H40V700C40 680 60 668 70 660C80 668 100 680 100 700V720H140V690C140 650 187 620 187 620C187 620 234 650 234 690V720H274V700C274 680 294 668 304 660C314 668 334 680 334 700V720H374V794Z" fill="${shade(P.c2, -.35)}" opacity=".9"/>
-        <rect x="183" y="592" width="8" height="28" fill="${shade(P.c2, -.35)}"/>`;
-    }
-    if (kind === 'back') return `<rect width="374" height="794" fill="${P.bg}"/><rect y="640" width="374" height="154" fill="${P.c2}"/>${stars(24, 650, 790, P.c1)}
-      <polygon points="${starPts(187, 20, 30, 12, 8)}" fill="${P.c1}" opacity=".25"/>`;
-    return `<rect width="374" height="794" fill="${P.bg}"/>${lantern(40, 60, .7)}${lantern(334, 40, .6)}
-      <polygon points="${starPts(187, 794, 120, 56, 8)}" fill="${P.c1}" opacity=".10"/>
-      <polygon points="${starPts(187, 794, 70, 34, 8)}" fill="none" stroke="${P.c1}" stroke-opacity=".35" stroke-width="1.5"/>`;
-  }
+/* ---------------------------------------------------------
+   Fold formats
+--------------------------------------------------------- */
+const FORMATS = {
+  tri: { type:'tri', pw:374,   sw:1122, out:['flap','back','cover'], in:['p1','p2','p3'], face3d:'in',
+         order:['cover','flap','p1','p2','p3','back'], k0:1,    mm:[297,210], pdf:['landscape','a4'], page:'A4 landscape', label:'fold3' },
+  bi:  { type:'bi',  pw:561,   sw:1122, out:['back','cover'], in:['p1','p3'], face3d:'in',
+         order:['cover','p1','p3','back'], k0:1.08, mm:[297,210], pdf:['landscape','a4'], page:'A4 landscape', label:'fold2' },
+  z:   { type:'z',   pw:280.5, sw:1122, out:['cover','flap','p1','p2'], in:['p3','p4','p5','back'], face3d:'out',
+         order:['cover','flap','p1','p2','p3','p4','p5','back'], k0:.86, mm:[297,210], pdf:['landscape','a4'], page:'A4 landscape', label:'foldZ' },
+  a5:  { type:'a5',  pw:559,   sw:559,  out:['cover'], in:['back'], face3d:'out',
+         order:['cover','back'], k0:1.1, mm:[148,210], pdf:['portrait','a5'], page:'A5 portrait', label:'foldA5' }
 };
+const FMT_KEYS = ['tri','bi','z','a5'];
+const fmtNow = () => FORMATS[st.fmt] || FORMATS.tri;
+
+/* ---------------------------------------------------------
+   Decorations — drawn for any panel width W (literal colors for PDF)
+--------------------------------------------------------- */
+function scalePath(d, f) {
+  if (f === 1) return d;
+  let cmd = '', idx = 0;
+  return d.replace(/([MLHVCSQTZmlhvcsqtz])|(-?\d*\.?\d+)/g, (m, c, n) => {
+    if (c) { cmd = c.toUpperCase(); idx = 0; return c; }
+    const isX = cmd === 'H' ? true : cmd === 'V' ? false : idx % 2 === 0;
+    idx++;
+    return isX ? String(+(parseFloat(n) * f).toFixed(1)) : n;
+  });
+}
+function mkDeco(W) {
+  const f = W / 374;
+  const X = x => +(x * f).toFixed(1);
+  const sp = d => scalePath(d, f);
+  const mv = (x, inner) => `<g transform="translate(${(X(x) - x).toFixed(1)} 0)">${inner}</g>`;
+  const s1 = Math.min(1, f);
+  return {
+    wave(kind, P) {
+      let s = `<rect width="${W}" height="794" fill="${P.bg}"/>`;
+      if (kind === 'cover') s += `
+        <path d="${sp('M0 0H374V372C318 410 262 356 196 384C128 413 64 396 0 424Z')}" fill="${P.c2}"/>
+        <path d="${sp('M0 0H374V340C314 380 256 322 188 352C122 381 58 366 0 392Z')}" fill="${P.c1}"/>
+        <circle cx="${X(312)}" cy="92" r="52" fill="#fff" opacity=".10"/><circle cx="${X(52)}" cy="262" r="24" fill="#fff" opacity=".13"/>
+        <circle cx="${X(330)}" cy="292" r="11" fill="${P.c3}"/><circle cx="${X(84)}" cy="120" r="6" fill="${P.c3}"/>
+        <path d="${sp('M0 794V744C70 726 132 766 202 748C272 730 322 748 374 736V794Z')}" fill="${P.c2}"/>
+        <path d="${sp('M0 794V768C80 750 150 788 230 770C300 755 340 770 374 762V794Z')}" fill="${P.c1}"/>`;
+      else if (kind === 'back') s += `
+        <path d="${sp('M0 0H374V40C300 62 240 26 170 44C100 62 50 50 0 60Z')}" fill="${P.c2}"/>
+        <path d="${sp('M0 794V690C70 664 140 712 214 688C286 664 330 684 374 670V794Z')}" fill="${P.c1}"/>
+        <circle cx="${X(320)}" cy="740" r="22" fill="#fff" opacity=".14"/><circle cx="${X(60)}" cy="760" r="9" fill="${P.c3}"/>`;
+      else if (kind === 'flap') s += `
+        <circle cx="${W - 14}" cy="30" r="120" fill="${P.c2}" opacity=".45"/><circle cx="20" cy="770" r="90" fill="${P.c2}" opacity=".35"/>
+        <circle cx="${X(300)}" cy="150" r="10" fill="${P.c3}"/><circle cx="${X(60)}" cy="640" r="16" fill="${P.c1}" opacity=".18"/>`;
+      else s += `
+        <path d="${sp('M0 0H374V64C310 92 250 52 186 74C120 96 60 78 0 96Z')}" fill="${P.c1}"/>
+        <path d="${sp('M0 96C60 78 120 96 186 74C250 52 310 92 374 64V76C310 104 250 64 186 86C120 108 60 90 0 108Z')}" fill="${P.c2}"/>
+        <circle cx="${W - 34}" cy="760" r="36" fill="${P.c2}" opacity=".35"/><circle cx="${W - 74}" cy="770" r="8" fill="${P.c3}"/>`;
+      return s;
+    },
+    note(kind, P) {
+      let s = `<rect width="${W}" height="794" fill="${P.bg}"/>`;
+      for (let y = 96; y < 780; y += 32) s += `<line x1="0" y1="${y}" x2="${W}" y2="${y}" stroke="${P.c3}" stroke-width="1.2"/>`;
+      s += `<line x1="62" y1="0" x2="62" y2="794" stroke="${P.c1}" stroke-width="2"/><line x1="67" y1="0" x2="67" y2="794" stroke="${P.c1}" stroke-width="1" opacity=".4"/>`;
+      if (kind === 'cover') {
+        for (let y = 60; y < 794; y += 90) s += `<circle cx="30" cy="${y}" r="9" fill="#E9E4D6"/><circle cx="30" cy="${y}" r="9" fill="none" stroke="#D5CFBE"/>`;
+        s += mv(300, `<path d="M300 690l8 16 18 3-13 12 3 18-16-9-16 9 3-18-13-12 18-3z" fill="none" stroke="${P.c1}" stroke-width="2.4" opacity=".7"/>`);
+      } else if (kind === 'flap' || kind === 'back') {
+        s += `<path d="${sp('M110 730c20 10 40-10 60 0s40-10 60 0 40-10 60 0')}" stroke="${P.c1}" stroke-width="2.4" fill="none" opacity=".45"/>`;
+      }
+      return s;
+    },
+    health(kind, P) {
+      let s = `<rect width="${W}" height="794" fill="${P.bg}"/>`;
+      if (kind === 'cover') s += `
+        <circle cx="${W - 14}" cy="60" r="232" fill="none" stroke="${P.c2}" stroke-width="10"/>
+        <circle cx="${W - 14}" cy="60" r="200" fill="${P.c1}"/>
+        <g transform="translate(${W - 88} 108)" fill="#fff" opacity=".9"><rect x="-12" y="-36" width="24" height="72" rx="6"/><rect x="-36" y="-12" width="72" height="24" rx="6"/></g>
+        <circle cx="0" cy="770" r="160" fill="${P.c2}" opacity=".7"/><circle cx="64" cy="640" r="16" fill="${P.c3}"/>
+        <circle cx="${W - 44}" cy="700" r="40" fill="${P.c1}" opacity=".12"/>`;
+      else if (kind === 'back' || kind === 'flap') s += `
+        <circle cx="${W}" cy="794" r="190" fill="${P.c1}" opacity=".14"/><circle cx="0" cy="0" r="110" fill="${P.c2}" opacity=".6"/>
+        <circle cx="${W - 54}" cy="120" r="10" fill="${P.c3}"/>`;
+      else s += `
+        <circle cx="${W + 6}" cy="-10" r="100" fill="${P.c2}" opacity=".55"/><circle cx="-20" cy="810" r="120" fill="${P.c1}" opacity=".12"/>
+        <circle cx="${W - 54}" cy="120" r="7" fill="${P.c3}"/>`;
+      return s;
+    },
+    eco(kind, P) {
+      let s = `<rect width="${W}" height="794" fill="${P.bg}"/>`;
+      if (kind === 'cover') s += `
+        <circle cx="${X(300)}" cy="520" r="62" fill="${P.c3}" opacity=".9"/>
+        <path d="${sp('M0 590C80 548 150 580 222 548C292 518 342 548 374 532V794H0Z')}" fill="${P.c2}"/>
+        <path d="${sp('M0 660C90 618 170 680 262 638C322 612 352 628 374 618V794H0Z')}" fill="${P.c1}"/>
+        ${leaf(W - 44, 20, 120, 1.3, P.c2)}${leaf(W - 14, 70, 150, 1, P.c1)}${leaf(20, 30, 40, .9, P.c2)}`;
+      else if (kind === 'back' || kind === 'flap') s += `
+        <path d="${sp('M0 690C90 660 170 700 262 672C322 654 352 664 374 656V794H0Z')}" fill="${P.c2}"/>
+        <path d="${sp('M0 734C100 708 180 750 280 720C330 706 356 712 374 708V794H0Z')}" fill="${P.c1}"/>
+        ${leaf(W - 34, 30, 130, 1, P.c2)}`;
+      else s += `
+        ${leaf(W - 24, 18, 128, 1.1, P.c2)}${leaf(W - 2, 70, 160, .8, P.c1)}
+        <path d="${sp('M0 754C100 734 180 766 280 742C330 730 356 736 374 732V794H0Z')}" fill="${P.c2}" opacity=".7"/>`;
+      return s;
+    },
+    event(kind, P, seed) {
+      const cols = [P.c1, P.c2, P.c3, P.c4];
+      const r = rng(seed || 7);
+      let s = `<rect width="${W}" height="794" fill="${P.bg}"/>`;
+      const n = Math.round((kind === 'cover' ? 56 : 22) * Math.max(.7, f));
+      for (let i = 0; i < n; i++) {
+        const x = r() * W; let y = r() * 794;
+        if (kind === 'cover') { if (y > 230 && y < 560) y = y < 395 ? y - 170 : y + 170; }
+        else { y = r() < .5 ? r() * 60 : 740 + r() * 54; }
+        const c = cols[Math.floor(r() * cols.length)];
+        const t = r();
+        if (t < .4) s += `<rect x="${x.toFixed(0)}" y="${y.toFixed(0)}" width="${(6 + r() * 8).toFixed(0)}" height="${(12 + r() * 10).toFixed(0)}" rx="2" fill="${c}" transform="rotate(${(r() * 180).toFixed(0)} ${x.toFixed(0)} ${y.toFixed(0)})"/>`;
+        else if (t < .75) s += `<circle cx="${x.toFixed(0)}" cy="${y.toFixed(0)}" r="${(3 + r() * 6).toFixed(1)}" fill="${c}"/>`;
+        else s += `<polygon points="${starPts(x, y, 9, 4, 5)}" fill="${c}"/>`;
+      }
+      if (kind === 'cover') s += `
+        <path d="${sp('M-10 40C60 90 120 10 190 60S320 20 390 70')}" stroke="${P.c2}" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <path d="${sp('M-10 740C60 700 130 770 200 730S320 760 390 720')}" stroke="${P.c1}" stroke-width="5" fill="none" stroke-linecap="round"/>`;
+      return s;
+    },
+    bts(kind, P) {
+      let s = `<rect width="${W}" height="794" fill="${P.bg}"/>`;
+      const ruler = (y, h) => {
+        let r = `<rect x="0" y="${y}" width="${W}" height="${h}" fill="#fff"/><rect x="0" y="${y}" width="${W}" height="${h}" fill="${P.c1}" opacity=".18"/>`;
+        for (let x = 8, i = 0; x < W; x += 12, i++) r += `<line x1="${x}" y1="${y}" x2="${x}" y2="${y + (i % 5 === 0 ? h * .6 : h * .32)}" stroke="${P.c2}" stroke-width="1.6"/>`;
+        return r;
+      };
+      if (kind === 'cover') {
+        s += `<rect width="${W}" height="480" fill="${P.c1}"/>`;
+        for (let i = -10; i < 30 * Math.max(1, f); i++) s += `<line x1="${i * 26}" y1="480" x2="${i * 26 + 480}" y2="0" stroke="#fff" stroke-opacity=".12" stroke-width="7"/>`;
+        s += `<g transform="translate(${(20 * s1 + (W - 374 * s1) / 2).toFixed(1)} 610) scale(${s1}) rotate(-10)">
+            <rect x="40" y="0" width="230" height="34" fill="${P.c1}"/><rect x="40" y="0" width="230" height="11" fill="#fff" opacity=".35"/>
+            <polygon points="270,0 318,17 270,34" fill="#F1C68A"/><polygon points="302,11 318,17 302,23" fill="${P.c2}"/>
+            <rect x="18" y="0" width="22" height="34" fill="#B9C2CC"/><rect x="0" y="0" width="20" height="34" rx="6" fill="${P.c3}"/></g>
+          ${ruler(744, 50)}`;
+      } else if (kind === 'back' || kind === 'flap') {
+        s += `${ruler(0, 34)}<circle cx="${W - 44}" cy="730" r="60" fill="${P.c1}" opacity=".25"/><circle cx="40" cy="700" r="14" fill="${P.c3}" opacity=".8"/>`;
+      } else {
+        s += `${ruler(0, 34)}<rect x="0" y="770" width="${W}" height="24" fill="${P.c1}"/>`;
+      }
+      return s;
+    },
+    corp(kind, P) {
+      let s = `<rect width="${W}" height="794" fill="${P.bg}"/>`;
+      if (kind === 'cover') {
+        s += `<path d="${sp('M0 0H374V500L0 590Z')}" fill="${P.c1}"/><path d="${sp('M0 590L374 500V516L0 606Z')}" fill="${P.c2}"/>`;
+        for (let i = 0; i < 9 * Math.max(1, f); i++) s += `<line x1="${-40 + i * 60}" y1="0" x2="${160 + i * 60}" y2="560" stroke="#fff" stroke-opacity=".05" stroke-width="18"/>`;
+        for (let x = 0; x < 4; x++) for (let y = 0; y < 3; y++) s += `<rect x="${W - 104 + x * 22}" y="${700 + y * 22}" width="10" height="10" fill="${P.c1}" opacity=".12"/>`;
+      } else if (kind === 'back') {
+        s += `<rect width="${W}" height="126" fill="${P.c1}"/><rect y="126" width="${W}" height="6" fill="${P.c2}"/>
+              <rect x="0" y="760" width="${W}" height="34" fill="${P.c3}"/>`;
+      } else {
+        s += `<rect x="0" y="0" width="14" height="794" fill="${P.c1}"/><rect x="0" y="60" width="14" height="70" fill="${P.c2}"/>
+              <rect x="0" y="760" width="${W}" height="34" fill="${P.c3}"/>`;
+      }
+      return s;
+    },
+    hex(kind, P) {
+      let s = `<rect width="${W}" height="794" fill="${P.bg}"/>`;
+      const hx = (cx, cy, r, fill, op = 1, line) => line
+        ? `<polygon points="${hexPts(cx, cy, r)}" fill="none" stroke="${fill}" stroke-width="3" opacity="${op}"/>`
+        : `<polygon points="${hexPts(cx, cy, r)}" fill="${fill}" opacity="${op}"/>`;
+      if (kind === 'cover') {
+        const R = 40, w = R * Math.sqrt(3);
+        const map = [[0,0,'c1'],[1,0,'c2'],[2,0,'l'],[3,0,'c1'],[4,0,'c2'],[0,1,'c2'],[1,1,'c1'],[2,1,'c3'],[3,1,'c2'],[4,1,'l'],[1,2,'l'],[2,2,'c1'],[3,2,'c2'],[4,2,'c1'],[2,3,'l'],[3,3,'c1'],[4,3,'c2'],[3,4,'c2']];
+        map.forEach(([c, r, k]) => {
+          const cx = 60 + c * w + (r % 2 ? w / 2 : 0), cy = 30 + r * R * 1.5;
+          if (cx - R > W) return;
+          s += k === 'l' ? hx(cx, cy, R - 4, P.c1, .5, true) : hx(cx, cy, R - 4, P[k], k === 'c2' ? .8 : 1);
+        });
+        s += hx(40, 760, 60, P.c2, .35) + hx(100, 790, 30, P.c1, .6, true);
+      } else {
+        s += hx(W - 24, 20, 60, P.c2, .6) + hx(W - 74, 70, 26, P.c1, .9) + hx(W - 18, 118, 22, P.c3, .9);
+        s += hx(20, 770, 50, P.c1, .12) + hx(80, 780, 24, P.c1, .4, true);
+      }
+      return s;
+    },
+    promo(kind, P) {
+      let s = '';
+      if (kind === 'cover') {
+        s += `<rect width="${W}" height="794" fill="${P.c1}"/>`;
+        for (let i = 0; i < 24; i++) { const a = i * 15 * Math.PI / 180; s += `<line x1="${W / 2}" y1="397" x2="${(W / 2 + 900 * Math.cos(a)).toFixed(0)}" y2="${(397 + 900 * Math.sin(a)).toFixed(0)}" stroke="#fff" stroke-opacity=".06" stroke-width="30"/>`; }
+        s += `<path d="${sp('M0 640L374 520V600L0 720Z')}" fill="${P.c2}"/><path d="${sp('M0 734L374 614V630L0 750Z')}" fill="${P.c3}"/>
+              <path d="M0 0L150 0L0 90Z" fill="${P.c2}" opacity=".9"/>`;
+        const r = rng(11);
+        for (let i = 0; i < 26 * Math.max(.7, f); i++) s += `<circle cx="${(r() * W).toFixed(0)}" cy="${(r() * 794).toFixed(0)}" r="${(2 + r() * 4).toFixed(1)}" fill="#fff" opacity=".35"/>`;
+      } else if (kind === 'flap') {
+        s += `<rect width="${W}" height="794" fill="${P.c2}"/>`;
+        for (let i = -4; i < W / 30 + 4; i++) s += `<path d="M${i * 30} 0l20 0l-60 60l-20 0z" fill="${P.c1}"/><path d="M${i * 30} 734l20 0l-60 60l-20 0z" fill="${P.c3}"/>`;
+      } else {
+        s += `<rect width="${W}" height="794" fill="${P.bg}"/><path d="M0 0H190L0 110Z" fill="${P.c1}"/><path d="M0 110L190 0H220L0 128Z" fill="${P.c2}"/>
+              <path d="M${W} 794V700L${W - 104} 794Z" fill="${P.c2}"/>`;
+        if (kind === 'back') s += `<rect y="760" width="${W}" height="34" fill="${P.c1}"/>`;
+      }
+      return s;
+    },
+    menu(kind, P) {
+      const cx = W / 2;
+      let s = `<rect width="${W}" height="794" fill="${P.bg}"/>
+        <rect x="16" y="16" width="${W - 32}" height="762" fill="none" stroke="${P.c1}" stroke-width="1.6"/>
+        <rect x="24" y="24" width="${W - 48}" height="746" fill="none" stroke="${P.c1}" stroke-width=".7" opacity=".6"/>`;
+      [[16,16],[W - 16,16],[16,778],[W - 16,778]].forEach(([x, y]) => s += `<rect x="${x - 6}" y="${y - 6}" width="12" height="12" fill="${P.c1}" transform="rotate(45 ${x} ${y})"/>`);
+      if (kind === 'cover') s += `
+        <g fill="none" stroke="${P.c1}" stroke-width="1.4"><path d="M${cx - 87} 150H${cx - 27}M${cx + 27} 150H${cx + 87}"/><path d="M${cx - 87} 650H${cx - 27}M${cx + 27} 650H${cx + 87}"/></g>
+        <polygon points="${starPts(cx, 150, 16, 6, 4)}" fill="${P.c1}"/><polygon points="${starPts(cx, 650, 16, 6, 4)}" fill="${P.c1}"/>
+        <circle cx="${cx}" cy="150" r="26" fill="none" stroke="${P.c1}" stroke-width=".8" opacity=".6"/><circle cx="${cx}" cy="650" r="26" fill="none" stroke="${P.c1}" stroke-width=".8" opacity=".6"/>`;
+      else s += `<polygon points="${starPts(cx, 740, 10, 4, 4)}" fill="${P.c1}" opacity=".8"/><path d="M${cx - 57} 740H${cx - 17}M${cx + 17} 740H${cx + 57}" stroke="${P.c1}" stroke-width="1"/>`;
+      return s;
+    },
+    conf(kind, P, seed) {
+      const id = 'g' + (++uid);
+      const net = (x0, y0, w, h, n, col, op, sd) => {
+        const r = rng(sd); const pts = [];
+        for (let i = 0; i < n; i++) pts.push([x0 + r() * w, y0 + r() * h]);
+        let o = '';
+        pts.forEach((a, i) => pts.slice(i + 1).forEach(b => { const d = Math.hypot(a[0] - b[0], a[1] - b[1]); if (d < 110) o += `<line x1="${a[0].toFixed(0)}" y1="${a[1].toFixed(0)}" x2="${b[0].toFixed(0)}" y2="${b[1].toFixed(0)}" stroke="${col}" stroke-opacity="${op}" stroke-width="1.2"/>`; }));
+        pts.forEach((a, i) => o += `<circle cx="${a[0].toFixed(0)}" cy="${a[1].toFixed(0)}" r="${i % 5 === 0 ? 5 : 2.6}" fill="${i % 7 === 0 ? P.c3 : col}" opacity="${i % 5 === 0 ? 1 : .8}"/>`);
+        return o;
+      };
+      const grad = `<defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${P.c1}"/><stop offset="1" stop-color="${shade(P.c1, -.55)}"/></linearGradient></defs>`;
+      if (kind === 'cover') return `${grad}<rect width="${W}" height="794" fill="url(#${id})"/>${net(0, 360, W, 440, Math.round(34 * f), P.c2, .35, 5)}
+        <circle cx="${W - 44}" cy="70" r="120" fill="${P.c2}" opacity=".10"/>`;
+      if (kind === 'back') return `${grad}<rect width="${W}" height="794" fill="${P.bg}"/><rect y="640" width="${W}" height="154" fill="url(#${id})"/>${net(0, 650, W, 140, Math.round(16 * f), P.c2, .35, 9)}`;
+      return `<rect width="${W}" height="794" fill="${P.bg}"/>${net(W - 174, 0, 174, 150, 14, P.c1, .22, (seed || 3) + 2)}`;
+    },
+    ram(kind, P, seed) {
+      const r = rng(seed || 21);
+      const cx = W / 2;
+      const lantern = (x, len, sc) => `<line x1="${x}" y1="0" x2="${x}" y2="${len}" stroke="${P.c1}" stroke-width="1.2"/>
+        <g transform="translate(${x} ${len}) scale(${sc})" fill="${P.c1}">
+          <path d="M-10 0H10L14 8H-14Z"/><path d="M-16 8H16L20 48L0 64L-20 48Z" fill-opacity=".92"/>
+          <path d="M-9 16H9L11 44L0 54L-11 44Z" fill="${P.c2}" fill-opacity=".55"/><circle cx="0" cy="70" r="4"/></g>`;
+      const stars = (n, y0, y1, col) => { let o = ''; for (let i = 0; i < n; i++) o += `<circle cx="${(r() * W).toFixed(0)}" cy="${(y0 + r() * (y1 - y0)).toFixed(0)}" r="${(0.8 + r() * 1.8).toFixed(1)}" fill="${col}" opacity="${(.5 + r() * .5).toFixed(2)}"/>`; return o; };
+      if (kind === 'cover') {
+        const g = 'g' + (++uid), m = 'm' + uid;
+        return `<defs><linearGradient id="${g}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${P.c2}"/><stop offset="1" stop-color="${P.c3}"/></linearGradient>
+          <mask id="${m}"><rect width="${W}" height="794" fill="#fff"/><circle cx="${cx + 22}" cy="118" r="50" fill="#000"/></mask></defs>
+          <rect width="${W}" height="794" fill="url(#${g})"/>${stars(Math.round(60 * f), 0, 620, '#fff')}
+          <circle cx="${cx}" cy="130" r="56" fill="${P.c1}" mask="url(#${m})"/>
+          <polygon points="${starPts(cx + 63, 90, 9, 3.5, 5)}" fill="${P.c1}"/>
+          ${lantern(X(56), 150, 1)}${lantern(X(318), 110, .85)}
+          <path d="${sp('M0 794V720H40V700C40 680 60 668 70 660C80 668 100 680 100 700V720H140V690C140 650 187 620 187 620C187 620 234 650 234 690V720H274V700C274 680 294 668 304 660C314 668 334 680 334 700V720H374V794Z')}" fill="${shade(P.c2, -.35)}" opacity=".9"/>
+          <rect x="${cx - 4}" y="592" width="8" height="28" fill="${shade(P.c2, -.35)}"/>`;
+      }
+      if (kind === 'back') return `<rect width="${W}" height="794" fill="${P.bg}"/><rect y="640" width="${W}" height="154" fill="${P.c2}"/>${stars(Math.round(24 * f), 650, 790, P.c1)}
+        <polygon points="${starPts(cx, 20, 30, 12, 8)}" fill="${P.c1}" opacity=".25"/>`;
+      return `<rect width="${W}" height="794" fill="${P.bg}"/>${lantern(40, 60, .7)}${lantern(W - 40, 40, .6)}
+        <polygon points="${starPts(cx, 794, 120, 56, 8)}" fill="${P.c1}" opacity=".10"/>
+        <polygon points="${starPts(cx, 794, 70, 34, 8)}" fill="none" stroke="${P.c1}" stroke-opacity=".35" stroke-width="1.5"/>`;
+    }
+  };
+}
+const decoCache = {};
+const decoFor = W => decoCache[W] || (decoCache[W] = mkDeco(W));
 
 /* ---------------------------------------------------------
    Panel & sheet rendering
@@ -745,23 +781,25 @@ function listHTML(txt) {
 }
 const imgTag = (src, cls = 'img') => src ? `<div class="${cls}"><img src="${src}" alt=""></div>` : '';
 
-const KIND_CLASS = { cover:'cv', flap:'fl', p1:'in', p2:'in', p3:'in', back:'bk' };
+const KIND_CLASS = { cover:'cv', flap:'fl', p1:'in', p2:'in', p3:'in', p4:'in', p5:'in', back:'bk' };
+const KIND_SEED = { cover:3, flap:5, p1:7, p2:11, p3:13, p4:19, p5:23, back:17 };
 
 function ctxFor(tplId, content, imgs, opts = {}) {
   const t = TPL[tplId];
   const P = palette(t, opts.color);
   const font = (opts.font && opts.font !== 'auto') ? opts.font : t.font;
-  return { t, P, font, c: content, img: imgs || {}, rtl: (opts.clang || 'ar') === 'ar', lang: opts.clang || 'ar', qr: opts.qr };
+  const F = FORMATS[opts.fmt] || FORMATS.tri;
+  return { t, P, font, F, c: content, img: imgs || {}, rtl: (opts.clang || 'ar') === 'ar', lang: opts.clang || 'ar', qr: opts.qr };
 }
 
 function panelHTML(kind, ctx) {
-  const { t, P, c, img } = ctx;
-  const cls = `pn T-${t.id} ${KIND_CLASS[kind]}`;
-  const seed = { cover:3, flap:5, p1:7, p2:11, p3:13, back:17 }[kind];
-  const decoKind = (kind === 'p1' || kind === 'p2' || kind === 'p3') ? 'inner' : kind;
-  let svg = DECO[t.id](decoKind, P, seed);
-  if (t.mirror && ctx.rtl) svg = `<g transform="translate(374 0) scale(-1 1)">${svg}</g>`;
-  const style = `--c1:${P.c1};--c2:${P.c2};--c3:${P.c3};--c4:${P.c4};--bg-p:${P.bg};--ink-p:${P.ink};--f:'${ctx.font}','Tajawal',sans-serif;`;
+  const { t, P, c, img, F } = ctx;
+  const W = F.pw;
+  const cls = `pn T-${t.id} ${KIND_CLASS[kind]} F-${F.type}`;
+  const decoKind = /^p\d$/.test(kind) ? 'inner' : kind;
+  let svg = decoFor(W)[t.id](decoKind, P, KIND_SEED[kind]);
+  if (t.mirror && ctx.rtl) svg = `<g transform="translate(${W} 0) scale(-1 1)">${svg}</g>`;
+  const style = `--pw:${W}px;--c1:${P.c1};--c2:${P.c2};--c3:${P.c3};--c4:${P.c4};--bg-p:${P.bg};--ink-p:${P.ink};--f:'${ctx.font}','Tajawal',sans-serif;`;
   let body = '';
   const v = k => c[k] || '';
   if (kind === 'cover') {
@@ -782,30 +820,38 @@ function panelHTML(kind, ctx) {
     const k = kind;
     body = `${v(k + '.title') ? `<h2>${esc(v(k + '.title'))}</h2>` : ''}${imgTag(img[k])}<div class="txt">${paras(v(k + '.text'))}</div>`;
   }
-  return `<div class="${cls}" data-kind="${kind}" style="${style}"><div class="deco"><svg viewBox="0 0 374 794" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">${svg}</svg></div><div class="ct">${body}</div></div>`;
+  return `<div class="${cls}" data-kind="${kind}" style="${style}"><div class="deco"><svg viewBox="0 0 ${W} 794" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">${svg}</svg></div><div class="ct">${body}</div></div>`;
 }
 
 function sheetHTML(side, ctx) {
-  const kinds = side === 'out' ? ['flap', 'back', 'cover'] : ['p1', 'p2', 'p3'];
-  return `<div class="sheet" dir="${ctx.rtl ? 'rtl' : 'ltr'}" lang="${ctx.lang}">${kinds.map(k => panelHTML(k, ctx)).join('')}</div>`;
+  const F = ctx.F;
+  return `<div class="sheet" style="width:${F.sw}px" dir="${ctx.rtl ? 'rtl' : 'ltr'}" lang="${ctx.lang}">${F[side].map(k => panelHTML(k, ctx)).join('')}</div>`;
 }
+/* thumbnail: outside sheet, or both faces side by side for A5 */
+function miniHTML(ctx) {
+  if (ctx.F.type === 'a5') return `<div class="mini" style="display:flex;width:${ctx.F.sw * 2}px">${sheetHTML('out', ctx)}${sheetHTML('in', ctx)}</div>`;
+  return `<div class="mini">${sheetHTML('out', ctx)}</div>`;
+}
+const miniWidth = ctx => ctx.F.type === 'a5' ? ctx.F.sw * 2 : ctx.F.sw;
 
-function fitPanel(pn, fixedK) {
+function fitPanel(pn, fixedK, k0 = 1) {
   if (fixedK) { pn.style.setProperty('--k', fixedK); return +fixedK; }
   const ct = pn.querySelector('.ct');
-  let k = 1;
-  pn.style.setProperty('--k', '1');
-  while (ct.scrollHeight > ct.clientHeight + 1 && k > 0.5) { k -= 0.04; pn.style.setProperty('--k', k.toFixed(2)); }
+  let k = k0;
+  pn.style.setProperty('--k', k.toFixed(2));
+  while (ct.scrollHeight > ct.clientHeight + 1 && k > 0.45) { k -= 0.04; pn.style.setProperty('--k', k.toFixed(2)); }
   return +k.toFixed(2);
 }
+const k0Of = pn => { const m = /F-(\w+)/.exec(pn.className); return (FORMATS[m && m[1]] || FORMATS.tri).k0; };
 function fitAll(root, useMap) {
+  if (!useMap) kmap = {};
   $$('.pn', root).forEach(pn => {
     const kind = pn.dataset.kind;
-    const k = fitPanel(pn, useMap ? kmap[kind] : null);
+    const k = fitPanel(pn, useMap ? kmap[kind] : null, k0Of(pn));
     if (!useMap) kmap[kind] = k;
   });
 }
-function fitThumbs(root) { $$('.pn', root).forEach(pn => fitPanel(pn)); }
+function fitThumbs(root) { $$('.pn', root).forEach(pn => fitPanel(pn, null, k0Of(pn))); }
 
 /* ---------------------------------------------------------
    QR
@@ -826,7 +872,7 @@ function qrData() {
 }
 
 function currentCtx() {
-  return ctxFor(st.tpl, st.c, st.img, { color: st.color, font: st.font, clang: st.clang, qr: qrData() });
+  return ctxFor(st.tpl, st.c, st.img, { color: st.color, font: st.font, clang: st.clang, qr: qrData(), fmt: st.fmt });
 }
 
 /* ---------------------------------------------------------
@@ -834,24 +880,33 @@ function currentCtx() {
 --------------------------------------------------------- */
 const holderOut = $('#holderOut'), holderIn = $('#holderIn');
 function renderFlat() {
-  const ctx = currentCtx();
-  const lines = `<span class="fold-line" style="left:${PW}px"></span><span class="fold-line" style="left:${PW * 2}px"></span>`;
+  const ctx = currentCtx(), F = ctx.F;
+  const n = F.out.length;
+  let lines = '';
+  for (let i = 1; i < n; i++) lines += `<span class="fold-line" style="left:${F.pw * i}px"></span>`;
   holderOut.innerHTML = sheetHTML('out', ctx);
   holderIn.innerHTML = sheetHTML('in', ctx);
   $$('.sheet', holderOut).concat($$('.sheet', holderIn)).forEach(sh => sh.insertAdjacentHTML('beforeend', lines));
-  fitAll(holderOut); fitAll(holderIn);
+  const capOut = F.type === 'tri' || F.type === 'bi' ? 'outside' : 'side_front';
+  const capIn = F.type === 'tri' || F.type === 'bi' ? 'inside' : 'side_back';
+  $('#capOut').textContent = T(capOut); $('#capIn').textContent = T(capIn);
+  $('#flatView').classList.toggle('side', F.type === 'a5');
+  fitAll(holderOut);
+  $$('.pn', holderIn).forEach(pn => { const k = fitPanel(pn, null, k0Of(pn)); kmap[pn.dataset.kind] = k; });
   applyZoom();
   highlight();
 }
 function stageFitScale() {
-  const stage = $('#stage');
-  const w = stage.clientWidth - 60, h = stage.clientHeight - 150;
-  return Math.max(0.2, Math.min(w / SW, h / PH, 1.4));
+  const stage = $('#stage'), F = fmtNow();
+  const a5 = F.type === 'a5';
+  const w = (stage.clientWidth - 60) / (a5 ? 2.08 : 1), h = stage.clientHeight - 150;
+  return Math.max(0.2, Math.min(w / F.sw, h / PH, 1.4));
 }
 function applyZoom() {
   const s = zoom === 'fit' ? stageFitScale() : zoom;
+  const F = fmtNow();
   [holderOut, holderIn].forEach(h => {
-    h.style.width = (SW * s) + 'px'; h.style.height = (PH * s) + 'px';
+    h.style.width = (F.sw * s) + 'px'; h.style.height = (PH * s) + 'px';
     const sh = h.querySelector('.sheet'); if (sh) sh.style.transform = `scale(${s})`;
   });
   $('#zoomVal').textContent = Math.round(s * 100) + '%';
@@ -871,48 +926,87 @@ function highlight() {
 }
 
 /* ---------------------------------------------------------
-   3D view
+   3D view — tri-fold, bi-fold, Z (accordion) and single leaf
 --------------------------------------------------------- */
 const rig = $('#rig'), scene = $('#scene');
+let foldInfo = { cx: 561 };
 function render3d() {
-  const ctx = currentCtx();
-  const P = k => panelHTML(k, ctx);
-  const inV = ctx.rtl ? ['p3', 'p2', 'p1'] : ['p1', 'p2', 'p3'];
-  const lBack = ctx.rtl ? 'flap' : 'cover';
-  const rBack = ctx.rtl ? 'cover' : 'flap';
-  const coverLeft = !ctx.rtl;
-  rig.innerHTML =
-    `<div class="p3 l ${coverLeft ? 'coverw' : 'first'}"><div class="face front">${P(inV[0])}</div><div class="face back">${P(lBack)}</div></div>` +
-    `<div class="p3 c"><div class="face front">${P(inV[1])}</div><div class="face back">${P('back')}</div></div>` +
-    `<div class="p3 r ${coverLeft ? 'first' : 'coverw'}"><div class="face front">${P(inV[2])}</div><div class="face back">${P(rBack)}</div></div>`;
+  const ctx = currentCtx(), F = ctx.F, pw = F.pw, n = F.in.length;
+  const faceSide = F[F.face3d], other = F[F.face3d === 'in' ? 'out' : 'in'];
+  const vis = arr => ctx.rtl ? [...arr].reverse() : arr;
+  const fv = vis(faceSide), ov = vis(other);
+  const backOf = i => ov[n - 1 - i];
+  const face = (k, cls) => `<div class="face ${cls}">${panelHTML(k, ctx)}</div>`;
+  rig.style.width = F.sw + 'px'; $('#rigScale').style.width = F.sw + 'px';
+  if (F.type === 'z') {
+    const start = fv[0] === 'cover' ? 0 : n - 1, d = start === 0 ? 1 : -1;
+    const build = (i, depth) => {
+      if (i < 0 || i >= n) return '';
+      const pos = depth === 0 ? `left:${i * pw}px;` : `left:${d > 0 ? pw : -pw}px;`;
+      const origin = depth === 0 ? '' : (d > 0 ? 'transform-origin:0 50%;' : 'transform-origin:100% 50%;');
+      return `<div class="zp" data-depth="${depth}" data-d="${d}" style="width:${pw}px;${pos}${origin}">${face(fv[i], 'front')}${face(backOf(i), 'back')}${build(i + d, depth + 1)}</div>`;
+    };
+    rig.innerHTML = build(start, 0);
+    foldInfo = { cx: start * pw + pw / 2 };
+  } else if (n === 1) {
+    rig.innerHTML = `<div class="zp" data-depth="0" style="width:${pw}px;left:0">${face(fv[0], 'front')}${face(backOf(0), 'back')}</div>`;
+    foldInfo = { cx: pw / 2 };
+  } else {
+    const coverIdx = [...Array(n).keys()].find(i => backOf(i) === 'cover');
+    const base = F.type === 'tri' ? 1 : 1 - coverIdx;
+    rig.innerHTML = fv.map((k, i) => {
+      const role = i === base ? 'base' : (i === coverIdx ? 'coverw' : 'first');
+      const side = i < base ? 'L' : (i > base ? 'R' : '');
+      const origin = side === 'L' ? 'transform-origin:100% 50%;' : side === 'R' ? 'transform-origin:0 50%;' : '';
+      return `<div class="zp ${role}" data-side="${side}" style="width:${pw}px;left:${i * pw}px;${origin}">${face(k, 'front')}${face(backOf(i), 'back')}</div>`;
+    }).join('');
+    foldInfo = { cx: base * pw + pw / 2 };
+  }
+  $('#btnFold').classList.toggle('hidden', F.type === 'a5');
   fitAll(rig, true);
   applyFold(false);
   apply3dScale();
   applyRot();
 }
 function applyFold(animate = true) {
-  const L = rig.querySelector('.p3.l'), R = rig.querySelector('.p3.r');
-  if (!L || !R) return;
-  if (!animate) { L.style.transition = R.style.transition = 'none'; }
-  const zL = L.classList.contains('coverw') ? 2 : 1, zR = R.classList.contains('coverw') ? 2 : 1;
-  if (folded) {
-    L.style.transform = `translateZ(${zL}px) rotateY(180deg)`;
-    R.style.transform = `translateZ(${zR}px) rotateY(-180deg)`;
-  } else {
-    L.style.transform = 'rotateY(14deg)';
-    R.style.transform = 'rotateY(-14deg)';
+  const F = fmtNow();
+  const els = $$('.zp', rig);
+  if (!els.length) return;
+  if (!animate) els.forEach(e => e.style.transition = 'none');
+  if (F.type === 'z') {
+    els.forEach(e => {
+      const dep = +e.dataset.depth; if (!dep) { e.style.transform = ''; return; }
+      const b = 180 * (+e.dataset.d);
+      const odd = dep % 2 === 1;
+      if (folded) e.style.transform = `translateZ(${odd ? -1 : 1}px) rotateY(${odd ? b : -b}deg)`;
+      else e.style.transform = `rotateY(${(odd ? b : -b) * 0.13}deg)`;
+    });
+  } else if (F.type !== 'a5') {
+    const open = F.type === 'tri' ? 14 : 18;
+    els.forEach(e => {
+      const sd = e.dataset.side; if (!sd) { e.style.transform = ''; return; }
+      const z = e.classList.contains('coverw') ? 2 : 1;
+      if (folded) e.style.transform = `translateZ(${z}px) rotateY(${sd === 'L' ? 180 : -180}deg)`;
+      else e.style.transform = `rotateY(${sd === 'L' ? open : -open}deg)`;
+    });
   }
   rig.classList.toggle('folded', folded);
-  rig.classList.toggle('half', !folded);
-  if (!animate) { void rig.offsetWidth; L.style.transition = R.style.transition = ''; }
+  if (!animate) { void rig.offsetWidth; els.forEach(e => e.style.transition = ''); }
   $('#btnFold span').textContent = folded ? T('unfold') : T('fold');
+  applyRot();
 }
 function apply3dScale() {
+  const F = fmtNow();
   const w = scene.clientWidth, h = scene.clientHeight;
-  const s = Math.max(0.2, Math.min(w / 1560, h / 1080));
+  const s = Math.max(0.2, Math.min(w / (F.sw * 1.39), h / 1080, 1.1));
   $('#rigScale').style.transform = `scale(${s})`;
 }
-function applyRot() { rig.style.transform = `rotateX(${rot.x}deg) rotateY(${rot.y}deg)`; }
+function applyRot() {
+  const F = fmtNow();
+  const cx = (folded || F.type === 'a5') ? foldInfo.cx : F.sw / 2;
+  rig.style.transformOrigin = `${cx}px 50%`;
+  rig.style.transform = `translateX(${(F.sw / 2 - cx).toFixed(1)}px) rotateX(${rot.x}deg) rotateY(${rot.y}deg)`;
+}
 
 (function initDrag() {
   let drag = null;
@@ -969,26 +1063,55 @@ const SEC_ICONS = {
   p3:'<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="1.5"/><path d="M9 4v16M15 4v16"/><rect x="16.5" y="6" width="3" height="12" fill="currentColor" stroke="none"/></svg>',
   back:'<svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>'
 };
-const SEC_COLORS = { style:'#64748B', cover:'#16A34A', flap:'#0891B2', p1:'#7C3AED', p2:'#D97706', p3:'#2563EB', back:'#DB2777' };
-const SECTIONS = [
-  { id:'style' },
+const SEC_COLORS = { style:'#64748B', cover:'#16A34A', flap:'#0891B2', p1:'#7C3AED', p2:'#D97706', p3:'#2563EB', p4:'#0D9488', p5:'#9333EA', back:'#DB2777' };
+const SECTION_DEFS = [
   { id:'cover', fields:[['cover.title','text','f_title'],['cover.sub','area','f_sub'],['cover.org','text','f_org'],['cover.badge','text','f_badge','f_badge_h'],['logo','img','f_logo'],['cover','img','f_cimg']] },
   { id:'flap', fields:[['flap.title','text','f_head'],['flap.text','area','f_text']] },
   { id:'p1', fields:[['p1.title','text','f_head'],['p1.text','area','f_text'],['p1','img','f_img']] },
   { id:'p2', fields:[['p2.title','text','f_head'],['p2.text','area','f_text'],['p2','img','f_img']] },
   { id:'p3', fields:[['p3.title','text','f_head'],['p3.list','area','f_list','f_list_h']] },
+  { id:'p4', fields:[['p4.title','text','f_head'],['p4.text','area','f_text'],['p4','img','f_img']] },
+  { id:'p5', fields:[['p5.title','text','f_head'],['p5.text','area','f_text'],['p5','img','f_img']] },
   { id:'back', fields:[['back.title','text','f_head'],['back.text','area','f_text'],['phone','text','f_phone'],['email','text','f_email'],['addr','text','f_addr'],['web','text','f_web'],['qr','toggle','f_qr']] }
 ];
+const SEC_BY_ID = Object.fromEntries(SECTION_DEFS.map(x => [x.id, x]));
+function curSections() { return [{ id:'style' }, ...fmtNow().order.map(id => SEC_BY_ID[id])]; }
+function secTitle(id) {
+  if (!/^p\d$/.test(id)) return T('sec_' + id);
+  const idx = fmtNow().order.filter(k => /^p\d$/.test(k)).indexOf(id) + 1;
+  return T('sec_inner') + ' ' + idx;
+}
+function secDesc(id) {
+  if (id === 'p3') return T('sec_p3_d');
+  if (/^p\d$/.test(id)) return T('sec_inner_d');
+  return T('sec_' + id + '_d');
+}
 const CHEV = '<svg class="acc-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>';
 const PLUS_IMG = '<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/></svg>';
 const XICON = '<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>';
 const NEXT = '<svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>';
 
+const FOLD_ICONS = {
+  tri:'<svg viewBox="0 0 24 24"><path d="M3 6l6-2v16l-6 2zM9 4l6 2v16l-6-2zM15 6l6-2v16l-6 2z"/></svg>',
+  bi:'<svg viewBox="0 0 24 24"><path d="M3 5l9 2v14l-9-2zM12 7l9-2v14l-9 2z"/></svg>',
+  z:'<svg viewBox="0 0 24 24"><path d="M2 6l5-2v16l-5 2zM7 4l5 2v16l-5-2zM12 6l5-2v16l-5 2zM17 4l5 2v16l-5-2z"/></svg>',
+  a5:'<svg viewBox="0 0 24 24"><rect x="6" y="3" width="12" height="18" rx="1.5"/><path d="M9 8h6M9 11h6M9 14h4"/></svg>'
+};
+function setFormat(k) {
+  if (!FORMATS[k] || st.fmt === k) return;
+  st.fmt = k;
+  if (openSec && openSec !== 'style' && !fmtNow().order.includes(openSec)) openSec = null;
+  folded = false;
+  rebuildKeepOpen(); renderAll();
+  if (view === '3d') render3d();
+}
 function styleSectionHTML() {
   const t = TPL[st.tpl];
   const sw = COLORS.map(c => `<button type="button" class="sw ${st.color === c ? 'on' : ''}" data-color="${c}" style="background:${c}" aria-label="${c}"></button>`).join('');
   const custom = st.color && !COLORS.includes(st.color) ? st.color : '#888888';
   return `
+    <div class="field"><label>${T('fold_type')}</label>
+      <div class="seg-ui fold-seg" id="fmtSeg">${FMT_KEYS.map(k => `<button type="button" data-fmt="${k}" class="${st.fmt === k ? 'on' : ''}">${FOLD_ICONS[k]}<span>${T(FORMATS[k].label)}</span></button>`).join('')}</div></div>
     <div class="field"><label>${T('color')}</label>
       <div class="swatches">
         <button type="button" class="sw auto ${!st.color ? 'on' : ''}" data-color="" style="--c-a:${t.pal.c1};--c-b:${t.pal.c2}" aria-label="auto"></button>
@@ -1022,13 +1145,14 @@ function fieldHTML([key, type, label, hint]) {
 
 function buildAccordion() {
   const acc = $('#accordion');
-  acc.innerHTML = SECTIONS.map((sec, i) => {
+  const SECS = curSections();
+  acc.innerHTML = SECS.map((sec, i) => {
     const content = sec.id === 'style' ? styleSectionHTML() : sec.fields.map(fieldHTML).join('');
-    const last = i === SECTIONS.length - 1;
+    const last = i === SECS.length - 1;
     const badge = sec.id === 'style' ? `<span class="acc-ico">${SEC_ICONS.style}</span>` : `<span class="acc-num">${i}</span>`;
     return `<section class="acc ${openSec === sec.id ? 'open' : ''}" data-sec="${sec.id}" style="--sc:${SEC_COLORS[sec.id]}">
       <button type="button" class="acc-head">${badge}
-        <span class="acc-title"><b>${T('sec_' + sec.id)}</b><small>${esc(secSummary(sec))}</small></span>${CHEV}</button>
+        <span class="acc-title"><b>${secTitle(sec.id)}</b><small>${esc(secSummary(sec))}</small></span>${CHEV}</button>
       <div class="acc-body"><div class="acc-inner"><div class="acc-content">${content}
         <button type="button" class="acc-next" data-next="${i}">${last ? T('done') : T('next')}${last ? '' : NEXT}</button>
       </div></div></div></section>`;
@@ -1046,13 +1170,13 @@ function secSummary(sec) {
   const cut = x => { x = String(x || '').replace(/\s+/g, ' ').trim(); return x.length > 46 ? x.slice(0, 44) + '…' : x; };
   if (sec.id === 'style') {
     const t = TPL[st.tpl];
-    return [t.name[uiLang] || t.name.ar, st.font === 'auto' ? t.font : st.font, {ar:'العربية', fr:'Français', en:'English'}[st.clang]].join(' · ');
+    return [t.name[uiLang] || t.name.ar, T(fmtNow().label), {ar:'العربية', fr:'Français', en:'English'}[st.clang]].join(' · ');
   }
   const parts = sec.fields.filter(f => f[1] === 'text' || f[1] === 'area').map(f => st.c[f[0]]).filter(v => (v || '').trim());
-  return parts.length ? cut(parts.slice(0, 2).join(' · ')) : T('sec_' + sec.id + '_d');
+  return parts.length ? cut(parts.slice(0, 2).join(' · ')) : secDesc(sec.id);
 }
 function updateStates() {
-  SECTIONS.forEach(sec => {
+  curSections().forEach(sec => {
     const el = $(`.acc[data-sec="${sec.id}"] .acc-title small`);
     if (el) el.textContent = secSummary(sec);
   });
@@ -1065,13 +1189,15 @@ $('#accordion').addEventListener('click', e => {
   const nx = e.target.closest('[data-next]');
   if (nx) {
     const i = +nx.dataset.next;
-    const nextSec = SECTIONS[i + 1];
+    const nextSec = curSections()[i + 1];
     toggleSec(nextSec ? nextSec.id : null, !!nextSec);
     if (nextSec) setTimeout(() => $(`.acc[data-sec="${nextSec.id}"]`).scrollIntoView({ behavior:'smooth', block:'nearest' }), 280);
     return;
   }
   const sw = e.target.closest('.sw[data-color]');
   if (sw) { st.color = sw.dataset.color || null; refreshStyleSection(); scheduleRender(); return; }
+  const fb = e.target.closest('#fmtSeg [data-fmt]');
+  if (fb) { setFormat(fb.dataset.fmt); return; }
   const cl = e.target.closest('#clangSeg button');
   if (cl) {
     const l = cl.dataset.l;
@@ -1151,20 +1277,20 @@ $('#flatView').addEventListener('click', e => {
 /* ---------------------------------------------------------
    Gallery
 --------------------------------------------------------- */
-let gCat = 'all';
-function miniOutside(tplId, forCard) {
+let gCat = 'all', gFold = null;
+function miniOutside(tplId) {
   const useUser = st.dirty;
   const lang = st.clang;
   const content = useUser ? st.c : sampleFor(tplId, lang);
   const imgs = useUser ? st.img : {};
   const color = tplId === st.tpl ? st.color : null;
-  const ctx = ctxFor(tplId, content, imgs, { color, font: tplId === st.tpl ? st.font : 'auto', clang: lang, qr: useUser ? qrData() : '' });
-  return `<div class="mini">${sheetHTML('out', ctx)}</div>`;
+  const ctx = ctxFor(tplId, content, imgs, { color, font: tplId === st.tpl ? st.font : 'auto', clang: lang, qr: useUser ? qrData() : '', fmt: gFold || st.fmt });
+  return miniHTML(ctx);
 }
 function buildGallery() {
   $('#gCats').innerHTML = ['all', ...CATS].map(c => `<button type="button" class="chip ${gCat === c ? 'on' : ''}" data-cat="${c}">${T('cat_' + c)}</button>`).join('');
-  $('#gFolds').innerHTML = `<button type="button" class="chip on">${T('fold3')}</button>` +
-    ['fold2', 'foldZ', 'foldA5'].map(f => `<button type="button" class="chip" disabled>${T(f)}<span class="soon">· ${T('soon')}</span></button>`).join('');
+  if (!gFold) gFold = st.fmt;
+  $('#gFolds').innerHTML = FMT_KEYS.map(k => `<button type="button" class="chip fold-chip ${gFold === k ? 'on' : ''}" data-gfold="${k}">${FOLD_ICONS[k]}${T(FORMATS[k].label)}</button>`).join('');
   renderGrid();
 }
 function renderGrid() {
@@ -1180,11 +1306,11 @@ function renderGrid() {
     $$('.g-thumb', grid).forEach(th => {
       const mini = th.querySelector('.mini');
       fitThumbs(mini);
-      mini.style.transform = `scale(${th.clientWidth / SW})`;
+      mini.style.transform = `scale(${th.clientWidth / mini.offsetWidth})`;
     });
   });
 }
-function openGallery() { $('#gallery').classList.remove('hidden'); buildGallery(); $('#gSearch').focus(); }
+function openGallery() { gFold = st.fmt; $('#gallery').classList.remove('hidden'); buildGallery(); $('#gSearch').focus(); }
 function closeGallery() { $('#gallery').classList.add('hidden'); }
 $('#btnGallery').addEventListener('click', openGallery);
 $('#gClose').addEventListener('click', closeGallery);
@@ -1192,12 +1318,15 @@ $('#gallery').addEventListener('click', e => {
   if (e.target.id === 'gallery') { closeGallery(); return; }
   const c = e.target.closest('[data-cat]');
   if (c) { gCat = c.dataset.cat; $$('#gCats .chip').forEach(x => x.classList.toggle('on', x === c)); renderGrid(); return; }
+  const gf = e.target.closest('[data-gfold]');
+  if (gf) { gFold = gf.dataset.gfold; $$('#gFolds .chip').forEach(x => x.classList.toggle('on', x === gf)); renderGrid(); return; }
   const card = e.target.closest('[data-tpl]');
   if (card) {
     st.tpl = card.dataset.tpl;
     st.color = null; st.font = 'auto';
+    if (gFold && gFold !== st.fmt) { st.fmt = gFold; folded = false; if (openSec && openSec !== 'style' && !fmtNow().order.includes(openSec)) openSec = null; }
     if (!st.dirty) st.c = sampleFor(st.tpl, st.clang);
-    closeGallery(); rebuildKeepOpen(); renderAll(); toast(T('t_tpl'));
+    closeGallery(); rebuildKeepOpen(); renderAll(); if (view === '3d') render3d(); toast(T('t_tpl'));
   }
 });
 $('#gSearch').addEventListener('input', renderGrid);
@@ -1206,10 +1335,10 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#galle
 function renderCurrentThumb() {
   const box = $('#currentThumb');
   const ctx = currentCtx();
-  box.innerHTML = `<div class="mini">${sheetHTML('out', ctx)}</div>`;
+  box.innerHTML = miniHTML(ctx);
   const mini = box.querySelector('.mini');
   fitAll(mini, true);
-  mini.style.transform = `scale(${84 / SW})`;
+  mini.style.transform = `scale(${Math.min(84 / miniWidth(ctx), 60 / PH)})`;
   $('#currentTplName').textContent = TPL[st.tpl].name[uiLang] || TPL[st.tpl].name.ar;
 }
 
@@ -1226,6 +1355,10 @@ function autosave() { clearTimeout(saveTimer); saveTimer = setTimeout(() => save
 function buildPrint(sides) {
   const ctx = currentCtx();
   const root = $('#printRoot');
+  const F = ctx.F;
+  let ps = $('#pageSize');
+  if (!ps) { ps = document.createElement('style'); ps.id = 'pageSize'; document.head.appendChild(ps); }
+  ps.textContent = `@page{ size: ${F.page}; margin: 0; } @media print{ .print-page{ width:${F.mm[0]}mm !important; height:${F.mm[1]}mm !important; } }`;
   root.innerHTML = sides.map(s => `<div class="print-page">${sheetHTML(s, ctx)}</div>`).join('');
   fitAll(root, true);
   return root;
@@ -1242,15 +1375,16 @@ async function doPdf() {
   try {
     if (document.fonts) await document.fonts.ready;
     const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF({ orientation:'landscape', unit:'mm', format:'a4' });
+    const F = fmtNow();
+    const pdf = new jsPDF({ orientation: F.pdf[0], unit:'mm', format: F.pdf[1] });
     const sides = ['out', 'in'];
     for (let i = 0; i < sides.length; i++) {
       const root = buildPrint([sides[i]]);
       const sheet = root.querySelector('.sheet');
       await new Promise(r => setTimeout(r, 60));
-      const canvas = await html2canvas(sheet, { scale: 2.5, backgroundColor:'#ffffff', useCORS:true, logging:false, width: SW, height: PH, windowWidth: SW, windowHeight: PH, scrollX: 0, scrollY: 0 });
-      if (i > 0) pdf.addPage('a4', 'landscape');
-      pdf.addImage(canvas.toDataURL('image/jpeg', 0.93), 'JPEG', 0, 0, 297, 210);
+      const canvas = await html2canvas(sheet, { scale: 2.5, backgroundColor:'#ffffff', useCORS:true, logging:false, width: F.sw, height: PH, windowWidth: F.sw, windowHeight: PH, scrollX: 0, scrollY: 0 });
+      if (i > 0) pdf.addPage(F.pdf[1], F.pdf[0]);
+      pdf.addImage(canvas.toDataURL('image/jpeg', 0.93), 'JPEG', 0, 0, F.mm[0], F.mm[1]);
     }
     const name = (st.c['cover.title'] || 'brochure').replace(/[\\/:*?"<>|]+/g, '').trim().slice(0, 60) || 'brochure';
     pdf.save(name + '.pdf');
@@ -1341,22 +1475,22 @@ function renderMine() {
   const cards = mineDocs.map(d => {
     let parsed = null; try { parsed = JSON.parse(d.state); } catch (e) {}
     if (!parsed || !TPL[parsed.tpl]) return '';
-    const ctx = ctxFor(parsed.tpl, parsed.c || {}, parsed.img || {}, { color: parsed.color, font: parsed.font, clang: parsed.clang || 'ar', qr: '' });
+    const ctx = ctxFor(parsed.tpl, { ...sampleFor(parsed.tpl, parsed.clang || 'ar'), ...(parsed.c || {}) }, parsed.img || {}, { color: parsed.color, font: parsed.font, clang: parsed.clang || 'ar', qr: '', fmt: parsed.fmt || 'tri' });
     return `<div class="g-card m-card" data-mid="${d.id}">
       ${d.id === st.docId ? `<span class="m-tag">${T('current')}</span>` : ''}
-      <div class="g-thumb"><div class="mini">${sheetHTML('out', ctx)}</div></div>
-      <div class="g-meta"><b>${esc(d.title || T('untitled'))}</b><span>${esc(TPL[parsed.tpl].name[uiLang] || TPL[parsed.tpl].name.ar)}</span></div>
+      <div class="g-thumb">${miniHTML(ctx)}</div>
+      <div class="g-meta"><b>${esc(d.title || T('untitled'))}</b><span>${esc(T(ctx.F.label))}</span></div>
       <div class="m-date">${fmt(d.updatedAt)}</div>
       <div class="m-actions">
         <button type="button" class="primary" data-act="open">${IC_OPEN}${T('open_b')}</button>
         <button type="button" data-act="dup">${IC_DUP}${T('dup_b')}</button>
-        <button type="button" class="danger" data-act="del">${IC_DEL}${T('del_b')}</button>
+        <button type="button" class="danger icon" data-act="del" title="${T('del_b')}" aria-label="${T('del_b')}">${IC_DEL}</button>
       </div></div>`;
   }).join('');
   grid.innerHTML = `<button type="button" class="g-card m-new" data-act="new">${IC_PLUS}<span>${T('new_b')}</span></button>` +
     (cards || `<div class="g-empty">${T('mine_empty')}</div>`);
   requestAnimationFrame(() => $$('.g-thumb', grid).forEach(th => {
-    const mini = th.querySelector('.mini'); fitThumbs(mini); mini.style.transform = `scale(${th.clientWidth / SW})`;
+    const mini = th.querySelector('.mini'); fitThumbs(mini); mini.style.transform = `scale(${th.clientWidth / mini.offsetWidth})`;
   }));
 }
 $('#btnMine').addEventListener('click', openMine);
@@ -1366,8 +1500,8 @@ $('#mine').addEventListener('click', async e => {
   const btn = e.target.closest('[data-act]'); if (!btn) return;
   const act = btn.dataset.act;
   if (act === 'new') {
-    st = freshState(); st.clang = uiLang; st.c = sampleFor(st.tpl, uiLang);
-    openSec = null; closeMine(); rebuildKeepOpen(); renderAll(); toast(T('t_new'));
+    st = freshState(); st.clang = uiLang; st.c = sampleFor(st.tpl, uiLang); folded = false;
+    openSec = null; closeMine(); rebuildKeepOpen(); renderAll(); if (view === '3d') render3d(); toast(T('t_new'));
     return;
   }
   const card = btn.closest('[data-mid]'); if (!card) return;
@@ -1378,7 +1512,8 @@ $('#mine').addEventListener('click', async e => {
     if (act === 'open') {
       const parsed = JSON.parse(doc.state);
       st = Object.assign(freshState(), parsed, { docId: id });
-      openSec = null; closeMine(); rebuildKeepOpen(); renderAll(); toast(T('t_opened'));
+      st.c = { ...sampleFor(st.tpl, st.clang), ...(parsed.c || {}) }; if (!FMT_OK(st.fmt)) st.fmt = 'tri'; folded = false;
+      openSec = null; closeMine(); rebuildKeepOpen(); renderAll(); if (view === '3d') render3d(); toast(T('t_opened'));
     } else if (act === 'dup') {
       const parsed = JSON.parse(doc.state);
       parsed.c = { ...(parsed.c || {}), 'cover.title': (parsed.c && parsed.c['cover.title'] || T('untitled')) + T('copy_suffix') };
