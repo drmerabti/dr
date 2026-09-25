@@ -184,6 +184,7 @@ const ICONS = {
   pdfToImgApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gP2I" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8FA8C7"/><stop offset="1" stop-color="#3A5A7D"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="6" y="8" width="20" height="26" rx="2.5" fill="url(#gP2I)"/><rect x="22" y="16" width="20" height="24" rx="2.5" fill="#fff" stroke="#8FA8C7" stroke-width="1.5"/><circle cx="28" cy="23" r="2" fill="#F0C56B"/><path d="M24 34l4-5 4 4 5-6 5 7" fill="none" stroke="#3A5A7D" stroke-width="1.6"/></svg>`,
   excelToPdfApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gE2P" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6FCF97"/><stop offset="1" stop-color="#1D7A46"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="6" y="8" width="20" height="26" rx="2.5" fill="url(#gE2P)"/><rect x="22" y="16" width="20" height="24" rx="2.5" fill="#C0392B"/><text x="32" y="32" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" font-weight="800" fill="#fff">PDF</text></svg>`,
   wordToPdfApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gW2P" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4A9AE8"/><stop offset="1" stop-color="#1857A8"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="6" y="8" width="20" height="26" rx="2.5" fill="url(#gW2P)"/><rect x="22" y="16" width="20" height="24" rx="2.5" fill="#C0392B"/><text x="32" y="32" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" font-weight="800" fill="#fff">PDF</text></svg>`,
+  keyboardApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gKbd" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7DD6A8"/><stop offset="1" stop-color="#1E8A52"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="4" y="13" width="40" height="23" rx="4.5" fill="url(#gKbd)"/><rect x="4" y="13" width="40" height="6" rx="4.5" fill="#fff" opacity=".2"/><g fill="#fff" opacity=".92"><rect x="9" y="18" width="4" height="3.6" rx="1"/><rect x="15" y="18" width="4" height="3.6" rx="1"/><rect x="21" y="18" width="4" height="3.6" rx="1"/><rect x="27" y="18" width="4" height="3.6" rx="1"/><rect x="33" y="18" width="6" height="3.6" rx="1"/><rect x="9" y="24" width="6" height="3.6" rx="1"/><rect x="17" y="24" width="4" height="3.6" rx="1"/><rect x="29" y="24" width="4" height="3.6" rx="1"/><rect x="35" y="24" width="4" height="3.6" rx="1"/><rect x="14" y="30" width="20" height="3.2" rx="1.2"/></g><rect x="23" y="24" width="4" height="3.6" rx="1" fill="#F0C56B"/></svg>`,
   lessons: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <linearGradient id="gLessonsL" x1="0" y1="0" x2="0" y2="1">
@@ -547,6 +548,15 @@ const CONTENT = {
       desc_en: '5 levels, 30 questions each (shortcuts and general knowledge), increasing difficulty.',
       url: 'trainings/word-training/',
       icon: ICONS.wordApp,
+    },
+    {
+      id: 'training-keyboard-typing',
+      title_ar: 'التدريب على لوحة المفاتيح',
+      title_en: 'Keyboard Typing Training',
+      desc_ar: '8 مراحل تصاعدية للكتابة بالعشر أصابع بالعربية والفرنسية والإنجليزية، والزر المطلوب يضيء أمامك.',
+      desc_en: '8 progressive stages to learn touch typing in Arabic, French and English, with the key you need lighting up.',
+      url: 'trainings/keyboard-typing/',
+      icon: ICONS.keyboardApp,
     },
     { id: 'training-excel', title_ar: 'تدريب شامل في إكسل', title_en: 'Complete Excel Training',
       desc_ar: '5 مستويات بصعوبة تصاعدية لاختبار معلوماتك في إكسل.', desc_en: '5 levels of increasing difficulty to test your Excel knowledge.',
