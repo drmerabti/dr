@@ -475,3 +475,92 @@ body.exporting .page{ box-shadow:none; }
   .page.empty{ display:none; }
   .ex-tools, .ex::before{ display:none !important; }
 }
+
+/* ===== v2: curriculum, units, paste, exercise cards ===== */
+.units{ gap:6px; }
+.u-item{
+  display:flex; align-items:center; gap:10px; padding:9px 11px; border:1px solid var(--line); border-radius:12px;
+  background:#fff; cursor:pointer; user-select:none; font-weight:600; font-size:.9rem; line-height:1.5; text-align:start; width:100%;
+}
+.u-item:hover{ border-color:#BFD2DF; }
+.u-item.on{ background:#EEF5FC; border-color:#B7D0E6; }
+.u-item .u-t{ flex:1; min-width:0; }
+.u-item .u-custom{ font-size:.72rem; color:var(--ink-soft); font-weight:700; }
+.u-item .u-del{ margin-inline-start:2px; }
+.unit-add{ display:flex; gap:8px; margin-top:8px; }
+.unit-add input{ flex:1; min-width:0; border:1px solid transparent; background:var(--field); border-radius:11px; padding:10px 12px; font-size:.9rem; }
+.unit-add input:focus{ outline:0; border-color:var(--accent-2); background:#fff; }
+.unit-add .btn-soft{ width:44px; padding:0; display:grid; place-items:center; }
+.unit-add svg{ width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:2.4; stroke-linecap:round; }
+
+.paste{ margin-top:12px; border:1px solid var(--line); border-radius:14px; background:#fff; }
+.paste summary{ list-style:none; display:flex; align-items:center; gap:9px; padding:11px 12px; cursor:pointer; font-weight:700; font-size:.9rem; color:var(--accent); }
+.paste summary::-webkit-details-marker{ display:none; }
+.paste summary svg{ width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; }
+.paste summary .pill{ margin-inline-start:auto; background:#E4F5EA; color:#15803D; }
+.paste[open] summary{ border-bottom:1px solid var(--line); }
+.paste .hint{ margin:10px 12px 6px; }
+.paste textarea{ display:block; width:calc(100% - 24px); margin:0 12px; border:1px solid transparent; background:var(--field); border-radius:11px; padding:10px 12px; font-size:.9rem; line-height:1.7; resize:vertical; }
+.paste textarea:focus{ outline:0; border-color:var(--accent-2); background:#fff; }
+.paste-foot{ display:flex; align-items:center; justify-content:space-between; padding:8px 12px 12px; }
+.paste-foot .hint{ margin:0; }
+
+.diff-all{ margin-bottom:12px; }
+.cards{ display:flex; flex-direction:column; gap:10px; }
+.card{
+  border:1px solid var(--line); border-radius:16px; background:#fff; overflow:hidden;
+  border-inline-start:5px solid var(--c, var(--accent)); transition:box-shadow .15s;
+}
+.card.open{ box-shadow:0 10px 26px rgba(21,36,49,.10); }
+.card.drag-over{ box-shadow:0 0 0 3px rgba(47,111,176,.35); }
+.card.dragging{ opacity:.45; }
+.card-h{ display:flex; align-items:center; gap:10px; padding:10px 10px 10px 12px; cursor:pointer; }
+.card-h .dd-ic{ width:34px; height:34px; border-radius:10px; }
+.card-h .dd-ic svg{ width:20px; height:20px; }
+.card-sum{ flex:1; min-width:0; }
+.card-sum b{ display:block; font-size:.93rem; font-weight:800; }
+.card-sum small{ display:block; font-size:.78rem; color:var(--ink-soft); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.chip{ font-size:.72rem; font-weight:800; padding:3px 8px; border-radius:20px; white-space:nowrap; }
+.chip.ready{ background:#E4F5EA; color:#15803D; }
+.chip.loading, .chip.waiting{ background:#EAF3FB; color:var(--accent-2); }
+.chip.error{ background:#FDF0F0; color:var(--bad); }
+.card-btn{ width:32px; height:32px; border:0; border-radius:9px; background:none; display:grid; place-items:center; color:var(--ink-soft); }
+.card-btn:hover{ background:var(--sky); color:var(--accent); }
+.card-btn.del:hover{ color:var(--bad); background:#FCE8E8; }
+.card-btn svg{ width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:2.1; stroke-linecap:round; stroke-linejoin:round; transition:transform .2s; }
+.card.open .card-btn.chev svg{ transform:rotate(180deg); }
+.card-btn.grip{ cursor:grab; }
+.card-b{ display:none; padding:4px 12px 14px; gap:10px; flex-direction:column; }
+.card.open .card-b{ display:flex; }
+.card-g{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.card-g .f-wide{ grid-column:1 / -1; }
+.card .f textarea{ min-height:54px; }
+.pts-in{ display:flex; align-items:center; gap:6px; background:var(--field); border-radius:11px; padding:0 10px; height:42px; }
+.pts-in input{ width:100%; border:0; background:none; font:700 .95rem Inter,sans-serif; text-align:center; }
+.pts-in input:focus{ outline:0; }
+.pts-in span{ font-size:.8rem; color:var(--ink-soft); font-weight:700; }
+.card-gen{
+  height:48px; border:0; border-radius:13px; color:#fff; font-weight:800; font-size:.98rem;
+  display:flex; align-items:center; justify-content:center; gap:9px; background:var(--c, var(--accent));
+  box-shadow:0 8px 18px rgba(21,36,49,.16); transition:filter .15s, transform .15s;
+}
+.card-gen:hover{ filter:brightness(1.07); transform:translateY(-1px); }
+.card-gen svg{ width:22px; height:22px; fill:#fff; }
+.card-gen:disabled{ opacity:.5; pointer-events:none; }
+.card-gen.busy svg{ animation:spin 1.6s linear infinite; }
+.add-card{
+  width:100%; margin-top:10px; height:52px; border:2px dashed #A9C2D3; border-radius:16px; background:var(--field);
+  display:flex; align-items:center; justify-content:center; gap:8px; font-weight:800; font-size:.98rem; color:var(--accent);
+}
+.add-card:hover{ border-color:var(--accent-2); background:#EAF3FB; }
+.add-card svg{ width:22px; height:22px; fill:none; stroke:currentColor; stroke-width:2.4; stroke-linecap:round; }
+.add-card:disabled{ opacity:.45; pointer-events:none; }
+.side-foot .pts-bar{ margin:0; }
+.tb-btn.c-admin{ color:#7A4FA3; }
+.tb-btn.c-admin:hover{ background:#F0E3F8; }
+.adm-g{ display:grid; grid-template-columns:repeat(4, 1fr); gap:10px; margin-bottom:12px; }
+.adm-g .f{ min-width:0; }
+.adm-ta{ width:100%; min-height:280px; border:1px solid var(--line); border-radius:12px; padding:12px; font-size:.95rem; line-height:1.9; background:var(--field); resize:vertical; }
+.adm-ta:focus{ outline:0; border-color:var(--accent-2); background:#fff; }
+.adm-src{ font-size:.8rem; font-weight:700; margin-top:6px; }
+@media (max-width: 900px){ .adm-g{ grid-template-columns:1fr 1fr; } }

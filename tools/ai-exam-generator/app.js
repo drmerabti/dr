@@ -7,14 +7,11 @@
 /* اجعلها false عندما تقرر فتح الأداة للجميع (وغيّر أيضًا EXAM_REQUIRE_ADMIN في الدالة) */
 const TOOL_LOCKED = true;
 
-const MAX_PAGES = 15;
-const MIN_CHARS_PER_PAGE = 60;
-const MAX_SOURCE = 12000;
+const MAX_PASTE = 3500;
 const MAX_EX = 8;
+const MAX_WAITS = 3;
 const A4_W = 794;
 const LIBS = {
-  pdfjs: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js',
-  pdfWorker: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js',
   h2c: 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js',
   jspdf: 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
   docx: 'https://cdn.jsdelivr.net/npm/html-docx-js@0.3.1/dist/html-docx.js'
@@ -24,6 +21,7 @@ const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const uid = () => Math.random().toString(36).slice(2, 10);
 const clone = o => JSON.parse(JSON.stringify(o));
+const sleep = ms => new Promise(r => setTimeout(r, ms));
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const txt = s => esc(s).replace(/\n/g, '<br>');
 const svgI = (d, cls = '') => `<svg class="${cls}" viewBox="0 0 24 24">${d}</svg>`;
@@ -32,99 +30,169 @@ const svgI = (d, cls = '') => `<svg class="${cls}" viewBox="0 0 24 24">${d}</svg
 const UI = {
   ar: {
     app_title: 'مولّد الامتحانات الذكي', new: 'امتحان جديد', open: 'امتحاناتي المحفوظة', save: 'حفظ',
-    print: 'طباعة', pdf: 'تحميل PDF', word: 'تحميل Word', tab_settings: 'الإعدادات', tab_preview: 'المعاينة',
-    s1: 'الكتاب', drop_title: 'ارفع الدرس أو الكتاب بصيغة PDF', drop_sub: '15 صفحة كحد أقصى، مكتوب وليس ممسوحًا ضوئيًا',
-    change_book: 'تغيير الملف', pages: 'صفحة', reading: 'جاري قراءة الملف…',
-    s2: 'الوحدات', units_empty: 'ارفع الكتاب أولًا، وستظهر وحداته هنا تلقائيًا.', detecting: 'جاري اكتشاف الوحدات…',
-    add_unit: 'إضافة وحدة', unit: 'الوحدة', from: 'من ص', to: 'إلى', whole_book: 'كل الكتاب',
-    s3: 'معلومات الامتحان', school: 'المؤسسة', year: 'السنة الدراسية', stage: 'الطور', grade: 'السنة',
-    subject: 'المادة', duration: 'المدة', teacher: 'الأستاذ(ة)', exam_title: 'عنوان الامتحان',
-    exam_lang: 'لغة الامتحان', logo: 'الشعار (اختياري)', logo_add: 'إضافة شعار', remove: 'حذف',
-    s4: 'التمارين', difficulty_all: 'صعوبة الامتحان', count: 'عدد التمارين', ex_n: 'التمرين', ex_unit: 'من',
-    points_short: 'ن', total: 'المجموع', balance: 'توزيع تلقائي على 20', all_units: 'كل الوحدات المختارة',
-    generate: 'ولّد الامتحان', generate_more: 'ولّد التمارين الجديدة', generating: 'جاري كتابة التمرين {i} من {n}…',
+    print: 'طباعة', pdf: 'تحميل PDF', word: 'تحميل Word', admin: 'إدارة وحدات المنهاج',
+    tab_settings: 'الإعدادات', tab_preview: 'المعاينة',
+    s1: 'المنهاج والمستوى', curriculum: 'المنهاج', cur_dz: 'الجزائري', stage: 'الطور', grade: 'السنة', stream: 'الشعبة', subject: 'المادة',
+    st_pri: 'ابتدائي', st_mid: 'متوسط', st_sec: 'ثانوي',
+    s2: 'الوحدات', units_none: 'لا توجد وحدات جاهزة لهذه المادة بعد. اكتب عنوان الوحدة أو الدرس أدناه.',
+    unit_ph: 'أضف وحدة أو درسًا غير موجود في القائمة', custom: 'مضافة',
+    paste_t: 'لصق نص الدرس (اختياري)', paste_hint: 'إذا ألصقت نص درسك، تُبنى التمارين منه مباشرة بدل المنهاج العام.',
+    chars: '{n} / 3500 حرف', paste_on: 'مفعّل',
+    s3: 'معلومات الامتحان', school: 'المؤسسة', year: 'السنة الدراسية', duration: 'المدة', teacher: 'الأستاذ(ة)',
+    exam_title: 'عنوان الامتحان', exam_lang: 'لغة الامتحان', logo: 'الشعار (اختياري)', logo_add: 'إضافة شعار', remove: 'حذف',
+    s4: 'التمارين', difficulty_all: 'صعوبة الامتحان', add_ex: 'إضافة تمرين', ex_n: 'التمرين',
+    ex_type: 'نوع التمرين', ex_unit: 'الوحدة', ex_diff: 'الصعوبة', f_points: 'النقاط', note: 'ملاحظة (اختياري)',
+    note_ph: 'مثال: أسئلة متدرجة، أمثلة من الحياة اليومية، أضف منحنى…',
+    gen_one: 'ولّد هذا التمرين', regen_one: 'أعد توليد التمرين', all_units: 'كل الوحدات المختارة',
+    points_short: 'ن', total: 'المجموع', balance: 'توزيع تلقائي على 20',
+    chip_ready: 'جاهز', chip_loading: 'جاري الكتابة', chip_waiting: 'انتظار {s} ث', chip_error: 'خطأ', chip_idle: 'لم يُولَّد',
     easy: 'سهل', medium: 'متوسط', hard: 'صعب',
     d_easy: 'تذكّر وتطبيق مباشر', d_medium: 'فهم وتطبيق', d_hard: 'تحليل واستدلال',
     t_qcm: 'اختيار من متعدد (QCM)', t_tf: 'صح أو خطأ', t_fill: 'املأ الفراغ', t_match: 'صِل بين العمودين',
     t_direct: 'أسئلة مباشرة', t_problem: 'تمرين تطبيقي / مسألة', t_situation: 'وضعية إدماجية', t_document: 'تحليل وثيقة أو نص',
-    st_pri: 'ابتدائي', st_mid: 'متوسط', st_sec: 'ثانوي',
     zoom_fit: 'ملاءمة العرض', show_corr: 'التصحيح النموذجي',
-    empty_title: 'امتحانك سيظهر هنا', empty_sub: 'ارفع الدرس، اختر الوحدات وأنواع التمارين، ثم اضغط «ولّد الامتحان» وشاهد التمارين تُكتب أمامك.',
-    e1: 'ارفع الكتاب', e2: 'اختر الوحدات', e3: 'اختر التمارين', e4: 'ولّد',
-    writing: 'جاري كتابة التمرين…', waiting: 'في الانتظار…', retry: 'أعد المحاولة',
-    regen: 'تمرين آخر', regen_title: 'توليد تمرين آخر', regen_go: 'ولّد تمرينًا جديدًا', note_ph: 'طلب اختياري: أسهل، أضف منحنى، ركّز على…',
-    undo: 'تراجع', edit: 'تعديل', image: 'صورة', curve: 'منحنى', up: 'إلى الأعلى', down: 'إلى الأسفل', del: 'حذف التمرين',
-    ed_title: 'تعديل التمرين', f_title: 'موضوع التمرين', f_ins: 'التعليمة', f_intro: 'النص أو السند', f_points: 'النقاط',
+    empty_title: 'امتحانك سيظهر هنا', empty_sub: 'اختر المستوى والمادة والوحدات، ثم اضغط «ولّد هذا التمرين» في بطاقة التمرين، وشاهده يُكتب أمامك.',
+    e1: 'المستوى', e2: 'الوحدات', e3: 'التمرين', e4: 'ولّد',
+    writing: 'جاري كتابة التمرين…', waiting_q: 'حصة Groq ممتلئة لهذه الدقيقة، ستُعاد المحاولة تلقائيًا بعد {s} ث…', retry: 'أعد المحاولة',
+    regen: 'تمرين آخر', regen_title: 'توليد تمرين آخر', regen_go: 'ولّد تمرينًا جديدًا', regen_note_ph: 'طلب اختياري: أسهل، أضف منحنى، ركّز على…',
+    undo: 'تراجع', edit: 'تعديل', image: 'إضافة صورة', up: 'إلى الأعلى', down: 'إلى الأسفل', del: 'حذف التمرين',
+    ed_title: 'تعديل التمرين', f_title: 'موضوع التمرين', f_ins: 'التعليمة', f_intro: 'النص أو السند',
     f_text: 'النص', f_answer: 'الإجابة', f_corr: 'التصحيح أو التبرير', f_true: 'صحيحة', f_false: 'خاطئة',
     f_answers: 'إجابات الفراغات (افصل بينها بـ ؛)', f_left: 'العمود أ', f_right: 'العمود ب', f_opt: 'اقتراح',
     add_item: 'إضافة سؤال', images: 'الصور', graph: 'المنحنى', g_expr: 'الدالة بدلالة x، مثل x^2-2*x+1',
     g_from: 'x من', g_to: 'إلى', g_caption: 'تعليق المنحنى', g_hint: 'مسموح: + - * / ^ sin cos tan exp log sqrt abs pi',
-    save_edit: 'حفظ التعديلات', cancel: 'إلغاء', close: 'إغلاق', insert: 'إدراج',
-    img_title: 'إضافة صورة للتمرين', img_device: 'من جهازي', img_book: 'من صفحات الكتاب', crop_hint: 'اسحب لتحديد جزء من الصفحة، ثم اضغط «إدراج».',
-    no_pdf_pages: 'صفحات الكتاب غير متوفرة في امتحان محفوظ، ارفع الكتاب من جديد لاستعمالها.',
-    size: 'الحجم', saved_title: 'امتحاناتي المحفوظة', no_saved: 'لا توجد امتحانات محفوظة بعد.', open_it: 'فتح',
+    save_edit: 'حفظ التعديلات', cancel: 'إلغاء', close: 'إغلاق', size: 'الحجم',
+    saved_title: 'امتحاناتي المحفوظة', no_saved: 'لا توجد امتحانات محفوظة بعد.', open_it: 'فتح',
     saved_ok: 'تم حفظ الامتحان', loaded_ok: 'تم فتح الامتحان', deleted: 'تم الحذف',
-    confirm: 'تأكيد', confirm_replace: 'سيتم استبدال كل التمارين الحالية بتمارين جديدة. هل تريد المتابعة؟',
-    confirm_new: 'سيتم مسح الامتحان الحالي غير المحفوظ. هل تريد البدء من جديد؟', confirm_del: 'هل تريد حذف هذا الامتحان نهائيًا؟',
-    err_pages: 'الملف يحتوي على {n} صفحة، والحد الأقصى 15 صفحة.', err_scanned: 'هذا الملف ممسوح ضوئيًا (صور). ارفع ملفًا مكتوبًا يمكن تحديد نصه.',
-    err_pdf: 'تعذّرت قراءة الملف. تأكد أنه PDF سليم.', err_nobook: 'ارفع الكتاب أولًا.', err_nounits: 'اختر وحدة واحدة على الأقل.',
-    err_short: 'نص الوحدة المختارة قصير جدًا لتوليد تمرين.', err_gen: 'تعذّر توليد التمرين.', err_net: 'تعذّر الاتصال، تحقق من الإنترنت.',
-    err_limit: 'تم بلوغ حد الاستعمال مؤقتًا، انتظر دقيقة ثم أعد المحاولة.', err_perm: 'هذه الأداة غير متاحة لحسابك بعد.',
-    err_export: 'تعذّر إنشاء الملف، أعد المحاولة.', err_empty: 'ولّد الامتحان أولًا.', err_save: 'تعذّر الحفظ.',
-    err_big: 'الامتحان كبير جدًا للحفظ بسبب الصور. صغّر الصور أو احذف بعضها.', units_fail: 'لم نتمكن من اكتشاف الوحدات، يمكنك تحديدها يدويًا.',
+    confirm: 'تأكيد', confirm_new: 'سيتم مسح الامتحان الحالي غير المحفوظ. هل تريد البدء من جديد؟',
+    confirm_del: 'هل تريد حذف هذا الامتحان نهائيًا؟', confirm_del_ex: 'هل تريد حذف هذا التمرين؟',
+    err_nounits: 'اختر وحدة واحدة على الأقل أو ألصق نص الدرس.', err_gen: 'تعذّر توليد التمرين.', err_net: 'تعذّر الاتصال بالخادم، تحقق من الإنترنت.',
+    err_limit: 'حصة Groq ممتلئة حاليًا، أعد المحاولة بعد دقيقة.', err_perm: 'هذه الأداة غير متاحة لحسابك بعد.',
+    err_export: 'تعذّر إنشاء الملف، أعد المحاولة.', err_empty: 'ولّد تمرينًا واحدًا على الأقل، وانتظر اكتمال التوليد.', err_save: 'تعذّر الحفظ.',
+    err_big: 'الامتحان كبير جدًا للحفظ بسبب الصور. صغّر الصور أو احذف بعضها.', err_busy: 'انتظر حتى ينتهي التمرين الجاري.', max_ex: 'الحد الأقصى 8 تمارين.',
     exporting: 'جاري تجهيز الملف…', pdf_ok: 'تم تحميل ملف PDF', word_ok: 'تم تحميل ملف Word',
     gate_check: 'جاري التحقق…', gate_login: 'سجّل الدخول أولًا', gate_login_t: 'هذه الأداة تتطلب تسجيل الدخول من الصفحة الرئيسية للموقع.',
     gate_login_b: 'الذهاب إلى الصفحة الرئيسية', gate_soon: 'قريبًا ✨', gate_soon_t: 'نعمل على تجهيز هذه الأداة بعناية، وستكون متاحة قريبًا.',
-    gate_err: 'تعذّر تحميل الأداة، أعد تحميل الصفحة.', in_exam: 'التصحيح ضمن التصدير'
+    gate_err: 'تعذّر تحميل الأداة، أعد تحميل الصفحة.',
+    adm_title: 'إدارة وحدات المنهاج', adm_hint: 'اكتب كل وحدة في سطر مستقل. تُحفظ في Firebase وتظهر لكل الأساتذة.',
+    adm_all_streams: 'كل الشعب', adm_src_def: 'القائمة الافتراضية المدمجة في الأداة', adm_src_fb: 'قائمة معدّلة محفوظة في Firebase', adm_src_none: 'لا توجد قائمة بعد',
+    adm_reset: 'استرجاع الافتراضي', adm_save: 'حفظ الوحدات', adm_saved: 'تم حفظ الوحدات'
   },
   en: {
     app_title: 'Smart Exam Generator', new: 'New exam', open: 'My saved exams', save: 'Save',
-    print: 'Print', pdf: 'Download PDF', word: 'Download Word', tab_settings: 'Settings', tab_preview: 'Preview',
-    s1: 'Book', drop_title: 'Upload the lesson or book as PDF', drop_sub: 'Up to 15 pages, typed text (not scanned)',
-    change_book: 'Change file', pages: 'pages', reading: 'Reading the file…',
-    s2: 'Units', units_empty: 'Upload the book first; its units will appear here automatically.', detecting: 'Detecting units…',
-    add_unit: 'Add unit', unit: 'Unit', from: 'p.', to: 'to', whole_book: 'Whole book',
-    s3: 'Exam details', school: 'School', year: 'School year', stage: 'Stage', grade: 'Year',
-    subject: 'Subject', duration: 'Duration', teacher: 'Teacher', exam_title: 'Exam title',
-    exam_lang: 'Exam language', logo: 'Logo (optional)', logo_add: 'Add logo', remove: 'Remove',
-    s4: 'Exercises', difficulty_all: 'Exam difficulty', count: 'Exercises', ex_n: 'Exercise', ex_unit: 'From',
-    points_short: 'pts', total: 'Total', balance: 'Split 20 points evenly', all_units: 'All selected units',
-    generate: 'Generate exam', generate_more: 'Generate new exercises', generating: 'Writing exercise {i} of {n}…',
+    print: 'Print', pdf: 'Download PDF', word: 'Download Word', admin: 'Manage curriculum units',
+    tab_settings: 'Settings', tab_preview: 'Preview',
+    s1: 'Curriculum and level', curriculum: 'Curriculum', cur_dz: 'Algerian', stage: 'Stage', grade: 'Year', stream: 'Stream', subject: 'Subject',
+    st_pri: 'Primary', st_mid: 'Middle', st_sec: 'Secondary',
+    s2: 'Units', units_none: 'No ready-made units for this subject yet. Type the unit or lesson title below.',
+    unit_ph: 'Add a unit or lesson not in the list', custom: 'added',
+    paste_t: 'Paste the lesson text (optional)', paste_hint: 'If you paste your lesson, exercises are built from it instead of the general curriculum.',
+    chars: '{n} / 3500 characters', paste_on: 'on',
+    s3: 'Exam details', school: 'School', year: 'School year', duration: 'Duration', teacher: 'Teacher',
+    exam_title: 'Exam title', exam_lang: 'Exam language', logo: 'Logo (optional)', logo_add: 'Add logo', remove: 'Remove',
+    s4: 'Exercises', difficulty_all: 'Exam difficulty', add_ex: 'Add exercise', ex_n: 'Exercise',
+    ex_type: 'Exercise type', ex_unit: 'Unit', ex_diff: 'Difficulty', f_points: 'Points', note: 'Note (optional)',
+    note_ph: 'e.g. progressive questions, everyday examples, add a curve…',
+    gen_one: 'Generate this exercise', regen_one: 'Regenerate exercise', all_units: 'All selected units',
+    points_short: 'pts', total: 'Total', balance: 'Split 20 points evenly',
+    chip_ready: 'Ready', chip_loading: 'Writing', chip_waiting: 'Wait {s}s', chip_error: 'Error', chip_idle: 'Not generated',
     easy: 'Easy', medium: 'Medium', hard: 'Hard',
     d_easy: 'Recall and direct use', d_medium: 'Understanding and application', d_hard: 'Analysis and reasoning',
     t_qcm: 'Multiple choice (QCM)', t_tf: 'True or false', t_fill: 'Fill in the blanks', t_match: 'Match the columns',
     t_direct: 'Direct questions', t_problem: 'Applied exercise / problem', t_situation: 'Integration situation', t_document: 'Document or text analysis',
-    st_pri: 'Primary', st_mid: 'Middle', st_sec: 'Secondary',
     zoom_fit: 'Fit width', show_corr: 'Answer key',
-    empty_title: 'Your exam will appear here', empty_sub: 'Upload the lesson, choose units and exercise types, then press “Generate exam” and watch the exercises being written.',
-    e1: 'Upload', e2: 'Units', e3: 'Exercises', e4: 'Generate',
-    writing: 'Writing the exercise…', waiting: 'Waiting…', retry: 'Try again',
-    regen: 'Another exercise', regen_title: 'Generate another exercise', regen_go: 'Generate a new exercise', note_ph: 'Optional request: easier, add a curve, focus on…',
-    undo: 'Undo', edit: 'Edit', image: 'Image', curve: 'Curve', up: 'Move up', down: 'Move down', del: 'Delete exercise',
-    ed_title: 'Edit exercise', f_title: 'Topic', f_ins: 'Instruction', f_intro: 'Text or context', f_points: 'Points',
+    empty_title: 'Your exam will appear here', empty_sub: 'Choose the level, subject and units, then press “Generate this exercise” on the exercise card and watch it being written.',
+    e1: 'Level', e2: 'Units', e3: 'Exercise', e4: 'Generate',
+    writing: 'Writing the exercise…', waiting_q: 'Groq quota is full for this minute; retrying automatically in {s}s…', retry: 'Try again',
+    regen: 'Another exercise', regen_title: 'Generate another exercise', regen_go: 'Generate a new exercise', regen_note_ph: 'Optional request: easier, add a curve, focus on…',
+    undo: 'Undo', edit: 'Edit', image: 'Add image', up: 'Move up', down: 'Move down', del: 'Delete exercise',
+    ed_title: 'Edit exercise', f_title: 'Topic', f_ins: 'Instruction', f_intro: 'Text or context',
     f_text: 'Text', f_answer: 'Answer', f_corr: 'Correction or justification', f_true: 'True', f_false: 'False',
     f_answers: 'Blank answers (separate with ;)', f_left: 'Column A', f_right: 'Column B', f_opt: 'Option',
     add_item: 'Add question', images: 'Images', graph: 'Curve', g_expr: 'Function of x, e.g. x^2-2*x+1',
     g_from: 'x from', g_to: 'to', g_caption: 'Caption', g_hint: 'Allowed: + - * / ^ sin cos tan exp log sqrt abs pi',
-    save_edit: 'Save changes', cancel: 'Cancel', close: 'Close', insert: 'Insert',
-    img_title: 'Add an image', img_device: 'From my device', img_book: 'From the book pages', crop_hint: 'Drag to select part of the page, then press “Insert”.',
-    no_pdf_pages: 'Book pages are not available for a saved exam; upload the book again to use them.',
-    size: 'Size', saved_title: 'My saved exams', no_saved: 'No saved exams yet.', open_it: 'Open',
+    save_edit: 'Save changes', cancel: 'Cancel', close: 'Close', size: 'Size',
+    saved_title: 'My saved exams', no_saved: 'No saved exams yet.', open_it: 'Open',
     saved_ok: 'Exam saved', loaded_ok: 'Exam opened', deleted: 'Deleted',
-    confirm: 'Confirm', confirm_replace: 'All current exercises will be replaced with new ones. Continue?',
-    confirm_new: 'The current unsaved exam will be cleared. Start over?', confirm_del: 'Delete this exam permanently?',
-    err_pages: 'The file has {n} pages; the limit is 15.', err_scanned: 'This file is scanned (images). Upload a typed file whose text can be selected.',
-    err_pdf: 'Could not read the file. Make sure it is a valid PDF.', err_nobook: 'Upload the book first.', err_nounits: 'Select at least one unit.',
-    err_short: 'The selected unit text is too short to build an exercise.', err_gen: 'Could not generate the exercise.', err_net: 'Connection failed, check your internet.',
-    err_limit: 'Usage limit reached for now; wait a minute and try again.', err_perm: 'This tool is not available for your account yet.',
-    err_export: 'Could not create the file, try again.', err_empty: 'Generate the exam first.', err_save: 'Saving failed.',
-    err_big: 'The exam is too large to save because of its images. Make them smaller or remove some.', units_fail: 'Could not detect the units; you can set them manually.',
+    confirm: 'Confirm', confirm_new: 'The current unsaved exam will be cleared. Start over?',
+    confirm_del: 'Delete this exam permanently?', confirm_del_ex: 'Delete this exercise?',
+    err_nounits: 'Select at least one unit or paste the lesson text.', err_gen: 'Could not generate the exercise.', err_net: 'Could not reach the server, check your internet.',
+    err_limit: 'Groq quota is full right now; try again in a minute.', err_perm: 'This tool is not available for your account yet.',
+    err_export: 'Could not create the file, try again.', err_empty: 'Generate at least one exercise and wait until it finishes.', err_save: 'Saving failed.',
+    err_big: 'The exam is too large to save because of its images. Make them smaller or remove some.', err_busy: 'Wait until the current exercise finishes.', max_ex: 'The limit is 8 exercises.',
     exporting: 'Preparing the file…', pdf_ok: 'PDF downloaded', word_ok: 'Word file downloaded',
     gate_check: 'Checking…', gate_login: 'Please sign in', gate_login_t: 'This tool requires signing in from the site home page.',
     gate_login_b: 'Go to the home page', gate_soon: 'Coming soon ✨', gate_soon_t: 'We are carefully preparing this tool; it will be available soon.',
-    gate_err: 'The tool could not load; reload the page.', in_exam: 'Answer key in exports'
+    gate_err: 'The tool could not load; reload the page.',
+    adm_title: 'Manage curriculum units', adm_hint: 'One unit per line. Saved in Firebase and shown to every teacher.',
+    adm_all_streams: 'All streams', adm_src_def: 'Built-in default list', adm_src_fb: 'Edited list saved in Firebase', adm_src_none: 'No list yet',
+    adm_reset: 'Restore default', adm_save: 'Save units', adm_saved: 'Units saved'
   }
 };
+
+/* ---------------- Algerian curriculum ---------------- */
+const STREAMS = {
+  1: [{ v: 'cst', ar: 'جذع مشترك علوم وتكنولوجيا', fr: 'Tronc commun sciences et technologie', en: 'Common core: science and technology' },
+      { v: 'cla', ar: 'جذع مشترك آداب', fr: 'Tronc commun lettres', en: 'Common core: letters' }],
+  2: [{ v: 'se', ar: 'علوم تجريبية', fr: 'Sciences expérimentales', en: 'Experimental sciences' },
+      { v: 'm', ar: 'رياضيات', fr: 'Mathématiques', en: 'Mathematics' },
+      { v: 'tm', ar: 'تقني رياضي', fr: 'Technique mathématique', en: 'Technical mathematics' },
+      { v: 'ge', ar: 'تسيير واقتصاد', fr: 'Gestion et économie', en: 'Management and economics' },
+      { v: 'lp', ar: 'آداب وفلسفة', fr: 'Lettres et philosophie', en: 'Letters and philosophy' },
+      { v: 'le', ar: 'لغات أجنبية', fr: 'Langues étrangères', en: 'Foreign languages' }]
+};
+STREAMS[3] = STREAMS[2];
+const SUBJ = {
+  math: { ar: 'الرياضيات', fr: 'Mathématiques', en: 'Mathematics' },
+  phys: { ar: 'العلوم الفيزيائية', fr: 'Sciences physiques', en: 'Physical sciences', mid_ar: 'العلوم الفيزيائية والتكنولوجيا', mid_fr: 'Sciences physiques et technologie', mid_en: 'Physics and technology' },
+  svt: { ar: 'علوم الطبيعة والحياة', fr: 'Sciences de la nature et de la vie', en: 'Natural and life sciences' },
+  sci: { ar: 'التربية العلمية والتكنولوجية', fr: 'Éducation scientifique et technologique', en: 'Science and technology' },
+  arab: { ar: 'اللغة العربية', fr: 'Langue arabe', en: 'Arabic' },
+  fren: { ar: 'اللغة الفرنسية', fr: 'Langue française', en: 'French' },
+  engl: { ar: 'اللغة الإنجليزية', fr: 'Langue anglaise', en: 'English' },
+  hg: { ar: 'التاريخ والجغرافيا', fr: 'Histoire et géographie', en: 'History and geography' },
+  isl: { ar: 'التربية الإسلامية', fr: 'Éducation islamique', en: 'Islamic education' },
+  civ: { ar: 'التربية المدنية', fr: 'Éducation civique', en: 'Civic education' },
+  info: { ar: 'الإعلام الآلي', fr: 'Informatique', en: 'Computer science' },
+  philo: { ar: 'الفلسفة', fr: 'Philosophie', en: 'Philosophy' }
+};
+const SUBJ_BY_STAGE = {
+  pri: ['math', 'arab', 'sci', 'fren', 'engl', 'isl', 'civ', 'hg'],
+  mid: ['math', 'phys', 'svt', 'arab', 'fren', 'engl', 'hg', 'isl', 'civ', 'info'],
+  sec: ['math', 'phys', 'svt', 'arab', 'fren', 'engl', 'hg', 'isl', 'philo', 'info']
+};
+/* Built-in units — the admin can correct any list from the tool (saved in Firestore). */
+const M3AS = ['النهايات والاستمرارية', 'الاشتقاقية ودراسة الدوال', 'الدالة الأسية', 'الدالة اللوغاريتمية', 'المتتاليات العددية', 'الدوال الأصلية والحساب التكاملي', 'الأعداد المركبة والتحويلات النقطية', 'الاحتمالات', 'الهندسة في الفضاء'];
+const CATALOG = {
+  'mid-1-math': ['الأعداد الطبيعية والأعداد العشرية', 'العمليات على الأعداد الطبيعية والعشرية', 'القسمة الإقليدية والقسمة العشرية', 'الكسور', 'الأعداد النسبية', 'الحساب الحرفي والمعادلات', 'التناسبية', 'تنظيم معطيات', 'المستقيمات المتوازية والمتعامدة', 'الزوايا', 'التناظر المحوري', 'المثلثات والدائرة', 'المحيطات والمساحات', 'متوازي المستطيلات والمكعب'],
+  'mid-2-math': ['العمليات على الأعداد الطبيعية والعشرية', 'الكسور', 'الأعداد النسبية', 'الحساب الحرفي', 'المعادلات من الدرجة الأولى', 'التناسبية', 'تنظيم معطيات والإحصاء', 'التناظر المركزي', 'الزوايا', 'المثلثات', 'متوازي الأضلاع', 'الموشور القائم وأسطوانة الدوران'],
+  'mid-3-math': ['العمليات على الأعداد النسبية', 'الأعداد الناطقة (الكسور)', 'القوى ذات الأسس الصحيحة', 'الحساب الحرفي والنشر', 'المعادلات من الدرجة الأولى', 'التناسبية والدالة الخطية', 'الإحصاء', 'المثلث القائم والدائرة', 'خاصية فيثاغورس', 'جيب تمام زاوية حادة', 'مستقيم المنتصفين في مثلث', 'الانسحاب', 'الهرم ومخروط الدوران'],
+  'mid-4-math': ['الأعداد الطبيعية والأعداد الناطقة (القاسم المشترك الأكبر)', 'الجذور التربيعية', 'الحساب الحرفي (النشر والتحليل والمتطابقات الشهيرة)', 'المعادلات والمتراجحات من الدرجة الأولى', 'جملة معادلتين من الدرجة الأولى بمجهولين', 'الدالة الخطية والدالة التآلفية', 'الإحصاء', 'خاصية طالس', 'حساب المثلثات في المثلث القائم', 'الأشعة والانسحاب', 'المعالم في المستوي', 'الدوران والزوايا والمضلعات المنتظمة', 'الهندسة في الفضاء (الكرة والجلة)'],
+  'mid-1-phys': ['المادة وتحولاتها: حالات المادة وخصائصها', 'المادة وتحولاتها: الكتلة والحجم', 'الظواهر الميكانيكية: مقاربة أولية للقوة', 'الظواهر الكهربائية: الدارة الكهربائية البسيطة', 'الظواهر الكهربائية: النواقل والعوازل', 'الظواهر الضوئية: الضوء ومصادره وانتشاره', 'الظواهر الفلكية: الظل والكسوف والخسوف'],
+  'mid-2-phys': ['المادة وتحولاتها: الخلائط والأجسام النقية', 'المادة وتحولاتها: الماء في الطبيعة', 'المادة وتحولاتها: التحول الكيميائي (الاحتراق)', 'الظواهر الميكانيكية: الحركة والسكون', 'الظواهر الكهربائية: الدارة الكهربائية والتيار', 'الظواهر الكهربائية: الأخطار الكهربائية', 'الظواهر الضوئية: الرؤية والألوان'],
+  'mid-3-phys': ['المادة وتحولاتها: النموذج الجزيئي والذري', 'المادة وتحولاتها: التحول الكيميائي والمعادلة الكيميائية', 'الظواهر الميكانيكية: القوة والثقل والكتلة', 'الظواهر الميكانيكية: الأفعال المتبادلة', 'الظواهر الكهربائية: قانون أوم', 'الظواهر الكهربائية: التيار المتناوب', 'الظواهر الكهربائية: الاستطاعة والطاقة الكهربائية', 'الظواهر الضوئية: انعكاس الضوء وانكساره'],
+  'mid-4-phys': ['المادة وتحولاتها: المحاليل الشاردية', 'المادة وتحولاتها: التحليل الكهربائي البسيط', 'المادة وتحولاتها: الأحماض والأسس (pH)', 'الظواهر الميكانيكية: القوة والحركة', 'الظواهر الميكانيكية: مبدأ العطالة', 'الظواهر الكهربائية: الكهرباء الساكنة', 'الظواهر الكهربائية: التحريض الكهرومغناطيسي والمنوبة', 'الظواهر الضوئية: العدسات والرؤية', 'الظواهر الفلكية: الحركات في النظام الشمسي'],
+  'mid-1-svt': ['التغذية عند الإنسان', 'التنفس عند الإنسان', 'الإطراح عند الإنسان', 'التنوع الحيوي في المحيط', 'تصنيف الكائنات الحية', 'الإنسان والمحيط'],
+  'mid-2-svt': ['التغذية عند النبات الأخضر', 'التكاثر عند النبات', 'التكاثر عند الحيوان', 'التوازن الطبيعي وتأثير الإنسان', 'الظواهر الجيولوجية الخارجية (الحت والترسيب)'],
+  'mid-3-svt': ['الهضم والامتصاص', 'الدوران الدموي', 'التنفس الخلوي والطاقة', 'الاتصال العصبي والحركة', 'التكاثر عند الإنسان', 'تشكل الصخور'],
+  'mid-4-svt': ['الاستجابة المناعية', 'الوراثة وانتقال الصفات', 'التحولات الطاقوية في الخلية', 'الظواهر الجيولوجية الداخلية (الزلازل والبراكين)', 'تكتونية الصفائح'],
+  'sec-1-math': ['الأعداد والحساب', 'الدوال (عموميات)', 'الدوال المرجعية', 'المعادلات والمتراجحات', 'الإحصاء', 'الحساب الشعاعي والمعالم', 'معادلات المستقيمات', 'الهندسة في الفضاء'],
+  'sec-1-math@cla': ['الأعداد والحساب', 'الدوال (عموميات)', 'المعادلات والمتراجحات', 'الإحصاء'],
+  'sec-2-math': ['كثيرات الحدود والمعادلات من الدرجة الثانية', 'الدوال المرجعية وتحويلاتها', 'الاشتقاقية', 'دراسة الدوال', 'المتتاليات العددية', 'الزوايا الموجهة وحساب المثلثات', 'الجداء السلمي', 'الإحصاء والاحتمالات', 'الهندسة في الفضاء'],
+  'sec-3-math': M3AS,
+  'sec-3-math@m': M3AS.concat(['القسمة في Z والموافقات', 'الأعداد الأولية والقاسم المشترك الأكبر']),
+  'sec-3-math@tm': M3AS.concat(['القسمة في Z والموافقات', 'الأعداد الأولية والقاسم المشترك الأكبر']),
+  'sec-3-math@ge': ['النهايات والاستمرارية', 'الاشتقاقية ودراسة الدوال', 'الدالة الأسية', 'الدالة اللوغاريتمية', 'المتتاليات العددية', 'الدوال الأصلية والحساب التكاملي', 'الإحصاء', 'الاحتمالات'],
+  'sec-3-math@lp': ['المتتاليات العددية', 'الدوال (دراسة وتمثيل)', 'الموافقات والحساب في Z', 'الإحصاء'],
+  'sec-3-math@le': ['المتتاليات العددية', 'الدوال (دراسة وتمثيل)', 'الموافقات والحساب في Z', 'الإحصاء'],
+  'sec-1-phys': ['الحركة والقوة', 'مقاربة أولية للمادة (البنية الذرية)', 'الجدول الدوري للعناصر', 'المقادير المولية', 'التحول الكيميائي وتقدم التفاعل', 'الضوء والتحليل الطيفي', 'الظواهر الكهربائية'],
+  'sec-2-phys': ['العمل والطاقة الحركية', 'الطاقة الكامنة وانحفاظ الطاقة', 'الطاقة الداخلية', 'الطاقة الكهربائية', 'الناقلية الكهربائية للمحاليل الشاردية', 'المعايرة (الأحماض والأسس)', 'الأكسدة والإرجاع', 'الكيمياء العضوية'],
+  'sec-3-phys': ['المتابعة الزمنية لتحول كيميائي', 'التحولات النووية', 'الظواهر الكهربائية (RC ،RL ،RLC)', 'تطور جملة كيميائية نحو حالة التوازن', 'تطور جملة ميكانيكية (قوانين نيوتن)', 'الاهتزازات الميكانيكية الحرة', 'مراقبة تطور جملة كيميائية (الأسترة والأعمدة)'],
+  'sec-1-svt': ['التغذية والنمو عند الكائنات الحية', 'التنفس والتخمر', 'الخلية ونشاطها', 'النشاط التكاثري', 'الديناميكية الداخلية للكرة الأرضية'],
+  'sec-2-svt': ['انتقال الصفات الوراثية', 'التكاثر عند الكائنات الحية', 'التحكم في التكاثر', 'الاستقلاب والطاقة', 'تكتونية الصفائح'],
+  'sec-3-svt': ['تركيب البروتين', 'العلاقة بين بنية ووظيفة البروتين', 'النشاط الإنزيمي للبروتينات', 'دور البروتينات في الدفاع عن الذات (المناعة)', 'دور البروتينات في الاتصال العصبي', 'التركيب الضوئي (تحويل الطاقة الضوئية)', 'التنفس والتخمر (إنتاج ATP)', 'التكتونية العامة']
+};
+
 
 /* ---------------- Exam-paper texts (exam language) ---------------- */
 const ORD_AR = ['الأول', 'الثاني', 'الثالث', 'الرابع', 'الخامس', 'السادس', 'السابع', 'الثامن'];
@@ -180,21 +248,21 @@ const TYPES = {
 const TYPE_KEYS = Object.keys(TYPES);
 const DIFFS = { easy: '#16A34A', medium: '#E08A00', hard: '#DC2626' };
 
+
 /* ---------------- State ---------------- */
 const S = {
   uiLang: (() => { try { return localStorage.getItem('site_lang') === 'en' ? 'en' : 'ar'; } catch (e) { return 'ar'; } })(),
-  user: null,
-  book: null,           // { name, pages:[text] }
-  pdf: null,            // pdf.js document (not saved)
-  units: [],            // { id, title, from, to, on }
-  header: { school: '', title: '', year: '2026/2027', stage: 'mid', grade: 4, subject: '', duration: '', teacher: '', logo: '' },
+  user: null, isAdmin: false, overrides: {},
+  cur: { sys: 'dz', stage: 'mid', grade: 4, stream: 'se', subject: 'math' },
+  units: [],            // { id, title, on, custom }
+  paste: '',
+  header: { school: '', title: '', year: '2026/2027', duration: '', teacher: '', logo: '' },
   examLang: 'ar',
   difficulty: 'medium',
-  rows: [],             // { type, unit, diff, points }
-  exercises: [],        // { id, type, diff, unit, points, data, history, images, status, err, perm }
+  exercises: [],        // cards: { id, type, unit, diff, points, note, open, data, history, images, status, err, wait, perm }
   showCorr: true,
   zoom: 1, zoomAuto: true,
-  examId: null, dirty: false, busy: false, detecting: false
+  examId: null, dirty: false, busy: false
 };
 const T = (k, vars) => {
   let s = (UI[S.uiLang] && UI[S.uiLang][k]) || UI.ar[k] || k;
@@ -203,6 +271,8 @@ const T = (k, vars) => {
 };
 const tLabel = t => T('t_' + t);
 const L = () => EL[S.examLang] || EL.ar;
+const shown = () => S.exercises.filter(e => e.status !== 'idle');
+
 
 /* ---------------- Small helpers ---------------- */
 function loadScript(src) {
@@ -237,9 +307,9 @@ function seededPerm(n, seed) {
   if (n > 2 && a.every((v, i) => v === i)) a.push(a.shift());
   return a;
 }
-async function compressImage(file, maxW, q = 0.85) {
+async function compressImage(file, maxW, q = 0.85, png = false) {
   const url = await new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = rej; r.readAsDataURL(file); });
-  return compressDataUrl(url, maxW, q);
+  return compressDataUrl(url, maxW, q, png);
 }
 function compressDataUrl(url, maxW, q = 0.85, png = false) {
   return new Promise(res => {
@@ -331,7 +401,7 @@ function closeMenu() { if (menuEl) { menuEl.remove(); menuEl = null; } if (menuC
 const typeOpts = () => TYPE_KEYS.map(k => ({ v: k, label: tLabel(k), icon: TYPES[k].i, color: TYPES[k].c }));
 const diffOpts = () => Object.keys(DIFFS).map(k => ({ v: k, label: T(k), desc: T('d_' + k), dot: DIFFS[k] }));
 const unitOpts = () => [{ v: 'all', label: T('all_units'), dot: 'var(--accent)' }]
-  .concat(S.units.filter(u => u.on).map(u => ({ v: u.id, label: u.title, desc: `${T('from')} ${u.from}–${u.to}`, dot: '#A9C2D3' })));
+  .concat(S.units.filter(u => u.on).map(u => ({ v: u.id, label: u.title, dot: '#A9C2D3' })));
 
 /* =====================================================================
    Curves (safe expression → SVG)
@@ -408,25 +478,27 @@ function graphSvg(g) {
 </svg>`;
 }
 
+
 /* =====================================================================
    i18n on the static UI
    ===================================================================== */
 function applyUI() {
   document.documentElement.lang = S.uiLang;
   $$('[data-t]').forEach(el => { el.textContent = T(el.dataset.t); });
+  $$('[data-ph]').forEach(el => { el.placeholder = T(el.dataset.ph); });
   $$('[data-tip]').forEach(el => { el.dataset.tipText = T(el.dataset.tip); el.setAttribute('aria-label', T(el.dataset.tip)); });
   $('#langBtn').textContent = S.uiLang === 'ar' ? 'EN' : 'ع';
   document.title = `${T('app_title')} — Merabti Academy`;
   DD.forEach(d => d.paint());
-  renderBookInfo(); renderUnits(); renderRows(); updateGenBtn();
-  if (!S.exercises.length) renderPaper();
+  renderUnits(); renderCards(); paintPaste();
+  if (!shown().length) renderPaper();
 }
 function fillDatalists() {
   const D = DEFAULTS[S.examLang];
-  $('#dlSubjects').innerHTML = D.subjects.map(s => `<option value="${esc(s)}">`).join('');
   $('#dlTitles').innerHTML = D.titles.map(s => `<option value="${esc(s)}">`).join('');
   $('#dlDurations').innerHTML = D.durations.map(s => `<option value="${esc(s)}">`).join('');
 }
+
 
 /* =====================================================================
    Access gate
@@ -455,144 +527,118 @@ function startGate() {
       isAdmin = d.exists && d.data().isAdmin === true;
     } catch (e) { isAdmin = false; }
     if (TOOL_LOCKED && !isAdmin) { gate('soon'); return; }
-    S.user = user; gate('open'); fitZoom();
+    S.user = user; S.isAdmin = isAdmin;
+    $('#adminBtn').classList.toggle('hidden', !isAdmin);
+    gate('open'); fitZoom();
+    await loadOverrides(); rebuildUnits();
   });
 }
-function callApi(payload) {
-  const fn = firebase.app().functions('us-central1').httpsCallable('generateExam', { timeout: 150000 });
-  return fn(payload).then(r => r.data);
+
+/* =====================================================================
+   Step 1 — curriculum and level
+   ===================================================================== */
+const YEARS = { pri: 5, mid: 4, sec: 3 };
+const lab = (o, lang) => o[lang] || o.ar;
+function subjLabel(key, lang) {
+  const s = SUBJ[key]; if (!s) return '';
+  return (S.cur.stage === 'mid' && s['mid_' + lang]) || s[lang] || s.ar;
 }
-function apiError(e) {
-  const code = (e && e.code) || '';
-  if (code.includes('resource-exhausted')) return T('err_limit');
-  if (code.includes('permission-denied')) return T('err_perm');
-  if (code.includes('unauthenticated')) return T('gate_login');
-  if (code.includes('unavailable') || code.includes('deadline')) return T('err_net');
-  return (e && e.message && S.uiLang === 'ar' && /[\u0600-\u06FF]/.test(e.message)) ? e.message : T('err_gen');
+function streamObj() {
+  if (S.cur.stage !== 'sec') return null;
+  return (STREAMS[S.cur.grade] || []).find(x => x.v === S.cur.stream) || null;
+}
+const levelText = () => {
+  const st = streamObj();
+  return L().level_of(S.cur.stage, S.cur.grade) + (st ? ` — ${lab(st, S.examLang)}` : '');
+};
+function catalogKey(withStream) {
+  const k = `${S.cur.stage}-${S.cur.grade}-${S.cur.subject}`;
+  return withStream && S.cur.stage === 'sec' ? `${k}@${S.cur.stream}` : k;
+}
+function catalogUnits() {
+  const a = catalogKey(true), b = catalogKey(false);
+  return S.overrides[a] || CATALOG[a] || S.overrides[b] || CATALOG[b] || [];
+}
+function rebuildUnits() {
+  const was = new Set(S.units.filter(u => u.on).map(u => u.title));
+  const custom = S.units.filter(u => u.custom);
+  S.units = catalogUnits().map(t => ({ id: uid(), title: t, on: was.has(t), custom: false }))
+    .concat(custom.filter(c => !catalogUnits().includes(c.title)));
+  S.exercises.forEach(e => { if (e.unit !== 'all' && !S.units.some(u => u.id === e.unit)) e.unit = 'all'; });
+  renderUnits(); renderCards();
+}
+const gradeOpts = () => [...Array(YEARS[S.cur.stage])].map((_, i) => ({ v: i + 1, label: S.uiLang === 'en' ? `Year ${i + 1}` : `السنة ${ORD_AR_F[i]}` }));
+const streamOpts = () => (STREAMS[S.cur.grade] || []).map(x => ({ v: x.v, label: lab(x, S.uiLang === 'en' ? 'en' : 'ar') }));
+const subjOpts = () => SUBJ_BY_STAGE[S.cur.stage].map(k => ({ v: k, label: subjLabel(k, S.uiLang === 'en' ? 'en' : 'ar') }));
+let ddGrade, ddStream, ddSubject;
+function fixStream() {
+  const list = STREAMS[S.cur.grade] || [];
+  if (!list.some(x => x.v === S.cur.stream)) S.cur.stream = list[0] ? list[0].v : '';
+  $('#streamField').classList.toggle('hidden', S.cur.stage !== 'sec');
+  if (ddStream) ddStream.set(S.cur.stream);
+}
+function initCurriculum() {
+  makeDD($('#ddCur'), () => [{ v: 'dz', label: T('cur_dz'), dot: '#16A34A' }], 'dz', () => {});
+  makeDD($('#ddStage'), () => ['pri', 'mid', 'sec'].map(k => ({ v: k, label: T('st_' + k) })), S.cur.stage, v => {
+    S.cur.stage = v;
+    if (S.cur.grade > YEARS[v]) S.cur.grade = YEARS[v];
+    if (!SUBJ_BY_STAGE[v].includes(S.cur.subject)) S.cur.subject = SUBJ_BY_STAGE[v][0];
+    ddGrade.set(S.cur.grade); ddSubject.set(S.cur.subject); fixStream(); curChanged();
+  });
+  ddGrade = makeDD($('#ddGrade'), gradeOpts, S.cur.grade, v => { S.cur.grade = v; fixStream(); curChanged(); });
+  ddStream = makeDD($('#ddStream'), streamOpts, S.cur.stream, v => { S.cur.stream = v; curChanged(); });
+  ddSubject = makeDD($('#ddSubject'), subjOpts, S.cur.subject, v => { S.cur.subject = v; curChanged(); });
+  fixStream();
+}
+function curChanged() { markDirty(); rebuildUnits(); rerender(); }
+function syncCurriculum() {
+  DD.forEach(d => { if (d.host.id === 'ddStage') d.set(S.cur.stage); });
+  ddGrade.set(S.cur.grade); ddSubject.set(S.cur.subject); fixStream();
 }
 
 /* =====================================================================
-   Step 1 — book
+   Step 2 — units + pasted lesson
    ===================================================================== */
-async function handleBook(file) {
-  if (!file) return;
-  if (!/pdf$/i.test(file.type) && !/\.pdf$/i.test(file.name)) { toast(T('err_pdf'), 'err'); return; }
-  const info = $('#bookInfo');
-  info.classList.remove('hidden');
-  info.innerHTML = `<div class="detecting"><div class="spin"></div>${esc(T('reading'))}</div>`;
-  try {
-    await loadScript(LIBS.pdfjs);
-    pdfjsLib.GlobalWorkerOptions.workerSrc = LIBS.pdfWorker;
-    const buf = await file.arrayBuffer();
-    const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
-    if (pdf.numPages > MAX_PAGES) { info.classList.add('hidden'); toast(T('err_pages', { n: pdf.numPages }), 'err'); renderBookInfo(); return; }
-    const pages = [];
-    for (let i = 1; i <= pdf.numPages; i++) {
-      const pg = await pdf.getPage(i);
-      const tc = await pg.getTextContent();
-      let s = '';
-      for (const it of tc.items) { s += it.str; s += it.hasEOL ? '\n' : ' '; }
-      pages.push(s.replace(/[ \t]+/g, ' ').replace(/\n\s*\n+/g, '\n').trim());
-    }
-    const chars = pages.reduce((a, p) => a + p.replace(/\s/g, '').length, 0);
-    if (chars / pages.length < MIN_CHARS_PER_PAGE) { toast(T('err_scanned'), 'err'); renderBookInfo(); return; }
-    S.pdf = pdf; S.book = { name: file.name, pages };
-    markDirty();
-    renderBookInfo();
-    detectUnits();
-  } catch (e) {
-    console.error(e); toast(T('err_pdf'), 'err'); renderBookInfo();
-  }
-}
-function renderBookInfo() {
-  const info = $('#bookInfo'), drop = $('#drop');
-  if (!S.book) { info.classList.add('hidden'); drop.classList.remove('compact'); $('.drop-t', drop).textContent = T('drop_title'); return; }
-  drop.classList.add('compact');
-  $('.drop-t', drop).textContent = T('change_book');
-  info.classList.remove('hidden');
-  info.innerHTML = `<div class="book-name">${svgI('<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/>', 'dd-chev')}<span>${esc(S.book.name)}</span><span class="pill">${S.book.pages.length} ${esc(T('pages'))}</span></div><div class="thumbs" id="thumbs"></div>`;
-  if (S.pdf) renderThumbs($('#thumbs'), 0.22);
-}
-async function renderThumbs(host, scale, onPick) {
-  const pdf = S.pdf; if (!pdf) return [];
-  const out = [];
-  for (let i = 1; i <= pdf.numPages; i++) {
-    if (pdf !== S.pdf) return out;
-    const pg = await pdf.getPage(i);
-    const vp = pg.getViewport({ scale });
-    const c = document.createElement('canvas');
-    c.width = vp.width; c.height = vp.height; c.title = `${i}`;
-    host.appendChild(c); out.push(c);
-    if (onPick) c.addEventListener('click', () => onPick(i, c));
-    await pg.render({ canvasContext: c.getContext('2d'), viewport: vp }).promise;
-  }
-  return out;
-}
-
-/* =====================================================================
-   Step 2 — units
-   ===================================================================== */
-async function detectUnits() {
-  const n = S.book.pages.length;
-  S.units = []; S.detecting = true; renderUnits();
-  try {
-    const res = await callApi({ mode: 'units', pages: S.book.pages.map((t, i) => ({ n: i + 1, t: t.slice(0, 600) })) });
-    S.units = (res.units || []).map(u => ({ id: uid(), title: u.title, from: u.from, to: u.to, on: true }));
-  } catch (e) {
-    console.error(e); toast(apiError(e) === T('err_gen') ? T('units_fail') : apiError(e), 'err');
-  }
-  if (!S.units.length) S.units = [{ id: uid(), title: T('whole_book'), from: 1, to: n, on: true }];
-  S.detecting = false;
-  S.rows.forEach(r => { if (r.unit !== 'all' && !S.units.some(u => u.id === r.unit)) r.unit = 'all'; });
-  renderUnits(); renderRows();
-}
 function renderUnits() {
   const host = $('#unitsList');
-  $('#addUnitBtn').classList.toggle('hidden', !S.book || S.detecting);
-  if (S.detecting) { host.innerHTML = `<div class="detecting"><div class="spin"></div>${esc(T('detecting'))}</div>`; return; }
-  if (!S.book) { host.innerHTML = `<div class="units-empty">${esc(T('units_empty'))}</div>`; return; }
-  const max = S.book.pages.length;
   host.innerHTML = '';
+  if (!S.units.length) { host.innerHTML = `<div class="units-empty">${esc(T('units_none'))}</div>`; return; }
   S.units.forEach(u => {
-    const el = document.createElement('div');
-    el.className = 'unit' + (u.on ? '' : ' off');
-    el.innerHTML = `<button type="button" class="check ${u.on ? 'on' : ''}" aria-pressed="${u.on}">${svgI('<path d="M5 12l5 5 9-10"/>')}</button>
-      <input class="u-title" type="text" value="${esc(u.title)}" aria-label="${esc(T('unit'))}">
-      <button type="button" class="u-del" aria-label="${esc(T('remove'))}">${svgI('<path d="M6 6l12 12M18 6L6 18"/>')}</button>
-      <div class="u-row2"><span class="u-range">${esc(T('from'))} <input type="number" min="1" max="${max}" value="${u.from}" data-k="from"> ${esc(T('to'))} <input type="number" min="1" max="${max}" value="${u.to}" data-k="to"></span></div>`;
-    $('.check', el).onclick = () => { u.on = !u.on; markDirty(); renderUnits(); refreshUnitDDs(); };
-    $('.u-title', el).oninput = e => { u.title = e.target.value; markDirty(); refreshUnitDDs(); };
-    $('.u-del', el).onclick = () => { S.units = S.units.filter(x => x !== u); S.rows.forEach(r => { if (r.unit === u.id) r.unit = 'all'; }); markDirty(); renderUnits(); renderRows(); };
-    $$('.u-range input', el).forEach(inp => inp.onchange = () => {
-      let v = Math.max(1, Math.min(max, parseInt(inp.value, 10) || 1));
-      u[inp.dataset.k] = v;
-      if (u.from > u.to) { if (inp.dataset.k === 'from') u.to = u.from; else u.from = u.to; }
-      markDirty(); renderUnits(); refreshUnitDDs();
-    });
-    host.appendChild(el);
+    const b = el('div', 'u-item' + (u.on ? ' on' : ''));
+    b.setAttribute('role', 'checkbox'); b.setAttribute('aria-checked', u.on); b.tabIndex = 0;
+    b.innerHTML = `<span class="check ${u.on ? 'on' : ''}">${svgI('<path d="M5 12l5 5 9-10"/>')}</span><span class="u-t">${esc(u.title)}</span>${u.custom ? `<span class="u-custom">${esc(T('custom'))}</span><button type="button" class="u-del" aria-label="${esc(T('remove'))}">${svgI('<path d="M6 6l12 12M18 6L6 18"/>')}</button>` : ''}`;
+    const toggle = () => { u.on = !u.on; markDirty(); renderUnits(); renderCards(); };
+    b.addEventListener('click', e => { if (e.target.closest('.u-del')) return; toggle(); });
+    b.addEventListener('keydown', e => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); toggle(); } });
+    const del = $('.u-del', b);
+    if (del) del.onclick = () => { S.units = S.units.filter(x => x !== u); S.exercises.forEach(x => { if (x.unit === u.id) x.unit = 'all'; }); markDirty(); renderUnits(); renderCards(); };
+    host.appendChild(b);
   });
 }
-function refreshUnitDDs() { DD.forEach(d => { if (d.isUnit) { if (d.value !== 'all' && !S.units.some(u => u.id === d.value && u.on)) { d.value = 'all'; if (d.row) d.row.unit = 'all'; } d.paint(); } }); }
+function addCustomUnit() {
+  const inp = $('#unitInput'), t = inp.value.trim();
+  if (!t) return;
+  if (!S.units.some(u => u.title === t)) S.units.push({ id: uid(), title: t, on: true, custom: true });
+  else S.units.find(u => u.title === t).on = true;
+  inp.value = ''; markDirty(); renderUnits(); renderCards();
+}
+function paintPaste() {
+  const n = S.paste.length;
+  $('#pasteCount').textContent = T('chars', { n });
+  const pill = $('#pastePill'); pill.textContent = T('paste_on'); pill.classList.toggle('hidden', !S.paste.trim());
+  $('#pasteClear').classList.toggle('hidden', !n);
+}
 
 /* =====================================================================
    Step 3 — header
    ===================================================================== */
-const gradeOpts = () => {
-  const n = { pri: 5, mid: 4, sec: 3 }[S.header.stage];
-  return [...Array(n)].map((_, i) => ({ v: i + 1, label: S.uiLang === 'en' ? `Year ${i + 1}` : `السنة ${ORD_AR_F[i]}` }));
-};
-let ddGrade;
 function initHeader() {
   const H = S.header, D = DEFAULTS[S.examLang];
   if (!H.title) H.title = D.title;
   if (!H.duration) H.duration = D.duration;
-  const bind = (id, k) => { const el = $(id); el.value = H[k] || ''; el.oninput = () => { H[k] = el.value; markDirty(); rerender(); }; };
+  const bind = (id, k) => { const e = $(id); e.value = H[k] || ''; e.oninput = () => { H[k] = e.value; markDirty(); rerender(); }; };
   bind('#hSchool', 'school'); bind('#hTitle', 'title'); bind('#hYear', 'year');
-  bind('#hSubject', 'subject'); bind('#hDuration', 'duration'); bind('#hTeacher', 'teacher');
-  makeDD($('#ddStage'), () => ['pri', 'mid', 'sec'].map(k => ({ v: k, label: T('st_' + k) })), H.stage, v => {
-    H.stage = v; const max = { pri: 5, mid: 4, sec: 3 }[v]; if (H.grade > max) H.grade = max; ddGrade.set(H.grade); markDirty(); rerender();
-  });
-  ddGrade = makeDD($('#ddGrade'), gradeOpts, H.grade, v => { H.grade = v; markDirty(); rerender(); });
+  bind('#hDuration', 'duration'); bind('#hTeacher', 'teacher');
   makeDD($('#ddExamLang'), () => [{ v: 'ar', label: 'العربية' }, { v: 'fr', label: 'Français' }, { v: 'en', label: 'English' }], S.examLang, v => {
     const old = DEFAULTS[S.examLang];
     S.examLang = v;
@@ -602,7 +648,7 @@ function initHeader() {
   });
   $('#logoFile').onchange = async e => {
     const f = e.target.files[0]; e.target.value = ''; if (!f) return;
-    H.logo = (await compressDataUrl(await new Promise(r => { const fr = new FileReader(); fr.onload = () => r(fr.result); fr.readAsDataURL(f); }), 320, 0.9, true)).src;
+    H.logo = (await compressImage(f, 320, 0.9, true)).src;
     paintLogo(); markDirty(); rerender();
   };
   $('#logoDel').onclick = () => { H.logo = ''; paintLogo(); markDirty(); rerender(); };
@@ -616,154 +662,210 @@ function paintLogo() {
 function syncHeaderInputs() {
   const H = S.header;
   $('#hSchool').value = H.school || ''; $('#hTitle').value = H.title || ''; $('#hYear').value = H.year || '';
-  $('#hSubject').value = H.subject || ''; $('#hDuration').value = H.duration || ''; $('#hTeacher').value = H.teacher || '';
-  DD.forEach(d => { if (d.host.id === 'ddStage') d.set(H.stage); if (d.host.id === 'ddExamLang') d.set(S.examLang); if (d.host.id === 'ddDiffAll') d.set(S.difficulty); });
-  ddGrade.set(H.grade); paintLogo(); fillDatalists();
+  $('#hDuration').value = H.duration || ''; $('#hTeacher').value = H.teacher || '';
+  DD.forEach(d => { if (d.host.id === 'ddExamLang') d.set(S.examLang); if (d.host.id === 'ddDiffAll') d.set(S.difficulty); });
+  paintLogo(); fillDatalists();
 }
-const levelText = () => L().level_of(S.header.stage, S.header.grade);
 
 /* =====================================================================
-   Step 4 — exercise rows
+   Step 4 — exercise cards
    ===================================================================== */
-const DEFAULT_ROW_TYPES = ['qcm', 'tf', 'problem', 'situation', 'fill', 'direct', 'match', 'document'];
-function setCount(n) {
-  n = Math.max(1, Math.min(MAX_EX, n));
-  while (S.rows.length < n) S.rows.push({ type: DEFAULT_ROW_TYPES[S.rows.length] || 'direct', unit: 'all', diff: S.difficulty, points: 0 });
-  if (S.rows.length > n) {
-    S.rows.length = n;
-    if (S.exercises.length > n) { S.exercises.length = n; renderPaper(); }
-  }
-  const pts = splitPoints(20, n);
-  S.rows.forEach((r, i) => { r.points = pts[i]; if (S.exercises[i]) S.exercises[i].points = pts[i]; });
-  markDirty(); renderRows(); updateGenBtn(); if (S.exercises.length) rerender();
+const CARD_TYPES = ['qcm', 'tf', 'problem', 'situation', 'fill', 'direct', 'match', 'document'];
+const GEN_ICON = '<svg viewBox="0 0 24 24"><path d="M12 3l1.8 4.7L18.5 9l-4.7 1.8L12 15.5l-1.8-4.7L5.5 9l4.7-1.3z"/><path d="M18.5 14.5l.9 2.1 2.1.9-2.1.9-.9 2.1-.9-2.1-2.1-.9 2.1-.9z"/></svg>';
+function newCard() {
+  const total = S.exercises.reduce((a, e) => a + Number(e.points || 0), 0);
+  const rem = Math.round((20 - total) * 100) / 100;
+  return {
+    id: uid(), type: CARD_TYPES[S.exercises.length] || 'direct', unit: 'all', diff: S.difficulty,
+    points: rem > 0 && rem < 5 ? rem : 5, note: '', open: true,
+    data: null, history: [], images: [], status: 'idle', err: '', wait: 0, perm: null
+  };
 }
-function renderRows() {
-  const host = $('#rows');
-  for (let i = DD.length - 1; i >= 0; i--) if (DD[i].isRow) DD.splice(i, 1);
+function addCard() {
+  if (S.exercises.length >= MAX_EX) { toast(T('max_ex'), 'err'); return; }
+  S.exercises.forEach(e => { e.open = false; });
+  S.exercises.push(newCard()); markDirty(); renderCards();
+  const last = $('#cards').lastElementChild; if (last) last.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+}
+const unitTitle = ex => ex.unit === 'all' ? T('all_units') : ((S.units.find(u => u.id === ex.unit) || {}).title || T('all_units'));
+function chipHtml(ex) {
+  const k = ex.status;
+  const label = k === 'waiting' ? T('chip_waiting', { s: ex.wait || '' }) : T('chip_' + k);
+  return `<span class="chip ${k}" data-chip="${ex.id}">${esc(label)}</span>`;
+}
+let dragId = null;
+function renderCards() {
+  const host = $('#cards');
+  for (let i = DD.length - 1; i >= 0; i--) if (DD[i].isCard) DD.splice(i, 1);
   host.innerHTML = '';
-  $('#cntVal').textContent = S.rows.length;
-  S.rows.forEach((r, i) => {
-    const el = document.createElement('div');
-    el.className = 'row'; el.style.setProperty('--c', TYPES[r.type].c);
-    el.innerHTML = `<div class="row-h"><span>${esc(T('ex_n'))} ${i + 1}</span>
-      <label class="pts"><input type="number" min="0.5" max="20" step="0.25" value="${r.points}"> ${esc(T('points_short'))}</label></div>
-      <div class="row-g"><div class="dd-type"></div><div class="dd-unit"></div><div class="dd-diff"></div></div>`;
-    const a = makeDD($('.dd-type', el), typeOpts, r.type, v => { r.type = v; el.style.setProperty('--c', TYPES[v].c); markDirty(); });
-    const b = makeDD($('.dd-unit', el), unitOpts, r.unit, v => { r.unit = v; markDirty(); });
-    const c = makeDD($('.dd-diff', el), diffOpts, r.diff, v => { r.diff = v; markDirty(); });
-    a.isRow = b.isRow = c.isRow = true; b.isUnit = true; b.row = r;
-    $('.pts input', el).onchange = e => {
-      r.points = Math.max(0.5, Math.min(20, Number(e.target.value) || 1)); e.target.value = r.points;
-      if (S.exercises[i]) { S.exercises[i].points = r.points; rerender(); }
-      markDirty(); paintTotal();
+  S.exercises.forEach((ex, i) => {
+    const c = el('div', 'card' + (ex.open ? ' open' : ''));
+    c.dataset.id = ex.id; c.style.setProperty('--c', TYPES[ex.type].c);
+    c.innerHTML = `<div class="card-h">
+        <button type="button" class="card-btn grip" aria-label="drag">${svgI('<circle cx="9" cy="6" r="1.3"/><circle cx="15" cy="6" r="1.3"/><circle cx="9" cy="12" r="1.3"/><circle cx="15" cy="12" r="1.3"/><circle cx="9" cy="18" r="1.3"/><circle cx="15" cy="18" r="1.3"/>')}</button>
+        <span class="dd-ic" style="--c:${TYPES[ex.type].c}">${svgI(TYPES[ex.type].i)}</span>
+        <div class="card-sum"><b>${esc(T('ex_n'))} ${i + 1}</b><small>${esc(tLabel(ex.type))} · ${esc(unitTitle(ex))} · ${fmtNum(ex.points)} ${esc(T('points_short'))}</small></div>
+        ${chipHtml(ex)}
+        <button type="button" class="card-btn del" aria-label="${esc(T('del'))}">${svgI(XT.del)}</button>
+        <button type="button" class="card-btn chev" aria-label="toggle">${svgI('<path d="M6 9l6 6 6-6"/>')}</button>
+      </div>
+      <div class="card-b">
+        <div class="card-g">
+          <div class="f f-wide"><span>${esc(T('ex_type'))}</span><div class="dd-t"></div></div>
+          <div class="f f-wide"><span>${esc(T('ex_unit'))}</span><div class="dd-u"></div></div>
+          <div class="f"><span>${esc(T('ex_diff'))}</span><div class="dd-d"></div></div>
+          <div class="f"><span>${esc(T('f_points'))}</span><div class="pts-in"><input type="number" min="0.5" max="20" step="0.25" value="${ex.points}"><span>${esc(T('points_short'))}</span></div></div>
+          <label class="f f-wide"><span>${esc(T('note'))}</span><textarea rows="2" placeholder="${esc(T('note_ph'))}">${esc(ex.note)}</textarea></label>
+        </div>
+        <button type="button" class="card-gen ${ex.status === 'loading' || ex.status === 'waiting' ? 'busy' : ''}" ${S.busy ? 'disabled' : ''}>${GEN_ICON}<span>${esc(ex.status === 'ready' ? T('regen_one') : T('gen_one'))}</span></button>
+      </div>`;
+    const a = makeDD($('.dd-t', c), typeOpts, ex.type, v => { ex.type = v; markDirty(); renderCards(); });
+    const b = makeDD($('.dd-u', c), unitOpts, ex.unit, v => { ex.unit = v; markDirty(); renderCards(); });
+    const d = makeDD($('.dd-d', c), diffOpts, ex.diff, v => { ex.diff = v; markDirty(); });
+    a.isCard = b.isCard = d.isCard = true;
+    $('.card-h', c).addEventListener('click', e => {
+      if (e.target.closest('.del') || e.target.closest('.grip')) return;
+      ex.open = !ex.open; renderCards();
+    });
+    $('.del', c).onclick = async () => {
+      if (S.busy && (ex.status === 'loading' || ex.status === 'waiting')) { toast(T('err_busy'), 'err'); return; }
+      if (ex.status === 'ready' && !(await confirmBox(T('confirm_del_ex'), true))) return;
+      S.exercises = S.exercises.filter(x => x !== ex); markDirty(); renderCards(); renderPaper();
     };
-    host.appendChild(el);
+    $('.pts-in input', c).onchange = e => {
+      ex.points = Math.max(0.5, Math.min(20, Number(e.target.value) || 1)); e.target.value = ex.points;
+      markDirty(); paintTotal(); renderCardSummary(c, ex, i); if (ex.status !== 'idle') rerender();
+    };
+    $('textarea', c).oninput = e => { ex.note = e.target.value; markDirty(); };
+    $('.card-gen', c).onclick = () => generateCard(ex);
+    // drag to reorder (handle only)
+    const grip = $('.grip', c);
+    grip.addEventListener('pointerdown', () => { c.draggable = true; });
+    c.addEventListener('dragstart', e => { dragId = ex.id; c.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move'; });
+    c.addEventListener('dragend', () => { c.draggable = false; c.classList.remove('dragging'); $$('.card.drag-over').forEach(x => x.classList.remove('drag-over')); });
+    c.addEventListener('dragover', e => { if (dragId && dragId !== ex.id) { e.preventDefault(); c.classList.add('drag-over'); } });
+    c.addEventListener('dragleave', () => c.classList.remove('drag-over'));
+    c.addEventListener('drop', e => {
+      e.preventDefault(); c.classList.remove('drag-over');
+      const from = S.exercises.findIndex(x => x.id === dragId), to = S.exercises.indexOf(ex);
+      dragId = null; if (from < 0 || to < 0 || from === to) return;
+      const [m] = S.exercises.splice(from, 1); S.exercises.splice(to, 0, m);
+      markDirty(); renderCards(); renderPaper();
+    });
+    host.appendChild(c);
   });
+  $('#addCardBtn').disabled = S.exercises.length >= MAX_EX;
   paintTotal();
 }
+function renderCardSummary(c, ex, i) {
+  $('.card-sum small', c).textContent = `${tLabel(ex.type)} · ${unitTitle(ex)} · ${fmtNum(ex.points)} ${T('points_short')}`;
+}
 function paintTotal() {
-  const t = S.rows.reduce((a, r) => a + Number(r.points || 0), 0);
-  const el = $('#ptsTotal');
-  el.textContent = `${T('total')}: ${fmtNum(t)} / 20`;
-  el.className = 'pts-total ' + (Math.abs(t - 20) < 0.01 ? 'good' : 'bad');
+  const t = S.exercises.reduce((a, e) => a + Number(e.points || 0), 0);
+  const e = $('#ptsTotal');
+  e.textContent = `${T('total')}: ${fmtNum(t)} / 20`;
+  e.className = 'pts-total ' + (Math.abs(t - 20) < 0.01 ? 'good' : 'bad');
 }
-function updateGenBtn() {
-  const btn = $('#genBtn'), lbl = $('#genLbl');
-  if (S.busy) return;
-  const ready = S.exercises.filter(e => e.status === 'ready').length;
-  lbl.textContent = (ready && ready === S.exercises.length && S.rows.length > S.exercises.length) ? T('generate_more') : T('generate');
-  btn.classList.remove('busy');
+function paintBusy() {
+  $$('.card-gen').forEach(b => { b.disabled = S.busy; });
 }
+
 
 /* =====================================================================
-   Generation
+   Generation (one card at a time)
    ===================================================================== */
-function unitPages(unitId) {
-  const list = unitId === 'all' ? S.units.filter(u => u.on) : S.units.filter(u => u.id === unitId);
-  const set = new Set();
-  (list.length ? list : S.units.filter(u => u.on)).forEach(u => { for (let p = u.from; p <= u.to; p++) set.add(p); });
-  return [...set].sort((a, b) => a - b);
+function chosenUnits(ex) {
+  const on = S.units.filter(u => u.on);
+  if (ex.unit !== 'all') { const u = S.units.find(x => x.id === ex.unit); if (u) return [u.title]; }
+  return on.map(u => u.title);
 }
-function sourceFor(ex) {
-  const pages = unitPages(ex.unit);
-  let s = pages.map(p => `[${p}]\n${S.book.pages[p - 1] || ''}`).join('\n\n');
-  if (s.length > MAX_SOURCE) {
-    // keep a fair share of every page instead of only the first ones
-    const per = Math.floor(MAX_SOURCE / pages.length);
-    s = pages.map(p => `[${p}]\n${(S.book.pages[p - 1] || '').slice(0, per)}`).join('\n\n');
+function summary(data) {
+  if (!data) return '';
+  const parts = (data.items || []).map(it => it.text).concat((data.pairs || []).map(p => p.left));
+  return `${data.title || ''}: ${(data.intro || '').slice(0, 200)} ${parts.join(' | ')}`.slice(0, 1100);
+}
+function callApi(payload) {
+  const fn = firebase.app().functions('us-central1').httpsCallable('generateExam', { timeout: 150000 });
+  return fn(payload).then(r => r.data);
+}
+function apiError(e) {
+  const code = (e && e.code) || '';
+  const msg = e && e.message && /[\u0600-\u06FF]/.test(e.message) ? e.message : '';
+  if (S.uiLang === 'ar' && msg && !code.includes('internal')) return msg;
+  if (code.includes('resource-exhausted')) return T('err_limit');
+  if (code.includes('permission-denied')) return T('err_perm');
+  if (code.includes('unauthenticated')) return T('gate_login');
+  if (code.includes('unavailable') || code.includes('deadline')) return msg || T('err_net');
+  return msg || T('err_gen');
+}
+function paintWait(ex) {
+  const chip = $(`[data-chip="${ex.id}"]`);
+  if (chip) { chip.className = 'chip ' + ex.status; chip.textContent = ex.status === 'waiting' ? T('chip_waiting', { s: ex.wait }) : T('chip_' + ex.status); }
+  const w = $(`[data-wait="${ex.id}"]`);
+  if (w) w.textContent = ex.status === 'waiting' ? T('waiting_q', { s: ex.wait }) : `${T('writing')} — ${tLabel(ex.type)}`;
+}
+async function callWithWait(ex, payload) {
+  for (let attempt = 0; ; attempt++) {
+    try { return await callApi(payload); } catch (e) {
+      const code = (e && e.code) || '';
+      if (code.includes('resource-exhausted') && attempt < MAX_WAITS) {
+        let s = Math.max(5, Math.min(60, Number(e.details && e.details.retryAfter) || 20));
+        ex.status = 'waiting';
+        while (s > 0) { ex.wait = s; paintWait(ex); await sleep(1000); s--; }
+        ex.status = 'loading'; paintWait(ex);
+        continue;
+      }
+      throw e;
+    }
   }
-  return s;
 }
-function summary(ex) {
-  const d = ex.data; if (!d) return '';
-  const parts = (d.items || []).map(it => it.text).concat((d.pairs || []).map(p => p.left));
-  return `${d.title || ''}: ${(d.intro || '').slice(0, 200)} ${parts.join(' | ')}`.slice(0, 1400);
+function generateCard(ex) {
+  if (S.busy) { toast(T('err_busy'), 'err'); return; }
+  if (!chosenUnits(ex).length && !S.paste.trim()) { toast(T('err_nounits'), 'err'); return; }
+  return runGen(ex, { note: ex.note, regen: ex.status === 'ready' });
 }
-const rowToEx = r => ({ id: uid(), type: r.type, diff: r.diff, unit: r.unit, points: r.points, data: null, history: [], images: [], status: 'waiting' });
-
-async function generate() {
-  if (S.busy) return;
-  if (!S.book) { toast(T('err_nobook'), 'err'); return; }
-  if (!S.units.some(u => u.on)) { toast(T('err_nounits'), 'err'); return; }
-  const allReady = S.exercises.length && S.exercises.every(e => e.status === 'ready');
-  let targets;
-  if (allReady && S.rows.length > S.exercises.length) {
-    targets = S.rows.slice(S.exercises.length).map(rowToEx);
-    S.exercises.push(...targets);
-  } else {
-    if (S.exercises.some(e => e.status === 'ready') && !(await confirmBox(T('confirm_replace')))) return;
-    S.exercises = S.rows.map(rowToEx);
-    targets = S.exercises.slice();
-  }
-  S.busy = true; markDirty();
-  $('#genBtn').classList.add('busy');
+async function runGen(ex, opts) {
+  S.busy = true; paintBusy();
   showPane('stage');
-  renderPaper();
-  let k = 0;
-  for (const ex of targets) {
-    k++;
-    $('#genLbl').textContent = T('generating', { i: k, n: targets.length });
-    if (!S.exercises.includes(ex)) continue;
-    await genOne(ex, {});
-  }
-  S.busy = false; updateGenBtn(); renderPaper();
+  const ok = await genOne(ex, opts);
+  S.busy = false;
+  if (ok) ex.open = false;
+  renderCards(); renderPaper(); if (ok) focusEx(ex, true);
 }
-
 async function genOne(ex, { note = '', regen = false } = {}) {
-  if (!S.book) { toast(T('err_nobook'), 'err'); return false; }
-  const source = sourceFor(ex);
-  if (source.replace(/\s|\[\d+\]/g, '').length < 80) {
-    ex.status = regen ? 'ready' : 'error'; ex.err = T('err_short'); renderPaper(); toast(T('err_short'), 'err'); return false;
-  }
   const prev = { type: ex.type, data: ex.data, perm: ex.perm, status: ex.status };
-  const avoid = S.exercises.filter(e => e !== ex && e.status === 'ready').map(e => (e.data.title || '') + ' — ' + ((e.data.items && e.data.items[0] && e.data.items[0].text) || '')).slice(0, 8);
+  const avoid = S.exercises.filter(e => e !== ex && e.status === 'ready' && e.data)
+    .map(e => (e.data.title || '') + ' — ' + ((e.data.items && e.data.items[0] && e.data.items[0].text) || '')).slice(0, 8);
   ex.status = 'loading'; ex.err = '';
-  renderPaper(); focusEx(ex, false);
+  renderCards(); renderPaper(); focusEx(ex, false);
+  const st = streamObj();
   try {
-    const res = await callApi({
-      mode: 'exercise', type: ex.type, lang: S.examLang, source,
-      level: levelText(), subject: S.header.subject, difficulty: ex.diff, points: ex.points,
-      note, previous: regen && prev.data ? summary({ data: prev.data }) : '', avoid
+    const res = await callWithWait(ex, {
+      mode: 'exercise', curriculum: S.cur.sys, type: ex.type, lang: S.examLang,
+      level: L().level_of(S.cur.stage, S.cur.grade), stream: st ? lab(st, S.examLang) : '',
+      subject: subjLabel(S.cur.subject, S.examLang), units: chosenUnits(ex), source: S.paste.trim().slice(0, MAX_PASTE),
+      difficulty: ex.diff, points: ex.points, note,
+      previous: regen && prev.data ? summary(prev.data) : '', avoid
     });
     if (!res || !res.exercise) throw new Error('empty');
     if (regen && prev.data) { ex.history.push({ type: prev.type, data: prev.data, perm: prev.perm }); if (ex.history.length > 10) ex.history.shift(); }
     ex.data = res.exercise; ex.perm = null; ex.status = 'ready';
-    markDirty(); renderPaper(); focusEx(ex, true);
+    markDirty();
     return true;
   } catch (e) {
     console.error(e);
     if (regen && prev.data) { Object.assign(ex, prev); toast(apiError(e), 'err'); }
     else { ex.status = 'error'; ex.err = apiError(e); }
-    renderPaper();
     return false;
   }
 }
 function focusEx(ex, flash) {
-  const el = $(`.ex[data-id="${ex.id}"]`);
-  if (!el) return;
-  el.scrollIntoView({ block: 'center', behavior: 'smooth' });
-  if (flash) { el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
+  const b = $(`.ex[data-id="${ex.id}"]`);
+  if (!b) return;
+  b.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  if (flash) { b.classList.remove('flash'); void b.offsetWidth; b.classList.add('flash'); }
 }
+
 
 /* =====================================================================
    Paper rendering (A4 pages with pagination)
@@ -801,18 +903,19 @@ function renderPaper() {
   const paper = $('#paper'), sc = $('#stageScroll'), top = sc.scrollTop;
   paper.innerHTML = '';
   paper.style.zoom = S.zoom;
-  if (!S.exercises.length) { paper.appendChild(emptyPage()); return; }
+  const list = shown();
+  if (!list.length) { paper.appendChild(emptyPage()); return; }
   const Lx = L();
   const blocks = [headerBlock()];
-  S.exercises.forEach((ex, i) => blocks.push(exBlock(ex, i)));
-  if (S.exercises.every(e => e.status === 'ready')) blocks.push(el('div', 'good-luck', esc(Lx.luck)));
+  list.forEach((ex, i) => blocks.push(exBlock(ex, i)));
+  if (list.every(e => e.status === 'ready')) blocks.push(el('div', 'good-luck', esc(Lx.luck)));
   const exam = flow(paper, blocks, 'exam');
   exam.forEach((p, i) => { p.foot.textContent = Lx.page(i + 1, exam.length); });
-  const ready = S.exercises.filter(e => e.status === 'ready');
+  const ready = list.filter(e => e.status === 'ready');
   if (S.showCorr && ready.length) {
     const cb = [el('h2', 'corr-title', esc(Lx.corr))];
-    S.exercises.forEach((ex, i) => { if (ex.status === 'ready') cb.push(corrBlock(ex, i)); });
-    const tot = S.exercises.reduce((a, e) => a + Number(e.points || 0), 0);
+    list.forEach((ex, i) => { if (ex.status === 'ready') cb.push(corrBlock(ex, i)); });
+    const tot = list.reduce((a, e) => a + Number(e.points || 0), 0);
     cb.push(el('div', 'corr-total', `${esc(Lx.total)}: ${fmtNum(tot)} / 20`));
     const corr = flow(paper, cb, 'corr');
     corr.forEach((p, i) => { p.foot.textContent = Lx.cpage(i + 1, corr.length); });
@@ -842,7 +945,7 @@ function headerBlock() {
   const cell = (k, val) => `<span class="h-k">${esc(Lx[k])}:</span> ${v(val)}`;
   const t = el('table', 'h-table');
   t.innerHTML = `<tr><td>${cell('school', H.school)}</td><td class="h-mid" rowspan="1">${H.logo ? `<img class="h-logo" src="${H.logo}" alt="">` : ''}</td><td>${cell('year', H.year)}</td></tr>
-    <tr><td>${cell('level', levelText())}</td><td class="h-mid h-title">${v(H.title)}</td><td>${cell('subject', H.subject)}</td></tr>
+    <tr><td>${cell('level', levelText())}</td><td class="h-mid h-title">${v(H.title)}</td><td>${cell('subject', subjLabel(S.cur.subject, S.examLang))}</td></tr>
     <tr><td colspan="2">${cell('teacher', H.teacher)}</td><td>${cell('duration', H.duration)}</td></tr>`;
   return t;
 }
@@ -850,7 +953,7 @@ function exHeading(ex, i) {
   const Lx = L();
   let label;
   if (ex.type === 'situation') label = Lx.situation;
-  else label = Lx.ex(S.exercises.slice(0, i).filter(e => e.type !== 'situation').length);
+  else label = Lx.ex(shown().slice(0, i).filter(e => e.type !== 'situation').length);
   return `<h3 class="ex-h">${esc(label)}<span>${esc(Lx.pts(Number(ex.points)))}</span></h3>`;
 }
 const PEN = svgI('<path d="M4 20l4.5-1 10-10a2.1 2.1 0 0 0-3-3l-10 10z"/><path d="M13.5 7.5l3 3"/>');
@@ -859,9 +962,10 @@ function exBlock(ex, i) {
   if (ex.status !== 'ready') {
     if (ex.status === 'error') {
       b.innerHTML = exHeading(ex, i) + `<div class="ex-error"><span>${esc(ex.err || T('err_gen'))}</span><button type="button" class="btn-main">${esc(T('retry'))}</button></div>`;
-      $('.btn-main', b).onclick = async () => { if (S.busy) return; S.busy = true; await genOne(ex, {}); S.busy = false; updateGenBtn(); };
+      $('.btn-main', b).onclick = () => generateCard(ex);
     } else {
-      b.innerHTML = exHeading(ex, i) + `<div class="ex-writing ${ex.status === 'waiting' ? 'w-wait' : ''}"><div class="w-h"><span class="pen">${PEN}</span>${esc(ex.status === 'waiting' ? T('waiting') : T('writing'))} — ${esc(tLabel(ex.type))}</div><div class="w-lines"><i></i><i></i><i></i><i></i></div></div>`;
+      const wt = ex.status === 'waiting' ? T('waiting_q', { s: ex.wait }) : `${T('writing')} — ${tLabel(ex.type)}`;
+      b.innerHTML = exHeading(ex, i) + `<div class="ex-writing"><div class="w-h"><span class="pen">${PEN}</span><span data-wait="${ex.id}">${esc(wt)}</span></div><div class="w-lines"><i></i><i></i><i></i><i></i></div></div>`;
     }
     return b;
   }
@@ -919,6 +1023,7 @@ function corrBlock(ex, i) {
   return b;
 }
 
+
 /* =====================================================================
    Per-exercise tools
    ===================================================================== */
@@ -932,7 +1037,7 @@ const XT = {
 };
 function toolsBar(ex, i) {
   const bar = el('div', 'ex-tools');
-  const n = S.exercises.length;
+  const n = shown().length;
   const mk = (k, tip, fn, dis) => {
     const b = el('button', 'xt ' + k, svgI(XT[k])); b.type = 'button';
     b.dataset.tipText = T(tip); b.setAttribute('aria-label', T(tip)); b.disabled = !!dis;
@@ -940,23 +1045,20 @@ function toolsBar(ex, i) {
     bar.appendChild(b);
   };
   mk('regen', 'regen', b => openRegen(ex, b), S.busy);
-  mk('undo', 'undo', () => { const h = ex.history.pop(); if (!h) return; Object.assign(ex, h, { status: 'ready' }); syncRowFromEx(ex); markDirty(); renderPaper(); }, !ex.history.length || S.busy);
+  mk('undo', 'undo', () => { const h = ex.history.pop(); if (!h) return; Object.assign(ex, h, { status: 'ready' }); markDirty(); renderCards(); renderPaper(); }, !ex.history.length || S.busy);
   mk('edit', 'edit', () => openEditor(ex));
   mk('image', 'image', () => openImages(ex));
   mk('up', 'up', () => moveEx(i, -1), i === 0);
   mk('down', 'down', () => moveEx(i, 1), i === n - 1);
-  mk('del', 'del', async () => { if (!(await confirmBox(T('del') + '؟'))) return; S.exercises.splice(i, 1); S.rows.splice(i, 1); markDirty(); renderRows(); renderPaper(); updateGenBtn(); }, S.busy);
+  mk('del', 'del', async () => { if (!(await confirmBox(T('confirm_del_ex'), true))) return; S.exercises = S.exercises.filter(x => x !== ex); markDirty(); renderCards(); renderPaper(); }, S.busy);
   return bar;
 }
 function moveEx(i, dir) {
-  const j = i + dir; if (j < 0 || j >= S.exercises.length) return;
-  [S.exercises[i], S.exercises[j]] = [S.exercises[j], S.exercises[i]];
-  if (S.rows[i] && S.rows[j]) [S.rows[i], S.rows[j]] = [S.rows[j], S.rows[i]];
-  markDirty(); renderRows(); renderPaper(); focusEx(S.exercises[j], true);
-}
-function syncRowFromEx(ex) {
-  const i = S.exercises.indexOf(ex); const r = S.rows[i]; if (!r) return;
-  r.type = ex.type; r.diff = ex.diff; r.points = ex.points; renderRows();
+  const list = shown(), a = list[i], b = list[i + dir];
+  if (!a || !b) return;
+  const ia = S.exercises.indexOf(a), ib = S.exercises.indexOf(b);
+  [S.exercises[ia], S.exercises[ib]] = [S.exercises[ib], S.exercises[ia]];
+  markDirty(); renderCards(); renderPaper(); focusEx(a, true);
 }
 
 /* popover */
@@ -971,7 +1073,7 @@ function openRegen(ex, anchor) {
   closePop(); closeMenu();
   const p = el('div', 'pop');
   p.innerHTML = `<h4>${esc(T('regen_title'))}</h4><div class="dd-a"></div><div class="dd-b"></div>
-    <div class="f"><textarea rows="2" placeholder="${esc(T('note_ph'))}"></textarea></div>
+    <div class="f"><textarea rows="2" placeholder="${esc(T('regen_note_ph'))}"></textarea></div>
     <button type="button" class="btn-main">${svgI(XT.regen, 'dd-chev')}<span>${esc(T('regen_go'))}</span></button>`;
   document.body.appendChild(p);
   let type = ex.type, diff = ex.diff;
@@ -987,17 +1089,16 @@ function openRegen(ex, anchor) {
   $('.btn-main', p).onclick = async () => {
     const note = $('textarea', p).value.trim();
     closePop();
-    if (S.busy) return;
-    ex.type = type; ex.diff = diff; syncRowFromEx(ex);
-    S.busy = true; $('#genBtn').classList.add('busy');
-    await genOne(ex, { note, regen: true });
-    S.busy = false; updateGenBtn(); renderPaper();
+    if (S.busy) { toast(T('err_busy'), 'err'); return; }
+    ex.type = type; ex.diff = diff;
+    await runGen(ex, { note: [ex.note, note].filter(Boolean).join(' — '), regen: true });
   };
   const onDown = e => { if (!p.contains(e.target) && !e.target.closest('.dd-menu')) closePop(); };
   const onKey = e => { if (e.key === 'Escape' && !menuEl) closePop(); };
   setTimeout(() => { document.addEventListener('pointerdown', onDown); document.addEventListener('keydown', onKey); }, 0);
   popEl = p; popOff = () => { document.removeEventListener('pointerdown', onDown); document.removeEventListener('keydown', onKey); };
 }
+
 
 /* =====================================================================
    Modals
@@ -1125,74 +1226,102 @@ function openEditor(ex) {
         });
       };
       paintImgs();
-      $('.ed-addimg', b).onclick = () => openImages(null, im => { w.images.push(im); paintImgs(); });
+      $('.ed-addimg', b).onclick = () => pickImage(im => { w.images.push(im); paintImgs(); });
     },
     foot: [
       { label: T('cancel'), onClick: a => a.close() },
       { label: T('save_edit'), cls: 'btn-main', onClick: a => {
         if (d.graph && !String(d.graph.expr || '').trim()) d.graph = null;
         ex.points = w.points; ex.data = d; ex.images = w.images; ex.perm = null;
-        syncRowFromEx(ex); markDirty(); a.close(); renderPaper(); focusEx(ex, true);
+        markDirty(); a.close(); renderCards(); renderPaper(); focusEx(ex, true);
       } }
     ]
   });
 }
 
-/* ---------------- Images: device or crop from book ---------------- */
-function openImages(ex, onAdd) {
-  const add = im => {
-    if (onAdd) { onAdd(im); return; }
-    ex.images = ex.images || []; ex.images.push(im); markDirty(); renderPaper(); focusEx(ex, true);
+
+/* ---------------- Images from the device ---------------- */
+function pickImage(onAdd) {
+  const inp = document.createElement('input');
+  inp.type = 'file'; inp.accept = 'image/*';
+  inp.onchange = async () => {
+    const f = inp.files[0]; if (!f) return;
+    const im = await compressImage(f, 1100, 0.85);
+    onAdd({ src: im.src, ratio: im.ratio, w: 60 });
+  };
+  inp.click();
+}
+function openImages(ex) {
+  pickImage(im => { ex.images = ex.images || []; ex.images.push(im); markDirty(); renderPaper(); focusEx(ex, true); });
+}
+
+/* ---------------- Admin: edit curriculum units (Firestore: aiExamCatalog/dz) ---------------- */
+const catalogDoc = () => firebase.firestore().collection('aiExamCatalog').doc('dz');
+async function loadOverrides() {
+  try { const d = await catalogDoc().get(); S.overrides = (d.exists && d.data().units) || {}; } catch (e) { S.overrides = {}; }
+}
+function openAdmin() {
+  if (!S.isAdmin) return;
+  const k = { stage: S.cur.stage, grade: S.cur.grade, stream: S.cur.stage === 'sec' ? S.cur.stream : '', subject: S.cur.subject };
+  const keyOf = () => `${k.stage}-${k.grade}-${k.subject}` + (k.stage === 'sec' && k.stream ? `@${k.stream}` : '');
+  let ta, src;
+  const load = () => {
+    const key = keyOf();
+    const list = S.overrides[key] || CATALOG[key];
+    ta.value = (list || []).join('\n');
+    src.textContent = S.overrides[key] ? T('adm_src_fb') : CATALOG[key] ? T('adm_src_def') : T('adm_src_none');
+    src.style.color = S.overrides[key] ? 'var(--ok)' : 'var(--ink-soft)';
   };
   modal({
-    title: T('img_title'), size: 'lg',
-    build: (b, api) => {
-      b.innerHTML = `<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px">
-          <label class="btn-main"><input type="file" accept="image/*" hidden>${svgI('<path d="M12 16V4M6 10l6-6 6 6"/><path d="M4 16v4h16v-4"/>', 'dd-chev')}<span>${esc(T('img_device'))}</span></label>
+    title: T('adm_title'), size: 'lg',
+    build: b => {
+      b.innerHTML = `<div class="adm-g">
+          <div class="f"><span>${esc(T('stage'))}</span><div class="a1"></div></div>
+          <div class="f"><span>${esc(T('grade'))}</span><div class="a2"></div></div>
+          <div class="f a3w"><span>${esc(T('stream'))}</span><div class="a3"></div></div>
+          <div class="f"><span>${esc(T('subject'))}</span><div class="a4"></div></div>
         </div>
-        <div class="ed-sec">${esc(T('img_book'))}</div>
-        ${S.pdf ? `<p class="hint">${esc(T('crop_hint'))}</p><div class="crop-wrap"><div class="crop-pages"></div><div class="crop-area"><div class="cv-wrap"><canvas></canvas><div class="crop-sel hidden"></div></div></div></div>` : `<p class="hint">${esc(T('no_pdf_pages'))}</p>`}`;
-      $('label.btn-main svg', b).style.stroke = '#fff';
-      $('input[type="file"]', b).onchange = async e => {
-        const file = e.target.files[0]; if (!file) return;
-        const im = await compressImage(file, 1100, 0.85);
-        add({ src: im.src, ratio: im.ratio, w: 60 }); api.close();
-      };
-      if (!S.pdf) return;
-      const cv = $('.crop-area canvas', b), wrap = $('.cv-wrap', b), sel = $('.crop-sel', b);
-      let rect = null, cur = 0;
-      const showPage = async (n, thumb) => {
-        cur = n; rect = null; sel.classList.add('hidden'); insertBtn.disabled = true;
-        $$('.crop-pages canvas', b).forEach(c => c.classList.toggle('on', c === thumb));
-        const pg = await S.pdf.getPage(n); const vp = pg.getViewport({ scale: 2 });
-        cv.width = vp.width; cv.height = vp.height;
-        await pg.render({ canvasContext: cv.getContext('2d'), viewport: vp }).promise;
-      };
-      const insertBtn = el('button', 'btn-main', esc(T('insert'))); insertBtn.type = 'button'; insertBtn.disabled = true;
-      const foot = el('div', 'modal-f'); foot.appendChild(insertBtn); api.el.appendChild(foot);
-      renderThumbs($('.crop-pages', b), 0.25, (n, c) => showPage(n, c)).then(list => { if (list[0]) showPage(1, list[0]); });
-      let start = null;
-      const pos = e => { const r = cv.getBoundingClientRect(); return { x: Math.max(0, Math.min(r.width, e.clientX - r.left)), y: Math.max(0, Math.min(r.height, e.clientY - r.top)) }; };
-      wrap.addEventListener('pointerdown', e => { if (!cur) return; start = pos(e); wrap.setPointerCapture(e.pointerId); });
-      wrap.addEventListener('pointermove', e => {
-        if (!start) return;
-        const p = pos(e);
-        rect = { x: Math.min(start.x, p.x), y: Math.min(start.y, p.y), w: Math.abs(p.x - start.x), h: Math.abs(p.y - start.y) };
-        Object.assign(sel.style, { left: rect.x + 'px', top: rect.y + 'px', width: rect.w + 'px', height: rect.h + 'px' });
-        sel.classList.remove('hidden');
+        <p class="hint">${esc(T('adm_hint'))}</p>
+        <textarea class="adm-ta"></textarea>
+        <div class="adm-src"></div>`;
+      ta = $('.adm-ta', b); src = $('.adm-src', b);
+      const years = () => [...Array(YEARS[k.stage])].map((_, i) => ({ v: i + 1, label: S.uiLang === 'en' ? `Year ${i + 1}` : `السنة ${ORD_AR_F[i]}` }));
+      const streams = () => [{ v: '', label: T('adm_all_streams') }].concat((STREAMS[k.grade] || []).map(x => ({ v: x.v, label: lab(x, S.uiLang === 'en' ? 'en' : 'ar') })));
+      const subjects = () => SUBJ_BY_STAGE[k.stage].map(s => ({ v: s, label: (SUBJ[s][(k.stage === 'mid' ? 'mid_' : '') + (S.uiLang === 'en' ? 'en' : 'ar')] || SUBJ[s][S.uiLang === 'en' ? 'en' : 'ar']) }));
+      const showStream = () => { $('.a3w', b).style.visibility = k.stage === 'sec' ? 'visible' : 'hidden'; };
+      let d2, d3, d4;
+      const d1 = makeDD($('.a1', b), () => ['pri', 'mid', 'sec'].map(s => ({ v: s, label: T('st_' + s) })), k.stage, v => {
+        k.stage = v; if (k.grade > YEARS[v]) k.grade = YEARS[v];
+        if (!SUBJ_BY_STAGE[v].includes(k.subject)) k.subject = SUBJ_BY_STAGE[v][0];
+        if (v !== 'sec') k.stream = '';
+        d2.set(k.grade); d3.set(k.stream); d4.set(k.subject); showStream(); load();
       });
-      wrap.addEventListener('pointerup', () => { start = null; insertBtn.disabled = !(rect && rect.w > 12 && rect.h > 12); });
-      insertBtn.onclick = async () => {
-        const r = cv.getBoundingClientRect(), k = cv.width / r.width;
-        const c = document.createElement('canvas');
-        c.width = Math.round(rect.w * k); c.height = Math.round(rect.h * k);
-        c.getContext('2d').drawImage(cv, rect.x * k, rect.y * k, c.width, c.height, 0, 0, c.width, c.height);
-        const im = await compressDataUrl(c.toDataURL('image/png'), 1100, 0.88);
-        add({ src: im.src, ratio: im.ratio, w: 60 }); api.close();
-      };
-    }
+      d2 = makeDD($('.a2', b), years, k.grade, v => { k.grade = v; if (!(STREAMS[v] || []).some(x => x.v === k.stream)) k.stream = ''; d3.set(k.stream); load(); });
+      d3 = makeDD($('.a3', b), streams, k.stream, v => { k.stream = v; load(); });
+      d4 = makeDD($('.a4', b), subjects, k.subject, v => { k.subject = v; load(); });
+      [d1, d2, d3, d4].forEach(x => { x.isModal = true; });
+      showStream(); load();
+    },
+    foot: [
+      { label: T('adm_reset'), onClick: async () => {
+        const key = keyOf();
+        try {
+          await catalogDoc().set({ units: { [key]: firebase.firestore.FieldValue.delete() } }, { merge: true });
+          delete S.overrides[key]; load(); rebuildUnits(); toast(T('adm_saved'), 'ok');
+        } catch (e) { console.error(e); toast(T('err_save'), 'err'); }
+      } },
+      { label: T('adm_save'), cls: 'btn-main', onClick: async () => {
+        const key = keyOf();
+        const list = ta.value.split('\n').map(s => s.trim()).filter(Boolean).slice(0, 60);
+        try {
+          await catalogDoc().set({ units: { [key]: list } }, { merge: true });
+          S.overrides[key] = list; load(); rebuildUnits(); toast(T('adm_saved'), 'ok');
+        } catch (e) { console.error(e); toast(T('err_save'), 'err'); }
+      } }
+    ]
   });
 }
+
 
 /* =====================================================================
    Zoom
@@ -1213,10 +1342,10 @@ function fitZoom() {
    ===================================================================== */
 function canExport() {
   if (S.busy) { toast(T('writing'), 'err'); return false; }
-  if (!S.exercises.length || S.exercises.some(e => e.status !== 'ready')) { toast(T('err_empty'), 'err'); return false; }
+  if (!shown().length || shown().some(e => e.status !== 'ready')) { toast(T('err_empty'), 'err'); return false; }
   return true;
 }
-const fileName = () => (`${S.header.title || 'exam'} ${S.header.subject || ''}`).trim().replace(/[\\/:*?"<>|]+/g, '').replace(/\s+/g, '_').slice(0, 80) || 'exam';
+const fileName = () => (`${S.header.title || 'exam'} ${subjLabel(S.cur.subject, S.examLang) || ''}`).trim().replace(/[\\/:*?"<>|]+/g, '').replace(/\s+/g, '_').slice(0, 80) || 'exam';
 async function withExport(btnId, fn) {
   const btn = $(btnId); btn.classList.add('busy'); btn.disabled = true;
   closeMenu(); closePop();
@@ -1315,6 +1444,7 @@ async function exportWord() {
 }
 function doPrint() { if (!canExport()) return; closeMenu(); closePop(); window.print(); }
 
+
 /* =====================================================================
    Save / open (Firestore: users/{uid}/aiExams)
    ===================================================================== */
@@ -1323,15 +1453,17 @@ async function saveExam() {
   if (!S.user) return;
   if (!S.exercises.some(e => e.status === 'ready')) { toast(T('err_empty'), 'err'); return; }
   const doc = clone({
-    title: [S.header.title, S.header.subject].filter(Boolean).join(' — ') || T('app_title'),
-    header: S.header, examLang: S.examLang, difficulty: S.difficulty, rows: S.rows, units: S.units, showCorr: S.showCorr,
-    book: S.book ? { name: S.book.name, pages: S.book.pages } : null,
-    exercises: S.exercises.filter(e => e.status === 'ready').map(e => ({ id: e.id, type: e.type, diff: e.diff, unit: e.unit, points: e.points, data: e.data, images: e.images || [], perm: e.perm || null }))
+    v: 2,
+    title: [S.header.title, subjLabel(S.cur.subject, 'ar')].filter(Boolean).join(' — ') || T('app_title'),
+    header: S.header, cur: S.cur, units: S.units, paste: S.paste,
+    examLang: S.examLang, difficulty: S.difficulty, showCorr: S.showCorr,
+    exercises: S.exercises.map(e => ({
+      id: e.id, type: e.type, unit: e.unit, diff: e.diff, points: e.points, note: e.note || '',
+      data: e.status === 'ready' ? e.data : null, images: e.images || [], perm: e.perm || null,
+      status: e.status === 'ready' ? 'ready' : 'idle'
+    }))
   });
-  if (JSON.stringify(doc).length > 950000) {
-    if (doc.book) doc.book.pages = doc.book.pages.map(p => p.slice(0, 2500));
-    if (JSON.stringify(doc).length > 950000) { toast(T('err_big'), 'err'); return; }
-  }
+  if (JSON.stringify(doc).length > 950000) { toast(T('err_big'), 'err'); return; }
   doc.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
   const btn = $('#saveBtn'); btn.classList.add('busy');
   try {
@@ -1354,13 +1486,14 @@ function openSaved() {
         snap.forEach(docSnap => {
           const x = docSnap.data();
           const dt = x.updatedAt && x.updatedAt.toDate ? x.updatedAt.toDate().toLocaleDateString(S.uiLang === 'ar' ? 'ar-DZ' : 'en-GB', { year: 'numeric', month: 'short', day: 'numeric' }) : '';
+          const n = (x.exercises || []).filter(e => e.data).length;
           const it = el('div', 'saved-it');
           it.innerHTML = `<span class="dd-ic" style="--c:var(--accent)">${svgI('<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M9 12h6M9 15.5h6"/>')}</span>
-            <div class="s-t"><b>${esc(x.title)}</b><small>${esc(dt)} · ${(x.exercises || []).length} ${esc(T('s4'))}</small></div>
+            <div class="s-t"><b>${esc(x.title)}</b><small>${esc(dt)} · ${n} ${esc(T('s4'))}</small></div>
             <button type="button" class="btn-main">${esc(T('open_it'))}</button>
             <button type="button" class="u-del" aria-label="${esc(T('remove'))}">${svgI(XT.del)}</button>`;
           $('.btn-main', it).onclick = async () => {
-            if (S.dirty && S.exercises.length && !(await confirmBox(T('confirm_new')))) return;
+            if (S.dirty && S.exercises.some(e => e.status === 'ready') && !(await confirmBox(T('confirm_new')))) return;
             loadExam(docSnap.id, x); api.close();
           };
           $('.u-del', it).onclick = async () => {
@@ -1375,20 +1508,29 @@ function openSaved() {
 }
 function loadExam(id, x) {
   S.examId = id;
-  S.header = Object.assign({ school: '', title: '', year: '', stage: 'mid', grade: 4, subject: '', duration: '', teacher: '', logo: '' }, x.header || {});
+  S.header = Object.assign({ school: '', title: '', year: '', duration: '', teacher: '', logo: '' }, x.header || {});
+  S.cur = Object.assign({ sys: 'dz', stage: 'mid', grade: 4, stream: 'se', subject: 'math' }, x.cur || {});
+  if (!x.cur && x.header && x.header.stage) { S.cur.stage = x.header.stage; S.cur.grade = x.header.grade || 1; }
   S.examLang = x.examLang || 'ar'; S.difficulty = x.difficulty || 'medium';
-  S.units = x.units || []; S.book = x.book || null; S.pdf = null;
+  S.units = (x.units || []).map(u => ({ id: u.id || uid(), title: u.title, on: !!u.on, custom: !!u.custom }));
+  S.paste = x.paste || ''; $('#pasteText').value = S.paste; paintPaste();
   S.showCorr = x.showCorr !== false; $('#corrToggle').checked = S.showCorr;
-  S.exercises = (x.exercises || []).map(e => Object.assign({ history: [], images: [], status: 'ready' }, e));
-  S.rows = x.rows && x.rows.length === S.exercises.length ? x.rows : S.exercises.map(e => ({ type: e.type, unit: e.unit || 'all', diff: e.diff || 'medium', points: e.points }));
-  syncHeaderInputs(); renderBookInfo(); renderUnits(); renderRows(); updateGenBtn(); renderPaper();
+  S.exercises = (x.exercises || []).map(e => Object.assign({ unit: 'all', diff: 'medium', note: '', images: [], perm: null }, e, {
+    history: [], open: false, err: '', wait: 0, status: e.data ? 'ready' : 'idle'
+  }));
+  if (!S.exercises.length) S.exercises.push(newCard());
+  syncHeaderInputs(); syncCurriculum();
+  if (!S.units.length) rebuildUnits(); else { renderUnits(); renderCards(); }
+  renderPaper();
   S.dirty = false; toast(T('loaded_ok'), 'ok'); showPane('stage');
 }
 async function newExam() {
-  if (S.busy) return;
-  if (S.exercises.length && S.dirty && !(await confirmBox(T('confirm_new')))) return;
-  S.examId = null; S.book = null; S.pdf = null; S.units = []; S.exercises = []; S.rows = [];
-  setCount(4); renderBookInfo(); renderUnits(); renderPaper(); updateGenBtn(); showPane('side');
+  if (S.busy) { toast(T('err_busy'), 'err'); return; }
+  if (S.dirty && S.exercises.some(e => e.status === 'ready') && !(await confirmBox(T('confirm_new')))) return;
+  S.examId = null; S.exercises = [newCard()];
+  S.units.forEach(u => { u.on = false; }); S.units = S.units.filter(u => !u.custom);
+  S.paste = ''; $('#pasteText').value = ''; paintPaste();
+  renderUnits(); renderCards(); renderPaper(); showPane('side');
   S.dirty = false;
 }
 
@@ -1402,20 +1544,26 @@ function showPane(p) {
 }
 function init() {
   fillDatalists();
+  initCurriculum();
   initHeader();
-  makeDD($('#ddDiffAll'), diffOpts, S.difficulty, v => { S.difficulty = v; S.rows.forEach(r => { r.diff = v; }); markDirty(); renderRows(); });
-  setCount(4); S.dirty = false;
+  makeDD($('#ddDiffAll'), diffOpts, S.difficulty, v => {
+    S.difficulty = v;
+    S.exercises.forEach(e => { if (e.status !== 'ready') e.diff = v; });
+    markDirty(); renderCards();
+  });
+  rebuildUnits();
+  S.exercises = [newCard()];
 
-  const drop = $('#drop');
-  $('#bookFile').onchange = e => { const f = e.target.files[0]; e.target.value = ''; handleBook(f); };
-  ['dragenter', 'dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('over'); }));
-  ['dragleave', 'drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('over'); }));
-  drop.addEventListener('drop', e => handleBook(e.dataTransfer.files[0]));
-  $('#addUnitBtn').onclick = () => { S.units.push({ id: uid(), title: `${T('unit')} ${S.units.length + 1}`, from: 1, to: S.book.pages.length, on: true }); markDirty(); renderUnits(); refreshUnitDDs(); };
-  $('#cntMinus').onclick = () => setCount(S.rows.length - 1);
-  $('#cntPlus').onclick = () => setCount(S.rows.length + 1);
-  $('#balanceBtn').onclick = () => { const p = splitPoints(20, S.rows.length); S.rows.forEach((r, i) => { r.points = p[i]; if (S.exercises[i]) S.exercises[i].points = p[i]; }); markDirty(); renderRows(); if (S.exercises.length) renderPaper(); };
-  $('#genBtn').onclick = generate;
+  $('#unitAddBtn').onclick = addCustomUnit;
+  $('#unitInput').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); addCustomUnit(); } });
+  $('#pasteText').oninput = e => { S.paste = e.target.value.slice(0, MAX_PASTE); markDirty(); paintPaste(); };
+  $('#pasteClear').onclick = () => { S.paste = ''; $('#pasteText').value = ''; markDirty(); paintPaste(); };
+  $('#addCardBtn').onclick = addCard;
+  $('#balanceBtn').onclick = () => {
+    const p = splitPoints(20, S.exercises.length);
+    S.exercises.forEach((e, i) => { e.points = p[i]; });
+    markDirty(); renderCards(); if (shown().length) renderPaper();
+  };
 
   $('#newBtn').onclick = newExam;
   $('#openBtn').onclick = openSaved;
@@ -1423,6 +1571,7 @@ function init() {
   $('#printBtn').onclick = doPrint;
   $('#pdfBtn').onclick = exportPdf;
   $('#wordBtn').onclick = exportWord;
+  $('#adminBtn').onclick = openAdmin;
   $('#langBtn').onclick = () => {
     S.uiLang = S.uiLang === 'ar' ? 'en' : 'ar';
     try { localStorage.setItem('site_lang', S.uiLang); } catch (e) { /* ignore */ }
@@ -1445,6 +1594,7 @@ function init() {
   applyUI();
   renderPaper();
   fitZoom();
+  S.dirty = false;
   startGate();
 }
 init();

@@ -31,6 +31,9 @@
   <div class="tb-title"><span data-t="app_title"></span><span class="tb-ai">AI</span></div>
 
   <nav class="tb-actions">
+    <button class="tb-btn c-admin hidden" id="adminBtn" type="button" data-tip="admin">
+      <svg viewBox="0 0 24 24"><path d="M4 6h10M4 12h7M4 18h10"/><circle cx="17.5" cy="12" r="2.5"/><path d="M17.5 7.5v2M17.5 14.5v2M21.4 9.8l-1.7 1M15.3 13.2l-1.7 1M21.4 14.2l-1.7-1M15.3 10.8l-1.7-1"/></svg>
+    </button>
     <button class="tb-btn" id="newBtn" type="button" data-tip="new">
       <svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M12 11v6M9 14h6"/></svg>
     </button>
@@ -66,23 +69,28 @@
 
       <section class="step">
         <div class="step-h"><span class="step-n">1</span><h2 data-t="s1"></h2></div>
-        <label class="drop" id="drop">
-          <input type="file" id="bookFile" accept="application/pdf" hidden>
-          <span class="drop-ic">
-            <svg viewBox="0 0 48 48"><path d="M13 6h16l9 9v27H13z" fill="#fff"/><path d="M29 6v9h9" fill="#DCEAFB"/><path d="M13 6h16l9 9v27H13z M29 6v9h9" fill="none" stroke="#2F5770" stroke-width="2.2" stroke-linejoin="round"/><path d="M25.5 36V22m-6 6 6-6 6 6" fill="none" stroke="#2F6FB0" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </span>
-          <span class="drop-t" data-t="drop_title"></span>
-          <span class="drop-s" data-t="drop_sub"></span>
-        </label>
-        <div id="bookInfo" class="book-info hidden"></div>
+        <div class="fields">
+          <div class="f"><span data-t="curriculum"></span><div id="ddCur"></div></div>
+          <div class="f"><span data-t="stage"></span><div id="ddStage"></div></div>
+          <div class="f"><span data-t="grade"></span><div id="ddGrade"></div></div>
+          <div class="f" id="streamField"><span data-t="stream"></span><div id="ddStream"></div></div>
+          <div class="f f-wide"><span data-t="subject"></span><div id="ddSubject"></div></div>
+        </div>
       </section>
 
       <section class="step">
         <div class="step-h"><span class="step-n">2</span><h2 data-t="s2"></h2></div>
         <div id="unitsList" class="units"></div>
-        <button id="addUnitBtn" class="btn-ghost hidden" type="button">
-          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span data-t="add_unit"></span>
-        </button>
+        <div class="unit-add">
+          <input id="unitInput" type="text" data-ph="unit_ph">
+          <button id="unitAddBtn" type="button" class="btn-soft" aria-label="+"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+        </div>
+        <details class="paste" id="pasteBox">
+          <summary><svg viewBox="0 0 24 24"><path d="M9 4h6v3H9z"/><path d="M8 5.5H6v15h12v-15h-2"/><path d="M9 12h6M9 15.5h4"/></svg><span data-t="paste_t"></span><span class="pill hidden" id="pastePill"></span></summary>
+          <p class="hint" data-t="paste_hint"></p>
+          <textarea id="pasteText" rows="7" maxlength="3500"></textarea>
+          <div class="paste-foot"><span id="pasteCount" class="hint"></span><button id="pasteClear" type="button" class="btn-ghost sm" data-t="remove"></button></div>
+        </details>
       </section>
 
       <section class="step">
@@ -91,12 +99,9 @@
           <label class="f f-wide"><span data-t="school"></span><input id="hSchool" type="text"></label>
           <label class="f"><span data-t="exam_title"></span><input id="hTitle" type="text" list="dlTitles"></label>
           <label class="f"><span data-t="year"></span><input id="hYear" type="text"></label>
-          <div class="f"><span data-t="stage"></span><div id="ddStage"></div></div>
-          <div class="f"><span data-t="grade"></span><div id="ddGrade"></div></div>
-          <label class="f"><span data-t="subject"></span><input id="hSubject" type="text" list="dlSubjects"></label>
           <label class="f"><span data-t="duration"></span><input id="hDuration" type="text" list="dlDurations"></label>
           <label class="f"><span data-t="teacher"></span><input id="hTeacher" type="text"></label>
-          <div class="f"><span data-t="exam_lang"></span><div id="ddExamLang"></div></div>
+          <div class="f f-wide"><span data-t="exam_lang"></span><div id="ddExamLang"></div></div>
           <div class="f f-wide logo-row">
             <span data-t="logo"></span>
             <div class="logo-box">
@@ -110,30 +115,19 @@
 
       <section class="step">
         <div class="step-h"><span class="step-n">4</span><h2 data-t="s4"></h2></div>
-        <div class="ex-global">
-          <div class="f"><span data-t="difficulty_all"></span><div id="ddDiffAll"></div></div>
-          <div class="f">
-            <span data-t="count"></span>
-            <div class="stepper">
-              <button type="button" id="cntMinus" aria-label="-"><svg viewBox="0 0 24 24"><path d="M5 12h14"/></svg></button>
-              <output id="cntVal">4</output>
-              <button type="button" id="cntPlus" aria-label="+"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
-            </div>
-          </div>
-        </div>
-        <div id="rows" class="rows"></div>
-        <div class="pts-bar">
-          <span id="ptsTotal" class="pts-total"></span>
-          <button id="balanceBtn" type="button" class="btn-ghost sm" data-t="balance"></button>
-        </div>
+        <div class="f diff-all"><span data-t="difficulty_all"></span><div id="ddDiffAll"></div></div>
+        <div id="cards" class="cards"></div>
+        <button id="addCardBtn" type="button" class="add-card">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span data-t="add_ex"></span>
+        </button>
       </section>
 
     </div>
     <div class="side-foot">
-      <button id="genBtn" class="gen-btn" type="button">
-        <svg viewBox="0 0 24 24"><path d="M12 3l1.8 4.7L18.5 9l-4.7 1.8L12 15.5l-1.8-4.7L5.5 9l4.7-1.3z"/><path d="M18.5 14.5l.9 2.1 2.1.9-2.1.9-.9 2.1-.9-2.1-2.1-.9 2.1-.9z"/></svg>
-        <span id="genLbl" data-t="generate"></span>
-      </button>
+      <div class="pts-bar">
+        <span id="ptsTotal" class="pts-total"></span>
+        <button id="balanceBtn" type="button" class="btn-ghost sm" data-t="balance"></button>
+      </div>
     </div>
   </aside>
 
@@ -157,7 +151,6 @@
   </main>
 </div>
 
-<datalist id="dlSubjects"></datalist>
 <datalist id="dlTitles"></datalist>
 <datalist id="dlDurations"></datalist>
 
