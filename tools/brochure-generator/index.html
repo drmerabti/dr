@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مولّد المطويات — أكاديمية مرابطي</title>
+<script src="/analytics.js"></script>
+<link rel="icon" type="image/x-icon" href="../../favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="../../apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Cairo:wght@400;600;700;800&family=Almarai:wght@400;700;800&family=El+Messiri:wght@400;600;700&family=Amiri:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <a href="../../index.html" class="brand-logo" title="أكاديمية مرابطي">
+    <img src="../../apple-touch-icon.png" alt="أكاديمية مرابطي">
+  </a>
+  <span class="tool-name" data-i18n="tool_name">مولّد المطويات</span>
+  <div class="topbar-actions">
+    <button class="icon-btn" id="btnFullscreen" type="button" data-tip="fullscreen">
+      <svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+    </button>
+    <button class="icon-btn" id="btnSave" type="button" data-tip="save">
+      <svg viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5z"/><path d="M8 4v5h7V4M8 20v-6h8v6"/></svg>
+    </button>
+    <button class="icon-btn" id="btnPrint" type="button" data-tip="print">
+      <svg viewBox="0 0 24 24"><path d="M7 9V4h10v5M7 17H4v-7h16v7h-3"/><path d="M7 14h10v6H7z"/></svg>
+    </button>
+    <button class="icon-btn pdf" id="btnPdf" type="button" data-tip="pdf">
+      <span>PDF</span>
+    </button>
+    <div class="lang-wrap">
+      <button class="lang-toggle" id="langToggle" type="button">AR</button>
+      <div class="lang-menu hidden" id="langMenu">
+        <button type="button" data-lang="ar">العربية</button>
+        <button type="button" data-lang="fr">Français</button>
+        <button type="button" data-lang="en">English</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="workspace" id="workspace">
+  <aside class="panel" id="panel">
+    <button class="gallery-open" id="btnGallery" type="button">
+      <span class="go-thumb" id="currentThumb"></span>
+      <span class="go-text">
+        <strong data-i18n="gallery">معرض القوالب</strong>
+        <small id="currentTplName"></small>
+      </span>
+      <svg viewBox="0 0 24 24"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></svg>
+    </button>
+    <div class="accordion" id="accordion"></div>
+  </aside>
+
+  <button class="panel-toggle" id="panelToggle" type="button" data-tip="toggle_panel">
+    <svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>
+  </button>
+
+  <main class="stage" id="stage">
+    <div class="stage-bar">
+      <div class="seg" id="viewSeg">
+        <button type="button" data-view="flat" class="on" data-i18n="view_flat">مسطّحة</button>
+        <button type="button" data-view="3d" data-i18n="view_3d">ثلاثية الأبعاد</button>
+      </div>
+      <div class="zoom" id="zoomCtl">
+        <button type="button" id="zoomOut" aria-label="-"><svg viewBox="0 0 24 24"><path d="M6 12h12"/></svg></button>
+        <span id="zoomVal">100%</span>
+        <button type="button" id="zoomIn" aria-label="+"><svg viewBox="0 0 24 24"><path d="M6 12h12M12 6v12"/></svg></button>
+        <button type="button" id="zoomFit" data-tip="fit"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+      </div>
+      <div class="ctl3d hidden" id="ctl3d">
+        <button type="button" id="btnFold" class="primary"><svg viewBox="0 0 24 24"><path d="M4 6l5-2v16l-5 2zM9 4l6 2v16l-6-2zM15 6l5-2v16l-5 2z"/></svg><span data-i18n="fold">طيّ</span></button>
+        <button type="button" id="btnFlip"><svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 14-5l2 2M20 12a8 8 0 0 1-14 5l-2-2M20 4v5h-5M4 20v-5h5"/></svg><span data-i18n="flip">اقلب</span></button>
+        <button type="button" id="btnReset3d"><svg viewBox="0 0 24 24"><path d="M4 4v6h6M4 10a8 8 0 1 1 2 6"/></svg><span data-i18n="reset">إعادة</span></button>
+      </div>
+    </div>
+
+    <div class="flat-view" id="flatView">
+      <figure class="sheet-fig">
+        <figcaption data-i18n="outside">الوجه الخارجي</figcaption>
+        <div class="sheet-holder" id="holderOut"></div>
+      </figure>
+      <figure class="sheet-fig">
+        <figcaption data-i18n="inside">الوجه الداخلي</figcaption>
+        <div class="sheet-holder" id="holderIn"></div>
+      </figure>
+    </div>
+
+    <div class="view3d hidden" id="view3d">
+      <div class="scene" id="scene">
+        <div class="rig-scale" id="rigScale">
+          <div class="rig" id="rig"></div>
+        </div>
+      </div>
+      <p class="hint3d" data-i18n="hint3d">اسحب بالفأرة لتدوير المطوية</p>
+    </div>
+  </main>
+</div>
+
+<!-- Templates gallery -->
+<div class="gallery hidden" id="gallery" role="dialog" aria-modal="true">
+  <div class="gallery-box">
+    <div class="gallery-head">
+      <h2 data-i18n="gallery">معرض القوالب</h2>
+      <div class="g-search">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21"/></svg>
+        <input type="text" id="gSearch" data-i18n-ph="search">
+      </div>
+      <button class="icon-btn" id="gClose" type="button" aria-label="close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="g-filters">
+      <div class="chips" id="gCats"></div>
+      <div class="chips small" id="gFolds"></div>
+    </div>
+    <div class="g-grid" id="gGrid"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="print-root" id="printRoot" aria-hidden="true"></div>
+<div class="measure" id="measure" aria-hidden="true"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
