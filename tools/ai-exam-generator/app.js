@@ -407,7 +407,7 @@ const S = {
   uiLang: (() => { try { return localStorage.getItem('site_lang') === 'en' ? 'en' : 'ar'; } catch (e) { return 'ar'; } })(),
   user: null, isAdmin: false, overrides: {},
   cur: { sys: 'dz', other: '', stage: 'mid', grade: 4, stream: 'se', subject: 'math', spec: '', module: '' },
-  fold: { s1: false, s2: false, s3: false, s4: false },
+  fold: { s1: true, s2: true, s3: true, s4: true },
   units: [],            // { id, title, on, custom }
   paste: '',
   header: { school: '', title: '', year: '2026/2027', duration: '', teacher: '', logo: '' },
@@ -505,6 +505,7 @@ function makeDD(host, getOpts, value, onChange) {
     e.stopPropagation();
     if (menuEl && menuEl._owner === api) { closeMenu(); return; }
     openMenu(btn, getOpts(), api.value, v => { api.value = v; api.paint(); onChange(v); }, api);
+    btn.setAttribute('aria-expanded', 'true');
   });
   api.paint(); DD.push(api);
   return api;
@@ -551,7 +552,7 @@ function openMenu(anchor, opts, cur, pick, owner) {
   };
   (m.querySelector('.on') || m.firstChild).focus({ preventScroll: true });
 }
-function closeMenu() { if (menuEl) { menuEl.remove(); menuEl = null; } if (menuCleanup) { menuCleanup(); menuCleanup = null; } }
+function closeMenu() { $$('.dd-btn[aria-expanded="true"]').forEach(b => b.setAttribute('aria-expanded', 'false')); if (menuEl) { menuEl.remove(); menuEl = null; } if (menuCleanup) { menuCleanup(); menuCleanup = null; } }
 
 const allowedTypes = () => (S.cur.stage !== 'uni' && LANG_TYPES[S.cur.subject]) ? LANG_TYPES[S.cur.subject].concat(GENERAL_TYPES) : GENERAL_TYPES;
 const typeOpts = () => allowedTypes().map(k => ({ v: k, label: tLabel(k), icon: TYPES[k].i, color: TYPES[k].c }));
@@ -956,8 +957,9 @@ function renderCards() {
           <div class="f f-wide"><span>${esc(T('ex_unit'))}</span><div class="dd-u"></div></div>
           <div class="f"><span>${esc(T('ex_diff'))}</span><div class="dd-d"></div></div>
           <div class="f"><span>${esc(T('f_points'))}</span><div class="pts-in"><input type="number" min="0.5" max="20" step="0.25" value="${ex.points}"><span>${esc(T('points_short'))}</span></div></div>
-          <label class="f f-wide"><span>${esc(T('note'))}</span><textarea rows="2" placeholder="${esc(T('note_ph'))}">${esc(ex.note)}</textarea></label>
+          <label class="f f-wide"><span>${esc(T('note'))}</span><textarea rows="2" maxlength="600" placeholder="${esc(T('note_ph'))}">${esc(ex.note)}</textarea></label>
         </div>
+        ${ex.status === 'ready' && ex.data && ex.data.note_applied ? `<div class="note-ok">${svgI('<path d="M5 12l5 5 9-10"/>')}<span>${esc(ex.data.note_applied)}</span></div>` : ''}
         <button type="button" class="card-gen ${ex.status === 'loading' || ex.status === 'waiting' ? 'busy' : ''}" ${S.busy ? 'disabled' : ''}>${GEN_ICON}<span>${esc(ex.status === 'ready' ? T('regen_one') : T('gen_one'))}</span></button>
       </div>`;
     const a = makeDD($('.dd-t', c), typeOpts, ex.type, v => { ex.type = v; markDirty(); renderCards(); });
@@ -1086,7 +1088,7 @@ async function genOne(ex, { note = '', regen = false } = {}) {
       mode: 'exercise', country: countryName('en'), university: isUni(), type: ex.type, lang: S.examLang,
       level: levelBase(S.examLang), stream: isUni() ? S.cur.spec.trim() : (st ? lab(st, S.examLang) : ''),
       subject: subjLabel(S.cur.subject, S.examLang), units: chosenUnits(ex), source: S.paste.trim().slice(0, MAX_PASTE),
-      difficulty: ex.diff, points: ex.points, note,
+      difficulty: ex.diff, points: ex.points, note, uiLang: S.uiLang,
       previous: regen && prev.data ? summary(prev.data) : '', avoid
     });
     if (!res || !res.exercise) throw new Error('empty');
@@ -1844,7 +1846,7 @@ function init() {
     markDirty(); renderCards();
   });
   rebuildUnits();
-  S.exercises = [newCard()];
+  S.exercises = [Object.assign(newCard(), { open: false })];
 
   $('#unitAddBtn').onclick = addCustomUnit;
   $('#unitInput').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); addCustomUnit(); } });
