@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مولّد الامتحانات بالذكاء الاصطناعي — أكاديمية مرابطي</title>
+<script src="/analytics.js"></script>
+<link rel="icon" type="image/x-icon" href="../../favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="../../apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Amiri:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Access gate: login / coming soon -->
+<div id="gate" class="gate">
+  <div class="gate-card">
+    <img src="../../apple-touch-icon.png" alt="" class="gate-logo">
+    <div id="gateSpin" class="spin"></div>
+    <h1 id="gateTitle"></h1>
+    <p id="gateText"></p>
+    <a id="gateBtn" class="btn-main hidden" href="../../index.html"></a>
+  </div>
+</div>
+
+<header class="tb">
+  <a class="tb-logo" href="../../index.html" aria-label="Merabti Academy"><img src="../../apple-touch-icon.png" alt=""></a>
+  <div class="tb-title"><span data-t="app_title"></span><span class="tb-ai">AI</span></div>
+
+  <nav class="tb-actions">
+    <button class="tb-btn" id="newBtn" type="button" data-tip="new">
+      <svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M12 11v6M9 14h6"/></svg>
+    </button>
+    <button class="tb-btn" id="openBtn" type="button" data-tip="open">
+      <svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v1H3z"/><path d="M3 10h18l-2 9H5z"/></svg>
+    </button>
+    <button class="tb-btn c-save" id="saveBtn" type="button" data-tip="save">
+      <svg viewBox="0 0 24 24"><path d="M5 3h11l3 3v15H5z"/><path d="M8 3v5h7V3"/><rect x="8" y="13" width="8" height="6" rx="1"/></svg>
+    </button>
+    <span class="tb-sep"></span>
+    <button class="tb-btn c-print" id="printBtn" type="button" data-tip="print">
+      <svg viewBox="0 0 24 24"><path d="M7 8V3h10v5"/><rect x="3" y="8" width="18" height="9" rx="2"/><path d="M7 14h10v7H7z"/></svg>
+    </button>
+    <button class="tb-btn c-pdf" id="pdfBtn" type="button" data-tip="pdf">
+      <svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><text x="12" y="17.5" text-anchor="middle" font-size="6.2" font-weight="800" stroke="none" fill="currentColor" font-family="Inter,Arial">PDF</text></svg>
+    </button>
+    <button class="tb-btn c-word" id="wordBtn" type="button" data-tip="word">
+      <svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M8.5 11l1.3 6 2.2-4.6 2.2 4.6 1.3-6"/></svg>
+    </button>
+  </nav>
+
+  <button id="langBtn" class="tb-lang" type="button">EN</button>
+</header>
+
+<div class="mtabs" role="tablist">
+  <button type="button" class="mtab on" data-pane="side" data-t="tab_settings"></button>
+  <button type="button" class="mtab" data-pane="stage" data-t="tab_preview"></button>
+</div>
+
+<div class="shell">
+  <aside class="side" id="side">
+    <div class="side-scroll">
+
+      <section class="step">
+        <div class="step-h"><span class="step-n">1</span><h2 data-t="s1"></h2></div>
+        <label class="drop" id="drop">
+          <input type="file" id="bookFile" accept="application/pdf" hidden>
+          <span class="drop-ic">
+            <svg viewBox="0 0 48 48"><path d="M13 6h16l9 9v27H13z" fill="#fff"/><path d="M29 6v9h9" fill="#DCEAFB"/><path d="M13 6h16l9 9v27H13z M29 6v9h9" fill="none" stroke="#2F5770" stroke-width="2.2" stroke-linejoin="round"/><path d="M25.5 36V22m-6 6 6-6 6 6" fill="none" stroke="#2F6FB0" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="drop-t" data-t="drop_title"></span>
+          <span class="drop-s" data-t="drop_sub"></span>
+        </label>
+        <div id="bookInfo" class="book-info hidden"></div>
+      </section>
+
+      <section class="step">
+        <div class="step-h"><span class="step-n">2</span><h2 data-t="s2"></h2></div>
+        <div id="unitsList" class="units"></div>
+        <button id="addUnitBtn" class="btn-ghost hidden" type="button">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span data-t="add_unit"></span>
+        </button>
+      </section>
+
+      <section class="step">
+        <div class="step-h"><span class="step-n">3</span><h2 data-t="s3"></h2></div>
+        <div class="fields">
+          <label class="f f-wide"><span data-t="school"></span><input id="hSchool" type="text"></label>
+          <label class="f"><span data-t="exam_title"></span><input id="hTitle" type="text" list="dlTitles"></label>
+          <label class="f"><span data-t="year"></span><input id="hYear" type="text"></label>
+          <div class="f"><span data-t="stage"></span><div id="ddStage"></div></div>
+          <div class="f"><span data-t="grade"></span><div id="ddGrade"></div></div>
+          <label class="f"><span data-t="subject"></span><input id="hSubject" type="text" list="dlSubjects"></label>
+          <label class="f"><span data-t="duration"></span><input id="hDuration" type="text" list="dlDurations"></label>
+          <label class="f"><span data-t="teacher"></span><input id="hTeacher" type="text"></label>
+          <div class="f"><span data-t="exam_lang"></span><div id="ddExamLang"></div></div>
+          <div class="f f-wide logo-row">
+            <span data-t="logo"></span>
+            <div class="logo-box">
+              <img id="logoPrev" class="hidden" alt="">
+              <label class="btn-ghost sm"><input type="file" id="logoFile" accept="image/*" hidden><span data-t="logo_add"></span></label>
+              <button id="logoDel" type="button" class="btn-ghost sm hidden" data-t="remove"></button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="step">
+        <div class="step-h"><span class="step-n">4</span><h2 data-t="s4"></h2></div>
+        <div class="ex-global">
+          <div class="f"><span data-t="difficulty_all"></span><div id="ddDiffAll"></div></div>
+          <div class="f">
+            <span data-t="count"></span>
+            <div class="stepper">
+              <button type="button" id="cntMinus" aria-label="-"><svg viewBox="0 0 24 24"><path d="M5 12h14"/></svg></button>
+              <output id="cntVal">4</output>
+              <button type="button" id="cntPlus" aria-label="+"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+            </div>
+          </div>
+        </div>
+        <div id="rows" class="rows"></div>
+        <div class="pts-bar">
+          <span id="ptsTotal" class="pts-total"></span>
+          <button id="balanceBtn" type="button" class="btn-ghost sm" data-t="balance"></button>
+        </div>
+      </section>
+
+    </div>
+    <div class="side-foot">
+      <button id="genBtn" class="gen-btn" type="button">
+        <svg viewBox="0 0 24 24"><path d="M12 3l1.8 4.7L18.5 9l-4.7 1.8L12 15.5l-1.8-4.7L5.5 9l4.7-1.3z"/><path d="M18.5 14.5l.9 2.1 2.1.9-2.1.9-.9 2.1-.9-2.1-2.1-.9 2.1-.9z"/></svg>
+        <span id="genLbl" data-t="generate"></span>
+      </button>
+    </div>
+  </aside>
+
+  <main class="stage" id="stage">
+    <div class="zoombar">
+      <div class="zgroup">
+        <button type="button" id="zOut" class="zbtn" aria-label="zoom out"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M8 11h6M16.5 16.5L21 21"/></svg></button>
+        <output id="zVal" class="zval">100%</output>
+        <button type="button" id="zIn" class="zbtn" aria-label="zoom in"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M8 11h6M11 8v6M16.5 16.5L21 21"/></svg></button>
+        <button type="button" id="zFit" class="zbtn" data-tip="zoom_fit"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="corrToggle" checked>
+        <span class="sw"></span>
+        <span data-t="show_corr"></span>
+      </label>
+    </div>
+    <div class="stage-scroll" id="stageScroll">
+      <div id="paper" class="paper"></div>
+    </div>
+  </main>
+</div>
+
+<datalist id="dlSubjects"></datalist>
+<datalist id="dlTitles"></datalist>
+<datalist id="dlDurations"></datalist>
+
+<div id="modalRoot"></div>
+<div id="toast" class="toast"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-functions-compat.js"></script>
+<script src="../../firebase-init.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<script defer src="app.js"></script>
+</body>
+</html>
