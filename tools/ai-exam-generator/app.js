@@ -50,6 +50,12 @@ const UI = {
     d_easy: 'تذكّر وتطبيق مباشر', d_medium: 'فهم وتطبيق', d_hard: 'تحليل واستدلال',
     t_qcm: 'اختيار من متعدد (QCM)', t_tf: 'صح أو خطأ', t_fill: 'املأ الفراغ', t_match: 'صِل بين العمودين',
     t_direct: 'أسئلة مباشرة', t_problem: 'تمرين تطبيقي / مسألة', t_situation: 'وضعية إدماجية', t_document: 'تحليل وثيقة أو نص',
+    t_ar_comp: 'فهم النص', t_ar_lang: 'الأسئلة اللغوية والإعراب', t_ar_rhet: 'البلاغة', t_ar_dict: 'الإملاء', t_ar_write: 'الإنتاج الكتابي',
+    t_fr_comp: "Compréhension de l'écrit", t_fr_vocab: 'Vocabulaire', t_fr_gram: 'Grammaire et conjugaison', t_fr_ortho: 'Orthographe', t_fr_prod: 'Production écrite',
+    t_en_read: 'Reading comprehension', t_en_vocab: 'Vocabulary', t_en_gram: 'Grammar', t_en_phon: 'Phonetics', t_en_write: 'Written expression',
+    country: 'الدولة', other_country: 'اسم الدولة', spec: 'التخصص', module: 'المقياس', spec_ph: 'مثال: إلكتروتقني', module_ph: 'مثال: إلكترونيك الاستطاعة',
+    st_uni: 'الجامعة', lic: 'ليسانس', mas: 'ماستر', n_units: '{n} وحدات مختارة', no_units_sel: 'لم تُختر وحدة بعد', pasted: 'نص ملصق',
+    n_ex: '{n} تمارين', word_prog: 'جاري تجهيز ملف Word… {i} من {n}', hint_title: 'رأس امتحانك جاهز', hint_sub: 'أكمل معلومات الامتحان وسترى التغييرات هنا مباشرة، ثم ولّد أول تمرين من بطاقة التمرين.',
     zoom_fit: 'ملاءمة العرض', show_corr: 'التصحيح النموذجي',
     empty_title: 'امتحانك سيظهر هنا', empty_sub: 'اختر المستوى والمادة والوحدات، ثم اضغط «ولّد هذا التمرين» في بطاقة التمرين، وشاهده يُكتب أمامك.',
     e1: 'المستوى', e2: 'الوحدات', e3: 'التمرين', e4: 'ولّد',
@@ -100,6 +106,12 @@ const UI = {
     d_easy: 'Recall and direct use', d_medium: 'Understanding and application', d_hard: 'Analysis and reasoning',
     t_qcm: 'Multiple choice (QCM)', t_tf: 'True or false', t_fill: 'Fill in the blanks', t_match: 'Match the columns',
     t_direct: 'Direct questions', t_problem: 'Applied exercise / problem', t_situation: 'Integration situation', t_document: 'Document or text analysis',
+    t_ar_comp: 'Arabic: text comprehension', t_ar_lang: 'Arabic: grammar and parsing', t_ar_rhet: 'Arabic: rhetoric', t_ar_dict: 'Arabic: spelling', t_ar_write: 'Arabic: written production',
+    t_fr_comp: "Compréhension de l'écrit", t_fr_vocab: 'Vocabulaire', t_fr_gram: 'Grammaire et conjugaison', t_fr_ortho: 'Orthographe', t_fr_prod: 'Production écrite',
+    t_en_read: 'Reading comprehension', t_en_vocab: 'Vocabulary', t_en_gram: 'Grammar', t_en_phon: 'Phonetics', t_en_write: 'Written expression',
+    country: 'Country', other_country: 'Country name', spec: 'Specialty', module: 'Module', spec_ph: 'e.g. Electrical engineering', module_ph: 'e.g. Power electronics',
+    st_uni: 'University', lic: 'Licence', mas: 'Master', n_units: '{n} units selected', no_units_sel: 'No unit selected yet', pasted: 'pasted text',
+    n_ex: '{n} exercises', word_prog: 'Preparing the Word file… {i} of {n}', hint_title: 'Your exam header is ready', hint_sub: 'Fill in the exam details and see the changes here instantly, then generate the first exercise from its card.',
     zoom_fit: 'Fit width', show_corr: 'Answer key',
     empty_title: 'Your exam will appear here', empty_sub: 'Choose the level, subject and units, then press “Generate this exercise” on the exercise card and watch it being written.',
     e1: 'Level', e2: 'Units', e3: 'Exercise', e4: 'Generate',
@@ -194,9 +206,149 @@ const CATALOG = {
 };
 
 
+/* ---------------- Countries and their school stages ---------------- */
+const STAGE_NAMES = {
+  pri: { ar: 'ابتدائي', fr: 'primaire', en: 'Primary' },
+  mid: { ar: 'متوسط', fr: 'moyen', en: 'Middle school' },
+  sec: { ar: 'ثانوي', fr: 'secondaire', en: 'Secondary' },
+  uni: { ar: 'الجامعة', fr: 'université', en: 'University' }
+};
+// [stage, years, Arabic name when different from the default]
+const COUNTRIES = [
+  { v: 'dz', ar: 'الجزائر', en: 'Algeria', st: [['pri', 5], ['mid', 4], ['sec', 3]] },
+  { v: 'ma', ar: 'المغرب', en: 'Morocco', st: [['pri', 6], ['mid', 3, 'الثانوي الإعدادي'], ['sec', 3, 'الثانوي التأهيلي']] },
+  { v: 'tn', ar: 'تونس', en: 'Tunisia', st: [['pri', 6], ['mid', 3, 'الإعدادي'], ['sec', 4]] },
+  { v: 'ly', ar: 'ليبيا', en: 'Libya', st: [['pri', 6], ['mid', 3, 'الإعدادي'], ['sec', 3]] },
+  { v: 'mr', ar: 'موريتانيا', en: 'Mauritania', st: [['pri', 6], ['mid', 4, 'الإعدادي'], ['sec', 3]] },
+  { v: 'eg', ar: 'مصر', en: 'Egypt', st: [['pri', 6], ['mid', 3, 'الإعدادي'], ['sec', 3]] },
+  { v: 'sd', ar: 'السودان', en: 'Sudan', st: [['pri', 6], ['mid', 3], ['sec', 3]] },
+  { v: 'sa', ar: 'السعودية', en: 'Saudi Arabia', st: [['pri', 6], ['mid', 3], ['sec', 3]] },
+  { v: 'ae', ar: 'الإمارات', en: 'United Arab Emirates', st: [['pri', 6], ['mid', 3, 'الإعدادي'], ['sec', 3]] },
+  { v: 'kw', ar: 'الكويت', en: 'Kuwait', st: [['pri', 5], ['mid', 4], ['sec', 3]] },
+  { v: 'qa', ar: 'قطر', en: 'Qatar', st: [['pri', 6], ['mid', 3, 'الإعدادي'], ['sec', 3]] },
+  { v: 'bh', ar: 'البحرين', en: 'Bahrain', st: [['pri', 6], ['mid', 3, 'الإعدادي'], ['sec', 3]] },
+  { v: 'om', ar: 'عُمان', en: 'Oman', st: [['pri', 4, 'الحلقة الأولى'], ['mid', 6, 'الحلقة الثانية'], ['sec', 2, 'ما بعد الأساسي']] },
+  { v: 'ye', ar: 'اليمن', en: 'Yemen', st: [['pri', 9, 'الأساسي'], ['sec', 3]] },
+  { v: 'iq', ar: 'العراق', en: 'Iraq', st: [['pri', 6], ['mid', 3], ['sec', 3, 'الإعدادي']] },
+  { v: 'sy', ar: 'سوريا', en: 'Syria', st: [['pri', 6, 'الأساسي، الحلقة الأولى'], ['mid', 3, 'الأساسي، الحلقة الثانية'], ['sec', 3]] },
+  { v: 'jo', ar: 'الأردن', en: 'Jordan', st: [['pri', 10, 'الأساسي'], ['sec', 2]] },
+  { v: 'lb', ar: 'لبنان', en: 'Lebanon', st: [['pri', 6, 'الأساسي'], ['mid', 3], ['sec', 3]] },
+  { v: 'ps', ar: 'فلسطين', en: 'Palestine', st: [['pri', 10, 'الأساسي'], ['sec', 2]] },
+  { v: 'so', ar: 'الصومال', en: 'Somalia', st: [['pri', 6], ['mid', 3], ['sec', 3]] },
+  { v: 'dj', ar: 'جيبوتي', en: 'Djibouti', st: [['pri', 5], ['mid', 4], ['sec', 3]] },
+  { v: 'km', ar: 'جزر القمر', en: 'Comoros', st: [['pri', 6], ['mid', 4], ['sec', 3]] },
+  { v: 'other', ar: 'دولة أخرى', en: 'Other country', st: [['pri', 6], ['mid', 3], ['sec', 3]] }
+];
+COUNTRIES.forEach(c => c.st.push(['uni', 5]));
+
+/* ---------------- Exercise types reserved for language subjects ---------------- */
+const GENERAL_TYPES = ['qcm', 'tf', 'fill', 'match', 'direct', 'problem', 'situation', 'document'];
+const LANG_TYPES = {
+  arab: ['ar_comp', 'ar_lang', 'ar_rhet', 'ar_dict', 'ar_write'],
+  fren: ['fr_comp', 'fr_vocab', 'fr_gram', 'fr_ortho', 'fr_prod'],
+  engl: ['en_read', 'en_vocab', 'en_gram', 'en_phon', 'en_write']
+};
+const DOC_TYPES = ['document', 'ar_comp', 'ar_lang', 'ar_rhet', 'fr_comp', 'en_read'];
+const I_READ = '<path d="M4 5.5A2 2 0 0 1 6 4h5v15H6a2 2 0 0 0-2 1.5z"/><path d="M20 5.5A2 2 0 0 0 18 4h-5v15h5a2 2 0 0 1 2 1.5z"/>';
+const I_GRAM = '<path d="M5 19l5-14 5 14"/><path d="M7 14h6"/><path d="M16 9h4M16 13h4M16 17h4"/>';
+const I_PEN = '<path d="M4 20l4.5-1 10-10a2.1 2.1 0 0 0-3-3l-10 10z"/><path d="M13.5 7.5l3 3"/>';
+const I_WORD = '<rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 10v4M10 10l1.5 4 1.5-4M17 10h-2.5v4H17M14.5 12H16.5"/>';
+const I_EAR = '<path d="M7 10a5 5 0 1 1 10 0c0 3-3 3.5-3 6.5a2.5 2.5 0 0 1-5 0"/><path d="M10 10a2 2 0 1 1 4 0"/>';
+const I_STAR = '<path d="M12 4l2.2 5 5.3.5-4 3.6 1.2 5.2L12 15.6 7.3 18.3l1.2-5.2-4-3.6 5.3-.5z"/>';
+const I_SPELL = '<path d="M4 17l3-10 3 10M5 14h4"/><path d="M13 12l3 3 5-6"/>';
+const LANG_TYPE_META = {
+  ar_comp: ['#0D9488', I_READ], ar_lang: ['#7C4DFF', I_GRAM], ar_rhet: ['#DB2777', I_STAR], ar_dict: ['#E08A00', I_SPELL], ar_write: ['#DC2626', I_PEN],
+  fr_comp: ['#0D9488', I_READ], fr_vocab: ['#0891B2', I_WORD], fr_gram: ['#7C4DFF', I_GRAM], fr_ortho: ['#E08A00', I_SPELL], fr_prod: ['#DC2626', I_PEN],
+  en_read: ['#0D9488', I_READ], en_vocab: ['#0891B2', I_WORD], en_gram: ['#7C4DFF', I_GRAM], en_phon: ['#2563EB', I_EAR], en_write: ['#DC2626', I_PEN]
+};
+
+/* ---------------- More built-in units (Algeria) ---------------- */
+const U_ISL = extra => ['القرآن الكريم (السور والآيات المقررة)', 'العقيدة الإسلامية', 'العبادات', 'السيرة النبوية', 'الأخلاق والآداب'].concat(extra);
+const U_INFO = ['مكونات الحاسوب', 'نظام التشغيل (الملفات والمجلدات)', 'معالجة النصوص', 'الجداول الإلكترونية', 'العروض التقديمية', 'الإنترنت والبريد الإلكتروني', 'الخوارزميات والبرمجة (Scratch)', 'أمن المعلومات والاستعمال الآمن'];
+const U_AR_THEMES = ['القيم الإنسانية', 'الحياة الاجتماعية', 'الهوية الوطنية', 'الطبيعة والبيئة', 'الصحة والرياضة', 'العلم والتكنولوجيا', 'الحياة الثقافية والفنون'];
+Object.assign(CATALOG, {
+  'pri-1-math': ['الأعداد من 0 إلى 9', 'الأعداد إلى 99', 'الجمع', 'الطرح', 'المقارنة والترتيب', 'الأشكال الهندسية', 'التموضع في الفضاء', 'قياس الأطوال', 'تنظيم معطيات'],
+  'pri-2-math': ['الأعداد إلى 999', 'الجمع والطرح', 'الضرب', 'الأعداد الزوجية والفردية', 'الأشكال الهندسية (المربع، المستطيل، المثلث)', 'قياس الأطوال', 'الكتل والسعات', 'النقود', 'الزمن والساعة', 'تنظيم معطيات'],
+  'pri-3-math': ['الأعداد إلى 9999', 'العمليات الأربع', 'الضرب في عدد من رقمين', 'القسمة', 'الأطوال والكتل والسعات', 'المحيط', 'الأشكال المستوية والمجسمات', 'الاستقامية والتوازي والتعامد', 'حل المشكلات', 'تنظيم معطيات'],
+  'pri-4-math': ['الأعداد إلى 999999', 'العمليات على الأعداد الطبيعية', 'الكسور', 'الأعداد العشرية', 'قياس الأطوال والكتل والسعات', 'المحيط والمساحة', 'الزوايا', 'التناظر المحوري', 'المجسمات', 'التناسبية', 'تنظيم معطيات'],
+  'pri-5-math': ['الأعداد الطبيعية الكبيرة', 'العمليات على الأعداد الطبيعية', 'الكسور', 'الأعداد العشرية والعمليات عليها', 'التناسبية والنسبة المئوية', 'السرعة المتوسطة والمقياس', 'المحيطات والمساحات', 'الحجوم', 'الزوايا والمثلثات', 'الدائرة', 'التناظر المحوري', 'تنظيم معطيات'],
+  'pri-1-arab': ['الحروف والأصوات', 'المدرسة', 'العائلة', 'الحي', 'الألعاب والتسلية', 'الصحة والتغذية', 'البيئة', 'الأعياد'],
+  'pri-2-arab': ['الحياة المدرسية', 'العائلة', 'الحي والقرية', 'الرياضة والتسلية', 'الصحة والتغذية', 'الطبيعة', 'الأسفار والرحلات', 'الأعياد والمناسبات'],
+  'pri-3-arab': U_AR_THEMES.concat(['الرحلات والأسفار', 'الجملة الاسمية والجملة الفعلية', 'المفرد والمثنى والجمع']),
+  'pri-4-arab': U_AR_THEMES.concat(['الرحلات والأسفار', 'الفاعل والمفعول به', 'المبتدأ والخبر', 'الإملاء: التاء المربوطة والمفتوحة']),
+  'pri-5-arab': U_AR_THEMES.concat(['عالم الابتكار والاكتشاف', 'كان وأخواتها', 'إن وأخواتها', 'الأفعال الخمسة', 'الإملاء: الهمزة المتوسطة والمتطرفة']),
+  'pri-1-sci': ['جسم الإنسان', 'الحواس', 'النظافة والصحة', 'الحيوانات', 'النباتات', 'الماء', 'الزمن والفصول'],
+  'pri-2-sci': ['الإنسان والصحة', 'الحيوانات وأوساط عيشها', 'النبات', 'المادة وعالم الأشياء', 'الماء', 'الزمن'],
+  'pri-3-sci': ['التغذية عند الإنسان', 'الحركة والأعضاء', 'الكائنات الحية ومحيطها', 'حالات المادة', 'الماء في الطبيعة', 'التموقع في الفضاء والزمن', 'الدارة الكهربائية البسيطة'],
+  'pri-4-sci': ['التغذية عند الإنسان', 'التنفس', 'الكائنات الحية ومحيطها', 'التكاثر عند النبات', 'المادة والطاقة', 'الكهرباء', 'الضوء والظل', 'التحكم التكنولوجي'],
+  'pri-5-sci': ['التغذية والهضم', 'الدوران والتنفس', 'التكاثر', 'التوازن البيئي', 'المادة وتحولاتها', 'الطاقة ومصادرها', 'الكهرباء', 'الضوء والظلال', 'الآلات البسيطة'],
+  'pri-3-fren': ['Projet 1 : Je me présente, ma famille et mon école', 'Projet 2 : Les jeux et les loisirs', 'Projet 3 : Mon environnement', 'Les lettres et les sons', 'Les articles et les noms', 'Être et avoir au présent'],
+  'pri-4-fren': ['Projet 1 : Les règles de vie', 'Projet 2 : Les métiers', 'Projet 3 : La nature', 'Le présent de l\'indicatif', 'Le futur simple', 'Les adjectifs qualificatifs'],
+  'pri-5-fren': ['Projet 1 : Les textes documentaires', 'Projet 2 : Le conte', 'Projet 3 : La lettre', 'Le passé composé et l\'imparfait', 'Les types de phrases', 'Le groupe nominal'],
+  'pri-3-engl': ['Sequence 1: Me, my family and friends', 'Sequence 2: My school', 'Sequence 3: My home', 'Sequence 4: My playtime', 'Numbers and colours', 'Greetings'],
+  'pri-4-engl': ['Sequence 1: Me and my friends', 'Sequence 2: My family', 'Sequence 3: My body', 'Sequence 4: My food', 'Sequence 5: My time'],
+  'pri-5-engl': ['Sequence 1: Me and my family', 'Sequence 2: My daily routine', 'Sequence 3: My town', 'Sequence 4: My hobbies', 'Sequence 5: Jobs and places'],
+  'pri-1-isl': ['السور القصيرة', 'أركان الإسلام', 'الوضوء', 'قصص الأنبياء', 'آداب الأكل والسلام'],
+  'pri-2-isl': ['السور المقررة', 'أركان الإيمان', 'الصلاة', 'مولد الرسول ﷺ', 'الأخلاق الحميدة'],
+  'pri-3-isl': U_ISL(['الطهارة والصلاة', 'الصيام']),
+  'pri-4-isl': U_ISL(['صلاة الجماعة', 'الزكاة', 'الهجرة النبوية']),
+  'pri-5-isl': U_ISL(['الحج', 'الزكاة والصدقة', 'الخلفاء الراشدون']),
+  'pri-1-civ': ['الحياة في الأسرة', 'الحياة في المدرسة', 'النظافة والصحة', 'قواعد المرور'],
+  'pri-2-civ': ['الأسرة', 'المدرسة', 'الحي', 'الرموز الوطنية', 'السلامة المرورية'],
+  'pri-3-civ': ['الحياة الجماعية', 'الحقوق والواجبات', 'الرموز الوطنية', 'حماية البيئة', 'المؤسسات المحلية'],
+  'pri-4-civ': ['الحياة المدنية', 'البلدية', 'الحقوق والواجبات', 'الرموز الوطنية', 'الأمن والسلامة'],
+  'pri-5-civ': ['الولاية ومؤسساتها', 'الدستور والحقوق', 'الجمعيات والعمل التطوعي', 'المواطنة', 'التضامن'],
+  'pri-3-hg': ['التاريخ: الزمن والتسلسل الزمني', 'التاريخ: التاريخ الشخصي والعائلي', 'الجغرافيا: التموقع في الفضاء', 'الجغرافيا: الحي والبلدية'],
+  'pri-4-hg': ['التاريخ: أدوات المادة (الزمن والمصادر)', 'التاريخ: شخصيات تاريخية', 'الجغرافيا: المخطط والخريطة', 'الجغرافيا: موقع الجزائر وتضاريسها', 'الجغرافيا: المناخ والسكان'],
+  'pri-5-hg': ['التاريخ: الجزائر عبر العصور', 'التاريخ: الثورة التحريرية', 'التاريخ: شخصيات وطنية', 'الجغرافيا: الجزائر (الموقع والتضاريس)', 'الجغرافيا: السكان والنشاطات الاقتصادية', 'الجغرافيا: الموارد والبيئة'],
+  'mid-1-arab': U_AR_THEMES.concat(['الجملة الاسمية والجملة الفعلية', 'الفاعل والمفعول به', 'المبتدأ والخبر', 'الإملاء: الهمزات']),
+  'mid-2-arab': U_AR_THEMES.concat(['الحال والتمييز', 'المفعول لأجله والمفعول المطلق', 'الأفعال الخمسة', 'النعت والعطف']),
+  'mid-3-arab': U_AR_THEMES.concat(['الممنوع من الصرف', 'أسلوب الشرط', 'اسم الفاعل واسم المفعول', 'البلاغة: التشبيه']),
+  'mid-4-arab': ['الأخلاق والمجتمع', 'العلم والاكتشافات', 'الإعلام والاتصال', 'الهجرة', 'الصناعات التقليدية', 'الهوية الوطنية', 'الجمل التي لها محل من الإعراب', 'الأساليب (التعجب، المدح والذم، الاستفهام)', 'البلاغة (التشبيه، الاستعارة، الكناية)', 'العروض'],
+  'mid-1-fren': ['Projet 1 : Le conte', 'Projet 2 : La fable', 'Projet 3 : Le récit', 'La phrase simple', 'Présent et passé composé', 'Le vocabulaire du conte'],
+  'mid-2-fren': ['Projet 1 : Le texte explicatif', 'Projet 2 : Le texte prescriptif', 'Projet 3 : La description', 'Les expansions du nom', "L'impératif et le futur"],
+  'mid-3-fren': ['Projet 1 : Le récit (fait divers, biographie)', 'Projet 2 : Le récit historique', 'Projet 3 : La description', 'Les propositions subordonnées', 'Le passé simple et l\'imparfait'],
+  'mid-4-fren': ['Projet 1 : Le texte argumentatif', 'Projet 2 : Argumenter pour défendre une cause', "Projet 3 : L'appel", 'Les connecteurs logiques', "La concession et l'opposition", 'Le subjonctif'],
+  'mid-1-engl': ['Sequence 1: Me and my friends', 'Sequence 2: Me and my family', 'Sequence 3: Me and my daily activities', 'Sequence 4: Me and my school', 'Sequence 5: Me and my environment', 'Grammar: present simple, to be, have got'],
+  'mid-2-engl': ['Sequence 1: Me and my friends', 'Sequence 2: Me and my environment', 'Sequence 3: Me and my health', 'Sequence 4: Me and my customs', 'Sequence 5: Me and the scientific world', 'Grammar: past simple, comparatives'],
+  'mid-3-engl': ['Sequence 1: Me, my personality and life experiences', 'Sequence 2: Me and my heritage', 'Sequence 3: Me and the scientific world', 'Sequence 4: Me and the environment', 'Grammar: present perfect, passive voice'],
+  'mid-4-engl': ['Sequence 1: Me, my personality and life experiences', 'Sequence 2: Me and my heritage', 'Sequence 3: Me and the scientific world', 'Sequence 4: Me and the environment', 'Grammar: conditionals, reported speech'],
+  'mid-1-hg': ['التاريخ: مصادر التاريخ وأدوات المؤرخ', 'التاريخ: الحضارات القديمة (مصر، بلاد الرافدين)', 'التاريخ: الحضارتان الإغريقية والرومانية', 'التاريخ: نوميديا والمغرب القديم', 'الجغرافيا: الأرض في النظام الشمسي', 'الجغرافيا: الخرائط وخطوط الطول والعرض', 'الجغرافيا: التضاريس والمناخ'],
+  'mid-2-hg': ['التاريخ: الحضارة الإسلامية', 'التاريخ: الدول الإسلامية في المغرب', 'التاريخ: أوروبا في العصور الوسطى', 'الجغرافيا: السكان والتنمية', 'الجغرافيا: الموارد الطبيعية', 'الجغرافيا: الأقاليم الكبرى في العالم'],
+  'mid-3-hg': ['التاريخ: الجزائر في العهد العثماني', 'التاريخ: الاحتلال الفرنسي والمقاومات الشعبية', 'التاريخ: النهضة الأوروبية والثورات', 'الجغرافيا: القارات (إفريقيا، آسيا، أوروبا)', 'الجغرافيا: التحديات الكبرى (المياه، الطاقة)'],
+  'mid-4-hg': ['التاريخ: الحركة الوطنية الجزائرية', 'التاريخ: الثورة التحريرية 1954–1962', 'التاريخ: الجزائر المستقلة', 'الجغرافيا: الجزائر (الموقع والسكان)', 'الجغرافيا: الاقتصاد الجزائري', 'الجغرافيا: التنمية المستدامة في الجزائر'],
+  'mid-1-isl': U_ISL(['الطهارة والصلاة']), 'mid-2-isl': U_ISL(['الصيام والزكاة']),
+  'mid-3-isl': U_ISL(['الحج والعمرة', 'الحديث الشريف']), 'mid-4-isl': U_ISL(['المعاملات (البيع والربا)', 'الحديث الشريف']),
+  'mid-1-civ': ['الحياة الجماعية', 'الحقوق والواجبات في المدرسة', 'الرموز الوطنية', 'حماية البيئة', 'التضامن'],
+  'mid-2-civ': ['الجماعات المحلية (البلدية والولاية)', 'الحياة الجمعوية', 'المواطنة', 'السلامة المرورية', 'حقوق الطفل'],
+  'mid-3-civ': ['الدولة ومؤسساتها', 'الدستور', 'الانتخابات', 'الحقوق والحريات', 'الإعلام'],
+  'mid-4-civ': ['حقوق الإنسان', 'المنظمات الدولية', 'التنمية المستدامة', 'المواطنة والمسؤولية', 'الأمن والسلم'],
+  'mid-1-info': U_INFO, 'mid-2-info': U_INFO, 'mid-3-info': U_INFO, 'mid-4-info': U_INFO,
+  'sec-1-arab': ['الشعر الجاهلي', 'أدب صدر الإسلام', 'الأدب الأموي', 'الخطابة', 'القواعد: المبني والمعرب وأنواع الجمل', 'البلاغة: التشبيه والاستعارة', 'العروض: الطويل والبسيط والكامل'],
+  'sec-2-arab': ['الأدب العباسي', 'الأدب الأندلسي', 'أدب عصر الضعف', 'القواعد: الأساليب والإعراب', 'البلاغة: المجاز والكناية والمحسنات البديعية', 'العروض'],
+  'sec-3-arab': ['أدب النهضة (الإحياء)', 'الشعر التعليمي', 'الشعر الوجداني', 'الشعر الحر', 'الالتزام في الأدب', 'القصة والمسرحية', 'المقال', 'القواعد: الإعراب المحلي والتقديري', 'البلاغة', 'العروض'],
+  'sec-1-fren': ["Projet 1 : L'exposé (vulgarisation scientifique)", "Projet 2 : L'argumentation", 'Projet 3 : La relation d\'événements (le fait divers)', 'Projet 4 : La nouvelle'],
+  'sec-2-fren': ['Projet 1 : Le discours objectivé', 'Projet 2 : Le plaidoyer et le réquisitoire', 'Projet 3 : Le reportage touristique', 'Projet 4 : La nouvelle', 'Projet 5 : Le poème'],
+  'sec-3-fren': ["Projet 1 : Le texte et le document d'histoire", "Projet 2 : Le débat d'idées", "Projet 3 : L'appel", 'Projet 4 : La nouvelle fantastique'],
+  'sec-1-engl': ['Unit 1: Getting through', 'Unit 2: Once upon a time', 'Unit 3: Our findings show', 'Unit 4: Eureka!', 'Unit 5: Back to nature'],
+  'sec-2-engl': ['Unit 1: Signs of the time', 'Unit 2: Make peace', 'Unit 3: Waste not, want not', 'Unit 4: Budding scientist', 'Unit 5: News and tales', 'Unit 6: No man is an island'],
+  'sec-3-engl': ['Unit 1: Ancient civilizations', 'Unit 2: Ethics in business', 'Unit 3: Education in the world', 'Unit 4: Advertising, consumers and safety', 'Unit 5: Astronomy and the solar system', 'Unit 6: Feelings, emotions and humour'],
+  'sec-1-hg': ['التاريخ: العالم الإسلامي من القرن 7 إلى القرن 13', 'التاريخ: التحولات الكبرى في أوروبا', 'التاريخ: الدولة العثمانية', 'الجغرافيا: الوسط الطبيعي والإنسان', 'الجغرافيا: الموارد والتنمية', 'الجغرافيا: الخرائط ووسائل التحليل'],
+  'sec-2-hg': ['التاريخ: الحركات الاستعمارية', 'التاريخ: المقاومات والحركة الوطنية', 'التاريخ: العالم بين الحربين', 'الجغرافيا: المبادلات والتنقلات', 'الجغرافيا: الاقتصاد العالمي', 'الجغرافيا: الجزائر في المجال المتوسطي'],
+  'sec-3-hg': ['التاريخ: العالم في ظل الثنائية القطبية (1945–1989)', 'التاريخ: من الثنائية إلى الأحادية القطبية', 'التاريخ: الثورة الجزائرية وبناء الدولة', 'الجغرافيا: الاقتصاد العالمي بين التكامل والتنافس', 'الجغرافيا: الولايات المتحدة الأمريكية', 'الجغرافيا: الاتحاد الأوروبي', 'الجغرافيا: جنوب شرق آسيا والصين والهند', 'الجغرافيا: الجزائر والمجال المتوسطي'],
+  'sec-1-isl': ['القرآن الكريم وعلومه', 'العقيدة: أركان الإيمان وأدلتها', 'الحديث الشريف', 'العبادات', 'الأخلاق والمعاملات', 'السيرة النبوية'],
+  'sec-2-isl': ['القرآن الكريم وعلومه', 'العقيدة', 'الفقه: المعاملات المالية', 'الأسرة في الإسلام', 'الأخلاق', 'القيم الإسلامية'],
+  'sec-3-isl': ['وسائل القرآن الكريم في تثبيت العقيدة', 'العقل في القرآن الكريم', 'القيم في القرآن الكريم', 'الصحة النفسية والجسمية في القرآن', 'مقاصد الشريعة الإسلامية', 'المعاملات المالية', 'العلاقات الاجتماعية وحقوق الإنسان', 'الأسرة في الإسلام'],
+  'sec-2-philo': ['الفلسفة ومجالاتها', 'المنطق', 'المعرفة', 'الإنسان والطبيعة', 'الأخلاق والسياسة'],
+  'sec-3-philo': ['السؤال والمشكلة', 'الإحساس والإدراك', 'اللغة والفكر', 'الذاكرة والخيال', 'الشعور واللاشعور', 'الحرية والمسؤولية', 'العدل والمساواة', 'الأخلاق', 'الرياضيات والمطلق', 'المنطق الصوري', 'الحقيقة'],
+  'sec-1-info': ['مفاهيم أساسية في الإعلام الآلي', 'أنظمة التشغيل', 'معالجة النصوص', 'المجدول', 'الإنترنت والشبكات', 'الخوارزميات والبرمجة'],
+  'sec-2-info': ['الخوارزميات والبرمجة', 'قواعد البيانات', 'الشبكات', 'الوسائط المتعددة'],
+  'sec-3-info': ['الخوارزميات والبرمجة', 'قواعد البيانات', 'الشبكات والإنترنت', 'أمن المعلومات']
+});
+
 /* ---------------- Exam-paper texts (exam language) ---------------- */
 const ORD_AR = ['الأول', 'الثاني', 'الثالث', 'الرابع', 'الخامس', 'السادس', 'السابع', 'الثامن'];
-const ORD_AR_F = ['الأولى', 'الثانية', 'الثالثة', 'الرابعة', 'الخامسة'];
+const ORD_AR_F = ['الأولى', 'الثانية', 'الثالثة', 'الرابعة', 'الخامسة', 'السادسة', 'السابعة', 'الثامنة', 'التاسعة', 'العاشرة'];
 const fmtNum = n => (Math.round(n * 100) / 100).toString();
 const EL = {
   ar: {
@@ -245,6 +397,7 @@ const TYPES = {
   situation: { c: 'var(--t-situation)', i: '<path d="M9 4h6v3.5a2 2 0 1 0 0 4V15h-3.5a2 2 0 1 1-4 0H4V9.5h3.5a2 2 0 1 0 0-4H9z"/><path d="M15 15h5v5h-5z"/>' },
   document: { c: 'var(--t-document)', i: '<path d="M6 3h8.5L19 7.5V21H6z"/><path d="M14 3v5h5"/><path d="M9 12.5h7M9 15.5h7M9 18.5h4"/>' }
 };
+for (const k in LANG_TYPE_META) TYPES[k] = { c: LANG_TYPE_META[k][0], i: LANG_TYPE_META[k][1] };
 const TYPE_KEYS = Object.keys(TYPES);
 const DIFFS = { easy: '#16A34A', medium: '#E08A00', hard: '#DC2626' };
 
@@ -253,7 +406,8 @@ const DIFFS = { easy: '#16A34A', medium: '#E08A00', hard: '#DC2626' };
 const S = {
   uiLang: (() => { try { return localStorage.getItem('site_lang') === 'en' ? 'en' : 'ar'; } catch (e) { return 'ar'; } })(),
   user: null, isAdmin: false, overrides: {},
-  cur: { sys: 'dz', stage: 'mid', grade: 4, stream: 'se', subject: 'math' },
+  cur: { sys: 'dz', other: '', stage: 'mid', grade: 4, stream: 'se', subject: 'math', spec: '', module: '' },
+  fold: { s1: false, s2: false, s3: false, s4: false },
   units: [],            // { id, title, on, custom }
   paste: '',
   header: { school: '', title: '', year: '2026/2027', duration: '', teacher: '', logo: '' },
@@ -286,10 +440,11 @@ function loadScript(src) {
   }));
 }
 let toastTimer;
-function toast(msg, kind = '') {
+function toast(msg, kind = '', sticky = false) {
   const el = $('#toast');
-  el.textContent = msg; el.className = 'toast show ' + kind;
-  clearTimeout(toastTimer); toastTimer = setTimeout(() => { el.className = 'toast'; }, 3200);
+  el.textContent = msg; el.className = 'toast show ' + kind + (sticky ? ' sticky' : '');
+  clearTimeout(toastTimer);
+  if (!sticky) toastTimer = setTimeout(() => { el.className = 'toast'; }, kind === 'err' ? 7000 : 3200);
 }
 function debounce(fn, ms) { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; }
 function markDirty() { S.dirty = true; }
@@ -398,7 +553,8 @@ function openMenu(anchor, opts, cur, pick, owner) {
 }
 function closeMenu() { if (menuEl) { menuEl.remove(); menuEl = null; } if (menuCleanup) { menuCleanup(); menuCleanup = null; } }
 
-const typeOpts = () => TYPE_KEYS.map(k => ({ v: k, label: tLabel(k), icon: TYPES[k].i, color: TYPES[k].c }));
+const allowedTypes = () => (S.cur.stage !== 'uni' && LANG_TYPES[S.cur.subject]) ? LANG_TYPES[S.cur.subject].concat(GENERAL_TYPES) : GENERAL_TYPES;
+const typeOpts = () => allowedTypes().map(k => ({ v: k, label: tLabel(k), icon: TYPES[k].i, color: TYPES[k].c }));
 const diffOpts = () => Object.keys(DIFFS).map(k => ({ v: k, label: T(k), desc: T('d_' + k), dot: DIFFS[k] }));
 const unitOpts = () => [{ v: 'all', label: T('all_units'), dot: 'var(--accent)' }]
   .concat(S.units.filter(u => u.on).map(u => ({ v: u.id, label: u.title, dot: '#A9C2D3' })));
@@ -490,7 +646,7 @@ function applyUI() {
   $('#langBtn').textContent = S.uiLang === 'ar' ? 'EN' : 'ع';
   document.title = `${T('app_title')} — Merabti Academy`;
   DD.forEach(d => d.paint());
-  renderUnits(); renderCards(); paintPaste();
+  renderUnits(); renderCards(); paintPaste(); paintFold();
   if (!shown().length) renderPaper();
 }
 function fillDatalists() {
@@ -535,65 +691,146 @@ function startGate() {
 }
 
 /* =====================================================================
-   Step 1 — curriculum and level
+   Step 1 — country, stage, year, stream / specialty, subject / module
    ===================================================================== */
-const YEARS = { pri: 5, mid: 4, sec: 3 };
 const lab = (o, lang) => o[lang] || o.ar;
+const uil = () => (S.uiLang === 'en' ? 'en' : 'ar');
+const country = () => COUNTRIES.find(c => c.v === S.cur.sys) || COUNTRIES[0];
+const countryStages = (c = country()) => c.st;
+const stageInfo = (st = S.cur.stage, c = country()) => c.st.find(x => x[0] === st) || c.st[0];
+const yearsOf = (st, c) => stageInfo(st, c)[1];
+const isUni = () => S.cur.stage === 'uni';
+function stageName(st, lang, c = country()) {
+  const info = stageInfo(st, c);
+  if (lang === 'ar' && info[2]) return info[2];
+  if (c.v === 'dz' && st === 'mid' && lang === 'fr') return 'moyenne';
+  return STAGE_NAMES[st][lang] || STAGE_NAMES[st].ar;
+}
+function countryName(lang) {
+  const c = country();
+  if (c.v === 'other') return S.cur.other.trim() || (lang === 'ar' ? 'دولة أخرى' : 'another country');
+  return lang === 'ar' ? c.ar : c.en;
+}
+function subjListFor(st, c = country()) {
+  if (st === 'pri' && yearsOf('pri', c) > 6) return SUBJ_BY_STAGE.mid;
+  return SUBJ_BY_STAGE[st] || SUBJ_BY_STAGE.mid;
+}
 function subjLabel(key, lang) {
+  if (isUni()) return S.cur.module.trim();
   const s = SUBJ[key]; if (!s) return '';
-  return (S.cur.stage === 'mid' && s['mid_' + lang]) || s[lang] || s.ar;
+  return (S.cur.stage === 'mid' && S.cur.sys === 'dz' && s['mid_' + lang]) || s[lang] || s.ar;
 }
 function streamObj() {
-  if (S.cur.stage !== 'sec') return null;
+  if (S.cur.sys !== 'dz' || S.cur.stage !== 'sec') return null;
   return (STREAMS[S.cur.grade] || []).find(x => x.v === S.cur.stream) || null;
 }
+function gradeLabel(g, lang, st = S.cur.stage) {
+  if (st === 'uni') {
+    const lic = g <= 3, n = lic ? g : g - 3;
+    if (lang === 'ar') return `السنة ${ORD_AR_F[n - 1]} ${lic ? 'ليسانس' : 'ماستر'}`;
+    if (lang === 'fr') return `${lic ? 'Licence' : 'Master'} ${n}`;
+    return `${lic ? 'Bachelor' : 'Master'}, year ${n}`;
+  }
+  const name = stageName(st, lang);
+  if (lang === 'ar') return `السنة ${ORD_AR_F[g - 1] || g} ${name.startsWith('ال') ? 'من ' : ''}${name}`;
+  if (S.cur.sys === 'dz' && lang !== 'ar') return EL[lang].level_of(st, g);
+  if (lang === 'fr') return `${g}${g === 1 ? 're' : 'e'} année ${name}`;
+  return `Year ${g}, ${name}`;
+}
+const levelBase = lang => gradeLabel(S.cur.grade, lang);
 const levelText = () => {
   const st = streamObj();
-  return L().level_of(S.cur.stage, S.cur.grade) + (st ? ` — ${lab(st, S.examLang)}` : '');
+  if (isUni()) return levelBase(S.examLang) + (S.cur.spec.trim() ? ` — ${S.cur.spec.trim()}` : '');
+  return levelBase(S.examLang) + (st ? ` — ${lab(st, S.examLang)}` : '');
 };
 function catalogKey(withStream) {
-  const k = `${S.cur.stage}-${S.cur.grade}-${S.cur.subject}`;
-  return withStream && S.cur.stage === 'sec' ? `${k}@${S.cur.stream}` : k;
+  const pre = S.cur.sys === 'dz' ? '' : S.cur.sys + ':';
+  const k = `${pre}${S.cur.stage}-${S.cur.grade}-${S.cur.subject}`;
+  return withStream && streamObj() ? `${k}@${S.cur.stream}` : k;
 }
 function catalogUnits() {
+  if (isUni() || S.cur.sys === 'other') return [];
   const a = catalogKey(true), b = catalogKey(false);
   return S.overrides[a] || CATALOG[a] || S.overrides[b] || CATALOG[b] || [];
 }
 function rebuildUnits() {
   const was = new Set(S.units.filter(u => u.on).map(u => u.title));
   const custom = S.units.filter(u => u.custom);
-  S.units = catalogUnits().map(t => ({ id: uid(), title: t, on: was.has(t), custom: false }))
-    .concat(custom.filter(c => !catalogUnits().includes(c.title)));
+  const cat = catalogUnits();
+  S.units = cat.map(t => ({ id: uid(), title: t, on: was.has(t), custom: false }))
+    .concat(custom.filter(c => !cat.includes(c.title)));
   S.exercises.forEach(e => { if (e.unit !== 'all' && !S.units.some(u => u.id === e.unit)) e.unit = 'all'; });
-  renderUnits(); renderCards();
+  renderUnits(); renderCards(); paintFold();
 }
-const gradeOpts = () => [...Array(YEARS[S.cur.stage])].map((_, i) => ({ v: i + 1, label: S.uiLang === 'en' ? `Year ${i + 1}` : `السنة ${ORD_AR_F[i]}` }));
-const streamOpts = () => (STREAMS[S.cur.grade] || []).map(x => ({ v: x.v, label: lab(x, S.uiLang === 'en' ? 'en' : 'ar') }));
-const subjOpts = () => SUBJ_BY_STAGE[S.cur.stage].map(k => ({ v: k, label: subjLabel(k, S.uiLang === 'en' ? 'en' : 'ar') }));
-let ddGrade, ddStream, ddSubject;
-function fixStream() {
+const gradeOpts = () => [...Array(yearsOf(S.cur.stage))].map((_, i) => ({
+  v: i + 1,
+  label: isUni() ? `${i < 3 ? T('lic') : T('mas')} ${i < 3 ? i + 1 : i - 2}` : (S.uiLang === 'en' ? `Year ${i + 1}` : `السنة ${ORD_AR_F[i] || i + 1}`)
+}));
+const streamOpts = () => (STREAMS[S.cur.grade] || []).map(x => ({ v: x.v, label: lab(x, uil()) }));
+const subjOpts = () => subjListFor(S.cur.stage).map(k => ({ v: k, label: subjLabel(k, uil()) }));
+const stageOpts = () => countryStages().map(x => ({ v: x[0], label: x[0] === 'uni' ? T('st_uni') : (S.uiLang === 'en' ? STAGE_NAMES[x[0]].en : stageName(x[0], 'ar')) }));
+let ddStage, ddGrade, ddStream, ddSubject;
+function fixCur() {
+  const c = country();
+  if (!c.st.some(x => x[0] === S.cur.stage)) S.cur.stage = c.st[0][0];
+  const n = yearsOf(S.cur.stage);
+  if (S.cur.grade > n) S.cur.grade = n;
+  if (!isUni() && !subjListFor(S.cur.stage).includes(S.cur.subject)) S.cur.subject = subjListFor(S.cur.stage)[0];
   const list = STREAMS[S.cur.grade] || [];
   if (!list.some(x => x.v === S.cur.stream)) S.cur.stream = list[0] ? list[0].v : '';
-  $('#streamField').classList.toggle('hidden', S.cur.stage !== 'sec');
-  if (ddStream) ddStream.set(S.cur.stream);
+  $('#otherField').classList.toggle('hidden', c.v !== 'other');
+  $('#streamField').classList.toggle('hidden', !(c.v === 'dz' && S.cur.stage === 'sec'));
+  $('#subjectField').classList.toggle('hidden', isUni());
+  $('#specField').classList.toggle('hidden', !isUni());
+  $('#moduleField').classList.toggle('hidden', !isUni());
+  if (ddStage) { ddStage.set(S.cur.stage); ddGrade.set(S.cur.grade); ddStream.set(S.cur.stream); ddSubject.set(S.cur.subject); }
+}
+function fixCardTypes() {
+  const ok = allowedTypes();
+  S.exercises.forEach(e => { if (e.status === 'idle' && !ok.includes(e.type)) e.type = ok[0]; });
+}
+function autoExamLang() {
+  const want = isUni() ? null : { fren: 'fr', engl: 'en', arab: 'ar' }[S.cur.subject];
+  if (want && want !== S.examLang) setExamLang(want);
 }
 function initCurriculum() {
-  makeDD($('#ddCur'), () => [{ v: 'dz', label: T('cur_dz'), dot: '#16A34A' }], 'dz', () => {});
-  makeDD($('#ddStage'), () => ['pri', 'mid', 'sec'].map(k => ({ v: k, label: T('st_' + k) })), S.cur.stage, v => {
-    S.cur.stage = v;
-    if (S.cur.grade > YEARS[v]) S.cur.grade = YEARS[v];
-    if (!SUBJ_BY_STAGE[v].includes(S.cur.subject)) S.cur.subject = SUBJ_BY_STAGE[v][0];
-    ddGrade.set(S.cur.grade); ddSubject.set(S.cur.subject); fixStream(); curChanged();
-  });
-  ddGrade = makeDD($('#ddGrade'), gradeOpts, S.cur.grade, v => { S.cur.grade = v; fixStream(); curChanged(); });
+  makeDD($('#ddCur'), () => COUNTRIES.map(c => ({ v: c.v, label: S.uiLang === 'en' ? c.en : c.ar, dot: c.v === 'other' ? '#A9C2D3' : '#16A34A' })), S.cur.sys, v => { S.cur.sys = v; curChanged(); });
+  ddStage = makeDD($('#ddStage'), stageOpts, S.cur.stage, v => { S.cur.stage = v; curChanged(); });
+  ddGrade = makeDD($('#ddGrade'), gradeOpts, S.cur.grade, v => { S.cur.grade = v; curChanged(); });
   ddStream = makeDD($('#ddStream'), streamOpts, S.cur.stream, v => { S.cur.stream = v; curChanged(); });
   ddSubject = makeDD($('#ddSubject'), subjOpts, S.cur.subject, v => { S.cur.subject = v; curChanged(); });
-  fixStream();
+  const bindTxt = (id, k) => { const e = $(id); e.value = S.cur[k] || ''; e.oninput = () => { S.cur[k] = e.value; markDirty(); paintFold(); rerender(); }; };
+  bindTxt('#curOther', 'other'); bindTxt('#curSpec', 'spec'); bindTxt('#curModule', 'module');
+  fixCur();
 }
-function curChanged() { markDirty(); rebuildUnits(); rerender(); }
+function curChanged() { fixCur(); fixCardTypes(); autoExamLang(); markDirty(); rebuildUnits(); rerender(); }
 function syncCurriculum() {
-  DD.forEach(d => { if (d.host.id === 'ddStage') d.set(S.cur.stage); });
-  ddGrade.set(S.cur.grade); ddSubject.set(S.cur.subject); fixStream();
+  DD.forEach(d => { if (d.host.id === 'ddCur') d.set(S.cur.sys); });
+  $('#curOther').value = S.cur.other || ''; $('#curSpec').value = S.cur.spec || ''; $('#curModule').value = S.cur.module || '';
+  fixCur();
+}
+
+/* ---------------- Collapsible sections (each one independent) ---------------- */
+function initFold() {
+  $$('.step').forEach(sec => {
+    const k = sec.dataset.step;
+    $('.step-h', sec).addEventListener('click', () => { S.fold[k] = !S.fold[k]; paintFold(); });
+  });
+  paintFold();
+}
+function paintFold() {
+  $$('.step').forEach(sec => {
+    const k = sec.dataset.step, f = !!S.fold[k];
+    sec.classList.toggle('folded', f);
+    $('.step-h', sec).setAttribute('aria-expanded', String(!f));
+  });
+  const set = (id, t) => { const e = $(id); if (e) e.textContent = t; };
+  set('#sum1', [countryName(uil()), gradeLabel(S.cur.grade, uil()), isUni() ? S.cur.module.trim() : subjLabel(S.cur.subject, uil())].filter(Boolean).join(' · '));
+  const n = S.units.filter(u => u.on).length;
+  set('#sum2', [n ? T('n_units', { n }) : T('no_units_sel'), S.paste.trim() ? T('pasted') : ''].filter(Boolean).join(' · '));
+  set('#sum3', [S.header.title, S.header.school, S.header.duration].filter(x => x && x.trim()).join(' · '));
+  const tot = S.exercises.reduce((a, e) => a + Number(e.points || 0), 0);
+  set('#sum4', `${T('n_ex', { n: S.exercises.length })} · ${fmtNum(tot)} / 20`);
 }
 
 /* =====================================================================
@@ -607,7 +844,7 @@ function renderUnits() {
     const b = el('div', 'u-item' + (u.on ? ' on' : ''));
     b.setAttribute('role', 'checkbox'); b.setAttribute('aria-checked', u.on); b.tabIndex = 0;
     b.innerHTML = `<span class="check ${u.on ? 'on' : ''}">${svgI('<path d="M5 12l5 5 9-10"/>')}</span><span class="u-t">${esc(u.title)}</span>${u.custom ? `<span class="u-custom">${esc(T('custom'))}</span><button type="button" class="u-del" aria-label="${esc(T('remove'))}">${svgI('<path d="M6 6l12 12M18 6L6 18"/>')}</button>` : ''}`;
-    const toggle = () => { u.on = !u.on; markDirty(); renderUnits(); renderCards(); };
+    const toggle = () => { u.on = !u.on; markDirty(); renderUnits(); renderCards(); paintFold(); };
     b.addEventListener('click', e => { if (e.target.closest('.u-del')) return; toggle(); });
     b.addEventListener('keydown', e => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); toggle(); } });
     const del = $('.u-del', b);
@@ -620,13 +857,14 @@ function addCustomUnit() {
   if (!t) return;
   if (!S.units.some(u => u.title === t)) S.units.push({ id: uid(), title: t, on: true, custom: true });
   else S.units.find(u => u.title === t).on = true;
-  inp.value = ''; markDirty(); renderUnits(); renderCards();
+  inp.value = ''; markDirty(); renderUnits(); renderCards(); paintFold();
 }
 function paintPaste() {
   const n = S.paste.length;
   $('#pasteCount').textContent = T('chars', { n });
   const pill = $('#pastePill'); pill.textContent = T('paste_on'); pill.classList.toggle('hidden', !S.paste.trim());
   $('#pasteClear').classList.toggle('hidden', !n);
+  paintFold();
 }
 
 /* =====================================================================
@@ -636,16 +874,10 @@ function initHeader() {
   const H = S.header, D = DEFAULTS[S.examLang];
   if (!H.title) H.title = D.title;
   if (!H.duration) H.duration = D.duration;
-  const bind = (id, k) => { const e = $(id); e.value = H[k] || ''; e.oninput = () => { H[k] = e.value; markDirty(); rerender(); }; };
+  const bind = (id, k) => { const e = $(id); e.value = H[k] || ''; e.oninput = () => { H[k] = e.value; markDirty(); paintFold(); rerender(); }; };
   bind('#hSchool', 'school'); bind('#hTitle', 'title'); bind('#hYear', 'year');
   bind('#hDuration', 'duration'); bind('#hTeacher', 'teacher');
-  makeDD($('#ddExamLang'), () => [{ v: 'ar', label: 'العربية' }, { v: 'fr', label: 'Français' }, { v: 'en', label: 'English' }], S.examLang, v => {
-    const old = DEFAULTS[S.examLang];
-    S.examLang = v;
-    if (H.title === old.title) { H.title = DEFAULTS[v].title; $('#hTitle').value = H.title; }
-    if (H.duration === old.duration) { H.duration = DEFAULTS[v].duration; $('#hDuration').value = H.duration; }
-    fillDatalists(); markDirty(); renderPaper();
-  });
+  ddExamLang = makeDD($('#ddExamLang'), () => [{ v: 'ar', label: 'العربية' }, { v: 'fr', label: 'Français' }, { v: 'en', label: 'English' }], S.examLang, v => setExamLang(v));
   $('#logoFile').onchange = async e => {
     const f = e.target.files[0]; e.target.value = ''; if (!f) return;
     H.logo = (await compressImage(f, 320, 0.9, true)).src;
@@ -653,6 +885,15 @@ function initHeader() {
   };
   $('#logoDel').onclick = () => { H.logo = ''; paintLogo(); markDirty(); rerender(); };
   paintLogo();
+}
+let ddExamLang;
+function setExamLang(v) {
+  const H = S.header, old = DEFAULTS[S.examLang];
+  S.examLang = v;
+  if (H.title === old.title) { H.title = DEFAULTS[v].title; $('#hTitle').value = H.title; }
+  if (H.duration === old.duration) { H.duration = DEFAULTS[v].duration; $('#hDuration').value = H.duration; }
+  if (ddExamLang) ddExamLang.set(v);
+  fillDatalists(); markDirty(); renderPaper(); paintFold();
 }
 function paintLogo() {
   const img = $('#logoPrev');
@@ -676,7 +917,7 @@ function newCard() {
   const total = S.exercises.reduce((a, e) => a + Number(e.points || 0), 0);
   const rem = Math.round((20 - total) * 100) / 100;
   return {
-    id: uid(), type: CARD_TYPES[S.exercises.length] || 'direct', unit: 'all', diff: S.difficulty,
+    id: uid(), type: (LANG_TYPES[S.cur.subject] && !isUni() ? LANG_TYPES[S.cur.subject] : CARD_TYPES)[S.exercises.length] || allowedTypes()[0], unit: 'all', diff: S.difficulty,
     points: rem > 0 && rem < 5 ? rem : 5, note: '', open: true,
     data: null, history: [], images: [], status: 'idle', err: '', wait: 0, perm: null
   };
@@ -755,7 +996,7 @@ function renderCards() {
     host.appendChild(c);
   });
   $('#addCardBtn').disabled = S.exercises.length >= MAX_EX;
-  paintTotal();
+  paintTotal(); paintFold();
 }
 function renderCardSummary(c, ex, i) {
   $('.card-sum small', c).textContent = `${tLabel(ex.type)} · ${unitTitle(ex)} · ${fmtNum(ex.points)} ${T('points_short')}`;
@@ -765,6 +1006,7 @@ function paintTotal() {
   const e = $('#ptsTotal');
   e.textContent = `${T('total')}: ${fmtNum(t)} / 20`;
   e.className = 'pts-total ' + (Math.abs(t - 20) < 0.01 ? 'good' : 'bad');
+  paintFold();
 }
 function paintBusy() {
   $$('.card-gen').forEach(b => { b.disabled = S.busy; });
@@ -841,15 +1083,15 @@ async function genOne(ex, { note = '', regen = false } = {}) {
   const st = streamObj();
   try {
     const res = await callWithWait(ex, {
-      mode: 'exercise', curriculum: S.cur.sys, type: ex.type, lang: S.examLang,
-      level: L().level_of(S.cur.stage, S.cur.grade), stream: st ? lab(st, S.examLang) : '',
+      mode: 'exercise', country: countryName('en'), university: isUni(), type: ex.type, lang: S.examLang,
+      level: levelBase(S.examLang), stream: isUni() ? S.cur.spec.trim() : (st ? lab(st, S.examLang) : ''),
       subject: subjLabel(S.cur.subject, S.examLang), units: chosenUnits(ex), source: S.paste.trim().slice(0, MAX_PASTE),
       difficulty: ex.diff, points: ex.points, note,
       previous: regen && prev.data ? summary(prev.data) : '', avoid
     });
     if (!res || !res.exercise) throw new Error('empty');
     if (regen && prev.data) { ex.history.push({ type: prev.type, data: prev.data, perm: prev.perm }); if (ex.history.length > 10) ex.history.shift(); }
-    ex.data = res.exercise; ex.perm = null; ex.status = 'ready';
+    ex.data = normalizeData(res.exercise); ex.perm = null; ex.status = 'ready';
     markDirty();
     return true;
   } catch (e) {
@@ -858,6 +1100,26 @@ async function genOne(ex, { note = '', regen = false } = {}) {
     else { ex.status = 'error'; ex.err = apiError(e); }
     return false;
   }
+}
+function cleanText(str) {
+  if (typeof str !== 'string') return str;
+  return str.split(/(\$[^$]*\$)/g).map((seg, i) => i % 2 ? seg.replace(/\\n(?=[\d\s.)]|$)/g, ' ')
+    : seg.replace(/\\n/g, '\n').replace(/\\t/g, ' ')).join('').replace(/\n{3,}/g, '\n\n').trim();
+}
+function cleanDeep(v) {
+  if (typeof v === 'string') return cleanText(v);
+  if (Array.isArray(v)) return v.map(cleanDeep);
+  if (v && typeof v === 'object') { const o = {}; for (const k in v) o[k] = cleanDeep(v[k]); return o; }
+  return v;
+}
+function normalizeData(d) {
+  d = cleanDeep(d || {});
+  if (typeof d.intro === 'string' && Array.isArray(d.items) && d.items.length) {
+    const lines = d.intro.split('\n');
+    const k = lines.findIndex(l => /^\s*(\d+|[٠-٩]+)\s*[.)\-–:]/.test(l));
+    if (k > 0) d.intro = lines.slice(0, k).join('\n').trim();
+  }
+  return d;
 }
 function focusEx(ex, flash) {
   const b = $(`.ex[data-id="${ex.id}"]`);
@@ -904,8 +1166,16 @@ function renderPaper() {
   paper.innerHTML = '';
   paper.style.zoom = S.zoom;
   const list = shown();
-  if (!list.length) { paper.appendChild(emptyPage()); return; }
   const Lx = L();
+  if (!list.length) {
+    const pg = newPage(paper, 'exam');
+    pg.body.appendChild(headerBlock());
+    const hint = el('div', 'paper-hint', emptyPage().querySelector('svg').outerHTML + `<h3>${esc(T('hint_title'))}</h3><p>${esc(T('hint_sub'))}</p>`);
+    pg.body.appendChild(hint);
+    pg.foot.textContent = Lx.page(1, 1);
+    sc.scrollTop = top;
+    return;
+  }
   const blocks = [headerBlock()];
   list.forEach((ex, i) => blocks.push(exBlock(ex, i)));
   if (list.every(e => e.status === 'ready')) blocks.push(el('div', 'good-luck', esc(Lx.luck)));
@@ -972,7 +1242,7 @@ function exBlock(ex, i) {
   const d = ex.data, Lx = L();
   let h = exHeading(ex, i);
   if (d.instruction) h += `<p class="ex-ins">${txt(d.instruction)}</p>`;
-  if (d.intro) h += ex.type === 'document' ? `<div class="ex-doc"><span class="ex-doc-l">${esc(Lx.doc)}:</span>${txt(d.intro)}</div>` : `<div class="ex-intro">${txt(d.intro)}</div>`;
+  if (d.intro) h += DOC_TYPES.includes(ex.type) ? `<div class="ex-doc"><span class="ex-doc-l">${esc(Lx.doc)}:</span>${txt(d.intro)}</div>` : `<div class="ex-intro">${txt(d.intro)}</div>`;
   if (d.graph && d.graph.expr) { const g = graphSvg(d.graph); if (g) h += `<figure class="figure">${g}${d.graph.caption ? `<figcaption>${txt(d.graph.caption)}</figcaption>` : ''}</figure>`; }
   (ex.images || []).forEach(im => { h += `<img class="ex-img" src="${im.src}" alt="" style="width:${im.w || 60}%;aspect-ratio:1/${im.ratio || 0.75}">`; });
   h += itemsHtml(ex);
@@ -1262,8 +1532,12 @@ async function loadOverrides() {
 }
 function openAdmin() {
   if (!S.isAdmin) return;
-  const k = { stage: S.cur.stage, grade: S.cur.grade, stream: S.cur.stage === 'sec' ? S.cur.stream : '', subject: S.cur.subject };
-  const keyOf = () => `${k.stage}-${k.grade}-${k.subject}` + (k.stage === 'sec' && k.stream ? `@${k.stream}` : '');
+  const c = S.cur.sys === 'other' || isUni() ? COUNTRIES[0] : country();
+  const stages = c.st.filter(x => x[0] !== 'uni').map(x => x[0]);
+  const k = { stage: stages.includes(S.cur.stage) ? S.cur.stage : stages[0], grade: S.cur.grade, stream: S.cur.stage === 'sec' && c.v === 'dz' ? S.cur.stream : '', subject: S.cur.subject };
+  if (k.grade > yearsOf(k.stage, c)) k.grade = yearsOf(k.stage, c);
+  const pre = c.v === 'dz' ? '' : c.v + ':';
+  const keyOf = () => `${pre}${k.stage}-${k.grade}-${k.subject}` + (c.v === 'dz' && k.stage === 'sec' && k.stream ? `@${k.stream}` : '');
   let ta, src;
   const load = () => {
     const key = keyOf();
@@ -1273,7 +1547,7 @@ function openAdmin() {
     src.style.color = S.overrides[key] ? 'var(--ok)' : 'var(--ink-soft)';
   };
   modal({
-    title: T('adm_title'), size: 'lg',
+    title: `${T('adm_title')} — ${S.uiLang === 'en' ? c.en : c.ar}`, size: 'lg',
     build: b => {
       b.innerHTML = `<div class="adm-g">
           <div class="f"><span>${esc(T('stage'))}</span><div class="a1"></div></div>
@@ -1285,14 +1559,14 @@ function openAdmin() {
         <textarea class="adm-ta"></textarea>
         <div class="adm-src"></div>`;
       ta = $('.adm-ta', b); src = $('.adm-src', b);
-      const years = () => [...Array(YEARS[k.stage])].map((_, i) => ({ v: i + 1, label: S.uiLang === 'en' ? `Year ${i + 1}` : `السنة ${ORD_AR_F[i]}` }));
-      const streams = () => [{ v: '', label: T('adm_all_streams') }].concat((STREAMS[k.grade] || []).map(x => ({ v: x.v, label: lab(x, S.uiLang === 'en' ? 'en' : 'ar') })));
-      const subjects = () => SUBJ_BY_STAGE[k.stage].map(s => ({ v: s, label: (SUBJ[s][(k.stage === 'mid' ? 'mid_' : '') + (S.uiLang === 'en' ? 'en' : 'ar')] || SUBJ[s][S.uiLang === 'en' ? 'en' : 'ar']) }));
-      const showStream = () => { $('.a3w', b).style.visibility = k.stage === 'sec' ? 'visible' : 'hidden'; };
+      const years = () => [...Array(yearsOf(k.stage, c))].map((_, i) => ({ v: i + 1, label: S.uiLang === 'en' ? `Year ${i + 1}` : `السنة ${ORD_AR_F[i] || i + 1}` }));
+      const streams = () => [{ v: '', label: T('adm_all_streams') }].concat((STREAMS[k.grade] || []).map(x => ({ v: x.v, label: lab(x, uil()) })));
+      const subjects = () => subjListFor(k.stage, c).map(sk => ({ v: sk, label: SUBJ[sk][uil()] || SUBJ[sk].ar }));
+      const showStream = () => { $('.a3w', b).style.visibility = c.v === 'dz' && k.stage === 'sec' ? 'visible' : 'hidden'; };
       let d2, d3, d4;
-      const d1 = makeDD($('.a1', b), () => ['pri', 'mid', 'sec'].map(s => ({ v: s, label: T('st_' + s) })), k.stage, v => {
-        k.stage = v; if (k.grade > YEARS[v]) k.grade = YEARS[v];
-        if (!SUBJ_BY_STAGE[v].includes(k.subject)) k.subject = SUBJ_BY_STAGE[v][0];
+      const d1 = makeDD($('.a1', b), () => stages.map(st => ({ v: st, label: S.uiLang === 'en' ? STAGE_NAMES[st].en : stageName(st, 'ar', c) })), k.stage, v => {
+        k.stage = v; if (k.grade > yearsOf(v, c)) k.grade = yearsOf(v, c);
+        if (!subjListFor(v, c).includes(k.subject)) k.subject = subjListFor(v, c)[0];
         if (v !== 'sec') k.stream = '';
         d2.set(k.grade); d3.set(k.stream); d4.set(k.subject); showStream(); load();
       });
@@ -1312,7 +1586,7 @@ function openAdmin() {
       } },
       { label: T('adm_save'), cls: 'btn-main', onClick: async () => {
         const key = keyOf();
-        const list = ta.value.split('\n').map(s => s.trim()).filter(Boolean).slice(0, 60);
+        const list = ta.value.split('\n').map(x => x.trim()).filter(Boolean).slice(0, 60);
         try {
           await catalogDoc().set({ units: { [key]: list } }, { merge: true });
           S.overrides[key] = list; load(); rebuildUnits(); toast(T('adm_saved'), 'ok');
@@ -1321,7 +1595,6 @@ function openAdmin() {
     ]
   });
 }
-
 
 /* =====================================================================
    Zoom
@@ -1405,27 +1678,45 @@ table{border-collapse:collapse;width:100%}
 .ex-ins{font-weight:bold;margin:2pt 0 4pt}.ex-doc{border:1px solid #333;padding:6pt}
 .opts td{border:none;padding:1pt 4pt}.figure,.good-luck{text-align:center}.good-luck{font-weight:bold}
 .corr-title{text-align:center;font-size:16pt;border:1px solid #222;padding:4pt}.corr-total{font-weight:bold}`;
+const withTimeout = (p, ms) => Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), ms))]);
 async function exportWord() {
   if (!canExport()) return;
-  toast(T('exporting'));
+  toast(T('exporting'), '', true);
   try { await Promise.all([loadScript(LIBS.h2c), loadScript(LIBS.docx)]); } catch (e) { toast(T('err_net'), 'err'); return; }
   const dir = L().dir, align = dir === 'rtl' ? 'right' : 'left';
   const ok = await withExport('#wordBtn', async pages => {
+    const all = pages.flatMap(pg => $$('.katex', $('.page-body', pg)));
+    const total = all.length + $$('.figure svg', $('#paper')).length;
+    const cache = new Map();
+    let done = 0;
+    const tick = () => { done++; if (total) toast(T('word_prog', { i: done, n: total }), '', true); };
+    const mathImg = async node => {
+      const ann = node.querySelector('annotation');
+      const key = (ann ? ann.textContent : node.textContent) + '|' + (node.closest('.katex-display') ? 'd' : 'i');
+      if (!cache.has(key)) {
+        try {
+          const c = await withTimeout(html2canvas(node, { scale: 1.6, backgroundColor: null, logging: false }), 8000);
+          cache.set(key, { src: c.toDataURL('image/png'), w: Math.round(c.width / 1.6), h: Math.round(c.height / 1.6) });
+        } catch (e) { cache.set(key, { text: ann ? ann.textContent : node.textContent }); }
+      }
+      return cache.get(key);
+    };
     const parts = [];
     for (const pg of pages) {
       const body = $('.page-body', pg), cl = body.cloneNode(true);
-      $$('.ex-tools', cl).forEach(n => n.remove());
+      $$('.ex-tools, .paper-hint', cl).forEach(n => n.remove());
       const ok1 = $$('.katex', body), ck = $$('.katex', cl);
       for (let i = 0; i < ok1.length; i++) {
-        const c = await html2canvas(ok1[i], { scale: 2, backgroundColor: null, logging: false });
-        const img = document.createElement('img');
-        img.src = c.toDataURL('image/png'); img.width = Math.round(c.width / 2); img.height = Math.round(c.height / 2);
-        img.style.verticalAlign = 'middle';
-        (ck[i].closest('.katex-display') || ck[i]).replaceWith(img);
+        const r = await mathImg(ok1[i]); tick();
+        let node;
+        if (r.src) { node = document.createElement('img'); node.src = r.src; node.width = r.w; node.height = r.h; node.style.verticalAlign = 'middle'; }
+        else node = document.createTextNode(r.text);
+        (ck[i].closest('.katex-display') || ck[i]).replaceWith(node);
       }
       const os = $$('.figure svg', body), cs = $$('.figure svg', cl);
       for (let i = 0; i < os.length; i++) {
-        const src = await svgToPng(os[i]); const img = document.createElement('img');
+        const src = await svgToPng(os[i]); tick();
+        const img = document.createElement('img');
         img.src = src; img.width = os[i].width.baseVal.value; img.height = os[i].height.baseVal.value; cs[i].replaceWith(img);
       }
       const oi = $$('img.ex-img, img.h-logo', body), ci = $$('img.ex-img, img.h-logo', cl);
@@ -1437,6 +1728,7 @@ async function exportWord() {
       parts.push(`<div dir="${dir}" style="direction:${dir};text-align:${align}">${cl.innerHTML}</div>`);
     }
     const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><style>${WORD_CSS}</style></head><body dir="${dir}" style="direction:${dir}">${parts.join('<br clear="all" style="page-break-before:always">')}</body></html>`;
+    if (!window.htmlDocx || !window.htmlDocx.asBlob) throw new Error('html-docx not loaded');
     const blob = window.htmlDocx.asBlob(html, { orientation: 'portrait', margins: { top: 850, right: 850, bottom: 850, left: 850 } });
     download(blob, fileName() + '.docx');
   });
@@ -1454,7 +1746,7 @@ async function saveExam() {
   if (!S.exercises.some(e => e.status === 'ready')) { toast(T('err_empty'), 'err'); return; }
   const doc = clone({
     v: 2,
-    title: [S.header.title, subjLabel(S.cur.subject, 'ar')].filter(Boolean).join(' — ') || T('app_title'),
+    title: [S.header.title, subjLabel(S.cur.subject, 'ar'), gradeLabel(S.cur.grade, 'ar')].filter(Boolean).join(' — ') || T('app_title'),
     header: S.header, cur: S.cur, units: S.units, paste: S.paste,
     examLang: S.examLang, difficulty: S.difficulty, showCorr: S.showCorr,
     exercises: S.exercises.map(e => ({
@@ -1509,14 +1801,14 @@ function openSaved() {
 function loadExam(id, x) {
   S.examId = id;
   S.header = Object.assign({ school: '', title: '', year: '', duration: '', teacher: '', logo: '' }, x.header || {});
-  S.cur = Object.assign({ sys: 'dz', stage: 'mid', grade: 4, stream: 'se', subject: 'math' }, x.cur || {});
+  S.cur = Object.assign({ sys: 'dz', other: '', stage: 'mid', grade: 4, stream: 'se', subject: 'math', spec: '', module: '' }, x.cur || {});
   if (!x.cur && x.header && x.header.stage) { S.cur.stage = x.header.stage; S.cur.grade = x.header.grade || 1; }
   S.examLang = x.examLang || 'ar'; S.difficulty = x.difficulty || 'medium';
   S.units = (x.units || []).map(u => ({ id: u.id || uid(), title: u.title, on: !!u.on, custom: !!u.custom }));
   S.paste = x.paste || ''; $('#pasteText').value = S.paste; paintPaste();
   S.showCorr = x.showCorr !== false; $('#corrToggle').checked = S.showCorr;
   S.exercises = (x.exercises || []).map(e => Object.assign({ unit: 'all', diff: 'medium', note: '', images: [], perm: null }, e, {
-    history: [], open: false, err: '', wait: 0, status: e.data ? 'ready' : 'idle'
+    data: e.data ? normalizeData(e.data) : null, history: [], open: false, err: '', wait: 0, status: e.data ? 'ready' : 'idle'
   }));
   if (!S.exercises.length) S.exercises.push(newCard());
   syncHeaderInputs(); syncCurriculum();
@@ -1591,6 +1883,7 @@ function init() {
   });
   addEventListener('beforeunload', e => { if (S.dirty && S.exercises.some(x => x.status === 'ready')) { e.preventDefault(); e.returnValue = ''; } });
 
+  initFold();
   applyUI();
   renderPaper();
   fitZoom();

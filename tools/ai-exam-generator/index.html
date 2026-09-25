@@ -67,19 +67,25 @@
   <aside class="side" id="side">
     <div class="side-scroll">
 
-      <section class="step">
-        <div class="step-h"><span class="step-n">1</span><h2 data-t="s1"></h2></div>
+      <section class="step" data-step="s1">
+        <button type="button" class="step-h" aria-expanded="true"><span class="step-n">1</span><span class="step-tt"><h2 data-t="s1"></h2><small class="step-sum" id="sum1"></small></span><svg class="step-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="step-b">
         <div class="fields">
-          <div class="f"><span data-t="curriculum"></span><div id="ddCur"></div></div>
+          <div class="f f-wide"><span data-t="country"></span><div id="ddCur"></div></div>
+          <label class="f f-wide hidden" id="otherField"><span data-t="other_country"></span><input id="curOther" type="text"></label>
           <div class="f"><span data-t="stage"></span><div id="ddStage"></div></div>
           <div class="f"><span data-t="grade"></span><div id="ddGrade"></div></div>
-          <div class="f" id="streamField"><span data-t="stream"></span><div id="ddStream"></div></div>
-          <div class="f f-wide"><span data-t="subject"></span><div id="ddSubject"></div></div>
+          <div class="f f-wide" id="streamField"><span data-t="stream"></span><div id="ddStream"></div></div>
+          <div class="f f-wide" id="subjectField"><span data-t="subject"></span><div id="ddSubject"></div></div>
+          <label class="f f-wide hidden" id="specField"><span data-t="spec"></span><input id="curSpec" type="text" data-ph="spec_ph"></label>
+          <label class="f f-wide hidden" id="moduleField"><span data-t="module"></span><input id="curModule" type="text" data-ph="module_ph"></label>
+        </div>
         </div>
       </section>
 
-      <section class="step">
-        <div class="step-h"><span class="step-n">2</span><h2 data-t="s2"></h2></div>
+      <section class="step" data-step="s2">
+        <button type="button" class="step-h" aria-expanded="true"><span class="step-n">2</span><span class="step-tt"><h2 data-t="s2"></h2><small class="step-sum" id="sum2"></small></span><svg class="step-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="step-b">
         <div id="unitsList" class="units"></div>
         <div class="unit-add">
           <input id="unitInput" type="text" data-ph="unit_ph">
@@ -91,10 +97,12 @@
           <textarea id="pasteText" rows="7" maxlength="3500"></textarea>
           <div class="paste-foot"><span id="pasteCount" class="hint"></span><button id="pasteClear" type="button" class="btn-ghost sm" data-t="remove"></button></div>
         </details>
+        </div>
       </section>
 
-      <section class="step">
-        <div class="step-h"><span class="step-n">3</span><h2 data-t="s3"></h2></div>
+      <section class="step" data-step="s3">
+        <button type="button" class="step-h" aria-expanded="true"><span class="step-n">3</span><span class="step-tt"><h2 data-t="s3"></h2><small class="step-sum" id="sum3"></small></span><svg class="step-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="step-b">
         <div class="fields">
           <label class="f f-wide"><span data-t="school"></span><input id="hSchool" type="text"></label>
           <label class="f"><span data-t="exam_title"></span><input id="hTitle" type="text" list="dlTitles"></label>
@@ -111,15 +119,18 @@
             </div>
           </div>
         </div>
+        </div>
       </section>
 
-      <section class="step">
-        <div class="step-h"><span class="step-n">4</span><h2 data-t="s4"></h2></div>
+      <section class="step" data-step="s4">
+        <button type="button" class="step-h" aria-expanded="true"><span class="step-n">4</span><span class="step-tt"><h2 data-t="s4"></h2><small class="step-sum" id="sum4"></small></span><svg class="step-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="step-b">
         <div class="f diff-all"><span data-t="difficulty_all"></span><div id="ddDiffAll"></div></div>
         <div id="cards" class="cards"></div>
         <button id="addCardBtn" type="button" class="add-card">
           <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span data-t="add_ex"></span>
         </button>
+        </div>
       </section>
 
     </div>
