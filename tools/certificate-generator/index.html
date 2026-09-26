@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مولّد الشهادات — أكاديمية مرابطي</title>
+<script src="/analytics.js"></script>
+<link rel="icon" type="image/x-icon" href="../../favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="../../apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Cairo:wght@400;600;700;800&family=Amiri:wght@400;700&family=El+Messiri:wght@400;600;700&family=Aref+Ruqaa:wght@400;700&family=Reem+Kufi:wght@400;600;700&family=Lalezar&family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@400;600;700;800&family=Playfair+Display:wght@400;700&family=Cormorant+Garamond:wght@400;600;700&family=Cinzel:wght@400;700&family=Great+Vibes&family=Pinyon+Script&family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <a href="../../index.html" class="brand-logo" title="أكاديمية مرابطي">
+    <img src="../../apple-touch-icon.png" alt="أكاديمية مرابطي">
+  </a>
+  <a class="icon-btn back-btn" href="../../tools.html" data-tip="back_tools" aria-label="back">
+    <svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>
+  </a>
+  <span class="tool-name" data-i18n="tool_name">مولّد الشهادات</span>
+  <div class="topbar-actions">
+    <button class="icon-btn" id="btnFullscreen" type="button" data-tip="fullscreen">
+      <svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+    </button>
+    <button class="icon-btn" id="btnMine" type="button" data-tip="mine">
+      <svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+    </button>
+    <button class="icon-btn" id="btnSave" type="button" data-tip="save">
+      <svg viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5z"/><path d="M8 4v5h7V4M8 20v-6h8v6"/></svg>
+    </button>
+    <button class="icon-btn pdf" id="btnPdf" type="button" data-tip="pdf">
+      <span>PDF</span>
+    </button>
+    <div class="lang-wrap">
+      <button class="lang-toggle" id="langToggle" type="button">AR</button>
+      <div class="lang-menu hidden" id="langMenu">
+        <button type="button" data-lang="ar">العربية</button>
+        <button type="button" data-lang="fr">Français</button>
+        <button type="button" data-lang="en">English</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="workspace" id="workspace">
+  <aside class="panel" id="panel">
+    <button class="gallery-open" id="btnGallery" type="button">
+      <span class="go-thumb" id="currentThumb"></span>
+      <span class="go-text">
+        <strong data-i18n="gallery">معرض القوالب</strong>
+        <small id="currentTplName"></small>
+      </span>
+      <svg viewBox="0 0 24 24"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></svg>
+    </button>
+    <div class="accordion" id="accordion"></div>
+  </aside>
+
+  <button class="panel-toggle" id="panelToggle" type="button" data-tip="toggle_panel">
+    <svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>
+  </button>
+
+  <main class="stage" id="stage">
+    <div class="stage-bar">
+      <div class="zoom rec-nav hidden" id="recNav">
+        <button type="button" id="recPrev" data-tip="prev"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
+        <span id="recVal">1 / 1</span>
+        <button type="button" id="recNext" data-tip="nextr"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+      </div>
+      <div class="zoom" id="zoomCtl">
+        <button type="button" id="zoomOut" aria-label="-"><svg viewBox="0 0 24 24"><path d="M6 12h12"/></svg></button>
+        <span id="zoomVal">100%</span>
+        <button type="button" id="zoomIn" aria-label="+"><svg viewBox="0 0 24 24"><path d="M6 12h12M12 6v12"/></svg></button>
+        <button type="button" id="zoomFit" data-tip="fit"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+      </div>
+    </div>
+    <div class="flat-view" id="flatView">
+      <div class="sheet-holder" id="holder"></div>
+    </div>
+  </main>
+</div>
+
+<!-- Templates gallery -->
+<div class="gallery hidden" id="gallery" role="dialog" aria-modal="true">
+  <div class="gallery-box">
+    <div class="gallery-head">
+      <h2 data-i18n="gallery">معرض القوالب</h2>
+      <div class="g-search">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21"/></svg>
+        <input type="text" id="gSearch" data-i18n-ph="search">
+      </div>
+      <button class="icon-btn" id="gClose" type="button" aria-label="close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="g-filters">
+      <div class="chips" id="gCats"></div>
+      <div class="chips small" id="gOrs"></div>
+    </div>
+    <div class="g-grid" id="gGrid"></div>
+  </div>
+</div>
+
+<!-- My certificates -->
+<div class="gallery hidden" id="mine" role="dialog" aria-modal="true">
+  <div class="gallery-box">
+    <div class="gallery-head">
+      <h2 data-i18n="mine">شهاداتي</h2>
+      <button class="icon-btn" id="mClose" type="button" aria-label="close" style="margin-inline-start:auto"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="g-grid" id="mGrid"></div>
+  </div>
+</div>
+
+<!-- Login prompt -->
+<div class="gallery hidden" id="login" role="dialog" aria-modal="true">
+  <div class="login-box">
+    <div class="login-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></div>
+    <h3 data-i18n="login_title">سجّل دخولك لحفظ شهاداتك</h3>
+    <p data-i18n="login_text"></p>
+    <button type="button" class="login-google" id="loginGoogle">
+      <svg viewBox="0 0 48 48" style="stroke:none"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>
+      <span data-i18n="login_google">الدخول بحساب Google</span>
+    </button>
+    <a class="login-site" href="../../index.html" data-i18n="login_site">تسجيل الدخول من الموقع</a>
+    <button type="button" class="login-cancel" id="loginCancel" data-i18n="cancel">إلغاء</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="print-root" id="printRoot" aria-hidden="true"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="../../firebase-init.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

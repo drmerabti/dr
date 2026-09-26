@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مولّد الامتحانات بالذكاء الاصطناعي — أكاديمية مرابطي</title>
+<script src="/analytics.js"></script>
+<link rel="icon" type="image/x-icon" href="../../favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="../../apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Amiri:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Access gate: login / coming soon -->
+<div id="gate" class="gate">
+  <div class="gate-card">
+    <img src="../../apple-touch-icon.png" alt="" class="gate-logo">
+    <div id="gateSpin" class="spin"></div>
+    <h1 id="gateTitle"></h1>
+    <p id="gateText"></p>
+    <a id="gateBtn" class="btn-main hidden" href="../../index.html"></a>
+  </div>
+</div>
+
+<header class="tb">
+  <a class="tb-logo" href="../../index.html" aria-label="Merabti Academy"><img src="../../apple-touch-icon.png" alt=""></a>
+  <a class="tb-btn tb-back" href="../../tools.html" data-tip="back">
+    <svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="7" height="7" rx="2"/><rect x="13.5" y="13.5" width="7" height="7" rx="2"/></svg>
+  </a>
+  <div class="tb-title"><span data-t="app_title"></span><span class="tb-ai">AI</span></div>
+
+  <nav class="tb-actions">
+    <button class="tb-btn c-admin hidden" id="adminBtn" type="button" data-tip="admin">
+      <svg viewBox="0 0 24 24"><path d="M4 6h10M4 12h7M4 18h10"/><circle cx="17.5" cy="12" r="2.5"/><path d="M17.5 7.5v2M17.5 14.5v2M21.4 9.8l-1.7 1M15.3 13.2l-1.7 1M21.4 14.2l-1.7-1M15.3 10.8l-1.7-1"/></svg>
+    </button>
+    <button class="tb-btn" id="newBtn" type="button" data-tip="new">
+      <svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M12 11v6M9 14h6"/></svg>
+    </button>
+    <button class="tb-btn" id="openBtn" type="button" data-tip="open">
+      <svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v1H3z"/><path d="M3 10h18l-2 9H5z"/></svg>
+    </button>
+    <button class="tb-btn c-save" id="saveBtn" type="button" data-tip="save">
+      <svg viewBox="0 0 24 24"><path d="M5 3h11l3 3v15H5z"/><path d="M8 3v5h7V3"/><rect x="8" y="13" width="8" height="6" rx="1"/></svg>
+    </button>
+    <span class="tb-sep"></span>
+    <button class="tb-btn c-print" id="printBtn" type="button" data-tip="print">
+      <svg viewBox="0 0 24 24"><path d="M7 8V3h10v5"/><rect x="3" y="8" width="18" height="9" rx="2"/><path d="M7 14h10v7H7z"/></svg>
+    </button>
+    <button class="tb-btn c-pdf" id="pdfBtn" type="button" data-tip="pdf">
+      <svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><text x="12" y="17.5" text-anchor="middle" font-size="6.2" font-weight="800" stroke="none" fill="currentColor" font-family="Inter,Arial">PDF</text></svg>
+    </button>
+    <button class="tb-btn c-word" id="wordBtn" type="button" data-tip="word">
+      <svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M8.5 11l1.3 6 2.2-4.6 2.2 4.6 1.3-6"/></svg>
+    </button>
+  </nav>
+
+  <button id="langBtn" class="tb-lang" type="button">EN</button>
+</header>
+
+<div class="mtabs" role="tablist">
+  <button type="button" class="mtab on" data-pane="side" data-t="tab_settings"></button>
+  <button type="button" class="mtab" data-pane="stage" data-t="tab_preview"></button>
+</div>
+
+<div class="shell">
+  <aside class="side" id="side">
+    <div class="side-scroll">
+
+      <section class="step" data-step="s1">
+        <button type="button" class="step-h" aria-expanded="true"><span class="step-n">1</span><span class="step-tt"><h2 data-t="s1"></h2><small class="step-sum" id="sum1"></small></span><svg class="step-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="step-b">
+        <div class="fields">
+          <div class="f f-wide"><span data-t="country"></span><div id="ddCur"></div></div>
+          <label class="f f-wide hidden" id="otherField"><span data-t="other_country"></span><input id="curOther" type="text"></label>
+          <div class="f"><span data-t="stage"></span><div id="ddStage"></div></div>
+          <div class="f"><span data-t="grade"></span><div id="ddGrade"></div></div>
+          <div class="f f-wide" id="streamField"><span data-t="stream"></span><div id="ddStream"></div></div>
+          <div class="f f-wide" id="subjectField"><span data-t="subject"></span><div id="ddSubject"></div></div>
+          <label class="f f-wide hidden" id="specField"><span data-t="spec"></span><input id="curSpec" type="text" data-ph="spec_ph"></label>
+          <label class="f f-wide hidden" id="moduleField"><span data-t="module"></span><input id="curModule" type="text" data-ph="module_ph"></label>
+        </div>
+        </div>
+      </section>
+
+      <section class="step" data-step="s2">
+        <button type="button" class="step-h" aria-expanded="true"><span class="step-n">2</span><span class="step-tt"><h2 data-t="s2"></h2><small class="step-sum" id="sum2"></small></span><svg class="step-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="step-b">
+        <div id="unitsList" class="units"></div>
+        <div class="unit-add">
+          <input id="unitInput" type="text" data-ph="unit_ph">
+          <button id="unitAddBtn" type="button" class="btn-soft" aria-label="+"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+        </div>
+        <details class="paste" id="pasteBox">
+          <summary><svg viewBox="0 0 24 24"><path d="M9 4h6v3H9z"/><path d="M8 5.5H6v15h12v-15h-2"/><path d="M9 12h6M9 15.5h4"/></svg><span data-t="paste_t"></span><span class="pill hidden" id="pastePill"></span></summary>
+          <p class="hint" data-t="paste_hint"></p>
+          <textarea id="pasteText" rows="7" maxlength="3500"></textarea>
+          <div class="paste-foot"><span id="pasteCount" class="hint"></span><button id="pasteClear" type="button" class="btn-ghost sm" data-t="remove"></button></div>
+        </details>
+        </div>
+      </section>
+
+      <section class="step" data-step="s3">
+        <button type="button" class="step-h" aria-expanded="true"><span class="step-n">3</span><span class="step-tt"><h2 data-t="s3"></h2><small class="step-sum" id="sum3"></small></span><svg class="step-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="step-b">
+        <div class="fields">
+          <label class="f f-wide"><span data-t="country_line"></span><input id="hCountryLine" type="text"></label>
+          <label class="f f-wide"><span data-t="ministry"></span><input id="hMinistry" type="text"></label>
+          <label class="f f-wide"><span data-t="school"></span><input id="hSchool" type="text"></label>
+          <label class="f"><span data-t="exam_title"></span><input id="hTitle" type="text" list="dlTitles"></label>
+          <label class="f"><span data-t="year"></span><input id="hYear" type="text"></label>
+          <label class="f"><span data-t="duration"></span><input id="hDuration" type="text" list="dlDurations"></label>
+          <label class="f"><span data-t="teacher"></span><input id="hTeacher" type="text"></label>
+          <div class="f f-wide"><span data-t="exam_lang"></span><div id="ddExamLang"></div></div>
+          <div class="f f-wide logo-row">
+            <span data-t="logo"></span>
+            <div class="logo-box">
+              <img id="logoPrev" class="hidden" alt="">
+              <label class="btn-ghost sm"><input type="file" id="logoFile" accept="image/*" hidden><span data-t="logo_add"></span></label>
+              <button id="logoDel" type="button" class="btn-ghost sm hidden" data-t="remove"></button>
+            </div>
+          </div>
+        </div>
+        </div>
+      </section>
+
+      <section class="step" data-step="s4">
+        <button type="button" class="step-h" aria-expanded="true"><span class="step-n">4</span><span class="step-tt"><h2 data-t="s4"></h2><small class="step-sum" id="sum4"></small></span><svg class="step-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="step-b">
+        <div class="f diff-all"><span data-t="difficulty_all"></span><div id="ddDiffAll"></div></div>
+        <div id="cards" class="cards"></div>
+        <button id="addCardBtn" type="button" class="add-card">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span data-t="add_ex"></span>
+        </button>
+        </div>
+      </section>
+
+      <section class="step" data-step="s5">
+        <button type="button" class="step-h" aria-expanded="true"><span class="step-n">5</span><span class="step-tt"><h2 data-t="s5"></h2><small class="step-sum" id="sum5"></small></span><svg class="step-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="step-b">
+        <p class="hint model-hint" data-t="model_hint"></p>
+        <div id="mcards" class="cards"></div>
+        <button id="addModelBtn" type="button" class="add-card add-model">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span data-t="add_model"></span>
+        </button>
+        </div>
+      </section>
+
+    </div>
+    <div class="side-foot">
+      <div class="pts-bar">
+        <span id="ptsTotal" class="pts-total"></span>
+        <button id="balanceBtn" type="button" class="btn-ghost sm" data-t="balance"></button>
+      </div>
+    </div>
+  </aside>
+
+  <main class="stage" id="stage">
+    <div class="zoombar">
+      <div class="zgroup">
+        <button type="button" id="zOut" class="zbtn" aria-label="zoom out"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M8 11h6M16.5 16.5L21 21"/></svg></button>
+        <output id="zVal" class="zval">100%</output>
+        <button type="button" id="zIn" class="zbtn" aria-label="zoom in"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M8 11h6M11 8v6M16.5 16.5L21 21"/></svg></button>
+        <button type="button" id="zFit" class="zbtn" data-tip="zoom_fit"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="corrToggle" checked>
+        <span class="sw"></span>
+        <span data-t="show_corr"></span>
+      </label>
+    </div>
+    <div class="stage-scroll" id="stageScroll">
+      <div id="paper" class="paper"></div>
+    </div>
+  </main>
+</div>
+
+<datalist id="dlTitles"></datalist>
+<datalist id="dlDurations"></datalist>
+
+<div id="modalRoot"></div>
+<div id="toast" class="toast"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-functions-compat.js"></script>
+<script src="../../firebase-init.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<script defer src="app.js"></script>
+</body>
+</html>
