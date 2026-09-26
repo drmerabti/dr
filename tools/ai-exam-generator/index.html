@@ -28,6 +28,9 @@
 
 <header class="tb">
   <a class="tb-logo" href="../../index.html" aria-label="Merabti Academy"><img src="../../apple-touch-icon.png" alt=""></a>
+  <a class="tb-btn tb-back" href="../../tools.html" data-tip="back">
+    <svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="7" height="7" rx="2"/><rect x="13.5" y="13.5" width="7" height="7" rx="2"/></svg>
+  </a>
   <div class="tb-title"><span data-t="app_title"></span><span class="tb-ai">AI</span></div>
 
   <nav class="tb-actions">
@@ -104,6 +107,8 @@
         <button type="button" class="step-h" aria-expanded="true"><span class="step-n">3</span><span class="step-tt"><h2 data-t="s3"></h2><small class="step-sum" id="sum3"></small></span><svg class="step-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
         <div class="step-b">
         <div class="fields">
+          <label class="f f-wide"><span data-t="country_line"></span><input id="hCountryLine" type="text"></label>
+          <label class="f f-wide"><span data-t="ministry"></span><input id="hMinistry" type="text"></label>
           <label class="f f-wide"><span data-t="school"></span><input id="hSchool" type="text"></label>
           <label class="f"><span data-t="exam_title"></span><input id="hTitle" type="text" list="dlTitles"></label>
           <label class="f"><span data-t="year"></span><input id="hYear" type="text"></label>
@@ -129,6 +134,17 @@
         <div id="cards" class="cards"></div>
         <button id="addCardBtn" type="button" class="add-card">
           <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span data-t="add_ex"></span>
+        </button>
+        </div>
+      </section>
+
+      <section class="step" data-step="s5">
+        <button type="button" class="step-h" aria-expanded="true"><span class="step-n">5</span><span class="step-tt"><h2 data-t="s5"></h2><small class="step-sum" id="sum5"></small></span><svg class="step-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="step-b">
+        <p class="hint model-hint" data-t="model_hint"></p>
+        <div id="mcards" class="cards"></div>
+        <button id="addModelBtn" type="button" class="add-card add-model">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span data-t="add_model"></span>
         </button>
         </div>
       </section>

@@ -56,6 +56,13 @@ const UI = {
     country: 'الدولة', other_country: 'اسم الدولة', spec: 'التخصص', module: 'المقياس', spec_ph: 'مثال: إلكتروتقني', module_ph: 'مثال: إلكترونيك الاستطاعة',
     st_uni: 'الجامعة', lic: 'ليسانس', mas: 'ماستر', n_units: '{n} وحدات مختارة', no_units_sel: 'لم تُختر وحدة بعد', pasted: 'نص ملصق',
     n_ex: '{n} تمارين', word_prog: 'جاري تجهيز ملف Word… {i} من {n}', hint_title: 'رأس امتحانك جاهز', hint_sub: 'أكمل معلومات الامتحان وسترى التغييرات هنا مباشرة، ثم ولّد أول تمرين من بطاقة التمرين.',
+    model_n: 'النموذج', back: 'العودة إلى الأدوات', s5: 'التمارين النموذجية', add_model: 'إضافة تمرين نموذجي',
+    model_hint: 'ألصق تمرينًا من امتحان سابق أعجبك، فيكتب الذكاء الاصطناعي تمرينًا جديدًا بالشكل والأسلوب نفسيهما، بمعطيات وأرقام مختلفة.',
+    model_text: 'نص التمرين النموذجي', model_ph: 'ألصق هنا نص التمرين كما هو…', gen_model: 'ولّد تمرينًا مشابهًا', t_model: 'تمرين على نموذج',
+    err_model: 'ألصق نص التمرين النموذجي أولًا.', n_models: '{n} تمارين نموذجية',
+    country_line: 'سطر الدولة', ministry: 'الوزارة', exam_title_ph: 'مثال: اختبار الفصل الأول',
+    f_table: 'الجدول (كل سطر في سطر، والخانات مفصولة بـ |)', f_pts: 'نقاط القياس: x,y ; x,y ; …', f_connect: 'وصل النقاط بخط',
+    circuit: 'الدارة الكهربائية', rm_circuit: 'حذف الدارة من التمرين',
     zoom_fit: 'ملاءمة العرض', show_corr: 'التصحيح النموذجي',
     empty_title: 'امتحانك سيظهر هنا', empty_sub: 'اختر المستوى والمادة والوحدات، ثم اضغط «ولّد هذا التمرين» في بطاقة التمرين، وشاهده يُكتب أمامك.',
     e1: 'المستوى', e2: 'الوحدات', e3: 'التمرين', e4: 'ولّد',
@@ -112,6 +119,13 @@ const UI = {
     country: 'Country', other_country: 'Country name', spec: 'Specialty', module: 'Module', spec_ph: 'e.g. Electrical engineering', module_ph: 'e.g. Power electronics',
     st_uni: 'University', lic: 'Licence', mas: 'Master', n_units: '{n} units selected', no_units_sel: 'No unit selected yet', pasted: 'pasted text',
     n_ex: '{n} exercises', word_prog: 'Preparing the Word file… {i} of {n}', hint_title: 'Your exam header is ready', hint_sub: 'Fill in the exam details and see the changes here instantly, then generate the first exercise from its card.',
+    model_n: 'Model', back: 'Back to tools', s5: 'Model exercises', add_model: 'Add a model exercise',
+    model_hint: 'Paste an exercise you liked from a past exam; AI writes a new one with the same form and style, with different data and numbers.',
+    model_text: 'Model exercise text', model_ph: 'Paste the exercise text here…', gen_model: 'Generate a similar exercise', t_model: 'Exercise from a model',
+    err_model: 'Paste the model exercise text first.', n_models: '{n} model exercises',
+    country_line: 'Country line', ministry: 'Ministry', exam_title_ph: 'e.g. First term exam',
+    f_table: 'Table (one row per line, cells separated by |)', f_pts: 'Measured points: x,y ; x,y ; …', f_connect: 'Join the points',
+    circuit: 'Electric circuit', rm_circuit: 'Remove the circuit from the exercise',
     zoom_fit: 'Fit width', show_corr: 'Answer key',
     empty_title: 'Your exam will appear here', empty_sub: 'Choose the level, subject and units, then press “Generate this exercise” on the exercise card and watch it being written.',
     e1: 'Level', e2: 'Units', e3: 'Exercise', e4: 'Generate',
@@ -346,13 +360,25 @@ Object.assign(CATALOG, {
   'sec-3-info': ['الخوارزميات والبرمجة', 'قواعد البيانات', 'الشبكات والإنترنت', 'أمن المعلومات']
 });
 
+/* ---------------- Official header lines per country ---------------- */
+const OFFICIAL = {
+  dz: ['الجمهورية الجزائرية الديمقراطية الشعبية', 'وزارة التربية الوطنية'], ma: ['المملكة المغربية', 'وزارة التربية الوطنية والتعليم الأولي والرياضة'],
+  tn: ['الجمهورية التونسية', 'وزارة التربية'], ly: ['دولة ليبيا', 'وزارة التربية والتعليم'], mr: ['الجمهورية الإسلامية الموريتانية', 'وزارة التهذيب الوطني وإصلاح النظام التعليمي'],
+  eg: ['جمهورية مصر العربية', 'وزارة التربية والتعليم والتعليم الفني'], sd: ['جمهورية السودان', 'وزارة التربية والتعليم'], sa: ['المملكة العربية السعودية', 'وزارة التعليم'],
+  ae: ['دولة الإمارات العربية المتحدة', 'وزارة التربية والتعليم'], kw: ['دولة الكويت', 'وزارة التربية'], qa: ['دولة قطر', 'وزارة التربية والتعليم والتعليم العالي'],
+  bh: ['مملكة البحرين', 'وزارة التربية والتعليم'], om: ['سلطنة عُمان', 'وزارة التربية والتعليم'], ye: ['الجمهورية اليمنية', 'وزارة التربية والتعليم'],
+  iq: ['جمهورية العراق', 'وزارة التربية'], sy: ['الجمهورية العربية السورية', 'وزارة التربية'], jo: ['المملكة الأردنية الهاشمية', 'وزارة التربية والتعليم'],
+  lb: ['الجمهورية اللبنانية', 'وزارة التربية والتعليم العالي'], ps: ['دولة فلسطين', 'وزارة التربية والتعليم'], so: ['جمهورية الصومال الفيدرالية', 'وزارة التربية والتعليم'],
+  dj: ['جمهورية جيبوتي', 'وزارة التربية الوطنية والتكوين المهني'], km: ['اتحاد جزر القمر', 'وزارة التربية الوطنية']
+};
+
 /* ---------------- Exam-paper texts (exam language) ---------------- */
 const ORD_AR = ['الأول', 'الثاني', 'الثالث', 'الرابع', 'الخامس', 'السادس', 'السابع', 'الثامن'];
 const ORD_AR_F = ['الأولى', 'الثانية', 'الثالثة', 'الرابعة', 'الخامسة', 'السادسة', 'السابعة', 'الثامنة', 'التاسعة', 'العاشرة'];
 const fmtNum = n => (Math.round(n * 100) / 100).toString();
 const EL = {
   ar: {
-    dir: 'rtl', school: 'المؤسسة', year: 'السنة الدراسية', level: 'المستوى', subject: 'المادة', duration: 'المدة', teacher: 'الأستاذ(ة)',
+    dir: 'rtl', exam_in: 'اختبار في مادة', school: 'المؤسسة', year: 'السنة الدراسية', level: 'المستوى', subject: 'المادة', duration: 'المدة', teacher: 'الأستاذ(ة)',
     ex: i => `التمرين ${ORD_AR[i] || (i + 1)}`, situation: 'الوضعية الإدماجية',
     pts: n => n === 1 ? '(نقطة واحدة)' : n === 2 ? '(نقطتان)' : (Number.isInteger(n) && n >= 3 && n <= 10) ? `(${n} نقاط)` : `(${fmtNum(n)} ن)`,
     ptsCell: n => `${fmtNum(n)} ن`,
@@ -362,7 +388,7 @@ const EL = {
     level_of: (st, g) => `السنة ${({ pri: ORD_AR_F, mid: ORD_AR_F, sec: ORD_AR_F }[st][g - 1] || g)} ${({ pri: 'ابتدائي', mid: 'متوسط', sec: 'ثانوي' })[st]}`
   },
   fr: {
-    dir: 'ltr', school: 'Établissement', year: 'Année scolaire', level: 'Niveau', subject: 'Matière', duration: 'Durée', teacher: 'Enseignant(e)',
+    dir: 'ltr', exam_in: 'Épreuve de', school: 'Établissement', year: 'Année scolaire', level: 'Niveau', subject: 'Matière', duration: 'Durée', teacher: 'Enseignant(e)',
     ex: i => `Exercice ${i + 1}`, situation: "Situation d'intégration",
     pts: n => `(${fmtNum(n)} pt${n > 1 ? 's' : ''})`, ptsCell: n => `${fmtNum(n)} pt${n > 1 ? 's' : ''}`,
     tru: 'Vrai', fal: 'Faux', statement: 'Affirmation', colA: 'Colonne A', colB: 'Colonne B', letters: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'],
@@ -371,7 +397,7 @@ const EL = {
     level_of: (st, g) => `${g}${g === 1 ? 're' : 'e'} année ${({ pri: 'primaire', mid: 'moyenne', sec: 'secondaire' })[st]}`
   },
   en: {
-    dir: 'ltr', school: 'School', year: 'School year', level: 'Level', subject: 'Subject', duration: 'Duration', teacher: 'Teacher',
+    dir: 'ltr', exam_in: 'Exam in', school: 'School', year: 'School year', level: 'Level', subject: 'Subject', duration: 'Duration', teacher: 'Teacher',
     ex: i => `Exercise ${i + 1}`, situation: 'Integration situation',
     pts: n => `(${fmtNum(n)} point${n === 1 ? '' : 's'})`, ptsCell: n => `${fmtNum(n)} pt${n === 1 ? '' : 's'}`,
     tru: 'True', fal: 'False', statement: 'Statement', colA: 'Column A', colB: 'Column B', letters: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'],
@@ -398,6 +424,7 @@ const TYPES = {
   document: { c: 'var(--t-document)', i: '<path d="M6 3h8.5L19 7.5V21H6z"/><path d="M14 3v5h5"/><path d="M9 12.5h7M9 15.5h7M9 18.5h4"/>' }
 };
 for (const k in LANG_TYPE_META) TYPES[k] = { c: LANG_TYPE_META[k][0], i: LANG_TYPE_META[k][1] };
+TYPES.model = { c: '#0F766E', i: '<rect x="8" y="8" width="12" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h2"/><path d="M11 13h6M11 16.5h4"/>' };
 const TYPE_KEYS = Object.keys(TYPES);
 const DIFFS = { easy: '#16A34A', medium: '#E08A00', hard: '#DC2626' };
 
@@ -407,10 +434,10 @@ const S = {
   uiLang: (() => { try { return localStorage.getItem('site_lang') === 'en' ? 'en' : 'ar'; } catch (e) { return 'ar'; } })(),
   user: null, isAdmin: false, overrides: {},
   cur: { sys: 'dz', other: '', stage: 'mid', grade: 4, stream: 'se', subject: 'math', spec: '', module: '' },
-  fold: { s1: true, s2: true, s3: true, s4: true },
+  fold: { s1: true, s2: true, s3: true, s4: true, s5: true },
   units: [],            // { id, title, on, custom }
   paste: '',
-  header: { school: '', title: '', year: '2026/2027', duration: '', teacher: '', logo: '' },
+  header: { school: '', title: '', year: '2026/2027', duration: '', teacher: '', logo: '', countryLine: null, ministry: null },
   examLang: 'ar',
   difficulty: 'medium',
   exercises: [],        // cards: { id, type, unit, diff, points, note, open, data, history, images, status, err, wait, perm }
@@ -447,7 +474,35 @@ function toast(msg, kind = '', sticky = false) {
   if (!sticky) toastTimer = setTimeout(() => { el.className = 'toast'; }, kind === 'err' ? 7000 : 3200);
 }
 function debounce(fn, ms) { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; }
-function markDirty() { S.dirty = true; }
+function markDirty() { S.dirty = true; saveSettingsSoon(); }
+/* ---------------- Remember the teacher's settings (users/{uid}/settings/aiExamGenerator) ---------------- */
+let settingsReady = false;
+const settingsDoc = () => firebase.firestore().collection('users').doc(S.user.uid).collection('settings').doc('aiExamGenerator');
+const saveSettingsSoon = debounce(() => {
+  if (!S.user || !settingsReady) return;
+  const data = clone({ cur: S.cur, header: S.header, examLang: S.examLang, difficulty: S.difficulty, showCorr: S.showCorr });
+  settingsDoc().set(data).catch(e => console.warn('settings', e));
+}, 1500);
+async function loadSettings(userDoc) {
+  try {
+    const d = await settingsDoc().get();
+    if (d.exists) {
+      const x = d.data();
+      Object.assign(S.cur, x.cur || {});
+      Object.assign(S.header, x.header || {});
+      if (x.examLang) S.examLang = x.examLang;
+      if (x.difficulty) S.difficulty = x.difficulty;
+      if (typeof x.showCorr === 'boolean') { S.showCorr = x.showCorr; $('#corrToggle').checked = S.showCorr; }
+    }
+  } catch (e) { console.warn('settings', e); }
+  if (!S.header.teacher) {
+    const u = userDoc || {};
+    S.header.teacher = (S.user && S.user.displayName) || u.displayName || u.name || u.fullName || '';
+  }
+  S.exercises.forEach(e => { if (e.status === 'idle') e.diff = S.difficulty; });
+  syncCurriculum(); syncHeaderInputs(); rebuildUnits(); fixCardTypes(); renderCards(); renderPaper(); paintFold();
+  settingsReady = true;
+}
 function splitPoints(total, n) {
   if (n <= 0) return [];
   const base = Math.floor((total / n) * 4) / 4;
@@ -585,15 +640,20 @@ function niceStep(range) {
   return (n < 1.5 ? 1 : n < 3.5 ? 2 : n < 7.5 ? 5 : 10) * p;
 }
 function graphSvg(g) {
-  const f = compileExpr(g && g.expr);
-  if (!f) return '';
+  if (!g) return '';
+  const f = g.expr ? compileExpr(g.expr) : null;
+  const meas = (Array.isArray(g.points) ? g.points : []).map(p => Array.isArray(p) ? [Number(p[0]), Number(p[1])] : [NaN, NaN]).filter(p => isFinite(p[0]) && isFinite(p[1])).slice(0, 40);
+  if (!f && !meas.length) return '';
   let x0 = Number(g.xmin), x1 = Number(g.xmax);
+  if (meas.length && !(isFinite(x0) && isFinite(x1) && x1 > x0)) {
+    const xs = meas.map(p => p[0]); x0 = Math.min(0, ...xs); x1 = Math.max(...xs); const pd = (x1 - x0) * 0.08 || 1; x1 += pd; if (x0 < 0) x0 -= pd;
+  }
   if (!isFinite(x0) || !isFinite(x1) || x1 <= x0) { x0 = -5; x1 = 5; }
   const N = 400, pts = [];
-  for (let i = 0; i <= N; i++) { const x = x0 + (x1 - x0) * i / N; let y; try { y = f(x); } catch (e) { y = NaN; } pts.push([x, isFinite(y) ? y : NaN]); }
-  const ys = pts.map(p => p[1]).filter(isFinite).sort((a, b) => a - b);
+  if (f) for (let i = 0; i <= N; i++) { const x = x0 + (x1 - x0) * i / N; let y; try { y = f(x); } catch (e) { y = NaN; } pts.push([x, isFinite(y) ? y : NaN]); }
+  const ys = pts.map(p => p[1]).concat(meas.map(p => p[1])).filter(isFinite).sort((a, b) => a - b);
   if (!ys.length) return '';
-  let y0 = ys[Math.floor(ys.length * 0.02)], y1 = ys[Math.ceil(ys.length * 0.98) - 1];
+  let y0 = meas.length && !f ? ys[0] : ys[Math.floor(ys.length * 0.02)], y1 = meas.length && !f ? ys[ys.length - 1] : ys[Math.ceil(ys.length * 0.98) - 1];
   if (Math.abs(y1 - y0) < 1e-9) { y0 -= 1; y1 += 1; }
   const pad = (y1 - y0) * 0.1; y0 -= pad; y1 += pad;
   if (y0 > 0) y0 = Math.min(0, y0 - pad); if (y1 < 0) y1 = Math.max(0, y1 + pad);
@@ -631,7 +691,9 @@ function graphSvg(g) {
 <g fill="#333">${labels}<text x="${(ax - 5).toFixed(1)}" y="${(ay + 14).toFixed(1)}" text-anchor="end">0</text></g>
 <text x="${W - m.r}" y="${(ay - 6).toFixed(1)}" text-anchor="end" font-style="italic" font-size="13">${esc(g.xlabel || 'x')}</text>
 <text x="${(ax + 6).toFixed(1)}" y="${m.t + 4}" font-style="italic" font-size="13">${esc(g.ylabel || 'y')}</text>
-<path d="${d}" fill="none" stroke="#1D4ED8" stroke-width="2.1" stroke-linejoin="round" clip-path="url(#${cid})"/>
+${d ? `<path d="${d}" fill="none" stroke="#1D4ED8" stroke-width="2.1" stroke-linejoin="round" clip-path="url(#${cid})"/>` : ''}
+${meas.length && g.connect ? `<polyline points="${meas.slice().sort((a, b) => a[0] - b[0]).map(p => X(p[0]).toFixed(1) + ',' + Y(p[1]).toFixed(1)).join(' ')}" fill="none" stroke="#1D4ED8" stroke-width="1.8" clip-path="url(#${cid})"/>` : ''}
+${meas.map(p => { const px = X(p[0]), py = Y(p[1]); return `<path d="M${(px - 4).toFixed(1)} ${(py - 4).toFixed(1)}l8 8M${(px + 4).toFixed(1)} ${(py - 4).toFixed(1)}l-8 8" stroke="#B91C1C" stroke-width="1.8"/>`; }).join('')}
 </svg>`;
 }
 
@@ -678,16 +740,17 @@ function startGate() {
   if (!window.firebase || !firebase.apps || !firebase.apps.length) { gate('error'); return; }
   firebase.auth().onAuthStateChanged(async user => {
     if (!user) { S.user = null; gate('login'); return; }
-    let isAdmin = false;
+    let isAdmin = false, userDoc = null;
     try {
       const d = await firebase.firestore().collection('users').doc(user.uid).get();
-      isAdmin = d.exists && d.data().isAdmin === true;
+      userDoc = d.exists ? d.data() : null;
+      isAdmin = !!(userDoc && userDoc.isAdmin === true);
     } catch (e) { isAdmin = false; }
     if (TOOL_LOCKED && !isAdmin) { gate('soon'); return; }
     S.user = user; S.isAdmin = isAdmin;
     $('#adminBtn').classList.toggle('hidden', !isAdmin);
     gate('open'); fitZoom();
-    await loadOverrides(); rebuildUnits();
+    await loadOverrides(); await loadSettings(userDoc);
   });
 }
 
@@ -804,7 +867,7 @@ function initCurriculum() {
   bindTxt('#curOther', 'other'); bindTxt('#curSpec', 'spec'); bindTxt('#curModule', 'module');
   fixCur();
 }
-function curChanged() { fixCur(); fixCardTypes(); autoExamLang(); markDirty(); rebuildUnits(); rerender(); }
+function curChanged() { fixCur(); fixCardTypes(); autoExamLang(); paintLines(); markDirty(); rebuildUnits(); rerender(); }
 function syncCurriculum() {
   DD.forEach(d => { if (d.host.id === 'ddCur') d.set(S.cur.sys); });
   $('#curOther').value = S.cur.other || ''; $('#curSpec').value = S.cur.spec || ''; $('#curModule').value = S.cur.module || '';
@@ -831,7 +894,9 @@ function paintFold() {
   set('#sum2', [n ? T('n_units', { n }) : T('no_units_sel'), S.paste.trim() ? T('pasted') : ''].filter(Boolean).join(' · '));
   set('#sum3', [S.header.title, S.header.school, S.header.duration].filter(x => x && x.trim()).join(' · '));
   const tot = S.exercises.reduce((a, e) => a + Number(e.points || 0), 0);
-  set('#sum4', `${T('n_ex', { n: S.exercises.length })} · ${fmtNum(tot)} / 20`);
+  const nm = S.exercises.filter(e => e.model).length;
+  set('#sum4', `${T('n_ex', { n: S.exercises.length - nm })} · ${fmtNum(tot)} / 20`);
+  set('#sum5', T('n_models', { n: nm }));
 }
 
 /* =====================================================================
@@ -878,6 +943,12 @@ function initHeader() {
   const bind = (id, k) => { const e = $(id); e.value = H[k] || ''; e.oninput = () => { H[k] = e.value; markDirty(); paintFold(); rerender(); }; };
   bind('#hSchool', 'school'); bind('#hTitle', 'title'); bind('#hYear', 'year');
   bind('#hDuration', 'duration'); bind('#hTeacher', 'teacher');
+  ['countryLine', 'ministry'].forEach(k => {
+    const e = $(k === 'countryLine' ? '#hCountryLine' : '#hMinistry');
+    e.value = headerLine(k);
+    e.oninput = () => { H[k] = e.value.trim() === autoLines()[k === 'countryLine' ? 0 : 1] ? null : e.value; markDirty(); rerender(); };
+    e.onblur = () => { if (!e.value.trim()) { H[k] = null; e.value = headerLine(k); rerender(); } };
+  });
   ddExamLang = makeDD($('#ddExamLang'), () => [{ v: 'ar', label: 'العربية' }, { v: 'fr', label: 'Français' }, { v: 'en', label: 'English' }], S.examLang, v => setExamLang(v));
   $('#logoFile').onchange = async e => {
     const f = e.target.files[0]; e.target.value = ''; if (!f) return;
@@ -894,7 +965,12 @@ function setExamLang(v) {
   if (H.title === old.title) { H.title = DEFAULTS[v].title; $('#hTitle').value = H.title; }
   if (H.duration === old.duration) { H.duration = DEFAULTS[v].duration; $('#hDuration').value = H.duration; }
   if (ddExamLang) ddExamLang.set(v);
-  fillDatalists(); markDirty(); renderPaper(); paintFold();
+  fillDatalists(); markDirty(); paintLines(); renderPaper(); paintFold();
+}
+function paintLines() {
+  const a = $('#hCountryLine'), b = $('#hMinistry');
+  if (a && document.activeElement !== a) a.value = headerLine('countryLine');
+  if (b && document.activeElement !== b) b.value = headerLine('ministry');
 }
 function paintLogo() {
   const img = $('#logoPrev');
@@ -904,7 +980,7 @@ function paintLogo() {
 function syncHeaderInputs() {
   const H = S.header;
   $('#hSchool').value = H.school || ''; $('#hTitle').value = H.title || ''; $('#hYear').value = H.year || '';
-  $('#hDuration').value = H.duration || ''; $('#hTeacher').value = H.teacher || '';
+  $('#hDuration').value = H.duration || ''; $('#hTeacher').value = H.teacher || ''; paintLines();
   DD.forEach(d => { if (d.host.id === 'ddExamLang') d.set(S.examLang); if (d.host.id === 'ddDiffAll') d.set(S.difficulty); });
   paintLogo(); fillDatalists();
 }
@@ -923,11 +999,13 @@ function newCard() {
     data: null, history: [], images: [], status: 'idle', err: '', wait: 0, perm: null
   };
 }
-function addCard() {
+function addCard(model = false) {
   if (S.exercises.length >= MAX_EX) { toast(T('max_ex'), 'err'); return; }
   S.exercises.forEach(e => { e.open = false; });
-  S.exercises.push(newCard()); markDirty(); renderCards();
-  const last = $('#cards').lastElementChild; if (last) last.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  const c = newCard();
+  if (model) Object.assign(c, { model: true, type: 'model', modelText: '' });
+  S.exercises.push(c); markDirty(); renderCards();
+  const last = $(model ? '#mcards' : '#cards').lastElementChild; if (last) last.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
 }
 const unitTitle = ex => ex.unit === 'all' ? T('all_units') : ((S.units.find(u => u.id === ex.unit) || {}).title || T('all_units'));
 function chipHtml(ex) {
@@ -937,35 +1015,44 @@ function chipHtml(ex) {
 }
 let dragId = null;
 function renderCards() {
-  const host = $('#cards');
+  const hostN = $('#cards'), hostM = $('#mcards');
   for (let i = DD.length - 1; i >= 0; i--) if (DD[i].isCard) DD.splice(i, 1);
-  host.innerHTML = '';
-  S.exercises.forEach((ex, i) => {
+  hostN.innerHTML = ''; hostM.innerHTML = '';
+  let nN = 0, nM = 0;
+  S.exercises.forEach(ex => {
+    const host = ex.model ? hostM : hostN;
+    const i = ex.model ? nM++ : nN++;
     const c = el('div', 'card' + (ex.open ? ' open' : ''));
     c.dataset.id = ex.id; c.style.setProperty('--c', TYPES[ex.type].c);
     c.innerHTML = `<div class="card-h">
         <button type="button" class="card-btn grip" aria-label="drag">${svgI('<circle cx="9" cy="6" r="1.3"/><circle cx="15" cy="6" r="1.3"/><circle cx="9" cy="12" r="1.3"/><circle cx="15" cy="12" r="1.3"/><circle cx="9" cy="18" r="1.3"/><circle cx="15" cy="18" r="1.3"/>')}</button>
         <span class="dd-ic" style="--c:${TYPES[ex.type].c}">${svgI(TYPES[ex.type].i)}</span>
-        <div class="card-sum"><b>${esc(T('ex_n'))} ${i + 1}</b><small>${esc(tLabel(ex.type))} · ${esc(unitTitle(ex))} · ${fmtNum(ex.points)} ${esc(T('points_short'))}</small></div>
+        <div class="card-sum"><b>${esc(ex.model ? T('model_n') : T('ex_n'))} ${i + 1}</b><small>${esc(cardSub(ex))}</small></div>
         ${chipHtml(ex)}
         <button type="button" class="card-btn del" aria-label="${esc(T('del'))}">${svgI(XT.del)}</button>
         <button type="button" class="card-btn chev" aria-label="toggle">${svgI('<path d="M6 9l6 6 6-6"/>')}</button>
       </div>
       <div class="card-b">
         <div class="card-g">
+          ${ex.model ? `<label class="f f-wide"><span>${esc(T('model_text'))}</span><textarea class="model-ta" rows="7" maxlength="2500" placeholder="${esc(T('model_ph'))}">${esc(ex.modelText || '')}</textarea></label>` : `
           <div class="f f-wide"><span>${esc(T('ex_type'))}</span><div class="dd-t"></div></div>
-          <div class="f f-wide"><span>${esc(T('ex_unit'))}</span><div class="dd-u"></div></div>
+          <div class="f f-wide"><span>${esc(T('ex_unit'))}</span><div class="dd-u"></div></div>`}
           <div class="f"><span>${esc(T('ex_diff'))}</span><div class="dd-d"></div></div>
           <div class="f"><span>${esc(T('f_points'))}</span><div class="pts-in"><input type="number" min="0.5" max="20" step="0.25" value="${ex.points}"><span>${esc(T('points_short'))}</span></div></div>
           <label class="f f-wide"><span>${esc(T('note'))}</span><textarea rows="2" maxlength="600" placeholder="${esc(T('note_ph'))}">${esc(ex.note)}</textarea></label>
         </div>
         ${ex.status === 'ready' && ex.data && ex.data.note_applied ? `<div class="note-ok">${svgI('<path d="M5 12l5 5 9-10"/>')}<span>${esc(ex.data.note_applied)}</span></div>` : ''}
-        <button type="button" class="card-gen ${ex.status === 'loading' || ex.status === 'waiting' ? 'busy' : ''}" ${S.busy ? 'disabled' : ''}>${GEN_ICON}<span>${esc(ex.status === 'ready' ? T('regen_one') : T('gen_one'))}</span></button>
+        <button type="button" class="card-gen ${ex.status === 'loading' || ex.status === 'waiting' ? 'busy' : ''}" ${S.busy ? 'disabled' : ''}>${GEN_ICON}<span>${esc(ex.model ? T('gen_model') : ex.status === 'ready' ? T('regen_one') : T('gen_one'))}</span></button>
       </div>`;
-    const a = makeDD($('.dd-t', c), typeOpts, ex.type, v => { ex.type = v; markDirty(); renderCards(); });
-    const b = makeDD($('.dd-u', c), unitOpts, ex.unit, v => { ex.unit = v; markDirty(); renderCards(); });
+    if (!ex.model) {
+      const a = makeDD($('.dd-t', c), typeOpts, ex.type, v => { ex.type = v; markDirty(); renderCards(); });
+      const b = makeDD($('.dd-u', c), unitOpts, ex.unit, v => { ex.unit = v; markDirty(); renderCards(); });
+      a.isCard = b.isCard = true;
+    } else {
+      $('.model-ta', c).oninput = e => { ex.modelText = e.target.value; markDirty(); };
+    }
     const d = makeDD($('.dd-d', c), diffOpts, ex.diff, v => { ex.diff = v; markDirty(); });
-    a.isCard = b.isCard = d.isCard = true;
+    d.isCard = true;
     $('.card-h', c).addEventListener('click', e => {
       if (e.target.closest('.del') || e.target.closest('.grip')) return;
       ex.open = !ex.open; renderCards();
@@ -977,9 +1064,9 @@ function renderCards() {
     };
     $('.pts-in input', c).onchange = e => {
       ex.points = Math.max(0.5, Math.min(20, Number(e.target.value) || 1)); e.target.value = ex.points;
-      markDirty(); paintTotal(); renderCardSummary(c, ex, i); if (ex.status !== 'idle') rerender();
+      markDirty(); paintTotal(); renderCardSummary(c, ex); if (ex.status !== 'idle') rerender();
     };
-    $('textarea', c).oninput = e => { ex.note = e.target.value; markDirty(); };
+    $('textarea:not(.model-ta)', c).oninput = e => { ex.note = e.target.value; markDirty(); };
     $('.card-gen', c).onclick = () => generateCard(ex);
     // drag to reorder (handle only)
     const grip = $('.grip', c);
@@ -997,12 +1084,13 @@ function renderCards() {
     });
     host.appendChild(c);
   });
-  $('#addCardBtn').disabled = S.exercises.length >= MAX_EX;
+  $('#addCardBtn').disabled = $('#addModelBtn').disabled = S.exercises.length >= MAX_EX;
   paintTotal(); paintFold();
 }
-function renderCardSummary(c, ex, i) {
-  $('.card-sum small', c).textContent = `${tLabel(ex.type)} · ${unitTitle(ex)} · ${fmtNum(ex.points)} ${T('points_short')}`;
+function cardSub(ex) {
+  return ex.model ? `${fmtNum(ex.points)} ${T('points_short')} · ${T(ex.diff)}` : `${tLabel(ex.type)} · ${unitTitle(ex)} · ${fmtNum(ex.points)} ${T('points_short')}`;
 }
+function renderCardSummary(c, ex) { $('.card-sum small', c).textContent = cardSub(ex); }
 function paintTotal() {
   const t = S.exercises.reduce((a, e) => a + Number(e.points || 0), 0);
   const e = $('#ptsTotal');
@@ -1065,8 +1153,9 @@ async function callWithWait(ex, payload) {
 }
 function generateCard(ex) {
   if (S.busy) { toast(T('err_busy'), 'err'); return; }
-  if (!chosenUnits(ex).length && !S.paste.trim()) { toast(T('err_nounits'), 'err'); return; }
-  return runGen(ex, { note: ex.note, regen: ex.status === 'ready' });
+  if (ex.model) { if ((ex.modelText || '').trim().length < 30) { toast(T('err_model'), 'err'); return; } }
+  else if (!chosenUnits(ex).length && !S.paste.trim()) { toast(T('err_nounits'), 'err'); return; }
+  return runGen(ex, { note: ex.model ? '' : ex.note, regen: ex.status === 'ready' });
 }
 async function runGen(ex, opts) {
   S.busy = true; paintBusy();
@@ -1088,7 +1177,7 @@ async function genOne(ex, { note = '', regen = false } = {}) {
       mode: 'exercise', country: countryName('en'), university: isUni(), type: ex.type, lang: S.examLang,
       level: levelBase(S.examLang), stream: isUni() ? S.cur.spec.trim() : (st ? lab(st, S.examLang) : ''),
       subject: subjLabel(S.cur.subject, S.examLang), units: chosenUnits(ex), source: S.paste.trim().slice(0, MAX_PASTE),
-      difficulty: ex.diff, points: ex.points, note, uiLang: S.uiLang,
+      difficulty: ex.diff, points: ex.points, note, uiLang: S.uiLang, model: ex.model ? (ex.modelText || '').slice(0, 2500) : '',
       previous: regen && prev.data ? summary(prev.data) : '', avoid
     });
     if (!res || !res.exercise) throw new Error('empty');
@@ -1130,6 +1219,99 @@ function focusEx(ex, flash) {
   if (flash) { b.classList.remove('flash'); void b.offsetWidth; b.classList.add('flash'); }
 }
 
+
+/* =====================================================================
+   Figures: data tables and electric circuits (SVG)
+   ===================================================================== */
+function tableHtml(t) {
+  if (!t || !Array.isArray(t.rows) || !t.rows.length) return '';
+  const rows = t.rows.filter(r => Array.isArray(r) && r.length).slice(0, 8).map(r => r.slice(0, 14));
+  if (!rows.length) return '';
+  return `<div class="figure"><table class="t-grid data-t" dir="ltr">${rows.map(r => `<tr>${r.map(c => `<td>${txt(c)}</td>`).join('')}</tr>`).join('')}</table>${t.caption ? `<div class="fig-cap">${txt(t.caption)}</div>` : ''}</div>`;
+}
+const CK = ['generator', 'battery', 'ac_source', 'resistor', 'lamp', 'switch', 'ammeter', 'voltmeter', 'capacitor', 'inductor', 'diode', 'led', 'motor'];
+const EW = 56; // width of one component on the wire
+function symbol(kind) {
+  const st = 'fill="none" stroke="#111" stroke-width="1.6"';
+  const mask = `<rect x="${-EW / 2}" y="-14" width="${EW}" height="28" fill="#fff" stroke="none"/>`;
+  const leads = w => `<line x1="${-EW / 2}" y1="0" x2="${-w}" y2="0" stroke="#111" stroke-width="1.6"/><line x1="${w}" y1="0" x2="${EW / 2}" y2="0" stroke="#111" stroke-width="1.6"/>`;
+  const circ = (t, sz = 11) => leads(sz) + `<circle cx="0" cy="0" r="${sz}" ${st}/>` + (t ? `<text x="0" y="4.5" text-anchor="middle" font-size="12" font-weight="700" font-family="Arial">${t}</text>` : '');
+  switch (kind) {
+    case 'battery': case 'generator':
+      return mask + leads(4) + `<line x1="-4" y1="-13" x2="-4" y2="13" stroke="#111" stroke-width="1.8"/><line x1="4" y1="-7" x2="4" y2="7" stroke="#111" stroke-width="3.2"/><text x="-12" y="-9" font-size="11" font-family="Arial">+</text><text x="8" y="-9" font-size="11" font-family="Arial">−</text>`;
+    case 'ac_source': return mask + circ('') + `<path d="M-6 0q3-6 6 0t6 0" ${st}/>`;
+    case 'resistor': return mask + leads(15) + `<rect x="-15" y="-6" width="30" height="12" ${st}/>`;
+    case 'lamp': return mask + circ('') + `<path d="M-7.8-7.8L7.8 7.8M7.8-7.8L-7.8 7.8" ${st}/>`;
+    case 'switch': return mask + `<line x1="${-EW / 2}" y1="0" x2="-10" y2="0" stroke="#111" stroke-width="1.6"/><line x1="10" y1="0" x2="${EW / 2}" y2="0" stroke="#111" stroke-width="1.6"/><line x1="-10" y1="0" x2="9" y2="-11" stroke="#111" stroke-width="1.6"/><circle cx="-10" cy="0" r="1.8" fill="#111"/><circle cx="10" cy="0" r="1.8" fill="#111"/>`;
+    case 'ammeter': return mask + circ('A');
+    case 'voltmeter': return mask + circ('V');
+    case 'motor': return mask + circ('M');
+    case 'capacitor': return mask + leads(4) + `<line x1="-4" y1="-11" x2="-4" y2="11" stroke="#111" stroke-width="2.2"/><line x1="4" y1="-11" x2="4" y2="11" stroke="#111" stroke-width="2.2"/>`;
+    case 'inductor': return mask + leads(16) + `<path d="M-16 0a4 4 0 0 1 8 0a4 4 0 0 1 8 0a4 4 0 0 1 8 0a4 4 0 0 1 8 0" ${st}/>`;
+    case 'diode': case 'led':
+      return mask + leads(8) + `<path d="M-8-8L6 0L-8 8z" fill="#111"/><line x1="7" y1="-9" x2="7" y2="9" stroke="#111" stroke-width="1.8"/>` +
+        (kind === 'led' ? `<path d="M0-11l6-7M5-11l6-7" ${st}/><path d="M6-18l-3 .5 1.5 1.5zM11-18l-3 .5 1.5 1.5z" fill="#111"/>` : '');
+    default: return mask + leads(15) + `<rect x="-15" y="-6" width="30" height="12" ${st}/>`;
+  }
+}
+function cleanEls(list) {
+  return (Array.isArray(list) ? list : []).filter(e => e && typeof e === 'object').slice(0, 8)
+    .map(e => ({ kind: CK.includes(e.kind) ? e.kind : 'resistor', label: String(e.label || '').slice(0, 10), vm: e.voltmeter === true }));
+}
+function placeEl(e, x, y, vertical, labelSide) {
+  const rot = vertical ? ' rotate(90)' : '';
+  let out = `<g transform="translate(${x} ${y})${rot}">${symbol(e.kind)}</g>`;
+  if (e.label) {
+    out += vertical
+      ? `<text x="${x + 22}" y="${y + 4}" font-size="12" font-style="italic" font-family="Times New Roman">${esc(e.label)}</text>`
+      : `<text x="${x}" y="${y + (labelSide > 0 ? 28 : -18)}" text-anchor="middle" font-size="12" font-style="italic" font-family="Times New Roman">${esc(e.label)}</text>`;
+  }
+  if (e.vm && !vertical) {
+    const d = labelSide > 0 ? 1 : -1, yy = y + d * 44, xl = x - EW / 2 + 4, xr = x + EW / 2 - 4;
+    out += `<path d="M${xl} ${y}V${yy}H${xr}V${y}" fill="none" stroke="#111" stroke-width="1.4"/><circle cx="${xl}" cy="${y}" r="2.4" fill="#111"/><circle cx="${xr}" cy="${y}" r="2.4" fill="#111"/>`;
+    out += `<g transform="translate(${x} ${yy})"><rect x="-13" y="-13" width="26" height="26" fill="#fff"/><circle r="11" fill="#fff" stroke="#111" stroke-width="1.6"/><text y="4.5" text-anchor="middle" font-size="12" font-weight="700" font-family="Arial">V</text></g>`;
+  }
+  return out;
+}
+function circuitSvg(c) {
+  if (!c || typeof c !== 'object') return '';
+  const main = cleanEls(c.main);
+  if (!main.length) return '';
+  const gi = main.findIndex(e => ['generator', 'battery', 'ac_source'].includes(e.kind));
+  const gen = gi >= 0 ? main.splice(gi, 1)[0] : { kind: 'generator', label: '' };
+  const branches = c.layout === 'parallel' ? (Array.isArray(c.branches) ? c.branches : []).map(cleanEls).filter(b => b.length).slice(0, 4) : [];
+  let body = '', W, H;
+  const x0 = 40;
+  if (!branches.length) {
+    const top = main.slice(0, Math.max(1, Math.ceil(main.length / 2))), bot = main.slice(top.length);
+    const n = Math.max(top.length, bot.length, 2);
+    const vmTop = top.some(e => e.vm), vmBot = bot.some(e => e.vm);
+    W = x0 + n * (EW + 26) + 40;
+    const y1 = vmTop ? 72 : 44, y2 = y1 + 110, x1 = W - 30;
+    H = y2 + (vmBot ? 70 : 40);
+    body += `<rect x="${x0}" y="${y1}" width="${x1 - x0}" height="${y2 - y1}" fill="none" stroke="#111" stroke-width="1.6"/>`;
+    body += placeEl(gen, x0, (y1 + y2) / 2, true, 0);
+    const span = x1 - x0;
+    top.forEach((e, i) => { body += placeEl(e, x0 + span * (i + 1) / (top.length + 1), y1, false, -1); });
+    bot.forEach((e, i) => { body += placeEl(e, x0 + span * (i + 1) / (bot.length + 1), y2, false, 1); });
+  } else {
+    const mainW = Math.max(1, main.length) * (EW + 24);
+    const bx0 = x0 + mainW + 30, bw = 90;
+    const maxLen = Math.max(...branches.map(b => b.length));
+    W = bx0 + branches.length * bw; H = Math.max(200, 70 + maxLen * (EW + 18) + 40);
+    const y1 = 50, y2 = H - 30, xEnd = bx0 + (branches.length - 1) * bw;
+    body += `<path d="M${x0} ${y1}H${xEnd}M${x0} ${y2}H${xEnd}M${x0} ${y1}V${y2}" fill="none" stroke="#111" stroke-width="1.6"/>`;
+    body += placeEl(gen, x0, (y1 + y2) / 2, true, 0);
+    main.forEach((e, i) => { body += placeEl(e, x0 + (mainW + 30) * (i + 1) / (main.length + 1), y1, false, -1); });
+    branches.forEach((b, j) => {
+      const x = bx0 + j * bw;
+      body += `<line x1="${x}" y1="${y1}" x2="${x}" y2="${y2}" stroke="#111" stroke-width="1.6"/>`;
+      if (j < branches.length - 1 || j > 0) body += `<circle cx="${x}" cy="${y1}" r="2.6" fill="#111"/><circle cx="${x}" cy="${y2}" r="2.6" fill="#111"/>`;
+      b.forEach((e, i) => { body += placeEl(e, x, y1 + (y2 - y1) * (i + 1) / (b.length + 1), true, 0); });
+    });
+  }
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" direction="ltr"><rect width="${W}" height="${H}" fill="#fff"/>${body}</svg>`;
+}
 
 /* =====================================================================
    Paper rendering (A4 pages with pagination)
@@ -1211,15 +1393,33 @@ function emptyPage() {
   </div>`;
   return p;
 }
+function autoLines() {
+  const c = S.cur.sys, lang = S.examLang;
+  const o = OFFICIAL[c] || [countryName('ar'), 'وزارة التربية'];
+  const uniMin = { ar: c === 'dz' ? 'وزارة التعليم العالي والبحث العلمي' : 'وزارة التعليم العالي', fr: c === 'dz' ? "Ministère de l'Enseignement Supérieur et de la Recherche Scientifique" : "Ministère de l'Enseignement Supérieur", en: 'Ministry of Higher Education' };
+  if (lang === 'ar') return [o[0], isUni() ? uniMin.ar : o[1]];
+  if (c === 'dz') return lang === 'fr'
+    ? ['République Algérienne Démocratique et Populaire', isUni() ? uniMin.fr : "Ministère de l'Éducation Nationale"]
+    : ["People's Democratic Republic of Algeria", isUni() ? uniMin.en : 'Ministry of National Education'];
+  return [countryName('en'), isUni() ? uniMin[lang] : (lang === 'fr' ? "Ministère de l'Éducation" : 'Ministry of Education')];
+}
+const headerLine = k => { const v = S.header[k]; return v == null ? autoLines()[k === 'countryLine' ? 0 : 1] : v; };
 function headerBlock() {
   const H = S.header, Lx = L();
-  const v = x => x ? esc(x) : '....................';
-  const cell = (k, val) => `<span class="h-k">${esc(Lx[k])}:</span> ${v(val)}`;
-  const t = el('table', 'h-table');
-  t.innerHTML = `<tr><td>${cell('school', H.school)}</td><td class="h-mid" rowspan="1">${H.logo ? `<img class="h-logo" src="${H.logo}" alt="">` : ''}</td><td>${cell('year', H.year)}</td></tr>
-    <tr><td>${cell('level', levelText())}</td><td class="h-mid h-title">${v(H.title)}</td><td>${cell('subject', subjLabel(S.cur.subject, S.examLang))}</td></tr>
-    <tr><td colspan="2">${cell('teacher', H.teacher)}</td><td>${cell('duration', H.duration)}</td></tr>`;
-  return t;
+  const v = x => x && String(x).trim() ? esc(x) : '....................';
+  const kv = (k, val) => `<span class="bh-k">${esc(Lx[k])}:</span> <span class="bh-v">${v(val)}</span>`;
+  const b = el('div', 'bac-head');
+  const cl = headerLine('countryLine'), mi = headerLine('ministry');
+  b.innerHTML = `<hr class="bh-rule">
+    ${H.logo ? `<img class="bh-logo" src="${H.logo}" alt="">` : ''}
+    ${cl ? `<div class="bh-country">${esc(cl)}</div>` : ''}
+    <table><tr><td>${esc(mi || '')}</td><td class="bh-end">${kv('school', H.school)}</td></tr>
+      <tr><td>${v(H.title)}</td><td class="bh-end">${kv('year', H.year)}</td></tr>
+      <tr><td>${kv('level', levelText())}</td><td class="bh-end">${kv('teacher', H.teacher)}</td></tr></table>
+    <hr class="bh-rule">
+    <table><tr><td>${kv('exam_in', subjLabel(S.cur.subject, S.examLang))}</td><td class="bh-end">${kv('duration', H.duration)}</td></tr></table>
+    <hr class="bh-rule">`;
+  return b;
 }
 function exHeading(ex, i) {
   const Lx = L();
@@ -1245,7 +1445,9 @@ function exBlock(ex, i) {
   let h = exHeading(ex, i);
   if (d.instruction) h += `<p class="ex-ins">${txt(d.instruction)}</p>`;
   if (d.intro) h += DOC_TYPES.includes(ex.type) ? `<div class="ex-doc"><span class="ex-doc-l">${esc(Lx.doc)}:</span>${txt(d.intro)}</div>` : `<div class="ex-intro">${txt(d.intro)}</div>`;
-  if (d.graph && d.graph.expr) { const g = graphSvg(d.graph); if (g) h += `<figure class="figure">${g}${d.graph.caption ? `<figcaption>${txt(d.graph.caption)}</figcaption>` : ''}</figure>`; }
+  if (d.circuit) { const c = circuitSvg(d.circuit); if (c) h += `<figure class="figure">${c}${d.circuit.caption ? `<figcaption>${txt(d.circuit.caption)}</figcaption>` : ''}</figure>`; }
+  if (d.table) h += tableHtml(d.table);
+  if (d.graph && (d.graph.expr || (Array.isArray(d.graph.points) && d.graph.points.length))) { const g = graphSvg(d.graph); if (g) h += `<figure class="figure">${g}${d.graph.caption ? `<figcaption>${txt(d.graph.caption)}</figcaption>` : ''}</figure>`; }
   (ex.images || []).forEach(im => { h += `<img class="ex-img" src="${im.src}" alt="" style="width:${im.w || 60}%;aspect-ratio:1/${im.ratio || 0.75}">`; });
   h += itemsHtml(ex);
   b.innerHTML = h;
@@ -1362,7 +1564,8 @@ function openRegen(ex, anchor) {
     const note = $('textarea', p).value.trim();
     closePop();
     if (S.busy) { toast(T('err_busy'), 'err'); return; }
-    ex.type = type; ex.diff = diff;
+    if (!ex.model) ex.type = type;
+    ex.diff = diff;
     await runGen(ex, { note: [ex.note, note].filter(Boolean).join(' — '), regen: true });
   };
   const onDown = e => { if (!p.contains(e.target) && !e.target.closest('.dd-menu')) closePop(); };
@@ -1436,6 +1639,12 @@ function openEditor(ex) {
         ${f(T('g_caption'), `<input type="text" data-g="caption" value="${esc(d.graph && d.graph.caption)}">`)}
       </div>
       <div class="hint">${esc(T('g_hint'))}</div>
+      <div class="fields" style="margin-top:10px">
+        ${f(T('f_pts'), `<textarea rows="2" dir="ltr" data-x="pts">${esc(((d.graph && d.graph.points) || []).map(p => p.join(',')).join(' ; '))}</textarea>`)}
+        <label class="f f-wide" style="flex-direction:row;align-items:center;gap:8px"><input type="checkbox" data-x="connect" ${d.graph && d.graph.connect ? 'checked' : ''}><span>${esc(T('f_connect'))}</span></label>
+        ${f(T('f_table'), `<textarea rows="3" dir="ltr" data-x="table">${esc(((d.table && d.table.rows) || []).map(r => r.join(' | ')).join('\n'))}</textarea>`)}
+        ${d.circuit ? `<label class="f f-wide" style="flex-direction:row;align-items:center;gap:8px"><input type="checkbox" data-x="rmc"><span>${esc(T('rm_circuit'))}</span></label>` : ''}
+      </div>
       <div class="ed-sec">${esc(T('images'))}</div><div class="ed-imgs"></div>
       <button type="button" class="btn-ghost ed-addimg">${svgI(XT.image)}<span>${esc(T('image'))}</span></button>`;
       $$('[data-k]', b).forEach(inp => inp.oninput = () => { if (inp.dataset.k === 'points') w.points = Math.max(0.5, Math.min(20, Number(inp.value) || 1)); else d[inp.dataset.k] = inp.value; });
@@ -1503,7 +1712,16 @@ function openEditor(ex) {
     foot: [
       { label: T('cancel'), onClick: a => a.close() },
       { label: T('save_edit'), cls: 'btn-main', onClick: a => {
-        if (d.graph && !String(d.graph.expr || '').trim()) d.graph = null;
+        const box = a.el;
+        const ptsTxt = $('[data-x="pts"]', box).value.trim();
+        const pts = ptsTxt ? ptsTxt.split(/[;\n]+/).map(p => p.split(/[,\s]+/).filter(Boolean).map(Number)).filter(p => p.length === 2 && p.every(isFinite)) : [];
+        d.graph = d.graph || { expr: '', xmin: -5, xmax: 5 };
+        d.graph.points = pts.length ? pts : null;
+        d.graph.connect = $('[data-x="connect"]', box).checked;
+        if (!String(d.graph.expr || '').trim() && !pts.length) d.graph = null;
+        const tt = $('[data-x="table"]', box).value.trim();
+        d.table = tt ? { caption: (d.table && d.table.caption) || '', rows: tt.split('\n').map(r => r.split('|').map(x => x.trim())).filter(r => r.some(Boolean)) } : null;
+        const rmc = $('[data-x="rmc"]', box); if (rmc && rmc.checked) d.circuit = null;
         ex.points = w.points; ex.data = d; ex.images = w.images; ex.perm = null;
         markDirty(); a.close(); renderCards(); renderPaper(); focusEx(ex, true);
       } }
@@ -1672,6 +1890,8 @@ function svgToPng(svg) {
   });
 }
 const WORD_CSS = `body{font-family:'Times New Roman',serif;font-size:13pt;line-height:1.5}
+.bac-head td{border:none;font-weight:bold;padding:1pt 2pt}.bh-country{text-align:center;font-weight:bold;font-size:14pt}.bh-end{text-align:left}
+hr.bh-rule{border:none;border-top:1.5pt solid #000;margin:2pt 0}.data-t td{border:1px solid #222;text-align:center;padding:3pt 8pt}
 table{border-collapse:collapse;width:100%}
 .h-table td,.t-grid td,.t-grid th{border:1px solid #222;padding:4pt 6pt;vertical-align:top}
 .t-grid th{background:#EEEEEE;font-weight:bold;text-align:center}
@@ -1726,7 +1946,8 @@ async function exportWord() {
       $$('.blank', cl).forEach(n => n.replaceWith(document.createTextNode(' ……………… ')));
       $$('.box', cl).forEach(n => n.replaceWith(document.createTextNode('☐ ')));
       $$('table', cl).forEach(t => t.setAttribute('dir', dir));
-      $$('p,div,li,h2,h3,td,th', cl).forEach(n => { n.setAttribute('dir', dir); if (!n.classList.contains('h-mid') && !n.classList.contains('c') && !n.classList.contains('n') && !/good-luck|corr-title|figure/.test(n.className)) n.style.textAlign = align; });
+      $$('p,div,li,h2,h3,td,th', cl).forEach(n => { n.setAttribute('dir', dir); if (!n.classList.contains('h-mid') && !n.classList.contains('c') && !n.classList.contains('n') && !/good-luck|corr-title|figure|bh-end|bh-country|data-t/.test(n.className) && !n.closest('.data-t')) n.style.textAlign = align; });
+      $$('.bh-end', cl).forEach(n => { n.style.textAlign = dir === 'rtl' ? 'left' : 'right'; });
       parts.push(`<div dir="${dir}" style="direction:${dir};text-align:${align}">${cl.innerHTML}</div>`);
     }
     const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><style>${WORD_CSS}</style></head><body dir="${dir}" style="direction:${dir}">${parts.join('<br clear="all" style="page-break-before:always">')}</body></html>`;
@@ -1752,7 +1973,7 @@ async function saveExam() {
     header: S.header, cur: S.cur, units: S.units, paste: S.paste,
     examLang: S.examLang, difficulty: S.difficulty, showCorr: S.showCorr,
     exercises: S.exercises.map(e => ({
-      id: e.id, type: e.type, unit: e.unit, diff: e.diff, points: e.points, note: e.note || '',
+      id: e.id, type: e.type, unit: e.unit, diff: e.diff, points: e.points, note: e.note || '', model: !!e.model, modelText: e.modelText || '',
       data: e.status === 'ready' ? e.data : null, images: e.images || [], perm: e.perm || null,
       status: e.status === 'ready' ? 'ready' : 'idle'
     }))
@@ -1852,7 +2073,8 @@ function init() {
   $('#unitInput').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); addCustomUnit(); } });
   $('#pasteText').oninput = e => { S.paste = e.target.value.slice(0, MAX_PASTE); markDirty(); paintPaste(); };
   $('#pasteClear').onclick = () => { S.paste = ''; $('#pasteText').value = ''; markDirty(); paintPaste(); };
-  $('#addCardBtn').onclick = addCard;
+  $('#addCardBtn').onclick = () => addCard(false);
+  $('#addModelBtn').onclick = () => addCard(true);
   $('#balanceBtn').onclick = () => {
     const p = splitPoints(20, S.exercises.length);
     S.exercises.forEach((e, i) => { e.points = p[i]; });
