@@ -32,6 +32,7 @@ const UI = {
     logo_up:'رفع شعار', logo_change:'تغيير الشعار', logo_del:'حذف الشعار', logo_hint:'بدون شعار يظهر الحرف الأول من اسم المؤسسة.',
     color:'اللون', color_custom:'لون مخصص', font:'الخط', font_auto:'خط التصميم', qr_toggle:'إظهار رمز QR', qr_mode:'عند مسح الرمز',
     qr_vcard:'يحفظ بيانات الاتصال في الهاتف', qr_web:'يفتح الموقع الإلكتروني',
+    sum_empty:'لم تُملأ بعد', sum_ct:'{n} وسائل', sum_logo:'شعار مرفوع', sum_nologo:'الحرف الأول من الاسم',
     btn_sample:'بيانات نموذجية', btn_clear:'مسح الحقول',
     t_saved_cloud:'حُفظت البطاقة في حسابك', t_cloud_err:'تعذّر الاتصال بالحساب، حاول مجددًا', t_png:'جارٍ تجهيز الصورة…', t_pdf:'جارٍ تجهيز ملف PDF…',
     t_done:'تم التنزيل', t_err:'تعذّر إنشاء الملف، حاول مجددًا', t_print:'جارٍ تجهيز لوحة الطباعة…', t_tpl:'تم تطبيق التصميم',
@@ -58,6 +59,7 @@ const UI = {
     logo_up:'Ajouter un logo', logo_change:'Changer le logo', logo_del:'Supprimer le logo', logo_hint:'Sans logo, l’initiale de l’entreprise s’affiche.',
     color:'Couleur', color_custom:'Couleur personnalisée', font:'Police', font_auto:'Police du modèle', qr_toggle:'Afficher un QR code', qr_mode:'Au scan du code',
     qr_vcard:'Enregistre le contact dans le téléphone', qr_web:'Ouvre le site web',
+    sum_empty:'Pas encore rempli', sum_ct:'{n} coordonnées', sum_logo:'Logo ajouté', sum_nologo:'Initiale du nom',
     btn_sample:'Données d’exemple', btn_clear:'Vider les champs',
     t_saved_cloud:'Carte enregistrée dans votre compte', t_cloud_err:'Connexion au compte impossible, réessayez', t_png:'Préparation de l’image…', t_pdf:'Préparation du PDF…',
     t_done:'Téléchargement terminé', t_err:'Création du fichier impossible, réessayez', t_print:'Préparation de la planche…', t_tpl:'Modèle appliqué',
@@ -84,6 +86,7 @@ const UI = {
     logo_up:'Upload a logo', logo_change:'Change logo', logo_del:'Remove logo', logo_hint:'Without a logo, the company’s initial is shown.',
     color:'Color', color_custom:'Custom color', font:'Font', font_auto:'Design font', qr_toggle:'Show a QR code', qr_mode:'When scanned',
     qr_vcard:'Saves the contact to the phone', qr_web:'Opens the website',
+    sum_empty:'Not filled yet', sum_ct:'{n} details', sum_logo:'Logo uploaded', sum_nologo:'Name initial',
     btn_sample:'Sample details', btn_clear:'Clear fields',
     t_saved_cloud:'Card saved to your account', t_cloud_err:'Couldn’t reach your account, try again', t_png:'Preparing the image…', t_pdf:'Preparing the PDF…',
     t_done:'Downloaded', t_err:'Couldn’t create the file, try again', t_print:'Preparing the print sheet…', t_tpl:'Design applied',
@@ -391,6 +394,7 @@ const TEMPLATES = [
 ];
 const TPL_BY = Object.fromEntries(TEMPLATES.map(t => [t.id, t]));
 const CATS = ['all', 'corp', 'med', 'eng', 'law', 'edu', 'shop', 'free'];
+const CAT_COLOR = { all:'#2F5770', corp:'#2563EB', med:'#16A34A', eng:'#0891B2', law:'#9F1239', edu:'#EA580C', shop:'#DB2777', free:'#7C3AED' };
 
 let GRID = '';
 function gridSVG() {
@@ -579,11 +583,11 @@ function thumbState(id) {
   return { ...st, tpl:id, color:'', font:'', bi:false, c: st.dirty ? st.c : sampleFor(id, st.clang) };
 }
 function renderGallery() {
-  $('#gCats').innerHTML = CATS.map(k => `<button type="button" class="chip${k === activeCat ? ' on' : ''}" data-cat="${k}">${T('cat_' + k)}</button>`).join('');
+  $('#gCats').innerHTML = CATS.map(k => `<button type="button" class="chip${k === activeCat ? ' on' : ''}" data-cat="${k}" style="--cc:${CAT_COLOR[k]}">${T('cat_' + k)}</button>`).join('');
   const list = TEMPLATES.filter(t => activeCat === 'all' || t.cat === activeCat);
   $('#gCount').textContent = T('count').replace('{n}', TEMPLATES.length);
   $('#gGrid').innerHTML = list.map(t => `<button type="button" class="g-card${t.id === st.tpl ? ' on' : ''}" data-tpl="${t.id}">
-      <div class="g-thumb"></div><div class="g-meta"><b>${esc(t.name[uiLang] || t.name.ar)}</b><span>${T('cat_' + t.cat)}</span></div></button>`).join('');
+      <div class="g-thumb"></div><div class="g-meta"><b>${esc(t.name[uiLang] || t.name.ar)}</b><span style="--cc:${CAT_COLOR[t.cat]}">${T('cat_' + t.cat)}</span></div></button>`).join('');
   fillThumbs();
 }
 function fillThumbs() {
@@ -622,12 +626,41 @@ const SI = {
   logo: '<rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/>',
   look: '<circle cx="13.5" cy="6.5" r="1.5"/><circle cx="17.5" cy="10.5" r="1.5"/><circle cx="8.5" cy="7.5" r="1.5"/><circle cx="6.5" cy="12.5" r="1.5"/><path d="M12 2a10 10 0 0 0 0 20c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.3 0-1.1.9-2 2-2h2.4A5.6 5.6 0 0 0 22 9.8C22 5.5 17.5 2 12 2z"/>'
 };
-const secHead = (icon, key) => `<h3><i><svg viewBox="0 0 24 24">${SI[icon]}</svg></i>${T(key)}</h3>`;
+const SECS = [
+  { id:'lang', key:'sec_lang', color:'#16A34A' },
+  { id:'id', key:'sec_id', color:'#7C3AED' },
+  { id:'ct', key:'sec_contact', color:'#D97706' },
+  { id:'logo', key:'sec_logo', color:'#2563EB' },
+  { id:'look', key:'sec_look', color:'#0F766E' }
+];
+let openSec = null;
+const CHEV = '<svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>';
+function secSummary(id) {
+  const c = st.c, j = a => a.filter(Boolean).join(' · ');
+  if (id === 'lang') return j([LANG_LABEL[st.clang], st.bi ? LANG_LABEL[st.blang] : '']);
+  if (id === 'id') return j([c.name, c.title, c.company]) || T('sum_empty');
+  if (id === 'ct') { const n = CT_KEYS.filter(k => c[k]).length; return n ? j([c.phone || c.email, T('sum_ct').replace('{n}', n)]) : T('sum_empty'); }
+  if (id === 'logo') return st.logo ? T('sum_logo') : T('sum_nologo');
+  const tpl = TPL_BY[st.tpl];
+  return j([tpl.name[uiLang] || tpl.name.ar, st.font || T('font_auto'), st.qrOn ? 'QR' : '']);
+}
+function sec(i, body) {
+  const S = SECS[i], open = openSec === S.id;
+  return `<section class="acc${open ? ' open' : ''}" data-sec="${S.id}" style="--sc:${S.color}">
+    <button type="button" class="acc-head" aria-expanded="${open}">
+      <span class="acc-num">${i + 1}</span>
+      <span class="acc-title"><b>${T(S.key)}</b><small data-sum="${S.id}">${esc(secSummary(S.id))}</small></span>
+      <span class="acc-chev">${CHEV}</span>
+    </button>
+    <div class="acc-body">${body}</div>
+  </section>`;
+}
+function updateSummaries() { $$('[data-sum]').forEach(el => { el.textContent = secSummary(el.dataset.sum); }); }
 const FTYPE = { phone:'tel', phone2:'tel', email:'email', web:'url' };
-function inputHTML(k, val, attr, full) {
-  const ltr = LTR_KEYS[k] ? ' ltr' : '';
+function inputHTML(k, val, attr, full, lang) {
+  const dir = LTR_KEYS[k] ? 'ltr' : ((lang || st.clang) === 'ar' ? 'rtl' : 'ltr');
   return `<div class="fld${full ? ' full' : ''}"><label for="f_${attr}_${k}">${T('f_' + k)}</label>
-    <input id="f_${attr}_${k}" class="${ltr.trim()}" type="${FTYPE[k] || 'text'}" data-${attr}="${k}" value="${esc(val || '')}" autocomplete="off"></div>`;
+    <input id="f_${attr}_${k}" dir="${dir}" type="${FTYPE[k] || 'text'}" data-${attr}="${k}" value="${esc(val || '')}" autocomplete="off"></div>`;
 }
 const FONTS = { ar:['Tajawal','Cairo','Almarai','El Messiri','Amiri'], la:['Inter','Poppins','Playfair Display','Cairo','Tajawal'] };
 
@@ -640,22 +673,17 @@ function buildForm() {
   const full = { name:1, company:1, tagline:1, email:1, address:1, title:1 };
 
   $('#paneForm').innerHTML = `
-  <section class="fsec">${secHead('lang', 'sec_lang')}
+  ${sec(0, `
     <div class="seg" id="clangSeg">${LANGS.map(l => `<button type="button" data-clang="${l}" class="${l === st.clang ? 'on' : ''}">${LANG_LABEL[l]}</button>`).join('')}</div>
     <label class="switch"><span>${T('bi_toggle')}</span><input type="checkbox" id="biT"${st.bi ? ' checked' : ''}><span class="tg"></span></label>
     ${st.bi ? `<div class="sub-box">
       <p class="note">${T('bi_note')}</p>
       <div class="seg" id="blangSeg" style="margin-bottom:10px">${otherLangs.map(l => `<button type="button" data-blang="${l}" class="${l === st.blang ? 'on' : ''}">${LANG_LABEL[l]}</button>`).join('')}</div>
-      <div class="fgrid" dir="${st.blang === 'ar' ? 'rtl' : 'ltr'}">${BI_KEYS.map(k => inputHTML(k, st.c2[k], 'k2', true)).join('')}</div>
-    </div>` : ''}
-  </section>
-  <section class="fsec">${secHead('id', 'sec_id')}
-    <div class="fgrid" dir="${st.clang === 'ar' ? 'rtl' : 'ltr'}">${ID_KEYS.map(k => inputHTML(k, st.c[k], 'k', full[k])).join('')}</div>
-  </section>
-  <section class="fsec">${secHead('ct', 'sec_contact')}
-    <div class="fgrid" dir="${st.clang === 'ar' ? 'rtl' : 'ltr'}">${CT_KEYS.map(k => inputHTML(k, st.c[k], 'k', full[k])).join('')}</div>
-  </section>
-  <section class="fsec">${secHead('logo', 'sec_logo')}
+      <div class="fgrid">${BI_KEYS.map(k => inputHTML(k, st.c2[k], 'k2', true, st.blang)).join('')}</div>
+    </div>` : ''}`)}
+  ${sec(1, `<div class="fgrid">${ID_KEYS.map(k => inputHTML(k, st.c[k], 'k', full[k])).join('')}</div>`)}
+  ${sec(2, `<div class="fgrid">${CT_KEYS.map(k => inputHTML(k, st.c[k], 'k', full[k])).join('')}</div>`)}
+  ${sec(3, `
     <div class="logo-row">
       <div class="logo-prev" style="${st.logo ? `background-image:url('${st.logo}')` : ''}">${st.logo ? '' : `<svg viewBox="0 0 24 24">${SI.logo}</svg>`}</div>
       <div class="logo-btns">
@@ -663,9 +691,8 @@ function buildForm() {
         ${st.logo ? `<button type="button" class="btn ghost" id="logoDel">${T('logo_del')}</button>` : ''}
       </div>
     </div>
-    ${st.logo ? '' : `<p class="hint-s">${T('logo_hint')}</p>`}
-  </section>
-  <section class="fsec">${secHead('look', 'sec_look')}
+    ${st.logo ? '' : `<p class="hint-s">${T('logo_hint')}</p>`}`)}
+  ${sec(4, `
     <div class="fld full" style="margin-bottom:12px"><label>${T('color')}</label>
       <div class="swatches">${tpl.swatches.map(c => `<button type="button" class="sw${c.toLowerCase() === acc.toLowerCase() ? ' on' : ''}" data-sw="${c}" style="background:${c}" aria-label="${c}"></button>`).join('')}
         <label class="sw-custom" title="${T('color_custom')}"><input type="color" id="colorIn" value="${acc}"></label></div>
@@ -675,8 +702,7 @@ function buildForm() {
     </div>
     <label class="switch"><span>${T('qr_toggle')}</span><input type="checkbox" id="qrT"${st.qrOn ? ' checked' : ''}><span class="tg"></span></label>
     ${st.qrOn ? `<div class="fld full"><label for="qrSel">${T('qr_mode')}</label>
-      <select id="qrSel"><option value="vcard"${st.qrMode === 'vcard' ? ' selected' : ''}>${T('qr_vcard')}</option><option value="web"${st.qrMode === 'web' ? ' selected' : ''}>${T('qr_web')}</option></select></div>` : ''}
-  </section>
+      <select id="qrSel"><option value="vcard"${st.qrMode === 'vcard' ? ' selected' : ''}>${T('qr_vcard')}</option><option value="web"${st.qrMode === 'web' ? ' selected' : ''}>${T('qr_web')}</option></select></div>` : ''}`)}
   <div class="btn-row">
     <button type="button" class="btn" id="btnSample">${T('btn_sample')}</button>
     <button type="button" class="btn" id="btnClear">${T('btn_clear')}</button>
@@ -685,6 +711,7 @@ function buildForm() {
 
 let rafId = 0;
 function onData() {
+  updateSummaries();
   cancelAnimationFrame(rafId);
   rafId = requestAnimationFrame(renderStage);
   refreshThumbsSoon();
@@ -722,6 +749,13 @@ pane.addEventListener('change', e => {
   else if (el.id === 'fontSel') { st.font = el.value; onData(); }
 });
 pane.addEventListener('click', e => {
+  const head = e.target.closest('.acc-head');
+  if (head) {
+    const id = head.parentElement.dataset.sec;
+    openSec = openSec === id ? null : id;
+    $$('.acc', pane).forEach(x => { const on = x.dataset.sec === openSec; x.classList.toggle('open', on); x.querySelector('.acc-head').setAttribute('aria-expanded', on); });
+    return;
+  }
   const b = e.target.closest('button'); if (!b) return;
   if (b.dataset.clang) { if (b.dataset.clang !== st.clang) setContentLang(b.dataset.clang); }
   else if (b.dataset.blang) {
