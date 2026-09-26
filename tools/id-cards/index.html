@@ -1,126 +1,162 @@
 <!DOCTYPE html>
-<html lang="fr" dir="ltr">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Business Cards — Merabti Academy</title>
-<meta name="description" content="Créez des cartes de visite professionnelles — 2 modèles, aperçu en direct, export PDF.">
+<title>مولّد بطاقات الأعمال — أكاديمية مرابطي</title>
+<script src="/analytics.js"></script>
+<link rel="icon" type="image/x-icon" href="../../favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="../../apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Montserrat:wght@400;600;700&family=Oswald:wght@300;400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Cairo:wght@400;600;700;800&family=Almarai:wght@400;700;800&family=El+Messiri:wght@400;600;700&family=Amiri:wght@400;700&family=Inter:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="topbar-inner">
-  <a class="back-link" href="../../tools.html" id="backLink">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-    <span>Retour aux outils</span>
+<header class="topbar">
+  <a href="../../index.html" class="brand-logo" title="أكاديمية مرابطي">
+    <img src="../../apple-touch-icon.png" alt="أكاديمية مرابطي">
   </a>
+  <a class="icon-btn back-btn" href="../../tools.html" data-tip="back_tools" aria-label="back">
+    <svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>
+  </a>
+  <span class="tool-name" data-i18n="tool_name">مولّد بطاقات الأعمال</span>
   <div class="topbar-actions">
-    <div class="lang-switch" id="langSwitch">
-      <button type="button" class="lang-btn active" data-lang="fr">FR</button>
-      <button type="button" class="lang-btn" data-lang="en">EN</button>
-    </div>
-    <button type="button" class="icon-btn" id="saveBtn" title="Enregistrer">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg>
+    <button class="icon-btn" id="btnFullscreen" type="button" data-tip="fullscreen">
+      <svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
     </button>
-    <button type="button" class="icon-btn" id="topDownloadBtn" title="Télécharger le PDF">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V4m0 0 4 4m-4-4-4 4"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+    <button class="icon-btn" id="btnMine" type="button" data-tip="mine">
+      <svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
     </button>
-    <div class="auth-wrap" id="authWrap">
-      <button class="auth-btn" id="authBtn" type="button"></button>
-      <div class="auth-menu hidden" id="authMenu"></div>
+    <button class="icon-btn" id="btnSave" type="button" data-tip="save">
+      <svg viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5z"/><path d="M8 4v5h7V4M8 20v-6h8v6"/></svg>
+    </button>
+    <button class="icon-btn" id="btnPrint" type="button" data-tip="print">
+      <svg viewBox="0 0 24 24"><path d="M7 9V4h10v5M7 17H4v-7h16v7h-3"/><path d="M7 14h10v6H7z"/></svg>
+    </button>
+    <div class="menu-wrap">
+      <button class="icon-btn" id="btnPng" type="button" data-tip="png">
+        <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="M4 18l5-5 4 4 3-3 4 4"/></svg>
+      </button>
+      <div class="drop hidden" id="pngMenu">
+        <button type="button" data-png="front"><b data-i18n="front">الوجه الأمامي</b><small data-i18n="png_d">صورة PNG عالية الدقة</small></button>
+        <button type="button" data-png="back"><b data-i18n="back">الوجه الخلفي</b><small data-i18n="png_d">صورة PNG عالية الدقة</small></button>
+      </div>
     </div>
+    <div class="menu-wrap">
+      <button class="icon-btn pdf" id="btnPdf" type="button" data-tip="pdf"><span>PDF</span></button>
+      <div class="drop hidden" id="pdfMenu">
+        <button type="button" data-pdf="card"><b data-i18n="pdf_card">بطاقة واحدة</b><small data-i18n="pdf_card_d">85 × 55 مم، بوجهيها</small></button>
+        <button type="button" data-pdf="sheet"><b data-i18n="pdf_sheet">لوحة A4</b><small data-i18n="pdf_sheet_d">10 بطاقات مع علامات القص</small></button>
+      </div>
+    </div>
+    <div class="lang-wrap">
+      <button class="lang-toggle" id="langToggle" type="button">AR</button>
+      <div class="lang-menu hidden" id="langMenu">
+        <button type="button" data-lang="ar">العربية</button>
+        <button type="button" data-lang="fr">Français</button>
+        <button type="button" data-lang="en">English</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="workspace" id="workspace" data-pane="stage">
+  <!-- Information: always on the right -->
+  <aside class="pane form-pane" id="paneForm"></aside>
+
+  <!-- Preview: center -->
+  <main class="pane stage" id="paneStage">
+    <div class="stage-bar">
+      <div class="seg" id="viewSeg">
+        <button type="button" data-view="both" class="on" data-i18n="view_both">الوجهان</button>
+        <button type="button" data-view="3d" data-i18n="view_3d">ثلاثي الأبعاد</button>
+      </div>
+      <span class="tpl-now" id="tplNow"></span>
+      <button type="button" class="flip-btn" id="btnFlip">
+        <svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 14-5l2 2M20 12a8 8 0 0 1-14 5l-2-2M20 4v5h-5M4 20v-5h5"/></svg>
+        <span data-i18n="flip">اقلب</span>
+      </button>
+    </div>
+    <div class="stage-body" id="stageBody">
+      <div class="both-view" id="bothView">
+        <figure class="side-fig">
+          <figcaption data-i18n="front">الوجه الأمامي</figcaption>
+          <div class="card-slot" id="slotFront"></div>
+        </figure>
+        <figure class="side-fig">
+          <figcaption data-i18n="back">الوجه الخلفي</figcaption>
+          <div class="card-slot" id="slotBack"></div>
+        </figure>
+      </div>
+      <div class="tilt-view hidden" id="tiltView">
+        <div class="tilt-scene" id="tiltScene">
+          <div class="flip" id="flip">
+            <div class="face face-front"><div class="card-slot" id="faceFront"></div><span class="shine"></span></div>
+            <div class="face face-back"><div class="card-slot" id="faceBack"></div><span class="shine"></span></div>
+          </div>
+        </div>
+        <p class="hint" data-i18n="hint3d">حرّك الفأرة فوق البطاقة، واضغط «اقلب» لرؤية الوجه الآخر</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Designs: always on the left -->
+  <aside class="pane gallery-pane" id="paneGallery">
+    <div class="gp-head">
+      <h2 data-i18n="designs">التصاميم</h2>
+      <span class="gp-count" id="gCount"></span>
+    </div>
+    <div class="chips" id="gCats"></div>
+    <div class="gp-grid" id="gGrid"></div>
+  </aside>
+</div>
+
+<!-- Mobile tabs -->
+<nav class="mtabs" id="mtabs">
+  <button type="button" data-pane="gallery"><svg viewBox="0 0 24 24"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></svg><span data-i18n="tab_design">التصميم</span></button>
+  <button type="button" data-pane="form"><svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13 7l4 4"/></svg><span data-i18n="tab_info">المعلومات</span></button>
+  <button type="button" data-pane="stage" class="on"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 10h6M7 14h4"/></svg><span data-i18n="tab_preview">المعاينة</span></button>
+</nav>
+
+<!-- My cards -->
+<div class="modal hidden" id="mine" role="dialog" aria-modal="true">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h2 data-i18n="mine">بطاقاتي</h2>
+      <button class="icon-btn" id="mClose" type="button" aria-label="close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="m-grid" id="mGrid"></div>
   </div>
 </div>
 
-<div class="hero">
-  <h1>Cartes de visite</h1>
-  <p>Choisissez un modèle, remplissez vos informations, et téléchargez un PDF prêt à imprimer (recto + verso).</p>
-</div>
-
-<main class="layout3">
-  <section class="panel-card">
-    <div class="panel-title">Vos informations</div>
-    <div class="field" data-field="name">
-      <label for="fName">Nom complet</label>
-      <input type="text" id="fName" class="field-input" placeholder="Soufiane Merabti">
-    </div>
-    <div class="field" data-field="title">
-      <label for="fTitle">Poste</label>
-      <input type="text" id="fTitle" class="field-input" placeholder="Head Department">
-    </div>
-    <div class="field" data-field="phone">
-      <label for="fPhone">Téléphone</label>
-      <input type="text" id="fPhone" class="field-input" placeholder="0663708148">
-    </div>
-    <div class="field" data-field="website">
-      <label for="fWebsite">Site web</label>
-      <input type="text" id="fWebsite" class="field-input" placeholder="merabti.com">
-    </div>
-    <div class="field" data-field="email">
-      <label for="fEmail">E-mail</label>
-      <input type="text" id="fEmail" class="field-input" placeholder="email@example.com">
-    </div>
-    <div class="field" data-field="social">
-      <label for="fSocial">Réseau social</label>
-      <input type="text" id="fSocial" class="field-input" placeholder="#soufiane">
-    </div>
-
-    <button type="button" class="primary-btn" id="downloadBtn">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15V4m0 0 4 4m-4-4-4 4"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
-      Télécharger le PDF (recto-verso)
+<!-- Login prompt -->
+<div class="modal hidden" id="login" role="dialog" aria-modal="true">
+  <div class="login-box">
+    <div class="login-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></div>
+    <h3 data-i18n="login_title">سجّل دخولك لحفظ بطاقاتك</h3>
+    <p data-i18n="login_text"></p>
+    <button type="button" class="login-google" id="loginGoogle">
+      <svg viewBox="0 0 48 48" style="stroke:none"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>
+      <span data-i18n="login_google">الدخول بحساب Google</span>
     </button>
-    <p class="field-hint" style="text-align:center; margin-top:8px;">Le QR code (verso) pointe vers votre site web.</p>
-  </section>
-
-  <section class="preview-col">
-    <div class="preview-card-wrap">
-      <div class="preview-card-label">Recto</div>
-      <div class="preview-card" id="previewFront"></div>
-    </div>
-    <div class="preview-card-wrap">
-      <div class="preview-card-label">Verso</div>
-      <div class="preview-card" id="previewBack"></div>
-    </div>
-  </section>
-
-  <div class="picker-col">
-    <div class="pick-title">Modèle</div>
-    <div class="pick-card active" data-template="t1" id="pickT1"></div>
-    <div class="pick-card" data-template="t2" id="pickT2"></div>
-    <div class="pick-card" data-template="t3" id="pickT3"></div>
-    <div class="pick-card" data-template="t4" id="pickT4"></div>
-    <div class="pick-soon">Bientôt<br>disponible</div>
-    <div class="pick-soon">Bientôt<br>disponible</div>
-    <div class="pick-soon">Bientôt<br>disponible</div>
-    <div class="pick-soon">Bientôt<br>disponible</div>
-  </div>
-</main>
-
-<footer class="site-footer">© 2026 Dr. Sofiane Merabti</footer>
-
-<!-- ============ Connexion (optionnelle) ============ -->
-<div class="modal-overlay hidden" id="authOverlay">
-  <div class="modal-card">
-    <button class="modal-close" id="authCloseBtn" type="button">×</button>
-    <h3>Connexion</h3>
-    <p class="modal-sub">La connexion est facultative — l'outil fonctionne aussi sans elle.</p>
+    <a class="login-site" href="../../index.html" data-i18n="login_site">تسجيل الدخول من الموقع</a>
+    <button type="button" class="login-cancel" id="loginCancel" data-i18n="cancel">إلغاء</button>
   </div>
 </div>
 
-<!-- Firebase (compat) — connexion optionnelle uniquement -->
+<div class="toast" id="toast"></div>
+<div class="print-root" id="printRoot" aria-hidden="true"></div>
+<div class="export-root" id="exportRoot" aria-hidden="true"></div>
+<input type="file" id="logoFile" accept="image/*" hidden>
+
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="../../firebase-init.js"></script>
-
-<!-- Génération PDF (vectoriel, pas de capture d'écran) + QR code -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/svg2pdf.js/2.2.1/svg2pdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-
 <script src="app.js"></script>
 </body>
 </html>
