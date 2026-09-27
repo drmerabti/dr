@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مولّد بطاقات التشجيع — أكاديمية مرابطي</title>
+<script src="/analytics.js"></script>
+<link rel="icon" type="image/x-icon" href="../../favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="../../apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Cairo:wght@400;600;700;800&family=Almarai:wght@400;700;800&family=El+Messiri:wght@400;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <a href="../../index.html" class="brand-logo" title="أكاديمية مرابطي">
+    <img src="../../apple-touch-icon.png" alt="أكاديمية مرابطي">
+  </a>
+  <a class="icon-btn back-btn" href="../../tools.html" data-tip="العودة إلى الأدوات" aria-label="back">
+    <svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>
+  </a>
+  <span class="tool-name">مولّد بطاقات التشجيع</span>
+  <div class="topbar-actions">
+    <div class="seg" id="modeSeg">
+      <button type="button" data-mode="single" class="on">فردي</button>
+      <button type="button" data-mode="batch">دفعة</button>
+    </div>
+    <button class="icon-btn" id="btnFullscreen" type="button" data-tip="ملء الشاشة">
+      <svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+    </button>
+    <button class="icon-btn" id="btnSave" type="button" data-tip="حفظ في هذا الجهاز">
+      <svg viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5z"/><path d="M8 4v5h7V4M8 20v-6h8v6"/></svg>
+    </button>
+    <button class="icon-btn" id="btnPrint" type="button" data-tip="طباعة">
+      <svg viewBox="0 0 24 24"><path d="M7 9V4h10v5M7 17H4v-7h16v7h-3"/><path d="M7 14h10v6H7z"/></svg>
+    </button>
+    <button class="icon-btn pdf" id="btnPdf" type="button" data-tip="تحميل PDF">
+      <span>PDF</span>
+    </button>
+  </div>
+</header>
+
+<div class="workspace" id="workspace">
+  <aside class="panel" id="panel">
+    <button class="gallery-open" id="btnGallery" type="button">
+      <span class="go-thumb" id="currentThumb"></span>
+      <span class="go-text">
+        <strong>معرض التصاميم</strong>
+        <small id="currentTplName"></small>
+      </span>
+      <svg viewBox="0 0 24 24"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></svg>
+    </button>
+
+    <div class="accordion" id="accordion">
+
+      <section class="acc-item" data-sec="size">
+        <button class="acc-head" type="button">
+          <span><strong>حجم البطاقة</strong><small>القياس الذي ستُطبع به</small></span>
+          <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="acc-body">
+          <div class="seg wide" id="sizeSeg">
+            <button type="button" data-size="a6" class="on">A6 (4/ورقة)</button>
+            <button type="button" data-size="bank">بطاقة (10/ورقة)</button>
+            <button type="button" data-size="a5">A5 (2/ورقة)</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="acc-item" data-sec="content" data-open="1">
+        <button class="acc-head" type="button">
+          <span><strong>محتوى البطاقة</strong><small>الاسم، المادة والرسالة</small></span>
+          <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="acc-body">
+          <div class="single-only">
+            <label>اسم التلميذ(ة)</label>
+            <input type="text" id="fName" placeholder="مثال: ياسمين">
+          </div>
+
+          <div class="batch-only hidden">
+            <label>قائمة الأسماء (اسم في كل سطر)</label>
+            <textarea id="fNames" rows="6" placeholder="ياسمين&#10;أمين&#10;سارة"></textarea>
+          </div>
+
+          <label>المادة</label>
+          <div class="subj-row">
+            <select id="fSubject"></select>
+            <button type="button" id="btnAddSubject" class="mini-btn" title="إضافة مادة">+</button>
+          </div>
+
+          <label>الرسالة</label>
+          <div class="phrase-chips" id="phraseChips"></div>
+          <textarea id="fMsg" rows="3"></textarea>
+
+          <label>اسم المعلّم(ة) / المؤسسة</label>
+          <input type="text" id="fTeacher" placeholder="مثال: الأستاذة سعاد">
+
+          <label>التاريخ</label>
+          <input type="text" id="fDate" placeholder="مثال: 2026/2027">
+        </div>
+      </section>
+
+    </div>
+  </aside>
+
+  <button class="panel-toggle" id="panelToggle" type="button" data-tip="إظهار / إخفاء اللوحة">
+    <svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>
+  </button>
+
+  <main class="stage" id="stage">
+    <div class="stage-bar">
+      <div class="zoom" id="zoomCtl">
+        <button type="button" id="zoomOut" aria-label="-"><svg viewBox="0 0 24 24"><path d="M6 12h12"/></svg></button>
+        <span id="zoomVal">100%</span>
+        <button type="button" id="zoomIn" aria-label="+"><svg viewBox="0 0 24 24"><path d="M6 12h12M12 6v12"/></svg></button>
+        <button type="button" id="zoomFit" data-tip="ملاءمة الشاشة"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+      </div>
+      <span class="batch-count hidden" id="batchCount"></span>
+    </div>
+
+    <div class="stage-holder" id="stageHolder">
+      <div class="card-holder" id="cardHolder"></div>
+    </div>
+  </main>
+</div>
+
+<!-- Templates gallery -->
+<div class="gallery hidden" id="gallery" role="dialog" aria-modal="true">
+  <div class="gallery-box">
+    <div class="gallery-head">
+      <h2>معرض التصاميم</h2>
+      <button class="icon-btn" id="gClose" type="button" aria-label="close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="g-filters">
+      <div class="chips" id="gCats"></div>
+    </div>
+    <div class="g-grid" id="gGrid"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="print-root" id="printRoot" aria-hidden="true"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
