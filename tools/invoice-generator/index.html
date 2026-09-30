@@ -1,368 +1,457 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr" id="htmlRoot">
+<html lang="ar" dir="rtl" id="htmlRoot">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Invoice Generator</title>
+<title>منشئ الفواتير — أكاديمية مرابطي</title>
 <meta name="description" content="Generate professional invoices with logo, signature, VAT, and amount-in-words in Arabic, English, or French.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@1,600;1,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../../style.css">
-<link rel="stylesheet" href="style.css">
 <script src="/analytics.js"></script>
+<link rel="icon" type="image/x-icon" href="../../favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="../../apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Cairo:wght@400;600;700;800&family=Amiri:wght@400;700&family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<!-- ============ INVOICE LIST SCREEN ============ -->
-<div id="listScreen">
-  <header class="topbar">
-    <div class="topbar-inner">
-      <div class="brand-group">
-        <a href="../../index.html" class="brand">Dr Soufiane Merabti</a>
-      </div>
-      <div class="topbar-actions">
-        <div class="auth-wrap" id="authWrapList"></div>
-        <div class="lang-switch" role="group" aria-label="Language switcher">
-          <button type="button" class="lang-btn list-lang-btn" data-lang="ar">العربية</button>
-          <button type="button" class="lang-btn list-lang-btn active" data-lang="en">English</button>
-          <button type="button" class="lang-btn list-lang-btn" data-lang="fr">Français</button>
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <div class="list-screen-body">
-    <div class="list-screen-header">
-      <h1 data-i18n="savedInvoicesTitle">Saved Invoices</h1>
-      <button type="button" class="btn-new-invoice" id="createNewInvoiceBtn">
-        <span aria-hidden="true">+</span> <span data-i18n="createNewInvoice">Create New Invoice</span>
-      </button>
-    </div>
-    <div id="invoiceListBody" class="invoice-list-body"></div>
-  </div>
-</div>
-
-<!-- ============ EDITOR SCREEN ============ -->
-<div id="editorScreen" class="hidden">
-
 <header class="topbar">
-  <div class="topbar-inner">
-    <div class="brand-group">
-      <button type="button" id="backToListBtn" class="back-to-list-btn" title="Back to saved invoices">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
-      </button>
-      <a href="../../index.html" class="brand">Dr Soufiane Merabti</a>
-
-      <button id="proBtn" class="pro-btn" type="button">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 8l4 3 5-6 5 6 4-3-2 11H5L3 8z"/><circle cx="3" cy="8" r="1.4" fill="currentColor" stroke="none"/><circle cx="12" cy="5" r="1.4" fill="currentColor" stroke="none"/><circle cx="21" cy="8" r="1.4" fill="currentColor" stroke="none"/></svg>
-        <span>Pro</span>
-      </button>
-    </div>
-
-    <div class="topbar-actions">
-      <div class="toolbar-actions-group" id="toolbarActionsGroup">
-        <button type="button" class="tbtn" id="settingsBtn" aria-label="Currency settings" title="Currency settings">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-          <span data-i18n="currencyBtnLabel">Currency</span>
-        </button>
-        <button type="button" class="tbtn tbtn-save" id="saveBtn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-          <span data-i18n="save">Save</span>
-        </button>
-        <button type="button" class="tbtn" id="clearBtn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
-          <span data-i18n="clear">Empty</span>
-        </button>
-        <button type="button" class="tbtn" id="printBtn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-          <span data-i18n="print">Print</span>
-        </button>
-        <button type="button" class="tbtn" id="generatePdfBtn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
-          <span data-i18n="generatePdf">PDF</span>
-        </button>
-      </div>
-
-      <button type="button" class="mobile-actions-toggle" id="mobileActionsToggle" aria-label="Actions">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
-      </button>
-
-      <div class="auth-wrap" id="authWrap"></div>
-      <div class="lang-switch" role="group" aria-label="Language switcher">
+  <a href="../../index.html" class="brand-logo" title="أكاديمية مرابطي">
+    <img src="../../apple-touch-icon.png" alt="أكاديمية مرابطي">
+  </a>
+  <a class="icon-btn back-btn" href="../../tools.html" data-tip="back_tools" aria-label="back">
+    <svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>
+  </a>
+  <span class="tool-name" data-i18n="appTitle">منشئ الفواتير</span>
+  <div class="topbar-actions">
+    <button class="icon-btn" id="btnFullscreen" type="button" data-tip="fullscreen">
+      <svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+    </button>
+    <button class="icon-btn" id="btnMine" type="button" data-tip="mine">
+      <svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+    </button>
+    <button class="icon-btn" id="saveBtn" type="button" data-tip="save">
+      <svg viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5z"/><path d="M8 4v5h7V4M8 20v-6h8v6"/></svg>
+    </button>
+    <button class="icon-btn" id="printBtn" type="button" data-tip="print">
+      <svg viewBox="0 0 24 24"><path d="M7 9V4h10v5M7 17H4v-7h16v7h-3"/><path d="M7 14h10v6H7z"/></svg>
+    </button>
+    <button class="icon-btn pdf" id="generatePdfBtn" type="button" data-tip="generatePdf">
+      <span>PDF</span>
+    </button>
+    <div class="lang-wrap">
+      <button class="lang-toggle" id="langToggle" type="button">AR</button>
+      <div class="lang-menu hidden" id="langMenu">
         <button type="button" class="lang-btn" data-lang="ar">العربية</button>
-        <button type="button" class="lang-btn active" data-lang="en">English</button>
         <button type="button" class="lang-btn" data-lang="fr">Français</button>
+        <button type="button" class="lang-btn" data-lang="en">English</button>
       </div>
     </div>
   </div>
 </header>
 
-<main class="app-grid">
+<div class="workspace" id="workspace">
+  <aside class="panel" id="panel">
+    <button class="gallery-open" id="btnGallery" type="button">
+      <span class="go-thumb" id="currentThumb"></span>
+      <span class="go-text">
+        <strong data-i18n="gallery">معرض القوالب</strong>
+        <small id="currentTplName"></small>
+      </span>
+      <svg viewBox="0 0 24 24"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></svg>
+    </button>
 
-  <!-- ============ LEFT COLUMN: FORM ============ -->
-  <section class="col col-form">
-    <div class="form-title-row">
-      <h1 class="col-title" data-i18n="invoiceForm">Invoice Form</h1>
-      <div class="doc-type-toggle" role="group" aria-label="Document type">
-        <button type="button" class="doc-type-btn active" id="typeFactureBtn" data-i18n="typeFacture">Facture</button>
-        <button type="button" class="doc-type-btn" id="typeProformaBtn" data-i18n="typeProforma">Proforma</button>
-      </div>
-    </div>
+    <div class="accordion" id="accordion">
 
-    <div class="card">
-      <div class="field-row">
-        <div class="field field-upload">
-          <label class="field-label" data-i18n="uploadLogo">Upload Header / Logo</label>
-          <div class="upload-box" id="logoUploadBox">
-            <input type="file" id="logoInput" accept=".png,.jpg,.jpeg,.svg,image/*" hidden>
-            <div class="upload-placeholder" id="logoPlaceholder">
-              <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
-              <span data-i18n="uploadLogoText">Upload Header/ Logo</span>
+      <!-- 1. Style -->
+      <section class="acc" data-sec="style" style="--sc:#64748B">
+        <button type="button" class="acc-head"><span class="acc-num">1</span>
+          <span class="acc-title"><b data-i18n="sec_style">التنسيق</b><small data-sum="style"></small></span>
+          <svg class="acc-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="acc-body"><div class="acc-inner"><div class="acc-content">
+          <div class="field">
+            <label data-i18n="docType">نوع المستند</label>
+            <div class="seg-ui" role="group">
+              <button type="button" class="doc-type-btn on" id="typeFactureBtn" data-i18n="typeFacture">فاتورة</button>
+              <button type="button" class="doc-type-btn" id="typeProformaBtn" data-i18n="typeProforma">عرض سعر</button>
             </div>
-            <img id="logoPreview" class="upload-img" hidden alt="Logo preview">
-          </div>
-        </div>
-
-        <div class="field-stack">
-          <div class="field">
-            <label class="field-label" data-i18n="date">Date</label>
-            <input type="date" id="invoiceDate" class="input">
           </div>
           <div class="field">
-            <input type="text" id="invoiceNumber" class="input" data-i18n-placeholder="referencePlaceholder" placeholder="Reference (e.g. 001)">
+            <label data-i18n="template">القالب</label>
+            <div class="tpl-strip" id="tplStrip"></div>
           </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <h2 class="card-title" data-i18n="yourContactInfo">Your Contact Info</h2>
-      <div id="issuerContactList" class="issuer-contact-list"></div>
-      <div class="add-contact-wrap">
-        <button type="button" class="btn btn-add" id="addContactBtn">
-          <span aria-hidden="true">+</span> <span data-i18n="addContact">Add</span>
-        </button>
-        <div class="add-contact-menu" id="addContactMenu" hidden>
-          <button type="button" data-type="phone" data-i18n="contactPhone">Phone</button>
-          <button type="button" data-type="email" data-i18n="contactEmail">Email</button>
-          <button type="button" data-type="address" data-i18n="contactAddress">Address</button>
-          <button type="button" data-type="website" data-i18n="contactWebsite">Website</button>
-          <button type="button" data-type="other" data-i18n="contactOther">Other</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="field">
-        <label class="field-label" data-i18n="customer">Customer</label>
-        <textarea id="customerName" class="input" rows="2" data-i18n-placeholder="customerPlaceholder" placeholder="Customer name"></textarea>
-      </div>
-    </div>
-
-    <div class="card">
-      <h2 class="card-title" data-i18n="invoiceItems">Invoice Items</h2>
-      <div class="table-wrap">
-        <table class="items-table">
-          <thead>
-            <tr>
-              <th data-i18n="article">Article</th>
-              <th data-i18n="quantity">Quantity</th>
-              <th data-i18n="unitPrice">Unit Price</th>
-              <th data-i18n="totalPrice">Total Price</th>
-              <th class="th-action"></th>
-            </tr>
-          </thead>
-          <tbody id="itemsTbody"></tbody>
-        </table>
-      </div>
-      <button type="button" class="btn btn-add" id="addArticleBtn">
-        <span aria-hidden="true">+</span> <span data-i18n="addArticle">Add Article</span>
-      </button>
-    </div>
-
-    <div class="card">
-      <h2 class="card-title" data-i18n="totals">Totals</h2>
-      <div class="totals-grid">
-        <div class="totals-row">
-          <span class="totals-label" data-i18n="ht">HT</span>
-          <span class="totals-value" id="htValue">$0.00</span>
-        </div>
-        <div class="totals-row totals-row-tva">
-          <span class="totals-label" data-i18n="tva">TVA</span>
-          <div class="tva-input-wrap">
-            <input type="number" id="tvaPercent" class="input input-tva" value="19" min="0" step="1">
-            <span class="tva-suffix">%</span>
+          <div class="field">
+            <label data-i18n="accentColor">اللون الرئيسي</label>
+            <div class="swatches" id="swatches"></div>
           </div>
-          <span class="totals-value" id="tvaValue">$0.00</span>
-        </div>
-        <div class="totals-row totals-row-ttc">
-          <span class="totals-label totals-label-ttc" data-i18n="ttc">TTC</span>
-          <span class="totals-value totals-value-ttc" id="ttcValue">$0.00</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <h2 class="card-title" data-i18n="amountInWords">Amount in Words</h2>
-      <div class="words-row">
-        <div class="words-box" id="amountWordsBox" data-i18n="clickGenerate">Click "Generate" to convert the total into words</div>
-        <button type="button" class="btn btn-secondary btn-generate" id="generateWordsBtn" data-i18n="generate">Generate</button>
-      </div>
-    </div>
-
-    <div class="card">
-      <h2 class="card-title" data-i18n="uploadSignature">Upload Signature</h2>
-      <div class="upload-box upload-box-wide" id="signatureUploadBox">
-        <input type="file" id="signatureInput" accept=".png,.jpg,.jpeg,.svg,image/*" hidden>
-        <div class="upload-placeholder" id="signaturePlaceholder">
-          <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
-          <span data-i18n="uploadSignatureText">Upload Signature</span>
-        </div>
-        <img id="signaturePreview" class="upload-img" hidden alt="Signature preview">
-      </div>
-    </div>
-
-    <div class="card">
-      <h2 class="card-title" data-i18n="notes">Notes / Payment Terms</h2>
-      <textarea id="notesInput" class="input" rows="3" data-i18n-placeholder="notesPlaceholder" placeholder="e.g. Payment due within 30 days"></textarea>
-    </div>
-  </section>
-
-  <!-- ============ RIGHT COLUMN: PREVIEW ============ -->
-  <section class="col col-preview">
-    <h1 class="col-title" data-i18n="livePreview">Live Invoice Preview</h1>
-
-    <div class="preview-shell">
-      <div class="invoice-sheet" id="invoiceSheet">
-
-        <div class="inv-header">
-          <div class="inv-logo-wrap" id="previewLogoWrap">
-            <img id="previewLogo" class="inv-logo" hidden alt="Company logo">
-            <div class="inv-logo-placeholder" id="previewLogoPlaceholder" data-i18n="companyLogo">COMPANY</div>
-            <button type="button" class="inv-remove-btn" id="removeLogoBtn" hidden title="Remove logo">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
+          <div class="field">
+            <label data-i18n="currencyBtnLabel">العملة</label>
+            <button type="button" class="soft-btn" id="settingsBtn">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M14.5 9.5c-.5-1-1.5-1.5-2.5-1.5-1.4 0-2.5.8-2.5 2s1.1 1.7 2.5 2 2.5.8 2.5 2-1.1 2-2.5 2c-1 0-2-.5-2.5-1.5M12 6.5V8M12 16v1.5"/></svg>
+              <span id="currencySummary"></span>
             </button>
           </div>
-          <div class="inv-meta">
-            <span id="previewInvoiceNumber" hidden>—</span>
-            <div class="inv-meta-row">
-              <span class="inv-meta-label" data-i18n="date">Date</span>
-              <span class="inv-meta-value" id="previewDate">—</span>
+          <div class="field">
+            <button type="button" class="soft-btn danger" id="clearBtn">
+              <svg viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>
+              <span data-i18n="clearInvoice">مسح الفاتورة</span>
+            </button>
+          </div>
+          <button type="button" class="acc-next" data-next><span data-i18n="next">التالي</span><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        </div></div></div>
+      </section>
+
+      <!-- 2. Company -->
+      <section class="acc" data-sec="org" style="--sc:#16A34A">
+        <button type="button" class="acc-head"><span class="acc-num">2</span>
+          <span class="acc-title"><b data-i18n="sec_org">معلومات المؤسسة</b><small data-sum="org"></small></span>
+          <svg class="acc-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="acc-body"><div class="acc-inner"><div class="acc-content">
+          <div class="field">
+            <label data-i18n="uploadLogo">الشعار / الترويسة</label>
+            <div class="upload-box" id="logoUploadBox">
+              <input type="file" id="logoInput" accept=".png,.jpg,.jpeg,.svg,image/*" hidden>
+              <div class="upload-placeholder" id="logoPlaceholder">
+                <svg viewBox="0 0 24 24"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+                <span data-i18n="uploadLogoText">رفع الشعار</span>
+              </div>
+              <img id="logoPreview" class="upload-img" hidden alt="">
             </div>
-            <div class="inv-issuer-contacts" id="previewIssuerContacts"></div>
           </div>
-        </div>
-
-        <div class="inv-customer">
-          <div class="inv-customer-label" data-i18n="customer">Customer</div>
-          <div class="inv-customer-value" id="previewCustomer">—</div>
-        </div>
-
-        <div class="inv-doctype-block">
-          <div class="inv-doctype-heading" id="previewDocTypeHeading">FACTURE</div>
-          <div class="inv-doctype-ref" id="previewDocTypeRef">—</div>
-        </div>
-
-        <table class="inv-table">
-          <thead>
-            <tr>
-              <th data-i18n="itemNumber" class="inv-num-col">#</th>
-              <th data-i18n="article">Article</th>
-              <th data-i18n="quantity">Quantity</th>
-              <th data-i18n="unitPrice">Unit Price</th>
-              <th data-i18n="totalPrice">Total Price</th>
-            </tr>
-          </thead>
-          <tbody id="previewItemsBody"></tbody>
-        </table>
-
-        <div class="inv-totals">
-          <div class="inv-totals-row">
-            <span data-i18n="ht">HT</span>
-            <span id="previewHt">$0.00</span>
+          <div class="field">
+            <label data-i18n="yourContactInfo">بيانات التواصل</label>
+            <div id="issuerContactList" class="issuer-contact-list"></div>
+            <div class="add-contact-wrap">
+              <button type="button" class="add-btn" id="addContactBtn">
+                <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span data-i18n="addContact">إضافة</span>
+              </button>
+              <div class="add-contact-menu" id="addContactMenu" hidden>
+                <button type="button" data-type="phone" data-i18n="contactPhone">الهاتف</button>
+                <button type="button" data-type="email" data-i18n="contactEmail">البريد</button>
+                <button type="button" data-type="address" data-i18n="contactAddress">العنوان</button>
+                <button type="button" data-type="website" data-i18n="contactWebsite">الموقع</button>
+                <button type="button" data-type="other" data-i18n="contactOther">أخرى</button>
+              </div>
+            </div>
           </div>
-          <div class="inv-totals-row">
-            <span id="previewTvaLabel">TVA (19%)</span>
-            <span id="previewTva">$0.00</span>
+          <div class="field">
+            <label data-i18n="uploadSignature">التوقيع / الختم</label>
+            <div class="upload-box" id="signatureUploadBox">
+              <input type="file" id="signatureInput" accept=".png,.jpg,.jpeg,.svg,image/*" hidden>
+              <div class="upload-placeholder" id="signaturePlaceholder">
+                <svg viewBox="0 0 24 24"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+                <span data-i18n="uploadSignatureText">رفع التوقيع</span>
+              </div>
+              <img id="signaturePreview" class="upload-img" hidden alt="">
+            </div>
           </div>
-          <div class="inv-totals-row inv-totals-ttc">
-            <span data-i18n="ttc">TTC</span>
-            <span id="previewTtc">$0.00</span>
+          <button type="button" class="acc-next" data-next><span data-i18n="next">التالي</span><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        </div></div></div>
+      </section>
+
+      <!-- 3. Customer -->
+      <section class="acc" data-sec="client" style="--sc:#0891B2">
+        <button type="button" class="acc-head"><span class="acc-num">3</span>
+          <span class="acc-title"><b data-i18n="sec_client">العميل</b><small data-sum="client"></small></span>
+          <svg class="acc-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="acc-body"><div class="acc-inner"><div class="acc-content">
+          <div class="field">
+            <label data-i18n="customer">العميل</label>
+            <textarea id="customerName" dir="auto" rows="3" data-i18n-placeholder="customerPlaceholder"></textarea>
+            <div class="hint" data-i18n="customerHint"></div>
           </div>
-        </div>
+          <button type="button" class="acc-next" data-next><span data-i18n="next">التالي</span><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        </div></div></div>
+      </section>
 
-        <div class="inv-words">
-          <div class="inv-words-label" data-i18n="amountInWords">Amount in Words</div>
-          <div class="inv-words-value" id="previewWords">—</div>
-        </div>
+      <!-- 4. Invoice data -->
+      <section class="acc" data-sec="meta" style="--sc:#7C3AED">
+        <button type="button" class="acc-head"><span class="acc-num">4</span>
+          <span class="acc-title"><b data-i18n="sec_meta">بيانات الفاتورة</b><small data-sum="meta"></small></span>
+          <svg class="acc-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="acc-body"><div class="acc-inner"><div class="acc-content">
+          <div class="field-row2">
+            <div class="field">
+              <label data-i18n="reference">المرجع</label>
+              <input type="text" id="invoiceNumber" data-i18n-placeholder="referencePlaceholder">
+            </div>
+            <div class="field">
+              <label data-i18n="date">التاريخ</label>
+              <input type="date" id="invoiceDate">
+            </div>
+          </div>
+          <button type="button" class="acc-next" data-next><span data-i18n="next">التالي</span><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        </div></div></div>
+      </section>
 
-        <div class="inv-notes" id="previewNotesWrap" hidden>
-          <div class="inv-notes-label" data-i18n="notes">Notes / Payment Terms</div>
-          <div class="inv-notes-value" id="previewNotes"></div>
-        </div>
-
-        <div class="inv-signature" id="previewSignatureWrap">
-          <div class="inv-signature-label" data-i18n="signature">Signature</div>
-          <img id="previewSignature" class="inv-signature-img" hidden alt="Signature">
-          <button type="button" class="inv-remove-btn" id="removeSignatureBtn" hidden title="Remove signature/stamp">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
+      <!-- 5. Items -->
+      <section class="acc" data-sec="items" style="--sc:#D97706">
+        <button type="button" class="acc-head"><span class="acc-num">5</span>
+          <span class="acc-title"><b data-i18n="sec_items">المنتجات والخدمات</b><small data-sum="items"></small></span>
+          <svg class="acc-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="acc-body"><div class="acc-inner"><div class="acc-content">
+          <div class="items-editor">
+            <div class="items-head">
+              <span>#</span>
+              <span data-i18n="article">الوصف</span>
+              <span data-i18n="quantity">الكمية</span>
+              <span data-i18n="unitPrice">السعر</span>
+              <span data-i18n="totalPrice">المجموع</span>
+              <span></span>
+            </div>
+            <div id="itemsTbody" class="items-body"></div>
+          </div>
+          <button type="button" class="add-btn wide" id="addArticleBtn">
+            <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span data-i18n="addArticle">إضافة سطر</span>
           </button>
-        </div>
+          <div class="items-sum"><span data-i18n="ht">HT</span><b id="itemsHt">0.00</b></div>
+          <button type="button" class="acc-next" data-next><span data-i18n="next">التالي</span><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        </div></div></div>
+      </section>
 
+      <!-- 6. Taxes & totals -->
+      <section class="acc" data-sec="totals" style="--sc:#2563EB">
+        <button type="button" class="acc-head"><span class="acc-num">6</span>
+          <span class="acc-title"><b data-i18n="sec_totals">الضرائب والمجموع</b><small data-sum="totals"></small></span>
+          <svg class="acc-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="acc-body"><div class="acc-inner"><div class="acc-content">
+          <div class="totals-card">
+            <div class="totals-row">
+              <span data-i18n="ht">HT</span>
+              <b id="htValue">0.00</b>
+            </div>
+            <div class="totals-row">
+              <span class="tva-label"><span data-i18n="tva">TVA</span>
+                <span class="tva-input-wrap"><input type="number" id="tvaPercent" value="19" min="0" step="1"><i>%</i></span>
+              </span>
+              <b id="tvaValue">0.00</b>
+            </div>
+            <div class="totals-row ttc">
+              <span data-i18n="ttc">TTC</span>
+              <b id="ttcValue">0.00</b>
+            </div>
+          </div>
+          <div class="field">
+            <label data-i18n="amountInWords">المبلغ بالحروف</label>
+            <div class="words-row">
+              <div class="words-box is-placeholder" id="amountWordsBox"></div>
+              <button type="button" class="soft-btn primary" id="generateWordsBtn" data-i18n="generate">توليد</button>
+            </div>
+          </div>
+          <button type="button" class="acc-next" data-next><span data-i18n="next">التالي</span><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        </div></div></div>
+      </section>
+
+      <!-- 7. Notes -->
+      <section class="acc" data-sec="notes" style="--sc:#DB2777">
+        <button type="button" class="acc-head"><span class="acc-num">7</span>
+          <span class="acc-title"><b data-i18n="sec_notes">الملاحظات وشروط الدفع</b><small data-sum="notes"></small></span>
+          <svg class="acc-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="acc-body"><div class="acc-inner"><div class="acc-content">
+          <div class="field">
+            <label data-i18n="notes">ملاحظات / شروط الدفع</label>
+            <textarea id="notesInput" dir="auto" rows="4" data-i18n-placeholder="notesPlaceholder"></textarea>
+          </div>
+          <button type="button" class="acc-next" data-next data-last><span data-i18n="done">تم</span></button>
+        </div></div></div>
+      </section>
+
+    </div>
+  </aside>
+
+  <button class="panel-toggle" id="panelToggle" type="button" data-tip="toggle_panel">
+    <svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>
+  </button>
+
+  <main class="stage" id="stage">
+    <div class="stage-bar">
+      <div class="zoom" id="zoomCtl">
+        <button type="button" id="zoomOut" aria-label="-"><svg viewBox="0 0 24 24"><path d="M6 12h12"/></svg></button>
+        <span id="zoomVal">100%</span>
+        <button type="button" id="zoomIn" aria-label="+"><svg viewBox="0 0 24 24"><path d="M6 12h12M12 6v12"/></svg></button>
+        <button type="button" id="zoomFit" data-tip="fit"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
       </div>
     </div>
-  </section>
 
-</main>
+    <div class="flat-view" id="flatView">
+      <div class="sheet-holder" id="sheetHolder">
+        <div class="invoice-sheet tpl-classic" id="invoiceSheet">
+
+          <div class="inv-band"></div>
+          <div class="inv-header">
+            <div class="inv-logo-wrap" id="previewLogoWrap" data-sec="org">
+              <img id="previewLogo" class="inv-logo" hidden alt="">
+              <div class="inv-logo-placeholder" id="previewLogoPlaceholder" data-i18n="companyLogo">COMPANY</div>
+              <button type="button" class="inv-remove-btn" id="removeLogoBtn" hidden>
+                <svg viewBox="0 0 24 24"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
+              </button>
+            </div>
+            <div class="inv-meta">
+              <span id="previewInvoiceNumber" hidden>—</span>
+              <div class="inv-meta-row" data-sec="meta">
+                <span class="inv-meta-label" data-i18n="date">Date</span>
+                <span class="inv-meta-value" id="previewDate">—</span>
+              </div>
+              <div class="inv-issuer-contacts" id="previewIssuerContacts" data-sec="org"></div>
+            </div>
+          </div>
+
+          <div class="inv-customer" data-sec="client">
+            <div class="inv-customer-label" data-i18n="customer">Customer</div>
+            <div class="inv-customer-value" id="previewCustomer">—</div>
+          </div>
+
+          <div class="inv-doctype-block" data-sec="meta">
+            <div class="inv-doctype-heading" id="previewDocTypeHeading">FACTURE</div>
+            <div class="inv-doctype-ref" id="previewDocTypeRef">—</div>
+          </div>
+
+          <table class="inv-table" data-sec="items">
+            <thead>
+              <tr>
+                <th data-i18n="itemNumber" class="inv-num-col">#</th>
+                <th data-i18n="article">Article</th>
+                <th data-i18n="quantity">Quantity</th>
+                <th data-i18n="unitPrice">Unit Price</th>
+                <th data-i18n="totalPrice">Total Price</th>
+              </tr>
+            </thead>
+            <tbody id="previewItemsBody"></tbody>
+          </table>
+
+          <div class="inv-totals" data-sec="totals">
+            <div class="inv-totals-row">
+              <span data-i18n="ht">HT</span>
+              <span id="previewHt">0.00</span>
+            </div>
+            <div class="inv-totals-row">
+              <span id="previewTvaLabel">TVA (19%)</span>
+              <span id="previewTva">0.00</span>
+            </div>
+            <div class="inv-totals-row inv-totals-ttc">
+              <span data-i18n="ttc">TTC</span>
+              <span id="previewTtc">0.00</span>
+            </div>
+          </div>
+
+          <div class="inv-words" data-sec="totals">
+            <div class="inv-words-label" data-i18n="amountInWords">Amount in Words</div>
+            <div class="inv-words-value" id="previewWords">—</div>
+          </div>
+
+          <div class="inv-notes" id="previewNotesWrap" data-sec="notes" hidden>
+            <div class="inv-notes-label" data-i18n="notes">Notes / Payment Terms</div>
+            <div class="inv-notes-value" id="previewNotes"></div>
+          </div>
+
+          <div class="inv-signature" id="previewSignatureWrap" data-sec="org">
+            <div class="inv-signature-label" data-i18n="signature">Signature</div>
+            <img id="previewSignature" class="inv-signature-img" hidden alt="">
+            <button type="button" class="inv-remove-btn" id="removeSignatureBtn" hidden>
+              <svg viewBox="0 0 24 24"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
+            </button>
+          </div>
+
+          <div class="inv-foot"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Templates gallery -->
+<div class="gallery hidden" id="gallery" role="dialog" aria-modal="true">
+  <div class="gallery-box">
+    <div class="gallery-head">
+      <h2 data-i18n="gallery">معرض القوالب</h2>
+      <button class="icon-btn" id="gClose" type="button" aria-label="close" style="margin-inline-start:auto"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="g-grid" id="gGrid"></div>
+  </div>
+</div>
+
+<!-- My invoices -->
+<div class="gallery hidden" id="mine" role="dialog" aria-modal="true">
+  <div class="gallery-box">
+    <div class="gallery-head">
+      <h2 data-i18n="mine">فواتيري</h2>
+      <div class="chips" id="mineTabs">
+        <button type="button" class="chip on" data-src="all" data-i18n="src_all">الكل</button>
+        <button type="button" class="chip" data-src="local" data-i18n="src_local">على الجهاز</button>
+        <button type="button" class="chip" data-src="cloud" data-i18n="src_cloud">في حسابي</button>
+      </div>
+      <button class="icon-btn" id="mClose" type="button" aria-label="close" style="margin-inline-start:auto"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="mine-login hidden" id="mineLogin">
+      <span data-i18n="mine_login_hint"></span>
+      <button type="button" class="soft-btn primary" id="mineLoginBtn" data-i18n="sign_in">تسجيل الدخول</button>
+    </div>
+    <div class="g-grid mine-grid" id="invoiceListBody"></div>
+  </div>
+</div>
+
+<!-- Login prompt -->
+<div class="gallery hidden" id="login" role="dialog" aria-modal="true">
+  <div class="login-box">
+    <div class="login-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></div>
+    <h3 data-i18n="login_title">سجّل دخولك لحفظ فواتيرك</h3>
+    <p data-i18n="login_text"></p>
+    <button type="button" class="login-google" id="loginGoogle">
+      <svg viewBox="0 0 48 48" style="stroke:none"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>
+      <span data-i18n="login_google">الدخول بحساب Google</span>
+    </button>
+    <a class="login-site" href="../../index.html" data-i18n="login_site">تسجيل الدخول من الموقع</a>
+    <button type="button" class="login-cancel" id="loginCancel" data-i18n="cancel">إلغاء</button>
+  </div>
+</div>
 
 <!-- Clear confirmation -->
-<div class="overlay" id="confirmOverlay" hidden>
-  <div class="overlay-box">
-    <p id="confirmMessage" data-i18n="confirmClear">Clear the whole invoice? This cannot be undone.</p>
-    <div class="overlay-actions">
-      <button type="button" class="btn btn-secondary" id="confirmCancel" data-i18n="cancel">Cancel</button>
-      <button type="button" class="btn btn-danger" id="confirmOk" data-i18n="confirmYes">Clear</button>
+<div class="gallery hidden" id="confirmOverlay" role="dialog" aria-modal="true">
+  <div class="login-box">
+    <div class="login-ico warn"><svg viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></div>
+    <p id="confirmMessage" data-i18n="confirmClear"></p>
+    <div class="dlg-actions">
+      <button type="button" class="soft-btn" id="confirmCancel" data-i18n="cancel">إلغاء</button>
+      <button type="button" class="soft-btn danger solid" id="confirmOk" data-i18n="confirmYes">مسح</button>
     </div>
   </div>
 </div>
 
 <!-- Currency settings -->
-<div class="overlay" id="settingsOverlay" hidden>
-  <div class="overlay-box">
-    <h3 class="overlay-title" data-i18n="settings">Currency Settings</h3>
-    <p class="overlay-hint" data-i18n="settingsHint">Applies to the currently selected language</p>
+<div class="gallery hidden" id="settingsOverlay" role="dialog" aria-modal="true">
+  <div class="login-box dlg-form">
+    <h3 data-i18n="settings">إعدادات العملة</h3>
+    <p data-i18n="settingsHint"></p>
     <div class="field">
-      <label class="field-label" data-i18n="mainCurrencyLabel">Main Currency Name</label>
-      <input type="text" id="settingsMainCurrency" class="input">
+      <label data-i18n="mainCurrencyLabel">اسم العملة الرئيسية</label>
+      <input type="text" id="settingsMainCurrency">
     </div>
     <div class="field">
-      <label class="field-label" data-i18n="subCurrencyLabel">Sub-unit Name</label>
-      <input type="text" id="settingsSubCurrency" class="input">
+      <label data-i18n="subCurrencyLabel">اسم الوحدة الفرعية</label>
+      <input type="text" id="settingsSubCurrency">
     </div>
-    <div class="overlay-actions">
-      <button type="button" class="btn btn-secondary" id="settingsCancel" data-i18n="cancel">Cancel</button>
-      <button type="button" class="btn btn-primary" id="settingsSave" data-i18n="saveSettings">Save</button>
+    <div class="dlg-actions">
+      <button type="button" class="soft-btn" id="settingsCancel" data-i18n="cancel">إلغاء</button>
+      <button type="button" class="soft-btn primary" id="settingsSave" data-i18n="saveSettings">حفظ</button>
     </div>
   </div>
 </div>
 
 <!-- PDF preview -->
-<div class="overlay" id="pdfPreviewOverlay" hidden>
-  <div class="overlay-box overlay-box-wide">
-    <h3 class="overlay-title" data-i18n="pdfPreviewTitle">PDF Preview</h3>
+<div class="gallery hidden" id="pdfPreviewOverlay" role="dialog" aria-modal="true">
+  <div class="login-box pdf-box">
+    <h3 data-i18n="pdfPreviewTitle">معاينة PDF</h3>
     <div class="pdf-preview-img-wrap">
-      <img id="pdfPreviewImg" alt="Invoice PDF preview">
+      <img id="pdfPreviewImg" alt="">
     </div>
-    <div class="overlay-actions">
-      <button type="button" class="btn btn-secondary" id="pdfPreviewBack" data-i18n="backToEdit">Back</button>
-      <button type="button" class="btn btn-primary" id="pdfPreviewDownload" data-i18n="download">Download</button>
+    <div class="dlg-actions">
+      <button type="button" class="soft-btn" id="pdfPreviewBack" data-i18n="backToEdit">رجوع</button>
+      <button type="button" class="soft-btn primary" id="pdfPreviewDownload" data-i18n="download">تحميل</button>
     </div>
   </div>
 </div>
 
-</div><!-- /#editorScreen -->
-
-<div class="saved-badge" id="savedBadge" data-i18n="savedBadge">Saved</div>
+<div class="toast" id="toast"></div>
+<div class="print-root" id="printRoot" aria-hidden="true"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
