@@ -67,11 +67,15 @@
     </div>
 
     <div class="inputs">
-      <label class="field">
+      <div class="field">
         <span class="f-label tx" data-t="start"></span>
-        <input type="date" id="startDate" class="big-in">
+        <div class="date-box">
+          <input type="text" id="startDate" class="big-in date-txt" dir="ltr" inputmode="numeric" maxlength="10" autocomplete="off" placeholder="DD/MM/YYYY">
+          <button type="button" class="date-pick" aria-label="calendar"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></button>
+          <input type="date" class="date-native" tabindex="-1" aria-hidden="true">
+        </div>
         <span class="f-hijri tx" id="startHijri"></span>
-      </label>
+      </div>
       <div class="field">
         <span class="f-label tx" data-t="days"></span>
         <div class="stepper">
@@ -155,14 +159,22 @@
       </button>
       <div class="acc-body"><div class="acc-inner"><div class="acc-content">
         <div class="inputs">
-          <label class="field">
+          <div class="field">
             <span class="f-label tx" data-t="start"></span>
-            <input type="date" id="revStart" class="big-in">
-          </label>
-          <label class="field">
+            <div class="date-box">
+          <input type="text" id="revStart" class="big-in date-txt" dir="ltr" inputmode="numeric" maxlength="10" autocomplete="off" placeholder="DD/MM/YYYY">
+          <button type="button" class="date-pick" aria-label="calendar"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></button>
+          <input type="date" class="date-native" tabindex="-1" aria-hidden="true">
+        </div>
+          </div>
+          <div class="field">
             <span class="f-label tx" data-t="returnDate"></span>
-            <input type="date" id="revEnd" class="big-in">
-          </label>
+            <div class="date-box">
+          <input type="text" id="revEnd" class="big-in date-txt" dir="ltr" inputmode="numeric" maxlength="10" autocomplete="off" placeholder="DD/MM/YYYY">
+          <button type="button" class="date-pick" aria-label="calendar"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></button>
+          <input type="date" class="date-native" tabindex="-1" aria-hidden="true">
+        </div>
+          </div>
         </div>
         <div class="mini-res tx" id="revRes"></div>
       </div></div></div>

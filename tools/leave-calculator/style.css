@@ -80,6 +80,13 @@ svg{ fill:none; stroke:currentColor; stroke-width:1.9; stroke-linecap:round; str
 .big-in.bad{ border-color:#DC2626; background:#FEF2F2; }
 input[type=number].big-in{ text-align:center; -moz-appearance:textfield; }
 input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button{ -webkit-appearance:none; margin:0; }
+.date-box{ position:relative; }
+.date-box .date-txt{ padding-right:60px; letter-spacing:.02em; }
+.date-txt::placeholder{ color:#A3B2C0; font-weight:600; }
+.date-pick{ position:absolute; top:5px; right:5px; width:48px; height:48px; border:0; border-radius:11px; background:#fff; color:var(--accent); cursor:pointer; display:grid; place-items:center; box-shadow:0 1px 4px rgba(21,36,49,.08); }
+.date-pick:hover{ background:var(--sky); }
+.date-pick svg{ width:24px; height:24px; }
+.date-native{ position:absolute; right:5px; bottom:0; width:48px; height:1px; opacity:0; pointer-events:none; border:0; padding:0; }
 .stepper{ display:flex; gap:8px; direction:ltr; }
 .st-btn{ width:58px; height:58px; flex:none; border-radius:14px; border:1.5px solid var(--mist); background:#fff; color:var(--accent); cursor:pointer; display:grid; place-items:center; }
 .st-btn:hover{ background:var(--sky); }

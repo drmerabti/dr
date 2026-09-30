@@ -13,7 +13,7 @@ const $$ = s => Array.from(document.querySelectorAll(s));
 ===================================================================== */
 const I18N = {
   ar: {
-    title: 'حاسبة العطل', subtitle: 'أدخل تاريخ بداية العطلة وعدد أيامها لتعرف فورًا يوم رجوعك إلى العمل.',
+    dmy: 'يوم/شهر/سنة', title: 'حاسبة العطل', subtitle: 'أدخل تاريخ بداية العطلة وعدد أيامها لتعرف فورًا يوم رجوعك إلى العمل.',
     back: 'العودة إلى الأدوات', reset: 'إعادة تعيين',
     start: 'تاريخ بداية العطلة', days: 'عدد أيام العطلة', returnDate: 'تاريخ الرجوع إلى العمل',
     empty: 'اختر تاريخ البداية وعدد الأيام لتظهر النتيجة هنا',
@@ -65,7 +65,7 @@ const I18N = {
     admin: 'وضع الأدمن — الأداة مقفلة لبقية المستخدمين'
   },
   fr: {
-    title: 'Calculateur de congés', subtitle: 'Saisissez la date de début et le nombre de jours pour connaître aussitôt votre date de reprise.',
+    dmy: 'JJ/MM/AAAA', title: 'Calculateur de congés', subtitle: 'Saisissez la date de début et le nombre de jours pour connaître aussitôt votre date de reprise.',
     back: 'Retour aux outils', reset: 'Réinitialiser',
     start: 'Date de début du congé', days: 'Nombre de jours', returnDate: 'Date de reprise',
     empty: 'Choisissez la date de début et le nombre de jours pour voir le résultat ici',
@@ -117,7 +117,7 @@ const I18N = {
     admin: 'Mode admin — outil verrouillé pour les autres utilisateurs'
   },
   en: {
-    title: 'Leave Calculator', subtitle: 'Enter the leave start date and number of days to instantly see your return-to-work date.',
+    dmy: 'DD/MM/YYYY', title: 'Leave Calculator', subtitle: 'Enter the leave start date and number of days to instantly see your return-to-work date.',
     back: 'Back to tools', reset: 'Reset',
     start: 'Leave start date', days: 'Number of leave days', returnDate: 'Return-to-work date',
     empty: 'Pick a start date and number of days to see the result here',
@@ -206,6 +206,59 @@ function parse(v) {
   if (!m) return null;
   const d = mk(+m[1], +m[2] - 1, +m[3]);
   return isNaN(d) ? null : d;
+}
+// عرض وإدخال التواريخ دائمًا بصيغة يوم/شهر/سنة
+function isoToDmy(v) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(v || '');
+  return m ? `${m[3]}/${m[2]}/${m[1]}` : '';
+}
+function dmyToIso(v) {
+  const m = /^(\d{1,2})\/(\d{1,2})\/(\d{2}|\d{4})$/.exec((v || '').trim());
+  if (!m) return null;
+  const y = m[3].length === 2 ? 2000 + +m[3] : +m[3], mo = +m[2], d = +m[1];
+  const dt = mk(y, mo - 1, d);
+  if (dt.getFullYear() !== y || dt.getMonth() !== mo - 1 || dt.getDate() !== d) return null;
+  return key(dt);
+}
+function maskDmy(v) {
+  // يقبل الكتابة المتواصلة (01102026) أو بالفواصل (5/3/2026)
+  const segs = [''];
+  for (const ch of v.replace(/[^\d/]/g, '')) {
+    const i = segs.length - 1, max = i < 2 ? 2 : 4;
+    if (ch === '/') {
+      if (segs[i] && i < 2) { segs[i] = segs[i].padStart(2, '0'); segs.push(''); }
+    } else if (segs[i].length < max) segs[i] += ch;
+    else if (i < 2) segs.push(ch);
+  }
+  return segs.join('/');
+}
+// حقل نصي DD/MM/YYYY + زر يفتح منتقي التاريخ الأصلي للمتصفح
+function setupDate(el, onChange) {
+  const box = el.closest('.date-box');
+  const nat = box.querySelector('.date-native');
+  el.addEventListener('input', () => {
+    el.value = maskDmy(el.value);
+    el.classList.remove('bad');
+    if (!el.value) { onChange(null); return; }
+    const iso = el.value.length === 10 ? dmyToIso(el.value) : null;
+    if (iso) onChange(iso);
+  });
+  el.addEventListener('blur', () => {
+    if (!el.value) return;
+    const iso = dmyToIso(el.value);
+    if (iso) { el.value = isoToDmy(iso); onChange(iso); }
+    else el.classList.add('bad');
+  });
+  box.querySelector('.date-pick').addEventListener('click', () => {
+    nat.value = dmyToIso(el.value) || '';
+    try { if (nat.showPicker) { nat.showPicker(); return; } } catch (e) {}
+    nat.focus(); nat.click();
+  });
+  nat.addEventListener('change', () => {
+    if (!nat.value) return;
+    el.value = isoToDmy(nat.value); el.classList.remove('bad');
+    onChange(nat.value);
+  });
 }
 const dayDiff = (a, b) => Math.round((b - a) / 86400000);
 
@@ -504,6 +557,7 @@ function applyLang() {
   $$('[data-t]').forEach(el => { el.textContent = T(el.dataset.t); });
   $$('[data-t-title]').forEach(el => { el.title = T(el.dataset.tTitle); el.setAttribute('aria-label', T(el.dataset.tTitle)); });
   $$('#langs button').forEach(b => b.classList.toggle('on', b.dataset.l === S.lang));
+  $$('.date-txt').forEach(el => { el.placeholder = T('dmy'); });
   document.title = `${T('title')} | Dr Soufiane Merabti`;
   if (S.gateState !== 'open') gate(S.gateState);
   update();
@@ -551,10 +605,11 @@ function load() {
   } catch (e) {}
 }
 function fillInputs() {
-  $('#startDate').value = S.start || '';
+  $('#startDate').value = isoToDmy(S.start);
   $('#daysIn').value = Number.isFinite(S.days) ? S.days : '';
-  $('#revStart').value = S.revStart || '';
-  $('#revEnd').value = S.revEnd || '';
+  $('#revStart').value = isoToDmy(S.revStart);
+  $('#revEnd').value = isoToDmy(S.revEnd);
+  $$('.date-txt').forEach(el => el.classList.remove('bad'));
   $('#monthsIn').value = S.months;
 }
 function resetAll() {
@@ -612,7 +667,7 @@ function init() {
   buildTypes();
   fillInputs();
 
-  $('#startDate').addEventListener('input', e => { S.start = e.target.value || null; update(); });
+  setupDate($('#startDate'), v => { S.start = v; update(); });
   $('#daysIn').addEventListener('input', e => {
     const v = parseInt(e.target.value, 10);
     S.days = Number.isFinite(v) ? v : NaN;
@@ -630,8 +685,8 @@ function init() {
   $$('#wkSeg button').forEach(b => b.addEventListener('click', () => { S.weekend = b.dataset.v; update(); }));
   $('#holChk').addEventListener('change', e => { S.holidays = e.target.checked; update(); });
   $('#typesGrid').addEventListener('click', e => { const b = e.target.closest('.type'); if (b) applyType(b.dataset.type); });
-  $('#revStart').addEventListener('input', e => { S.revStart = e.target.value || null; update(); });
-  $('#revEnd').addEventListener('input', e => { S.revEnd = e.target.value || null; update(); });
+  setupDate($('#revStart'), v => { S.revStart = v; update(); });
+  setupDate($('#revEnd'), v => { S.revEnd = v; update(); });
   $('#monthsIn').addEventListener('input', e => { const v = parseInt(e.target.value, 10); S.months = Number.isFinite(v) ? Math.max(0, Math.min(12, v)) : 0; update(); });
   $$('[data-mstep]').forEach(b => b.addEventListener('click', () => {
     S.months = Math.max(0, Math.min(12, (S.months || 0) + +b.dataset.mstep));
