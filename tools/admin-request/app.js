@@ -42,7 +42,7 @@
   let activeFont = FONTS[0];
   let tplId = 'free';
   let designId = 'classic';
-  let fontScale = 100; // % of the base text size, 80–130
+  let fontScale = 130; // % of the base text size, 80–150 (default 130)
   let bodyIsOwned = false; // true once AI-generated or manually edited — stops auto-mirroring the idea draft
   let localId = null;
   let cloudId = null;
@@ -119,9 +119,10 @@
   }
 
   /* ================= Text size ================= */
-  const FS_MIN = 80, FS_MAX = 130, FS_STEP = 5;
+  const FS_MIN = 80, FS_MAX = 150, FS_STEP = 5, FS_DEFAULT = 130;
+  const FS_VERSION = 2; // requests saved before the 130% default start at the new default
   function clampScale(v) {
-    v = Math.round((parseInt(v, 10) || 100) / FS_STEP) * FS_STEP;
+    v = Math.round((parseInt(v, 10) || FS_DEFAULT) / FS_STEP) * FS_STEP;
     return Math.max(FS_MIN, Math.min(FS_MAX, v));
   }
   function applyFontScale() {
@@ -129,7 +130,7 @@
     $('fsVal').textContent = fontScale + '%';
     $('fsDown').disabled = fontScale <= FS_MIN;
     $('fsUp').disabled = fontScale >= FS_MAX;
-    $('fsReset').disabled = fontScale === 100;
+    $('fsReset').disabled = fontScale === FS_DEFAULT;
   }
   function setFontScale(v) {
     const nv = clampScale(v);
@@ -139,7 +140,7 @@
   }
   $('fsDown').addEventListener('click', () => setFontScale(fontScale - FS_STEP));
   $('fsUp').addEventListener('click', () => setFontScale(fontScale + FS_STEP));
-  $('fsReset').addEventListener('click', () => setFontScale(100));
+  $('fsReset').addEventListener('click', () => setFontScale(FS_DEFAULT));
 
   /* ================= Design ================= */
   function applyDesign() {
@@ -563,7 +564,7 @@
     const nAtt = attachments.filter((a) => (a || '').trim()).length;
     set('attach', nAtt ? t('n_attach')(nAtt) : t('d_attach'));
     set('sign', `${dateLine()} · ${stampDataUrl ? t('with_stamp') : t('no_stamp')}`);
-    set('style', [activeFont.name[lang], fontScale !== 100 ? t('size_lbl')(fontScale) : '', companyLogoDataUrl ? t('with_header') : ''].filter(Boolean).join(' · '));
+    set('style', [activeFont.name[lang], fontScale !== FS_DEFAULT ? t('size_lbl')(fontScale) : '', companyLogoDataUrl ? t('with_header') : ''].filter(Boolean).join(' · '));
   }
 
   /* ================= Persistence (device) ================= */
@@ -579,7 +580,7 @@
       fPhone: els.fPhone.value, fEmail: els.fEmail.value, fAddressedTo: els.fAddressedTo.value, fSubjectTitle: els.fSubjectTitle.value,
       fDate: els.fDate.value, fPlace: els.fPlace.value,
       fRequestSubject: els.fRequestSubject.value, bodyText: getBody(), bodyIsOwned,
-      tplId, designId, fontScale, lang,
+      tplId, designId, fontScale, fontScaleV: FS_VERSION, lang,
     };
   }
   function hasContent(s) {
@@ -631,7 +632,7 @@
     bodyIsOwned = !!state.bodyIsOwned;
     tplId = TYPE_BY_ID[state.tplId] ? state.tplId : 'free';
     designId = DESIGN_BY_ID[state.designId] ? state.designId : 'classic';
-    fontScale = clampScale(state.fontScale || 100);
+    fontScale = state.fontScaleV === FS_VERSION ? clampScale(state.fontScale) : FS_DEFAULT;
     syncUploadPreviews(); renderExtraFields(); renderAttachments(); renderFontFilter(); renderTypeGrid();
     applyFont(); applyDesign(); applyFontScale(); syncAiButtons();
   }

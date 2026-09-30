@@ -3,7 +3,7 @@
 // ============================================================
 window.ADMINREQ_I18N = {
   ar: {
-    fontSizeLbl: 'حجم خط الطلب', fontSizeHint: 'يكبّر أو يصغّر كل نصوص الطلب بنفس النسبة (من 80% إلى 130%).', fsDown: 'تصغير الخط', fsUp: 'تكبير الخط', fsReset: 'إرجاع إلى 100%',
+    fontSizeLbl: 'حجم خط الطلب', fontSizeHint: 'يكبّر أو يصغّر كل نصوص الطلب بنفس النسبة (من 80% إلى 150%، والحجم الافتراضي 130%).', fsDown: 'تصغير الخط', fsUp: 'تكبير الخط', fsReset: 'إرجاع إلى الحجم الافتراضي (130%)',
     overflowWarn: 'النص أطول من صفحة A4 واحدة، وسيُطبع على صفحتين. صغّر الخط أو اختصر النص.', overflowShort: 'تجاوز صفحة A4', size_lbl: (n) => `الخط ${n}%`,
     dir: 'rtl', pageTitleTag: 'مولّد الطلب الإداري — أكاديمية مرابطي', topbarTitle: 'مولّد الطلب الإداري',
     back_tools: 'العودة إلى الأدوات', fullscreen: 'ملء الشاشة', mine: 'طلباتي', save: 'حفظ في حسابي', print: 'طباعة',
@@ -62,7 +62,7 @@ window.ADMINREQ_I18N = {
     },
   },
   fr: {
-    fontSizeLbl: 'Taille du texte', fontSizeHint: 'Agrandit ou réduit tout le texte de la demande dans la même proportion (80 % à 130 %).', fsDown: 'Réduire le texte', fsUp: 'Agrandir le texte', fsReset: 'Revenir à 100 %',
+    fontSizeLbl: 'Taille du texte', fontSizeHint: 'Agrandit ou réduit tout le texte de la demande dans la même proportion (80 % à 150 %, 130 % par défaut).', fsDown: 'Réduire le texte', fsUp: 'Agrandir le texte', fsReset: 'Revenir à la taille par défaut (130 %)',
     overflowWarn: 'Le texte dépasse une page A4 et sera imprimé sur deux pages. Réduisez la taille ou raccourcissez le texte.', overflowShort: 'Dépasse une page A4', size_lbl: (n) => `Texte ${n} %`,
     dir: 'ltr', pageTitleTag: 'Générateur de demande administrative — Académie Merabti', topbarTitle: 'Générateur de demande',
     back_tools: 'Retour aux outils', fullscreen: 'Plein écran', mine: 'Mes demandes', save: 'Enregistrer dans mon compte', print: 'Imprimer',
@@ -121,7 +121,7 @@ window.ADMINREQ_I18N = {
     },
   },
   en: {
-    fontSizeLbl: 'Text size', fontSizeHint: 'Makes all the request text larger or smaller by the same ratio (80% to 130%).', fsDown: 'Smaller text', fsUp: 'Larger text', fsReset: 'Reset to 100%',
+    fontSizeLbl: 'Text size', fontSizeHint: 'Makes all the request text larger or smaller by the same ratio (80% to 150%, default 130%).', fsDown: 'Smaller text', fsUp: 'Larger text', fsReset: 'Reset to default (130%)',
     overflowWarn: 'The text is longer than one A4 page and will print on two pages. Reduce the size or shorten the text.', overflowShort: 'Exceeds one A4 page', size_lbl: (n) => `Text ${n}%`,
     dir: 'ltr', pageTitleTag: 'Administrative Request Generator — Merabti Academy', topbarTitle: 'Admin Request Generator',
     back_tools: 'Back to tools', fullscreen: 'Full screen', mine: 'My requests', save: 'Save to my account', print: 'Print',
