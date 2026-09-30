@@ -58,7 +58,7 @@ svg{ fill:none; stroke:currentColor; stroke-width:1.9; stroke-linecap:round; str
 .langs button.on{ background:var(--accent); color:#fff; }
 
 /* ---------- المحتوى ---------- */
-.wrap{ width:100%; padding:20px 16px 50px; display:grid; grid-template-columns:minmax(0, 1fr) minmax(0, 1fr); gap:16px; align-items:start; }
+.wrap{ width:100%; padding:20px 16px 50px; display:grid; grid-template-columns:minmax(0, 35fr) minmax(0, 65fr); gap:16px; align-items:start; }
 /* تقسيم ثابت في كل اللغات: الحساب يسارًا والأقسام يمينًا (الحاوية RTL فالعمود 1 هو الأيمن) */
 .wrap > .main-card{ grid-column:2; grid-row:1; }
 .wrap > .accs{ grid-column:1; grid-row:1; }
@@ -68,6 +68,7 @@ svg{ fill:none; stroke:currentColor; stroke-width:1.9; stroke-linecap:round; str
 .head p{ margin:4px 0 0; color:var(--ink-soft); font-size:.95rem; line-height:1.7; }
 
 .inputs{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.accs .inputs{ grid-template-columns:repeat(auto-fit, minmax(min(210px, 100%), 1fr)); }
 .field{ display:flex; flex-direction:column; gap:6px; min-width:0; }
 .f-label{ font-size:.92rem; font-weight:800; }
 .f-hijri{ font-size:.82rem; color:var(--ink-soft); min-height:1.2em; }
@@ -150,14 +151,14 @@ input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer
 .switch input:checked + i::after{ left:23px; }
 .note-s{ margin:0; font-size:.8rem; color:var(--ink-soft); line-height:1.7; }
 .note-s:empty{ display:none; }
-.hol-list{ display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+.hol-list{ display:grid; grid-template-columns:repeat(auto-fill, minmax(min(230px, 100%), 1fr)); gap:6px; }
 .hol-list.off{ opacity:.45; }
 .hol{ display:flex; justify-content:space-between; gap:8px; padding:8px 11px; background:var(--field); border-radius:10px; font-size:.84rem; }
 .hol b{ font-weight:700; }
 .hol span{ color:var(--ink-soft); white-space:nowrap; font-family:'Inter','Tajawal',sans-serif; font-size:.8rem; }
 .hol.rel b::after{ content:" ☾"; color:var(--c-hol); }
 
-.types{ display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; }
+.types{ display:grid; grid-template-columns:repeat(auto-fill, minmax(min(120px, 100%), 1fr)); gap:10px; }
 .type{ display:flex; flex-direction:column; align-items:center; gap:6px; padding:14px 8px; border-radius:16px; border:1.5px solid var(--line); background:#fff; cursor:pointer; text-align:center; transition:border-color .15s, transform .15s; }
 .type:hover{ transform:translateY(-1px); }
 .type.on{ border-color:var(--t-c); background:var(--t-bg); }
