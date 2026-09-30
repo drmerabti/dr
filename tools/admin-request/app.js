@@ -42,6 +42,7 @@
   let activeFont = FONTS[0];
   let tplId = 'free';
   let designId = 'classic';
+  let fontScale = 100; // % of the base text size, 80–130
   let bodyIsOwned = false; // true once AI-generated or manually edited — stops auto-mirroring the idea draft
   let localId = null;
   let cloudId = null;
@@ -116,6 +117,29 @@
     els.requestPage.style.setProperty('--rq-font-ar', activeFont.ar);
     els.requestPage.style.setProperty('--rq-font-en', activeFont.en);
   }
+
+  /* ================= Text size ================= */
+  const FS_MIN = 80, FS_MAX = 130, FS_STEP = 5;
+  function clampScale(v) {
+    v = Math.round((parseInt(v, 10) || 100) / FS_STEP) * FS_STEP;
+    return Math.max(FS_MIN, Math.min(FS_MAX, v));
+  }
+  function applyFontScale() {
+    els.requestPage.style.setProperty('--fs', String(fontScale / 100));
+    $('fsVal').textContent = fontScale + '%';
+    $('fsDown').disabled = fontScale <= FS_MIN;
+    $('fsUp').disabled = fontScale >= FS_MAX;
+    $('fsReset').disabled = fontScale === 100;
+  }
+  function setFontScale(v) {
+    const nv = clampScale(v);
+    if (nv === fontScale) return;
+    fontScale = nv;
+    applyFontScale(); refresh(); saveDraft();
+  }
+  $('fsDown').addEventListener('click', () => setFontScale(fontScale - FS_STEP));
+  $('fsUp').addEventListener('click', () => setFontScale(fontScale + FS_STEP));
+  $('fsReset').addEventListener('click', () => setFontScale(100));
 
   /* ================= Design ================= */
   function applyDesign() {
@@ -464,6 +488,9 @@
     els.sheetHolder.style.width = (SHEET_W * s) + 'px';
     els.sheetHolder.style.height = (els.requestPage.offsetHeight * s) + 'px';
     $('zoomVal').textContent = Math.round(s * 100) + '%';
+    const over = els.requestPage.offsetHeight > SHEET_H + 2; // taller than one A4 page
+    $('pageWarn').classList.toggle('hidden', !over);
+    $('fsWarn').classList.toggle('hidden', !over);
   }
   function setZoom(dir) {
     let s = zoom === 'fit' ? stageFitScale() : zoom;
@@ -536,7 +563,7 @@
     const nAtt = attachments.filter((a) => (a || '').trim()).length;
     set('attach', nAtt ? t('n_attach')(nAtt) : t('d_attach'));
     set('sign', `${dateLine()} · ${stampDataUrl ? t('with_stamp') : t('no_stamp')}`);
-    set('style', [activeFont.name[lang], companyLogoDataUrl ? t('with_header') : ''].filter(Boolean).join(' · '));
+    set('style', [activeFont.name[lang], fontScale !== 100 ? t('size_lbl')(fontScale) : '', companyLogoDataUrl ? t('with_header') : ''].filter(Boolean).join(' · '));
   }
 
   /* ================= Persistence (device) ================= */
@@ -552,7 +579,7 @@
       fPhone: els.fPhone.value, fEmail: els.fEmail.value, fAddressedTo: els.fAddressedTo.value, fSubjectTitle: els.fSubjectTitle.value,
       fDate: els.fDate.value, fPlace: els.fPlace.value,
       fRequestSubject: els.fRequestSubject.value, bodyText: getBody(), bodyIsOwned,
-      tplId, designId, lang,
+      tplId, designId, fontScale, lang,
     };
   }
   function hasContent(s) {
@@ -604,8 +631,9 @@
     bodyIsOwned = !!state.bodyIsOwned;
     tplId = TYPE_BY_ID[state.tplId] ? state.tplId : 'free';
     designId = DESIGN_BY_ID[state.designId] ? state.designId : 'classic';
+    fontScale = clampScale(state.fontScale || 100);
     syncUploadPreviews(); renderExtraFields(); renderAttachments(); renderFontFilter(); renderTypeGrid();
-    applyFont(); applyDesign(); syncAiButtons();
+    applyFont(); applyDesign(); applyFontScale(); syncAiButtons();
   }
 
   function deriveTitle() {
@@ -960,6 +988,7 @@
     const d = DESIGN_BY_ID[designId] || DESIGNS[0];
     const ac = designId === 'classic' ? '#1E2F40' : d.color;
     const images = [];
+    const pt = (n) => (Math.round(n * fontScale / 50) / 2) + 'pt'; // scaled, rounded to 0.5pt
     function imgPart(dataUrl, name) {
       const m = /^data:(image\/[\w+.-]+);base64,(.*)$/.exec(dataUrl || '');
       if (!m) return null;
@@ -983,8 +1012,8 @@
       <td valign=top style="padding:0">${sender}</td>
       <td valign=top align=${end} style="padding:0;text-align:${end};white-space:nowrap">${p(`<b>${escapeHtml(els.reqDate.textContent)}</b>`, `text-align:${end}`)}</td></tr></table>`;
     body += `<table dir=${dir} width="100%" style="width:100%;border-collapse:collapse;margin-bottom:20pt"><tr><td width="46%" style="width:46%;padding:0"></td>
-      <td style="padding:0">${p(`<b>${escapeHtml(v(els.reqAddressed)).replace(/\n/g, '<br>')}</b>`, 'font-size:13pt')}</td></tr></table>`;
-    body += p(`${lbl(t('labelSubject'))}<b>${escapeHtml(v(els.reqSubjectValue))}</b>`, 'text-align:center;font-size:13pt;margin:0 0 18pt 0');
+      <td style="padding:0">${p(`<b>${escapeHtml(v(els.reqAddressed)).replace(/\n/g, '<br>')}</b>`, `font-size:${pt(13)}`)}</td></tr></table>`;
+    body += p(`${lbl(t('labelSubject'))}<b>${escapeHtml(v(els.reqSubjectValue))}</b>`, `text-align:center;font-size:${pt(13.5)};margin:0 0 18pt 0`);
     getBody().split('\n').forEach((line) => {
       body += p(line.trim() ? escapeHtml(line) : '&nbsp;', 'text-align:justify;line-height:180%;margin:0');
     });
@@ -1004,8 +1033,8 @@
 <style>
 @page WordSection1{size:21.0cm 29.7cm;margin:1.8cm 2.0cm 1.8cm 2.0cm;}
 div.WordSection1{page:WordSection1;}
-p.MsoNormal, li.MsoNormal{margin:0;font-family:${font};font-size:12pt;color:#1E2F40;direction:${dir};text-align:${start};}
-body{font-family:${font};font-size:12pt;}
+p.MsoNormal, li.MsoNormal{margin:0;font-family:${font};font-size:${pt(12)};color:#1E2F40;direction:${dir};text-align:${start};}
+body{font-family:${font};font-size:${pt(12)};}
 </style></head>
 <body lang=${lang === 'ar' ? 'AR-DZ' : lang === 'fr' ? 'FR' : 'EN-GB'} dir=${dir}><div class=WordSection1 dir=${dir}>${body}</div></body></html>`;
 

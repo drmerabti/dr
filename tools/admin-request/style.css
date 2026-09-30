@@ -397,33 +397,33 @@ html[lang="ar"] .request-page *{ letter-spacing: 0 !important; }
 .req-remove-btn:hover{ background: rgba(192,57,43,.9); }
 
 .req-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:24px; margin-bottom: 38px; }
-.req-sender-block p{ margin: 0 0 4px; font-size: 15px; line-height:1.6; }
+.req-sender-block p{ margin: 0 0 4px; font-size: calc(15px * var(--fs, 1)); line-height:1.6; }
 .req-label{ font-weight: 800; }
 .req-value{ font-weight: 400; }
 .req-ltr{ direction: ltr; unicode-bidi: isolate; display: inline-block; }
-.req-date{ font-size: 15px; font-weight: 700; white-space:nowrap; text-align:end; }
+.req-date{ font-size: calc(15px * var(--fs, 1)); font-weight: 700; white-space:nowrap; text-align:end; }
 
 .req-addressed{
-  margin: 0 0 34px !important; font-size: 16px; font-weight: 800;
+  margin: 0 0 34px !important; font-size: calc(16px * var(--fs, 1)); font-weight: 800;
   margin-inline-start: 46% !important; line-height:1.7; white-space:pre-line;
 }
-.req-subject{ text-align: center; margin: 0 0 30px !important; font-size: 17px; }
+.req-subject{ text-align: center; margin: 0 0 30px !important; font-size: calc(17px * var(--fs, 1)); }
 .req-subject .req-label{ font-weight: 800; }
 .req-subject .req-value{ font-weight: 700; }
 
 .req-body{
-  font-size: 15.5px; line-height: 2; min-height: 240px;
+  font-size: calc(15.5px * var(--fs, 1)); line-height: 2; min-height: 240px;
   white-space: pre-wrap; outline: none; margin-bottom: 36px; text-align: justify;
 }
 .req-body:empty::before{ content: attr(data-placeholder); color: #9AA5B1; }
 
-.req-attach{ margin-bottom: 30px; font-size:14.5px; }
+.req-attach{ margin-bottom: 30px; font-size: calc(14.5px * var(--fs, 1)); }
 .req-attach .req-label{ margin-bottom:6px !important; }
 .req-attach #reqAttachList p, .req-attach > div p{ padding-inline-start: 18px; line-height:1.8; }
 .req-att-n{ font-weight:700; }
 
 .req-signature{ position: relative; align-self:flex-end; text-align:center; min-width:220px; margin-inline-end: 10px; }
-.req-signature-caption{ font-size: 15px; font-weight:800; margin-bottom:8px !important; }
+.req-signature-caption{ font-size: calc(15px * var(--fs, 1)); font-weight:800; margin-bottom:8px !important; }
 .req-stamp-img{ max-width: 170px; max-height: 130px; object-fit: contain; display:block; margin:0 auto; }
 .req-signature .req-remove-btn{ top: 26px; inset-inline-end: -4px; }
 
@@ -587,3 +587,26 @@ html[lang="ar"] .request-page *{ letter-spacing: 0 !important; }
 
 /* example values shown on screen only (left blank in print / PDF / Word) */
 .request-page .ph{ color:#9AA5B1; }
+
+/* text size control (section 7) */
+.size-ctl{ display:flex; align-items:center; gap:8px; }
+.size-ctl button{
+  height:46px; min-width:56px; border:1px solid var(--line); background:#F5F8FA; border-radius:12px; cursor:pointer;
+  font-family:'Inter',sans-serif; font-weight:800; color: var(--ink); display:grid; place-items:center; padding:0 12px;
+  transition: background .15s, border-color .15s;
+}
+.size-ctl button:hover:not(:disabled){ background:#fff; border-color: var(--sc, var(--accent)); color: var(--sc, var(--accent)); }
+.size-ctl button:disabled{ opacity:.4; cursor:not-allowed; }
+.size-ctl #fsDown{ font-size:.95rem; }
+.size-ctl #fsUp{ font-size:1.2rem; }
+.size-ctl #fsReset{ min-width:46px; margin-inline-start:auto; }
+.size-ctl #fsReset svg{ width:18px; height:18px; }
+.size-val{ flex:1; max-width:120px; text-align:center; font-family:'Inter',sans-serif; font-weight:800; font-size:1.05rem;
+  background: color-mix(in srgb, var(--sc, var(--accent)) 8%, #fff); border-radius:12px; padding:11px 0; }
+.size-warn{ display:flex; align-items:flex-start; gap:8px; margin-top:10px; padding:10px 12px; border-radius:12px;
+  background:#FFF6E5; border:1px solid #F3D9A4; color:#8A5A00; font-size:.84rem; font-weight:600; line-height:1.6; }
+.size-warn svg{ width:18px; height:18px; flex:none; margin-top:2px; }
+/* overflow warning on the stage */
+.stage-bar .page-warn{ display:flex; align-items:center; gap:7px; padding:8px 12px; background:#FFF6E5; border-color:#F3D9A4; color:#8A5A00;
+  font-size:.82rem; font-weight:700; white-space:nowrap; direction: var(--dir, rtl); }
+.stage-bar .page-warn svg{ width:16px; height:16px; flex:none; }

@@ -237,6 +237,17 @@
             <div class="font-grid" id="fontFilter"></div>
           </div>
           <div class="field">
+            <label data-i18n="fontSizeLbl">حجم خط الطلب</label>
+            <div class="size-ctl" role="group">
+              <button type="button" id="fsDown" data-tip="fsDown" dir="ltr">A−</button>
+              <span class="size-val" id="fsVal" dir="ltr">100%</span>
+              <button type="button" id="fsUp" data-tip="fsUp" dir="ltr">A+</button>
+              <button type="button" id="fsReset" data-tip="fsReset"><svg viewBox="0 0 24 24"><path d="M4 4v6h6M4 10a8 8 0 1 1 2 6"/></svg></button>
+            </div>
+            <p class="hint" data-i18n="fontSizeHint"></p>
+            <div class="size-warn hidden" id="fsWarn"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><span data-i18n="overflowWarn"></span></div>
+          </div>
+          <div class="field">
             <label data-i18n="companyCardTitle">صورة الرأس / الترويسة (اختياري)</label>
             <div class="upload-box wide" id="companyLogoBox">
               <input type="file" id="companyLogoInput" accept="image/*" hidden>
@@ -273,6 +284,7 @@
         <button type="button" id="zoomIn" aria-label="+"><svg viewBox="0 0 24 24"><path d="M6 12h12M12 6v12"/></svg></button>
         <button type="button" id="zoomFit" data-tip="fit"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
       </div>
+      <div class="page-warn hidden" id="pageWarn"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><span data-i18n="overflowShort"></span></div>
     </div>
 
     <div class="flat-view" id="flatView">
