@@ -1,6 +1,6 @@
 /* =========================================================
    بطاقات التشجيع — Merabti Academy
-   Encouragement cards for children: 20 templates, 3 sizes,
+   Encouragement cards for children: 30 templates (10 landscape), 3 sizes,
    batch names, print sheets, PDF, PNG, account saving.
    No living beings are drawn in any design.
    ========================================================= */
@@ -28,7 +28,7 @@ const UI = {
     sec_child:'الطفل', sec_child_d:'الاسم أو قائمة أسماء',
     sec_sign:'التوقيع', sec_sign_d:'المانح، المؤسسة والتاريخ',
     sec_print:'الطباعة', sec_print_d:'ترتيب البطاقات في ورقة A4',
-    size:'المقاس', orient:'الاتجاه', o_p:'عمودي', o_l:'أفقي', sz_a6:'A6', sz_sm:'صغيرة', sz_a5:'A5',
+    size:'المقاس', orient:'الاتجاه', or_all:'كل الاتجاهات', o_p:'عمودي', o_l:'أفقي', sz_a6:'A6', sz_sm:'صغيرة', sz_a5:'A5',
     color:'اللون الرئيسي', font:'الخط', font_auto:'خط القالب', clang:'لغة البطاقة', reset_txt:'استعادة نصوص القالب',
     f_title:'العنوان', f_emblem:'الرمز', f_msg:'عبارة التشجيع', f_phrase:'اختر عبارة جاهزة...', none:'بدون',
     f_name:'اسم الطفل', f_names:'قائمة أسماء (اختياري)', f_names_h:'اسم في كل سطر، فتُنشأ بطاقة لكل طفل', names_n:'بطاقة',
@@ -57,7 +57,7 @@ const UI = {
     sec_child:'L’enfant', sec_child_d:'Un nom ou une liste de noms',
     sec_sign:'Signature', sec_sign_d:'Donateur, établissement et date',
     sec_print:'Impression', sec_print_d:'Disposition sur une feuille A4',
-    size:'Format', orient:'Orientation', o_p:'Portrait', o_l:'Paysage', sz_a6:'A6', sz_sm:'Petite', sz_a5:'A5',
+    size:'Format', orient:'Orientation', or_all:'Toutes', o_p:'Portrait', o_l:'Paysage', sz_a6:'A6', sz_sm:'Petite', sz_a5:'A5',
     color:'Couleur principale', font:'Police', font_auto:'Police du modèle', clang:'Langue de la carte', reset_txt:'Rétablir les textes du modèle',
     f_title:'Titre', f_emblem:'Symbole', f_msg:'Message d’encouragement', f_phrase:'Choisir un message prêt...', none:'Aucun',
     f_name:'Prénom de l’enfant', f_names:'Liste de noms (optionnel)', f_names_h:'Un nom par ligne : une carte par enfant', names_n:'cartes',
@@ -86,7 +86,7 @@ const UI = {
     sec_child:'The child', sec_child_d:'One name or a list of names',
     sec_sign:'Signature', sec_sign_d:'Giver, school and date',
     sec_print:'Printing', sec_print_d:'Layout on an A4 sheet',
-    size:'Size', orient:'Orientation', o_p:'Portrait', o_l:'Landscape', sz_a6:'A6', sz_sm:'Small', sz_a5:'A5',
+    size:'Size', orient:'Orientation', or_all:'All', o_p:'Portrait', o_l:'Landscape', sz_a6:'A6', sz_sm:'Small', sz_a5:'A5',
     color:'Main color', font:'Font', font_auto:'Template font', clang:'Card language', reset_txt:'Restore template texts',
     f_title:'Title', f_emblem:'Symbol', f_msg:'Encouraging message', f_phrase:'Pick a ready message...', none:'None',
     f_name:'Child’s name', f_names:'List of names (optional)', f_names_h:'One name per line: one card per child', names_n:'cards',
@@ -202,7 +202,42 @@ const EMBLEMS = {
   sparkle: P => `${spark(50, 46, 34, P.c1)}${spark(20, 20, 12, P.c3)}${spark(82, 80, 14, P.c3)}${spark(84, 18, 8, P.c2)}${spark(16, 80, 8, P.c2)}
     <circle cx="50" cy="46" r="6" fill="#fff" opacity=".8"/>`,
   sun: P => `${Array.from({ length: 12 }, (_, i) => `<rect x="47" y="2" width="6" height="16" rx="3" fill="${P.c3}" transform="rotate(${i * 30} 50 50)"/>`).join('')}
-    <circle cx="50" cy="50" r="26" fill="${P.c3}"/><circle cx="50" cy="50" r="18" fill="#fff" opacity=".25"/>`
+    <circle cx="50" cy="50" r="26" fill="${P.c3}"/><circle cx="50" cy="50" r="18" fill="#fff" opacity=".25"/>`,
+  seal: P => `<path d="M36 56L26 94l11-5 8 10 9-36z" fill="${P.c1}"/><path d="M64 56l10 38-11-5-8 10-9-36z" fill="${P.c2}"/>
+    <polygon points="${starPts(50, 42, 40, 34, 24)}" fill="${P.c3}"/><circle cx="50" cy="42" r="29" fill="${P.c1}"/>
+    <circle cx="50" cy="42" r="24" fill="none" stroke="${P.c3}" stroke-width="2" stroke-dasharray="3 2.4"/>
+    <polygon points="${starPts(50, 42, 16, 7, 5)}" fill="${P.c3}"/>${spark(90, 12, 6, P.c3)}`,
+  puzzle: P => `<rect x="10" y="10" width="38" height="38" rx="6" fill="${P.c1}"/><rect x="52" y="10" width="38" height="38" rx="6" fill="${P.c3}"/>
+    <rect x="52" y="52" width="38" height="38" rx="6" fill="${P.c2}"/><rect x="10" y="52" width="38" height="38" rx="6" fill="${P.c4 || shade(P.c1, .45)}"/>
+    <circle cx="50" cy="29" r="7" fill="${P.c1}"/><circle cx="71" cy="50" r="7" fill="${P.c3}"/><circle cx="50" cy="71" r="7" fill="${P.c2}"/><circle cx="29" cy="50" r="7" fill="${P.c4 || shade(P.c1, .45)}"/>
+    <path d="M18 20h10M62 20h10" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".55"/>${spark(94, 6, 6, P.c3)}`,
+  boat: P => `<path d="M49 8v58" stroke="${P.c1}" stroke-width="3.5" stroke-linecap="round"/><path d="M51 8l14 5-14 5z" fill="${P.c2}"/>
+    <path d="M53 18c16 10 26 26 30 44H53z" fill="${P.c3}"/><path d="M45 24C34 34 24 48 20 62h25z" fill="#fff" stroke="${P.c1}" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="M12 68h76l-10 18H22z" fill="${P.c1}"/><circle cx="36" cy="76" r="2.6" fill="#fff"/><circle cx="50" cy="76" r="2.6" fill="#fff"/><circle cx="64" cy="76" r="2.6" fill="#fff"/>
+    <path d="M6 93q7-5 14 0t14 0 14 0 14 0 14 0 14 0" stroke="${P.c2}" stroke-width="3.5" fill="none" stroke-linecap="round"/>`,
+  sprout: P => `<path d="M50 60V28" stroke="#4CAF50" stroke-width="4.5" stroke-linecap="round"/>
+    <path d="M50 48C38 48 26 42 24 28c12 0 24 6 26 20z" fill="#66BB6A"/><path d="M50 40c12 0 24-6 26-20-12 0-24 6-26 20z" fill="#43A047"/>
+    <path d="M33 34c5 2 10 6 13 10M67 26c-5 2-10 6-13 10" stroke="#fff" stroke-width="1.6" fill="none" opacity=".55" stroke-linecap="round"/>
+    ${[0, 72, 144, 216, 288].map(a => `<ellipse cx="50" cy="12" rx="5" ry="7" fill="${P.c1}" transform="rotate(${a} 50 19)"/>`).join('')}<circle cx="50" cy="19" r="4.5" fill="${P.c3}"/>
+    <path d="M30 64h40l-6 30H36z" fill="#D9825B"/><rect x="25" y="56" width="50" height="11" rx="3" fill="#C06C47"/>
+    <path d="${heartPath(50, 79, 5)}" fill="#fff" opacity=".85"/>`,
+  gift: P => `<rect x="16" y="46" width="68" height="46" rx="4" fill="${P.c1}"/><rect x="10" y="32" width="80" height="16" rx="4" fill="${shade(P.c1, -.12)}"/>
+    <circle cx="28" cy="62" r="3" fill="#fff" opacity=".35"/><circle cx="70" cy="80" r="3" fill="#fff" opacity=".35"/><circle cx="30" cy="84" r="2.4" fill="#fff" opacity=".35"/><circle cx="72" cy="58" r="2.4" fill="#fff" opacity=".35"/>
+    <rect x="44" y="32" width="12" height="60" fill="${P.c3}"/>
+    <path d="M50 32C40 14 22 16 26 26c3 7 16 6 24 6zM50 32c10-18 28-16 24-6-3 7-16 6-24 6z" fill="${P.c3}" stroke="${shade(P.c3, -.2)}" stroke-width="1.5"/>
+    <circle cx="50" cy="31" r="5" fill="${shade(P.c3, -.15)}"/>${spark(88, 14, 6, P.c3)}${spark(10, 16, 4, P.c1)}`,
+  mosque: P => `<rect x="8" y="34" width="8" height="58" fill="${P.c3}"/><path d="M6 34l6-16 6 16z" fill="${P.c3}"/><rect x="84" y="34" width="8" height="58" fill="${P.c3}"/><path d="M82 34l6-16 6 16z" fill="${P.c3}"/>
+    <rect x="22" y="56" width="56" height="36" fill="${P.c3}"/><path d="M26 58c0-16 12-24 24-30 12 6 24 14 24 30z" fill="${P.c3}"/>
+    <path d="M50 28v-12" stroke="${P.c3}" stroke-width="2.5"/><path d="M53 6a6 6 0 1 0 0 10 5 5 0 1 1 0-10z" fill="${P.c3}"/>
+    <path d="M42 92V78a8 8 0 0 1 16 0v14z" fill="${P.c2}"/><path d="M28 74v-6a3.5 3.5 0 0 1 7 0v6zM65 74v-6a3.5 3.5 0 0 1 7 0v6z" fill="${P.c2}"/>
+    <rect x="10.5" y="44" width="3" height="6" rx="1.5" fill="${P.c2}"/><rect x="86.5" y="44" width="3" height="6" rx="1.5" fill="${P.c2}"/>
+    <path d="M4 92h92" stroke="${P.c3}" stroke-width="3" stroke-linecap="round"/>`,
+  recycle: P => {
+    const pt = (a, r) => [(50 + r * Math.cos(a * Math.PI / 180)).toFixed(1), (50 + r * Math.sin(a * Math.PI / 180)).toFixed(1)];
+    const arrow = (a1, a2) => { const [x1, y1] = pt(a1, 36), [x2, y2] = pt(a2, 36), [tx, ty] = pt(a2 + 18, 36), [bx, by] = pt(a2, 46), [cx, cy] = pt(a2, 26);
+      return `<path d="M${x1} ${y1}A36 36 0 0 1 ${x2} ${y2}" stroke="${P.c1}" stroke-width="8" fill="none" stroke-linecap="round"/><polygon points="${tx},${ty} ${bx},${by} ${cx},${cy}" fill="${P.c1}" stroke="${P.c1}" stroke-width="2" stroke-linejoin="round"/>`; };
+    return `${arrow(200, 318)}${arrow(20, 138)}<path d="M50 70C34 64 32 44 50 30c18 14 16 34 0 40z" fill="#4CAF50"/><path d="M50 36v34" stroke="#fff" stroke-width="2" opacity=".7"/>${spark(88, 10, 6, P.c3)}`;
+  }
 };
 const EMBLEM_KEYS = Object.keys(EMBLEMS);
 const emblemSVG = (key, P) => EMBLEMS[key] ? `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">${EMBLEMS[key](P)}</svg>` : '';
@@ -228,6 +263,28 @@ function edgePts(W, H, n, band, seed) {
     if (!inCenter) pts.push([x, y, r()]);
   }
   return pts;
+}
+/* landscape templates: the emblem sits on a start panel, 27u from the edge (matches .ct in style.css).
+   Drawn left-to-right; cardHTML mirrors the whole drawing for right-to-left cards. */
+const f1 = v => +(+v).toFixed(1);
+const isLand = (W, H) => W >= H;
+const emCenter = (W, H, u) => isLand(W, H) ? [u * 27, H / 2] : [W / 2, u * 25];
+function emDisc(W, H, u, ring, dash) {
+  const [x, y] = emCenter(W, H, u);
+  return `<circle cx="${f1(x)}" cy="${f1(y)}" r="${f1(u * 21)}" fill="#fff"/>` +
+    (ring ? `<circle cx="${f1(x)}" cy="${f1(y)}" r="${f1(u * 23.5)}" fill="none" stroke="${ring}" stroke-width="${f1(u * .8)}"${dash ? ` stroke-dasharray="${f1(u * 1.6)} ${f1(u * 1.2)}"` : ''}/>` : '');
+}
+const wavePath = (x0, x1, y, a, p) => { let d = `M${f1(x0)} ${f1(y)}q${f1(p / 4)} ${f1(-a)} ${f1(p / 2)} 0`; for (let x = x0 + p / 2; x < x1; x += p / 2) d += `t${f1(p / 2)} 0`; return d; };
+const leafShape = (x, y, a, len, c, op = 1) => `<path d="M0 0C${f1(len * .3)} ${f1(-len * .32)} ${f1(len * .75)} ${f1(-len * .32)} ${f1(len)} 0C${f1(len * .75)} ${f1(len * .32)} ${f1(len * .3)} ${f1(len * .32)} 0 0Z" fill="${c}"${op < 1 ? ` opacity="${op}"` : ''} transform="translate(${f1(x)} ${f1(y)}) rotate(${f1(a)})"/>`;
+const bloom = (x, y, r, c, mid) => `<g transform="translate(${f1(x)} ${f1(y)})">${[0, 72, 144, 216, 288].map(a => `<ellipse cx="0" cy="${f1(-r * .62)}" rx="${f1(r * .42)}" ry="${f1(r * .62)}" fill="${c}" transform="rotate(${a})"/>`).join('')}<circle r="${f1(r * .38)}" fill="${mid}"/></g>`;
+const bez = (p, t) => { const m = 1 - t; return [0, 1].map(i => m * m * m * p[0][i] + 3 * m * m * t * p[1][i] + 3 * m * t * t * p[2][i] + t * t * t * p[3][i]); };
+function lantern(x, top, len, u, c) {
+  const y = top + len, k = u * .9;
+  return `<path d="M${f1(x)} ${f1(top)}V${f1(y)}" stroke="${c}" stroke-width="${f1(u * .25)}"/>
+    <path d="M${f1(x - k * 2.2)} ${f1(y + k * 1.6)}L${f1(x)} ${f1(y)}L${f1(x + k * 2.2)} ${f1(y + k * 1.6)}Z" fill="${c}"/>
+    <path d="M${f1(x - k * 3)} ${f1(y + k * 1.6)}h${f1(k * 6)}l${f1(-k * .6)} ${f1(k * 6)}l${f1(-k * 2.4)} ${f1(k * 1.4)}l${f1(-k * 2.4)} ${f1(-k * 1.4)}Z" fill="${c}"/>
+    <path d="M${f1(x - k * 1.8)} ${f1(y + k * 2.6)}h${f1(k * 3.6)}l${f1(-k * .4)} ${f1(k * 4.2)}l${f1(-k * 1.4)} ${f1(k * .8)}l${f1(-k * 1.4)} ${f1(-k * .8)}Z" fill="#FFF3C4"/>
+    <circle cx="${f1(x)}" cy="${f1(y + k * 10)}" r="${f1(k * .8)}" fill="${c}"/>`;
 }
 
 /* ---------------------------------------------------------
@@ -362,11 +419,240 @@ const DECO = {
     });
     s += `<rect x="${u * 3}" y="${u * 3}" width="${W - u * 6}" height="${H - u * 6}" rx="${u * 6}" fill="none" stroke="${P.c1}" stroke-width="${u * .8}"/>`;
     return s;
+  },
+
+  /* ----- landscape designs (orient:'l') ----- */
+  certif(W, H, P, u) {
+    const land = isLand(W, H), p = u * 6;
+    let s = `<rect width="${W}" height="${H}" fill="${P.bg}"/>`;
+    for (let y = u * 9; y < H - u * 8; y += u * 3.2) s += `<path d="${wavePath(u * 8, W - u * 8 - p / 2, y, u * .9, p)}" stroke="${P.c3}" stroke-opacity=".16" stroke-width="${f1(u * .18)}" fill="none"/>`;
+    s += `<rect x="${u * 2.5}" y="${u * 2.5}" width="${f1(W - u * 5)}" height="${f1(H - u * 5)}" fill="none" stroke="${P.c1}" stroke-width="${f1(u * 2.2)}"/>
+      <rect x="${f1(u * 5.2)}" y="${f1(u * 5.2)}" width="${f1(W - u * 10.4)}" height="${f1(H - u * 10.4)}" fill="none" stroke="${P.c3}" stroke-width="${f1(u * .6)}"/>
+      <rect x="${f1(u * 6.6)}" y="${f1(u * 6.6)}" width="${f1(W - u * 13.2)}" height="${f1(H - u * 13.2)}" fill="none" stroke="${P.c3}" stroke-width="${f1(u * .25)}"/>`;
+    const k = u * 5.9;
+    [[k, k], [W - k, k], [k, H - k], [W - k, H - k]].forEach(([x, y]) => s += `<polygon points="${starPts(x, y, u * 3.6, u * 1.7, 8)}" fill="${P.c3}"/><circle cx="${f1(x)}" cy="${f1(y)}" r="${f1(u * 1.1)}" fill="${P.c1}"/>`);
+    const dia = (x, y, r) => `<polygon points="${f1(x)},${f1(y - r)} ${f1(x + r * 1.6)},${f1(y)} ${f1(x)},${f1(y + r)} ${f1(x - r * 1.6)},${f1(y)}" fill="${P.c3}"/>`;
+    s += dia(W / 2, k, u * 1.4) + dia(W / 2, H - k, u * 1.4);
+    if (land) {
+      /* laurel around the seal and a divider before the text */
+      const [cx, cy0] = emCenter(W, H, u), cy = cy0 - u * 2.4, R = u * 17.5;
+      s += `<path d="M${f1(cx + R * Math.cos(2))} ${f1(cy + R * Math.sin(2))}A${f1(R)} ${f1(R)} 0 0 1 ${f1(cx + R * Math.cos(4.3))} ${f1(cy + R * Math.sin(4.3))}M${f1(cx + R * Math.cos(1.14))} ${f1(cy + R * Math.sin(1.14))}A${f1(R)} ${f1(R)} 0 0 0 ${f1(cx + R * Math.cos(-1.16))} ${f1(cy + R * Math.sin(-1.16))}" stroke="${P.c3}" stroke-width="${f1(u * .5)}" fill="none" opacity=".8"/>`;
+      for (let a = 118; a <= 244; a += 14) { const t = a * Math.PI / 180; s += leafShape(cx + R * Math.cos(t), cy + R * Math.sin(t), a + 90 + ((a / 14) % 2 ? 28 : -28), u * 4.6, P.c3, .85); }
+      for (let a = 62; a >= -64; a -= 14) { const t = a * Math.PI / 180; s += leafShape(cx + R * Math.cos(t), cy + R * Math.sin(t), a - 90 + ((a / 14) % 2 ? 28 : -28), u * 4.6, P.c3, .85); }
+      const dx = u * 49;
+      s += `<path d="M${f1(dx)} ${f1(u * 18)}V${f1(H - u * 18)}" stroke="${P.c3}" stroke-width="${f1(u * .35)}"/>${dia(dx, u * 17, u * 1)}${dia(dx, H - u * 17, u * 1)}
+        <polygon points="${starPts(dx, H / 2, u * 2.2, u * 1, 8)}" fill="${P.c3}"/>`;
+    }
+    return s;
+  },
+  diagonal(W, H, P, u, seed) {
+    const land = isLand(W, H), g = 'dg' + (++uid);
+    const pts = a => a.map(([x, y]) => f1(x) + ',' + f1(y)).join(' ');
+    const band = land ? [[0, 0], [u * 56, 0], [u * 44, H], [0, H]] : [[0, 0], [W, 0], [W, u * 40], [0, u * 52]];
+    const st1 = land ? [[u * 56, 0], [u * 60.5, 0], [u * 48.5, H], [u * 44, H]] : [[0, u * 52], [W, u * 40], [W, u * 44.5], [0, u * 56.5]];
+    const st2 = land ? [[u * 62.5, 0], [u * 63.8, 0], [u * 51.8, H], [u * 50.5, H]] : [[0, u * 58.5], [W, u * 46.5], [W, u * 47.8], [0, u * 59.8]];
+    const [cx, cy] = emCenter(W, H, u);
+    let s = `<rect width="${W}" height="${H}" fill="${P.bg}"/><defs><clipPath id="${g}"><polygon points="${pts(band)}"/></clipPath></defs>
+      <polygon points="${pts(band)}" fill="${P.c1}"/><g clip-path="url(#${g})">`;
+    for (let r = u * 27; r < u * 90; r += u * 6) s += `<circle cx="${f1(cx)}" cy="${f1(cy)}" r="${f1(r)}" fill="none" stroke="#fff" stroke-opacity=".17" stroke-width="${f1(u * .7)}"/>`;
+    s += `</g><polygon points="${pts(st1)}" fill="${P.c3}"/><polygon points="${pts(st2)}" fill="${P.c1}" opacity=".5"/>` + emDisc(W, H, u, P.c3);
+    const r = rng(seed + 11), cols = [P.c1, P.c3, P.c4 || P.c2];
+    for (let n = 0, guard = 0; n < 22 && guard < 800; guard++) {
+      const x = r() * W, y = r() * H, k = r();
+      const free = land ? x > u * 74 : y > u * 68;
+      if (!free || !(y < u * 7 || y > H - u * 6.5)) continue;
+      const c = cols[n % 3], sz = u * (1 + k * 1.4);
+      if (k < .35) s += `<rect x="${f1(x)}" y="${f1(y)}" width="${f1(sz * .7)}" height="${f1(sz * 1.7)}" rx="${f1(u * .3)}" fill="${c}" transform="rotate(${Math.round(r() * 180)} ${f1(x)} ${f1(y)})"/>`;
+      else if (k < .7) s += `<circle cx="${f1(x)}" cy="${f1(y)}" r="${f1(sz * .55)}" fill="${c}"/>`;
+      else s += `<polygon points="${starPts(x, y, sz, sz * .45, 5)}" fill="${c}"/>`;
+      n++;
+    }
+    return s;
+  },
+  shelf(W, H, P, u, seed) {
+    const land = isLand(W, H), r = rng(seed + 5), soft = P.c4 || P.c2;
+    const cols = [P.c1, P.c3, soft, shade(P.c1, .35), shade(P.c3, -.15)];
+    const books = (x0, x1, base, hMin, hMax) => {
+      let o = '', x = x0, i = 0;
+      for (;;) {
+        const w = u * (3.4 + r() * 2.2), h = u * (hMin + r() * (hMax - hMin)), c = cols[i++ % cols.length];
+        if (x + w > x1) break;
+        o += `<rect x="${f1(x)}" y="${f1(base - h)}" width="${f1(w)}" height="${f1(h)}" rx="${f1(u * .5)}" fill="${c}"/>
+          <rect x="${f1(x)}" y="${f1(base - h + u * 1.6)}" width="${f1(w)}" height="${f1(u * .6)}" fill="#fff" opacity=".5"/><rect x="${f1(x)}" y="${f1(base - u * 2.4)}" width="${f1(w)}" height="${f1(u * .6)}" fill="#fff" opacity=".5"/>`;
+        x += w + u * .35;
+      }
+      return o;
+    };
+    const plank = (x, y, w) => `<rect x="${f1(x)}" y="${f1(y)}" width="${f1(w)}" height="${f1(u * 2.4)}" rx="${f1(u * .6)}" fill="#B07D52"/><rect x="${f1(x + u)}" y="${f1(y + u * 2.4)}" width="${f1(w - u * 2)}" height="${f1(u * .9)}" fill="#000" opacity=".1"/>`;
+    let s = `<rect width="${W}" height="${H}" fill="${P.bg}"/>`;
+    if (land) {
+      const pw = u * 52;
+      s += `<rect width="${f1(pw)}" height="${H}" fill="${shade(soft, .62)}"/><rect x="${f1(pw - u * .6)}" width="${f1(u * .6)}" height="${H}" fill="${shade(soft, .2)}"/>`;
+      for (let y = u * 4, j = 0; y < H; y += u * 6, j++) for (let x = u * (j % 2 ? 6 : 3); x < pw - u * 2; x += u * 6) s += `<circle cx="${f1(x)}" cy="${f1(y)}" r="${f1(u * .5)}" fill="#fff" opacity=".7"/>`;
+      s += books(u * 4, u * 30, u * 17, 8, 12);
+      const px = u * 40, py = u * 17;
+      s += leafShape(px, py - u * 5.5, -60, u * 6, '#4CAF50') + leafShape(px, py - u * 5.5, -120, u * 6, '#66BB6A') + leafShape(px, py - u * 5.5, -90, u * 7, '#43A047') +
+        `<path d="M${f1(px - u * 3.5)} ${f1(py - u * 5.5)}h${f1(u * 7)}l${f1(-u)} ${f1(u * 5.5)}h${f1(-u * 5)}z" fill="#D9825B"/>`;
+      s += plank(u, u * 17, u * 50) + books(u * 3, u * 49, H - u * 7, 12, 17) + plank(u, H - u * 7, u * 50);
+    } else {
+      s += books(u * 6, W - u * 6, H - u * 6, 10, 15) + plank(u * 3, H - u * 6, W - u * 6);
+    }
+    const bx = W - u * 14;
+    s += `<path d="M${f1(bx)} 0h${f1(u * 6)}v${f1(u * 16)}l${f1(-u * 3)} ${f1(-u * 3)}l${f1(-u * 3)} ${f1(u * 3)}z" fill="${P.c3}"/>`;
+    return s;
+  },
+  blocks(W, H, P, u, seed) {
+    const land = isLand(W, H), r = rng(seed + 29), cols = [P.c1, P.c2, P.c3, P.c4 || shade(P.c1, .45)];
+    const t = u * 13, nx = land ? 4 : Math.ceil(W / t), ny = land ? Math.ceil(H / t) : 4;
+    let s = `<rect width="${W}" height="${H}" fill="${P.bg}"/>`;
+    for (let j = 0; j < ny; j++) for (let i = 0; i < nx; i++) {
+      const x = f1(i * t), y = f1(j * t), T = f1(t), a = Math.floor(r() * 4), c = cols[(a + 1 + Math.floor(r() * 3)) % 4], kind = Math.floor(r() * 6);
+      s += `<rect x="${x}" y="${y}" width="${T}" height="${T}" fill="${cols[a]}"/>`;
+      if (kind === 0) s += `<path d="M${x} ${y}h${T}A${T} ${T} 0 0 1 ${x} ${f1(y + t)}Z" fill="${c}"/>`;
+      else if (kind === 1) s += `<path d="M${x} ${f1(y + t)}A${f1(t / 2)} ${f1(t / 2)} 0 0 1 ${f1(x + t)} ${f1(y + t)}Z" fill="${c}"/>`;
+      else if (kind === 2) s += `<circle cx="${f1(x + t / 2)}" cy="${f1(y + t / 2)}" r="${f1(t * .34)}" fill="${c}"/>`;
+      else if (kind === 3) s += `<polygon points="${x},${y} ${f1(x + t)},${y} ${x},${f1(y + t)}" fill="${c}"/>`;
+      else if (kind === 4) s += `<polygon points="${f1(x + t / 2)},${f1(y + t * .14)} ${f1(x + t * .86)},${f1(y + t / 2)} ${f1(x + t / 2)},${f1(y + t * .86)} ${f1(x + t * .14)},${f1(y + t / 2)}" fill="${c}"/>`;
+      else s += `<circle cx="${f1(x + t / 2)}" cy="${f1(y + t / 2)}" r="${f1(t * .28)}" fill="none" stroke="${c}" stroke-width="${f1(t * .14)}"/>`;
+    }
+    s += land ? `<rect x="${f1(t * 4)}" width="${f1(u * .8)}" height="${H}" fill="#fff"/>` : `<rect y="${f1(t * 4)}" width="${W}" height="${f1(u * .8)}" fill="#fff"/>`;
+    s += emDisc(W, H, u, '#fff');
+    const sw = f1(u * .7);
+    if (land) {
+      s += `<polygon points="${f1(W - u * 6)},${f1(u * 4)} ${f1(W - u * 3.8)},${f1(u * 8)} ${f1(W - u * 8.2)},${f1(u * 8)}" fill="none" stroke="${cols[3]}" stroke-width="${sw}" stroke-linejoin="round"/>`;
+      for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) s += `<circle cx="${f1(W - u * 26 + i * u * 2.4)}" cy="${f1(u * 4 + j * u * 2.4)}" r="${f1(u * .5)}" fill="${P.c1}" opacity=".4"/>`;
+    }
+    s += `<circle cx="${f1(W - u * 5)}" cy="${f1(H * .58)}" r="${f1(u * 2)}" fill="none" stroke="${P.c2}" stroke-width="${sw}"/>
+      <rect x="${f1(W - u * 6.8)}" y="${f1(H * .72)}" width="${f1(u * 3.2)}" height="${f1(u * 3.2)}" fill="none" stroke="${P.c3}" stroke-width="${sw}" transform="rotate(20 ${f1(W - u * 5.2)} ${f1(H * .72 + u * 1.6)})"/>`;
+    if (!land) s += `<polygon points="${f1(u * 10)},${f1(H - u * 11)} ${f1(u * 12.2)},${f1(H - u * 7)} ${f1(u * 7.8)},${f1(H - u * 7)}" fill="none" stroke="${cols[3]}" stroke-width="${sw}" stroke-linejoin="round"/>`;
+    return s;
+  },
+  waves(W, H, P, u) {
+    const g = 'wv' + (++uid);
+    let s = `<defs><linearGradient id="${g}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${shade(P.bg, .55)}"/><stop offset="1" stop-color="${P.bg}"/></linearGradient></defs>
+      <rect width="${W}" height="${H}" fill="url(#${g})"/>`;
+    const sx = u * 12, sy = u * 12;
+    s += `<circle cx="${f1(sx)}" cy="${f1(sy)}" r="${f1(u * 11)}" fill="${P.c3}" opacity=".18"/>`;
+    for (let i = 0; i < 10; i++) s += `<rect x="${f1(sx - u * .6)}" y="${f1(sy - u * 10.2)}" width="${f1(u * 1.2)}" height="${f1(u * 2.4)}" rx="${f1(u * .6)}" fill="${P.c3}" transform="rotate(${i * 36} ${f1(sx)} ${f1(sy)})"/>`;
+    s += `<circle cx="${f1(sx)}" cy="${f1(sy)}" r="${f1(u * 6.4)}" fill="${P.c3}"/>`;
+    const cloud = (x, y, k) => `<g fill="#fff" transform="translate(${f1(x)} ${f1(y)}) scale(${k})"><circle r="${f1(u * 3.2)}"/><circle cx="${f1(u * 4)}" cy="${f1(-u * 2)}" r="${f1(u * 4.2)}"/><circle cx="${f1(u * 8.5)}" r="${f1(u * 3.2)}"/><rect width="${f1(u * 8.5)}" height="${f1(u * 3.2)}"/></g>`;
+    s += cloud(u * 26, u * 10, .8) + cloud(W - u * 20, u * 7, .6);
+    const layer = (y, a, p, off, c, op) => `<path d="${wavePath(-off, W + p, y, a, p)}V${H}H${f1(-off)}Z" fill="${c}"${op ? ` opacity="${op}"` : ''}/>`;
+    s += layer(H - u * 15, u * 2, u * 22, u * 6, P.c2, .5) + layer(H - u * 10.5, u * 2.2, u * 18, 0, P.c2) + layer(H - u * 6, u * 2, u * 24, u * 9, P.c1);
+    for (let x = u * 4.5, i = 0; x < W; x += u * 18, i++) s += `<ellipse cx="${f1(x)}" cy="${f1(H - u * 10.9)}" rx="${f1(u * 1.8)}" ry="${f1(u * .45)}" fill="#fff" opacity=".8"/>` + (i % 2 ? spark(f1(x + u * 9), f1(H - u * 3.5), f1(u * 1.1), '#fff') : '');
+    return s;
+  },
+  ticket(W, H, P, u) {
+    const land = isLand(W, H), m = u * 3, cut = land ? u * 52 : u * 46, [cx, cy] = emCenter(W, H, u);
+    let s = `<rect width="${W}" height="${H}" fill="${P.c1}"/><rect x="${m}" y="${m}" width="${f1(W - m * 2)}" height="${f1(H - m * 2)}" rx="${f1(u * 3)}" fill="${P.bg}"/>`;
+    if (land) for (let y = u * 8; y < H - u * 6; y += u * 3.4) s += `<path d="${wavePath(cut + u * 4, W - u * 10, y, u, u * 7)}" stroke="${P.c1}" stroke-opacity=".08" stroke-width="${f1(u * .25)}" fill="none"/>`;
+    else for (let y = cut + u * 6; y < H - u * 6; y += u * 3.4) s += `<path d="${wavePath(u * 6, W - u * 10, y, u, u * 7)}" stroke="${P.c1}" stroke-opacity=".08" stroke-width="${f1(u * .25)}" fill="none"/>`;
+    s += land ? `<rect x="${m}" y="${m}" width="${f1(cut - m)}" height="${f1(H - m * 2)}" rx="${f1(u * 3)}" fill="${P.c2}"/><rect x="${f1(cut - u * 4)}" y="${m}" width="${f1(u * 4)}" height="${f1(H - m * 2)}" fill="${P.c2}"/>`
+              : `<rect x="${m}" y="${m}" width="${f1(W - m * 2)}" height="${f1(cut - m)}" rx="${f1(u * 3)}" fill="${P.c2}"/><rect x="${m}" y="${f1(cut - u * 4)}" width="${f1(W - m * 2)}" height="${f1(u * 4)}" fill="${P.c2}"/>`;
+    s += `<polygon points="${starPts(cx, cy, u * 22, u * 17, 16)}" fill="#fff" opacity=".16"/><circle cx="${f1(cx)}" cy="${f1(cy)}" r="${f1(u * 15)}" fill="#fff" opacity=".14"/>`;
+    const sx0 = m + u * 5.5, sx1 = land ? cut - u * 5.5 : W - m - u * 5.5, sy1 = land ? H - m - u * 5.5 : cut - u * 5.5;
+    [[sx0, sx0], [sx1, sx0], [sx0, sy1], [sx1, sy1]].forEach(([x, y]) => s += `<polygon points="${starPts(x, y, u * 2, u * .85, 5)}" fill="${P.c3}"/>`);
+    const dash = `stroke="${P.c1}" stroke-width="${f1(u * .6)}" stroke-dasharray="${f1(u * 1.2)} ${f1(u * 1.4)}" stroke-linecap="round"`;
+    if (land) {
+      s += `<circle cx="${f1(cut)}" cy="${m}" r="${f1(u * 4)}" fill="${P.c1}"/><circle cx="${f1(cut)}" cy="${f1(H - m)}" r="${f1(u * 4)}" fill="${P.c1}"/><path d="M${f1(cut)} ${f1(m + u * 5)}V${f1(H - m - u * 5)}" ${dash}/>`;
+      for (let y = u * 9; y < H - u * 8; y += u * 6) s += `<circle cx="${f1(W - m)}" cy="${f1(y)}" r="${f1(u * 1.5)}" fill="${P.c1}"/>`;
+      s += `<rect x="${f1(cut + u * 3)}" y="${f1(m + u * 3)}" width="${f1(W - cut - m - u * 6)}" height="${f1(H - m * 2 - u * 6)}" rx="${f1(u * 2)}" fill="none" stroke="${P.c3}" stroke-width="${f1(u * .5)}"/>`;
+    } else {
+      s += `<circle cx="${m}" cy="${f1(cut)}" r="${f1(u * 4)}" fill="${P.c1}"/><circle cx="${f1(W - m)}" cy="${f1(cut)}" r="${f1(u * 4)}" fill="${P.c1}"/><path d="M${f1(m + u * 5)} ${f1(cut)}H${f1(W - m - u * 5)}" ${dash}/>`;
+      for (let x = u * 9; x < W - u * 8; x += u * 6) s += `<circle cx="${f1(x)}" cy="${f1(H - m)}" r="${f1(u * 1.5)}" fill="${P.c1}"/>`;
+      s += `<rect x="${f1(m + u * 3)}" y="${f1(cut + u * 3)}" width="${f1(W - m * 2 - u * 6)}" height="${f1(H - cut - m - u * 6)}" rx="${f1(u * 2)}" fill="none" stroke="${P.c3}" stroke-width="${f1(u * .5)}"/>`;
+    }
+    return s;
+  },
+  garden(W, H, P, u) {
+    const land = isLand(W, H), leafC = shade(P.c2, -.3), leafD = shade(P.c2, -.45);
+    let s = `<rect width="${W}" height="${H}" fill="${P.bg}"/>`;
+    s += land ? `<path d="M0 0H${f1(u * 50)}C${f1(u * 60)} ${f1(H * .3)} ${f1(u * 44)} ${f1(H * .62)} ${f1(u * 54)} ${H}H0Z" fill="${shade(P.c2, .35)}"/>`
+              : `<path d="M0 0H${W}V${f1(u * 44)}C${f1(W * .68)} ${f1(u * 54)} ${f1(W * .32)} ${f1(u * 36)} 0 ${f1(u * 47)}Z" fill="${shade(P.c2, .35)}"/>`;
+    const vine = land ? [[u * 53, 0], [u * 63, H * .3], [u * 47, H * .62], [u * 57, H]] : [[W, u * 47], [W * .68, u * 57], [W * .32, u * 39], [0, u * 50]];
+    s += `<path d="M${f1(vine[0][0])} ${f1(vine[0][1])}C${vine.slice(1).map(p => f1(p[0]) + ' ' + f1(p[1])).join(' ')}" stroke="${leafD}" stroke-width="${f1(u * .5)}" fill="none"/>`;
+    for (let i = 0, tt = .05; tt < .97; tt += .09, i++) {
+      const [x, y] = bez(vine, tt), a = land ? (i % 2 ? -140 : -40) : (i % 2 ? -60 : 60);
+      s += leafShape(x, y, a, u * 4.2, i % 2 ? leafC : leafD);
+    }
+    const spray = (x, y, a, r, c, mid) => leafShape(x, y, a, r * 1.9, leafC) + leafShape(x, y, a + 70, r * 1.6, leafD) + bloom(x, y, r, c, mid);
+    if (land) s += spray(u * 11, u * 11, 20, u * 4.2, P.c1, P.c3) + bloom(u * 38, u * 7, u * 2.8, P.c3, '#fff') + spray(u * 9, H - u * 11, -60, u * 3.4, P.c3, P.c1) + spray(u * 36, H - u * 8, 200, u * 4, P.c1, P.c3) +
+      `<circle cx="${f1(u * 24)}" cy="${f1(u * 6)}" r="${f1(u)}" fill="${P.c1}"/><circle cx="${f1(u * 22)}" cy="${f1(H - u * 5)}" r="${f1(u)}" fill="${P.c3}"/>`;
+    else s += spray(u * 9, u * 9, 20, u * 4, P.c1, P.c3) + spray(W - u * 9, u * 10, 160, u * 3.4, P.c3, P.c1) + bloom(u * 16, u * 36, u * 2.4, P.c3, '#fff');
+    s += emDisc(W, H, u, P.c1, true);
+    const corner = (x, y, a, c, mid) => leafShape(x, y, a, u * 5, leafC) + leafShape(x, y, a - 50, u * 4, leafD) + bloom(x, y, u * 2, c, mid);
+    s += land ? corner(W - u * 7, u * 6.5, 160, P.c1, P.c3) : corner(W - u * 7, H - u * 6.5, 250, P.c1, P.c3);
+    s += `<rect x="${u * 3}" y="${u * 3}" width="${f1(W - u * 6)}" height="${f1(H - u * 6)}" rx="${f1(u * 4)}" fill="none" stroke="${leafC}" stroke-width="${f1(u * .5)}" stroke-dasharray="${f1(u * .1)} ${f1(u * 1.6)}" stroke-linecap="round"/>`;
+    return s;
+  },
+  sunrise(W, H, P, u) {
+    const [cx, cy] = emCenter(W, H, u), g = 'sr' + (++uid), R = Math.hypot(W, H) * 1.1;
+    let s = `<defs><radialGradient id="${g}" gradientUnits="userSpaceOnUse" cx="${f1(cx)}" cy="${f1(cy)}" r="${f1(Math.max(W, H) * .95)}"><stop offset="0" stop-color="${P.c2}" stop-opacity=".95"/><stop offset="1" stop-color="${P.c2}" stop-opacity="0"/></radialGradient></defs>
+      <rect width="${W}" height="${H}" fill="${P.bg}"/>`;
+    for (let i = 0; i < 32; i += 2) {
+      const a1 = i * Math.PI / 16, a2 = (i + 1) * Math.PI / 16;
+      s += `<path d="M${f1(cx)} ${f1(cy)}L${f1(cx + R * Math.cos(a1))} ${f1(cy + R * Math.sin(a1))}L${f1(cx + R * Math.cos(a2))} ${f1(cy + R * Math.sin(a2))}Z" fill="url(#${g})"/>`;
+    }
+    s += `<circle cx="${f1(cx)}" cy="${f1(cy)}" r="${f1(u * 34)}" fill="none" stroke="${P.c1}" stroke-width="${f1(u * .7)}" stroke-dasharray="${f1(u * .1)} ${f1(u * 2)}" stroke-linecap="round"/>
+      <circle cx="${f1(cx)}" cy="${f1(cy)}" r="${f1(u * 29)}" fill="${P.c3}" opacity=".22"/><circle cx="${f1(cx)}" cy="${f1(cy)}" r="${f1(u * 25.5)}" fill="${P.c3}" opacity=".35"/>` + emDisc(W, H, u, P.c3);
+    const ht = (x, y, k, c) => `<path d="${heartPath(f1(x), f1(y), f1(u * k))}" fill="${c}"/>`;
+    s += ht(W - u * 10, u * 10, 2.2, P.c1) + ht(W - u * 18, u * 6.5, 1.3, P.c3) + spark(f1(W - u * 6), f1(u * 18), f1(u * 1.6), P.c3) +
+      ht(W - u * 5.5, H * .62, 1.5, P.c4 || P.c1) + spark(f1(u * 6.5), f1(u * 8), f1(u * 1.4), P.c1) + ht(u * 8, H - u * 8, 1.5, P.c1);
+    s += `<rect x="${u * 3}" y="${u * 3}" width="${f1(W - u * 6)}" height="${f1(H - u * 6)}" rx="${f1(u * 5)}" fill="none" stroke="${P.c1}" stroke-width="${f1(u * .6)}" opacity=".7"/>`;
+    return s;
+  },
+  nightsky(W, H, P, u, seed) {
+    const land = isLand(W, H), g = 'ns' + (++uid), r = rng(seed + 41);
+    let s = `<defs><linearGradient id="${g}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${shade(P.bg, .14)}"/><stop offset="1" stop-color="${shade(P.bg, -.35)}"/></linearGradient></defs>
+      <rect width="${W}" height="${H}" fill="url(#${g})"/>`;
+    for (let i = 0; i < 90; i++) {
+      const x = r() * W, y = r() * H, k = r(), o = r();
+      if (x > u * 6 && x < W - u * 6 && y > u * 6 && y < H - u * 6 && (land ? x > u * 54 : y > u * 44)) continue; /* keep the text area clear */
+      s += `<circle cx="${f1(x)}" cy="${f1(y)}" r="${f1(u * (.15 + k * .4))}" fill="#fff" opacity="${(.35 + o * .6).toFixed(2)}"/>`;
+    }
+    (land ? [[8, 38], [46, 64], [9, 80], [44, 88], [W / u - 5, H / u * .5]] : [[8, 50], [W / u - 8, 60], [W / u - 5, H / u * .8]]).forEach(([x, y], i) => s += spark(f1(x * u), f1(y * u), f1(u * (1 + (i % 2) * .7)), P.c3));
+    s += `<rect x="${u * 3}" y="${u * 3}" width="${f1(W - u * 6)}" height="${f1(H - u * 6)}" fill="none" stroke="${P.c3}" stroke-width="${f1(u * .5)}"/>
+      <rect x="${f1(u * 4.4)}" y="${f1(u * 4.4)}" width="${f1(W - u * 8.8)}" height="${f1(H - u * 8.8)}" fill="none" stroke="${P.c3}" stroke-width="${f1(u * .2)}" opacity=".6"/>`;
+    [[u * 3, u * 3], [W - u * 3, u * 3], [u * 3, H - u * 3], [W - u * 3, H - u * 3]].forEach(([x, y]) => s += `<polygon points="${starPts(x, y, u * 2.8, u * 1.7, 8)}" fill="${P.c3}"/>`);
+    const moon = (x, y) => `<path d="M58 8a42 42 0 1 0 30 70A34 34 0 1 1 58 8z" fill="${P.c3}" transform="translate(${f1(x - u * 7)} ${f1(y - u * 7)}) scale(${(u * .14).toFixed(4)})"/>`;
+    if (land) {
+      s += moon(u * 27, u * 14) + spark(f1(u * 35), f1(u * 9), f1(u * 1.2), P.c3) + lantern(u * 11, u * 3, u * 6, u, P.c3) + lantern(u * 43, u * 3, u * 9, u, P.c3);
+      for (let y = u * 16; y <= H - u * 16; y += u * 3) if (Math.abs(y - H / 2) > u * 3) s += `<circle cx="${f1(u * 52)}" cy="${f1(y)}" r="${f1(u * .35)}" fill="${P.c3}" opacity=".75"/>`;
+      s += `<polygon points="${starPts(u * 52, H / 2, u * 1.8, u * .9, 8)}" fill="${P.c3}"/>`;
+    } else {
+      s += moon(u * 14, u * 15) + lantern(W - u * 12, u * 3, u * 5, u, P.c3) + lantern(W - u * 22, u * 3, u * 1.5, u, P.c3);
+    }
+    return s;
+  },
+  ecoband(W, H, P, u) {
+    const land = isLand(W, H), g = 'eb' + (++uid);
+    const d = land ? `M0 0H${f1(u * 44)}Q${f1(u * 64)} ${f1(H / 2)} ${f1(u * 44)} ${H}H0Z` : `M0 0H${W}V${f1(u * 42)}Q${f1(W / 2)} ${f1(u * 62)} 0 ${f1(u * 42)}Z`;
+    let s = `<rect width="${W}" height="${H}" fill="${P.bg}"/><defs><clipPath id="${g}"><path d="${d}"/></clipPath></defs><path d="${d}" fill="${P.c1}"/><g clip-path="url(#${g})">`;
+    for (let y = u * 4, j = 0; y < (land ? H + u * 4 : u * 62); y += u * 8, j++)
+      for (let x = u * (j % 2 ? 7 : 3); x < (land ? u * 62 : W + u * 4); x += u * 8) s += leafShape(x, y, j % 2 ? -30 : -150, u * 4, '#fff', .13);
+    s += `</g>`;
+    const drop = (x, y, k) => `<path d="M0 -3C1.8 -.5 2.4 .6 2.4 1.4a2.4 2.4 0 0 1-4.8 0C-2.4 .6-1.8-.5 0-3Z" fill="#fff" opacity=".6" transform="translate(${f1(x)} ${f1(y)}) scale(${(u * k).toFixed(3)})"/>`;
+    if (land) {
+      const q = t => [(1 - t) * (1 - t) * u * 44 + 2 * (1 - t) * t * u * 64 + t * t * u * 44, 2 * (1 - t) * t * H / 2 + t * t * H];
+      const [x1, y1] = q(.16), [x2, y2] = q(.84);
+      s += leafShape(x1, y1, -60, u * 7, P.c2) + leafShape(x1, y1, -110, u * 5, shade(P.c2, .3)) + leafShape(x2, y2, 60, u * 7, P.c2) + leafShape(x2, y2, 110, u * 5, shade(P.c2, .3));
+      s += drop(u * 10, u * 12, 1.1) + drop(u * 40, u * 9, .8) + drop(u * 12, H - u * 12, .9);
+    } else {
+      s += drop(u * 12, u * 12, 1.1) + drop(W - u * 12, u * 14, .9);
+    }
+    s += emDisc(W, H, u, P.c2);
+    const sprig = (x, y, a) => leafShape(x, y, a, u * 6, P.c1, .85) + leafShape(x, y, a + 35, u * 5, P.c2);
+    if (land) {
+      for (let i = 0; i < 4; i++) for (let j = 0; j < 3; j++) s += `<circle cx="${f1(W - u * 16 + i * u * 3)}" cy="${f1(u * 6 + j * u * 3)}" r="${f1(u * .6)}" fill="${P.c2}"/>`;
+    } else s += sprig(u * 6, H - u * 5, -65);
+    s += `<rect x="${u * 3}" y="${u * 3}" width="${f1(W - u * 6)}" height="${f1(H - u * 6)}" rx="${f1(u * 4)}" fill="none" stroke="${P.c2}" stroke-width="${f1(u * .5)}"/>`;
+    return s;
   }
 };
 
 /* ---------------------------------------------------------
-   Templates (20)
+   Templates (30) — orient:'l' marks a landscape design: choosing it
+   from the gallery switches the card to landscape.
 --------------------------------------------------------- */
 const TEMPLATES = [
   { id:'star',    cat:'excel',   style:'rays',     emblem:'star',    font:'Baloo Bhaijaan 2', msg:0,  pal:{c1:'#F08A24', c2:'#FFD166', c3:'#FFB703', bg:'#FFF8E7', ink:'#3A2A12'},
@@ -408,7 +694,28 @@ const TEMPLATES = [
   { id:'bubble',  cat:'improve', style:'confetti', emblem:'bubble',  font:'Baloo Bhaijaan 2', msg:8, pal:{c1:'#8338EC', c2:'#3A86FF', c3:'#FB5607', c4:'#FFBE0B', bg:'#FFFFFF', ink:'#240046'},
     t:{ar:'مشاركة فعّالة', fr:'Participation active', en:'Active participation'} },
   { id:'check',   cat:'excel',   style:'scallop',  emblem:'check',   font:'Changa', msg:18, pal:{c1:'#2B9348', c2:'#B7E4C7', c3:'#F9A620', bg:'#F6FCF7', ink:'#1B4332'},
-    t:{ar:'إنجاز رائع', fr:'Travail accompli', en:'Great achievement'} }
+    t:{ar:'إنجاز رائع', fr:'Travail accompli', en:'Great achievement'} },
+  /* ----- landscape ----- */
+  { id:'cert',    cat:'excel',   style:'certif',   emblem:'seal',    font:'Cairo', msg:2, orient:'l', pal:{c1:'#1F4E79', c2:'#2E86AB', c3:'#D4A62A', bg:'#FFFBF0', ink:'#1F2D3D'},
+    t:{ar:'شهادة تفوّق', fr:'Certificat d’excellence', en:'Certificate of excellence'} },
+  { id:'first',   cat:'excel',   style:'diagonal', emblem:'trophy',  font:'Baloo Bhaijaan 2', msg:0, orient:'l', pal:{c1:'#FF5A5F', c2:'#FFB4B6', c3:'#FFC93C', c4:'#3DB2FF', bg:'#FFFFFF', ink:'#2B2D42'},
+    t:{ar:'المركز الأول', fr:'Première place', en:'First place'} },
+  { id:'shelf',   cat:'study',   style:'shelf',    emblem:'book',    font:'Almarai', msg:4, orient:'l', pal:{c1:'#3D5A80', c2:'#98C1D9', c3:'#EE6C4D', c4:'#7FB7BE', bg:'#FFFDF7', ink:'#293241'},
+    t:{ar:'بطل القراءة', fr:'Champion de lecture', en:'Reading champion'} },
+  { id:'puzzle',  cat:'study',   style:'blocks',   emblem:'puzzle',  font:'Changa', msg:17, orient:'l', pal:{c1:'#118AB2', c2:'#06D6A0', c3:'#FFD166', c4:'#EF476F', bg:'#FFFFFF', ink:'#073B4C'},
+    t:{ar:'عقل ذكي', fr:'Esprit brillant', en:'Clever mind'} },
+  { id:'sail',    cat:'improve', style:'waves',    emblem:'boat',    font:'Baloo Bhaijaan 2', msg:9, orient:'l', pal:{c1:'#0077B6', c2:'#48CAE4', c3:'#FFB703', bg:'#E3F5FF', ink:'#023E8A'},
+    t:{ar:'نحو النجاح', fr:'Cap sur la réussite', en:'Sailing to success'} },
+  { id:'ticket',  cat:'improve', style:'ticket',   emblem:'star',    font:'Changa', msg:18, orient:'l', pal:{c1:'#6A2C70', c2:'#B83B5E', c3:'#F9C74F', bg:'#FFF8E1', ink:'#3B1F41'},
+    t:{ar:'تذكرة ذهبية', fr:'Ticket d’or', en:'Golden ticket'} },
+  { id:'garden',  cat:'behave',  style:'garden',   emblem:'sprout',  font:'Almarai', msg:14, orient:'l', pal:{c1:'#E56B6F', c2:'#A7D98B', c3:'#FFB703', bg:'#FBFFF5', ink:'#2F3E2E'},
+    t:{ar:'طيبة تُزهر', fr:'La gentillesse fleurit', en:'Kindness in bloom'} },
+  { id:'thanks',  cat:'thanks',  style:'sunrise',  emblem:'gift',    font:'Baloo Bhaijaan 2', msg:10, orient:'l', pal:{c1:'#F3722C', c2:'#FFD6A5', c3:'#F9C74F', c4:'#43AA8B', bg:'#FFFAF0', ink:'#5A2E0C'},
+    t:{ar:'شكرًا جزيلًا', fr:'Merci beaucoup', en:'Thank you so much'} },
+  { id:'ramadan', cat:'religion',style:'nightsky', emblem:'mosque',  font:'El Messiri', msg:16, orient:'l', dark:true, pal:{c1:'#1B263B', c2:'#274472', c3:'#F4C95D', bg:'#0D1B2A', ink:'#F5EFE0'},
+    t:{ar:'نجم رمضان', fr:'Étoile du Ramadan', en:'Ramadan star'} },
+  { id:'eco',     cat:'clean',   style:'ecoband',  emblem:'recycle', font:'Cairo', msg:15, orient:'l', pal:{c1:'#2A9D8F', c2:'#8AD7C1', c3:'#E9C46A', bg:'#F4FBF9', ink:'#1D3A35'},
+    t:{ar:'بطل البيئة', fr:'Héros de la planète', en:'Planet hero'} }
 ];
 const TPL = Object.fromEntries(TEMPLATES.map(t => [t.id, t]));
 const CATS = ['excel','study','behave','improve','thanks','clean','religion'];
@@ -485,7 +792,7 @@ function cardHTML(ctx, name) {
   const c = s.c;
   const emb = s.emblem === 'none' ? '' : (s.emblem || t.emblem);
   const style = `--w:${W}px;--h:${H}px;--u:${u.toFixed(3)}px;--c1:${P.c1};--c2:${P.c2};--c3:${P.c3};--bg:${P.bg};--ink:${P.ink};--f:'${ctx.font}','Tajawal',sans-serif;`;
-  const deco = DECO[t.style](W, H, P, u, 7);
+  const deco = t.orient === 'l' && ctx.rtl ? `<g transform="matrix(-1 0 0 1 ${W} 0)">${DECO[t.style](W, H, P, u, 7)}</g>` : DECO[t.style](W, H, P, u, 7);
   const stars = s.stars ? `<div class="stars">${Array.from({ length: Math.max(1, Math.min(5, s.starsN || 5)) }, () => STAR_ON(P.c3)).join('')}</div>` : '';
   const nm = name != null ? name : c.name;
   const sig = (c.from || c.school) ? `<div class="sig">${esc(c.from || '')}${c.school ? `<small>${esc(c.school)}</small>` : ''}</div>` : '<div></div>';
@@ -773,26 +1080,29 @@ function renderCurrentThumb() {
   fitAllCards(box); placeMini(box, st);
   $('#currentTplName').textContent = TPL[st.tpl].t[uiLang] || TPL[st.tpl].t.ar;
 }
-let gCat = 'all';
+let gCat = 'all', gOr = 'all';
+/* a landscape template always shows in landscape; leaving one brings the card back to portrait */
+const orientFor = id => TPL[id].orient || (id !== st.tpl && TPL[st.tpl].orient ? 'p' : st.orient);
+const OR_ICO = { p:'<svg viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="2"/></svg>', l:'<svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="10" rx="2"/></svg>' };
 function previewState(id) {
-  return { ...st, tpl:id, color: id === st.tpl ? st.color : null, font: id === st.tpl ? st.font : 'auto', emblem: id === st.tpl ? st.emblem : null,
+  return { ...st, tpl:id, orient: id === st.tpl ? st.orient : orientFor(id), color: id === st.tpl ? st.color : null, font: id === st.tpl ? st.font : 'auto', emblem: id === st.tpl ? st.emblem : null,
     c: st.dirty ? st.c : sampleFor(id, st.clang) };
 }
 function buildGallery() {
   $('#gCats').innerHTML = ['all', ...CATS].map(c => `<button type="button" class="chip ${gCat === c ? 'on' : ''}" data-cat="${c}">${T('cat_' + c)}</button>`).join('');
-  $('#gSizes').innerHTML = '';
+  $('#gSizes').innerHTML = ['all', 'p', 'l'].map(o => `<button type="button" class="chip ${gOr === o ? 'on' : ''}" data-or="${o}">${OR_ICO[o] || ''}${T(o === 'all' ? 'or_all' : 'o_' + o)}</button>`).join('');
   renderGrid();
 }
 function renderGrid() {
   const q = ($('#gSearch').value || '').trim().toLowerCase();
-  const list = TEMPLATES.filter(t => (gCat === 'all' || t.cat === gCat) &&
+  const list = TEMPLATES.filter(t => (gCat === 'all' || t.cat === gCat) && (gOr === 'all' || (t.orient || 'p') === gOr) &&
     (!q || Object.values(t.t).concat(Object.keys(UI).map(l => UI[l]['cat_' + t.cat])).some(n => n.toLowerCase().includes(q))));
   const grid = $('#gGrid');
   if (!list.length) { grid.innerHTML = `<div class="g-empty">${T('no_results')}</div>`; return; }
   grid.innerHTML = list.map(t => `<button type="button" class="g-card ${t.id === st.tpl ? 'on' : ''}" data-tpl="${t.id}">
       <div class="g-thumb" style="background:${shade(t.pal.bg, -.04)}">${cardHTML(ctxFor(previewState(t.id)))}</div>
       <div class="g-meta"><b>${esc(t.t[uiLang] || t.t.ar)}</b><span>${T('cat_' + t.cat)}</span></div></button>`).join('');
-  requestAnimationFrame(() => $$('.g-thumb', grid).forEach(th => { fitAllCards(th); placeMini(th, st); }));
+  requestAnimationFrame(() => $$('.g-thumb', grid).forEach(th => { fitAllCards(th); placeMini(th, previewState(th.parentElement.dataset.tpl)); }));
 }
 function openGallery() { $('#gallery').classList.remove('hidden'); buildGallery(); $('#gSearch').focus(); }
 function closeGallery() { $('#gallery').classList.add('hidden'); }
@@ -802,8 +1112,12 @@ $('#gallery').addEventListener('click', e => {
   if (e.target.id === 'gallery') { closeGallery(); return; }
   const c = e.target.closest('[data-cat]');
   if (c) { gCat = c.dataset.cat; $$('#gCats .chip').forEach(x => x.classList.toggle('on', x === c)); renderGrid(); return; }
+  const o = e.target.closest('[data-or]');
+  if (o) { gOr = o.dataset.or; $$('#gSizes .chip').forEach(x => x.classList.toggle('on', x === o)); renderGrid(); return; }
   const card = e.target.closest('[data-tpl]');
   if (card) {
+    const o2 = orientFor(card.dataset.tpl);
+    if (o2 !== st.orient) { st.orient = o2; zoom = 'fit'; }
     st.tpl = card.dataset.tpl; st.color = null; st.font = 'auto'; st.emblem = null;
     if (!st.dirty) st.c = { ...sampleFor(st.tpl, st.clang), names: st.c.names, name: st.c.name, from: st.c.from, school: st.c.school, date: st.c.date };
     closeGallery(); rebuildKeepOpen(); renderAll(); toast(T('t_tpl'));
