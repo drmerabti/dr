@@ -1,333 +1,401 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr" id="htmlRoot">
+<html lang="ar" dir="rtl" id="htmlRoot">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Professional Report Generator</title>
+<title>منشئ التقرير المهني — أكاديمية مرابطي</title>
+<script src="/analytics.js"></script>
+<link rel="icon" type="image/x-icon" href="../../favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="../../apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Cairo:wght@400;600;700;800&family=Almarai:wght@300;400;700;800&family=IBM+Plex+Sans+Arabic:wght@300;400;500;700&family=Readex+Pro:wght@300;400;600;700&family=El+Messiri:wght@400;600;700&family=Amiri:ital,wght@0,400;0,700;1,400&family=Noto+Naskh+Arabic:wght@400;600;700&family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@300;400;600;700;800&family=Playfair+Display:wght@500;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&family=Roboto+Slab:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="report.css">
 </head>
 <body>
 
-<!-- ============ TOPBAR ============ -->
-<div class="topbar">
-  <div class="brand-crumb">
-    <a href="../../tools.html" class="crumb-link" id="crumbToTools">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="crumb-arrow"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-      <span data-i18n="backToTools">Tools</span>
-    </a>
-    <button type="button" class="crumb-link" id="crumbToLibrary" hidden>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="crumb-arrow"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-      <span data-i18n="backToLibrary">My Reports</span>
+<header class="topbar">
+  <a href="../../index.html" class="brand-logo" title="أكاديمية مرابطي">
+    <img src="../../apple-touch-icon.png" alt="أكاديمية مرابطي">
+  </a>
+  <a class="icon-btn back-btn" href="../../tools.html" data-tip="back_tools">
+    <svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>
+  </a>
+  <span class="tool-name" data-i18n="appTitle">منشئ التقرير المهني</span>
+  <div class="topbar-actions">
+    <button class="icon-btn" id="btnFullscreen" type="button" data-tip="fullscreen">
+      <svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
     </button>
-    <span class="brand-sep">/</span>
-    <span class="brand-name" data-i18n="appTitle">Report Generator</span>
-  </div>
-  <div class="topbar-controls">
-    <div class="lang-switch" role="group" aria-label="Language switcher">
-      <button type="button" class="lang-btn" data-lang="ar">العربية</button>
-      <button type="button" class="lang-btn active" data-lang="en">English</button>
-      <button type="button" class="lang-btn" data-lang="fr">Français</button>
-    </div>
-    <button type="button" class="user-chip" id="userChip" hidden>
-      <span id="userChipEmail"></span>
-      <span class="user-chip-signout" data-i18n="signOut">Sign out</span>
+    <button class="icon-btn" id="btnMine" type="button" data-tip="mine">
+      <svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
     </button>
-  </div>
-</div>
-
-<!-- ============ AUTH GATE ============ -->
-<main class="auth-shell" id="authScreen" hidden>
-  <div class="auth-card">
-    <h1 class="auth-title" data-i18n="authTitle">Sign in to build your reports</h1>
-    <p class="auth-sub" data-i18n="authSub">Sign in or create a free account to save and access your reports.</p>
-
-    <button type="button" class="btn btn-google" id="googleSignInBtn">
-      <svg viewBox="0 0 48 48" width="18" height="18"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.6 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.4 6.1 29.5 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.9 18.9 13 24 13c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.4 6.1 29.5 4 24 4c-7.5 0-14 4.2-17.3 10.4z"/><path fill="#4CAF50" d="M24 44c5.3 0 10.1-2 13.7-5.4l-6.3-5.3C29.4 35 26.8 36 24 36c-5.3 0-9.7-3.4-11.3-8.1l-6.5 5C9.9 39.6 16.4 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.2-4.3 5.6l6.3 5.3C40.9 36.2 44 30.6 44 24c0-1.3-.1-2.7-.4-3.5z"/></svg>
-      <span data-i18n="continueWithGoogle">Continue with Google</span>
+    <button class="icon-btn" id="btnSave" type="button" data-tip="save">
+      <svg viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5z"/><path d="M8 4v5h7V4M8 20v-6h8v6"/></svg>
     </button>
-
-    <div class="auth-divider"><span data-i18n="orDivider">or</span></div>
-
-    <div class="field">
-      <label class="field-label" data-i18n="email">Email</label>
-      <input type="email" id="authEmail" class="input" autocomplete="email">
-    </div>
-    <div class="field">
-      <label class="field-label" data-i18n="password">Password</label>
-      <input type="password" id="authPassword" class="input" autocomplete="current-password">
-    </div>
-
-    <p class="auth-error" id="authError" hidden></p>
-
-    <div class="auth-actions">
-      <button type="button" class="btn btn-primary" id="authSignInBtn" data-i18n="signIn">Sign In</button>
-      <button type="button" class="btn btn-secondary" id="authRegisterBtn" data-i18n="createAccount">Create Account</button>
-    </div>
-  </div>
-</main>
-
-<!-- ============ REPORTS LIBRARY ============ -->
-<main class="library-shell" id="libraryScreen" hidden>
-  <div class="library-head">
-    <h1 class="col-title" data-i18n="myReports">My Reports</h1>
-    <button type="button" class="btn btn-primary" id="newReportBtn">
-      <span aria-hidden="true">+</span> <span data-i18n="newReport">New Report</span>
+    <button class="icon-btn" id="printBtn" type="button" data-tip="print">
+      <svg viewBox="0 0 24 24"><path d="M7 9V4h10v5M7 17H4v-7h16v7h-3"/><path d="M7 14h10v6H7z"/></svg>
     </button>
-  </div>
-
-  <div class="library-empty" id="libraryEmpty" hidden>
-    <p data-i18n="libraryEmptyText">You don't have any saved reports yet.</p>
-  </div>
-
-  <div class="library-loading" id="libraryLoading">
-    <p data-i18n="loading">Loading...</p>
-  </div>
-
-  <div class="library-grid" id="libraryGrid"></div>
-</main>
-
-<!-- ============ EDITOR ============ -->
-<main class="app-grid" id="editorScreen" hidden>
-
-  <!-- ============ LEFT COLUMN: EDITOR ============ -->
-  <section class="col col-form">
-    <h1 class="col-title" data-i18n="reportEditor">Report Editor</h1>
-
-    <div class="card templates-card">
-      <h2 class="card-title" data-i18n="chooseTemplate">Apply a Template</h2>
-      <div class="template-grid" id="templateGrid">
-        <button type="button" class="template-btn" data-template="general">
-          <span class="tpl-icon">📋</span>
-          <span data-i18n="tplGeneral">General Work Report</span>
-        </button>
-        <button type="button" class="template-btn" data-template="incident">
-          <span class="tpl-icon">⚠️</span>
-          <span data-i18n="tplIncident">Incident Report</span>
-        </button>
-        <button type="button" class="template-btn" data-template="performance">
-          <span class="tpl-icon">📈</span>
-          <span data-i18n="tplPerformance">Periodic Performance Report</span>
-        </button>
-        <button type="button" class="template-btn" data-template="minutes">
-          <span class="tpl-icon">🗒️</span>
-          <span data-i18n="tplMinutes">Meeting Minutes</span>
-        </button>
+    <button class="icon-btn word" id="wordBtn" type="button" data-tip="word"><span>DOCX</span></button>
+    <button class="icon-btn pdf" id="generatePdfBtn" type="button" data-tip="generatePdf"><span>PDF</span></button>
+    <div class="lang-wrap">
+      <button class="lang-toggle" id="langToggle" type="button">AR</button>
+      <div class="lang-menu hidden" id="langMenu">
+        <button type="button" class="lang-btn" data-lang="ar">العربية</button>
+        <button type="button" class="lang-btn" data-lang="fr">Français</button>
+        <button type="button" class="lang-btn" data-lang="en">English</button>
       </div>
     </div>
+  </div>
+</header>
 
-    <div class="card">
-      <div class="field-row">
-        <div class="field">
-          <label class="field-label" data-i18n="reference">Reference Number</label>
-          <input type="text" id="referenceNumber" class="input" data-i18n-placeholder="referencePlaceholder" placeholder="RPT-2026-0001">
-        </div>
-        <div class="field">
-          <label class="field-label" data-i18n="reportDate">Date</label>
-          <input type="date" id="reportDate" class="input">
-        </div>
-      </div>
-    </div>
+<div class="workspace" id="workspace">
+  <aside class="panel" id="panel">
+    <button class="gallery-open" id="btnGallery" type="button">
+      <span class="go-thumb" id="currentThumb"></span>
+      <span class="go-text">
+        <strong data-i18n="gallery">معرض القوالب</strong>
+        <small id="currentTplName"></small>
+      </span>
+      <svg viewBox="0 0 24 24"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></svg>
+    </button>
 
-    <div class="card">
-      <h2 class="card-title" data-i18n="coverInfo">Cover Information</h2>
+    <div class="accordion" id="accordion">
 
-      <div class="field-row">
-        <div class="field field-upload">
-          <label class="field-label" data-i18n="uploadLogo">Logo / Letterhead</label>
-          <div class="upload-box" id="logoUploadBox">
-            <input type="file" id="logoInput" accept=".png,.jpg,.jpeg,.svg,image/*" hidden>
-            <div class="upload-placeholder" id="logoPlaceholder">
-              <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
-              <span data-i18n="uploadLogoText">Upload Logo</span>
-            </div>
-            <img id="logoPreview" class="upload-img" hidden alt="Logo preview">
-            <button type="button" class="remove-img-btn" id="removeLogoBtn" hidden aria-label="Remove logo">×</button>
-          </div>
-        </div>
-
-        <div class="field-stack">
+      <!-- 1. Layout & template -->
+      <section class="acc" data-sec="style" style="--sc:#64748B">
+        <button type="button" class="acc-head"><span class="acc-num">1</span>
+          <span class="acc-title"><b data-i18n="sec_style"></b><small data-sum="style"></small></span>
+          <svg class="acc-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="acc-body"><div class="acc-inner"><div class="acc-content">
           <div class="field">
-            <label class="field-label" data-i18n="organization">Organization</label>
-            <input type="text" id="organization" class="input" data-i18n-placeholder="organizationPlaceholder" placeholder="Organization name">
+            <label data-i18n="template"></label>
+            <div class="tpl-strip" id="tplStrip"></div>
           </div>
-        </div>
-      </div>
-
-      <div class="field">
-        <label class="field-label" data-i18n="reportTitle">Report Title</label>
-        <input type="text" id="reportTitle" class="input" data-i18n-placeholder="reportTitlePlaceholder" placeholder="Report title">
-      </div>
-
-      <div class="field-row">
-        <div class="field">
-          <label class="field-label" data-i18n="preparedBy">Prepared By</label>
-          <input type="text" id="preparedBy" class="input" data-i18n-placeholder="preparedByPlaceholder" placeholder="Your name">
-        </div>
-        <div class="field">
-          <label class="field-label" data-i18n="preparedFor">Prepared For</label>
-          <input type="text" id="preparedFor" class="input" data-i18n-placeholder="preparedForPlaceholder" placeholder="Recipient (optional)">
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <h2 class="card-title" data-i18n="execSummary">Executive Summary</h2>
-      <textarea id="execSummary" class="textarea" rows="4" data-i18n-placeholder="execSummaryPlaceholder" placeholder="A short overview..."></textarea>
-    </div>
-
-    <div class="card">
-      <div class="card-title-row">
-        <h2 class="card-title" data-i18n="sections">Report Sections</h2>
-        <span class="section-count-badge" id="sectionCountBadge">0</span>
-      </div>
-      <div id="sectionsList" class="sections-list"></div>
-      <button type="button" class="btn btn-add" id="addSectionBtn">
-        <span aria-hidden="true">+</span> <span data-i18n="addSection">Add Section</span>
-      </button>
-    </div>
-
-    <div class="card">
-      <h2 class="card-title" data-i18n="recommendations">Conclusion &amp; Recommendations</h2>
-      <textarea id="recommendations" class="textarea" rows="4" data-i18n-placeholder="recommendationsPlaceholder" placeholder="Final conclusions..."></textarea>
-    </div>
-
-    <div class="card">
-      <h2 class="card-title" data-i18n="uploadSignature">Signature / Approval</h2>
-      <div class="upload-box upload-box-wide" id="signatureUploadBox">
-        <input type="file" id="signatureInput" accept=".png,.jpg,.jpeg,.svg,image/*" hidden>
-        <div class="upload-placeholder" id="signaturePlaceholder">
-          <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
-              <span data-i18n="uploadSignatureText">Upload Signature</span>
-        </div>
-        <img id="signaturePreview" class="upload-img" hidden alt="Signature preview">
-        <button type="button" class="remove-img-btn" id="removeSignatureBtn" hidden aria-label="Remove signature">×</button>
-      </div>
-    </div>
-
-    <div class="card">
-      <h2 class="card-title" data-i18n="pageFrame">Page Frame</h2>
-      <div class="frame-options" id="frameOptions">
-        <label class="frame-option">
-          <input type="radio" name="frameMode" value="none" checked>
-          <span data-i18n="frameNone">No Frame</span>
-        </label>
-        <label class="frame-option">
-          <input type="radio" name="frameMode" value="simple">
-          <span data-i18n="frameSimple">Simple Frame</span>
-        </label>
-        <label class="frame-option">
-          <input type="radio" name="frameMode" value="custom">
-          <span data-i18n="frameCustom">Upload My Own</span>
-        </label>
-      </div>
-      <div class="upload-box upload-box-wide" id="frameUploadBox" hidden>
-        <input type="file" id="frameInput" accept=".png,.jpg,.jpeg,.svg,image/*" hidden>
-        <div class="upload-placeholder" id="framePlaceholder">
-          <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
-          <span data-i18n="uploadFrameText">Upload Frame Image</span>
-        </div>
-        <img id="framePreview" class="upload-img" hidden alt="Frame preview">
-        <button type="button" class="remove-img-btn" id="removeFrameBtn" hidden aria-label="Remove frame">×</button>
-      </div>
-    </div>
-
-    <div class="actions-row">
-      <button type="button" class="btn btn-primary" id="generatePdfBtn" data-i18n="generatePdf">Generate PDF</button>
-      <button type="button" class="btn btn-secondary" id="printBtn" data-i18n="print">Print</button>
-      <button type="button" class="btn btn-secondary" id="clearBtn" data-i18n="clear">Clear</button>
-    </div>
-    <div class="autosave-note" id="autosaveNote"></div>
-  </section>
-
-  <!-- ============ RIGHT COLUMN: PREVIEW ============ -->
-  <section class="col col-preview">
-    <h1 class="col-title" data-i18n="livePreview">Live Report Preview</h1>
-
-    <div class="preview-shell">
-      <div class="report-sheet" id="reportSheet">
-        <img id="frameLayerImg" class="frame-layer-img" hidden alt="">
-        <div class="rp-content" id="rpContent">
-
-          <div class="rp-cover">
-            <div class="rp-logo-wrap">
-              <img id="previewLogo" class="rp-logo" hidden alt="Logo">
-              <div class="rp-logo-placeholder" id="previewLogoPlaceholder" data-i18n="companyLogo">ORGANIZATION</div>
+          <div class="field">
+            <label data-i18n="accentColor"></label>
+            <div class="swatches" id="swatches"></div>
+          </div>
+          <div class="field">
+            <label data-i18n="font"></label>
+            <select class="select-ui" id="fontSel"></select>
+          </div>
+          <div class="field">
+            <label data-i18n="pageFrame"></label>
+            <div class="seg-ui" id="frameSeg">
+              <button type="button" data-frame="none" data-i18n="frameNone"></button>
+              <button type="button" data-frame="simple" data-i18n="frameSimple"></button>
+              <button type="button" data-frame="custom" data-i18n="frameCustom"></button>
             </div>
-            <div class="rp-cover-meta">
-              <div class="rp-org" id="previewOrg">—</div>
-              <div class="rp-date" id="previewDate">—</div>
-              <div class="rp-ref" id="previewRef"></div>
+            <div class="upload-box small" id="frameUploadBox" hidden style="margin-top:10px">
+              <input type="file" id="frameInput" accept=".png,.jpg,.jpeg,.svg,image/*" hidden>
+              <div class="upload-placeholder" id="framePlaceholder">
+                <svg viewBox="0 0 24 24"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+                <span data-i18n="uploadFrameText"></span>
+              </div>
+              <img id="framePreview" class="upload-img" hidden alt="">
+              <button type="button" class="rm" id="removeFrameBtn" hidden><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
             </div>
           </div>
+          <div class="field">
+            <label data-i18n="contentPresets"></label>
+            <div class="preset-grid" id="templateGrid">
+              <button type="button" class="preset-btn" data-template="general"><span>📋</span><span data-i18n="tplGeneral"></span></button>
+              <button type="button" class="preset-btn" data-template="incident"><span>⚠️</span><span data-i18n="tplIncident"></span></button>
+              <button type="button" class="preset-btn" data-template="performance"><span>📈</span><span data-i18n="tplPerformance"></span></button>
+              <button type="button" class="preset-btn" data-template="minutes"><span>🗒️</span><span data-i18n="tplMinutes"></span></button>
+            </div>
+            <div class="hint" data-i18n="contentPresetsHint"></div>
+          </div>
+          <div class="field">
+            <button type="button" class="soft-btn danger" id="clearBtn" style="width:100%;justify-content:flex-start">
+              <svg viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>
+              <span data-i18n="clearReport"></span>
+            </button>
+          </div>
+          <button type="button" class="acc-next" data-next><span data-i18n="next"></span><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        </div></div></div>
+      </section>
 
-          <div class="rp-title-block">
-            <h2 class="rp-title" id="previewTitle" data-i18n="untitledReport">Untitled Report</h2>
-            <div class="rp-authors">
-              <span id="previewPreparedBy"></span>
-              <span id="previewPreparedFor"></span>
+      <!-- 2. Cover -->
+      <section class="acc" data-sec="cover" style="--sc:#16A34A">
+        <button type="button" class="acc-head"><span class="acc-num">2</span>
+          <span class="acc-title"><b data-i18n="sec_cover"></b><small data-sum="cover"></small></span>
+          <svg class="acc-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="acc-body"><div class="acc-inner"><div class="acc-content">
+          <div class="field">
+            <label data-i18n="reportTitle"></label>
+            <textarea id="reportTitle" dir="auto" rows="2" style="min-height:70px" data-i18n-placeholder="reportTitlePlaceholder"></textarea>
+          </div>
+          <div class="field">
+            <label data-i18n="organization"></label>
+            <input type="text" id="organization" dir="auto" data-i18n-placeholder="organizationPlaceholder">
+          </div>
+          <div class="field-row2">
+            <div class="field">
+              <label data-i18n="preparedBy"></label>
+              <input type="text" id="preparedBy" dir="auto" data-i18n-placeholder="preparedByPlaceholder">
+            </div>
+            <div class="field">
+              <label data-i18n="preparedFor"></label>
+              <input type="text" id="preparedFor" dir="auto" data-i18n-placeholder="preparedForPlaceholder">
             </div>
           </div>
-
-          <div class="rp-toc" id="previewToc" hidden>
-            <div class="rp-block-label" data-i18n="tableOfContents">Table of Contents</div>
-            <ol class="rp-toc-list" id="previewTocList"></ol>
+          <div class="field-row2">
+            <div class="field">
+              <label data-i18n="reportDate"></label>
+              <input type="date" id="reportDate">
+            </div>
+            <div class="field">
+              <label data-i18n="reference"></label>
+              <input type="text" id="referenceNumber" dir="auto" data-i18n-placeholder="referencePlaceholder">
+            </div>
           </div>
-
-          <div class="rp-block" id="previewSummaryBlock" hidden>
-            <div class="rp-block-label" data-i18n="execSummary">Executive Summary</div>
-            <div class="rp-block-text" id="previewSummary"></div>
+          <div class="field-row2">
+            <div class="field">
+              <label data-i18n="uploadLogo"></label>
+              <div class="upload-box" id="logoUploadBox">
+                <input type="file" id="logoInput" accept=".png,.jpg,.jpeg,.svg,image/*" hidden>
+                <div class="upload-placeholder" id="logoPlaceholder">
+                  <svg viewBox="0 0 24 24"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+                  <span data-i18n="uploadLogoText"></span>
+                </div>
+                <img id="logoPreview" class="upload-img" hidden alt="">
+                <button type="button" class="rm" id="removeLogoBtn" hidden><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+              </div>
+            </div>
+            <div class="field">
+              <label data-i18n="coverImage"></label>
+              <div class="upload-box" id="coverUploadBox">
+                <input type="file" id="coverInput" accept=".png,.jpg,.jpeg,image/*" hidden>
+                <div class="upload-placeholder" id="coverPlaceholder">
+                  <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 16l5-5 4 4 3-3 6 6"/></svg>
+                  <span data-i18n="uploadImageText"></span>
+                </div>
+                <img id="coverPreview" class="upload-img" hidden alt="">
+                <button type="button" class="rm" id="removeCoverBtn" hidden><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+              </div>
+            </div>
           </div>
+          <div class="hint-inline" data-i18n="coverImageHint"></div>
+          <button type="button" class="acc-next" data-next><span data-i18n="next"></span><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        </div></div></div>
+      </section>
 
-          <div id="previewSections"></div>
-
-          <div class="rp-block" id="previewRecBlock" hidden>
-            <div class="rp-block-label" data-i18n="recommendations">Conclusion &amp; Recommendations</div>
-            <div class="rp-block-text" id="previewRec"></div>
+      <!-- 3. Summary -->
+      <section class="acc" data-sec="summary" style="--sc:#0891B2">
+        <button type="button" class="acc-head"><span class="acc-num">3</span>
+          <span class="acc-title"><b data-i18n="sec_summary"></b><small data-sum="summary"></small></span>
+          <svg class="acc-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="acc-body"><div class="acc-inner"><div class="acc-content">
+          <div class="field">
+            <label data-i18n="execSummary"></label>
+            <textarea id="execSummary" dir="auto" rows="8" style="min-height:190px" data-i18n-placeholder="execSummaryPlaceholder"></textarea>
+            <div class="hint" data-i18n="textHint"></div>
           </div>
+          <button type="button" class="acc-next" data-next><span data-i18n="next"></span><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        </div></div></div>
+      </section>
 
-          <div class="rp-signature">
-            <div class="rp-signature-label" data-i18n="signature">Signature</div>
-            <img id="previewSignature" class="rp-signature-img" hidden alt="Signature">
+      <!-- 4. Sections / axes -->
+      <section class="acc" data-sec="axes" style="--sc:#D97706">
+        <button type="button" class="acc-head"><span class="acc-num">4</span>
+          <span class="acc-title"><b><span data-i18n="sec_axes"></span><span class="count-badge" id="sectionCountBadge">0</span></b><small data-sum="axes"></small></span>
+          <svg class="acc-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="acc-body"><div class="acc-inner"><div class="acc-content">
+          <div class="hint-inline" data-i18n="textHint" style="margin:0"></div>
+          <div class="item-list" id="sectionsList"></div>
+          <button type="button" class="add-btn wide" id="addSectionBtn">
+            <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span data-i18n="addSection"></span>
+          </button>
+          <button type="button" class="acc-next" data-next><span data-i18n="next"></span><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        </div></div></div>
+      </section>
+
+      <!-- 5. Findings & recommendations -->
+      <section class="acc" data-sec="results" style="--sc:#2563EB">
+        <button type="button" class="acc-head"><span class="acc-num">5</span>
+          <span class="acc-title"><b data-i18n="sec_results"></b><small data-sum="results"></small></span>
+          <svg class="acc-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="acc-body"><div class="acc-inner"><div class="acc-content">
+          <div class="field">
+            <label data-i18n="recommendations"></label>
+            <textarea id="recommendations" dir="auto" rows="8" style="min-height:190px" data-i18n-placeholder="recommendationsPlaceholder"></textarea>
+            <div class="hint" data-i18n="textHint"></div>
           </div>
+          <button type="button" class="acc-next" data-next><span data-i18n="next"></span><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        </div></div></div>
+      </section>
 
-        </div>
+      <!-- 6. Signatures -->
+      <section class="acc" data-sec="signs" style="--sc:#7C3AED">
+        <button type="button" class="acc-head"><span class="acc-num">6</span>
+          <span class="acc-title"><b data-i18n="sec_signs"></b><small data-sum="signs"></small></span>
+          <svg class="acc-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="acc-body"><div class="acc-inner"><div class="acc-content">
+          <div class="field">
+            <label data-i18n="mainSignature"></label>
+            <div class="upload-box" id="signatureUploadBox">
+              <input type="file" id="signatureInput" accept=".png,.jpg,.jpeg,.svg,image/*" hidden>
+              <div class="upload-placeholder" id="signaturePlaceholder">
+                <svg viewBox="0 0 24 24"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+                <span data-i18n="uploadSignatureText"></span>
+              </div>
+              <img id="signaturePreview" class="upload-img" hidden alt="">
+              <button type="button" class="rm" id="removeSignatureBtn" hidden><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+            </div>
+          </div>
+          <div class="field">
+            <label data-i18n="signers"></label>
+            <div class="item-list" id="signersList"></div>
+            <button type="button" class="add-btn" id="addSignerBtn">
+              <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span data-i18n="addSigner"></span>
+            </button>
+          </div>
+          <button type="button" class="acc-next" data-next><span data-i18n="next"></span><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        </div></div></div>
+      </section>
+
+      <!-- 7. Appendices -->
+      <section class="acc" data-sec="annex" style="--sc:#DB2777">
+        <button type="button" class="acc-head"><span class="acc-num">7</span>
+          <span class="acc-title"><b data-i18n="sec_annex"></b><small data-sum="annex"></small></span>
+          <svg class="acc-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="acc-body"><div class="acc-inner"><div class="acc-content">
+          <div class="item-list" id="annexList"></div>
+          <button type="button" class="add-btn wide" id="addAnnexBtn">
+            <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span data-i18n="addAppendix"></span>
+          </button>
+          <button type="button" class="acc-next" data-next data-last><span data-i18n="done"></span></button>
+        </div></div></div>
+      </section>
+
+    </div>
+  </aside>
+
+  <button class="panel-toggle" id="panelToggle" type="button" data-tip="toggle_panel">
+    <svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>
+  </button>
+
+  <main class="stage" id="stage">
+    <div class="stage-bar">
+      <div class="zoom" id="zoomCtl">
+        <button type="button" id="zoomOut" aria-label="-"><svg viewBox="0 0 24 24"><path d="M6 12h12"/></svg></button>
+        <span id="zoomVal">100%</span>
+        <button type="button" id="zoomIn" aria-label="+"><svg viewBox="0 0 24 24"><path d="M6 12h12M12 6v12"/></svg></button>
+        <button type="button" id="zoomFit" data-tip="fit"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
       </div>
     </div>
-  </section>
+    <div class="flat-view" id="flatView">
+      <div class="sheet-holder" id="sheetHolder"></div>
+    </div>
+  </main>
+</div>
 
-</main>
+<!-- Templates gallery -->
+<div class="gallery hidden" id="gallery" role="dialog" aria-modal="true">
+  <div class="gallery-box">
+    <div class="gallery-head">
+      <h2 data-i18n="gallery"></h2>
+      <div class="g-search">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21"/></svg>
+        <input type="text" id="gSearch" data-i18n-placeholder="gallery_search">
+      </div>
+      <button class="icon-btn" id="gClose" type="button" aria-label="close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="g-filters"><div class="chips" id="gCats"></div></div>
+    <div class="g-grid tpl-grid" id="gGrid"></div>
+  </div>
+</div>
 
-<div class="confirm-overlay" id="confirmOverlay" hidden>
-  <div class="confirm-box">
-    <p id="confirmMessage" data-i18n="confirmClear">Clear the whole report? This cannot be undone.</p>
-    <div class="confirm-actions">
-      <button type="button" class="btn btn-secondary" id="confirmCancel" data-i18n="cancel">Cancel</button>
-      <button type="button" class="btn btn-danger" id="confirmOk" data-i18n="confirmYes">Clear</button>
+<!-- My reports -->
+<div class="gallery hidden" id="mine" role="dialog" aria-modal="true">
+  <div class="gallery-box">
+    <div class="gallery-head">
+      <h2 data-i18n="mine"></h2>
+      <div class="chips" id="mineTabs">
+        <button type="button" class="chip on" data-src="all" data-i18n="src_all"></button>
+        <button type="button" class="chip" data-src="local" data-i18n="src_local"></button>
+        <button type="button" class="chip" data-src="cloud" data-i18n="src_cloud"></button>
+      </div>
+      <div class="mine-user hidden" id="mineUser">
+        <span><span data-i18n="signed_as"></span> <b id="userChipEmail"></b></span>
+        <button type="button" class="soft-btn" id="signOutBtn" data-i18n="signOut"></button>
+      </div>
+      <button class="icon-btn" id="mClose" type="button" aria-label="close" style="margin-inline-start:auto"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="mine-login hidden" id="mineLogin">
+      <span data-i18n="mine_login_hint"></span>
+      <button type="button" class="soft-btn primary" id="mineLoginBtn" data-i18n="sign_in"></button>
+    </div>
+    <div class="g-grid mine-grid" id="libraryGrid"></div>
+  </div>
+</div>
+
+<!-- Login (Google + email/password, as in the previous version) -->
+<div class="gallery hidden" id="login" role="dialog" aria-modal="true">
+  <div class="login-box">
+    <div class="login-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></div>
+    <h3 data-i18n="login_title"></h3>
+    <p data-i18n="login_text"></p>
+    <button type="button" class="login-google" id="googleSignInBtn">
+      <svg viewBox="0 0 48 48" style="stroke:none"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>
+      <span data-i18n="continueWithGoogle"></span>
+    </button>
+    <div class="auth-or"><span data-i18n="orDivider"></span></div>
+    <div class="auth-form">
+      <input type="email" id="authEmail" autocomplete="email" data-i18n-placeholder="email">
+      <input type="password" id="authPassword" autocomplete="current-password" data-i18n-placeholder="password">
+      <p class="auth-err" id="authError" hidden></p>
+      <div class="auth-btns">
+        <button type="button" class="soft-btn primary" id="authSignInBtn" data-i18n="signIn"></button>
+        <button type="button" class="soft-btn" id="authRegisterBtn" data-i18n="createAccount"></button>
+      </div>
+    </div>
+    <a class="login-site" href="../../index.html" data-i18n="login_site"></a>
+    <button type="button" class="login-cancel" id="loginCancel" data-i18n="cancel"></button>
+  </div>
+</div>
+
+<!-- Clear confirmation -->
+<div class="gallery hidden" id="confirmOverlay" role="dialog" aria-modal="true">
+  <div class="login-box">
+    <div class="login-ico warn"><svg viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></div>
+    <p data-i18n="confirmClear"></p>
+    <div class="dlg-actions">
+      <button type="button" class="soft-btn" id="confirmCancel" data-i18n="cancel"></button>
+      <button type="button" class="soft-btn danger solid" id="confirmOk" data-i18n="confirmYes"></button>
     </div>
   </div>
 </div>
 
-<div class="confirm-overlay" id="pdfWarnOverlay" hidden>
-  <div class="confirm-box">
-    <p data-i18n="emptyReportWarning">This report has no title or sections yet. Generate the PDF anyway?</p>
-    <div class="confirm-actions">
-      <button type="button" class="btn btn-secondary" id="pdfWarnCancel" data-i18n="cancel">Cancel</button>
-      <button type="button" class="btn btn-primary" id="pdfWarnOk" data-i18n="continueAnyway">Generate Anyway</button>
+<!-- Empty report warning before PDF / Word -->
+<div class="gallery hidden" id="pdfWarnOverlay" role="dialog" aria-modal="true">
+  <div class="login-box">
+    <div class="login-ico"><svg viewBox="0 0 24 24"><path d="M12 8v5M12 16.5v.5"/><circle cx="12" cy="12" r="9"/></svg></div>
+    <p data-i18n="emptyReportWarning"></p>
+    <div class="dlg-actions">
+      <button type="button" class="soft-btn" id="pdfWarnCancel" data-i18n="cancel"></button>
+      <button type="button" class="soft-btn primary" id="pdfWarnOk" data-i18n="continueAnyway"></button>
     </div>
   </div>
 </div>
 
-<div class="confirm-overlay" id="deleteReportOverlay" hidden>
-  <div class="confirm-box">
-    <p data-i18n="confirmDeleteReport">Delete this report permanently? This cannot be undone.</p>
-    <div class="confirm-actions">
-      <button type="button" class="btn btn-secondary" id="deleteReportCancel" data-i18n="cancel">Cancel</button>
-      <button type="button" class="btn btn-danger" id="deleteReportOk" data-i18n="confirmYes">Clear</button>
+<!-- Delete confirmation -->
+<div class="gallery hidden" id="deleteReportOverlay" role="dialog" aria-modal="true">
+  <div class="login-box">
+    <div class="login-ico warn"><svg viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></div>
+    <p data-i18n="confirmDeleteReport"></p>
+    <div class="dlg-actions">
+      <button type="button" class="soft-btn" id="deleteReportCancel" data-i18n="cancel"></button>
+      <button type="button" class="soft-btn danger solid" id="deleteReportOk" data-i18n="del_b"></button>
     </div>
   </div>
 </div>
+
+<input type="file" id="itemImageInput" accept=".png,.jpg,.jpeg,.svg,image/*" hidden>
+<div class="toast" id="toast"></div>
+<div class="print-root" id="printRoot" aria-hidden="true"></div>
+<div class="measure-root" id="measureRoot" aria-hidden="true"></div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
@@ -335,6 +403,9 @@
 <script src="../../firebase-init.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="i18n.js"></script>
+<script src="templates.js"></script>
+<script src="docx.js"></script>
 <script src="script.js"></script>
 </body>
 </html>

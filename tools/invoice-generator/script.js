@@ -1427,6 +1427,23 @@
     const opts = {
       scale: 2, backgroundColor: "#ffffff", useCORS: true, logging: false,
       width: SHEET_W, height: copy.offsetHeight, windowWidth: SHEET_W, scrollX: 0, scrollY: 0,
+      // the hidden frame html2canvas renders in reloads the web fonts; drawing before they
+      // are ready misplaces Arabic word spacing, so wait for them
+      onclone: function (doc) {
+        // load, in the hidden copy, every font face the page itself already uses (all weights, Arabic + Latin subsets)
+        const loads = [];
+        if (document.fonts && doc.fonts) {
+          document.fonts.forEach((f) => {
+            if (f.status !== "loaded") return;
+            const fam = String(f.family).replace(/^["']|["']$/g, "");
+            loads.push(doc.fonts.load(`${f.style} ${f.weight} 16px "${fam}"`, "ابتث abc 123").catch(() => {}));
+          });
+        }
+        doc.body && doc.body.getBoundingClientRect();
+        const wait = Promise.all(loads).then(() => (doc.fonts && doc.fonts.ready ? doc.fonts.ready : null));
+        // never block the export on a slow network: give up waiting after 4 s
+        return Promise.race([wait, new Promise((r) => setTimeout(r, 4000))]).then(() => new Promise((r) => setTimeout(r, 80)));
+      },
     };
     try {
       return await html2canvas(copy, opts);
