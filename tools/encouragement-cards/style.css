@@ -266,6 +266,7 @@ html[dir="rtl"] .acc-next svg{ transform: scaleX(-1); }
 .chip{ border:1px solid var(--line); background:#fff; padding:7px 14px; border-radius:999px; cursor:pointer; font-weight:700; font-size:.85rem; color: var(--ink-soft); }
 .chip.on{ background: var(--accent); color:#fff; border-color: var(--accent); }
 .chips.small .chip{ padding:5px 12px; font-size:.78rem; }
+.chips.small .chip svg{ width:14px; height:14px; vertical-align:-3px; margin-inline-end:5px; }
 .chip .soon{ font-size:.68rem; opacity:.8; margin-inline-start:4px; }
 .chip[disabled]{ opacity:.5; cursor:not-allowed; }
 .g-grid{
@@ -446,6 +447,75 @@ html[dir="rtl"] .back-btn svg{ transform: scaleX(-1); }
 .S-nature .ttl{ color: var(--c1); }
 .S-bubbles .nm{ background: var(--c1); color:#fff; border:0; border-radius: calc(var(--u)*2); padding: calc(var(--u)*1.2) calc(var(--u)*6); }
 .S-rays .nm{ border-bottom: calc(var(--u)*.8) solid var(--c3); }
+
+/* ---------- landscape designs (orient:'l') ----------
+   The emblem is centred on a start panel 27u from the edge (see emCenter in app.js),
+   the text fills the rest. Portrait fallback: the panel becomes a top band. */
+.card.O-l.S-diagonal .ct, .card.O-l.S-shelf .ct, .card.O-l.S-blocks .ct, .card.O-l.S-ticket .ct,
+.card.O-l.S-garden .ct, .card.O-l.S-sunrise .ct, .card.O-l.S-nightsky .ct, .card.O-l.S-ecoband .ct{
+  inset: calc(var(--u)*8); grid-template-columns: calc(var(--u)*38) 1fr; column-gap: calc(var(--u)*12); row-gap: calc(var(--u)*1.5);
+}
+.card.O-l.S-diagonal .em, .card.O-l.S-shelf .em, .card.O-l.S-blocks .em, .card.O-l.S-ticket .em,
+.card.O-l.S-garden .em, .card.O-l.S-sunrise .em, .card.O-l.S-nightsky .em, .card.O-l.S-ecoband .em{
+  width: calc(var(--u)*33 * var(--k)); height: calc(var(--u)*33 * var(--k)); justify-self:center;
+}
+.card.O-p.S-diagonal .ct, .card.O-p.S-blocks .ct, .card.O-p.S-ticket .ct, .card.O-p.S-garden .ct,
+.card.O-p.S-sunrise .ct, .card.O-p.S-nightsky .ct, .card.O-p.S-ecoband .ct{ inset: calc(var(--u)*9); justify-content:flex-start; }
+.card.O-p.S-diagonal .em, .card.O-p.S-blocks .em, .card.O-p.S-garden .em, .card.O-p.S-ecoband .em{ margin-bottom: calc(var(--u)*14 * var(--k)); }
+.card.O-p.S-sunrise .em{ margin-bottom: calc(var(--u)*10 * var(--k)); }
+.card.O-l.S-certif .ttl, .card.O-l.S-diagonal .ttl, .card.O-l.S-shelf .ttl, .card.O-l.S-blocks .ttl, .card.O-l.S-waves .ttl,
+.card.O-l.S-ticket .ttl, .card.O-l.S-garden .ttl, .card.O-l.S-sunrise .ttl, .card.O-l.S-nightsky .ttl, .card.O-l.S-ecoband .ttl{ font-size: calc(var(--u)*9 * var(--k)); }
+
+/* certificate: seal in a laurel, gold divider, text centred */
+.card.O-l.S-certif .ct{ inset: calc(var(--u)*11); grid-template-columns: calc(var(--u)*32) 1fr; column-gap: calc(var(--u)*10); row-gap: calc(var(--u)*1); }
+.card.O-l.S-certif .em{ width: calc(var(--u)*30 * var(--k)); height: calc(var(--u)*30 * var(--k)); justify-self:center; }
+.card.O-p.S-certif .ct{ inset: calc(var(--u)*11); }
+.S-certif .ttl{ color: var(--c1); font-weight:800; }
+.S-certif .lbl{ letter-spacing:.04em; }
+.S-certif .nm{ color: var(--c1); border-bottom: calc(var(--u)*.4) solid var(--c3); padding-inline: calc(var(--u)*8); }
+.S-certif .ft{ border-top: calc(var(--u)*.25) solid color-mix(in srgb, var(--c3) 60%, transparent); padding-top: calc(var(--u)*1.2); }
+
+/* diagonal split */
+.card.O-l.S-diagonal .ct, .card.O-l.S-garden .ct{ column-gap: calc(var(--u)*16); }
+.S-diagonal .ttl{ color: var(--c1); text-shadow: calc(var(--u)*.5) calc(var(--u)*.5) 0 var(--c3); }
+.S-diagonal .nm{ background: var(--c1); color:#fff; border:0; border-radius:999px; padding: calc(var(--u)*1) calc(var(--u)*6); }
+
+/* bookshelf */
+.card.O-p.S-shelf .ct{ inset: calc(var(--u)*9) calc(var(--u)*9) calc(var(--u)*23); }
+.S-shelf .ttl{ color: var(--c1); }
+.S-shelf .nm{ border-bottom: calc(var(--u)*1.1) solid var(--c3); border-radius:2px; padding-bottom:0; }
+
+/* geometric blocks */
+.S-blocks .ttl{ color: var(--c1); }
+.S-blocks .nm{ border-bottom: calc(var(--u)*.9) solid var(--c2); }
+
+/* sea waves */
+.card.O-l.S-waves .ct{ inset: calc(var(--u)*7) calc(var(--u)*8) calc(var(--u)*17); grid-template-columns: calc(var(--u)*38) 1fr; column-gap: calc(var(--u)*10); row-gap: calc(var(--u)*1); }
+.card.O-l.S-waves .em{ width: calc(var(--u)*36 * var(--k)); height: calc(var(--u)*36 * var(--k)); justify-self:center; }
+.card.O-p.S-waves .ct{ inset: calc(var(--u)*9) calc(var(--u)*9) calc(var(--u)*17); }
+.S-waves .ttl{ color: var(--c1); }
+.S-waves .nm{ background:#fff; border: calc(var(--u)*.5) dashed var(--c2); border-radius: calc(var(--u)*3); padding: calc(var(--u)*.8) calc(var(--u)*5); }
+
+/* golden ticket */
+.S-ticket .ttl{ color: var(--c2); letter-spacing:.02em; }
+.S-ticket .nm{ background: var(--c3); color: var(--ink); border:0; border-radius: calc(var(--u)*1.5); padding: calc(var(--u)*.8) calc(var(--u)*5); }
+.card.O-p.S-ticket .em{ margin-bottom: calc(var(--u)*5); }
+
+/* garden */
+.S-garden .ttl{ color: var(--c1); }
+.S-garden .nm{ border-bottom-style: dotted; border-bottom-color: var(--c1); }
+
+/* sunrise */
+.S-sunrise .ttl{ color: var(--c1); }
+.S-sunrise .nm{ background:#fff; border: calc(var(--u)*.5) solid var(--c3); border-radius:999px; padding: calc(var(--u)*.8) calc(var(--u)*6); }
+
+/* Ramadan night */
+.S-nightsky .ttl{ color: var(--c3); font-weight:700; }
+.S-nightsky .nm{ color:#fff; border-bottom: calc(var(--u)*.4) solid var(--c3); }
+
+/* eco band */
+.S-ecoband .ttl{ color: var(--c1); }
+.S-ecoband .nm{ border-bottom: calc(var(--u)*1) solid var(--c2); border-radius:2px; }
 
 /* =========================================================
    PRINT
