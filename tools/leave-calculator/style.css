@@ -58,7 +58,10 @@ svg{ fill:none; stroke:currentColor; stroke-width:1.9; stroke-linecap:round; str
 .langs button.on{ background:var(--accent); color:#fff; }
 
 /* ---------- المحتوى ---------- */
-.wrap{ max-width:980px; margin:0 auto; padding:20px 16px 50px; display:flex; flex-direction:column; gap:16px; }
+.wrap{ width:100%; padding:20px 16px 50px; display:grid; grid-template-columns:minmax(0, 1fr) minmax(0, 1fr); gap:16px; align-items:start; }
+/* تقسيم ثابت في كل اللغات: الحساب يسارًا والأقسام يمينًا (الحاوية RTL فالعمود 1 هو الأيمن) */
+.wrap > .main-card{ grid-column:2; grid-row:1; }
+.wrap > .accs{ grid-column:1; grid-row:1; }
 .card{ background:var(--card); border:1px solid var(--line); border-radius:22px; box-shadow:0 10px 30px rgba(21,36,49,.07); }
 .main-card{ padding:22px; display:flex; flex-direction:column; gap:16px; }
 .head h1{ margin:0; font-size:1.55rem; font-weight:900; color:var(--accent); }
@@ -192,6 +195,10 @@ input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer
 .toast.show{ opacity:1; transform:translate(-50%, 0); }
 
 /* ---------- الهاتف ---------- */
+@media (max-width: 900px){
+  .wrap{ grid-template-columns:minmax(0, 1fr); }
+  .wrap > .main-card, .wrap > .accs{ grid-column:1; grid-row:auto; }
+}
 @media (max-width: 760px){
   :root{ --tb-h:58px; }
   .tb{ gap:5px; padding:0 8px; }
