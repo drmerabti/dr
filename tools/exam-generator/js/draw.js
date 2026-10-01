@@ -108,7 +108,11 @@ function openDrawEditor(obj, done, opts){
     fabric.Object.prototype.cornerStyle = 'circle';
     fabric.Object.prototype.borderColor = '#D97706';
     fabric.Object.prototype.cornerSize = 11;
-    const ready = () => { bindCanvas(); setMode('select'); drawSide(); syncTop(); commit(true); };
+    const ready = () => {
+      bindCanvas();
+      if(!startData.json && startData.presets) startData.presets.forEach(k => { const it = findShapeItem(k); if(it) addShape(it); });
+      setMode('select'); drawSide(); syncTop(); setTimeout(() => commit(true), 300);
+    };
     if(startData.json){
       st.restoring = true;
       cv.loadFromJSON(startData.json, () => { st.restoring = false; cv.renderAll(); ready(); });

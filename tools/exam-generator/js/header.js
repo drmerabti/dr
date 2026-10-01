@@ -152,6 +152,7 @@ function pageClasses(ex){
 function renderHeader(){
   const page = $('examPage');
   page.className = pageClasses(exam);
+  page.classList.toggle('readonly-page', isReadonly);
   const box = $('examHeader');
   box.innerHTML = headerHTML(exam, !isReadonly);
   if(isReadonly) return;
@@ -200,7 +201,11 @@ function openDesignPicker(){
       <div class="tpl-grid" id="dpHeaders"></div>
       <h3 class="dp-h">2. ${L('اختر التصميم','Choose the design','Choisissez le style')}</h3>
       <div class="tpl-grid" id="dpStyles"></div>
-      <h3 class="dp-h">3. ${L('حجم الخط','Font size','Taille du texte')}</h3>
+      <h3 class="dp-h">3. ${L('لغة ورقة الامتحان','Exam paper language','Langue de la copie')}</h3>
+      <div class="seg-big" id="dpLang">
+        <button data-xl="ar">🇩🇿 العربية</button><button data-xl="fr">🇫🇷 Français</button><button data-xl="en">🇬🇧 English</button>
+      </div>
+      <h3 class="dp-h">4. ${L('حجم الخط','Font size','Taille du texte')}</h3>
       <div class="seg-big" id="dpFont">
         <button data-f="sm">${L('صغير','Small','Petit')}</button><button data-f="md">${L('متوسط','Medium','Moyen')}</button><button data-f="lg">${L('كبير','Large','Grand')}</button>
       </div></div>`,
@@ -209,6 +214,8 @@ function openDesignPicker(){
     m.body.querySelector('#dpHeaders').innerHTML = HEADER_TPLS.map(tp => tplThumbCard({ ...exam, tpl:{ ...exam.tpl, header: tp.id } }, tp.name(), exam.tpl.header === tp.id, `data-h="${tp.id}"`, true)).join('');
     m.body.querySelector('#dpStyles').innerHTML = STYLE_TPLS.map(st => tplThumbCard({ ...sampleExamForThumb(), header: exam.header, tpl:{ ...exam.tpl, style: st.id } }, st.name(), exam.tpl.style === st.id, `data-s="${st.id}"`, false)).join('');
     m.body.querySelectorAll('#dpFont button').forEach(b => b.classList.toggle('on', b.dataset.f === exam.tpl.fontSize));
+    m.body.querySelectorAll('#dpLang button').forEach(b => b.classList.toggle('on', b.dataset.xl === exam.lang));
+    m.body.querySelectorAll('#dpLang button').forEach(b => b.onclick = () => { exam.lang = b.dataset.xl; render(); scheduleSave(); fill(); });
     hydrateThumbs(m.body);
     m.body.querySelectorAll('[data-h]').forEach(c => c.onclick = () => { exam.tpl.header = c.dataset.h; render(); scheduleSave(); fill(); });
     m.body.querySelectorAll('[data-s]').forEach(c => c.onclick = () => { exam.tpl.style = c.dataset.s; render(); scheduleSave(); fill(); });
@@ -220,16 +227,17 @@ function openDesignPicker(){
 /* ---------- Static page rendering (thumbnails, previews) ---------- */
 function staticPageHTML(ex, opts){
   opts = opts || {};
-  const saved = { exam, isReadonly, selectedId };
+  const saved = { exam, isReadonly, selectedId, lang };
   exam = ex; isReadonly = true; selectedId = null;
+  if(ex.lang) lang = ex.lang;
   let html;
   try{
-    const qs = (opts.maxQuestions ? ex.questions.slice(0, opts.maxQuestions) : ex.questions);
-    html = `<div class="${pageClasses(ex)} static-page">
+    const qs = (opts.maxQuestions != null ? ex.questions.slice(0, opts.maxQuestions) : ex.questions);
+    html = `<div class="${pageClasses(ex)} static-page" dir="${lang === 'ar' ? 'rtl' : 'ltr'}" lang="${lang}">
       <div class="exam-header">${headerHTML(ex, false)}</div>
       <div class="questions-static">${qs.map((q,i) => questionHTML(q,i)).join('')}</div>
     </div>`;
-  } finally { exam = saved.exam; isReadonly = saved.isReadonly; selectedId = saved.selectedId; }
+  } finally { exam = saved.exam; isReadonly = saved.isReadonly; selectedId = saved.selectedId; lang = saved.lang; }
   return html;
 }
 /* A small thumbnail card holding a scaled-down live page */

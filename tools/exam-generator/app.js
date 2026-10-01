@@ -121,6 +121,7 @@ if (!LANG_ORDER.includes(lang)) lang = 'ar';
 function t(k){ return I18N[lang][k]; }
 function questionLabel(i){
   const words = t('ordWords');
+  if(lang !== 'ar') return t('exerciseWord') + ' ' + (i+1);
   return i < 10 ? (t('exerciseWord') + ' ' + words[i]) : (t('exerciseWord') + ' ' + (i+1));
 }
 
@@ -147,6 +148,7 @@ function freshExam(){
       year: s.year || defaultSchoolYear(), directorate: s.directorate || '', logo: s.logo || ''
     },
     tpl: { header: s.headerTpl || 'classic', style: s.styleTpl || 'classic', fontSize: s.fontSize || 'md' },
+    lang: s.examLang || lang,
     questions: [],
     objects: {},
     maxPoints: s.maxPoints || 20,
@@ -165,6 +167,7 @@ function normalizeExam(ex){
   if(!ex) return ex;
   ex.header = Object.assign({ institution:'', teacher:'', title:'', subject:'', grade:'', duration:'', year:'', directorate:'', logo:'' }, ex.header || {});
   ex.tpl = Object.assign({ header:'classic', style:'classic', fontSize:'md' }, ex.tpl || {});
+  if(!LANG_ORDER.includes(ex.lang)) ex.lang = lang;
   ex.objects = ex.objects || {};
   ex.questions = ex.questions || [];
   ex.createdAt = ex.createdAt || ex.updatedAt || Date.now();
@@ -215,6 +218,12 @@ let cloudSaveBusy = false;
 
 const typeMeta = { normal:{icon:'✏️'}, mcq:{icon:'✅'}, tf:{icon:'☑️'}, blank:{icon:'🧩'}, table:{icon:'📊'} };
 
+/* Run fn with the global language switched to the exam's own language (page labels follow the exam) */
+function withExamLang(ex, fn){
+  const saved = lang;
+  lang = (ex && ex.lang) || lang;
+  try{ return fn(); } finally { lang = saved; }
+}
 function escapeHtml(s){ const d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; }
 
 /* ================= Views ================= */
@@ -257,7 +266,15 @@ function startNewExam(){
   persistExam();
   showEditor(); render();
 }
-$('newExamCard').addEventListener('click', startNewExam);
+$('newExamCard').addEventListener('click', () => {
+  const m = openModal({ size:'medium', icon:'📝', title: L('كيف تريد أن تبدأ؟','How do you want to start?','Comment commencer ?'),
+    body: `<div class="tool-tiles">
+      <button class="tool-tile" data-st="blank" style="--c:#1F6F63"><span class="tt-ic">📄</span><span class="tt-name">${L('صفحة فارغة','Blank page','Page vierge')}</span><span class="tt-desc">${L('ترويسة جاهزة بمعلوماتك، وتضيف التمارين بنفسك','Header with your info; you add the exercises','En-tête prêt, vous ajoutez les exercices')}</span></button>
+      <button class="tool-tile" data-st="tpl" style="--c:#E08E3E"><span class="tt-ic">✨</span><span class="tt-name">${L('من قالب جاهز','From a ready template','Depuis un modèle')}</span><span class="tt-desc">${L('امتحان كامل حسب المادة والمستوى، تعدّل فيه ما تريد فقط','A complete exam by subject and level','Un examen complet par matière et niveau')}</span></button>
+    </div>` });
+  m.body.querySelector('[data-st="blank"]').onclick = () => { m.close(); startNewExam(); };
+  m.body.querySelector('[data-st="tpl"]').onclick = () => { m.close(); tplTab = 'exams'; goTemplates(); };
+});
 $('backToListBtn').addEventListener('click', () => { persistExam(); showList(); });
 
 /* ================= Editor logic ================= */
@@ -303,6 +320,7 @@ function renderProps(){
     <div class="props-card">
       <h4>${typeMeta[q.type].icon} ${t('propsPoints')}</h4>
       <div class="prop-row"><label>${t('propsPoints')}</label><input type="number" min="0" step="0.25" value="${q.points}" id="propPoints"></div>
+      <div class="prop-row"><label>${L('عنوان خاص (اختياري)','Custom title (optional)','Titre personnalisé')}</label><input id="propTitle" value="${escAttr(q.title || '')}" placeholder="${escAttr(questionLabel(numberIndex(q)))}"></div>
     </div>
     <div class="props-card props-insert">
       <h4>➕ ${L('أضف داخل هذا التمرين','Add inside this exercise','Ajouter dans cet exercice')}</h4>
@@ -313,6 +331,7 @@ function renderProps(){
     </div>`;
   $('propPoints').addEventListener('input', e=>{ q.points = parseFloat(e.target.value)||0; renderTotals(); scheduleSave();
     const pe = document.querySelector(`.question[data-id="${q.id}"] .q-points`); if(pe) pe.textContent = `${t('propsPoints')}: ${q.points}`; });
+  $('propTitle').addEventListener('change', e=>{ q.title = e.target.value.trim(); render(); scheduleSave(); });
   panel.querySelectorAll('.pi-btn').forEach(b => b.addEventListener('click', () => {
     if(!activeEditable || activeEditable.type !== 'rich' || !activeEditable.el.closest(`.question[data-id="${q.id}"]`)){
       const el = document.querySelector(`.question[data-id="${q.id}"] .rich[data-rich="text"]`);
@@ -384,6 +403,12 @@ function imagesHTML(q){
       <div class="img-resize" data-act="resizeimg"></div>`}
     </div>`).join('') + `</div>`;
 }
+/* Exercise number, skipping items that have their own title (e.g. "Text", "Part II") */
+function numberIndex(q, ex){
+  let n = 0;
+  for(const x of (ex || exam).questions){ if(x === q) return n; if(!x.title) n++; }
+  return n;
+}
 function questionHTML(q, index){
   let body = '';
   if(q.type==='mcq') body = mcqHTML(q);
@@ -404,10 +429,10 @@ function questionHTML(q, index){
       <div class="q-head">
         <div class="q-title">
           <span class="q-dot q-${q.type}"></span>
-          <span class="q-num">${questionLabel(index)}</span>
+          <span class="q-num">${escapeHtml(q.title || '') || questionLabel(numberIndex(q))}</span>
         </div>
         <div style="display:flex;align-items:center;gap:10px;">
-          <span class="q-points">${t('propsPoints')}: ${q.points}</span>
+          ${q.points || !isReadonly ? `<span class="q-points ${q.points ? '' : 'zero'}">${t('propsPoints')}: ${q.points}</span>` : ''}
           ${controls}
         </div>
       </div>
@@ -420,15 +445,18 @@ function questionHTML(q, index){
 
 function render(){
   const wrap = $('questionsWrap');
+  const page = $('examPage');
+  page.setAttribute('dir', (exam.lang || lang) === 'ar' ? 'rtl' : 'ltr');
+  page.setAttribute('lang', exam.lang || lang);
   if(exam.questions.length===0){ wrap.innerHTML=''; $('emptyHint').style.display = isReadonly?'none':'block'; }
   else{
     $('emptyHint').style.display='none';
-    wrap.innerHTML = exam.questions.map((q,i)=>questionHTML(q,i)).join('');
+    wrap.innerHTML = withExamLang(exam, () => exam.questions.map((q,i)=>questionHTML(q,i)).join(''));
     hydrateObjects(wrap, exam.objects);
     attachQuestionEvents();
   }
   renderTotals(); renderProps();
-  if(typeof renderHeader === 'function') renderHeader();
+  if(typeof renderHeader === 'function') withExamLang(exam, renderHeader);
   $('maxPoints').value = exam.maxPoints; $('maxPoints').disabled = isReadonly;
   updateHero();
 }

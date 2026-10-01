@@ -7,18 +7,20 @@ async function exportWord(ex){
   const busy = openModal({ size:'small', icon:'📝', title:L('تحضير ملف Word','Preparing Word file','Préparation du fichier Word'),
     body:`<div class="eg-busy"><div class="spinner"></div><p>${L('لحظة من فضلك... نحضّر الامتحان بالمعادلات والرسومات بجودة عالية','Please wait… preparing the exam with high-quality equations and drawings','Veuillez patienter…')}</p></div>` });
   let host;
+  const uiLang = lang;
   try{
     await loadDocx();
+    lang = ex.lang || lang;
     const D = window.docx;
     host = document.createElement('div');
     host.className = 'export-host';
-    host.setAttribute('dir', document.documentElement.dir);
+    host.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
     host.innerHTML = staticPageHTML(ex);
     document.body.appendChild(host);
     hydrateObjects(host, ex.objects);
     await new Promise(r => setTimeout(r, 30));
 
-    const rtl = document.documentElement.dir === 'rtl';
+    const rtl = lang === 'ar';
     const FONT = { ascii: 'Calibri', hAnsi: 'Calibri', cs: 'Arial', eastAsia: 'Calibri' };
     const baseSize = { sm: 22, md: 24, lg: 28 }[(ex.tpl && ex.tpl.fontSize) || 'md'];
     const TR = (text, f) => new D.TextRun({ text, bold: !!(f && f.bold), italics: !!(f && f.italic), underline: (f && f.underline) ? {} : undefined,
@@ -141,7 +143,8 @@ async function exportWord(ex){
     for(let i = 0; i < ex.questions.length; i++){
       const q = ex.questions[i], qEl = qEls[i];
       const blocks = [];
-      blocks.push(P([TR(questionLabel(i), { bold: true, size: baseSize + 4, underline: style === 'underline' }), TR(`   (${q.points} ${L('ن','pts','pts')})`, { size: baseSize - 2, color: '555555' })], { spacing: { after: 100 } }));
+      const qTitle = q.title || questionLabel(numberIndex(q, ex));
+      blocks.push(P([TR(qTitle, { bold: true, size: baseSize + 4, underline: style === 'underline' })].concat(q.points ? [TR(`   (${q.points} ${L('ن','pts','pts')})`, { size: baseSize - 2, color: '555555' })] : []), { spacing: { after: 100 } }));
       blocks.push(...await richBlocks(qEl.querySelector('.rich[data-rich="text"]')));
       if(q.type === 'mcq'){
         const opts = qEl.querySelectorAll('.rich[data-rich="opt"]');
@@ -200,13 +203,16 @@ async function exportWord(ex){
     document.body.appendChild(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(a.href), 4000);
     window.__lastDocx = blob;
+    lang = uiLang;
     busy.close();
     toast(L('تم تحميل ملف Word ✓','Word file downloaded ✓','Fichier Word téléchargé ✓'), 'ok');
   }catch(err){
     console.error(err);
+    lang = uiLang;
     busy.close();
     toast(L('تعذّر إنشاء ملف Word: ','Could not create the Word file: ','Échec de création Word : ') + err.message, 'warn');
   }finally{
+    lang = uiLang;
     if(host) host.remove();
   }
 }

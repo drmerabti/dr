@@ -119,3 +119,40 @@ function geoPreset(k){
   }
   return null;
 }
+
+/* Full-size SVG of a geometry preset (for templates; the editor rebuilds real points from the same preset) */
+function geoSvgFull(k){
+  const g = geoPreset(k); if(!g) return '';
+  const U = 30, P = g.pts.map(p => ({ n: p.n, x: p.x * U, y: p.y * U }));
+  let s = '', ext = 0;
+  const seg = (a, b) => `<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}"/>`;
+  g.items.forEach(it => {
+    const [type, i, j, n] = it;
+    if(type === 'segment') s += seg(P[i], P[j]);
+    if(type === 'circle'){ const r = Math.hypot(P[i].x - P[j].x, P[i].y - P[j].y); ext = Math.max(ext, r); s += `<circle cx="${P[i].x}" cy="${P[i].y}" r="${r}"/>`; }
+    if(type === 'tick'){
+      const a = P[i], b = P[j], L0 = Math.hypot(b.x - a.x, b.y - a.y) || 1, d = { x: (b.x - a.x) / L0, y: (b.y - a.y) / L0 }, nn = { x: -d.y, y: d.x }, M = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
+      for(let q = 0; q < (n || 1); q++){ const o = (q - ((n || 1) - 1) / 2) * 5, c = { x: M.x + d.x * o, y: M.y + d.y * o }; s += `<line x1="${c.x - nn.x * 7}" y1="${c.y - nn.y * 7}" x2="${c.x + nn.x * 7}" y2="${c.y + nn.y * 7}"/>`; }
+    }
+    if(type === 'right'){
+      const O = P[i], A = P[j], B = P[it[3]];
+      const u = { x: A.x - O.x, y: A.y - O.y }, v = { x: B.x - O.x, y: B.y - O.y }, lu = Math.hypot(u.x, u.y) || 1, lv = Math.hypot(v.x, v.y) || 1, sz = 13;
+      u.x /= lu; u.y /= lu; v.x /= lv; v.y /= lv;
+      s += `<path d="M${O.x + u.x * sz} ${O.y + u.y * sz}L${O.x + (u.x + v.x) * sz} ${O.y + (u.y + v.y) * sz}L${O.x + v.x * sz} ${O.y + v.y * sz}" stroke-width="1.6"/>`;
+    }
+  });
+  P.forEach(p => s += `<circle cx="${p.x}" cy="${p.y}" r="3.5" fill="#111" stroke="none"/><text x="${p.x + 7}" y="${p.y - 8}" font-family="Times New Roman" font-style="italic" font-size="19" fill="#111" stroke="none">${p.n}</text>`);
+  const xs = P.map(p => p.x), ys = P.map(p => p.y);
+  const minx = Math.min(...xs) - 20 - ext, miny = Math.min(...ys) - 30 - ext, maxx = Math.max(...xs) + 30 + ext, maxy = Math.max(...ys) + 20 + ext;
+  return `<svg xmlns="http://www.w3.org/2000/svg" direction="ltr" viewBox="${minx} ${miny} ${maxx - minx} ${maxy - miny}" width="${maxx - minx}" height="${maxy - miny}" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round">${s}</svg>`;
+}
+function findShapeItem(k){ for(const c of SHAPE_LIB) for(const it of c.items) if(it.k === k) return it; return null; }
+function presetDrawingSvg(keys){
+  const k = (keys || [])[0]; const it = findShapeItem(k);
+  if(!it) return '';
+  if(it.geo) return geoSvgFull(k);
+  let svg = it.svg();
+  const vb = (svg.match(/viewBox="([^"]+)"/) || [])[1];
+  if(vb){ const [, , w, h] = vb.split(/\s+/).map(Number); const sc = Math.min(1.6, 220 / Math.max(w, h)); svg = svg.replace('<svg ', `<svg width="${Math.round(w * sc)}" height="${Math.round(h * sc)}" direction="ltr" `); }
+  return svg;
+}
