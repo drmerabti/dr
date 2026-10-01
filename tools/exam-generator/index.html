@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="tools.css">
 </head>
 <body>
 
@@ -70,7 +71,10 @@
     </div>
 
     <div class="exam-list-section">
-      <h3 data-i18n="myExamsTitle">امتحاناتي</h3>
+      <div class="exams-head">
+        <h3 data-i18n="myExamsTitle">امتحاناتي</h3>
+        <input class="search-input" id="examSearch" data-l-ph="ابحث بالعنوان أو المادة أو المستوى...|Search by title, subject or level...|Rechercher..." placeholder="ابحث بالعنوان أو المادة أو المستوى...">
+      </div>
       <div class="exam-grid" id="examGrid"></div>
       <p class="empty-note hidden" id="emptyNote" data-i18n="emptyNote">لا توجد امتحانات محفوظة بعد. أنشئ أول امتحان من الأعلى.</p>
     </div>
@@ -84,24 +88,34 @@
         <span data-i18n-inline="backToList">امتحاناتي</span>
       </button>
       <div class="editor-head-actions">
+        <button class="btn btn-design" id="designBtn">🎨 <span data-l="الشكل والقالب|Look & template|Apparence">الشكل والقالب</span></button>
         <button class="btn btn-ghost" id="shareBtn" data-i18n="shareBtn">مشاركة</button>
-        <button class="btn btn-ghost" id="printBtn" data-i18n="printBtn">طباعة / تصدير</button>
+        <button class="btn btn-export" id="printBtn">🖨️ <span data-l="طباعة|Print|Imprimer">طباعة</span></button>
+        <button class="btn btn-export" id="pdfBtn">📄 <span>PDF</span></button>
+        <button class="btn btn-export btn-word" id="wordBtn">📝 <span>Word</span></button>
       </div>
     </div>
 
     <div class="editor-wrap">
       <div class="tools-col">
+        <div class="tools-title" data-l="أدوات الإدراج|Insert tools|Outils d’insertion">أدوات الإدراج</div>
+        <div class="big-tools">
+          <button class="big-tool" data-obj="eq" style="--c:#2563EB"><span class="bt-ic">∑</span><span data-l="معادلة|Equation|Équation">معادلة</span></button>
+          <button class="big-tool" data-obj="plot" style="--c:#059669"><span class="bt-ic">📈</span><span data-l="منحنى|Curve|Courbe">منحنى</span></button>
+          <button class="big-tool" data-obj="draw" style="--c:#D97706"><span class="bt-ic">📐</span><span data-l="رسم|Drawing|Dessin">رسم</span></button>
+          <button class="big-tool" data-obj="table" style="--c:#7C3AED"><span class="bt-ic">▦</span><span data-l="جدول|Table|Tableau">جدول</span></button>
+        </div>
+        <div class="tools-divider"></div>
         <div class="tools-title" data-i18n="toolsTitle">الأدوات</div>
         <button class="tool-btn q-normal" data-type="normal"><span class="tool-ic">✏️</span> <span data-i18n-inline="toolNormal">سؤال عادي</span></button>
         <button class="tool-btn q-mcq" data-type="mcq"><span class="tool-ic">✅</span> <span data-i18n-inline="toolMcq">اختيار من متعدد</span></button>
         <button class="tool-btn q-tf" data-type="tf"><span class="tool-ic">☑️</span> <span data-i18n-inline="toolTf">صح / خطأ</span></button>
         <button class="tool-btn q-blank" data-type="blank"><span class="tool-ic">🧩</span> <span data-i18n-inline="toolBlank">أكمل الفراغ</span></button>
-        <button class="tool-btn q-table" data-type="table"><span class="tool-ic">📊</span> <span data-i18n-inline="toolTable">جدول</span></button>
         <button class="tool-btn q-image" id="imageToolBtn"><span class="tool-ic">🖼️</span> <span data-i18n-inline="toolImage">صورة</span></button>
         <button class="tool-btn q-symbols" id="symbolsToolBtn"><span class="tool-ic">🔣</span> <span data-i18n-inline="toolSymbols">رموز</span></button>
         <div id="imageHintWrap"></div>
         <div class="tools-divider"></div>
-        <button class="lib-btn" id="libBtn" data-i18n="libBtn" title="متوفر في مرحلة لاحقة">📚 إدراج من مكتبتي</button>
+        <button class="lib-btn" id="libBtn" data-i18n="libBtn">📚 إدراج من مكتبتي</button>
         <input type="file" id="imgFileInput" accept="image/*" class="hidden">
       </div>
 
@@ -111,20 +125,7 @@
           <span><span data-i18n-inline="totalLabel">المجموع:</span> <span class="points" id="totalPoints">0</span> / <input id="maxPoints" type="number" value="20"></span>
         </div>
         <div class="a4-page" id="examPage">
-          <div class="exam-header">
-            <div class="top-line" data-i18n="repLine1">الجمهورية الجزائرية الديمقراطية الشعبية</div>
-            <div class="top-line" data-i18n="repLine2">وزارة التربية الوطنية</div>
-            <div class="school-fields">
-              <input id="hInstitution" data-i18n-placeholder="institutionPh" placeholder="اسم المؤسسة">
-              <input id="hTeacher" data-i18n-placeholder="teacherPh" placeholder="أستاذ: ..............">
-            </div>
-            <input class="title-field" id="hTitle" value="اختبار الفصل الأول">
-            <div class="meta-row">
-              <span><b data-i18n-inline="subjectLabel">المادة:</b> <span class="resize-field meta-field"><input id="hSubject" placeholder="..."></span></span>
-              <span><b data-i18n-inline="gradeLabel">المستوى:</b> <span class="resize-field meta-field"><input id="hGrade" placeholder="..."></span></span>
-              <span><b data-i18n-inline="durationLabel">المدة:</b> <span class="resize-field meta-field" style="width:60px;"><input id="hDuration" placeholder="..."></span></span>
-            </div>
-          </div>
+          <div class="exam-header" id="examHeader"></div>
           <div id="questionsWrap"></div>
           <div class="empty-page-hint" id="emptyHint" data-i18n="emptyPageHint">اختر أداة من القائمة على اليمين لبدء إنشاء الامتحان</div>
         </div>
@@ -135,6 +136,11 @@
       </div>
     </div>
   </section>
+
+  <!-- ============ LIBRARY / SETTINGS / TEMPLATES VIEWS ============ -->
+  <section id="libraryView" class="view hidden"></section>
+  <section id="settingsView" class="view hidden"></section>
+  <section id="templatesView" class="view hidden"></section>
 
 </main>
 
@@ -168,6 +174,23 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="../../firebase-init.js"></script>
+<script src="js/store.js"></script>
 <script src="app.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/objects.js"></script>
+<script src="js/header.js"></script>
+<script src="js/eq.js"></script>
+<script src="js/plot.js"></script>
+<script src="js/draw.js"></script>
+<script src="js/shapes.js"></script>
+<script src="js/tables.js"></script>
+<script src="js/library.js"></script>
+<script src="js/settings.js"></script>
+<script src="js/templates.js"></script>
+<script src="js/exam-templates.js"></script>
+<script src="js/examslist.js"></script>
+<script src="js/export-docx.js"></script>
+<script src="js/hub.js"></script>
+<script>bootApp();</script>
 </body>
 </html>

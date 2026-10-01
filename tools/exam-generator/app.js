@@ -134,38 +134,72 @@ function b64Decode(str){
   return decodeURIComponent(atob(str).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
 }
 
-/* ================= Storage ================= */
-const LIST_KEY = 'examgen_list_v1';
-const EXAM_KEY_PREFIX = 'examgen_exam_';
-
+/* ================= State ================= */
 function uid(p){ return (p||'exam_') + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
 
 function freshExam(){
-  return {
+  const s = (typeof getSettings === 'function') ? getSettings() : {};
+  const ex = {
     id: uid(),
-    header: { institution:'', teacher:'', title: t('defaultTitle'), subject:'', grade:'', duration:'' },
+    header: {
+      institution: s.institution || '', teacher: s.teacher || '', title: t('defaultTitle'),
+      subject: s.subject || '', grade: (s.levels && s.levels[0]) || '', duration: s.duration || '',
+      year: s.year || defaultSchoolYear(), directorate: s.directorate || '', logo: s.logo || ''
+    },
+    tpl: { header: s.headerTpl || 'classic', style: s.styleTpl || 'classic', fontSize: s.fontSize || 'md' },
     questions: [],
-    maxPoints: 20,
+    objects: {},
+    maxPoints: s.maxPoints || 20,
+    createdAt: Date.now(),
     updatedAt: Date.now(),
     savedToCloud: false
   };
+  return ex;
 }
+function defaultSchoolYear(){
+  const d = new Date(); const y = d.getFullYear();
+  return d.getMonth() >= 7 ? `${y}/${y+1}` : `${y-1}/${y}`;
+}
+/* Bring any stored exam (old or new format) up to the current shape */
+function normalizeExam(ex){
+  if(!ex) return ex;
+  ex.header = Object.assign({ institution:'', teacher:'', title:'', subject:'', grade:'', duration:'', year:'', directorate:'', logo:'' }, ex.header || {});
+  ex.tpl = Object.assign({ header:'classic', style:'classic', fontSize:'md' }, ex.tpl || {});
+  ex.objects = ex.objects || {};
+  ex.questions = ex.questions || [];
+  ex.createdAt = ex.createdAt || ex.updatedAt || Date.now();
+  ex.questions.forEach(q => {
+    if(q.html == null) q.html = textToHtml(q.text);
+    if(q.type === 'mcq' && q.options && !q.optHtml){ q.options = q.options.map(o => textToHtml(o)); q.optHtml = true; }
+    if(q.type === 'tf' && q.statements) q.statements.forEach(s => { if(s.html == null) s.html = textToHtml(s.text); });
+    q.images = q.images || [];
+  });
+  // drop objects that are no longer referenced anywhere
+  const used = new Set();
+  ex.questions.forEach(q => {
+    richObjIds(q.html).forEach(id => used.add(id));
+    (q.options || []).forEach(o => richObjIds(o).forEach(id => used.add(id)));
+    (q.statements || []).forEach(s => richObjIds(s.html).forEach(id => used.add(id)));
+  });
+  Object.keys(ex.objects).forEach(id => { if(!used.has(id)) delete ex.objects[id]; });
+  return ex;
+}
+
 function emptyCell(){ return { value:'', rowspan:1, colspan:1, merged:false }; }
 function makeGrid(r,c){ return Array.from({length:r},()=>Array.from({length:c},()=>emptyCell())); }
 
-function loadList(){
-  try{ return JSON.parse(localStorage.getItem(LIST_KEY) || '[]'); }catch(e){ return []; }
-}
-function saveList(list){ localStorage.setItem(LIST_KEY, JSON.stringify(list)); }
-function loadExam(id){
-  try{ return JSON.parse(localStorage.getItem(EXAM_KEY_PREFIX + id)); }catch(e){ return null; }
+let examsCache = [];   // all saved exams (full objects), newest first
+async function loadAllExams(){
+  examsCache = (await Store.all('exams')).map(normalizeExam).sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0));
+  return examsCache;
 }
 function persistExam(){
+  if(isReadonly) return Promise.resolve();
   exam.updatedAt = Date.now();
-  localStorage.setItem(EXAM_KEY_PREFIX + exam.id, JSON.stringify(exam));
-  let list = loadList().filter(e=>e.id!==exam.id);
-  list.unshift({ id: exam.id, title: exam.header.title || t('untitledExam'), updatedAt: exam.updatedAt });
-  saveList(list.slice(0,50));
+  exam.questions.forEach(q => { q.text = richToPlain(q.html); });
+  const snapshot = JSON.parse(JSON.stringify(exam));
+  examsCache = [snapshot].concat(examsCache.filter(e => e.id !== exam.id));
+  return Store.put('exams', snapshot);
 }
 
 let exam = freshExam();
@@ -181,60 +215,64 @@ let cloudSaveBusy = false;
 
 const typeMeta = { normal:{icon:'✏️'}, mcq:{icon:'✅'}, tf:{icon:'☑️'}, blank:{icon:'🧩'}, table:{icon:'📊'} };
 
-/* ================= List view ================= */
-function renderListView(){
-  const grid = $('examGrid');
-  const list = loadList();
-  $('emptyNote').classList.toggle('hidden', list.length>0);
-  grid.innerHTML = list.map(e=>`
-    <div class="exam-card" data-id="${e.id}">
-      <div class="name">${escapeHtml(e.title)}</div>
-      <div class="meta">${new Date(e.updatedAt).toLocaleString(lang==='ar'?'ar-DZ':(lang==='fr'?'fr-FR':'en-US'))}</div>
-    </div>`).join('');
-  grid.querySelectorAll('.exam-card').forEach(card=>{
-    card.addEventListener('click', ()=>{
-      const loaded = loadExam(card.dataset.id);
-      if(loaded){ exam = loaded; selectedId = null; showEditor(); render(); }
-    });
-  });
-}
 function escapeHtml(s){ const d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; }
 
+/* ================= Views ================= */
+const VIEWS = ['listView','editorView','libraryView','settingsView','templatesView'];
+function showView(id){
+  VIEWS.forEach(v => { const el = $(v); if(el) el.classList.toggle('hidden', v !== id); });
+  deselectObject && deselectObject();
+  updateHero();
+  window.scrollTo(0, 0);
+}
 function updateHero(){
+  const heroTitle = $('heroTitle'), heroSub = $('heroSub');
   if(isReadonly || !$('editorView').classList.contains('hidden')){
-    $('heroTitle').textContent = exam.header.title || t('defaultTitle');
-    $('heroSub').textContent = exam.header.subject || '';
+    heroTitle.textContent = exam.header.title || t('defaultTitle');
+    heroSub.textContent = [exam.header.subject, exam.header.grade].filter(Boolean).join(' — ');
+  } else if(!$('libraryView').classList.contains('hidden')){
+    heroTitle.textContent = L('مكتبتي','My library','Ma bibliothèque');
+    heroSub.textContent = L('كل ما أنشأته محفوظ هنا تلقائيًا، أدرجه في أي امتحان بضغطة واحدة','Everything you create is saved here automatically','Tout ce que vous créez est enregistré ici automatiquement');
+  } else if(!$('settingsView').classList.contains('hidden')){
+    heroTitle.textContent = L('الإعدادات','Settings','Paramètres');
+    heroSub.textContent = L('املأ معلوماتك مرة واحدة، وستظهر تلقائيًا في كل امتحان جديد','Fill your info once — it appears in every new exam','Remplissez vos informations une seule fois');
+  } else if(!$('templatesView').classList.contains('hidden')){
+    heroTitle.textContent = L('القوالب','Templates','Modèles');
+    heroSub.textContent = L('اختر شكلًا جاهزًا أو امتحانًا كاملًا وابدأ منه','Pick a ready design or a complete exam to start from','Choisissez un modèle prêt à l’emploi');
   } else {
-    $('heroTitle').textContent = t('title');
-    $('heroSub').textContent = t('subtitleList');
+    heroTitle.textContent = t('title');
+    heroSub.textContent = t('subtitleList');
   }
 }
-function showEditor(){ $('listView').classList.add('hidden'); $('editorView').classList.remove('hidden'); updateHero(); }
-function showList(){ $('editorView').classList.add('hidden'); $('listView').classList.remove('hidden'); updateHero(); renderListView(); }
+function showEditor(){ showView('editorView'); }
+function showList(){ showView('listView'); renderListView(); }
 
-$('newExamBtn') && $('newExamBtn').addEventListener('click', startNewExam);
+function openExam(ex){
+  exam = normalizeExam(JSON.parse(JSON.stringify(ex)));
+  selectedId = null; isReadonly = false;
+  showEditor(); render();
+}
 function startNewExam(){
   exam = freshExam(); selectedId=null; isReadonly=false;
   persistExam();
   showEditor(); render();
 }
 $('newExamCard').addEventListener('click', startNewExam);
-$('backToListBtn').addEventListener('click', showList);
-['goTools','goLibrary','goSettings','goTemplates'].forEach(id=>{
-  $(id).addEventListener('click', ()=> alert(t('libSoon')));
-});
+$('backToListBtn').addEventListener('click', () => { persistExam(); showList(); });
 
 /* ================= Editor logic ================= */
 function addQuestion(type){
   const q = {
-    id: uid('q_'), type, text:'', points:2, frameOff:false,
-    options: type==='mcq' ? ['','',''] : undefined,
-    statements: type==='tf' ? [ {id:uid('s_'), text:'', correction:'', showCorrection:false} ] : undefined,
+    id: uid('q_'), type, text:'', html:'', points:2, frameOff:false,
+    options: type==='mcq' ? ['','',''] : undefined, optHtml: type==='mcq' ? true : undefined,
+    statements: type==='tf' ? [ {id:uid('s_'), text:'', html:'', correction:'', showCorrection:false} ] : undefined,
     grid: type==='table' ? makeGrid(3,3) : undefined,
     images: []
   };
   exam.questions.push(q);
+  selectedId = q.id;
   render(); scheduleSave();
+  return q;
 }
 function removeQuestion(id){
   exam.questions = exam.questions.filter(q=>q.id!==id);
@@ -264,9 +302,24 @@ function renderProps(){
   panel.innerHTML = `
     <div class="props-card">
       <h4>${typeMeta[q.type].icon} ${t('propsPoints')}</h4>
-      <div class="prop-row"><label>${t('propsPoints')}</label><input type="number" min="0" step="0.5" value="${q.points}" id="propPoints"></div>
+      <div class="prop-row"><label>${t('propsPoints')}</label><input type="number" min="0" step="0.25" value="${q.points}" id="propPoints"></div>
+    </div>
+    <div class="props-card props-insert">
+      <h4>➕ ${L('أضف داخل هذا التمرين','Add inside this exercise','Ajouter dans cet exercice')}</h4>
+      <button class="pi-btn" data-kind="eq"><span style="background:#2563EB">∑</span>${L('معادلة','Equation','Équation')}</button>
+      <button class="pi-btn" data-kind="plot"><span style="background:#059669">📈</span>${L('منحنى','Curve','Courbe')}</button>
+      <button class="pi-btn" data-kind="draw"><span style="background:#D97706">📐</span>${L('رسم','Drawing','Dessin')}</button>
+      <button class="pi-btn" data-kind="table"><span style="background:#7C3AED">▦</span>${L('جدول','Table','Tableau')}</button>
     </div>`;
-  $('propPoints').addEventListener('input', e=>{ q.points = parseFloat(e.target.value)||0; renderTotals(); scheduleSave(); });
+  $('propPoints').addEventListener('input', e=>{ q.points = parseFloat(e.target.value)||0; renderTotals(); scheduleSave();
+    const pe = document.querySelector(`.question[data-id="${q.id}"] .q-points`); if(pe) pe.textContent = `${t('propsPoints')}: ${q.points}`; });
+  panel.querySelectorAll('.pi-btn').forEach(b => b.addEventListener('click', () => {
+    if(!activeEditable || activeEditable.type !== 'rich' || !activeEditable.el.closest(`.question[data-id="${q.id}"]`)){
+      const el = document.querySelector(`.question[data-id="${q.id}"] .rich[data-rich="text"]`);
+      if(el){ const r = document.createRange(); r.selectNodeContents(el); r.collapse(false); activeEditable = { type:'rich', el, range:r }; }
+    }
+    openObjTool(b.dataset.kind);
+  }));
 }
 
 function mcqHTML(q){
@@ -274,7 +327,7 @@ function mcqHTML(q){
   return `<div class="mcq-options">` + q.options.map((opt,i)=>`
     <div class="mcq-opt">
       <span class="bullet"></span>
-      <span class="opt-field"><input data-oi="${i}" value="${escapeHtml(opt)}" placeholder="…" ${ro?'disabled':''}></span>
+      <span class="opt-field">${richFieldHTML(opt, `data-rich="opt" data-oi="${i}"`, '…', 'rich-line')}</span>
       ${ro?'':`<button class="opt-del" data-act="delopt" data-oi="${i}" title="${t('delOpt')}">🗑️</button>`}
     </div>`).join('') + (ro?'':`<button class="add-opt-btn" data-act="addopt">${t('addOpt')}</button>`) + `</div>`;
 }
@@ -283,7 +336,7 @@ function tfHTML(q){
   const head = `<div class="tf-head"><span>&nbsp;</span><span>${t('trueLabel')}</span><span>${t('falseLabel')}</span><span>&nbsp;</span></div>`;
   return `<div class="tf-wrap">` + head + q.statements.map(s=>`
     <div class="tf-row" data-sid="${s.id}">
-      <input class="tf-text" data-field="text" value="${escapeHtml(s.text)}" placeholder="…" ${ro?'disabled':''}>
+      ${richFieldHTML(s.html, `data-rich="stmt"`, '…', 'rich-line tf-text')}
       <span class="tf-box"></span>
       <span class="tf-box"></span>
       ${ro?'<span></span>':`
@@ -336,7 +389,7 @@ function questionHTML(q, index){
   if(q.type==='mcq') body = mcqHTML(q);
   else if(q.type==='tf') body = tfHTML(q);
   else if(q.type==='table') body = tableHTML(q);
-  else if(q.type==='blank') body = isReadonly?'':`<div class="blank-hint">ضع ..... داخل النص لتحديد مكان الفراغ</div>`;
+  else if(q.type==='blank') body = isReadonly?'':`<div class="blank-hint">${L('ضع ..... داخل النص لتحديد مكان الفراغ','Type ..... in the text to mark a blank','Tapez ..... pour marquer un trou')}</div>`;
 
   const controls = isReadonly ? '' : `
     <div class="q-controls">
@@ -345,7 +398,7 @@ function questionHTML(q, index){
       <button class="qc-btn frame-toggle ${q.frameOff?'is-off':''}" data-act="frame" title="${q.frameOff?t('frameShow'):t('frameHide')}">▢</button>
       <button class="qc-btn danger" data-act="del" title="${t('delQuestion')}">🗑️</button>
     </div>`;
-
+  const tstyle = (q.textH ? `min-height:${q.textH};` : '');
   return `
     <div class="question ${q.id===selectedId?'selected':''} ${q.frameOff?'frame-off':''}" data-id="${q.id}" style="position:relative;">
       <div class="q-head">
@@ -358,8 +411,9 @@ function questionHTML(q, index){
           ${controls}
         </div>
       </div>
-      <textarea class="q-text" placeholder="…" ${isReadonly?'disabled':''} style="${q.textW?`width:${q.textW};`:''}${q.textH?`height:${q.textH};`:''}">${escapeHtml(q.text)}</textarea>
+      ${richFieldHTML(q.html, `data-rich="text" style="${tstyle}"`, isReadonly ? '' : L('اكتب نص السؤال هنا… (يمكنك إدراج معادلة أو رسم أو منحنى من الأزرار)','Type the question here… (you can insert equations, drawings or curves)','Écrivez l’énoncé ici…'), 'q-text')}
       ${body}
+      <div class="q-clear"></div>
       ${imagesHTML(q)}
     </div>`;
 }
@@ -367,14 +421,14 @@ function questionHTML(q, index){
 function render(){
   const wrap = $('questionsWrap');
   if(exam.questions.length===0){ wrap.innerHTML=''; $('emptyHint').style.display = isReadonly?'none':'block'; }
-  else{ $('emptyHint').style.display='none'; wrap.innerHTML = exam.questions.map((q,i)=>questionHTML(q,i)).join(''); attachQuestionEvents(); }
+  else{
+    $('emptyHint').style.display='none';
+    wrap.innerHTML = exam.questions.map((q,i)=>questionHTML(q,i)).join('');
+    hydrateObjects(wrap, exam.objects);
+    attachQuestionEvents();
+  }
   renderTotals(); renderProps();
-  $('hInstitution').value = exam.header.institution; $('hInstitution').disabled = isReadonly;
-  $('hTeacher').value = exam.header.teacher; $('hTeacher').disabled = isReadonly;
-  $('hTitle').value = exam.header.title; $('hTitle').disabled = isReadonly;
-  $('hSubject').value = exam.header.subject; $('hSubject').disabled = isReadonly;
-  $('hGrade').value = exam.header.grade; $('hGrade').disabled = isReadonly;
-  $('hDuration').value = exam.header.duration; $('hDuration').disabled = isReadonly;
+  if(typeof renderHeader === 'function') renderHeader();
   $('maxPoints').value = exam.maxPoints; $('maxPoints').disabled = isReadonly;
   updateHero();
 }
@@ -385,7 +439,7 @@ function renderTotals(){
 }
 
 function attachQuestionEvents(){
-  document.querySelectorAll('.question').forEach(el=>{
+  document.querySelectorAll('#questionsWrap .question').forEach(el=>{
     const id = el.dataset.id; const q = findQ(id);
 
     el.addEventListener('click', (e)=>{
@@ -397,28 +451,26 @@ function attachQuestionEvents(){
         triggerImagePlacement(q, x, y);
         return;
       }
-      if(!['TEXTAREA','INPUT','TD','BUTTON'].includes(e.target.tagName)) selectQuestion(id);
+      if(!e.target.closest('.rich, input, td, button, .eobj')) selectQuestion(id);
     });
 
-    const ta = el.querySelector('.q-text');
-    if(ta){
-      ta.addEventListener('input', e=>{ q.text = e.target.value; scheduleSave(); });
-      ta.addEventListener('focus', ()=> selectQuestionLight(id));
-      const captureTa = ()=>{ activeEditable = { type:'textarea', el:ta, start:ta.selectionStart, end:ta.selectionEnd }; };
-      ta.addEventListener('focus', captureTa);
-      ta.addEventListener('click', captureTa);
-      ta.addEventListener('keyup', captureTa);
-      if(!isReadonly && window.ResizeObserver){
-        const robs = new ResizeObserver(()=>{
-          q.textW = ta.style.width || q.textW;
-          q.textH = ta.style.height || q.textH;
-          scheduleSave();
-        });
-        robs.observe(ta);
-      }
-    }
-
     if(isReadonly) return;
+
+    const main = el.querySelector('.rich[data-rich="text"]');
+    bindRich(main, html => { q.html = html; scheduleSave(); }, () => selectQuestionLight(id));
+
+    el.querySelectorAll('.rich[data-rich="opt"]').forEach(r => {
+      bindRich(r, html => { q.options[+r.dataset.oi] = html; scheduleSave(); }, () => selectQuestionLight(id));
+    });
+    el.querySelectorAll('.tf-row').forEach(row=>{
+      const s = q.statements.find(s=>s.id===row.dataset.sid);
+      const r = row.querySelector('.rich[data-rich="stmt"]');
+      bindRich(r, html => { s.html = html; s.text = richToPlain(html); scheduleSave(); }, () => selectQuestionLight(id));
+      row.querySelectorAll('input[data-field]').forEach(inp=>{
+        inp.addEventListener('input', e=>{ s[inp.dataset.field] = e.target.value; scheduleSave(); });
+        inp.addEventListener('focus', ()=> selectQuestionLight(id));
+      });
+    });
 
     el.querySelectorAll('[data-act]').forEach(btn=>{
       btn.addEventListener('click', (e)=>{
@@ -430,7 +482,7 @@ function attachQuestionEvents(){
         else if(act==='frame'){ q.frameOff = !q.frameOff; render(); scheduleSave(); }
         else if(act==='addopt'){ q.options.push(''); render(); scheduleSave(); }
         else if(act==='delopt'){ q.options.splice(+btn.dataset.oi,1); render(); scheduleSave(); }
-        else if(act==='addstmt'){ q.statements.push({id:uid('s_'),text:'',correction:'',showCorrection:false}); render(); scheduleSave(); }
+        else if(act==='addstmt'){ q.statements.push({id:uid('s_'),text:'',html:'',correction:'',showCorrection:false}); render(); scheduleSave(); }
         else if(act==='delstmt'){ const row = btn.closest('.tf-row'); q.statements = q.statements.filter(s=>s.id!==row.dataset.sid); render(); scheduleSave(); }
         else if(act==='togglecorr'){ const row = btn.closest('.tf-row'); const s = q.statements.find(s=>s.id===row.dataset.sid); s.showCorrection=!s.showCorrection; render(); scheduleSave(); }
         else if(act==='addrow'){ q.grid.push(Array.from({length:q.grid[0].length},()=>emptyCell())); render(); scheduleSave(); }
@@ -439,19 +491,6 @@ function attachQuestionEvents(){
         else if(act==='delcol'){ if(q.grid[0].length>1){ q.grid.forEach(r=>r.pop()); render(); scheduleSave(); } }
         else if(act==='merge'){ mergeSelection(); }
         else if(act==='delimg'){ const item = btn.closest('.img-item'); q.images = q.images.filter(im=>im.id!==item.dataset.iid); render(); scheduleSave(); }
-      });
-    });
-
-    el.querySelectorAll('.opt-field input').forEach(inp=>{
-      inp.addEventListener('input', e=>{ q.options[+inp.dataset.oi] = e.target.value; scheduleSave(); });
-      inp.addEventListener('focus', ()=> selectQuestionLight(id));
-    });
-
-    el.querySelectorAll('.tf-row').forEach(row=>{
-      const s = q.statements.find(s=>s.id===row.dataset.sid);
-      row.querySelectorAll('[data-field]').forEach(inp=>{
-        inp.addEventListener('input', e=>{ s[inp.dataset.field] = e.target.value; scheduleSave(); });
-        inp.addEventListener('focus', ()=> selectQuestionLight(id));
       });
     });
 
@@ -566,12 +605,14 @@ function buildSymbolsPanel(){
     <div class="sym-grid">${g.items.map(s=>`<button class="sym-btn" data-sym="${s}">${s}</button>`).join('')}</div>
   `).join('');
   body.querySelectorAll('.sym-btn').forEach(btn=>{
+    btn.addEventListener('mousedown', e => e.preventDefault());
     btn.addEventListener('click', ()=>{
       body.querySelectorAll('.sym-btn').forEach(b=> b.classList.remove('sym-selected'));
       btn.classList.add('sym-selected');
       selectedSymbol = btn.dataset.sym;
       $('symPreview').textContent = selectedSymbol;
     });
+    btn.addEventListener('dblclick', ()=>{ selectedSymbol = btn.dataset.sym; insertAtActiveEditable(selectedSymbol); });
   });
 }
 $('symbolsToolBtn').addEventListener('click', ()=>{
@@ -581,13 +622,14 @@ $('symbolsToolBtn').addEventListener('click', ()=>{
   if(opening) buildSymbolsPanel();
 });
 $('closeSymbolsBtn').addEventListener('click', ()=> $('symbolsPanel').classList.add('hidden'));
+$('insertSymbolBtn').addEventListener('mousedown', e => e.preventDefault());
 $('insertSymbolBtn').addEventListener('click', ()=>{
   if(!selectedSymbol || !activeEditable) return;
   insertAtActiveEditable(selectedSymbol);
 });
 function insertAtActiveEditable(text){
   const ae = activeEditable;
-  if(!ae) return;
+  if(!ae || !document.body.contains(ae.el)) return;
   if(ae.type==='textarea'){
     const el = ae.el;
     const val = el.value;
@@ -598,19 +640,19 @@ function insertAtActiveEditable(text){
     el.selectionStart = el.selectionEnd = newPos;
     ae.start = ae.end = newPos;
     el.dispatchEvent(new Event('input', { bubbles:true }));
-  } else if(ae.type==='td'){
+  } else if(ae.type==='td' || ae.type==='rich'){
     const el = ae.el;
     el.focus();
     const sel = window.getSelection();
     sel.removeAllRanges();
-    if(ae.range){ try{ sel.addRange(ae.range); }catch(e){} }
+    if(ae.range && el.contains(ae.range.startContainer)){ try{ sel.addRange(ae.range); }catch(e){} }
+    else { const r = document.createRange(); r.selectNodeContents(el); r.collapse(false); sel.addRange(r); }
     document.execCommand('insertText', false, text);
     if(sel.rangeCount) ae.range = sel.getRangeAt(0).cloneRange();
-    el.dispatchEvent(new Event('input', { bubbles:true }));
   }
 }
 
-/* ================= Image insertion ================= */
+/* ================= Image insertion (free placement inside an exercise) ================= */
 const imgFileInput = $('imgFileInput');
 let pendingImagePlacement = null;
 function triggerImagePlacement(q, x, y){
@@ -629,6 +671,7 @@ imgFileInput.addEventListener('change', (e)=>{
       q.images.push({ id: uid('im_'), src: ev.target.result,
         x: Math.max(0, pendingImagePlacement.x - w/2), y: Math.max(0, pendingImagePlacement.y - h/2), w, h });
       render(); scheduleSave();
+      if(typeof libraryAutoSave === 'function') libraryAutoSave({ kind:'image', data:{ src: ev.target.result, name: file.name } });
     }
     pendingImagePlacement = null;
     setImageTool(false);
@@ -642,17 +685,19 @@ function setImageTool(on){
 }
 $('imageToolBtn').addEventListener('click', ()=> setImageTool(!placingImage));
 
-/* ================= Header inputs ================= */
-const headerMap = { hInstitution:'institution', hTeacher:'teacher', hTitle:'title', hSubject:'subject', hGrade:'grade', hDuration:'duration' };
-Object.keys(headerMap).forEach(id=>{
-  $(id).addEventListener('input', e=>{ exam.header[headerMap[id]] = e.target.value; scheduleSave(); });
-});
 $('maxPoints').addEventListener('input', e=>{ exam.maxPoints = parseFloat(e.target.value)||20; renderTotals(); scheduleSave(); });
 
 document.querySelectorAll('.tool-btn[data-type]').forEach(btn=>{
   btn.addEventListener('click', ()=> addQuestion(btn.dataset.type));
 });
-$('libBtn').addEventListener('click', ()=> alert(t('libSoon')));
+document.querySelectorAll('[data-obj]').forEach(btn=>{
+  btn.addEventListener('mousedown', e => e.preventDefault());
+  btn.addEventListener('click', ()=> openObjTool(btn.dataset.obj));
+});
+function openObjTool(kind){
+  if(!ObjKinds[kind]){ toast(L('هذه الأداة قيد الإنجاز','This tool is coming soon','Outil bientôt disponible')); return; }
+  startObjectTool(kind);
+}
 
 /* ================= Autosave (local) ================= */
 let saveTimer=null;
@@ -662,17 +707,28 @@ function scheduleSave(){
   dot.classList.add('saving'); text.textContent=t('savingLocal');
   clearTimeout(saveTimer);
   saveTimer = setTimeout(()=>{
-    try{ persistExam(); dot.classList.remove('saving'); text.textContent=t('savedLocal'); }
-    catch(err){ text.textContent=t('saveFailed'); }
+    persistExam().then(()=>{ dot.classList.remove('saving'); text.textContent=t('savedLocal'); })
+      .catch(()=>{ text.textContent=t('saveFailed'); });
   }, 500);
 }
 
-/* ================= Print ================= */
-$('printBtn').addEventListener('click', ()=> window.print());
+/* ================= Print / PDF / Word ================= */
+function doPrint(){ deselectObject(); document.activeElement && document.activeElement.blur && document.activeElement.blur(); setTimeout(()=>window.print(), 50); }
+$('printBtn').addEventListener('click', doPrint);
+$('pdfBtn').addEventListener('click', ()=>{
+  const m = openModal({ size:'small', icon:'📄', title:L('حفظ الامتحان PDF','Save as PDF','Enregistrer en PDF'),
+    body:`<div class="pdf-help">
+      <p>${L('ستفتح نافذة الطباعة. في خانة <b>الطابعة</b> اختر:','The print window will open. In <b>Destination</b> choose:','La fenêtre d’impression va s’ouvrir. Dans <b>Destination</b>, choisissez :')}</p>
+      <div class="pdf-choice">📄 ${L('حفظ بتنسيق PDF','Save as PDF','Enregistrer au format PDF')}</div>
+      <p>${L('ثم اضغط <b>حفظ</b>. المعادلات والرسومات تبقى واضحة جدًا عند التكبير.','Then press <b>Save</b>. Equations and drawings stay sharp at any zoom.','Puis cliquez sur <b>Enregistrer</b>.')}</p></div>`,
+    footer:`<button class="big-btn ghost" data-close>${L('إلغاء','Cancel','Annuler')}</button><button class="big-btn primary" id="pdfGo">📄 ${L('متابعة','Continue','Continuer')}</button>` });
+  m.foot.querySelector('#pdfGo').onclick = ()=>{ m.close(); doPrint(); };
+});
+$('wordBtn').addEventListener('click', ()=> exportWord(exam));
 
 /* ================= Share (read-only link) ================= */
 $('shareBtn').addEventListener('click', ()=>{
-  const payload = { h: exam.header, q: exam.questions, mp: exam.maxPoints, l: lang };
+  const payload = { h: exam.header, q: exam.questions, o: exam.objects, tp: exam.tpl, mp: exam.maxPoints, l: lang };
   const encoded = b64Encode(JSON.stringify(payload));
   const url = `${location.origin}${location.pathname}#shared=${encoded}`;
   $('shareLinkInput').value = url;
@@ -695,9 +751,13 @@ function tryLoadSharedFromHash(){
       exam = freshExam();
       exam.header = payload.h || exam.header;
       exam.questions = payload.q || [];
+      exam.objects = payload.o || {};
+      if(payload.tp) exam.tpl = payload.tp;
       exam.maxPoints = payload.mp || 20;
       if(payload.l) lang = payload.l;
+      normalizeExam(exam);
       isReadonly = true;
+      document.body.classList.add('readonly');
       return true;
     }catch(e){ return false; }
   }
@@ -713,14 +773,24 @@ function applyLanguage(){
   document.querySelectorAll('[data-i18n]').forEach(el=>{ el.textContent = t(el.getAttribute('data-i18n')); });
   document.querySelectorAll('[data-i18n-inline]').forEach(el=>{ el.textContent = t(el.getAttribute('data-i18n-inline')); });
   document.querySelectorAll('[data-i18n-placeholder]').forEach(el=>{ el.placeholder = t(el.getAttribute('data-i18n-placeholder')); });
+  document.querySelectorAll('[data-l]').forEach(el=>{ const p = el.getAttribute('data-l').split('|'); el.textContent = L(p[0], p[1], p[2]); });
+  document.querySelectorAll('[data-l-ph]').forEach(el=>{ const p = el.getAttribute('data-l-ph').split('|'); el.placeholder = L(p[0], p[1], p[2]); });
   updateCloudButtons();
   localStorage.setItem('examgen_lang', lang);
 }
 $('langToggle').addEventListener('click', ()=>{
   lang = LANG_ORDER[(LANG_ORDER.indexOf(lang) + 1) % LANG_ORDER.length];
   applyLanguage();
-  if(!$('editorView').classList.contains('hidden')) render(); else renderListView();
+  refreshCurrentView();
 });
+function refreshCurrentView(){
+  if(!$('editorView').classList.contains('hidden')) render();
+  else if(!$('libraryView').classList.contains('hidden')) renderLibraryView && renderLibraryView();
+  else if(!$('settingsView').classList.contains('hidden')) renderSettingsView && renderSettingsView();
+  else if(!$('templatesView').classList.contains('hidden')) renderTemplatesView && renderTemplatesView();
+  else renderListView();
+  updateHero();
+}
 
 /* ================= Firebase auth + cloud save (activates once configured) ================= */
 function updateCloudButtons(){
@@ -739,8 +809,8 @@ $('saveCloudBtn').addEventListener('click', ()=>{
   if(!currentUser || !window.fbDb) return;
   const btnSpan = $('saveCloudBtn').querySelector('span');
   cloudSaveBusy = true; btnSpan.textContent = t('savingCloudBtn');
-  const payload = { owner: currentUser.uid, header: exam.header, questions: exam.questions, maxPoints: exam.maxPoints, updatedAt: new Date().toISOString() };
-  window.fbDb.collection('exams').doc(exam.id).set(payload, { merge:true })
+  const payload = { owner: currentUser.uid, header: exam.header, tpl: exam.tpl, questions: exam.questions, objects: exam.objects, maxPoints: exam.maxPoints, updatedAt: new Date().toISOString() };
+  window.fbDb.collection('exams').doc(exam.id).set(JSON.parse(JSON.stringify(payload)), { merge:true })
     .then(()=>{ exam.savedToCloud = true; persistExam(); btnSpan.textContent = t('savedCloudBtn');
       setTimeout(()=>{ cloudSaveBusy=false; btnSpan.textContent = t('saveCloudBtn'); }, 2000); })
     .catch(()=>{ cloudSaveBusy=false; btnSpan.textContent = t('saveCloudBtn'); });
@@ -749,10 +819,20 @@ if(window.fbAuth){
   window.fbAuth.onAuthStateChanged(user=>{ currentUser = user; updateCloudButtons(); });
 }
 
-/* ================= Init ================= */
-applyLanguage();
-if(tryLoadSharedFromHash()){
-  showEditor(); render();
-} else {
+/* ================= Boot (called after all modules are loaded) ================= */
+async function bootApp(){
+  if(typeof loadSettings === 'function') await loadSettings();
+  if(typeof getSettings === 'function' && getSettings().lang && !localStorage.getItem('examgen_lang')) lang = getSettings().lang;
+  applyLanguage();
+  if(tryLoadSharedFromHash()){
+    applyLanguage();
+    showEditor(); render();
+    return;
+  }
+  try{ await Store.migrateLegacy(); }catch(e){ console.warn(e); }
+  await loadAllExams();
+  if(typeof initLibrary === 'function') await initLibrary();
   renderListView();
+  updateHero();
+  window.__egReady = true;
 }
