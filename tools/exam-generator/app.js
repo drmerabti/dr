@@ -230,9 +230,13 @@ function escapeHtml(s){ const d=document.createElement('div'); d.textContent=s||
 const VIEWS = ['listView','editorView','libraryView','settingsView','templatesView'];
 function showView(id){
   VIEWS.forEach(v => { const el = $(v); if(el) el.classList.toggle('hidden', v !== id); });
+  const inEditor = id === 'editorView';
+  document.body.classList.toggle('in-editor', inEditor);
+  $('pageArea').classList.toggle('hidden', inEditor);
   deselectObject && deselectObject();
   updateHero();
-  window.scrollTo(0, 0);
+  $('pageArea').scrollTop = 0;
+  if(inEditor && typeof onEditorShown === 'function') onEditorShown();
 }
 function updateHero(){
   const heroTitle = $('heroTitle'), heroSub = $('heroSub');
@@ -275,7 +279,12 @@ $('newExamCard').addEventListener('click', () => {
   m.body.querySelector('[data-st="blank"]').onclick = () => { m.close(); startNewExam(); };
   m.body.querySelector('[data-st="tpl"]').onclick = () => { m.close(); tplTab = 'exams'; goTemplates(); };
 });
-$('backToListBtn').addEventListener('click', () => { persistExam(); showList(); });
+$('btnMine').addEventListener('click', () => {
+  if(!$('editorView').classList.contains('hidden') && !isReadonly) persistExam();
+  if(isReadonly){ location.href = location.pathname; return; }
+  showList();
+  setTimeout(() => { const s = document.querySelector('.exam-list-section'); if(s) s.scrollIntoView({ behavior:'smooth', block:'start' }); }, 50);
+});
 
 /* ================= Editor logic ================= */
 function addQuestion(type){
@@ -303,43 +312,17 @@ function moveQuestion(id, dir){
   [exam.questions[i], exam.questions[j]] = [exam.questions[j], exam.questions[i]];
   render(); scheduleSave();
 }
-function selectQuestion(id){ selectedId = id; render(); }
+function selectQuestion(id){ selectedId = id; render(); if(typeof openQuestionEditor === 'function') openQuestionEditor(); }
 function selectQuestionLight(id){
+  if(typeof openQuestionEditor === 'function') openQuestionEditor();
   if(selectedId === id) return;
   selectedId = id;
-  document.querySelectorAll('.question').forEach(el=> el.classList.toggle('selected', el.dataset.id===id));
+  document.querySelectorAll('#questionsWrap .question').forEach(el=> el.classList.toggle('selected', el.dataset.id===id));
   renderProps();
 }
 function findQ(id){ return exam.questions.find(q=>q.id===id); }
 
-function renderProps(){
-  const panel = $('propsPanel');
-  const q = findQ(selectedId);
-  if(!q || isReadonly){ panel.innerHTML = `<div class="props-empty">${t('propsEmpty')}</div>`; return; }
-  panel.innerHTML = `
-    <div class="props-card">
-      <h4>${typeMeta[q.type].icon} ${t('propsPoints')}</h4>
-      <div class="prop-row"><label>${t('propsPoints')}</label><input type="number" min="0" step="0.25" value="${q.points}" id="propPoints"></div>
-      <div class="prop-row"><label>${L('عنوان خاص (اختياري)','Custom title (optional)','Titre personnalisé')}</label><input id="propTitle" value="${escAttr(q.title || '')}" placeholder="${escAttr(questionLabel(numberIndex(q)))}"></div>
-    </div>
-    <div class="props-card props-insert">
-      <h4>➕ ${L('أضف داخل هذا التمرين','Add inside this exercise','Ajouter dans cet exercice')}</h4>
-      <button class="pi-btn" data-kind="eq"><span style="background:#2563EB">∑</span>${L('معادلة','Equation','Équation')}</button>
-      <button class="pi-btn" data-kind="plot"><span style="background:#059669">📈</span>${L('منحنى','Curve','Courbe')}</button>
-      <button class="pi-btn" data-kind="draw"><span style="background:#D97706">📐</span>${L('رسم','Drawing','Dessin')}</button>
-      <button class="pi-btn" data-kind="table"><span style="background:#7C3AED">▦</span>${L('جدول','Table','Tableau')}</button>
-    </div>`;
-  $('propPoints').addEventListener('input', e=>{ q.points = parseFloat(e.target.value)||0; renderTotals(); scheduleSave();
-    const pe = document.querySelector(`.question[data-id="${q.id}"] .q-points`); if(pe) pe.textContent = `${t('propsPoints')}: ${q.points}`; });
-  $('propTitle').addEventListener('change', e=>{ q.title = e.target.value.trim(); render(); scheduleSave(); });
-  panel.querySelectorAll('.pi-btn').forEach(b => b.addEventListener('click', () => {
-    if(!activeEditable || activeEditable.type !== 'rich' || !activeEditable.el.closest(`.question[data-id="${q.id}"]`)){
-      const el = document.querySelector(`.question[data-id="${q.id}"] .rich[data-rich="text"]`);
-      if(el){ const r = document.createRange(); r.selectNodeContents(el); r.collapse(false); activeEditable = { type:'rich', el, range:r }; }
-    }
-    openObjTool(b.dataset.kind);
-  }));
-}
+/* renderProps (question editor inside the side panel) lives in js/panel.js */
 
 function mcqHTML(q){
   const ro = isReadonly;
@@ -459,11 +442,14 @@ function render(){
   if(typeof renderHeader === 'function') withExamLang(exam, renderHeader);
   $('maxPoints').value = exam.maxPoints; $('maxPoints').disabled = isReadonly;
   updateHero();
+  if(typeof refreshPanel === 'function') refreshPanel();
 }
 function renderTotals(){
   $('qCount').textContent = exam.questions.length;
   const total = exam.questions.reduce((s,q)=>s+(q.points||0),0);
   const el = $('totalPoints'); el.textContent = total; el.classList.toggle('over', total > exam.maxPoints);
+  const mv = $('maxPointsView'); if(mv) mv.textContent = exam.maxPoints;
+  if(typeof refreshPointsList === 'function') refreshPointsList();
 }
 
 function attachQuestionEvents(){
@@ -475,7 +461,8 @@ function attachQuestionEvents(){
       if(placingImage){
         e.stopPropagation();
         const rect = el.getBoundingClientRect();
-        const x = e.clientX - rect.left, y = e.clientY - rect.top;
+        const z = (typeof pageZoom === 'function') ? pageZoom() : 1;
+        const x = (e.clientX - rect.left)/z, y = (e.clientY - rect.top)/z;
         triggerImagePlacement(q, x, y);
         return;
       }
@@ -553,12 +540,12 @@ function attachQuestionEvents(){
       item.addEventListener('mousedown', (e)=>{
         if(e.target.dataset.act==='resizeimg' || e.target.dataset.act==='delimg') return;
         e.preventDefault(); e.stopPropagation();
-        const parentRect = el.getBoundingClientRect();
         const startX = e.clientX, startY = e.clientY, ox = im.x, oy = im.y;
         function onMove(ev){
-          let nx = ox + (ev.clientX-startX), ny = oy + (ev.clientY-startY);
-          nx = Math.max(0, Math.min(nx, parentRect.width-im.w));
-          ny = Math.max(0, Math.min(ny, parentRect.height-im.h));
+          const z = (typeof pageZoom === 'function') ? pageZoom() : 1;
+          let nx = ox + (ev.clientX-startX)/z, ny = oy + (ev.clientY-startY)/z;
+          nx = Math.max(0, Math.min(nx, el.offsetWidth-im.w));
+          ny = Math.max(0, Math.min(ny, el.offsetHeight-im.h));
           im.x=nx; im.y=ny; item.style.left=nx+'px'; item.style.top=ny+'px';
         }
         function onUp(){ document.removeEventListener('mousemove',onMove); document.removeEventListener('mouseup',onUp); scheduleSave(); }
@@ -567,12 +554,12 @@ function attachQuestionEvents(){
       const rh = item.querySelector('[data-act="resizeimg"]');
       if(rh) rh.addEventListener('mousedown', (e)=>{
         e.preventDefault(); e.stopPropagation();
-        const parentRect = el.getBoundingClientRect();
         const startX=e.clientX, startY=e.clientY, ow=im.w, oh=im.h;
         function onMove(ev){
-          let nw = Math.max(30, ow + (ev.clientX-startX));
-          let nh = Math.max(30, oh + (ev.clientY-startY));
-          nw = Math.min(nw, parentRect.width-im.x); nh = Math.min(nh, parentRect.height-im.y);
+          const z = (typeof pageZoom === 'function') ? pageZoom() : 1;
+          let nw = Math.max(30, ow + (ev.clientX-startX)/z);
+          let nh = Math.max(30, oh + (ev.clientY-startY)/z);
+          nw = Math.min(nw, el.offsetWidth-im.x); nh = Math.min(nh, el.offsetHeight-im.y);
           im.w=nw; im.h=nh; item.style.width=nw+'px'; item.style.height=nh+'px';
         }
         function onUp(){ document.removeEventListener('mousemove',onMove); document.removeEventListener('mouseup',onUp); scheduleSave(); }
@@ -728,16 +715,22 @@ function openObjTool(kind){
 }
 
 /* ================= Autosave (local) ================= */
+/* "Saved" appears as a small toast, at most once every few seconds */
+let _lastSavedToast = 0;
+function savedToast(){
+  const now = Date.now();
+  if(now - _lastSavedToast < 4000) return;
+  _lastSavedToast = now;
+  toast('✓ ' + t('savedLocal'), 'mini');
+}
 let saveTimer=null;
 function scheduleSave(){
   if(isReadonly) return;
-  const dot=$('saveDot'), text=$('saveText');
-  dot.classList.add('saving'); text.textContent=t('savingLocal');
   clearTimeout(saveTimer);
   saveTimer = setTimeout(()=>{
-    persistExam().then(()=>{ dot.classList.remove('saving'); text.textContent=t('savedLocal'); })
-      .catch(()=>{ text.textContent=t('saveFailed'); });
-  }, 500);
+    persistExam().then(()=>{ savedToast(); if(typeof refreshPanelSummaries === 'function') refreshPanelSummaries(); })
+      .catch(()=>{ toast(t('saveFailed'), 'warn'); });
+  }, 600);
 }
 
 /* ================= Print / PDF / Word ================= */
@@ -796,8 +789,9 @@ function tryLoadSharedFromHash(){
 function applyLanguage(){
   document.documentElement.lang = lang;
   document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-  const nextLang = LANG_ORDER[(LANG_ORDER.indexOf(lang) + 1) % LANG_ORDER.length];
-  $('langToggle').textContent = nextLang.toUpperCase();
+  $('langToggle').textContent = lang.toUpperCase();
+  document.querySelectorAll('#langMenu [data-setlang]').forEach(b => b.classList.toggle('on', b.dataset.setlang === lang));
+  document.querySelectorAll('[data-l-tip]').forEach(el=>{ const p = el.getAttribute('data-l-tip').split('|'); el.setAttribute('data-tiptext', L(p[0], p[1], p[2])); });
   document.querySelectorAll('[data-i18n]').forEach(el=>{ el.textContent = t(el.getAttribute('data-i18n')); });
   document.querySelectorAll('[data-i18n-inline]').forEach(el=>{ el.textContent = t(el.getAttribute('data-i18n-inline')); });
   document.querySelectorAll('[data-i18n-placeholder]').forEach(el=>{ el.placeholder = t(el.getAttribute('data-i18n-placeholder')); });
@@ -806,11 +800,15 @@ function applyLanguage(){
   updateCloudButtons();
   localStorage.setItem('examgen_lang', lang);
 }
-$('langToggle').addEventListener('click', ()=>{
-  lang = LANG_ORDER[(LANG_ORDER.indexOf(lang) + 1) % LANG_ORDER.length];
+$('langToggle').addEventListener('click', (e)=>{ e.stopPropagation(); $('langMenu').classList.toggle('hidden'); });
+document.addEventListener('click', (e)=>{ if(!e.target.closest('.lang-wrap')) $('langMenu').classList.add('hidden'); });
+document.querySelectorAll('#langMenu [data-setlang]').forEach(b => b.addEventListener('click', ()=>{
+  $('langMenu').classList.add('hidden');
+  if(b.dataset.setlang === lang) return;
+  lang = b.dataset.setlang;
   applyLanguage();
   refreshCurrentView();
-});
+}));
 function refreshCurrentView(){
   if(!$('editorView').classList.contains('hidden')) render();
   else if(!$('libraryView').classList.contains('hidden')) renderLibraryView && renderLibraryView();
@@ -822,26 +820,24 @@ function refreshCurrentView(){
 
 /* ================= Firebase auth + cloud save (activates once configured) ================= */
 function updateCloudButtons(){
-  const saveCloudBtn = $('saveCloudBtn'), signInBtn = $('signInBtn');
-  if(isReadonly){ saveCloudBtn.classList.add('hidden'); signInBtn.classList.add('hidden'); return; }
-  saveCloudBtn.classList.toggle('hidden', !currentUser);
-  signInBtn.classList.toggle('hidden', !!currentUser);
-  if(!cloudSaveBusy){ const span = saveCloudBtn.querySelector('span'); if(span) span.textContent = t('saveCloudBtn'); }
-  const signSpan = signInBtn.querySelector('span'); if(signSpan) signSpan.textContent = t('signInBtn');
+  const b = $('saveCloudBtn');
+  if(isReadonly){ b.classList.add('hidden'); return; }
+  b.classList.remove('hidden');
+  b.classList.toggle('signed-in', !!currentUser);
 }
-$('signInBtn').addEventListener('click', ()=>{
-  if(!window.fbAuth) return;
-  window.fbAuth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(()=>{});
-});
 $('saveCloudBtn').addEventListener('click', ()=>{
-  if(!currentUser || !window.fbDb) return;
-  const btnSpan = $('saveCloudBtn').querySelector('span');
-  cloudSaveBusy = true; btnSpan.textContent = t('savingCloudBtn');
+  if(!currentUser){
+    if(!window.fbAuth){ toast(L('خدمة الحساب غير متاحة حاليًا','Account service unavailable','Service de compte indisponible'), 'warn'); return; }
+    toast(t('signInBtn'));
+    window.fbAuth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(()=>{});
+    return;
+  }
+  if(!window.fbDb || cloudSaveBusy) return;
+  cloudSaveBusy = true; toast(t('savingCloudBtn'), 'mini');
   const payload = { owner: currentUser.uid, header: exam.header, tpl: exam.tpl, questions: exam.questions, objects: exam.objects, maxPoints: exam.maxPoints, updatedAt: new Date().toISOString() };
   window.fbDb.collection('exams').doc(exam.id).set(JSON.parse(JSON.stringify(payload)), { merge:true })
-    .then(()=>{ exam.savedToCloud = true; persistExam(); btnSpan.textContent = t('savedCloudBtn');
-      setTimeout(()=>{ cloudSaveBusy=false; btnSpan.textContent = t('saveCloudBtn'); }, 2000); })
-    .catch(()=>{ cloudSaveBusy=false; btnSpan.textContent = t('saveCloudBtn'); });
+    .then(()=>{ exam.savedToCloud = true; persistExam(); cloudSaveBusy=false; toast(t('savedCloudBtn'), 'ok'); })
+    .catch(()=>{ cloudSaveBusy=false; toast(t('saveFailed'), 'warn'); });
 });
 if(window.fbAuth){
   window.fbAuth.onAuthStateChanged(user=>{ currentUser = user; updateCloudButtons(); });

@@ -136,10 +136,10 @@ function insertNodeAtCaret(node){
   const ae = activeEditable;
   let el = ae && ae.type === 'rich' && document.body.contains(ae.el) ? ae.el : null;
   if(!el){
-    let qEl = selectedId && document.querySelector(`.question[data-id="${selectedId}"]`);
+    let qEl = selectedId && document.querySelector(`#questionsWrap .question[data-id="${selectedId}"]`);
     if(!qEl){
       addQuestion('normal');
-      qEl = document.querySelector('.question:last-child');
+      qEl = document.querySelector('#questionsWrap .question:last-child');
     }
     el = qEl.querySelector('.rich[data-rich="text"]');
     const r = document.createRange(); r.selectNodeContents(el); r.collapse(false);
