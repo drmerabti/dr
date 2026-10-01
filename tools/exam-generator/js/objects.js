@@ -182,7 +182,8 @@ function startObjectTool(kind, presetData){
   const saved = activeEditable ? { ...activeEditable } : null;
   ObjKinds[kind].edit(presetData ? { kind, data: presetData } : null, (obj) => {
     activeEditable = saved;
-    obj.kind = kind;
+    obj.kind = obj.kind || kind;
+    kind = obj.kind;
     if(!obj.display) obj.display = (kind === 'eq') ? (obj._wantBlock ? 'block' : 'inline') : 'block';
     if(!obj.w && DEFAULT_W[kind]) obj.w = DEFAULT_W[kind];
     if(obj.display === 'block' && !obj.align) obj.align = 'center';

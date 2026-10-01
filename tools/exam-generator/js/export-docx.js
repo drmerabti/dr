@@ -22,7 +22,7 @@ async function exportWord(ex){
     const FONT = { ascii: 'Calibri', hAnsi: 'Calibri', cs: 'Arial', eastAsia: 'Calibri' };
     const baseSize = { sm: 22, md: 24, lg: 28 }[(ex.tpl && ex.tpl.fontSize) || 'md'];
     const TR = (text, f) => new D.TextRun({ text, bold: !!(f && f.bold), italics: !!(f && f.italic), underline: (f && f.underline) ? {} : undefined,
-      superScript: !!(f && f.sup), subScript: !!(f && f.sub), rightToLeft: rtl, font: FONT, size: (f && f.size) || baseSize, sizeComplexScript: (f && f.size) || baseSize,
+      superScript: !!(f && f.sup), subScript: !!(f && f.sub), rightToLeft: rtl && /[\u0590-\u08FF]/.test(text), font: FONT, size: (f && f.size) || baseSize, sizeComplexScript: (f && f.size) || baseSize,
       color: f && f.color });
     const P = (children, o) => new D.Paragraph(Object.assign({ children, bidirectional: rtl, spacing: { after: 80, line: 312 } }, o || {}));
     const ALIGN = { center: D.AlignmentType.CENTER, left: D.AlignmentType.LEFT, right: D.AlignmentType.RIGHT };
@@ -64,7 +64,7 @@ async function exportWord(ex){
           if(ch.nodeType !== 1) continue;
           if(ch.classList.contains('eobj')){
             const obj = ex.objects[ch.dataset.oid]; if(!obj) continue;
-            if(obj.kind === 'table' && typeof tableObjToDocx === 'function'){ flush(); out.push(tableObjToDocx(obj, { D, TR, P, allBorders, rtl })); out.push(P([])); continue; }
+            if(obj.kind === 'table'){ flush(); out.push(await tableObjToDocxAsync(ch, { D, TR, P, allBorders, rtl })); out.push(P([])); continue; }
             const img = await objImage(ch, obj);
             if((obj.display || 'inline') === 'inline') runs.push(img);
             else { flush(); out.push(P([img], { alignment: ALIGN[obj.align || 'center'] || D.AlignmentType.CENTER })); }

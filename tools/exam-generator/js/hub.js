@@ -20,7 +20,7 @@ function openToolsHub(){
     if(!ObjKinds[k]){ toast(L('هذه الأداة قيد الإنجاز','Coming soon','Bientôt'), 'warn'); return; }
     m.close();
     ObjKinds[k].edit(null, obj => {
-      obj.kind = k;
+      obj.kind = obj.kind || k;
       if(typeof libraryAutoSave === 'function') libraryAutoSave(obj, true);
     }, { mode:'library' });
   }));
