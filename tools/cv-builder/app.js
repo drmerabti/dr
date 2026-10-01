@@ -132,6 +132,82 @@
     },
   };
 
+
+  /* ================= Extra UI strings (redesigned interface) ================= */
+  const I18N_X = {
+    ar: {
+      back_tools: 'العودة إلى الأدوات', fullscreen: 'ملء الشاشة', mine: 'سيري الذاتية', save: 'حفظ في حسابي',
+      print: 'طباعة', pdf: 'تحميل PDF', toggle_panel: 'إظهار / إخفاء حيّز الملء', fit: 'ملاءمة الشاشة',
+      gallery: 'معرض القوالب', search: 'ابحث عن قالب...', no_results: 'لا توجد قوالب مطابقة',
+      cats: { all: 'الكل', professional: 'احترافي', modern: 'عصري', minimal: 'بسيط', creative: 'إبداعي', academic: 'أكاديمي', ats: 'ATS' },
+      sec_style: 'التنسيق والقالب', sec_personal: 'المعلومات الشخصية والصورة',
+      f_template: 'القالب', f_color: 'اللون الرئيسي', f_font: 'الخط', font_auto: 'خط القالب', f_fontsize: 'حجم الخط',
+      f_reset: 'إرجاع إلى 100%', f_cvtitle: 'اسم السيرة (للحفظ)', all_templates: 'عرض كل القوالب',
+      photo: 'الصورة الشخصية', upload_photo: 'رفع صورة', change_photo: 'تغيير الصورة', photo_hint: 'صورة واضحة بخلفية هادئة',
+      next: 'التالي', done: 'تم', add_section: 'إضافة قسم', section_type: 'نوع القسم',
+      move_up: 'تحريك للأعلى', move_down: 'تحريك للأسفل', remove: 'حذف', add_btn: 'إضافة',
+      entries_n: 'عناصر', empty_sec: 'فارغ — اضغط للتعبئة', d_personal: 'الاسم واللقب ووسائل التواصل والصورة',
+      del_section_confirm: 'حذف هذا القسم بكل محتواه؟', present: 'حتى الآن', contact_info: 'وسائل التواصل',
+      login_title: 'سجّل دخولك لحفظ سيرك الذاتية', login_text: 'تُحفظ سيرتك تلقائيًا في هذا الجهاز. بتسجيل الدخول تُحفظ في حسابك وتصل إليها من أي جهاز.',
+      cancel: 'إلغاء', confirm_yes: 'تأكيد', sign_in: 'تسجيل الدخول',
+      mine_login_hint: 'المعروض هنا محفوظ في هذا الجهاز فقط. سجّل دخولك لرؤية السير المحفوظة في حسابك.',
+      cloud_badge: 'في حسابي', local_badge: 'على الجهاز فقط', open: 'فتح', current_badge: 'المفتوحة الآن',
+      t_saved_cloud: '✅ تم الحفظ في حسابك', t_cloud_err: 'تعذّر الحفظ في الحساب، حاول مرة أخرى',
+      t_print: 'جارِ تجهيز الطباعة...', t_pdf: 'جارِ إنشاء PDF...', t_cleared: 'تم تفريغ السيرة', t_no_fb: 'خدمة الحساب غير متاحة حاليًا',
+      pages_n: 'عدد الصفحات', loading: 'جارِ التحميل...', untitled_sec: 'قسم',
+    },
+    en: {
+      back_tools: 'Back to tools', fullscreen: 'Full screen', mine: 'My CVs', save: 'Save to my account',
+      print: 'Print', pdf: 'Download PDF', toggle_panel: 'Show / hide the form', fit: 'Fit to screen',
+      gallery: 'Template gallery', search: 'Search templates...', no_results: 'No matching templates',
+      cats: { all: 'All', professional: 'Professional', modern: 'Modern', minimal: 'Minimal', creative: 'Creative', academic: 'Academic', ats: 'ATS' },
+      sec_style: 'Layout & template', sec_personal: 'Personal info & photo',
+      f_template: 'Template', f_color: 'Main colour', f_font: 'Font', font_auto: 'Template font', f_fontsize: 'Text size',
+      f_reset: 'Reset to 100%', f_cvtitle: 'CV name (for saving)', all_templates: 'Show all templates',
+      photo: 'Profile photo', upload_photo: 'Upload photo', change_photo: 'Change photo', photo_hint: 'A clear photo with a calm background',
+      next: 'Next', done: 'Done', add_section: 'Add section', section_type: 'Section type',
+      move_up: 'Move up', move_down: 'Move down', remove: 'Delete', add_btn: 'Add',
+      entries_n: 'items', empty_sec: 'Empty — click to fill', d_personal: 'Name, title, contact details and photo',
+      del_section_confirm: 'Delete this section and all its content?', present: 'Present', contact_info: 'Contact details',
+      login_title: 'Sign in to save your CVs', login_text: 'Your CV is saved automatically on this device. Sign in to keep it in your account and open it anywhere.',
+      cancel: 'Cancel', confirm_yes: 'Confirm', sign_in: 'Sign in',
+      mine_login_hint: 'These CVs are stored on this device only. Sign in to see the CVs saved in your account.',
+      cloud_badge: 'In my account', local_badge: 'This device only', open: 'Open', current_badge: 'Open now',
+      t_saved_cloud: '✅ Saved to your account', t_cloud_err: 'Could not save to your account, please try again',
+      t_print: 'Preparing print...', t_pdf: 'Creating PDF...', t_cleared: 'CV cleared', t_no_fb: 'Account service is unavailable right now',
+      pages_n: 'Pages', loading: 'Loading...', untitled_sec: 'Section',
+    },
+    fr: {
+      back_tools: 'Retour aux outils', fullscreen: 'Plein écran', mine: 'Mes CV', save: 'Enregistrer dans mon compte',
+      print: 'Imprimer', pdf: 'Télécharger en PDF', toggle_panel: 'Afficher / masquer le formulaire', fit: "Ajuster à l'écran",
+      gallery: 'Galerie de modèles', search: 'Rechercher un modèle...', no_results: 'Aucun modèle correspondant',
+      cats: { all: 'Tous', professional: 'Professionnel', modern: 'Moderne', minimal: 'Épuré', creative: 'Créatif', academic: 'Académique', ats: 'ATS' },
+      sec_style: 'Mise en forme & modèle', sec_personal: 'Informations personnelles & photo',
+      f_template: 'Modèle', f_color: 'Couleur principale', f_font: 'Police', font_auto: 'Police du modèle', f_fontsize: 'Taille du texte',
+      f_reset: 'Revenir à 100 %', f_cvtitle: 'Nom du CV (pour l’enregistrement)', all_templates: 'Voir tous les modèles',
+      photo: 'Photo de profil', upload_photo: 'Ajouter une photo', change_photo: 'Changer la photo', photo_hint: 'Une photo nette sur fond neutre',
+      next: 'Suivant', done: 'Terminé', add_section: 'Ajouter une section', section_type: 'Type de section',
+      move_up: 'Monter', move_down: 'Descendre', remove: 'Supprimer', add_btn: 'Ajouter',
+      entries_n: 'éléments', empty_sec: 'Vide — cliquez pour remplir', d_personal: 'Nom, titre, coordonnées et photo',
+      del_section_confirm: 'Supprimer cette section et tout son contenu ?', present: "Aujourd'hui", contact_info: 'Coordonnées',
+      login_title: 'Connectez-vous pour enregistrer vos CV', login_text: 'Votre CV est enregistré automatiquement sur cet appareil. Connectez-vous pour le garder dans votre compte et l’ouvrir partout.',
+      cancel: 'Annuler', confirm_yes: 'Confirmer', sign_in: 'Se connecter',
+      mine_login_hint: 'Ces CV sont stockés sur cet appareil uniquement. Connectez-vous pour voir les CV de votre compte.',
+      cloud_badge: 'Dans mon compte', local_badge: 'Cet appareil uniquement', open: 'Ouvrir', current_badge: 'Ouvert',
+      t_saved_cloud: '✅ Enregistré dans votre compte', t_cloud_err: "Impossible d'enregistrer dans votre compte, réessayez",
+      t_print: "Préparation de l'impression...", t_pdf: 'Création du PDF...', t_cleared: 'CV vidé', t_no_fb: 'Le service de compte est indisponible',
+      pages_n: 'Pages', loading: 'Chargement...', untitled_sec: 'Section',
+    },
+  };
+  const TEMPLATE_NAMES_X = {
+    ar: { onyx: 'الأونيكس الداكن', geo: 'هندسي عصري', hairline: 'الخط الرفيع', executive: 'التنفيذي الفاخر', tech: 'الهندسي التقني', academic: 'الأكاديمي', creative: 'الإبداعي الملوّن', timeline: 'الخط الزمني', banner: 'الترويسة العريضة', ats: 'متوافق مع ATS' },
+    en: { onyx: 'Onyx Sidebar', geo: 'Geometric', hairline: 'Hairline', executive: 'Executive', tech: 'Engineer', academic: 'Academic', creative: 'Creative', timeline: 'Timeline', banner: 'Banner', ats: 'ATS Friendly' },
+    fr: { onyx: 'Onyx', geo: 'Géométrique', hairline: 'Trait fin', executive: 'Exécutif', tech: 'Ingénieur', academic: 'Académique', creative: 'Créatif', timeline: 'Chronologie', banner: 'Bandeau', ats: 'Compatible ATS' },
+  };
+  Object.keys(I18N_X).forEach((l) => {
+    Object.keys(I18N_X[l]).forEach((k) => { if (!(k in I18N[l])) I18N[l][k] = I18N_X[l][k]; });
+    Object.assign(I18N[l].templateNames, TEMPLATE_NAMES_X[l]);
+  });
   let lang = localStorage.getItem('cvbuilder:lang') || 'ar';
   const t = (key) => I18N[lang][key];
 
@@ -210,32 +286,29 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
     };
   }
 
+
   /* ================= DOM refs ================= */
   const $ = (id) => document.getElementById(id);
+  const qsa = (sel, root) => Array.from((root || document).querySelectorAll(sel));
   const els = {
-    htmlRoot: $('htmlRoot'), pageTitleTag: $('pageTitleTag'), topbarTitle: $('topbarTitle'),
-    langBtns: document.querySelectorAll('.lang-btn'),
+    pageTitleTag: $('pageTitleTag'), topbarTitle: $('topbarTitle'),
+    langToggle: $('langToggle'), langMenu: $('langMenu'),
     saveIndicator: $('saveIndicator'),
+    workspace: $('workspace'), panel: $('panel'), accordion: $('accordion'), stage: $('stage'),
+    pages: $('cvPages'), pagesHolder: $('pagesHolder'), pageCount: $('pageCount'), zoomVal: $('zoomVal'),
+    currentThumb: $('currentThumb'), currentTplName: $('currentTplName'),
+    addSectionBtn: $('addSectionBtn'), addSectionText: $('addSectionText'), addSecMenu: $('addSecMenu'),
+    saveCvBtn: $('saveCvBtn'), downloadPdfBtn: $('downloadPdfBtn'), downloadPdfText: $('downloadPdfText'),
+    gallery: $('gallery'), gSearch: $('gSearch'), gCats: $('gCats'), gGrid: $('gGrid'),
+    mine: $('mine'), cvGrid: $('cvGrid'), mineLogin: $('mineLogin'), dashTitle: $('dashTitle'),
     userChip: $('userChip'), userChipName: $('userChipName'), logoutBtn: $('logoutBtn'),
-    lockedScreen: $('lockedScreen'), dashboardScreen: $('dashboardScreen'), editorScreen: $('editorScreen'), loadingScreen: $('loadingScreen'),
-    lockedTitle: $('lockedTitle'), lockedSub: $('lockedSub'),
+    login: $('login'), lockedTitle: $('lockedTitle'), lockedSub: $('lockedSub'),
     tabLogin: $('tabLogin'), tabSignup: $('tabSignup'),
     authCardForm: $('authCardForm'), authCardError: $('authCardError'),
     acName: $('acName'), acEmail: $('acEmail'), acPassword: $('acPassword'), acSubmitBtn: $('acSubmitBtn'),
     forgotPwBtn: $('forgotPwBtn'), orDivider: $('orDivider'), acGoogleBtn: $('acGoogleBtn'), acGoogleText: $('acGoogleText'),
-    dashTitle: $('dashTitle'), newCvBtn: $('newCvBtn'), newCvText: $('newCvText'), cvGrid: $('cvGrid'), dashEmpty: $('dashEmpty'),
-    editorBackBtn: $('editorBackBtn'), cvTitleInput: $('cvTitleInput'), downloadPdfBtn: $('downloadPdfBtn'), downloadPdfText: $('downloadPdfText'),
-    saveCvBtn: $('saveCvBtn'), saveCvText: $('saveCvText'), clearCvBtn: $('clearCvBtn'), clearCvText: $('clearCvText'),
-    templateTitle: $('templateTitle'), templateSwatches: $('templateSwatches'), colorCard: $('colorCard'),
-    photoUploadBox: $('photoUploadBox'), photoPreview: $('photoPreview'), photoPlaceholder: $('photoPlaceholder'), photoInput: $('photoInput'), removePhotoBtn: $('removePhotoBtn'),
-    personalInfoTitle: $('personalInfoTitle'),
-    pFullName: $('pFullName'), pTitle: $('pTitle'), pPhone: $('pPhone'), pEmail: $('pEmail'),
-    pAddress: $('pAddress'), pLinkedin: $('pLinkedin'), pWebsite: $('pWebsite'), pPassport: $('pPassport'),
-    pShowPassport: $('pShowPassport'), showPassportLabel: $('showPassportLabel'),
-    colorTitle: $('colorTitle'), colorSwatches: $('colorSwatches'),
-    sectionsTitle: $('sectionsTitle'), sectionsList: $('sectionsList'), addSectionBtn: $('addSectionBtn'), addSectionText: $('addSectionText'),
-    cvSheet: $('cvSheet'), cvSidebar: $('cvSidebar'), cvPreviewPhoto: $('cvPreviewPhoto'), cvPhotoPlaceholder: $('cvPhotoPlaceholder'),
-    cvContact: $('cvContact'), cvSidebarSections: $('cvSidebarSections'), cvName: $('cvName'), cvRole: $('cvRole'), cvMainSections: $('cvMainSections'),
+    confirmOverlay: $('confirmOverlay'), confirmMessage: $('confirmMessage'),
+    printRoot: $('printRoot'), measure: $('measure'), toast: $('toast'),
   };
 
   /* ================= State ================= */
@@ -247,8 +320,9 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
 
   /* ================= Local drafts (unsaved-to-account CVs) ================= */
   const LOCAL_DRAFTS_KEY = 'cvbuilder:localDrafts';
+  const LAST_OPEN_KEY = 'cvbuilder:lastOpen';
   function loadLocalDrafts() { try { return JSON.parse(localStorage.getItem(LOCAL_DRAFTS_KEY)) || []; } catch (e) { return []; } }
-  function saveLocalDraftsList(list) { localStorage.setItem(LOCAL_DRAFTS_KEY, JSON.stringify(list)); }
+  function saveLocalDraftsList(list) { try { localStorage.setItem(LOCAL_DRAFTS_KEY, JSON.stringify(list)); } catch (e) { /* storage full */ } }
   function upsertLocalDraft(rec) {
     const list = loadLocalDrafts();
     const i = list.findIndex((d) => d.localId === rec.localId);
@@ -256,6 +330,7 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
     saveLocalDraftsList(list);
   }
   function deleteLocalDraft(localId) { saveLocalDraftsList(loadLocalDrafts().filter((d) => d.localId !== localId)); }
+  function rememberOpen() { try { localStorage.setItem(LAST_OPEN_KEY, activeCvId || ''); } catch (e) { /* ignore */ } }
 
   function newCvData(title) {
     return {
@@ -271,6 +346,1021 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
     };
   }
 
+  function uid() { return 's' + Math.random().toString(36).slice(2, 10); }
+  function clone(o) { return JSON.parse(JSON.stringify(o)); }
+  function escapeHtml(s) { return String(s || '').replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  function formatMonthYear(val) {
+    if (!val) return '';
+    const [y, m] = val.split('-');
+    if (!y || !m) return val;
+    const d = new Date(Number(y), Number(m) - 1, 1);
+    const locale = lang === 'ar' ? 'ar' : lang === 'fr' ? 'fr-FR' : 'en-US';
+    return d.toLocaleDateString(locale, { month: 'short', year: 'numeric' });
+  }
+  function formatDate(ts) {
+    if (!ts) return '—';
+    const d = new Date(ts);
+    return d.toLocaleDateString(lang === 'ar' ? 'ar' : lang === 'fr' ? 'fr-FR' : 'en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+  }
+  function cut(x, n) { x = String(x || '').replace(/\s+/g, ' ').trim(); n = n || 60; return x.length > n ? x.slice(0, n - 1) + '…' : x; }
+
+  /* ================= Templates ================= */
+  // Existing four (navy, classic, gold, rose) keep their original design; ten new ones follow.
+  const TPL = {
+    navy:      { cat: 'professional', legacy: true, color: SIDEBAR_COLORS[0] },
+    classic:   { cat: 'professional', legacy: true, color: SIDEBAR_COLORS[0] },
+    gold:      { cat: 'professional', legacy: true, fixed: true, color: '#C9A24B' },
+    rose:      { cat: 'creative', legacy: true, fixed: true, color: '#C27D74' },
+    onyx:      { cat: 'professional', color: '#E0A33A', ar: 'Cairo', lat: 'Poppins', side: true },
+    geo:       { cat: 'modern', color: '#0E7C86', ar: 'Tajawal', lat: 'Poppins', side: true },
+    hairline:  { cat: 'minimal', color: '#8C6A4F', ar: 'Almarai', lat: 'Lato', optPhoto: true },
+    executive: { cat: 'professional', color: '#B08D57', ar: 'Tajawal', lat: 'Lato', side: true },
+    tech:      { cat: 'modern', color: '#2563EB', ar: 'IBM Plex Sans Arabic', lat: 'Inter', side: true },
+    academic:  { cat: 'academic', color: '#7A1F2B', ar: 'Amiri', lat: 'Lora', optPhoto: true },
+    creative:  { cat: 'creative', color: '#F2545B', ar: 'Cairo', lat: 'Poppins', side: true },
+    timeline:  { cat: 'modern', color: '#4F46E5', ar: 'Tajawal', lat: 'Inter', side: true },
+    banner:    { cat: 'modern', color: '#1E5AA8', ar: 'Almarai', lat: 'Lato', side: true },
+    ats:       { cat: 'ats', color: '#1F2937', ar: 'Tajawal', lat: 'Inter', optPhoto: true },
+  };
+  const TPL_IDS = Object.keys(TPL);
+  const CATS = ['all', 'professional', 'modern', 'minimal', 'creative', 'academic', 'ats'];
+  const FONTS = [
+    { id: 'Tajawal', ar: true }, { id: 'Cairo', ar: true }, { id: 'Almarai', ar: true }, { id: 'IBM Plex Sans Arabic', ar: true },
+    { id: 'Amiri', ar: true }, { id: 'El Messiri', ar: true }, { id: 'Inter' }, { id: 'Poppins' }, { id: 'Lato' },
+    { id: 'Merriweather' }, { id: 'Playfair Display' }, { id: 'Lora' },
+  ];
+  const FS_MIN = 0.8, FS_MAX = 1.3, FS_STEP = 0.05;
+  const SIDEBAR_SECTION_TYPES = ['skills', 'languages', 'interests', 'certifications'];
+  const PALETTE_SWATCHES = ['#22415A', '#0D1B2A', '#374151', '#1B4332', '#4A235A', '#6B1E2F', '#111111', '#2563EB', '#0E7C86', '#4F46E5', '#B08D57', '#E0A33A', '#F2545B', '#7A1F2B'];
+  const SEC_COLORS = {
+    style: '#475569', personal: '#0F766E',
+    summary: '#0891B2', experience: '#D97706', education: '#7C3AED', skills: '#16A34A', certifications: '#DB2777',
+    achievements: '#EA580C', languages: '#2563EB', interests: '#E11D48', projects: '#0D9488', courses: '#9333EA',
+    publications: '#4F46E5', volunteer: '#65A30D', references: '#64748B', other: '#78716C',
+  };
+  const secColor = (key) => SEC_COLORS[key] || '#64748B';
+
+  /* ---- colours (literal hex everywhere so html2canvas / PDF render them) ---- */
+  function hexToRgb(hex) {
+    let h = String(hex || '#22415A').replace('#', '');
+    if (h.length === 3) h = h.split('').map((c) => c + c).join('');
+    const n = parseInt(h, 16) || 0;
+    return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+  }
+  function rgbToHex(r, g, b) { return '#' + [r, g, b].map((v) => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, '0')).join(''); }
+  function mix(hex, other, w) { const a = hexToRgb(hex), b = hexToRgb(other); return rgbToHex(a[0] + (b[0] - a[0]) * w, a[1] + (b[1] - a[1]) * w, a[2] + (b[2] - a[2]) * w); }
+  function lum(hex) { const [r, g, b] = hexToRgb(hex).map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }); return 0.2126 * r + 0.7152 * g + 0.0722 * b; }
+  function hueShift(hex, deg) {
+    let [r, g, b] = hexToRgb(hex).map((v) => v / 255);
+    const max = Math.max(r, g, b), min = Math.min(r, g, b); let h = 0, s = 0; const l = (max + min) / 2;
+    if (max !== min) {
+      const d = max - min; s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+      h = max === r ? (g - b) / d + (g < b ? 6 : 0) : max === g ? (b - r) / d + 2 : (r - g) / d + 4; h /= 6;
+    }
+    h = (h + deg / 360) % 1; if (h < 0) h += 1;
+    const s2 = Math.max(0.45, s), l2 = Math.min(0.55, Math.max(0.42, l));
+    const q = l2 < 0.5 ? l2 * (1 + s2) : l2 + s2 - l2 * s2, p = 2 * l2 - q;
+    const f = (t2) => { if (t2 < 0) t2 += 1; if (t2 > 1) t2 -= 1; if (t2 < 1 / 6) return p + (q - p) * 6 * t2; if (t2 < 1 / 2) return q; if (t2 < 2 / 3) return p + (q - p) * (2 / 3 - t2) * 6; return p; };
+    return rgbToHex(f(h + 1 / 3) * 255, f(h) * 255, f(h - 1 / 3) * 255);
+  }
+  function palette(ac) {
+    return { ac, d: mix(ac, '#000000', 0.35), s: mix(ac, '#ffffff', 0.88), l: mix(ac, '#ffffff', 0.55), on: lum(ac) > 0.45 ? '#1F2A37' : '#ffffff' };
+  }
+
+  /* ---- SVG icons (inline, literal colours) ---- */
+  const ICON_PATHS = {
+    phone: '<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/>',
+    email: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
+    address: '<path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>',
+    linkedin: '<rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 10v7M8 7v.01M12 17v-4a2 2 0 0 1 4 0v4M12 10v7"/>',
+    website: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',
+    passport: '<rect x="5" y="3" width="14" height="18" rx="2"/><circle cx="12" cy="10" r="3"/><path d="M9 16h6"/>',
+    summary: '<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+    experience: '<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18"/>',
+    education: '<path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2 9 2 12 0v-5"/>',
+    skills: '<path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4 6.8 19.1l1-5.8L3.5 9.2l5.9-.9z"/>',
+    certifications: '<circle cx="12" cy="9" r="6"/><path d="M8.5 14 7 22l5-3 5 3-1.5-8"/>',
+    achievements: '<path d="M8 4h8v5a4 4 0 0 1-8 0zM8 6H4a3 3 0 0 0 4 4M16 6h4a3 3 0 0 1-4 4M12 13v4M8 21h8M10 17h4"/>',
+    languages: '<path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/>',
+    interests: '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>',
+    projects: '<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
+    courses: '<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19a2 2 0 0 1 2-2h13"/>',
+    publications: '<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 12h7M9 16h7"/>',
+    volunteer: '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/><path d="M9 11h6M12 8v6"/>',
+    references: '<path d="M7 7h4v4c0 3-2 5-4 6M14 7h4v4c0 3-2 5-4 6"/>',
+    other: '<circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/>',
+  };
+  function ico(name, color, size) {
+    const s = size || 16;
+    return `<svg width="${s}" height="${s}" viewBox="0 0 24 24"><g fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICON_PATHS[name] || ICON_PATHS.other}</g></svg>`;
+  }
+
+  /* ---- render context ---- */
+  function tplOf(cv) { return TPL[cv.template] ? cv.template : 'navy'; }
+  function fontStack(cv, id, dir) {
+    const def = TPL[id];
+    const arDef = def.legacy ? 'Tajawal' : def.ar;
+    if (cv.fontFamily) return dir === 'rtl' ? `'${cv.fontFamily}', '${arDef}', 'Tajawal', sans-serif` : `'${cv.fontFamily}', 'Inter', 'Tajawal', sans-serif`;
+    if (def.legacy) return dir === 'rtl' ? "'Tajawal', sans-serif" : "'Inter', sans-serif";
+    return dir === 'rtl' ? `'${def.ar}', 'Tajawal', sans-serif` : `'${def.lat}', '${def.ar}', 'Tajawal', sans-serif`;
+  }
+  function contactItems(p) {
+    const out = [];
+    if (p.phone) out.push({ k: 'phone', v: p.phone, ltr: true });
+    if (p.email) out.push({ k: 'email', v: p.email, ltr: true });
+    if (p.address) out.push({ k: 'address', v: p.address, ltr: false });
+    if (p.linkedin) out.push({ k: 'linkedin', v: p.linkedin, ltr: true });
+    if (p.website) out.push({ k: 'website', v: p.website, ltr: true });
+    if (p.showPassport && p.passport) out.push({ k: 'passport', v: p.passport, ltr: true });
+    return out;
+  }
+  function buildCtx(cv, id) {
+    const def = TPL[id];
+    const dir = I18N[lang].dir;
+    const ac = def.fixed ? def.color : (cv.sidebarColor || def.color);
+    const pal = palette(ac);
+    const p = cv.personal || {};
+    return {
+      cv, id, def, dir, rtl: dir === 'rtl', p, pal,
+      fs: Math.min(FS_MAX, Math.max(FS_MIN, Number(cv.fontScale) || 1)),
+      font: fontStack(cv, id, dir),
+      head: cv.fontFamily ? fontStack(cv, id, dir) : null,
+      c1: ac, c2: hueShift(ac, 150), c3: hueShift(ac, 215),
+      contacts: contactItems(p),
+      name: escapeHtml(p.fullName || '—'),
+      role: escapeHtml(p.title || ''),
+      initial: escapeHtml((p.fullName || '').trim().slice(0, 1).toUpperCase()),
+    };
+  }
+  function photoHtml(ctx, cls) {
+    const ph = ctx.p.photo;
+    if (ph) return `<div class="ph ${cls || ''}" data-sec="personal" style="background-image:url('${ph}')"></div>`;
+    if (ctx.def.optPhoto) return '';
+    return `<div class="ph ${cls || ''}" data-sec="personal">${ctx.initial}</div>`;
+  }
+  function contactsHtml(ctx, iconColor, size) {
+    return ctx.contacts.map((c) => `<div class="ct">${iconColor ? `<span class="ct-i">${ico(c.k, iconColor, size || 14)}</span>` : ''}<bdi ${c.ltr ? 'dir="ltr"' : ''}>${escapeHtml(c.v)}</bdi></div>`).join('');
+  }
+  const nameHtml = (ctx) => `<div class="nm">${ctx.name}</div>`;
+  const roleHtml = (ctx) => (ctx.role ? `<div class="rl">${ctx.role}</div>` : '');
+  const flow = (f, extra) => `<div class="flow ${extra || ''}" data-flow="${f}"></div>`;
+
+  /* ---- decorations (SVG, literal colours, mirrored for RTL) ---- */
+  function svgWrap(w, h, inner, style) { return `<svg class="deco" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="${style}" xmlns="http://www.w3.org/2000/svg">${inner}</svg>`; }
+  function poly(ctx, W, pts, fill, op) {
+    const p = pts.map(([x, y]) => `${ctx.rtl ? W - x : x},${y}`).join(' ');
+    return `<polygon points="${p}" fill="${fill}"${op ? ` fill-opacity="${op}"` : ''}/>`;
+  }
+  function decoGeo(ctx, first) {
+    const W = 794, { pal } = ctx;
+    let s = '';
+    if (first) {
+      s += poly(ctx, W, [[560, 0], [794, 0], [794, 210]], pal.ac);
+      s += poly(ctx, W, [[650, 0], [794, 0], [794, 120]], pal.d);
+      s += poly(ctx, W, [[470, 0], [600, 0], [530, 90]], pal.l);
+      s += poly(ctx, W, [[720, 150], [794, 110], [794, 250]], pal.s);
+      s += poly(ctx, W, [[0, 0], [90, 0], [0, 70]], pal.s);
+    } else {
+      s += poly(ctx, W, [[700, 0], [794, 0], [794, 80]], pal.ac);
+      s += poly(ctx, W, [[640, 0], [720, 0], [690, 40]], pal.l);
+    }
+    s += poly(ctx, W, [[0, 1123], [0, 1033], [110, 1123]], pal.ac);
+    s += poly(ctx, W, [[0, 1123], [0, 1073], [190, 1123]], pal.l, 0.6);
+    return svgWrap(W, 1123, s, 'left:0;top:0;');
+  }
+  function decoExecutive(ctx) {
+    const c = ctx.pal.ac;
+    const corner = (x, y, sx, sy) => `<path d="M${x} ${y + sy * 46}V${y}H${x + sx * 46}" fill="none" stroke="${c}" stroke-width="1.5"/><path d="M${x + sx * 7} ${y + sy * 30}V${y + sy * 7}H${x + sx * 30}" fill="none" stroke="${c}" stroke-width="1"/>`;
+    const s = `<rect x="12" y="12" width="770" height="1099" fill="none" stroke="${c}" stroke-width="0.8" stroke-opacity="0.55"/>` +
+      corner(22, 22, 1, 1) + corner(772, 22, -1, 1) + corner(22, 1101, 1, -1) + corner(772, 1101, -1, -1);
+    return svgWrap(794, 1123, s, 'left:0;top:0;');
+  }
+  function decoTech(ctx) {
+    const c = ctx.pal.ac, g = '#94A3B8';
+    const mark = (x, y) => `<path d="M${x - 9} ${y}H${x + 9}M${x} ${y - 9}V${y + 9}" stroke="${g}" stroke-width="1"/><circle cx="${x}" cy="${y}" r="3.5" fill="none" stroke="${c}" stroke-width="1.2"/>`;
+    let ticks = '';
+    for (let i = 0; i <= 794; i += 20) ticks += `<path d="M${i} 0V${i % 100 === 0 ? 9 : 5}" stroke="${g}" stroke-width="0.8"/>`;
+    return svgWrap(794, 1123, ticks + mark(22, 22) + mark(772, 22) + mark(22, 1101) + mark(772, 1101), 'left:0;top:0;');
+  }
+  function decoCreative(ctx, first) {
+    const W = 794, x = (v) => (ctx.rtl ? W - v : v);
+    const { c1, c2, c3 } = ctx;
+    let s = `<circle cx="${x(40)}" cy="40" r="120" fill="${mix(c1, '#ffffff', 0.78)}"/>` +
+      `<circle cx="${x(250)}" cy="-30" r="70" fill="${mix(c2, '#ffffff', 0.8)}"/>` +
+      `<circle cx="${x(30)}" cy="1120" r="120" fill="${mix(c3, '#ffffff', 0.8)}"/>` +
+      `<circle cx="${x(200)}" cy="1150" r="62" fill="${mix(c1, '#ffffff', 0.82)}"/>` +
+      (first ? `<circle cx="${x(780)}" cy="70" r="36" fill="${mix(c2, '#ffffff', 0.7)}"/>` : '');
+    if (first) for (let i = 0; i < 5; i++) for (let j = 0; j < 4; j++) s += `<circle cx="${x(660 + i * 14)}" cy="${150 + j * 14}" r="2.4" fill="${mix(c3, '#ffffff', 0.35)}"/>`;
+    return svgWrap(W, 1123, s, 'left:0;top:0;z-index:0;');
+  }
+  function decoBanner(ctx) {
+    const { pal } = ctx;
+    const s = `<path d="M0 50 C 200 0, 360 70, 540 30 S 760 10, 794 22 V 64 H 0 Z" fill="${pal.l}" fill-opacity="0.55"/>` +
+      `<path d="M0 64 C 210 18, 380 78, 560 44 S 770 30, 794 40 V 64 H 0 Z" fill="#ffffff"/>`;
+    return svgWrap(794, 64, s, 'left:0;bottom:-1px;');
+  }
+  function decoOnyx(ctx) {
+    const W = 794, x = (v) => (ctx.rtl ? W - v : v);
+    let s = '';
+    for (let i = 0; i < 6; i++) for (let j = 0; j < 5; j++) s += `<circle cx="${x(700 + i * 14)}" cy="${30 + j * 14}" r="2.2" fill="#D9DEE6"/>`;
+    s += `<rect x="${ctx.rtl ? W - 278 : 0}" y="0" width="278" height="8" fill="${ctx.pal.ac}"/>`;
+    return svgWrap(W, 1123, s, 'left:0;top:0;');
+  }
+  function decoTimeline(ctx) {
+    const W = 794, x = (v) => (ctx.rtl ? W - v : v);
+    const s = `<circle cx="${x(794)}" cy="0" r="150" fill="${ctx.pal.s}"/><circle cx="${x(794)}" cy="0" r="92" fill="none" stroke="${ctx.pal.l}" stroke-width="2"/>`;
+    return svgWrap(W, 220, s, 'left:0;top:0;');
+  }
+
+  /* ---- page skeletons (one function per template; `first` = page 1) ---- */
+  const PAGES = {
+    legacy(ctx, first) {
+      const p = ctx.p;
+      const photo = p.photo
+        ? `<div class="cv-photo-wrap" data-sec="personal"><div class="cv-photo ph" style="background-image:url('${p.photo}')"></div></div>`
+        : `<div class="cv-photo-wrap" data-sec="personal"><div class="cv-photo-placeholder">${ctx.initial}</div></div>`;
+      const contact = `<div class="cv-contact" data-sec="personal">${ctx.contacts.map((l) => `<div><bdi ${l.ltr ? 'dir="ltr"' : ''}>${escapeHtml(l.v)}</bdi></div>`).join('')}</div>`;
+      return `<div class="cv-page legacy template-${ctx.id}">
+        <div class="cv-sidebar pg-col">${first ? photo + contact : ''}${flow('side', 'cv-sidebar-sections')}</div>
+        <div class="cv-main pg-col">${first ? `<div class="cv-header-block" data-sec="personal"><h1 class="cv-name">${ctx.name}</h1><p class="cv-role">${ctx.role}</p></div>` : ''}${flow('main', 'cv-main-sections')}</div>
+      </div>`;
+    },
+    onyx(ctx, first) {
+      return `<div class="cv-page m tpl-onyx">${decoOnyx(ctx)}
+        <div class="pg-col side">${first ? `${photoHtml(ctx)}<div class="contacts" data-sec="personal">${contactsHtml(ctx, '#ffffff', 14)}</div>` : ''}${flow('side')}</div>
+        <div class="pg-col main">${first ? `<div class="head" data-sec="personal">${nameHtml(ctx)}${roleHtml(ctx)}<div class="bar"></div></div>` : ''}${flow('main')}</div>
+      </div>`;
+    },
+    geo(ctx, first) {
+      return `<div class="cv-page m tpl-geo">${decoGeo(ctx, first)}
+        ${first ? `<div class="head" data-sec="personal">${photoHtml(ctx)}<div class="who">${nameHtml(ctx)}${roleHtml(ctx)}<div class="ctrow">${contactsHtml(ctx, ctx.pal.ac, 14)}</div></div></div>` : ''}
+        <div class="pg-body"><div class="pg-col main">${flow('main')}</div><div class="pg-col side">${flow('side')}</div></div>
+      </div>`;
+    },
+    hairline(ctx, first) {
+      return `<div class="cv-page m tpl-hairline">
+        ${first ? `<div class="head" data-sec="personal">${photoHtml(ctx)}${nameHtml(ctx)}${roleHtml(ctx)}<div class="ctrow">${contactsHtml(ctx, null)}</div></div>` : ''}
+        <div class="pg-body col"><div class="pg-col main">${flow('main')}</div></div>
+      </div>`;
+    },
+    executive(ctx, first) {
+      return `<div class="cv-page m tpl-executive">
+        ${first ? `<div class="head" data-sec="personal">${photoHtml(ctx)}<div class="who">${nameHtml(ctx)}${roleHtml(ctx)}</div></div>
+        ${ctx.contacts.length ? `<div class="ctstrip" data-sec="personal">${contactsHtml(ctx, ctx.pal.d, 14)}</div>` : ''}` : ''}
+        <div class="pg-body"><div class="pg-col main">${flow('main')}</div><div class="pg-col side">${flow('side')}</div></div>
+        ${decoExecutive(ctx)}
+      </div>`;
+    },
+    tech(ctx, first) {
+      return `<div class="cv-page m tpl-tech">${decoTech(ctx)}
+        ${first ? `<div class="head" data-sec="personal">${photoHtml(ctx)}<div class="who">${nameHtml(ctx)}${roleHtml(ctx)}<div class="ctgrid">${contactsHtml(ctx, ctx.pal.ac, 13)}</div></div></div>` : ''}
+        <div class="pg-body"><div class="pg-col main">${flow('main')}</div><div class="pg-col side">${flow('side')}</div></div>
+      </div>`;
+    },
+    academic(ctx, first) {
+      return `<div class="cv-page m tpl-academic${ctx.p.photo ? ' has-ph' : ''}">
+        ${first ? `<div class="head" data-sec="personal">${photoHtml(ctx)}<div class="who">${nameHtml(ctx)}${roleHtml(ctx)}<div class="ctrow">${contactsHtml(ctx, null)}</div></div></div>` : ''}
+        <div class="pg-body col"><div class="pg-col main">${flow('main')}</div></div>
+      </div>`;
+    },
+    creative(ctx, first) {
+      return `<div class="cv-page m tpl-creative">${decoCreative(ctx, first)}
+        <div class="pg-col side">${first ? `${photoHtml(ctx)}<div class="contacts" data-sec="personal">${contactsHtml(ctx, '#ffffff', 14)}</div>` : ''}${flow('side')}</div>
+        <div class="pg-col main">${first ? `<div class="head" data-sec="personal">${nameHtml(ctx)}${roleHtml(ctx)}</div>` : ''}${flow('main')}</div>
+      </div>`;
+    },
+    timeline(ctx, first) {
+      return `<div class="cv-page m tpl-timeline">${decoTimeline(ctx)}
+        ${first ? `<div class="head" data-sec="personal">${photoHtml(ctx)}<div class="who">${nameHtml(ctx)}${roleHtml(ctx)}<div class="ctrow">${contactsHtml(ctx, ctx.pal.ac, 14)}</div></div></div>` : ''}
+        <div class="pg-body"><div class="pg-col main">${flow('main')}</div><div class="pg-col side">${flow('side')}</div></div>
+      </div>`;
+    },
+    banner(ctx, first) {
+      return `<div class="cv-page m tpl-banner">
+        ${first ? `<div class="head" data-sec="personal"><div class="who">${nameHtml(ctx)}${roleHtml(ctx)}<div class="ctrow">${contactsHtml(ctx, ctx.pal.on, 14)}</div></div>${photoHtml(ctx)}${decoBanner(ctx)}</div>` : ''}
+        <div class="pg-body"><div class="pg-col main">${flow('main')}</div><div class="pg-col side">${flow('side')}</div></div>
+      </div>`;
+    },
+    ats(ctx, first) {
+      const line = ctx.contacts.map((c) => `<bdi ${c.ltr ? 'dir="ltr"' : ''}>${escapeHtml(c.v)}</bdi>`).join('<span class="sep">|</span>');
+      return `<div class="cv-page m tpl-ats">
+        ${first ? `<div class="head" data-sec="personal"><div class="who">${nameHtml(ctx)}${roleHtml(ctx)}${line ? `<div class="ctline">${line}</div>` : ''}</div>${photoHtml(ctx)}</div>` : ''}
+        <div class="pg-body col"><div class="pg-col main">${flow('main')}</div></div>
+      </div>`;
+    },
+  };
+
+  /* ---- content blocks: each section is split into pieces that can move to the next page ---- */
+  function splitLines(txt) { return String(txt || '').split('\n'); }
+  function datesText(e) {
+    return [formatMonthYear(e.start), e.current ? t('present') : formatMonthYear(e.end)].filter(Boolean).join(' – ');
+  }
+  function sectionTitle(sec) { return t('sectionTypes')[sec.type] || t('untitled_sec'); }
+
+  function legacyBlocks(ctx, sec) {
+    const heading = `<span class="sec-icon">${SECTION_ICONS[sec.type] || ''}</span>${escapeHtml(sectionTitle(sec))}`;
+    const ds = `data-sec="${sec.id}"`;
+    if (SIDEBAR_SECTION_TYPES.includes(sec.type)) {
+      let inner;
+      if (sec.type === 'skills') inner = (sec.entries || []).map((s) => `<span class="cv-side-tag">${escapeHtml(s)}</span>`).join('');
+      else if (sec.type === 'languages') inner = (sec.entries || []).map((e) => `<p>${escapeHtml(e.language || '')}${e.level ? ' — ' + escapeHtml(e.level) : ''}</p>`).join('');
+      else inner = `<p style="white-space:pre-line">${escapeHtml(sec.content || '')}</p>`;
+      return [{ flow: 'side', html: `<div class="cv-side-section blk" ${ds}><h4>${heading}</h4>${inner}</div>` }];
+    }
+    const pieces = [];
+    const st = STRUCTURED_TYPES[sec.type];
+    if (st === 'experience' || st === 'education') {
+      const isExp = st === 'experience';
+      (sec.entries || []).forEach((e) => {
+        const titleLine = isExp ? [e.title, e.company].filter(Boolean).join(' — ') : [e.degree, e.institution].filter(Boolean).join(' — ');
+        const metaLine = [e.location, [formatMonthYear(e.start), e.current ? (I18N[lang].currentlyHere) : formatMonthYear(e.end)].filter(Boolean).join(' - ')].filter(Boolean).join(' · ');
+        pieces.push(`<div class="entry"><p class="entry-title">${escapeHtml(titleLine)}</p>${metaLine ? `<p class="entry-meta">${escapeHtml(metaLine)}</p>` : ''}${e.description ? `<p>${escapeHtml(e.description)}</p>` : ''}</div>`);
+      });
+    } else if (sec.type === 'skills' || sec.type === 'languages') {
+      pieces.push(`<p>${(sec.entries || []).map((e) => escapeHtml(typeof e === 'string' ? e : [e.language, e.level].filter(Boolean).join(' — '))).join(' · ')}</p>`);
+    } else {
+      const metaLine = [sec.subtitle, sec.dateInfo].filter(Boolean).join(' · ');
+      const lines = sec.content ? splitLines(sec.content) : [];
+      if (metaLine) pieces.push(`<p class="entry-meta">${escapeHtml(metaLine)}</p>`);
+      lines.forEach((l) => pieces.push(`<p>${l.trim() ? escapeHtml(l) : '&#8203;'}</p>`));
+      if (metaLine && lines.length) { pieces[1] = pieces[0] + pieces[1]; pieces.shift(); }
+    }
+    if (!pieces.length) pieces.push('');
+    return pieces.map((inner, i) => ({
+      flow: 'main',
+      html: `<div class="cv-block blk${i < pieces.length - 1 ? ' nl' : ''}" ${ds}>${i === 0 ? `<h4>${heading}</h4>` : ''}${inner}</div>`,
+    }));
+  }
+
+  function headingHtml(ctx, sec, n) {
+    const title = `<span class="sh-t">${escapeHtml(sectionTitle(sec))}</span>`;
+    const id = ctx.id;
+    if (id === 'tech') return `<div class="sh"><span class="sh-n">${String(n).padStart(2, '0')}</span>${title}</div>`;
+    if (id === 'onyx') {
+      const inSide = ctx.def.side && SIDEBAR_SECTION_TYPES.includes(sec.type);
+      return inSide ? `<div class="sh">${title}</div>` : `<div class="sh"><span class="sh-ic">${ico(sec.type, '#ffffff', 17)}</span>${title}</div>`;
+    }
+    if (id === 'geo' || id === 'timeline') return `<div class="sh"><span class="sh-ic">${ico(sec.type, '#ffffff', 15)}</span>${title}</div>`;
+    if (id === 'creative') return `<div class="sh"><span class="sh-ic">${ico(sec.type, '#ffffff', 17)}</span>${title}</div>`;
+    return `<div class="sh">${title}</div>`;
+  }
+
+  function modernBlocks(ctx, sec, n) {
+    const fl = ctx.def.side && SIDEBAR_SECTION_TYPES.includes(sec.type) ? 'side' : 'main';
+    const pieces = [];
+    const st = STRUCTURED_TYPES[sec.type];
+    if (st === 'experience' || st === 'education') {
+      const isExp = st === 'experience';
+      (sec.entries || []).forEach((e) => {
+        const title = escapeHtml((isExp ? e.title : e.degree) || '');
+        const sub = [isExp ? e.company : e.institution, e.location].filter(Boolean).map(escapeHtml).join(' · ');
+        const dates = datesText(e);
+        const lines = e.description ? splitLines(e.description) : [];
+        const head = `<span class="en-dot"></span><div class="en-top"><div class="en-t">${title}</div>${dates ? `<div class="en-d"><bdi>${escapeHtml(dates)}</bdi></div>` : ''}</div>${sub ? `<div class="en-s">${sub}</div>` : ''}`;
+        const line = (l) => `<div class="en-p">${l.trim() ? escapeHtml(l) : '&#8203;'}</div>`;
+        if (lines.length <= 1) pieces.push(`<div class="en">${head}${lines.length ? line(lines[0]) : ''}</div>`);
+        else lines.forEach((l, i) => pieces.push(`<div class="en${i ? ' en-c' : ''}${i < lines.length - 1 ? ' ec' : ''}">${i ? '' : head}${line(l)}</div>`));
+      });
+    } else if (sec.type === 'skills') {
+      if ((sec.entries || []).length) pieces.push(`<div class="sk-list">${sec.entries.map((s) => `<span class="sk">${escapeHtml(s)}</span>`).join('')}</div>`);
+    } else if (sec.type === 'languages') {
+      (sec.entries || []).forEach((e) => pieces.push(`<div class="lg"><span class="lg-n">${escapeHtml(e.language || '')}</span>${e.level ? `<span class="lg-l">${escapeHtml(e.level)}</span>` : ''}</div>`));
+      if (pieces.length > 1) { const all = pieces.join(''); pieces.length = 0; pieces.push(all); }
+    } else {
+      const meta = [sec.subtitle, sec.dateInfo].filter(Boolean).map(escapeHtml).join(' · ');
+      const lines = sec.content ? splitLines(sec.content) : [];
+      lines.forEach((l) => pieces.push(`<p class="gp">${l.trim() ? escapeHtml(l) : '&#8203;'}</p>`));
+      if (meta) { if (pieces.length) pieces[0] = `<div class="gm">${meta}</div>` + pieces[0]; else pieces.push(`<div class="gm">${meta}</div>`); }
+    }
+    if (!pieces.length) pieces.push('');
+    const pal = [ctx.c1, ctx.c2, ctx.c3];
+    const sc = ctx.id === 'creative' ? ` style="--sc:${pal[(n - 1) % 3]}"` : '';
+    return pieces.map((inner, i) => ({
+      flow: fl,
+      html: `<div class="blk${i === 0 ? ' first' : ''}${i < pieces.length - 1 ? ' nl' : ''}" data-sec="${sec.id}" data-type="${sec.type}"${sc}>${i === 0 ? headingHtml(ctx, sec, n) : ''}${inner}</div>`,
+    }));
+  }
+
+  function buildBlocks(ctx) {
+    const out = [];
+    (ctx.cv.sections || []).forEach((sec, i) => {
+      (ctx.def.legacy ? legacyBlocks(ctx, sec) : modernBlocks(ctx, sec, i + 1)).forEach((b) => out.push(b));
+    });
+    return out;
+  }
+
+  function applyPageVars(pg, ctx) {
+    pg.setAttribute('dir', ctx.dir);
+    pg.setAttribute('lang', lang);
+    const s = pg.style;
+    s.setProperty('--fs', ctx.fs);
+    s.setProperty('--cvf', ctx.font);
+    if (ctx.head) s.setProperty('--cvh', ctx.head);
+    s.setProperty('--ac', ctx.pal.ac); s.setProperty('--ac-d', ctx.pal.d); s.setProperty('--ac-s', ctx.pal.s);
+    s.setProperty('--ac-l', ctx.pal.l); s.setProperty('--on-ac', ctx.pal.on);
+    s.setProperty('--c1', ctx.c1); s.setProperty('--c2', ctx.c2); s.setProperty('--c3', ctx.c3);
+    s.setProperty('--sidebar-color', ctx.pal.ac);
+  }
+
+  // Lays the CV out on as many A4 pages as needed. Returns the page elements.
+  function renderPages(cv, id, target, opts) {
+    opts = opts || {};
+    const ctx = buildCtx(cv, id);
+    const page = ctx.def.legacy ? PAGES.legacy : PAGES[id];
+    target.innerHTML = '';
+    const pages = [];
+    const addPage = () => {
+      const wrap = document.createElement('div');
+      wrap.innerHTML = page(ctx, pages.length === 0).trim();
+      const pg = wrap.firstElementChild;
+      if (pages.length) pg.classList.add('cont');
+      applyPageVars(pg, ctx);
+      target.appendChild(pg);
+      pages.push(pg);
+    };
+    addPage();
+    const cursor = { main: 0, side: 0 };
+    const tmp = document.createElement('div');
+    for (const b of buildBlocks(ctx)) {
+      const fl = pages[0].querySelector(`[data-flow="${b.flow}"]`) ? b.flow : 'main';
+      let pi = cursor[fl];
+      for (;;) {
+        if (pi >= pages.length) {
+          if (opts.maxPages && pages.length >= opts.maxPages) break;
+          addPage();
+        }
+        const slot = pages[pi].querySelector(`[data-flow="${fl}"]`);
+        tmp.innerHTML = b.html;
+        const node = tmp.firstElementChild;
+        const empty = !slot.firstElementChild;
+        if (empty) node.classList.add('top');
+        slot.appendChild(node);
+        const over = node.getBoundingClientRect().bottom - slot.getBoundingClientRect().bottom;
+        if (over <= 1 || empty) { cursor[fl] = pi; break; }
+        slot.removeChild(node);
+        pi++;
+      }
+    }
+    pages.forEach((pg) => qsa('.flow', pg).forEach((f) => f.parentElement.classList.toggle('is-empty', !f.firstElementChild)));
+    return pages;
+  }
+
+  /* ================= Live preview ================= */
+  let zoom = 'fit';
+  let previewPages = [];
+  let renderQueued = false;
+  function renderPreview() {
+    if (!activeCv) return;
+    previewPages = renderPages(activeCv, tplOf(activeCv), els.pages);
+    const n = previewPages.length;
+    els.pageCount.textContent = n > 1 ? `${t('pages_n')}: ${n}` : '';
+    applyZoom();
+    highlight();
+    scheduleThumbs();
+  }
+  function renderPreviewSoon() {
+    if (renderQueued) return;
+    renderQueued = true;
+    requestAnimationFrame(() => { renderQueued = false; renderPreview(); });
+  }
+  function stageFitScale() {
+    const w = (els.stage.clientWidth - 60) / 794;
+    const h = (els.stage.clientHeight - 100) / 1123;
+    return Math.max(0.2, Math.min(w, h, 1.5));
+  }
+  function applyZoom() {
+    const s = zoom === 'fit' ? stageFitScale() : zoom;
+    els.pages.style.transform = `scale(${s})`;
+    els.pagesHolder.style.width = (794 * s) + 'px';
+    els.pagesHolder.style.height = (els.pages.offsetHeight * s) + 'px';
+    els.zoomVal.textContent = Math.round(s * 100) + '%';
+  }
+  function setZoom(dir) {
+    let s = zoom === 'fit' ? stageFitScale() : zoom;
+    s = Math.round((s + dir * 0.1) * 10) / 10;
+    zoom = Math.max(0.2, Math.min(2, s));
+    applyZoom();
+  }
+  $('zoomIn').addEventListener('click', () => setZoom(1));
+  $('zoomOut').addEventListener('click', () => setZoom(-1));
+  $('zoomFit').addEventListener('click', () => { zoom = 'fit'; applyZoom(); });
+  window.addEventListener('resize', () => applyZoom());
+
+  function secColorOf(key) {
+    if (key === 'style' || key === 'personal') return secColor(key);
+    const sec = activeCv && activeCv.sections.find((s) => s.id === key);
+    return secColor(sec ? sec.type : '');
+  }
+  function highlight() {
+    qsa('[data-sec]', els.pages).forEach((n) => {
+      const on = !!openSec && n.dataset.sec === openSec;
+      n.classList.toggle('hl', on);
+      if (on) n.style.setProperty('--hl', secColorOf(openSec));
+    });
+  }
+  // clicking a part of the CV opens its section in the form
+  els.pages.addEventListener('click', (e) => {
+    const part = e.target.closest('[data-sec]');
+    if (!part) return;
+    const k = part.dataset.sec;
+    els.workspace.classList.remove('collapsed');
+    toggleSec(k, true);
+    setTimeout(() => { const a = els.accordion.querySelector(`.acc[data-sec="${k}"]`); if (a) a.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); applyZoom(); }, 320);
+  });
+
+  /* ================= Thumbnails (real filled CVs) ================= */
+  function thumbSource() {
+    const cv = activeCv;
+    const filled = cv && cv.personal && cv.personal.fullName && (cv.sections || []).filter((s) => (s.entries && s.entries.length) || s.content).length >= 3;
+    if (filled) return cv;
+    const s = sampleCvData(lang);
+    const extra = { ar: ['شهادة مدقق داخلي ISO 9001\nشهادة إدارة الطاقة ISO 50001', 'البحث العلمي، القراءة، الشطرنج'], fr: ['Auditeur interne ISO 9001\nManagement de l’énergie ISO 50001', 'Recherche scientifique, lecture, échecs'], en: ['ISO 9001 Internal Auditor\nISO 50001 Energy Management', 'Scientific research, reading, chess'] }[lang];
+    s.sections.push({ id: uid(), type: 'certifications', subtitle: '', dateInfo: '', content: extra[0] });
+    s.sections.push({ id: uid(), type: 'interests', subtitle: '', dateInfo: '', content: extra[1] });
+    if (cv) s.fontScale = cv.fontScale;
+    return s;
+  }
+  function cvForTemplate(src, id) {
+    const c = clone(src);
+    const st = (activeCv && activeCv.tplStyles && activeCv.tplStyles[id]) || {};
+    if (activeCv && id === tplOf(activeCv)) { c.sidebarColor = activeCv.sidebarColor; c.fontFamily = activeCv.fontFamily || ''; }
+    else { c.sidebarColor = st.color || TPL[id].color; c.fontFamily = st.font || ''; }
+    c.template = id;
+    return c;
+  }
+  function thumbInto(box, cv, id, width) {
+    const pg = renderPages(cv, id, els.measure, { maxPages: 1 })[0];
+    els.measure.innerHTML = '';
+    const holder = document.createElement('div');
+    holder.className = 'thumb-box';
+    holder.style.transform = `scale(${width / 794})`;
+    holder.appendChild(pg);
+    box.innerHTML = '';
+    box.appendChild(holder);
+  }
+  let thumbTimer = null;
+  function scheduleThumbs() {
+    clearTimeout(thumbTimer);
+    thumbTimer = setTimeout(() => {
+      if (!activeCv) return;
+      thumbInto(els.currentThumb, activeCv, tplOf(activeCv), 52);
+      els.currentTplName.textContent = t('templateNames')[tplOf(activeCv)];
+      if (openSec === 'style') renderTplStrip();
+    }, 380);
+  }
+  function renderTplStrip() {
+    const strip = $('tplStrip');
+    if (!strip || !activeCv) return;
+    const src = thumbSource();
+    const cur = tplOf(activeCv);
+    strip.innerHTML = TPL_IDS.map((id) => `<button type="button" class="tpl-chip${id === cur ? ' on' : ''}" data-tpl="${id}"><span class="t-thumb"></span><span>${escapeHtml(t('templateNames')[id])}</span></button>`).join('');
+    qsa('.tpl-chip', strip).forEach((b) => {
+      const box = b.querySelector('.t-thumb');
+      thumbInto(box, cvForTemplate(src, b.dataset.tpl), b.dataset.tpl, box.clientWidth || 78);
+    });
+  }
+
+  /* ================= Gallery ================= */
+  let gCat = 'all';
+  function openGallery() { els.gallery.classList.remove('hidden'); buildGallery(); setTimeout(() => els.gSearch.focus(), 50); }
+  function closeGallery() { els.gallery.classList.add('hidden'); }
+  function buildGallery() {
+    els.gCats.innerHTML = CATS.map((c) => `<button type="button" class="chip${c === gCat ? ' on' : ''}" data-cat="${c}">${escapeHtml(t('cats')[c])}</button>`).join('');
+    renderGalleryGrid();
+  }
+  function renderGalleryGrid() {
+    const q = els.gSearch.value.trim().toLowerCase();
+    const ids = TPL_IDS.filter((id) => (gCat === 'all' || TPL[id].cat === gCat) &&
+      (!q || [id, I18N.ar.templateNames[id], I18N.en.templateNames[id], I18N.fr.templateNames[id], t('cats')[TPL[id].cat]].join(' ').toLowerCase().includes(q)));
+    const cur = tplOf(activeCv);
+    if (!ids.length) { els.gGrid.innerHTML = `<div class="g-empty">${escapeHtml(t('no_results'))}</div>`; return; }
+    els.gGrid.innerHTML = ids.map((id) => `<button type="button" class="g-card${id === cur ? ' on' : ''}" data-tpl="${id}"><div class="g-thumb"></div><div class="g-meta"><b>${escapeHtml(t('templateNames')[id])}</b><span>${escapeHtml(t('cats')[TPL[id].cat])}</span></div></button>`).join('');
+    const src = thumbSource();
+    const cards = qsa('.g-card', els.gGrid);
+    let i = 0;
+    const step = () => { // render progressively so the dialog opens instantly
+      const end = Math.min(cards.length, i + 3);
+      for (; i < end; i++) { const box = cards[i].querySelector('.g-thumb'); thumbInto(box, cvForTemplate(src, cards[i].dataset.tpl), cards[i].dataset.tpl, box.clientWidth || 200); }
+      if (i < cards.length && !els.gallery.classList.contains('hidden')) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+  $('btnGallery').addEventListener('click', openGallery);
+  $('gClose').addEventListener('click', closeGallery);
+  els.gallery.addEventListener('click', (e) => {
+    if (e.target === els.gallery) { closeGallery(); return; }
+    const chip = e.target.closest('[data-cat]');
+    if (chip) { gCat = chip.dataset.cat; buildGallery(); return; }
+    const card = e.target.closest('.g-card');
+    if (card) { setTemplate(card.dataset.tpl); closeGallery(); }
+  });
+  els.gSearch.addEventListener('input', renderGalleryGrid);
+
+  function setTemplate(id) {
+    if (!activeCv || !TPL[id]) return;
+    const old = tplOf(activeCv);
+    activeCv.tplStyles = activeCv.tplStyles || {};
+    activeCv.tplStyles[old] = { color: activeCv.sidebarColor || TPL[old].color, font: activeCv.fontFamily || '' };
+    const st = activeCv.tplStyles[id] || {};
+    activeCv.template = id;
+    activeCv.sidebarColor = st.color || TPL[id].color;
+    activeCv.fontFamily = st.font || '';
+    rebuildKeepOpen();
+    renderPreview();
+    scheduleSave();
+  }
+
+  /* ================= Accordion (form panel) ================= */
+  let openSec = null;
+  const chev = '<svg class="acc-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>';
+  const IC = {
+    up: '<svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg>',
+    down: '<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12l7 7 7-7"/></svg>',
+    del: '<svg viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>',
+    x: '<svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>',
+    plus: '<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>',
+    next: '<svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>',
+    reset: '<svg viewBox="0 0 24 24"><path d="M4 4v6h6M4 10a8 8 0 1 1 2 6"/></svg>',
+    cam: '<svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>',
+    grid: '<svg viewBox="0 0 24 24"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></svg>',
+  };
+  const field = (label, input) => `<div class="field"><label>${escapeHtml(label)}</label>${input}</div>`;
+  const attr = (v) => escapeHtml(v == null ? '' : v);
+
+  function accShell(key, num, title, body, isLast) {
+    return `<section class="acc${openSec === key ? ' open' : ''}" data-sec="${key}" style="--sc:${secColorOf(key)}">
+      <button type="button" class="acc-head"><span class="acc-num">${num}</span><span class="acc-title"><b>${escapeHtml(title)}</b><small data-sum="${key}"></small></span>${chev}</button>
+      <div class="acc-body"><div class="acc-inner"><div class="acc-content">${body}
+        <button type="button" class="acc-next" data-next>${isLast ? `<span>${escapeHtml(t('done'))}</span>` : `<span>${escapeHtml(t('next'))}</span>${IC.next}`}</button>
+      </div></div></div></section>`;
+  }
+
+  function styleBody() {
+    const id = tplOf(activeCv);
+    const def = TPL[id];
+    const color = activeCv.sidebarColor || def.color;
+    const fsPct = Math.round((Number(activeCv.fontScale) || 1) * 100);
+    const colorField = def.fixed
+      ? `<div class="fixed-note">${escapeHtml(t('fixedPaletteNote'))}</div>`
+      : `<div class="swatches">${PALETTE_SWATCHES.map((c) => `<button type="button" class="sw${c.toLowerCase() === String(color).toLowerCase() ? ' on' : ''}" style="background:${c}" data-color="${c}"></button>`).join('')}
+         <label class="sw custom" title="custom"><input type="color" data-act-input="color" value="${attr(color)}"></label></div>`;
+    const fonts = `<select data-act-change="font"><option value="">${escapeHtml(t('font_auto'))}</option>${FONTS.map((f) => `<option value="${f.id}"${activeCv.fontFamily === f.id ? ' selected' : ''} style="font-family:'${f.id}'">${f.id}${f.ar ? ' — عربي' : ''}</option>`).join('')}</select>`;
+    return `
+      <div class="field"><label>${escapeHtml(t('f_template'))}</label><div class="tpl-strip" id="tplStrip"></div>
+        <button type="button" class="soft-btn block" data-act="gallery" style="margin-top:10px">${IC.grid}<span>${escapeHtml(t('all_templates'))}</span></button></div>
+      ${field(t('f_color'), colorField)}
+      ${field(t('f_font'), fonts)}
+      <div class="field"><label>${escapeHtml(t('f_fontsize'))}</label><div class="fs-ctl">
+        <button type="button" class="fs-btn" data-act="fs-" ${fsPct <= FS_MIN * 100 ? 'disabled' : ''}>A−</button>
+        <span class="fs-val" id="fsVal">${fsPct}%</span>
+        <button type="button" class="fs-btn" data-act="fs+" ${fsPct >= FS_MAX * 100 ? 'disabled' : ''}>A+</button>
+        <button type="button" class="fs-reset" data-act="fs0" title="${attr(t('f_reset'))}" aria-label="${attr(t('f_reset'))}">${IC.reset}</button>
+      </div></div>
+      ${field(t('f_cvtitle'), `<input type="text" data-bind="title" value="${attr(activeCv.title)}" placeholder="${attr(t('untitled'))}">`)}
+      <button type="button" class="soft-btn danger block" data-act="clear">${IC.del}<span>${escapeHtml(t('clearCv'))}</span></button>`;
+  }
+
+  function personalBody() {
+    const p = activeCv.personal;
+    const inp = (f, label, type, ltr) => field(label, `<input type="${type || 'text'}" data-bind="personal.${f}" value="${attr(p[f])}" ${ltr ? 'dir="ltr"' : ''} placeholder="${attr(label)}">`);
+    return `
+      <div class="field"><label>${escapeHtml(t('photo'))}</label><div class="photo-row">
+        <div class="photo-upload" data-act="photo">${p.photo ? `<img src="${attr(p.photo)}" alt="">` : `<span class="ph-ico">${IC.cam}<span>${escapeHtml(t('upload_photo'))}</span></span>`}</div>
+        <div class="photo-side"><button type="button" class="soft-btn" data-act="photo">${IC.cam}<span>${escapeHtml(p.photo ? t('change_photo') : t('upload_photo'))}</span></button>
+          ${p.photo ? `<button type="button" class="link-btn danger" data-act="photo-del">${escapeHtml(t('removePhoto'))}</button>` : `<span class="hint" style="font-size:.78rem;color:var(--ink-soft)">${escapeHtml(t('photo_hint'))}</span>`}</div>
+        <input type="file" id="photoInput" accept="image/*" hidden>
+      </div></div>
+      ${inp('fullName', t('fullName'))}
+      ${inp('title', t('professionalTitle'))}
+      <div class="field-row2">${inp('phone', t('phone'), 'text', true)}${inp('email', t('email'), 'email', true)}</div>
+      ${inp('address', t('address'))}
+      <div class="field-row2">${inp('linkedin', t('linkedin'), 'text', true)}${inp('website', t('website'), 'text', true)}</div>
+      ${inp('passport', t('passport'))}
+      <label class="toggle-row"><span>${escapeHtml(t('showPassport'))}</span><input type="checkbox" data-bind="personal.showPassport" ${p.showPassport ? 'checked' : ''}><span class="toggle-switch"></span></label>`;
+  }
+
+  function sectionTypeOptionsHtml(selected) {
+    return `<option value="" disabled ${!selected ? 'selected' : ''}>${t('chooseSection')}</option>` +
+      SECTION_TYPE_ORDER.map((typ) => `<option value="${typ}" ${selected === typ ? 'selected' : ''}>${t('sectionTypes')[typ]}</option>`).join('');
+  }
+
+  function itemTools(n, len, role) {
+    return `<button type="button" class="mini-btn" data-act="${role}-up" title="${attr(t('move_up'))}" ${n === 0 ? 'disabled' : ''}>${IC.up}</button>
+      <button type="button" class="mini-btn" data-act="${role}-down" title="${attr(t('move_down'))}" ${n === len - 1 ? 'disabled' : ''}>${IC.down}</button>
+      <button type="button" class="mini-btn danger" data-act="${role}-del" title="${attr(t('remove'))}">${IC.x}</button>`;
+  }
+
+  function sectionBody(sec, idx) {
+    const len = activeCv.sections.length;
+    const tools = `<div class="sec-tools"><select data-act-change="sec-type" aria-label="${attr(t('section_type'))}">${sectionTypeOptionsHtml(sec.type)}</select>
+      <button type="button" class="mini-btn" data-act="sec-up" title="${attr(t('move_up'))}" ${idx === 0 ? 'disabled' : ''}>${IC.up}</button>
+      <button type="button" class="mini-btn" data-act="sec-down" title="${attr(t('move_down'))}" ${idx === len - 1 ? 'disabled' : ''}>${IC.down}</button>
+      <button type="button" class="mini-btn danger" data-act="sec-del" title="${attr(t('remove'))}">${IC.del}</button></div>`;
+    const st = STRUCTURED_TYPES[sec.type];
+    let body = '';
+    if (st === 'experience' || st === 'education') {
+      const isExp = st === 'experience';
+      const entries = sec.entries || [];
+      body = `<div class="entries">${entries.map((e, ei) => {
+        const tf = isExp ? 'title' : 'degree', of = isExp ? 'company' : 'institution';
+        const inp = (f, label, type, extra) => field(label, `<input type="${type || 'text'}" data-ei="${ei}" data-f="${f}" value="${attr(e[f])}" placeholder="${attr(label)}" ${extra || ''}>`);
+        return `<div class="entry-card" data-ei="${ei}">
+          <div class="entry-head"><span class="en-num">${ei + 1}</span><b data-etitle="${ei}">${escapeHtml(e[tf] || e[of] || (isExp ? t('jobTitle') : t('degree')))}</b>${itemTools(ei, entries.length, 'entry')}</div>
+          <div class="entry-body">
+            ${inp(tf, isExp ? t('jobTitle') : t('degree'))}
+            <div class="field-row2">${inp(of, isExp ? t('company') : t('institution'))}${inp('location', t('location'))}</div>
+            <div class="field-row2">${inp('start', t('startDate'), 'month')}${inp('end', t('endDate'), 'month', e.current ? 'disabled' : '')}</div>
+            ${isExp ? `<label class="toggle-row"><span>${escapeHtml(t('currentlyHere'))}</span><input type="checkbox" data-ei="${ei}" data-f="current" ${e.current ? 'checked' : ''}><span class="toggle-switch"></span></label>` : ''}
+            ${field(t('description'), `<textarea data-ei="${ei}" data-f="description" placeholder="${attr(t('description'))}">${escapeHtml(e.description || '')}</textarea>`)}
+          </div></div>`;
+      }).join('')}</div>
+      <button type="button" class="add-btn wide" data-act="entry-add">${IC.plus}<span>${escapeHtml(String(isExp ? t('addExperience') : t('addEducation')).replace(/^\+\s*/, ''))}</span></button>`;
+    } else if (st === 'skills') {
+      const entries = sec.entries || [];
+      body = `<div class="entries">${entries.map((s, si) => `<div class="row-item" data-ei="${si}"><input class="row-input" type="text" data-ei="${si}" data-f="skill" value="${attr(s)}">${itemTools(si, entries.length, 'entry')}</div>`).join('')}</div>
+        <div class="add-row"><input class="row-input" type="text" data-role="skill-input" placeholder="${attr(t('skillPh'))}"><button type="button" class="soft-btn primary" data-act="skill-add" style="background:var(--sc);border-color:var(--sc)">${IC.plus}<span>${escapeHtml(t('add_btn'))}</span></button></div>`;
+    } else if (st === 'languages') {
+      const entries = sec.entries || [];
+      body = `<div class="entries">${entries.map((e, ei) => `<div class="row-item" data-ei="${ei}"><input class="row-input" type="text" data-ei="${ei}" data-f="language" value="${attr(e.language)}" placeholder="${attr(t('langNamePh'))}"><input class="row-input small" type="text" data-ei="${ei}" data-f="level" value="${attr(e.level)}" placeholder="${attr(t('langLevelPh'))}">${itemTools(ei, entries.length, 'entry')}</div>`).join('')}</div>
+        <button type="button" class="add-btn wide" data-act="entry-add">${IC.plus}<span>${escapeHtml(String(t('addLanguage')).replace(/^\+\s*/, ''))}</span></button>`;
+    } else {
+      body = `<div class="field-row2">${field(t('subtitlePh'), `<input type="text" data-f="subtitle" value="${attr(sec.subtitle)}" placeholder="${attr(t('subtitlePh'))}">`)}${field(t('datePh'), `<input type="text" data-f="dateInfo" value="${attr(sec.dateInfo)}" placeholder="${attr(t('datePh'))}">`)}</div>
+        ${field(sectionTitle(sec), `<textarea data-f="content" placeholder="${attr(t('contentPh'))}" style="min-height:140px">${escapeHtml(sec.content || '')}</textarea>`)}`;
+    }
+    return tools + body;
+  }
+
+  function buildAccordion() {
+    if (!activeCv) return;
+    const secs = activeCv.sections;
+    let html = accShell('style', 1, t('sec_style'), styleBody(), false);
+    html += accShell('personal', 2, t('sec_personal'), personalBody(), secs.length === 0);
+    secs.forEach((sec, i) => { html += accShell(sec.id, i + 3, sectionTitle(sec), sectionBody(sec, i), i === secs.length - 1); });
+    els.accordion.innerHTML = html;
+    bindPhotoInput();
+    updateSummaries();
+    if (openSec === 'style') setTimeout(renderTplStrip, 30);
+  }
+  function rebuildKeepOpen() {
+    const y = els.panel.scrollTop;
+    const focusSel = document.activeElement && els.accordion.contains(document.activeElement) ? document.activeElement : null;
+    buildAccordion();
+    els.panel.scrollTop = y;
+    if (focusSel && focusSel.dataset.role === 'skill-input') {
+      const acc = els.accordion.querySelector(`.acc[data-sec="${openSec}"] [data-role="skill-input"]`);
+      if (acc) acc.focus();
+    }
+  }
+
+  function toggleSec(id, force) {
+    openSec = (force === undefined ? openSec !== id : force) ? id : null;
+    qsa('.acc', els.accordion).forEach((a) => a.classList.toggle('open', a.dataset.sec === openSec));
+    if (openSec === 'style') renderTplStrip();
+    highlight();
+  }
+
+  function updateSummaries() {
+    if (!activeCv) return;
+    const set = (k, v) => { const el = els.accordion.querySelector(`[data-sum="${k}"]`); if (el) el.textContent = v; };
+    const fsPct = Math.round((Number(activeCv.fontScale) || 1) * 100);
+    set('style', [t('templateNames')[tplOf(activeCv)], activeCv.fontFamily || t('font_auto'), fsPct + '%'].join(' · '));
+    const p = activeCv.personal;
+    set('personal', cut([p.fullName, p.title, p.phone || p.email].filter(Boolean).join(' · ')) || t('d_personal'));
+    activeCv.sections.forEach((sec) => {
+      let s = '';
+      const st = STRUCTURED_TYPES[sec.type];
+      if (st === 'experience' || st === 'education') {
+        const n = (sec.entries || []).length;
+        const first = (sec.entries || []).map((e) => (st === 'experience' ? e.title || e.company : e.degree || e.institution)).filter(Boolean).slice(0, 2).join('، ');
+        s = n ? `${n} ${t('entries_n')}${first ? ' · ' + first : ''}` : '';
+      } else if (st === 'skills') s = (sec.entries || []).slice(0, 5).join(' · ');
+      else if (st === 'languages') s = (sec.entries || []).map((e) => e.language).filter(Boolean).join(' · ');
+      else s = [sec.subtitle, sec.content].filter(Boolean).join(' · ');
+      set(sec.id, cut(s) || t('empty_sec'));
+    });
+    const fv = $('fsVal'); if (fv) fv.textContent = fsPct + '%';
+  }
+
+  function findSec(el) {
+    const acc = el.closest('.acc');
+    if (!acc) return null;
+    const id = acc.dataset.sec;
+    return { id, sec: activeCv.sections.find((s) => s.id === id), idx: activeCv.sections.findIndex((s) => s.id === id) };
+  }
+  function changed(rebuild) {
+    if (rebuild) rebuildKeepOpen(); else updateSummaries();
+    renderPreviewSoon();
+    scheduleSave();
+  }
+  function blankSection(type) {
+    const base = { id: uid(), type: type || 'summary', subtitle: '', dateInfo: '', content: '' };
+    if (type === 'experience' || type === 'education') base.entries = [];
+    if (type === 'skills') base.entries = [];
+    if (type === 'languages') base.entries = [];
+    return base;
+  }
+  function setFontScale(v) {
+    activeCv.fontScale = Math.round(Math.min(FS_MAX, Math.max(FS_MIN, v)) * 100) / 100;
+    changed(true);
+  }
+
+  // typing in fields
+  els.accordion.addEventListener('input', (e) => {
+    const el = e.target;
+    if (!activeCv) return;
+    if (el.dataset.bind) {
+      const path = el.dataset.bind.split('.');
+      const val = el.type === 'checkbox' ? el.checked : el.value;
+      if (path.length === 1) activeCv[path[0]] = val; else activeCv[path[0]][path[1]] = val;
+      changed(false);
+      return;
+    }
+    if (el.dataset.actInput === 'color') { activeCv.sidebarColor = el.value; qsa('.sw.on', els.accordion).forEach((s) => s.classList.remove('on')); changed(false); return; }
+    const info = findSec(el);
+    if (!info || !info.sec || !el.dataset.f) return;
+    const { sec } = info;
+    const f = el.dataset.f;
+    if (el.dataset.ei !== undefined) {
+      const ei = Number(el.dataset.ei);
+      if (f === 'skill') sec.entries[ei] = el.value;
+      else {
+        sec.entries[ei][f] = el.type === 'checkbox' ? el.checked : el.value;
+        const tEl = els.accordion.querySelector(`.acc[data-sec="${sec.id}"] [data-etitle="${ei}"]`);
+        if (tEl && (f === 'title' || f === 'degree' || f === 'company' || f === 'institution')) {
+          const e2 = sec.entries[ei];
+          tEl.textContent = e2.title || e2.degree || e2.company || e2.institution || '';
+        }
+      }
+      changed(f === 'current');
+    } else {
+      sec[f] = el.value;
+      changed(false);
+    }
+  });
+  els.accordion.addEventListener('change', (e) => {
+    const el = e.target;
+    if (!activeCv) return;
+    if (el.dataset.bind && el.type === 'checkbox') return; // handled by input
+    if (el.dataset.actChange === 'font') { activeCv.fontFamily = el.value; changed(false); return; }
+    if (el.dataset.actChange === 'sec-type') {
+      const info = findSec(el);
+      if (!info || !info.sec) return;
+      const ns = blankSection(el.value);
+      ns.id = info.sec.id;
+      activeCv.sections[info.idx] = ns;
+      changed(true);
+    }
+  });
+  els.accordion.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && e.target.dataset.role === 'skill-input') { e.preventDefault(); addSkill(e.target); }
+  });
+  function addSkill(input) {
+    const info = findSec(input);
+    if (!info || !info.sec || !input.value.trim()) return;
+    info.sec.entries = info.sec.entries || [];
+    info.sec.entries.push(input.value.trim());
+    input.value = '';
+    changed(true);
+  }
+
+  els.accordion.addEventListener('click', async (e) => {
+    if (!activeCv) return;
+    const head = e.target.closest('.acc-head');
+    if (head) { toggleSec(head.closest('.acc').dataset.sec); return; }
+    const nx = e.target.closest('[data-next]');
+    if (nx) {
+      const next = nx.closest('.acc').nextElementSibling;
+      if (next && next.classList.contains('acc')) {
+        toggleSec(next.dataset.sec, true);
+        setTimeout(() => next.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
+      } else toggleSec(null);
+      return;
+    }
+    const sw = e.target.closest('.sw[data-color]');
+    if (sw) { activeCv.sidebarColor = sw.dataset.color; changed(true); return; }
+    const chip = e.target.closest('.tpl-chip');
+    if (chip) { setTemplate(chip.dataset.tpl); return; }
+    const btn = e.target.closest('[data-act]');
+    if (!btn) return;
+    const act = btn.dataset.act;
+    const fs = Number(activeCv.fontScale) || 1;
+    if (act === 'gallery') return openGallery();
+    if (act === 'fs-') return setFontScale(fs - FS_STEP);
+    if (act === 'fs+') return setFontScale(fs + FS_STEP);
+    if (act === 'fs0') return setFontScale(1);
+    if (act === 'clear') return clearCvFields();
+    if (act === 'photo') { const pi = $('photoInput'); if (pi) pi.click(); return; }
+    if (act === 'photo-del') {
+      activeCv.personal.photo = null;
+      return changed(true);
+    }
+    const info = findSec(btn);
+    if (!info || !info.sec) return;
+    const { sec, idx } = info;
+    const arr = activeCv.sections;
+    if (act === 'sec-up' || act === 'sec-down') {
+      const j = idx + (act === 'sec-up' ? -1 : 1);
+      if (j < 0 || j >= arr.length) return;
+      [arr[idx], arr[j]] = [arr[j], arr[idx]];
+      return changed(true);
+    }
+    if (act === 'sec-del') {
+      if (!(await askConfirm(t('del_section_confirm')))) return;
+      arr.splice(idx, 1);
+      if (openSec === sec.id) openSec = null;
+      return changed(true);
+    }
+    if (act === 'entry-add') {
+      sec.entries = sec.entries || [];
+      sec.entries.push({});
+      return changed(true);
+    }
+    if (act === 'skill-add') { const inp = btn.parentElement.querySelector('[data-role="skill-input"]'); if (inp) addSkill(inp); return; }
+    const holder = btn.closest('[data-ei]');
+    if (!holder) return;
+    const ei = Number(holder.dataset.ei);
+    if (act === 'entry-del') { sec.entries.splice(ei, 1); return changed(true); }
+    if (act === 'entry-up' || act === 'entry-down') {
+      const j = ei + (act === 'entry-up' ? -1 : 1);
+      if (j < 0 || j >= sec.entries.length) return;
+      [sec.entries[ei], sec.entries[j]] = [sec.entries[j], sec.entries[ei]];
+      return changed(true);
+    }
+  });
+
+  /* ---- Photo upload (compressed to base64, stored directly in Firestore) ---- */
+  function bindPhotoInput() {
+    const input = $('photoInput');
+    if (!input) return;
+    input.addEventListener('change', () => {
+      const file = input.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const maxSize = 300;
+          let w = img.width, h = img.height;
+          if (w > h && w > maxSize) { h = Math.round(h * maxSize / w); w = maxSize; }
+          else if (h > maxSize) { w = Math.round(w * maxSize / h); h = maxSize; }
+          const canvas = document.createElement('canvas');
+          canvas.width = w; canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+          activeCv.personal.photo = canvas.toDataURL('image/jpeg', 0.8);
+          changed(true);
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  /* ---- Add section menu ---- */
+  els.addSectionBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    els.addSecMenu.innerHTML = SECTION_TYPE_ORDER.map((typ) => `<button type="button" data-type="${typ}"><i style="background:${secColor(typ)}"></i>${escapeHtml(t('sectionTypes')[typ])}</button>`).join('');
+    els.addSecMenu.classList.toggle('hidden');
+  });
+  els.addSecMenu.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-type]');
+    if (!b || !activeCv) return;
+    const sec = blankSection(b.dataset.type);
+    activeCv.sections.push(sec);
+    els.addSecMenu.classList.add('hidden');
+    openSec = sec.id;
+    changed(true);
+    setTimeout(() => { const a = els.accordion.querySelector(`.acc[data-sec="${sec.id}"]`); if (a) a.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 300);
+  });
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('#addSecWrap')) els.addSecMenu.classList.add('hidden');
+    if (!e.target.closest('.lang-wrap')) els.langMenu.classList.add('hidden');
+  });
+
+  /* ================= Dialog helpers ================= */
+  function toast(msg) {
+    els.toast.textContent = msg;
+    els.toast.classList.add('show');
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => els.toast.classList.remove('show'), 2400);
+  }
+  let confirmResolve = null;
+  function askConfirm(msg) {
+    els.confirmMessage.textContent = msg;
+    els.confirmOverlay.classList.remove('hidden');
+    return new Promise((res) => { confirmResolve = res; });
+  }
+  function closeConfirm(v) { els.confirmOverlay.classList.add('hidden'); if (confirmResolve) { confirmResolve(v); confirmResolve = null; } }
+  $('confirmOk').addEventListener('click', () => closeConfirm(true));
+  $('confirmCancel').addEventListener('click', () => closeConfirm(false));
+  els.confirmOverlay.addEventListener('click', (e) => { if (e.target === els.confirmOverlay) closeConfirm(false); });
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    if (!els.confirmOverlay.classList.contains('hidden')) closeConfirm(false);
+    else if (!els.gallery.classList.contains('hidden')) closeGallery();
+    else if (!els.mine.classList.contains('hidden')) closeMine();
+    else if (!els.login.classList.contains('hidden')) closeLogin();
+  });
+
   /* ================= Language ================= */
   function applyLanguage() {
     const dict = I18N[lang];
@@ -279,8 +1369,15 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
     els.pageTitleTag.textContent = dict.pageTitleTag;
     document.title = dict.pageTitleTag;
     els.topbarTitle.textContent = dict.topbarTitle;
-    els.lockedTitle.textContent = dict.lockedTitle;
-    els.lockedSub.textContent = dict.lockedSub;
+    els.langToggle.textContent = lang.toUpperCase();
+    qsa('.lang-btn').forEach((b) => b.classList.toggle('on', b.dataset.lang === lang));
+    qsa('[data-tip]').forEach((n) => { n.setAttribute('data-tiptext', t(n.dataset.tip)); n.setAttribute('aria-label', t(n.dataset.tip)); });
+    qsa('[data-i18n]').forEach((n) => { n.textContent = t(n.dataset.i18n); });
+    qsa('[data-i18n-ph]').forEach((n) => { n.placeholder = t(n.dataset.i18nPh); });
+    els.addSectionText.textContent = t('add_section');
+    els.dashTitle.textContent = dict.dashTitle;
+    els.lockedTitle.textContent = t('login_title');
+    els.lockedSub.textContent = t('login_text');
     els.tabLogin.textContent = dict.tabLogin;
     els.tabSignup.textContent = dict.tabSignup;
     els.acName.placeholder = dict.namePh;
@@ -289,45 +1386,42 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
     els.forgotPwBtn.textContent = dict.forgotPw;
     els.orDivider.textContent = dict.or;
     els.acGoogleText.textContent = dict.googleBtn;
-    els.logoutBtn.textContent = '⎋';
-    els.logoutBtn.title = dict.logout;
-    els.dashTitle.textContent = dict.dashTitle;
-    els.newCvText.textContent = dict.newCv;
-    els.dashEmpty.textContent = dict.dashEmpty;
-    els.downloadPdfText.textContent = dict.downloadPdf;
-    els.saveCvText.textContent = dict.saveCv;
-    els.clearCvText.textContent = dict.clearCv;
-    els.templateTitle.textContent = dict.templateTitle;
-    els.removePhotoBtn.textContent = dict.removePhoto;
-    els.personalInfoTitle.textContent = dict.personalInfo;
-    els.pFullName.placeholder = dict.fullName;
-    els.pTitle.placeholder = dict.professionalTitle;
-    els.pPhone.placeholder = dict.phone;
-    els.pEmail.placeholder = dict.email;
-    els.pAddress.placeholder = dict.address;
-    els.pLinkedin.placeholder = dict.linkedin;
-    els.pWebsite.placeholder = dict.website;
-    els.pPassport.placeholder = dict.passport;
-    els.showPassportLabel.textContent = dict.showPassport;
-    els.colorTitle.textContent = dict.colorTitle;
-    els.sectionsTitle.textContent = dict.sectionsTitle;
-    els.addSectionText.textContent = dict.addSection;
+    els.logoutBtn.textContent = dict.logout;
+    updateAuthFormMode(els.tabLogin.classList.contains('on') ? 'login' : 'signup');
+    try { localStorage.setItem('cvbuilder:lang', lang); } catch (e) { /* ignore */ }
 
-    const authMode = els.tabLogin.classList.contains('active') ? 'login' : 'signup';
-    updateAuthFormMode(authMode);
-
-    els.langBtns.forEach((b) => b.classList.toggle('active', b.getAttribute('data-lang') === lang));
-    localStorage.setItem('cvbuilder:lang', lang);
-
-    if (activeCv) { renderSectionsList(); renderPreview(); renderTemplateSwatches(); }
-    if (cvList.length) renderDashboard();
+    if (activeCv) {
+      // An untouched example CV follows the interface language.
+      if (activeCv.isSample) { const keep = activeCv.template; activeCv = sampleCvData(lang); activeCv.template = keep; activeCv.sidebarColor = TPL[keep].color; }
+      buildAccordion(); renderPreview();
+    }
+    if (!els.mine.classList.contains('hidden')) renderMine();
+    if (!els.gallery.classList.contains('hidden')) buildGallery();
   }
-  els.langBtns.forEach((btn) => btn.addEventListener('click', () => { lang = btn.getAttribute('data-lang'); applyLanguage(); }));
+  els.langToggle.addEventListener('click', (e) => { e.stopPropagation(); els.langMenu.classList.toggle('hidden'); });
+  qsa('.lang-btn').forEach((btn) => btn.addEventListener('click', () => { lang = btn.dataset.lang; els.langMenu.classList.add('hidden'); applyLanguage(); }));
+
+  /* ================= Auth (login dialog, opened only when needed) ================= */
+  let pendingAfterLogin = null;
+  const hasFb = () => !!(window.fbAuth && window.fbDb);
+  function openLogin(after) {
+    pendingAfterLogin = after || null;
+    els.authCardError.classList.add('hidden');
+    els.login.classList.remove('hidden');
+  }
+  function closeLogin() { els.login.classList.add('hidden'); }
+  function afterLogin() {
+    closeLogin();
+    const fn = pendingAfterLogin; pendingAfterLogin = null;
+    if (fn) fn();
+  }
+  $('loginCancel').addEventListener('click', () => { pendingAfterLogin = null; closeLogin(); });
+  els.login.addEventListener('click', (e) => { if (e.target === els.login) { pendingAfterLogin = null; closeLogin(); } });
 
   function updateAuthFormMode(mode) {
     const isLogin = mode === 'login';
-    els.tabLogin.classList.toggle('active', isLogin);
-    els.tabSignup.classList.toggle('active', !isLogin);
+    els.tabLogin.classList.toggle('on', isLogin);
+    els.tabSignup.classList.toggle('on', !isLogin);
     els.acName.classList.toggle('hidden', isLogin);
     els.acSubmitBtn.textContent = isLogin ? t('loginBtn') : t('signupBtn');
     els.forgotPwBtn.classList.toggle('hidden', !isLogin);
@@ -335,14 +1429,6 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
   }
   els.tabLogin.addEventListener('click', () => updateAuthFormMode('login'));
   els.tabSignup.addEventListener('click', () => updateAuthFormMode('signup'));
-
-  /* ================= Screens ================= */
-  function showScreen(name) {
-    [els.loadingScreen, els.lockedScreen, els.dashboardScreen, els.editorScreen].forEach((s) => s.classList.add('hidden'));
-    els[name].classList.remove('hidden');
-  }
-
-  /* ================= Auth ================= */
   const AUTH_ERR = {
     ar: {
       'auth/email-already-in-use': 'هذا البريد مستخدم مسبقًا.', 'auth/invalid-email': 'صيغة البريد غير صحيحة.',
@@ -372,7 +1458,8 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
 
   els.authCardForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const isLogin = els.tabLogin.classList.contains('active');
+    if (!hasFb()) { showAuthError(t('t_no_fb')); return; }
+    const isLogin = els.tabLogin.classList.contains('on');
     const email = els.acEmail.value.trim();
     const password = els.acPassword.value;
     els.acSubmitBtn.disabled = true;
@@ -383,6 +1470,8 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
         const cred = await window.fbAuth.createUserWithEmailAndPassword(email, password);
         if (els.acName.value.trim()) await cred.user.updateProfile({ displayName: els.acName.value.trim() });
       }
+      await onSignedIn(window.fbAuth.currentUser);
+      afterLogin();
     } catch (err) {
       showAuthError(authErrMsg(err.code));
     }
@@ -390,8 +1479,11 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
   });
 
   els.acGoogleBtn.addEventListener('click', async () => {
+    if (!hasFb()) { showAuthError(t('t_no_fb')); return; }
     try {
       await window.fbAuth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
+      await onSignedIn(window.fbAuth.currentUser);
+      afterLogin();
     } catch (err) {
       showAuthError(authErrMsg(err.code));
     }
@@ -409,9 +1501,23 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
     }
   });
 
-  els.logoutBtn.addEventListener('click', () => window.fbAuth.signOut());
+  els.logoutBtn.addEventListener('click', () => { if (hasFb()) window.fbAuth.signOut(); });
 
-  /* ================= Dashboard (Firestore CRUD) ================= */
+  async function onSignedIn(fbUser) {
+    if (!fbUser) return;
+    if (currentUser && currentUser.uid === fbUser.uid && cvList.length) return;
+    currentUser = { uid: fbUser.uid, name: fbUser.displayName || fbUser.email, email: fbUser.email, picture: fbUser.photoURL || null };
+    await loadCvList();
+    updateUserChip();
+    if (!els.mine.classList.contains('hidden')) renderMine();
+  }
+  function updateUserChip() {
+    els.userChip.classList.toggle('hidden', !currentUser);
+    els.mineLogin.classList.toggle('hidden', !!currentUser || !hasFb());
+    if (currentUser) els.userChipName.textContent = currentUser.name;
+  }
+
+  /* ================= "My CVs" (Firestore collection `cvs` + local drafts) ================= */
   async function loadCvList() {
     if (!currentUser) { cvList = []; return; }
     try {
@@ -423,81 +1529,70 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
     }
   }
 
-  function renderDashboard() {
-    const localDrafts = loadLocalDrafts();
-    const totalCount = cvList.length + localDrafts.length;
-    els.dashEmpty.classList.toggle('hidden', totalCount > 0);
+  function openMine() { els.mine.classList.remove('hidden'); updateUserChip(); renderMine(); if (currentUser) loadCvList().then(renderMine); }
+  function closeMine() { els.mine.classList.add('hidden'); }
+  $('btnMine').addEventListener('click', openMine);
+  $('mClose').addEventListener('click', closeMine);
+  els.mine.addEventListener('click', (e) => { if (e.target === els.mine) closeMine(); });
+  $('mineLoginBtn').addEventListener('click', () => openLogin(() => openMine()));
 
-    const savedHtml = cvList.map((cv) => `
-      <div class="cv-card" data-id="${cv.id}" data-kind="saved">
-        <div class="cv-card-swatch" style="background:${cv.sidebarColor || SIDEBAR_COLORS[0]}"></div>
-        <h3>${escapeHtml(cv.title || t('untitled'))}</h3>
-        <p>${t('lastUpdated')}: ${formatDate(cv.updatedAt)}</p>
-        <div class="cv-card-actions">
-          <button type="button" data-act="edit">${t('edit')}</button>
-          <button type="button" data-act="duplicate">${t('duplicate')}</button>
+  function miniIcon(color) { return `<span class="m-ico"><i style="background:${escapeHtml(color || SIDEBAR_COLORS[0])}"></i></span>`; }
+  function renderMine() {
+    const drafts = loadLocalDrafts();
+    const cloudIds = new Set(cvList.map((c) => c.id));
+    const cards = [];
+    cards.push(`<button type="button" class="g-card m-new" data-act="new">${IC.plus}<span>${escapeHtml(t('newCv'))}</span></button>`);
+    cvList.forEach((cv) => {
+      const d = drafts.find((x) => x.localId === cv.id);
+      const unsaved = d && (d.updatedAt || 0) > (cv.updatedAt || 0);
+      cards.push(`<div class="g-card m-card" data-id="${escapeHtml(cv.id)}" data-kind="saved">
+        ${cv.id === activeCvId ? `<span class="m-tag">${escapeHtml(t('current_badge'))}</span>` : ''}
+        <div class="m-top">${miniIcon(cv.sidebarColor)}<div class="m-info"><b>${escapeHtml(cv.title || t('untitled'))}</b><small>${t('lastUpdated')}: ${formatDate(unsaved ? d.updatedAt : cv.updatedAt)}</small></div></div>
+        <span class="m-src cloud">${escapeHtml(t('cloud_badge'))}${unsaved ? ' · ' + escapeHtml(t('unsavedBadge')) : ''}</span>
+        <div class="m-actions">
+          <button type="button" class="primary" data-act="edit">${escapeHtml(t('open'))}</button>
+          <button type="button" data-act="duplicate">${escapeHtml(t('duplicate'))}</button>
           <button type="button" data-act="pdf">PDF</button>
-          <button type="button" data-act="delete" class="danger">${t('deleteCv')}</button>
-        </div>
-      </div>`).join('');
-
-    const draftHtml = localDrafts.map((d) => `
-      <div class="cv-card" data-id="${d.localId}" data-kind="draft">
-        <div class="cv-card-swatch" style="background:${(d.data && d.data.sidebarColor) || SIDEBAR_COLORS[0]}"></div>
-        <span class="unsaved-badge">${t('unsavedBadge')}</span>
-        <h3>${escapeHtml(d.title || t('untitled'))}</h3>
-        <p>${t('lastUpdated')}: ${formatDate(d.updatedAt)}</p>
-        <div class="cv-card-actions">
-          <button type="button" data-act="edit">${t('edit')}</button>
-          <button type="button" data-act="delete" class="danger">${t('deleteCv')}</button>
-        </div>
-      </div>`).join('');
-
-    els.cvGrid.innerHTML = savedHtml + draftHtml;
-
-    els.cvGrid.querySelectorAll('.cv-card').forEach((card) => {
-      const id = card.getAttribute('data-id');
-      const kind = card.getAttribute('data-kind');
-      card.addEventListener('click', (e) => {
-        const actBtn = e.target.closest('button');
-        if (!actBtn) { openEditor(id); return; }
-        e.stopPropagation();
-        const act = actBtn.getAttribute('data-act');
-        if (act === 'edit') openEditor(id);
-        else if (act === 'duplicate') duplicateCv(id);
-        else if (act === 'delete') {
-          if (kind === 'draft') { if (confirm(t('deleteConfirm'))) { deleteLocalDraft(id); renderDashboard(); } }
-          else deleteCv(id);
-        }
-        else if (act === 'pdf') openEditorThenExport(id);
-      });
+          <button type="button" class="danger" data-act="delete">${escapeHtml(t('deleteCv'))}</button>
+        </div></div>`);
     });
+    drafts.filter((d) => !cloudIds.has(d.localId)).forEach((d) => {
+      cards.push(`<div class="g-card m-card" data-id="${escapeHtml(d.localId)}" data-kind="draft">
+        ${d.localId === activeCvId ? `<span class="m-tag">${escapeHtml(t('current_badge'))}</span>` : ''}
+        <div class="m-top">${miniIcon(d.data && d.data.sidebarColor)}<div class="m-info"><b>${escapeHtml(d.title || t('untitled'))}</b><small>${t('lastUpdated')}: ${formatDate(d.updatedAt)}</small></div></div>
+        <span class="m-src">${escapeHtml(t('unsavedBadge'))} · ${escapeHtml(t('local_badge'))}</span>
+        <div class="m-actions">
+          <button type="button" class="primary" data-act="edit">${escapeHtml(t('open'))}</button>
+          <button type="button" data-act="pdf">PDF</button>
+          <button type="button" class="danger" data-act="delete">${escapeHtml(t('deleteCv'))}</button>
+        </div></div>`);
+    });
+    els.cvGrid.innerHTML = cards.join('');
   }
+  els.cvGrid.addEventListener('click', async (e) => {
+    const btn = e.target.closest('[data-act]');
+    if (!btn) return;
+    const act = btn.dataset.act;
+    if (act === 'new') { createNewCv(); closeMine(); return; }
+    const card = btn.closest('[data-id]');
+    const id = card.dataset.id, kind = card.dataset.kind;
+    if (act === 'edit') { await openEditor(id); closeMine(); }
+    else if (act === 'duplicate') duplicateCv(id);
+    else if (act === 'pdf') { closeMine(); openEditorThenExport(id); }
+    else if (act === 'delete') {
+      if (kind === 'draft') { if (await askConfirm(t('deleteConfirm'))) { deleteLocalDraft(id); if (id === activeCvId) startFresh(); renderMine(); } }
+      else deleteCv(id);
+    }
+  });
 
-  function escapeHtml(s) { return String(s || '').replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-  function formatMonthYear(val) {
-    if (!val) return '';
-    const [y, m] = val.split('-');
-    if (!y || !m) return val;
-    const d = new Date(Number(y), Number(m) - 1, 1);
-    const locale = lang === 'ar' ? 'ar' : lang === 'fr' ? 'fr-FR' : 'en-US';
-    return d.toLocaleDateString(locale, { month: 'short', year: 'numeric' });
-  }
-  function formatDate(ts) {
-    if (!ts) return '—';
-    const d = new Date(ts);
-    return d.toLocaleDateString(lang === 'ar' ? 'ar' : lang === 'fr' ? 'fr-FR' : 'en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-  }
-
-  els.newCvBtn.addEventListener('click', () => {
-    if (!currentUser) return;
+  function createNewCv() {
     const data = sampleCvData(lang);
     const localId = 'local_' + Date.now();
     activeCv = data;
     activeCvId = localId;
     upsertLocalDraft({ localId, title: data.title, updatedAt: data.updatedAt, data });
-    openEditorWithActiveCv();
-  });
+    populateEditorFromActiveCv();
+  }
 
   async function duplicateCv(id) {
     const src = cvList.find((c) => c.id === id);
@@ -510,28 +1605,30 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
     try {
       const ref = await window.fbDb.collection('cvs').add(copy);
       cvList.unshift({ id: ref.id, ...copy });
-      renderDashboard();
+      renderMine();
     } catch (e) { /* ignore */ }
   }
 
   async function deleteCv(id) {
-    if (!confirm(t('deleteConfirm'))) return;
+    if (!(await askConfirm(t('deleteConfirm')))) return;
     try {
       await window.fbDb.collection('cvs').doc(id).delete();
       cvList = cvList.filter((c) => c.id !== id);
-      renderDashboard();
+      deleteLocalDraft(id);
+      if (id === activeCvId) startFresh();
+      renderMine();
     } catch (e) { /* ignore */ }
   }
 
   async function openEditorThenExport(id) {
     await openEditor(id);
-    setTimeout(() => exportPdf(), 400);
+    setTimeout(() => els.downloadPdfBtn.click(), 400);
   }
 
-  /* ================= Editor: open / bind / autosave ================= */
+  /* ================= Editor: open / autosave ================= */
   async function openEditor(id) {
+    const draft = loadLocalDrafts().find((d) => d.localId === id);
     if (String(id).startsWith('local_')) {
-      const draft = loadLocalDrafts().find((d) => d.localId === id);
       if (!draft) return;
       activeCvId = id;
       activeCv = JSON.parse(JSON.stringify(draft.data));
@@ -545,88 +1642,66 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
         if (doc.exists) cv = { id: doc.id, ...doc.data() };
       } catch (e) { /* ignore */ }
     }
-    if (!cv) return;
+    if (!cv && !draft) return;
     activeCvId = id;
-    activeCv = JSON.parse(JSON.stringify(cv));
+    // Autosave mirrors edits on this device: prefer them if they are newer than the account copy.
+    activeCv = JSON.parse(JSON.stringify(draft && (!cv || (draft.updatedAt || 0) > (cv.updatedAt || 0)) ? draft.data : cv));
+    if (!draft) upsertLocalDraft({ localId: id, title: activeCv.title, updatedAt: activeCv.updatedAt, data: activeCv }); // reopens after a reload
     populateEditorFromActiveCv();
   }
-
-  function openEditorWithActiveCv() { populateEditorFromActiveCv(); }
 
   function populateEditorFromActiveCv() {
     if (!activeCv.personal) activeCv.personal = newCvData().personal;
     if (!activeCv.sections) activeCv.sections = [];
     if (!activeCv.template) activeCv.template = 'navy';
-
-    els.cvTitleInput.value = activeCv.title || '';
-    els.pFullName.value = activeCv.personal.fullName || '';
-    els.pTitle.value = activeCv.personal.title || '';
-    els.pPhone.value = activeCv.personal.phone || '';
-    els.pEmail.value = activeCv.personal.email || '';
-    els.pAddress.value = activeCv.personal.address || '';
-    els.pLinkedin.value = activeCv.personal.linkedin || '';
-    els.pWebsite.value = activeCv.personal.website || '';
-    els.pPassport.value = activeCv.personal.passport || '';
-    els.pShowPassport.checked = !!activeCv.personal.showPassport;
-
-    if (activeCv.personal.photo) {
-      els.photoPreview.src = activeCv.personal.photo;
-      els.photoPreview.classList.remove('hidden');
-      els.photoPlaceholder.classList.add('hidden');
-    } else {
-      els.photoPreview.classList.add('hidden');
-      els.photoPlaceholder.classList.remove('hidden');
-    }
-
-    renderTemplateSwatches();
-    renderColorSwatches();
-    renderSectionsList();
+    rememberOpen();
+    openSec = null;
+    buildAccordion();
     renderPreview();
-    showScreen('editorScreen');
+    els.panel.scrollTop = 0;
   }
 
-  els.editorBackBtn.addEventListener('click', async () => {
-    if (activeCvId) {
-      const idx = cvList.findIndex((c) => c.id === activeCvId);
-      if (idx >= 0) cvList[idx] = { id: activeCvId, ...activeCv };
-    }
-    activeCv = null; activeCvId = null;
-    await loadCvList();
-    renderDashboard();
-    showScreen('dashboardScreen');
-  });
+  function startFresh() {
+    activeCv = sampleCvData(lang);
+    activeCvId = 'local_' + Date.now();
+    populateEditorFromActiveCv();
+  }
 
   function scheduleSave() {
     if (!activeCv || !activeCvId) return;
     activeCv.updatedAt = Date.now();
     activeCv.isSample = false;
     clearTimeout(saveTimeout);
-    saveTimeout = setTimeout(() => {
-      if (String(activeCvId).startsWith('local_')) {
-        upsertLocalDraft({ localId: activeCvId, title: activeCv.title, updatedAt: activeCv.updatedAt, data: activeCv });
-      } else {
-        upsertLocalDraft({ localId: activeCvId, title: activeCv.title, updatedAt: activeCv.updatedAt, data: activeCv });
-      }
-      showSaveIndicator('saving');
-    }, 500);
+    saveTimeout = setTimeout(flushLocal, 500);
   }
-  function showSaveIndicator(state) {
-    els.saveIndicator.classList.remove('hidden', 'saving', 'saved');
-    els.saveIndicator.classList.add(state);
-    els.saveIndicator.textContent = state === 'saving' ? t('savedLocal') : t('saved');
-    setTimeout(() => els.saveIndicator.classList.add('hidden'), 1500);
+  function flushLocal() {
+    clearTimeout(saveTimeout);
+    if (!activeCv || !activeCvId || activeCv.isSample) return;
+    upsertLocalDraft({ localId: activeCvId, title: activeCv.title, updatedAt: activeCv.updatedAt, data: activeCv });
+    rememberOpen();
+    showSaveIndicator();
+  }
+  function showSaveIndicator() {
+    els.saveIndicator.textContent = t('savedLocal');
+    els.saveIndicator.classList.add('on');
   }
 
   async function saveCvToAccount() {
-    if (!activeCv || !currentUser) return;
-    const btn = els.saveCvBtn, txt = els.saveCvText;
-    const original = txt.textContent;
-    btn.disabled = true;
+    if (!activeCv) return;
+    activeCv.isSample = false;
+    flushLocal();
+    if (!currentUser) {
+      if (!hasFb()) { toast(t('savedLocal')); return; }
+      toast(t('savedLocal'));
+      openLogin(saveCvToAccount);
+      return;
+    }
+    els.saveCvBtn.disabled = true;
     try {
       activeCv.updatedAt = Date.now();
       activeCv.owner = currentUser.uid;
       activeCv.isSample = false;
-      if (String(activeCvId).startsWith('local_')) {
+      if (!cvList.some((c) => c.id === activeCvId) && String(activeCvId).startsWith('local_')) {
         const oldLocalId = activeCvId;
         const ref = await window.fbDb.collection('cvs').add(activeCv);
         activeCvId = ref.id;
@@ -635,392 +1710,60 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
       } else {
         await window.fbDb.collection('cvs').doc(activeCvId).set(activeCv, { merge: true });
         const idx = cvList.findIndex((c) => c.id === activeCvId);
-        if (idx >= 0) cvList[idx] = { id: activeCvId, ...activeCv };
+        if (idx >= 0) cvList[idx] = { id: activeCvId, ...activeCv }; else cvList.unshift({ id: activeCvId, ...activeCv });
       }
-      txt.textContent = t('savedRemote');
-      setTimeout(() => { txt.textContent = original; }, 1500);
+      flushLocal();
+      toast(t('t_saved_cloud'));
     } catch (e) {
-      txt.textContent = original;
+      console.error('Cloud save failed:', e);
+      toast(t('t_cloud_err'));
     }
-    btn.disabled = false;
+    els.saveCvBtn.disabled = false;
   }
   els.saveCvBtn.addEventListener('click', saveCvToAccount);
 
-  function clearCvFields() {
+  async function clearCvFields() {
     if (!activeCv) return;
-    if (!confirm(t('clearConfirm'))) return;
+    if (!(await askConfirm(t('clearConfirm')))) return;
     const blank = newCvData(activeCv.title);
     activeCv.personal = blank.personal;
     activeCv.sections = [];
     activeCv.isSample = false;
-    populateEditorFromActiveCv();
-    scheduleSave();
-  }
-  els.clearCvBtn.addEventListener('click', clearCvFields);
-
-  /* ================= Template picker ================= */
-  function swatchBodyLines(tpl) {
-    if (tpl === 'classic' || tpl === 'gold') {
-      const sideColor = 'rgba(255,255,255,.55)';
-      const mainColor = tpl === 'gold' ? '#B9C2CB' : '#AEB9C2';
-      const sideLines = [44, 54, 64].map((top) => `<span class="line" style="top:${top}px;inset-inline-start:6px;width:16px;background:${sideColor};"></span>`).join('');
-      const mainLines = [10, 18, 26, 38, 46, 54].map((top, i) => `<span class="line" style="top:${top}px;inset-inline-start:36px;width:${[42, 36, 40, 30, 34, 26][i]}px;background:${mainColor};"></span>`).join('');
-      return sideLines + mainLines;
-    }
-    const color = tpl === 'rose' ? '#C9B9AE' : '#C7D0D8';
-    const startTop = tpl === 'rose' ? 30 : 36;
-    return [0, 1, 2, 3, 4].map((i) => `<span class="line" style="top:${startTop + i * 10}px;inset-inline-start:8px;width:${[52, 44, 48, 38, 46][i]}px;background:${color};"></span>`).join('');
-  }
-
-  function renderTemplateSwatches() {
-    if (!activeCv) return;
-    els.templateSwatches.innerHTML = TEMPLATES.map((tpl) => `
-      <button type="button" class="template-swatch template-swatch-${tpl} ${activeCv.template === tpl ? 'active' : ''}" data-tpl="${tpl}">
-        <span class="template-swatch-preview">${swatchBodyLines(tpl)}</span>
-        <span class="template-swatch-label">${t('templateNames')[tpl]}</span>
-      </button>`).join('');
-    els.templateSwatches.querySelectorAll('.template-swatch').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        activeCv.template = btn.getAttribute('data-tpl');
-        renderTemplateSwatches();
-        els.colorCard.classList.toggle('hidden', FIXED_PALETTE_TEMPLATES.includes(activeCv.template));
-        renderPreview(); scheduleSave();
-      });
-    });
-    els.colorCard.classList.toggle('hidden', FIXED_PALETTE_TEMPLATES.includes(activeCv.template));
-  }
-
-  els.cvTitleInput.addEventListener('input', () => { if (activeCv) { activeCv.title = els.cvTitleInput.value; scheduleSave(); } });
-
-  function bindPersonal(el, field) {
-    el.addEventListener('input', () => { activeCv.personal[field] = el.value; renderPreview(); scheduleSave(); });
-  }
-  bindPersonal(els.pFullName, 'fullName');
-  bindPersonal(els.pTitle, 'title');
-  bindPersonal(els.pPhone, 'phone');
-  bindPersonal(els.pEmail, 'email');
-  bindPersonal(els.pAddress, 'address');
-  bindPersonal(els.pLinkedin, 'linkedin');
-  bindPersonal(els.pWebsite, 'website');
-  bindPersonal(els.pPassport, 'passport');
-  els.pShowPassport.addEventListener('change', () => { activeCv.personal.showPassport = els.pShowPassport.checked; renderPreview(); scheduleSave(); });
-
-  /* ---- Photo upload (compressed to base64, stored directly in Firestore) ---- */
-  els.photoUploadBox.addEventListener('click', () => els.photoInput.click());
-  els.photoInput.addEventListener('change', () => {
-    const file = els.photoInput.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const img = new Image();
-      img.onload = () => {
-        const maxSize = 300;
-        let w = img.width, h = img.height;
-        if (w > h && w > maxSize) { h = Math.round(h * maxSize / w); w = maxSize; }
-        else if (h > maxSize) { w = Math.round(w * maxSize / h); h = maxSize; }
-        const canvas = document.createElement('canvas');
-        canvas.width = w; canvas.height = h;
-        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-        const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
-        activeCv.personal.photo = dataUrl;
-        els.photoPreview.src = dataUrl;
-        els.photoPreview.classList.remove('hidden');
-        els.photoPlaceholder.classList.add('hidden');
-        renderPreview();
-        scheduleSave();
-      };
-      img.src = e.target.result;
-    };
-    reader.readAsDataURL(file);
-  });
-  els.removePhotoBtn.addEventListener('click', () => {
-    activeCv.personal.photo = null;
-    els.photoPreview.classList.add('hidden');
-    els.photoPlaceholder.classList.remove('hidden');
-    els.photoInput.value = '';
+    openSec = null;
+    buildAccordion();
     renderPreview();
     scheduleSave();
-  });
+    toast(t('t_cleared'));
+  }
 
-  /* ---- Sidebar color ---- */
-  function renderColorSwatches() {
-    els.colorSwatches.innerHTML = SIDEBAR_COLORS.map((c) => `
-      <div class="color-swatch ${activeCv.sidebarColor === c ? 'active' : ''}" style="background:${c}" data-color="${c}"></div>
-    `).join('') + `
-      <div class="color-swatch color-swatch-custom" title="custom">
-        🎨<input type="color" id="customColorInput" value="${activeCv.sidebarColor || '#22415A'}">
-      </div>`;
-    els.colorSwatches.querySelectorAll('.color-swatch[data-color]').forEach((sw) => {
-      sw.addEventListener('click', () => {
-        activeCv.sidebarColor = sw.getAttribute('data-color');
-        renderColorSwatches(); renderPreview(); scheduleSave();
-      });
+  /* ================= Print ================= */
+  // Clean, unscaled copies of every page for printing and PDF capture.
+  function buildPrintCopy() {
+    const pages = renderPages(activeCv, tplOf(activeCv), els.printRoot);
+    pages.forEach((pg) => {
+      qsa('.hl', pg).forEach((n) => n.classList.remove('hl'));
+      qsa('[data-sec]', pg).forEach((n) => n.removeAttribute('data-sec'));
     });
-    const customInput = document.getElementById('customColorInput');
-    if (customInput) {
-      customInput.addEventListener('input', () => {
-        activeCv.sidebarColor = customInput.value;
-        renderPreview(); scheduleSave();
-      });
-    }
+    return pages;
   }
-
-  /* ================= Dynamic Sections ================= */
-  const SIDEBAR_SECTION_TYPES = ['skills', 'languages', 'interests', 'certifications'];
-  function uid() { return 's' + Math.random().toString(36).slice(2, 10); }
-
-  function blankSection(type) {
-    const base = { id: uid(), type: type || 'summary', subtitle: '', dateInfo: '', content: '' };
-    if (type === 'experience' || type === 'education') base.entries = [];
-    if (type === 'skills') base.entries = [];
-    if (type === 'languages') base.entries = [];
-    return base;
-  }
-
-  els.addSectionBtn.addEventListener('click', () => {
-    activeCv.sections.push(blankSection('summary'));
-    renderSectionsList(); renderPreview(); scheduleSave();
-  });
-
-  function moveSection(idx, dir) {
-    const j = idx + dir;
-    if (j < 0 || j >= activeCv.sections.length) return;
-    [activeCv.sections[idx], activeCv.sections[j]] = [activeCv.sections[j], activeCv.sections[idx]];
-    renderSectionsList(); renderPreview(); scheduleSave();
-  }
-  function removeSection(idx) {
-    activeCv.sections.splice(idx, 1);
-    renderSectionsList(); renderPreview(); scheduleSave();
-  }
-
-  function sectionTypeOptionsHtml(selected) {
-    return `<option value="" disabled ${!selected ? 'selected' : ''}>${t('chooseSection')}</option>` +
-      SECTION_TYPE_ORDER.map((typ) => `<option value="${typ}" ${selected === typ ? 'selected' : ''}>${t('sectionTypes')[typ]}</option>`).join('');
-  }
-
-  function renderSectionsList() {
-    els.sectionsList.innerHTML = activeCv.sections.map((sec, idx) => {
-      const structured = STRUCTURED_TYPES[sec.type];
-      return `
-      <div class="section-row" data-idx="${idx}">
-        <div class="section-row-head">
-          <select class="section-select" data-role="type">${sectionTypeOptionsHtml(sec.type)}</select>
-          <div class="section-reorder">
-            <button type="button" class="section-icon-btn" data-role="up" title="up">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
-            </button>
-            <button type="button" class="section-icon-btn" data-role="down" title="down">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
-            </button>
-            <button type="button" class="section-icon-btn danger" data-role="delete" title="delete">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 6L6 18M6 6l12 12"/></svg>
-            </button>
-          </div>
-        </div>
-        <div class="section-body" data-role="body"></div>
-      </div>`;
-    }).join('');
-
-    els.sectionsList.querySelectorAll('.section-row').forEach((row) => {
-      const idx = parseInt(row.getAttribute('data-idx'), 10);
-      const sec = activeCv.sections[idx];
-
-      row.querySelector('[data-role="type"]').addEventListener('change', (e) => {
-        activeCv.sections[idx] = blankSection(e.target.value);
-        renderSectionsList(); renderPreview(); scheduleSave();
-      });
-      row.querySelector('[data-role="up"]').addEventListener('click', () => moveSection(idx, -1));
-      row.querySelector('[data-role="down"]').addEventListener('click', () => moveSection(idx, 1));
-      row.querySelector('[data-role="delete"]').addEventListener('click', () => removeSection(idx));
-
-      renderSectionBody(row.querySelector('[data-role="body"]'), sec, idx);
-    });
-  }
-
-  function renderSectionBody(container, sec, idx) {
-    const structured = STRUCTURED_TYPES[sec.type];
-
-    if (structured === 'experience' || structured === 'education') {
-      const isExp = structured === 'experience';
-      container.innerHTML = (sec.entries || []).map((entry, ei) => `
-        <div class="entry-block" data-ei="${ei}">
-          <div class="entry-block-head">
-            <button type="button" class="section-icon-btn danger" data-role="del-entry">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 6L6 18M6 6l12 12"/></svg>
-            </button>
-          </div>
-          <div class="section-subrow">
-            <input type="text" class="cv-input" data-f="${isExp ? 'title' : 'degree'}" placeholder="${isExp ? t('jobTitle') : t('degree')}" value="${escapeHtml(entry[isExp ? 'title' : 'degree'] || '')}">
-            <input type="text" class="cv-input" data-f="${isExp ? 'company' : 'institution'}" placeholder="${isExp ? t('company') : t('institution')}" value="${escapeHtml(entry[isExp ? 'company' : 'institution'] || '')}">
-          </div>
-          <div class="section-subrow">
-            <input type="text" class="cv-input" data-f="location" placeholder="${t('location')}" value="${escapeHtml(entry.location || '')}">
-            <input type="month" class="cv-input" data-f="start" title="${t('startDate')}" value="${escapeHtml(entry.start || '')}">
-            <input type="month" class="cv-input" data-f="end" title="${t('endDate')}" value="${escapeHtml(entry.end || '')}" ${entry.current ? 'disabled' : ''}>
-          </div>
-          ${isExp ? `<label class="toggle-row" style="margin-bottom:8px;"><span>${t('currentlyHere')}</span><input type="checkbox" data-f="current" ${entry.current ? 'checked' : ''}><span class="toggle-switch"></span></label>` : ''}
-          <textarea class="section-textarea" data-f="description" placeholder="${t('description')}">${escapeHtml(entry.description || '')}</textarea>
-        </div>
-      `).join('') + `<button type="button" class="btn btn-add" data-role="add-entry">${isExp ? t('addExperience') : t('addEducation')}</button>`;
-
-      container.querySelector('[data-role="add-entry"]').addEventListener('click', () => {
-        sec.entries.push({});
-        renderSectionsList(); renderPreview(); scheduleSave();
-      });
-      container.querySelectorAll('.entry-block').forEach((block) => {
-        const ei = parseInt(block.getAttribute('data-ei'), 10);
-        block.querySelector('[data-role="del-entry"]').addEventListener('click', () => {
-          sec.entries.splice(ei, 1);
-          renderSectionsList(); renderPreview(); scheduleSave();
-        });
-        block.querySelectorAll('[data-f]').forEach((input) => {
-          const field = input.getAttribute('data-f');
-          const evt = input.type === 'checkbox' ? 'change' : 'input';
-          input.addEventListener(evt, () => {
-            sec.entries[ei][field] = input.type === 'checkbox' ? input.checked : input.value;
-            renderPreview(); scheduleSave();
-            if (field === 'current') renderSectionsList();
-          });
-        });
-      });
-
-    } else if (structured === 'skills') {
-      container.innerHTML = `
-        <input type="text" class="cv-input" data-role="skill-input" placeholder="${t('skillPh')}">
-        <div class="tag-list">
-          ${(sec.entries || []).map((s, si) => `<span class="tag-chip">${escapeHtml(s)}<button type="button" data-si="${si}">×</button></span>`).join('')}
-        </div>`;
-      const input = container.querySelector('[data-role="skill-input"]');
-      input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && input.value.trim()) {
-          e.preventDefault();
-          sec.entries.push(input.value.trim());
-          input.value = '';
-          renderSectionsList(); renderPreview(); scheduleSave();
-        }
-      });
-      container.querySelectorAll('.tag-chip button').forEach((btn) => {
-        btn.addEventListener('click', () => {
-          sec.entries.splice(parseInt(btn.getAttribute('data-si'), 10), 1);
-          renderSectionsList(); renderPreview(); scheduleSave();
-        });
-      });
-
-    } else if (structured === 'languages') {
-      container.innerHTML = (sec.entries || []).map((entry, ei) => `
-        <div class="section-subrow" data-ei="${ei}">
-          <input type="text" class="cv-input" data-f="language" placeholder="${t('langNamePh')}" value="${escapeHtml(entry.language || '')}">
-          <input type="text" class="cv-input" data-f="level" placeholder="${t('langLevelPh')}" value="${escapeHtml(entry.level || '')}">
-          <button type="button" class="section-icon-btn danger" data-role="del-entry">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 6L6 18M6 6l12 12"/></svg>
-          </button>
-        </div>`).join('') + `<button type="button" class="btn btn-add" data-role="add-entry">${t('addLanguage')}</button>`;
-      container.querySelector('[data-role="add-entry"]').addEventListener('click', () => {
-        sec.entries.push({});
-        renderSectionsList(); renderPreview(); scheduleSave();
-      });
-      container.querySelectorAll('[data-ei]').forEach((row) => {
-        const ei = parseInt(row.getAttribute('data-ei'), 10);
-        row.querySelector('[data-role="del-entry"]').addEventListener('click', () => {
-          sec.entries.splice(ei, 1);
-          renderSectionsList(); renderPreview(); scheduleSave();
-        });
-        row.querySelectorAll('[data-f]').forEach((input) => {
-          const field = input.getAttribute('data-f');
-          input.addEventListener('input', () => {
-            sec.entries[ei][field] = input.value;
-            renderPreview(); scheduleSave();
-          });
-        });
-      });
-
-    } else {
-      // generic: subtitle + date + textarea
-      container.innerHTML = `
-        <div class="section-subrow">
-          <input type="text" class="cv-input" data-f="subtitle" placeholder="${t('subtitlePh')}" value="${escapeHtml(sec.subtitle || '')}">
-          <input type="text" class="cv-input" data-f="dateInfo" placeholder="${t('datePh')}" value="${escapeHtml(sec.dateInfo || '')}">
-        </div>
-        <textarea class="section-textarea" data-f="content" placeholder="${t('contentPh')}">${escapeHtml(sec.content || '')}</textarea>`;
-      container.querySelectorAll('[data-f]').forEach((input) => {
-        const field = input.getAttribute('data-f');
-        input.addEventListener('input', () => {
-          sec[field] = input.value;
-          renderPreview(); scheduleSave();
-        });
-      });
-    }
-  }
-
-  /* ================= Live Preview ================= */
-  function renderPreview() {
+  $('btnPrint').addEventListener('click', () => {
     if (!activeCv) return;
-    const p = activeCv.personal;
+    toast(t('t_print'));
+    const fonts = document.fonts ? document.fonts.ready : Promise.resolve();
+    fonts.then(() => { buildPrintCopy(); setTimeout(() => window.print(), 250); });
+  });
+  window.addEventListener('afterprint', () => { els.printRoot.innerHTML = ''; });
 
-    els.cvSheet.className = 'cv-sheet template-' + (activeCv.template || 'navy');
-    els.cvSidebar.style.setProperty('--sidebar-color', activeCv.sidebarColor || SIDEBAR_COLORS[0]);
-    els.cvSheet.style.setProperty('--sidebar-color', activeCv.sidebarColor || SIDEBAR_COLORS[0]);
-
-    if (p.photo) {
-      els.cvPreviewPhoto.src = p.photo;
-      els.cvPreviewPhoto.hidden = false;
-      els.cvPhotoPlaceholder.textContent = '';
-    } else {
-      els.cvPreviewPhoto.hidden = true;
-      els.cvPhotoPlaceholder.textContent = (p.fullName || '').slice(0, 1).toUpperCase();
-    }
-
-    els.cvName.textContent = p.fullName || '—';
-    els.cvRole.textContent = p.title || '';
-
-    const contactLines = [];
-    if (p.phone) contactLines.push({ v: p.phone, ltr: true });
-    if (p.email) contactLines.push({ v: p.email, ltr: true });
-    if (p.address) contactLines.push({ v: p.address, ltr: false });
-    if (p.linkedin) contactLines.push({ v: p.linkedin, ltr: true });
-    if (p.website) contactLines.push({ v: p.website, ltr: true });
-    if (p.showPassport && p.passport) contactLines.push({ v: p.passport, ltr: true });
-    els.cvContact.innerHTML = contactLines.map((l) => `<div><bdi ${l.ltr ? 'dir="ltr"' : ''}>${escapeHtml(l.v)}</bdi></div>`).join('');
-
-    const sidebarSecs = activeCv.sections.filter((s) => SIDEBAR_SECTION_TYPES.includes(s.type));
-    const mainSecs = activeCv.sections.filter((s) => !SIDEBAR_SECTION_TYPES.includes(s.type));
-
-    els.cvSidebarSections.innerHTML = sidebarSecs.map((sec) => sectionSidebarHtml(sec)).join('');
-    els.cvMainSections.innerHTML = mainSecs.map((sec) => sectionMainHtml(sec)).join('');
-  }
-
-  function sectionSidebarHtml(sec) {
-    const heading = `<span class="sec-icon">${SECTION_ICONS[sec.type] || ''}</span>${escapeHtml(t('sectionTypes')[sec.type])}`;
-    if (sec.type === 'skills') {
-      return `<div class="cv-side-section"><h4>${heading}</h4>${(sec.entries || []).map((s) => `<span class="cv-side-tag">${escapeHtml(s)}</span>`).join('')}</div>`;
-    }
-    if (sec.type === 'languages') {
-      return `<div class="cv-side-section"><h4>${heading}</h4>${(sec.entries || []).map((e) => `<p>${escapeHtml(e.language || '')}${e.level ? ' — ' + escapeHtml(e.level) : ''}</p>`).join('')}</div>`;
-    }
-    return `<div class="cv-side-section"><h4>${heading}</h4><p>${escapeHtml(sec.content || '')}</p></div>`;
-  }
-
-  function sectionMainHtml(sec) {
-    const heading = `<span class="sec-icon">${SECTION_ICONS[sec.type] || ''}</span>${escapeHtml(t('sectionTypes')[sec.type])}`;
-    const structured = STRUCTURED_TYPES[sec.type];
-    if (structured === 'experience' || structured === 'education') {
-      const isExp = structured === 'experience';
-      const entriesHtml = (sec.entries || []).map((e) => {
-        const titleLine = isExp
-          ? [e.title, e.company].filter(Boolean).join(' — ')
-          : [e.degree, e.institution].filter(Boolean).join(' — ');
-        const metaLine = [e.location, [formatMonthYear(e.start), e.current ? (I18N[lang].currentlyHere) : formatMonthYear(e.end)].filter(Boolean).join(' - ')].filter(Boolean).join(' · ');
-        return `<div class="entry">
-          <p class="entry-title">${escapeHtml(titleLine)}</p>
-          ${metaLine ? `<p class="entry-meta">${escapeHtml(metaLine)}</p>` : ''}
-          ${e.description ? `<p>${escapeHtml(e.description)}</p>` : ''}
-        </div>`;
-      }).join('');
-      return `<div class="cv-block"><h4>${heading}</h4>${entriesHtml}</div>`;
-    }
-    const metaLine = [sec.subtitle, sec.dateInfo].filter(Boolean).join(' · ');
-    return `<div class="cv-block"><h4>${heading}</h4>${metaLine ? `<p class="entry-meta">${escapeHtml(metaLine)}</p>` : ''}${sec.content ? `<p>${escapeHtml(sec.content)}</p>` : ''}</div>`;
-  }
+  /* ================= Toolbar ================= */
+  $('btnFullscreen').addEventListener('click', () => {
+    if (!document.fullscreenElement) (document.documentElement.requestFullscreen || function () {}).call(document.documentElement);
+    else if (document.exitFullscreen) document.exitFullscreen();
+  });
+  $('panelToggle').addEventListener('click', () => {
+    els.workspace.classList.toggle('collapsed');
+    setTimeout(applyZoom, 320);
+  });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (activeCv) renderPreview(); });
 
   /* ================= PDF Export (paid per download via Paddle) ================= */
   const PADDLE_CLIENT_TOKEN = 'live_11f89f5307b65bb7f8a4c484e40';
@@ -1115,27 +1858,34 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
     const original = els.downloadPdfText.textContent;
     els.downloadPdfBtn.disabled = true;
     els.downloadPdfText.textContent = '…';
+    toast(t('t_pdf'));
     try {
-      const canvas = await html2canvas(els.cvSheet, { scale: 2.5, backgroundColor: '#ffffff', useCORS: true });
-      const imgData = canvas.toDataURL('image/png');
+      // Wait for web fonts so Arabic glyphs are joined correctly in the capture.
+      if (document.fonts && document.fonts.ready) await document.fonts.ready;
+      els.printRoot.classList.add('capturing');
+      const pages = buildPrintCopy();
+      await new Promise((r) => setTimeout(r, 60));
       const { jsPDF } = window.jspdf;
       const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
       const pageWidth = pdf.internal.pageSize.getWidth();
       const pageHeight = pdf.internal.pageSize.getHeight();
-      const imgHeight = (canvas.height * pageWidth) / canvas.width;
-      let heightLeft = imgHeight, position = 0;
-      pdf.addImage(imgData, 'PNG', 0, position, pageWidth, imgHeight);
-      heightLeft -= pageHeight;
-      while (heightLeft > 0) {
-        position = heightLeft - imgHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, 'PNG', 0, position, pageWidth, imgHeight);
-        heightLeft -= pageHeight;
+      for (let i = 0; i < pages.length; i++) {
+        const canvas = await html2canvas(pages[i], {
+          scale: 2.5, backgroundColor: '#ffffff', useCORS: true, logging: false,
+          width: 794, height: 1123, windowWidth: 794, scrollX: 0, scrollY: 0,
+        });
+        if (i) pdf.addPage();
+        pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pageWidth, pageHeight);
       }
-      pdf.save(`${(activeCv.title || 'CV').replace(/[^\w\- ]/g, '')}.pdf`);
+      const ascii = (v) => String(v || '').replace(/[^\w\- ]/g, '').replace(/\s+/g, ' ').trim();
+      const base = ascii(activeCv.title) || ascii(activeCv.personal && activeCv.personal.fullName) || 'CV';
+      pdf.save(`${base}.pdf`);
     } catch (e) {
+      console.error(e);
       alert('PDF export failed. Please try again.');
     }
+    els.printRoot.classList.remove('capturing');
+    els.printRoot.innerHTML = '';
     els.downloadPdfBtn.disabled = false;
     els.downloadPdfText.textContent = original;
   }
@@ -1144,32 +1894,28 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
   // change this back to: els.downloadPdfBtn.addEventListener('click', startPaidDownload);
   els.downloadPdfBtn.addEventListener('click', exportPdf);
 
-  /* ================= Auth state / Init ================= */
+  /* ================= Init ================= */
   applyLanguage();
-
-  let authReadyResolve;
-  const authReady = new Promise((resolve) => { authReadyResolve = resolve; });
-  let authFirstFired = false;
+  (function openInitial() {
+    const drafts = loadLocalDrafts();
+    let last = null;
+    try { last = localStorage.getItem(LAST_OPEN_KEY); } catch (e) { /* ignore */ }
+    const d = drafts.find((x) => x.localId === last) || drafts.slice().sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0))[0];
+    if (d && d.data) { activeCvId = d.localId; activeCv = clone(d.data); populateEditorFromActiveCv(); }
+    else startFresh();
+  })();
 
   if (window.fbAuth) {
     window.fbAuth.onAuthStateChanged(async (fbUser) => {
       if (fbUser) {
-        currentUser = { uid: fbUser.uid, name: fbUser.displayName || fbUser.email, email: fbUser.email, picture: fbUser.photoURL || null };
-        els.userChip.classList.remove('hidden');
-        els.userChipName.textContent = currentUser.name;
-        await loadCvList();
-        renderDashboard();
-        showScreen('dashboardScreen');
+        await onSignedIn(fbUser);
       } else {
         currentUser = null;
-        els.userChip.classList.add('hidden');
-        activeCv = null; activeCvId = null;
-        showScreen('lockedScreen');
+        cvList = [];
+        updateUserChip();
+        if (!els.mine.classList.contains('hidden')) renderMine();
       }
-      if (!authFirstFired) { authFirstFired = true; authReadyResolve(); }
     });
-  } else {
-    showScreen('lockedScreen');
-    authReadyResolve();
   }
+  updateUserChip();
 })();
