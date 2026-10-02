@@ -4,9 +4,8 @@
 // ============================================================
 
 // رابط Realtime Database — يُؤخذ من firebaseConfig.databaseURL إن أضيف هناك،
-// وإلا فهذا الرابط الافتراضي للمشروع (غيّره إن اخترت منطقة أخرى، مثل:
-// https://word-shortcuts-default-rtdb.europe-west1.firebasedatabase.app )
-var LR_DB_URL = 'https://word-shortcuts-default-rtdb.firebaseio.com';
+// وإلا فهذا رابط قاعدة المشروع (المنطقة europe-west1).
+var LR_DB_URL = 'https://word-shortcuts-default-rtdb.europe-west1.firebasedatabase.app';
 
 var LR = (function () {
   var LR = {};
