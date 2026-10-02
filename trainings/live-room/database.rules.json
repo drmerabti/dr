@@ -32,6 +32,7 @@
           "status": { ".validate": "(newData.val() === 'open' || newData.val() === 'ended') && (data.val() !== 'ended' || newData.val() === 'ended')" },
           "locked": { ".validate": "newData.isBoolean()" },
           "endedAt": { ".validate": "newData.isNumber()" },
+          "sim": { ".validate": "newData.isBoolean() && (!data.exists() || data.val() === newData.val())" },
           "$other": { ".validate": false }
         },
 
@@ -45,7 +46,7 @@
           ".read": "auth != null",
           "$uid": {
             ".write": "auth != null && auth.uid === $uid && newData.exists() && root.child('rooms').child($code).child('meta/status').val() === 'open' && root.child('rooms').child($code).child('meta/expiresAt').val() > now && (data.exists() || root.child('rooms').child($code).child('meta/locked').val() !== true)",
-            ".validate": "newData.hasChildren(['name', 'joinedAt']) && newData.child('name').isString() && newData.child('name').val().length >= 1 && newData.child('name').val().length <= 30 && newData.child('joinedAt').isNumber()"
+            ".validate": "newData.hasChildren(['name', 'joinedAt']) && newData.child('name').isString() && newData.child('name').val().length >= 1 && newData.child('name').val().length <= 30 && newData.child('joinedAt').isNumber() && (!newData.child('photo').exists() || (newData.child('photo').isString() && newData.child('photo').val().beginsWith('https://') && newData.child('photo').val().length <= 600))"
           }
         },
 
@@ -55,6 +56,28 @@
             ".write": "auth != null && auth.uid === $uid && (!newData.exists() || root.child('rooms').child($code).child('members').child($uid).exists())",
             ".validate": "newData.val() === true"
           }
+        },
+
+        "answered": {
+          ".read": "auth != null",
+          "$qid": {
+            "$uid": {
+              ".write": "auth != null && auth.uid === $uid && !data.exists() && newData.exists() && newData.parent().parent().parent().child('answers').child($qid).child($uid).exists()",
+              ".validate": "newData.val() === true"
+            }
+          }
+        },
+
+        "reactions": {
+          ".read": "auth != null",
+          "$uid": {
+            ".write": "auth != null && auth.uid === $uid && newData.exists() && root.child('rooms').child($code).child('presence').child($uid).exists() && root.child('rooms').child($code).child('meta/status').val() === 'open' && (!data.exists() || now - data.child('ts').val() >= 800)",
+            ".validate": "newData.hasChildren(['e', 'ts']) && newData.child('ts').val() === now && (newData.child('e').val() === 'clap' || newData.child('e').val() === 'fire' || newData.child('e').val() === 'wow')"
+          }
+        },
+
+        "mine": {
+          "$uid": { ".read": "auth != null && auth.uid === $uid" }
         },
 
         "answers": {

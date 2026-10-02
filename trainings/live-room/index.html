@@ -12,6 +12,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="hall.css">
 <script src="/analytics.js"></script>
 </head>
 <body class="lr">
@@ -102,19 +103,12 @@
     </div>
   </section>
 
-  <!-- غرفة الانتظار / الترتيب الحي -->
-  <section class="scr hidden" id="scrLobby">
-    <div class="lobby">
-      <div class="lobby-status"><span class="pulse"></span><span id="lobbyStatus" data-t="waiting"></span></div>
-      <div class="count-big"><b id="presentCount">0</b><span data-t="in_room"></span></div>
-      <div class="people" id="people"></div>
-      <div class="rank-list hidden" id="rankList"></div>
-    </div>
-  </section>
+  <!-- القاعة: كل ما يحدث بعد الدخول (انتظار، سؤال، نتيجة) يظهر فيها -->
+  <div class="hall-area" id="hallArea">
+    <div class="lrh-wrap" id="hallWrap"></div>
 
-  <!-- السؤال -->
-  <section class="scr hidden" id="scrQuestion">
-    <div class="q-wrap">
+    <!-- لوحة الإجابة: الأنواع التفاعلية، وكل الأنواع على الهاتف عمودياً -->
+    <section class="apanel hidden" id="desk" aria-live="polite">
       <div class="q-top">
         <div class="q-meta"><span class="q-num" id="qNum"></span><span class="q-type" id="qType"></span></div>
         <div class="timer" id="timer">
@@ -125,19 +119,29 @@
       <h2 class="q-text" id="qText"></h2>
       <div class="q-body" id="qBody"></div>
       <div class="q-state hidden" id="qState"></div>
-    </div>
-  </section>
+      <!-- نتيجتي بعد كل سؤال (لا أرى صح أو خطأ الآخرين) -->
+      <div class="rv hidden" id="rv">
+        <div class="rv-me" id="rvMe"></div>
+        <div class="rv-correct" id="rvCorrect"></div>
+        <div class="rv-hint" data-t="rank_hint"></div>
+      </div>
+    </section>
 
-  <!-- النتيجة بعد كل سؤال -->
-  <section class="scr hidden" id="scrReveal">
-    <div class="rv">
-      <div class="rv-me" id="rvMe"></div>
-      <div class="rv-correct" id="rvCorrect"></div>
-      <h3 class="rv-h" data-t="top5"></h3>
-      <ol class="top5" id="top5"></ol>
-      <div class="rv-rank" id="rvRank"></div>
+    <!-- الهاتف عمودياً: نص الجدار والخمسة الأوائل بخط مقروء تحت القاعة -->
+    <section class="pinfo" id="pinfo">
+      <h2 id="piQ"></h2>
+      <p id="piSub"></p>
+      <div class="pi-top hidden" id="piTopBox"><div class="pi-h" data-t="top5"></div><ol id="piTop"></ol></div>
+    </section>
+
+    <!-- ترتيبي ونقاطي + التفاعلات -->
+    <div class="mine hidden" id="mine">
+      <span class="mine-score" id="myScore" data-t="my_seat"></span>
+      <button type="button" class="react" data-r="clap" aria-label="تصفيق">👏</button>
+      <button type="button" class="react" data-r="fire" aria-label="حماس">🔥</button>
+      <button type="button" class="react" data-r="wow" aria-label="دهشة">😮</button>
     </div>
-  </section>
+  </div>
 
   <!-- النهاية: منصة بثلاثة مراكز -->
   <section class="scr hidden" id="scrFinal">
@@ -159,6 +163,7 @@
 <script src="parts-svg.js"></script>
 <script src="bank-stage1.js"></script>
 <script src="challenges.js"></script>
+<script src="hall.js"></script>
 <script src="script.js"></script>
 </body>
 </html>

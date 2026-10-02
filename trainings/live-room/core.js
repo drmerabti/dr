@@ -53,6 +53,12 @@ var LR = (function () {
       final_rank: 'ترتيبك النهائي',
       session_over: 'انتهت الجلسة. شكراً لمشاركتك!',
       ranking: 'الترتيب المباشر',
+      rank_hint: 'الترتيب على الشاشة اليمنى، والأوائل في الصف الأمامي',
+      my_seat: 'مقعدك محاط بإطار أبيض',
+      hall_wait_sub: 'ستبدأ المسابقة بعد قليل',
+      pick_answer: 'اختر الإجابة',
+      on_device: 'أجب في اللوحة أسفل القاعة',
+      winner: 'الفائز:',
       tf_true: 'صح', tf_false: 'خطأ',
       confirm: 'تأكيد',
       typing_send: 'إرسال',
@@ -112,6 +118,13 @@ var LR = (function () {
     if (!w.length) return '?';
     return (w[0].charAt(0) + (w[1] ? w[1].charAt(0) : '')).toUpperCase();
   };
+  LR.firstName = function (name) { return String(name || '').trim().split(/\s+/)[0] || '؟'; };
+  // صورة الحساب (Google وغيره): https فقط
+  LR.photoOf = function (user) {
+    var u = user && (user.photoURL || (user.providerData || []).map(function (p) { return p && p.photoURL; }).filter(Boolean)[0]);
+    return u && /^https:\/\//.test(u) && u.length <= 600 ? u : null;
+  };
+  LR.REACTIONS = { clap: '👏', fire: '🔥', wow: '😮' };
   LR.hue = function (s) { var h = 0; s = String(s || ''); for (var i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) % 360; return h; };
   LR.pick = function (arr) { return arr[Math.floor(Math.random() * arr.length)]; };
   LR.shuffle = function (a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; };
@@ -224,6 +237,7 @@ var LR = (function () {
       try { Sound.ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {}
       if (Sound.ctx && Sound.ctx.state === 'suspended') Sound.ctx.resume();
       if (Sound._wantAmb) Sound.ambience(true);
+      applyHum();
     };
     ['pointerdown', 'keydown', 'touchstart'].forEach(function (ev) { window.addEventListener(ev, unlock, { capture: true, passive: true }); });
   };
@@ -232,6 +246,7 @@ var LR = (function () {
     try { localStorage.setItem('lr_muted', m ? '1' : '0'); } catch (e) {}
     if (m && Sound.amb) Sound.amb.pause();
     if (!m && Sound._wantAmb) Sound.ambience(true);
+    applyHum();
   };
   function tone(freq, dur, type, vol, when, slideTo) {
     var c = Sound.ctx; if (!c) return;
@@ -271,6 +286,47 @@ var LR = (function () {
     if (on && !Sound.muted && Sound.unlocked) Sound.amb.play().catch(function () {});
     else Sound.amb.pause();
   };
+  // همهمة القاعة: ترتفع قليلاً كلما زاد عدد الحاضرين (حتى 100) وتنخفض أثناء السؤال.
+  // تستعمل ambience.mp3 إن وُجد، وإلا ضجيجاً مولّداً مُرشَّحاً يشبه همس جمهور بعيد.
+  Sound.hum = function (n, live) { Sound._hum = { n: Math.max(0, n || 0), live: !!live }; applyHum(); };
+  function humLevel() {
+    var h = Sound._hum;
+    if (!h || !h.n || Sound.muted) return 0;
+    return (0.25 + 0.75 * Math.min(h.n, 100) / 100) * (h.live ? 0.45 : 1);
+  }
+  function applyHum() {
+    var lvl = humLevel(), f = Sound.files.ambience;
+    if (f && f.ok) {
+      if (!Sound.amb) { Sound.amb = f.el; Sound.amb.loop = true; }
+      Sound.amb.volume = Math.min(1, 0.06 + 0.3 * lvl);
+      if (lvl > 0 && Sound.unlocked) Sound.amb.play().catch(function () {});
+      else if (!Sound._wantAmb || Sound.muted) Sound.amb.pause();
+      return;
+    }
+    var c = Sound.ctx;
+    if (!c) return;
+    if (!Sound.humGain) {
+      try {
+        var len = c.sampleRate * 3, buf = c.createBuffer(1, len, c.sampleRate), d = buf.getChannelData(0), b0 = 0, b1 = 0, b2 = 0;
+        for (var i = 0; i < len; i++) { // ضجيج وردي تقريبي
+          var w = Math.random() * 2 - 1;
+          b0 = 0.99765 * b0 + w * 0.0990460; b1 = 0.96300 * b1 + w * 0.2965164; b2 = 0.57000 * b2 + w * 1.0526913;
+          d[i] = (b0 + b1 + b2 + w * 0.1848) * 0.18;
+        }
+        var src = c.createBufferSource(); src.buffer = buf; src.loop = true;
+        var bp = c.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 420; bp.Q.value = 0.7;
+        var lp = c.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 900;
+        var mod = c.createGain(); mod.gain.value = 0.8;
+        var lfo = c.createOscillator(), lfoG = c.createGain(); lfo.frequency.value = 0.23; lfoG.gain.value = 0.2;
+        lfo.connect(lfoG); lfoG.connect(mod.gain);
+        Sound.humGain = c.createGain(); Sound.humGain.gain.value = 0;
+        src.connect(bp); bp.connect(lp); lp.connect(mod); mod.connect(Sound.humGain); Sound.humGain.connect(c.destination);
+        src.start(); lfo.start();
+      } catch (e) { Sound.humGain = null; return; }
+    }
+    if (c.state === 'suspended') c.resume();
+    Sound.humGain.gain.setTargetAtTime(0.09 * lvl, c.currentTime, 0.8);
+  }
   LR.Sound = Sound;
 
   // زر الكتم (مشترك)

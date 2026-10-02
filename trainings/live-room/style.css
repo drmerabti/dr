@@ -309,3 +309,68 @@ button{ font-family:inherit; }
   .pd-who .nm{ font-size:.95rem; }
 }
 @media (prefers-reduced-motion:reduce){ .beam{ animation:none; } }
+
+/* ---------------- القاعة (صفحة المتدرب) ---------------- */
+.hall-area{ position:absolute; inset:0; z-index:1; display:flex; flex-direction:column; }
+#hallWrap{ flex:1; min-height:0; }
+.scr{ z-index:3; }
+/* بطاقات الدخول تظهر فوق القاعة المعتمة */
+.scr:not(#scrFinal){ background:rgba(2,5,13,.6); }
+#scrFinal{ background:rgba(2,5,13,.74); }
+
+/* لوحة الإجابة: فوق أسفل القاعة على الشاشات العريضة */
+.apanel{ position:absolute; z-index:2; left:50%; bottom:66px; transform:translateX(-50%); width:min(920px,94%); max-height:calc(100% - 84px); overflow-y:auto;
+  background:rgba(6,14,32,.92); border:1px solid #24426e; border-radius:18px; padding:14px 16px; display:flex; flex-direction:column; align-items:center; gap:12px;
+  backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); box-shadow:0 20px 60px rgba(0,0,0,.6); animation:deskIn .35s ease both; }
+@keyframes deskIn{ from{ opacity:0; transform:translate(-50%,12px); } to{ opacity:1; transform:translate(-50%,0); } }
+.apanel .q-top{ width:100%; }
+.apanel .q-num{ font-size:1rem; } .apanel .q-type{ font-size:.85rem; }
+.apanel .q-wrap{ gap:10px; }
+.apanel .timer{ width:74px; height:74px; }
+.apanel .timer b{ font-size:1.9rem; }
+.apanel .q-text{ font-size:clamp(1.1rem,2.2vw,1.45rem); }
+.apanel .arena{ min-height:240px; }
+.apanel.is-compact .q-body, .apanel.is-rv .q-body, .apanel.is-rv .q-state{ display:none; }
+.apanel.is-compact, .apanel.is-rv{ width:auto; min-width:min(420px,94%); padding:10px 18px; }
+.apanel.is-compact .q-top, .apanel.is-compact .q-text, .apanel.is-rv .q-top, .apanel.is-rv .q-text{ display:none !important; }
+.rv{ display:flex; flex-direction:column; align-items:center; gap:6px; text-align:center; }
+.apanel .rv-me{ font-size:1.25rem; }
+.apanel .rv-me .big{ font-size:2rem; }
+.apanel .rv-me small{ font-size:.95rem; }
+.apanel .rv-correct{ font-size:1rem; }
+.rv-hint{ color:var(--soft); font-size:.92rem; }
+
+/* ترتيبي ونقاطي + التفاعلات */
+.mine{ position:absolute; z-index:2; bottom:12px; left:50%; transform:translateX(-50%); display:flex; gap:8px; align-items:center; }
+.mine-score{ background:rgba(6,18,42,.85); border:1px solid #24426e; border-radius:20px; padding:7px 14px; font-weight:700; white-space:nowrap; }
+.mine-score b{ color:#FFE19A; font-family:'Inter',sans-serif; }
+.react{ width:44px; height:44px; flex:none; border-radius:50%; background:rgba(6,18,42,.85); border:1px solid #24426e; font-size:1.35rem; cursor:pointer; line-height:1; transition:transform .15s; }
+.react:hover{ border-color:#6cbcff; }
+.react.sent{ transform:scale(1.25); }
+.react:focus-visible{ outline:2px solid #fff; outline-offset:2px; }
+.av.ph{ overflow:hidden; background:#12233e; }
+.av.ph img{ width:100%; height:100%; object-fit:cover; display:block; }
+
+.pinfo{ display:none; }
+/* الشاشات الضيقة أو العمودية: القاعة في الأعلى، ثم الترتيب والتفاعلات، ثم لوحة الإجابة */
+@media (max-width:760px), (max-aspect-ratio:4/3){
+  body.in-hall:not(.desk-open) .pinfo{ display:flex; order:3; flex-direction:column; align-items:center; gap:8px; padding:14px 16px 24px; text-align:center; }
+  .pinfo h2{ font-size:1.3rem; font-weight:900; line-height:1.5; }
+  .pinfo p{ color:var(--soft); }
+  .pi-top{ width:min(420px,100%); margin-top:6px; }
+  .pi-h{ font-weight:900; color:#FFE7B0; margin-bottom:6px; }
+  .pi-top ol{ list-style:none; display:flex; flex-direction:column; gap:6px; }
+  .pi-top li{ display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:12px; background:rgba(255,255,255,.05); border:1px solid var(--line); }
+  .pi-top li.me{ border-color:#fff; }
+  .pi-top li .nm{ flex:1; text-align:start; font-size:1rem; }
+  .pi-top li b{ font-family:'Inter',sans-serif; color:#FFE19A; }
+  .hall-area{ overflow-y:auto; background:#02050d; }
+  #hallWrap{ flex:none; height:56.25vw; max-height:62%; }
+  .mine{ position:static; transform:none; order:2; flex:none; justify-content:center; flex-wrap:wrap; padding:8px; }
+  .mine-score{ font-size:.92rem; }
+  .apanel{ position:static; transform:none; order:3; width:100%; max-height:none; flex:1 0 auto; border-radius:0; border-width:1px 0 0; box-shadow:none; animation:none; }
+  .apanel.is-compact, .apanel.is-rv{ width:100%; }
+  .apanel .q-text{ font-size:clamp(1.15rem,4.6vw,1.6rem); }
+  .apanel .ch-opts{ gap:8px; }
+  .apanel .opt{ min-height:62px; }
+}

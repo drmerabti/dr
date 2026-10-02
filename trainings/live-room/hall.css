@@ -1,0 +1,128 @@
+/* ============================================================
+   hall.css — القاعة المشتركة (hall.js)
+   كل الأحجام بوحدات cqw لتتناسب القاعة مع أي عرض شاشة.
+   ============================================================ */
+.lrh-wrap{ position:relative; container-type:size; display:flex; align-items:center; justify-content:center; overflow:hidden;
+  background:radial-gradient(ellipse at 50% 35%,#0a1b38 0%,#02050d 70%); }
+.lrh{ --gold:#f3c449; --silver:#d3dbe6; --bronze:#d68a4b; --ok:#3ddc84; --bad:#ff6b5e;
+  position:relative; width:min(100cqw,177.78cqh); aspect-ratio:16/9; container-type:inline-size; overflow:hidden;
+  color:#e6f0ff; font-family:'Tajawal',Tahoma,Arial,sans-serif; user-select:none; -webkit-user-select:none; }
+.lrh .hidden{ display:none !important; }
+.lrh-svg{ position:absolute; inset:0; width:100%; height:100%; display:block; }
+
+.lrh .lamp{ fill:#d8ecff; animation:lrhTw 4s ease-in-out infinite; }
+@keyframes lrhTw{ 0%,100%{ opacity:.25; } 50%{ opacity:1; } }
+
+/* ---------- المقاعد ---------- */
+.lrh .seat{ transition:transform 1s cubic-bezier(.2,.8,.2,1), opacity .6s; cursor:default; }
+.lrh .seat.new, .lrh .seat.gone{ opacity:0; }
+.lrh .seat .chair{ fill:#12233e; stroke:#2c4b77; stroke-width:1.5; transition:fill .35s, stroke .35s; }
+.lrh .seat .ini{ fill:#8fa7cb; font:800 11px 'Tajawal',sans-serif; text-anchor:middle; dominant-baseline:central; pointer-events:none; }
+.lrh .seat.has-ph .ini{ display:none; }
+.lrh .seat .ph{ pointer-events:none; }
+.lrh .seat .tint{ fill:transparent; pointer-events:none; transition:fill .35s; }
+.lrh .seat .rim{ fill:none; stroke:transparent; stroke-width:2; pointer-events:none; transition:stroke .35s; }
+.lrh .seat .halo{ fill:none; stroke:#8fd4ff; stroke-width:2; opacity:0; transform-box:fill-box; transform-origin:center; }
+.lrh .seat .hand{ font-size:15px; text-anchor:middle; opacity:0; transition:opacity .3s; pointer-events:none; }
+.lrh .seat .medal{ font-size:17px; text-anchor:middle; dominant-baseline:central; pointer-events:none; }
+.lrh .seat .medal.num{ font:900 13px 'Inter',sans-serif; fill:#dfe9f8; paint-order:stroke; stroke:#0b1830; stroke-width:3px; }
+.lrh .seat .fn, .lrh .seat .full{ fill:#cfe2ff; font:700 10px 'Tajawal',sans-serif; text-anchor:middle; opacity:0; transition:opacity .3s; pointer-events:none;
+  paint-order:stroke; stroke:#02050d; stroke-width:3px; }
+/* الاسم الأول تحت كل مقعد إذا كان الحاضرون 30 أو أقل */
+.lrh.names .seat .fn, .lrh .seat.me .fn, .lrh .seat.top .fn{ opacity:1; }
+/* الاسم الكامل عند التمرير أو اللمس */
+.lrh .seat:hover .fn, .lrh .seat.peek .fn{ opacity:0; }
+.lrh .seat:hover .full, .lrh .seat.peek .full{ opacity:1; }
+
+/* أجاب: إضاءة + يد + موجة */
+.lrh .seat.answered .chair{ fill:#1c64b8; stroke:#a6dcff; }
+.lrh .seat.answered .ini{ fill:#fff; }
+.lrh .seat.answered .rim{ stroke:#a6dcff; }
+.lrh .seat.answered .tint{ fill:rgba(28,100,184,.35); }
+.lrh .seat.answered .hand{ opacity:1; }
+.lrh .seat.top .hand{ transform:translate(15px,8px); }
+.lrh .seat.wave .halo{ animation:lrhWave 1s ease-out; }
+@keyframes lrhWave{ 0%{ opacity:.95; transform:scale(1); } 100%{ opacity:0; transform:scale(2.4); } }
+
+/* مقعدي: إطار أبيض */
+.lrh .seat.me .chair, .lrh .seat.me .rim{ stroke:#fff; stroke-width:2.8; }
+
+/* الخمسة الأوائل */
+.lrh .seat.r1 .chair{ fill:#3b2c06; stroke:var(--gold); stroke-width:3; }
+.lrh .seat.r2 .chair{ fill:#262c36; stroke:var(--silver); stroke-width:3; }
+.lrh .seat.r3 .chair{ fill:#2f1d0c; stroke:var(--bronze); stroke-width:3; }
+.lrh .seat.r4 .chair, .lrh .seat.r5 .chair{ fill:#1a2a44; stroke:#9fb7da; stroke-width:2.5; }
+.lrh .seat.r1 .rim{ stroke:var(--gold); stroke-width:3; } .lrh .seat.r2 .rim{ stroke:var(--silver); stroke-width:3; } .lrh .seat.r3 .rim{ stroke:var(--bronze); stroke-width:3; }
+.lrh .seat.r1 .ini, .lrh .seat.r2 .ini, .lrh .seat.r3 .ini{ fill:#fff; }
+.lrh .seat.me.top .rim{ stroke:#fff; }
+
+/* صح / خطأ: للمدرّب فقط، ويختفي في وضع المشاركة */
+.lrh.verdicts .seat.ok .chair{ fill:#16663c; stroke:#7ff0ad; }
+.lrh.verdicts .seat.ok .rim{ stroke:#7ff0ad; stroke-width:2.6; }
+.lrh.verdicts .seat.ok .tint{ fill:rgba(22,102,60,.55); }
+.lrh.verdicts .seat.bad .chair{ fill:#6e2020; stroke:#ff9b90; }
+.lrh.verdicts .seat.bad .rim{ stroke:#ff9b90; stroke-width:2.6; }
+.lrh.verdicts .seat.bad .tint{ fill:rgba(110,32,32,.55); }
+
+.lrh .ghost{ fill:none; stroke:#1f3557; stroke-width:1.3; stroke-dasharray:3 3; opacity:.7; }
+.lrh .slot{ fill:none; stroke:#7a6420; stroke-width:1.5; stroke-dasharray:4 3; }
+.lrh .slotn{ fill:#7a6420; font:800 11px 'Tajawal',sans-serif; text-anchor:middle; dominant-baseline:central; }
+.lrh .ray{ stroke:#9fd8ff; stroke-width:2; stroke-linecap:round; fill:none; opacity:.85; }
+
+/* ---------- الجدار المضيء ---------- */
+.lrh-board{ position:absolute; left:35.94%; top:28.33%; width:28.13%; height:36.67%; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; padding:.9cqw 1cqw; gap:.45cqw; overflow:hidden; }
+.lrh-logo{ width:3.4cqw; height:3.4cqw; border-radius:50%; border:.15cqw solid #a9d6ff; box-shadow:0 0 1.5cqw #4fa3ff80; flex:none; object-fit:cover; }
+.lrh-img{ height:5cqw; flex:none; }
+.lrh-board.has-img .lrh-logo{ width:2.6cqw; height:2.6cqw; }
+.lrh-img svg{ height:100%; width:auto; }
+.lrh-q{ font-weight:800; font-size:1.7cqw; line-height:1.35; text-shadow:0 0 1cqw #000a; }
+.lrh-q.long{ font-size:1.3cqw; }
+.lrh-sub{ font-size:1cqw; color:#bcd6f5; }
+.lrh-sub:empty{ display:none; }
+.lrh-opts{ display:grid; grid-template-columns:1fr 1fr; gap:.45cqw; width:100%; }
+.lrh-opts:empty{ display:none; }
+.lrh-opts.one{ grid-template-columns:1fr; }
+.lrh-opt{ font:700 1.05cqw 'Tajawal',sans-serif; color:#eaf4ff; background:#0c2346cc; border:.1cqw solid #4b7fbf; border-radius:.5cqw; padding:.4cqw; line-height:1.3; }
+button.lrh-opt{ cursor:pointer; }
+button.lrh-opt:hover:not(:disabled){ background:#15386acc; }
+button.lrh-opt:focus-visible{ outline:.15cqw solid #fff; outline-offset:.1cqw; }
+.lrh-opt.pick{ background:#1c64b8; border-color:#a6dcff; }
+.lrh-opt.ok{ background:#16653c; border-color:#7ff0ad; }
+.lrh-opt:disabled{ cursor:default; }
+.lrh-opts.locked .lrh-opt:not(.pick):not(.ok){ opacity:.55; }
+/* العدّاد في زاوية الجدار حتى لا يزاحم السؤال والاختيارات */
+.lrh-timer{ position:absolute; top:.5cqw; left:.7cqw; font:800 2.4cqw/1 'Inter','Tajawal',sans-serif; color:#fff; letter-spacing:.03em; text-shadow:0 0 1cqw #4fa3ff; }
+.lrh-timer:empty{ display:none; }
+.lrh-timer.hot{ color:#ff8a7a; animation:lrhBeat .5s ease-in-out infinite; }
+@keyframes lrhBeat{ 50%{ transform:scale(1.12); } }
+
+/* ---------- الشاشتان الجانبيتان ---------- */
+.lrh-screen{ position:absolute; top:53.33%; width:11.25%; height:11.67%; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; padding:.4cqw; color:#cfe5ff; font-size:.8cqw; line-height:1.35; overflow:hidden; }
+.lrh-scrL{ left:22.5%; } .lrh-scrR{ left:66.25%; }
+.lrh-screen b{ font:800 1.6cqw 'Inter','Tajawal',sans-serif; color:#fff; }
+.lrh-dim{ opacity:.7; }
+.lrh .bar{ width:85%; height:.35cqw; background:#13294a; border-radius:1cqw; overflow:hidden; margin-top:.3cqw; }
+.lrh .bar i{ display:block; height:100%; width:0; background:linear-gradient(90deg,#6cbcff,#bfe6ff); transition:width .3s; }
+.lrh-top5{ list-style:none; margin:0; padding:0; width:100%; font-size:.72cqw; text-align:right; }
+.lrh-top5 li{ display:flex; justify-content:space-between; gap:.3cqw; white-space:nowrap; overflow:hidden; }
+.lrh-top5 li span:first-child{ overflow:hidden; text-overflow:ellipsis; }
+.lrh-top5 li.me{ color:#fff; font-weight:800; }
+
+/* ---------- الشريط العلوي والإشعارات ---------- */
+.lrh-hud{ position:absolute; top:1.1cqw; right:1.4cqw; left:1.4cqw; display:flex; gap:.6cqw; align-items:center; pointer-events:none; }
+.lrh-fill{ flex:1; }
+.lrh-chip{ background:#06122acc; border:.1cqw solid #24426e; border-radius:2cqw; padding:.35cqw 1cqw; font-size:.95cqw; font-weight:700; white-space:nowrap; }
+.lrh-chip .dot{ display:inline-block; width:.6cqw; height:.6cqw; border-radius:50%; background:#3ddc84; margin-inline-start:.4cqw; box-shadow:0 0 .6cqw #3ddc84; }
+.lrh-simchip{ background:#3a2a06cc; border-color:#a07a1c; color:#ffe19a; }
+.lrh-toasts{ position:absolute; top:4cqw; right:1.4cqw; display:flex; flex-direction:column; gap:.4cqw; align-items:flex-end; pointer-events:none; }
+.lrh-toast{ background:#0b1d3acc; border:.1cqw solid #2c4b77; border-radius:.6cqw; padding:.3cqw .8cqw; font-size:.9cqw; animation:lrhTin .4s ease-out; }
+@keyframes lrhTin{ from{ opacity:0; transform:translateX(-1cqw); } }
+.lrh-fly{ position:absolute; font-size:1.8cqw; pointer-events:none; animation:lrhFly 2s ease-out forwards; z-index:4; }
+@keyframes lrhFly{ 0%{ opacity:0; transform:translate(-50%,0) scale(.6); } 15%{ opacity:1; } 100%{ opacity:0; transform:translate(-50%,-7cqw) scale(1.2); } }
+
+@media (prefers-reduced-motion: reduce){
+  .lrh .lamp, .lrh-timer.hot, .lrh .seat.wave .halo{ animation:none; }
+  .lrh .seat{ transition:none; }
+}

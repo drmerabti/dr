@@ -9,9 +9,11 @@
   var H3 = 3 * 3600 * 1000;
 
   var A = {
-    user: null, code: null, meta: null, members: {}, presence: {}, scores: {}, current: null, qlog: {}, answersLive: {},
-    custom: [], stage: 1, type: 'all', showAnswers: false, revealing: {}, refs: [], ansRef: null, ending: false
+    user: null, code: null, meta: null, members: {}, presence: {}, scores: {}, mine: {}, current: null, qlog: {}, answersLive: {},
+    custom: [], stage: 1, type: 'all', search: '', showAnswers: false, revealing: {}, refs: [], ansRef: null, ending: false,
+    hall: null, secret: null, secretQid: null, share: false, loadedAt: 0
   };
+  try { A.share = localStorage.getItem('lr_share') === '1'; } catch (e) {}
   try { A.duration = Math.min(180, Math.max(5, parseInt(localStorage.getItem('lr_dur'), 10) || 20)); } catch (e) { A.duration = 20; }
 
   /* ================= البوابة ================= */
@@ -38,7 +40,9 @@
         if (/popup-blocked|operation-not-supported/.test(err.code || '')) window.fbAuth.signInWithRedirect(prov);
       });
     });
+    A.hall = LR_HALL.create($('hallWrap'), { admin: true });
     bindUi();
+    setShare(A.share);
     window.fbAuth.onAuthStateChanged(function (u) {
       A.user = u || null;
       if (!u) { gate('سجّل الدخول بحساب المدرّب', '', { login: true }); return; }
@@ -79,7 +83,7 @@
     if (saved) {
       LR.roomRef(saved, 'meta').once('value').then(function (s) {
         var m = s.val();
-        if (m && m.owner === A.user.uid && m.status === 'open' && LR.serverNow() < m.expiresAt) openRoom(saved);
+        if (m && m.owner === A.user.uid && (m.status === 'open' || m.sim) && LR.serverNow() < m.expiresAt) openRoom(saved);
         else { try { localStorage.removeItem('lr_admin_room'); } catch (e) {} showHome(); }
       }).catch(showHome);
     } else showHome();
@@ -109,32 +113,44 @@
     });
   }
 
-  function createRoom() {
+  function createRoom(opts) {
+    opts = opts || {};
     var btn = $('createBtn');
     btn.disabled = true; $('createErr').textContent = '';
     var tries = 0;
+    return new Promise(function (resolve, reject) {
     (function attempt() {
       tries++;
       var code = String(100000 + Math.floor(Math.random() * 900000));
       var ref = LR.roomRef(code, 'meta');
       ref.once('value').then(function (s) {
         if (s.exists()) throw { retry: true };
-        return ref.set({ owner: A.user.uid, createdAt: LR.SERVER_TS(), expiresAt: LR.serverNow() + H3 - 5000, status: 'open', locked: false });
+        var meta = { owner: A.user.uid, createdAt: LR.SERVER_TS(), expiresAt: LR.serverNow() + H3 - 5000, status: 'open', locked: !!opts.sim };
+        if (opts.sim) meta.sim = true; // غرفة المحاكاة: مقفلة ومميّزة ولا تُحفظ في التقارير
+        return ref.set(meta);
       }).then(function () {
         btn.disabled = false;
         openRoom(code);
+        resolve(code);
       }).catch(function (e) {
         if (tries < 8) { attempt(); return; }
         btn.disabled = false;
         $('createErr').textContent = 'تعذّر إنشاء الغرفة' + (e && e.code ? ' (' + e.code + ')' : '') + '.';
+        reject(e);
       });
     })();
+    });
   }
 
   /* ================= الغرفة ================= */
   function openRoom(code) {
     detach();
-    A.code = code; A.revealing = {}; A.ending = false;
+    A.code = code; A.revealing = {}; A.ending = false; A.saved = undefined; A.lastReport = null;
+    A.meta = null; A.current = null; A.scores = {}; A.mine = {}; A.qlog = {}; A.members = {}; A.presence = {}; A.secret = null; A.secretQid = null;
+    A.loadedAt = LR.serverNow();
+    A.hall.reset();
+    A.hall.setCode(code);
+    $('lockBtn').disabled = false; $('endBtn').disabled = false;
     try { localStorage.setItem('lr_admin_room', code); } catch (e) {}
     $('home').classList.add('hidden'); $('room').classList.remove('hidden');
     var url = roomUrl(code);
@@ -146,13 +162,25 @@
 
     var hostRef = LR.roomRef(code, 'host');
     listen(LR.db.ref('.info/connected'), function (s) { if (s.val() === true) hostRef.onDisconnect().remove().then(function () { hostRef.set(true); }); });
-    listen(LR.roomRef(code, 'meta'), function (s) { A.meta = s.val(); paintRoom(); });
-    listen(LR.roomRef(code, 'members'), function (s) { A.members = s.val() || {}; paintAttendees(); paintStandings(); paintLive(); });
-    listen(LR.roomRef(code, 'presence'), function (s) { A.presence = s.val() || {}; paintAttendees(); paintLive(); });
-    listen(LR.roomRef(code, 'scores'), function (s) { A.scores = s.val() || {}; paintStandings(); paintLive(); });
-    listen(LR.roomRef(code, 'qlog'), function (s) { A.qlog = s.val() || {}; paintBank(); });
-    listen(LR.roomRef(code, 'current'), function (s) { A.current = s.val(); watchAnswers(); paintLive(); paintBank(); });
+    listen(LR.roomRef(code, 'meta'), function (s) { A.meta = s.val(); paintRoom(); paintSim(); paintHall(); });
+    listen(LR.roomRef(code, 'members'), function (s) { A.members = s.val() || {}; paintAttendees(); paintStandings(); paintLive(); paintHall(); });
+    listen(LR.roomRef(code, 'presence'), function (s) { A.presence = s.val() || {}; paintAttendees(); paintLive(); paintHall(); });
+    listen(LR.roomRef(code, 'scores'), function (s) { A.scores = s.val() || {}; paintStandings(); paintLive(); paintHall(); });
+    listen(LR.roomRef(code, 'mine'), function (s) { A.mine = s.val() || {}; paintStandings(); paintLive(); });
+    listen(LR.roomRef(code, 'qlog'), function (s) { A.qlog = s.val() || {}; paintBank(); paintHall(); });
+    listen(LR.roomRef(code, 'current'), function (s) { A.current = s.val(); loadSecret(); watchAnswers(); paintLive(); paintBank(); paintHall(); Sim.onCurrent(); });
+    // التفاعلات 👏 🔥 😮 تطير فوق مقعد صاحبها
+    var rref = LR.roomRef(code, 'reactions');
+    var onReact = function (s) {
+      var r = s.val();
+      if (!r || !LR.REACTIONS[r.e] || r.ts < A.loadedAt - 4000 || LR.serverNow() - r.ts > 6000) return;
+      A.hall.fly(s.key, LR.REACTIONS[r.e]);
+    };
+    rref.on('child_added', onReact, function () {});
+    rref.on('child_changed', onReact, function () {});
+    A.refs.push(rref);
     paintBank();
+    paintSim();
   }
   function listen(ref, cb) { ref.on('value', cb, function () {}); A.refs.push(ref); }
   function detach() {
@@ -181,8 +209,11 @@
   function paintRoom() {
     var m = A.meta;
     if (!m) return;
-    $('lockBtn').textContent = m.locked ? '🔒 الغرفة مقفلة — فتح' : '🔓 قفل الغرفة';
+    $('lockBtn').textContent = m.locked ? '🔒 مقفلة — فتح' : '🔓 قفل الغرفة';
     $('lockBtn').classList.toggle('on', !!m.locked);
+    $('lockState').textContent = m.status === 'ended' ? 'منتهية' : m.locked ? 'مقفلة' : 'مفتوحة';
+    $('lockState').className = 'status' + (m.status === 'ended' ? ' ended' : m.locked ? ' locked' : '');
+    A.hall.setSim(!!m.sim);
     if (m.status === 'ended') showEnded();
   }
   // عدّاد انتهاء الصلاحية + الإنهاء التلقائي بعد 3 ساعات
@@ -202,8 +233,9 @@
     $('attCount').textContent = n + (uids.length > n ? ' / ' + uids.length : '');
     $('bcCount').textContent = n;
     $('attList').innerHTML = uids.length ? uids.map(function (u) {
-      var nm = A.members[u].name;
-      return '<div class="att' + (pres[u] ? '' : ' off') + '"><span class="av" style="--h:' + LR.hue(nm) + '">' + esc(LR.initials(nm)) + '<i></i></span><span class="nm">' + esc(nm) + '</span></div>';
+      var nm = A.members[u].name, ph = A.members[u].photo;
+      var av = ph ? '<span class="av ph"><img src="' + esc(ph) + '" alt="" referrerpolicy="no-referrer"><i></i></span>' : '<span class="av" style="--h:' + LR.hue(nm) + '">' + esc(LR.initials(nm)) + '<i></i></span>';
+      return '<div class="att' + (pres[u] ? '' : ' off') + '">' + av + '<span class="nm">' + esc(nm) + '</span></div>';
     }).join('') : '<p class="muted">لم يدخل أحد بعد. شارك الرابط أو الرمز في دردشة زووم.</p>';
   }
 
@@ -240,11 +272,16 @@
   function paintBank() {
     if (!$('stageTabs').children.length) paintTabs();
     var stage = window.LR_STAGES.filter(function (s) { return s.id === A.stage; })[0];
-    var list = allQuestions().filter(function (q) { return Number(q.stage) === A.stage && (A.type === 'all' || q.type === A.type); });
+    var needle = LR.norm(A.search).toLowerCase();
+    var list = allQuestions().filter(function (q) {
+      return Number(q.stage) === A.stage && (A.type === 'all' || q.type === A.type) &&
+        (!needle || LR.norm(LR.deskText(q.text) + ' ' + LR.qTitle(q) + ' ' + (q.options || []).join(' ')).toLowerCase().indexOf(needle) >= 0);
+    });
+    $('stopQBtn').disabled = !isLive();
     var sent = sentMap(), live = isLive(), ok = A.meta && A.meta.status === 'open';
     $('bankCount').textContent = list.length + ' سؤال';
     if (!list.length) {
-      $('bankList').innerHTML = '<div class="empty">' + (stage && stage.soon ? '⏳ بنك مرحلة «' + esc(stage.name) + '» قريباً.<br>يمكنك إضافة أسئلتك الخاصة لها الآن.' : 'لا توجد أسئلة بهذا النوع.') + '</div>';
+      $('bankList').innerHTML = '<div class="empty">' + (needle ? 'لا توجد أسئلة تطابق البحث.' : stage && stage.soon ? '⏳ بنك مرحلة «' + esc(stage.name) + '» قريباً.<br>يمكنك إضافة أسئلتك الخاصة لها الآن.' : 'لا توجد أسئلة بهذا النوع.') + '</div>';
       return;
     }
     $('bankList').innerHTML = list.map(function (q) {
@@ -275,13 +312,37 @@
 
   // متابعة الإجابات الواردة أثناء السؤال
   function watchAnswers() {
-    var c = A.current, want = c && c.state === 'live' ? c.qid : null;
+    var c = A.current, want = c && c.qid ? c.qid : null;
     if (A.ansQid === want) return;
     if (A.ansRef) { A.ansRef.off(); A.ansRef = null; }
     A.ansQid = want; A.answersLive = {};
+    paintVerdicts();
     if (!want) return;
     A.ansRef = LR.roomRef(A.code, 'answers/' + want);
-    A.ansRef.on('value', function (s) { A.answersLive = s.val() || {}; paintLive(); });
+    A.ansRef.on('value', function (s) { A.answersLive = s.val() || {}; paintLive(); paintVerdicts(); paintStandings(); });
+  }
+  // مفتاح السؤال الحالي (المدرّب وحده يقرؤه) لتلوين المقاعد لحظياً
+  function loadSecret() {
+    var c = A.current, qid = c && c.qid;
+    if (!qid) { A.secret = null; A.secretQid = null; return; }
+    if (A.secretQid === qid) return;
+    A.secretQid = qid; A.secret = null;
+    LR.db.ref('secrets/' + A.code + '/' + qid).once('value').then(function (s) {
+      if (A.secretQid !== qid) return;
+      A.secret = s.val();
+      paintVerdicts(); paintBoard(); paintStandings();
+    }).catch(function () {});
+  }
+  function verdict(uid) {
+    var a = A.answersLive[uid];
+    if (!a) return null;
+    if (!A.secret) return true;
+    return LR.grade(A.secret.type, a.v, A.secret.s) ? 'ok' : 'bad';
+  }
+  function paintVerdicts() {
+    var map = {};
+    Object.keys(A.answersLive).forEach(function (u) { map[u] = verdict(u); });
+    A.hall.setAnswered(map);
   }
 
   // التصحيح التلقائي عند انتهاء الوقت (+ هامش 1.2 ث لوصول آخر الإجابات)
@@ -289,8 +350,9 @@
     var c = A.current;
     if (!A.code || !c || c.state !== 'live' || !c.publishedAt) return;
     var left = c.publishedAt + c.duration * 1000 - LR.serverNow();
-    var el = $('liveTimer');
-    if (el) { var sec = Math.max(0, Math.ceil(left / 1000)); if (el.textContent !== String(sec)) el.textContent = sec; el.classList.toggle('hot', left <= 5000); }
+    var el = $('liveTimer'), sec = Math.max(0, Math.ceil(left / 1000));
+    if (el) { if (el.textContent !== String(sec)) el.textContent = sec; el.classList.toggle('hot', left <= 5000); }
+    A.hall.setTimer(left > 0 ? sec : '', left > 0 && left <= 5000);
     if (left <= -1200) reveal(c.qid);
   }, 200);
 
@@ -327,7 +389,10 @@
           last: last
         };
         next[u] = s;
-        up['rooms/' + code + '/scores/' + u] = s;
+        // صح/خطأ يبقى خاصاً: mine/{uid} يقرؤه صاحبه فقط، و scores للمجموع والزمن
+        var pub = {}; Object.keys(s).forEach(function (k) { if (k !== 'last') pub[k] = s[k]; });
+        up['rooms/' + code + '/scores/' + u] = pub;
+        up['rooms/' + code + '/mine/' + u] = last;
       });
       var top = LR.standings(next).slice(0, 5).map(function (x) { return { uid: x.uid, name: x.name, total: x.total, gain: gains[x.uid] || 0 }; });
       up['rooms/' + code + '/reveal/' + qid] = { correctText: (A.qlog[qid] && A.qlog[qid].correctText) || '', top: top, answered: nAns, correct: nOk, participants: uids.length };
@@ -337,6 +402,7 @@
       up['rooms/' + code + '/current/state'] = 'reveal';
       return LR.db.ref().update(up);
     }).then(function () {
+      A.hall.setTimer('');
       Sound.play('applause');
     }).catch(function (e) {
       delete A.revealing[qid];
@@ -373,7 +439,7 @@
       '<div class="live-sum">✓ ' + (log.correct || 0) + ' صحيحة · ' + (log.answered || 0) + ' أجابوا من ' + (log.participants || st.length) + (log.correctText ? ' · الإجابة: <b>' + esc(log.correctText) + '</b>' : '') + '</div>' +
       '<div class="tbl-wrap small"><table class="tbl"><thead><tr><th>#</th><th>الاسم</th><th>الإجابة</th><th>الزمن</th><th>النقاط</th><th>المجموع</th></tr></thead><tbody>' +
       st.map(function (r, i) {
-        var l = r.last && r.last.qid === c.qid ? r.last : null;
+        var l = lastOf(r.uid, c.qid);
         var res = !l || !l.answered ? '<span class="na">—</span>' : l.ok ? '<span class="yes">✓</span>' : '<span class="no">✗</span>';
         return '<tr><td>' + (i + 1) + '</td><td>' + esc(r.name) + '</td><td>' + res + '</td><td>' + (l && l.ms != null ? LR.fmtSec(l.ms) + ' ث' : '—') + '</td><td>' + (l ? '+' + l.pts : '0') + '</td><td><b>' + r.total + '</b></td></tr>';
       }).join('') + '</tbody></table></div>' +
@@ -381,14 +447,222 @@
     $('lobbyBtn').addEventListener('click', backToLobby);
   }
 
+  function lastOf(uid, qid) {
+    var l = A.mine[uid] || (A.scores[uid] && A.scores[uid].last);
+    return l && (!qid || l.qid === qid) ? l : null;
+  }
+  // الترتيب الكامل لحظياً: آخر سؤال يُلوَّن فور وصول الإجابة أثناء السؤال
   function paintStandings() {
     var st = LR.standings(A.scores);
     var asked = Object.keys(A.qlog).filter(function (k) { return A.qlog[k].answered != null; }).length;
-    $('standTbl').innerHTML = '<thead><tr><th>#</th><th>الاسم</th><th>النقاط</th><th>صحيحة</th><th>النسبة</th></tr></thead><tbody>' +
+    var c = A.current, live = isLive();
+    // من دخل ولم يُحتسب بعد يظهر في آخر الجدول
+    var seen = {};
+    st.forEach(function (r) { seen[r.uid] = true; });
+    Object.keys(A.members).forEach(function (u) { if (!seen[u]) st.push({ uid: u, name: A.members[u].name, total: 0, correct: 0, time: 0 }); });
+    $('standTbl').innerHTML = '<thead><tr><th>#</th><th>الاسم</th><th>آخر سؤال</th><th>الزمن</th><th>المجموع</th><th>صحيحة</th></tr></thead><tbody>' +
       (st.length ? st.map(function (r, i) {
-        var a = (A.scores[r.uid] && A.scores[r.uid].asked) || asked || 0;
-        return '<tr class="' + (i < 3 ? 'top' + (i + 1) : '') + '"><td>' + (i === 0 ? '👑' : i === 1 ? '🥈' : i === 2 ? '🥉' : i + 1) + '</td><td>' + esc(r.name) + '</td><td><b>' + r.total + '</b></td><td>' + r.correct + ' / ' + a + '</td><td>' + (a ? Math.round(r.correct / a * 100) : 0) + '%</td></tr>';
-      }).join('') : '<tr><td colspan="5" class="muted">يظهر الترتيب بعد السؤال الأول.</td></tr>') + '</tbody>';
+        var a = (A.scores[r.uid] && A.scores[r.uid].asked) || asked || 0, res = '—', tm = '—';
+        if (live && A.answersLive[r.uid]) {
+          var v = verdict(r.uid), ms = Math.max(0, A.answersLive[r.uid].ts - c.publishedAt);
+          res = v === 'ok' ? '<span class="yes">✓</span>' : v === 'bad' ? '<span class="no">✗</span>' : '<span class="na">…</span>';
+          tm = LR.fmtSec(ms) + ' ث';
+        } else {
+          var l = lastOf(r.uid);
+          if (l) { res = !l.answered ? '<span class="na">—</span>' : l.ok ? '<span class="yes">✓</span>' : '<span class="no">✗</span>'; tm = l.ms != null ? LR.fmtSec(l.ms) + ' ث' : '—'; }
+        }
+        return '<tr class="' + (i < 3 && r.total ? 'top' + (i + 1) : '') + (A.presence[r.uid] ? '' : ' off') + '"><td>' + (!r.total && !A.scores[r.uid] ? '' : i === 0 ? '👑' : i === 1 ? '🥈' : i === 2 ? '🥉' : i + 1) + '</td><td>' + esc(r.name) + '</td><td>' + res + '</td><td>' + tm + '</td><td><b>' + r.total + '</b></td><td>' + r.correct + ' / ' + a + '</td></tr>';
+      }).join('') : '<tr><td colspan="6" class="muted">لم يدخل أحد بعد.</td></tr>') + '</tbody>';
+  }
+
+  /* ================= القاعة ================= */
+  function paintHall() {
+    if (!A.code || !A.hall) return;
+    var present = presentUids();
+    var people = present.map(function (u) { var m = A.members[u]; return { uid: u, name: m.name, photo: m.photo, joinedAt: m.joinedAt }; });
+    var st = LR.standings(A.scores), started = st.length > 0;
+    var ended = A.meta && A.meta.status === 'ended', c = A.current;
+    var ph = ended ? 'reveal' : !c || !c.qid ? 'wait' : c.state === 'live' ? 'live' : 'reveal';
+    A.hall.update({
+      phase: ph, people: people,
+      ranking: started ? st.map(function (r) { return r.uid; }) : null,
+      top5: started ? st.slice(0, 5) : null
+    });
+    Sound.hum(present.length, ph === 'live');
+    paintBoard();
+  }
+  // جدار السؤال: المدرّب يرى الإجابة الصحيحة بالأخضر (إلا في وضع المشاركة قبل التصحيح)
+  function paintBoard() {
+    if (!A.hall) return;
+    var c = A.current, m = A.meta, b;
+    if (m && m.status === 'ended') {
+      var w = LR.standings(A.scores)[0];
+      b = { q: w ? '👑 ' + LR.t('winner') + ' ' + w.name : LR.t('session_over'), sub: 'انتهت الجلسة' };
+    } else if (!c || !c.qid) {
+      b = { q: A.share ? LR.t('waiting') : 'اختر سؤالاً من البنك وأرسله', sub: LR.t('hall_wait_sub') };
+    } else {
+      var p = c.payload || {}, log = A.qlog[c.qid] || {}, sec = A.secret && A.secretQid === c.qid ? A.secret : null;
+      var revealed = c.state === 'reveal', mark = revealed || !A.share, ty = window.LR_TYPES[p.type], okIdx = null;
+      b = { q: LR.deskText(p.text), sub: ty ? ty.icon + ' ' + ty.name : '' };
+      if (p.svg) b.img = p.svg;
+      if (sec && p.type === 'mcq') okIdx = Number(sec.s);
+      if (sec && p.type === 'tf') okIdx = sec.s === 'true' ? 0 : 1;
+      if (p.type === 'mcq') b.opts = p.options.map(function (o, i) { return { label: o, cls: mark && i === okIdx ? 'ok' : '' }; });
+      else if (p.type === 'tf') b.opts = [{ label: '✓ ' + LR.t('tf_true'), cls: mark && okIdx === 0 ? 'ok' : '' }, { label: '✗ ' + LR.t('tf_false'), cls: mark && okIdx === 1 ? 'ok' : '' }];
+      else {
+        b.sub += ' — يُنجزه المتدربون على أجهزتهم';
+        if (mark && log.correctText) b.opts = [{ label: '✓ ' + log.correctText, cls: 'ok' }];
+      }
+      if (revealed) {
+        if (log.correctText) b.q = LR.t('correct_was') + ' ' + log.correctText;
+        b.sub = 'أجاب صح ' + (log.correct || 0) + ' من ' + (log.participants || presentUids().length);
+      }
+    }
+    var key = JSON.stringify(b);
+    if (key === A.boardKey) return;
+    A.boardKey = key;
+    A.hall.setBoard(b);
+  }
+
+  /* ================= وضع المشاركة ================= */
+  // يخفي الشريط وألوان الصح والخطأ لمشاركة القاعة على زووم
+  function setShare(on) {
+    A.share = !!on;
+    document.body.classList.toggle('share', A.share);
+    if (A.hall) A.hall.setVerdicts(!A.share);
+    try { localStorage.setItem('lr_share', A.share ? '1' : '0'); } catch (e) {}
+    A.boardKey = null;
+    paintBoard();
+  }
+
+  /* ================= المحاكاة ================= */
+  // متدربون وهميون في غرفة تجريبية منفصلة ومقفلة (meta/sim)، يكتبهم متصفح المدرّب.
+  // لا تُحفظ في Firestore، و«إنهاء المحاكاة» يحذف الغرفة بالكامل.
+  var Sim = (function () {
+    var FIRST = ['أحمد', 'سارة', 'يوسف', 'مريم', 'خالد', 'أمينة', 'رياض', 'نور', 'سمير', 'ليلى', 'كريم', 'هاجر', 'عمر', 'إيمان', 'بلال', 'خديجة', 'وليد', 'سلمى', 'نبيل', 'رانيا', 'إسحاق', 'ياسمين', 'حمزة', 'فاطمة', 'زكرياء', 'دنيا', 'أيوب', 'شيماء', 'عادل', 'حنان'];
+    var LAST = ['بن علي', 'بوزيد', 'حداد', 'قاسمي', 'سعدي', 'عيساوي', 'بلقاسم', 'زروقي', 'منصوري', 'شريف'];
+    var X = { timers: [], joins: [], reactT: null, qid: null, pending: 0, idx: 0 };
+    function isSim() { return !!(A.meta && A.meta.sim); }
+    function bots() { return Object.keys(A.members).filter(function (u) { return u.indexOf('sim-') === 0; }); }
+    function botsPresent() { return presentUids().filter(function (u) { return u.indexOf('sim-') === 0; }); }
+    function pad(n) { return ('00' + n).slice(-3); }
+
+    function start(n) {
+      if (isSim() && A.meta.status === 'open') { add(n); return; }
+      if (isLive()) { alert('أنهِ السؤال الحالي أولاً، ثم ابدأ المحاكاة.'); return; }
+      if (A.code && A.meta && A.meta.status === 'open' && !A.meta.sim) {
+        if (!confirm('ستنتقل إلى غرفة تجريبية منفصلة. غرفتك الحالية تبقى مفتوحة وتعود إليها عند «إنهاء المحاكاة». متابعة؟')) return;
+        try { localStorage.setItem('lr_admin_real', A.code); } catch (e) {}
+      } else { try { localStorage.removeItem('lr_admin_real'); } catch (e) {} }
+      createRoom({ sim: true }).then(function () {
+        $('simSec').open = true;
+        setTimeout(function () { add(n); }, 400);
+      }).catch(function () { alert('تعذّر إنشاء غرفة المحاكاة.'); });
+    }
+    // دخول تدريجي حتى 100 متدرب
+    function add(n) {
+      var code = A.code, idx = Math.max(X.idx || 0, bots().length), added = 0;
+      var toAdd = Math.max(0, Math.min(LR_HALL.capacity - presentUids().length - X.pending, n));
+      (function step() {
+        if (A.code !== code || !isSim() || added >= toAdd) return;
+        idx++; added++; X.idx = idx;
+        var uid = 'sim-' + pad(idx), name = FIRST[(idx - 1) % FIRST.length] + ' ' + LAST[Math.floor((idx - 1) / FIRST.length) % LAST.length];
+        var pres = LR.roomRef(code, 'presence/' + uid);
+        X.pending++;
+        LR.roomRef(code, 'members/' + uid).set({ name: name, joinedAt: LR.SERVER_TS() }).then(function () {
+          pres.onDisconnect().remove(); // إغلاق صفحة المدرّب يُخرج الوهميين
+          return pres.set(true);
+        }).catch(function () {}).then(function () { X.pending--; });
+        X.joins.push(setTimeout(step, 80 + Math.random() * 90));
+      })();
+      startReactions();
+    }
+    function wrong(sec, p) {
+      switch (sec.type) {
+        case 'mcq': case 'rightclick': {
+          var n = (p.options || []).length || 4, k = Number(sec.s);
+          return String((k + 1 + Math.floor(Math.random() * (n - 1))) % n);
+        }
+        case 'tf': return sec.s === 'true' ? 'false' : 'true';
+        case 'click': case 'dblclick': return String(Math.max(0, Number(sec.s) - 1 - Math.floor(Math.random() * 2)));
+        case 'drag': { try { var a = JSON.parse(sec.s); if (a.length > 1) { var t = a[0]; a[0] = a[1]; a[1] = t; } return JSON.stringify(a); } catch (e) { return '[]'; } }
+        case 'typing': return String(sec.s).slice(0, -1) + 'خ';
+      }
+      return 'x';
+    }
+    // عند كل سؤال جديد: كل وهمي يجيب عشوائياً (≈90% يجيبون، ≈70% صواب)
+    function onCurrent() {
+      if (!isSim()) return;
+      var c = A.current;
+      if (!c || c.state !== 'live' || X.qid === c.qid) return;
+      X.qid = c.qid;
+      clearAnswers();
+      var code = A.code, qid = c.qid, durMs = c.duration * 1000;
+      LR.db.ref('secrets/' + code + '/' + qid).once('value').then(function (s) {
+        var sec = s.val();
+        if (!sec) return;
+        botsPresent().forEach(function (u) {
+          if (Math.random() > 0.9) return;
+          var at = 800 + Math.random() * Math.max(500, durMs - 2200);
+          X.timers.push(setTimeout(function () {
+            if (A.code !== code || !A.current || A.current.qid !== qid || A.current.state !== 'live' || !A.presence[u]) return;
+            var up = {};
+            up['answers/' + qid + '/' + u] = { v: Math.random() < 0.7 ? String(sec.s) : wrong(sec, c.payload || {}), ts: LR.SERVER_TS() };
+            up['answered/' + qid + '/' + u] = true;
+            LR.roomRef(code).update(up).catch(function () {});
+          }, at));
+        });
+      });
+    }
+    function startReactions() {
+      if (X.reactT) return;
+      var keys = Object.keys(LR.REACTIONS);
+      X.reactT = setInterval(function () {
+        if (!isSim() || A.meta.status !== 'open' || isLive()) return;
+        var b = botsPresent();
+        if (b.length < 3) return;
+        var u = b[Math.floor(Math.random() * b.length)];
+        LR.roomRef(A.code, 'reactions/' + u).set({ e: keys[Math.floor(Math.random() * keys.length)], ts: LR.SERVER_TS() }).catch(function () {});
+      }, 1800);
+    }
+    function clearAnswers() { X.timers.forEach(clearTimeout); X.timers = []; }
+    function stop() { X.joins.forEach(clearTimeout); X.joins = []; clearAnswers(); clearInterval(X.reactT); X.reactT = null; X.qid = null; X.idx = 0; }
+    // «إنهاء المحاكاة»: حذف غرفة المحاكاة بالكامل ثم العودة إلى الغرفة الحقيقية إن كانت مفتوحة
+    function end() {
+      if (!isSim() || !A.code) return;
+      if (!confirm('إنهاء المحاكاة وحذف الغرفة التجريبية وكل بياناتها؟')) return;
+      var code = A.code;
+      stop();
+      bots().forEach(function (u) { LR.roomRef(code, 'presence/' + u).onDisconnect().cancel(); });
+      LR.roomRef(code, 'host').onDisconnect().cancel();
+      detach();
+      var up = {};
+      up['rooms/' + code] = null;
+      up['secrets/' + code] = null;
+      LR.db.ref().update(up).then(function () {
+        var real = null;
+        try { real = localStorage.getItem('lr_admin_real'); localStorage.removeItem('lr_admin_real'); localStorage.removeItem('lr_admin_room'); } catch (e) {}
+        A.code = null; A.meta = null; A.current = null; A.scores = {}; A.mine = {}; A.qlog = {}; A.members = {}; A.presence = {};
+        A.hall.reset(); A.boardKey = null;
+        if (!real) { showHome(); return; }
+        return LR.roomRef(real, 'meta').once('value').then(function (s) {
+          var m = s.val();
+          if (m && m.owner === A.user.uid && m.status === 'open' && LR.serverNow() < m.expiresAt) openRoom(real);
+          else showHome();
+        });
+      }).then(function () {
+        if (A.hall) A.hall.toast('انتهت المحاكاة وحُذفت الغرفة التجريبية');
+      }).catch(function (e) { alert('تعذّر حذف غرفة المحاكاة: ' + (e.code || e.message)); });
+    }
+    return { start: start, end: end, stop: stop, onCurrent: onCurrent, isSim: isSim };
+  })();
+  function paintSim() {
+    var sim = Sim.isSim();
+    $('simEnd').classList.toggle('hidden', !sim);
+    $('simNote').textContent = sim
+      ? 'أنت في غرفة المحاكاة. أضف متدربين وهميين، أرسل الأسئلة كالمعتاد، ثم احذفها بـ«إنهاء المحاكاة».'
+      : 'متدربون وهميون يجيبون عشوائياً في غرفة تجريبية منفصلة ومقفلة. لا تُحفظ في التقارير.';
+    document.body.classList.toggle('sim', sim);
   }
 
   /* ================= إنهاء الجلسة ================= */
@@ -416,11 +690,14 @@
       LR.roomRef(code, 'host').onDisconnect().cancel();
       LR.roomRef(code, 'host').remove();
       // حفظ السجل النهائي في Firestore ثم حذف الإجابات الخام
+      // غرفة المحاكاة لا تُحفظ في التقارير أبداً
       var rec = A.lastReport;
+      if (A.meta && A.meta.sim) { A.saved = null; return; }
       return window.fbDb.collection('liveSessions').doc(code + '-' + rec.createdAt).set(rec).then(function () { A.saved = true; }, function (e) { A.saved = false; console.warn('Firestore save failed', e); });
     }).then(function () {
-      LR.db.ref().update(pathNull(['rooms/' + code + '/answers', 'rooms/' + code + '/results'])).catch(function () {});
-      try { localStorage.removeItem('lr_admin_room'); } catch (e) {}
+      LR.db.ref().update(pathNull(['rooms/' + code + '/answers', 'rooms/' + code + '/results', 'rooms/' + code + '/answered', 'rooms/' + code + '/reactions'])).catch(function () {});
+      if (!(A.meta && A.meta.sim)) { try { localStorage.removeItem('lr_admin_room'); } catch (e) {} }
+      Sim.stop();
       Sound.play('applause'); setTimeout(function () { Sound.play('cheer'); }, 500);
       showEnded();
     }).catch(function (e) {
@@ -450,13 +727,15 @@
     if (!A.code) return;
     $('liveBox').innerHTML = '<div class="live-idle"><div class="big-ico">🏆</div><h3>انتهت الجلسة</h3><p>الرمز <b dir="ltr">' + fmtCode(A.code) + '</b> لم يعد صالحاً. المتدربون يرون المنصة النهائية.</p>' +
       (A.saved === false ? '<p class="err">لم يُحفظ السجل في Firestore (تحقق من القواعد)، لكن يمكنك تحميل التقرير الآن.</p>' : '') +
+      (A.meta && A.meta.sim ? '<p class="muted">جلسة محاكاة: لم تُحفظ في التقارير. اضغط «إنهاء المحاكاة» لحذفها.</p>' : '') +
       '<button type="button" class="btn btn-gold btn-block" id="endPdf">⬇ تحميل تقرير الجلسة PDF</button>' +
       '<button type="button" class="btn btn-ghost btn-block" id="newRoom">＋ غرفة جديدة</button></div>';
     $('endPdf').addEventListener('click', function () { downloadReport(this); });
-    $('newRoom').addEventListener('click', function () { detach(); A.code = null; A.meta = null; A.current = null; A.scores = {}; A.qlog = {}; A.members = {}; A.presence = {}; showHome(); });
+    $('newRoom').addEventListener('click', function () { detach(); A.code = null; A.meta = null; A.current = null; A.scores = {}; A.mine = {}; A.qlog = {}; A.members = {}; A.presence = {}; showHome(); });
     $('lockBtn').disabled = true; $('endBtn').disabled = true;
     $('expText').textContent = 'انتهت الجلسة';
     paintBank();
+    paintHall();
   }
 
   /* ================= تقرير PDF ================= */
@@ -614,7 +893,13 @@
 
   /* ================= ربط الواجهة ================= */
   function bindUi() {
-    $('createBtn').addEventListener('click', createRoom);
+    $('createBtn').addEventListener('click', function () { try { localStorage.removeItem('lr_admin_real'); } catch (e) {} createRoom().catch(function () {}); });
+    $('shareBtn').addEventListener('click', function () { setShare(true); });
+    $('showTools').addEventListener('click', function () { setShare(false); });
+    $('bankSearch').addEventListener('input', function () { A.search = this.value; paintBank(); });
+    $('stopQBtn').addEventListener('click', function () { if (isLive()) reveal(A.current.qid); });
+    document.querySelectorAll('[data-sim]').forEach(function (b) { b.addEventListener('click', function () { Sim.start(Number(b.getAttribute('data-sim'))); }); });
+    $('simEnd').addEventListener('click', function () { Sim.end(); });
     $('copyBtn').addEventListener('click', function () { copy($('linkIn').value); var b = this; b.textContent = 'تم النسخ ✓'; setTimeout(function () { b.textContent = 'نسخ الرابط'; }, 1600); });
     $('bigCodeBtn').addEventListener('click', function () { $('bigCode').classList.remove('hidden'); });
     $('bcClose').addEventListener('click', function () { $('bigCode').classList.add('hidden'); });
