@@ -6,7 +6,7 @@
 // ============================================================
 var LR_HALL = (function () {
   var NS = 'http://www.w3.org/2000/svg';
-  var CX = 800, CY = 592, QX = 800, QY = 400, MAX = 100, NAMES_MAX = 30;
+  var CX = 800, CY = 592, QX = 800, QY = 400, MAX = 100, NAMES_MAX = 30, MIN_SEATS = 20;
   var MEDALS = ['👑', '🥈', '🥉', '4', '5'];
   var seq = 0;
 
@@ -46,7 +46,9 @@ var LR_HALL = (function () {
     '<radialGradient id="lrhBack{N}" cx="50%" cy="45%" r="70%"><stop offset="0" stop-color="#3a7fcc"/><stop offset=".55" stop-color="#174276"/><stop offset="1" stop-color="#0a2140"/></radialGradient>' +
     '<pattern id="lrhDots{N}" width="12" height="12" patternUnits="userSpaceOnUse"><circle cx="6" cy="6" r="1" fill="#9fd0ff" opacity=".25"/></pattern>' +
     '<linearGradient id="lrhFloor{N}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0a1830"/><stop offset="1" stop-color="#02050d"/></linearGradient>' +
-    '<linearGradient id="lrhBeam{N}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#cfe6ff" stop-opacity=".1"/><stop offset="1" stop-color="#cfe6ff" stop-opacity="0"/></linearGradient>' +
+    '<linearGradient id="lrhBeam{N}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e4f1ff" stop-opacity=".34"/><stop offset=".55" stop-color="#cfe6ff" stop-opacity=".12"/><stop offset="1" stop-color="#cfe6ff" stop-opacity=".03"/></linearGradient>' +
+    '<radialGradient id="lrhLamp{N}"><stop offset="0" stop-color="#ffffff"/><stop offset=".35" stop-color="#d8ecff"/><stop offset="1" stop-color="#7fb6ff" stop-opacity="0"/></radialGradient>' +
+    '<radialGradient id="lrhPool{N}" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#e4f1ff" stop-opacity=".22"/><stop offset="1" stop-color="#e4f1ff" stop-opacity="0"/></radialGradient>' +
     '<filter id="lrhGlow{N}" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="18"/></filter>' +
     '<filter id="lrhSoft{N}"><feGaussianBlur stdDeviation="1.6"/></filter>' +
     '<clipPath id="lrhClip{N}"><circle r="14"/></clipPath>' +
@@ -56,6 +58,7 @@ var LR_HALL = (function () {
     '<ellipse cx="800" cy="150" rx="430" ry="128" fill="#050d1f" stroke="#21416f" stroke-width="2"/>' +
     '<ellipse cx="800" cy="146" rx="310" ry="86" fill="#020611"/>' +
     '<ellipse cx="800" cy="118" rx="70" ry="22" fill="#0f2547"/>' +
+    '<ellipse cx="800" cy="118" rx="70" ry="22" fill="none" stroke="#9cc8ff" stroke-opacity=".45" stroke-width="1.5"/>' +
     '<g class="lrh-lamps"></g>' +
     '<path d="M60 340 Q300 255 560 300 L560 612 Q300 600 30 655 Z" fill="url(#lrhSlats{N})"/>' +
     '<path d="M60 340 Q300 255 560 300 L560 612 Q300 600 30 655 Z" fill="url(#lrhWall{N})"/>' +
@@ -67,10 +70,16 @@ var LR_HALL = (function () {
     '<rect x="575" y="255" width="450" height="330" fill="url(#lrhBack{N})"/>' +
     '<rect x="575" y="255" width="450" height="330" fill="url(#lrhDots{N})"/>' +
     '<rect x="575" y="255" width="450" height="330" fill="none" stroke="#7fbaff" stroke-opacity=".35"/>' +
+    // الكشاف: من الدائرة في وسط القبة نزولاً إلى جدار السؤال
+    '<g class="lrh-spot">' +
+    '<polygon points="772,124 828,124 1030,585 570,585" fill="url(#lrhBeam{N})"/>' +
+    '<ellipse cx="800" cy="440" rx="250" ry="170" fill="url(#lrhPool{N})"/>' +
+    '<ellipse class="lrh-lampglow" cx="800" cy="120" rx="110" ry="42" fill="url(#lrhLamp{N})" opacity=".55" filter="url(#lrhSoft{N})"/>' +
+    '<ellipse class="lrh-lampcore" cx="800" cy="121" rx="40" ry="11" fill="url(#lrhLamp{N})"/>' +
+    '</g>' +
     '<rect x="360" y="480" width="180" height="105" rx="4" fill="#050f20" stroke="#356aa8" stroke-width="2"/>' +
     '<rect x="1060" y="480" width="180" height="105" rx="4" fill="#050f20" stroke="#356aa8" stroke-width="2"/>' +
     '<rect x="0" y="600" width="1600" height="300" fill="url(#lrhFloor{N})"/>' +
-    '<polygon points="760,0 840,0 1010,610 590,610" fill="url(#lrhBeam{N})"/>' +
     '<rect x="690" y="590" width="220" height="16" rx="3" fill="#0d2241"/>' +
     '<rect x="735" y="570" width="130" height="22" rx="3" fill="#15345f" stroke="#3b6aa6"/>' +
     '<g class="lrh-rays"></g><g class="lrh-slots"></g><g class="lrh-ghosts"></g><g class="lrh-seats"></g>' +
@@ -235,10 +244,11 @@ var LR_HALL = (function () {
         });
       }
       rest.forEach(function (u) { place(H.seats[u], SLOTS[i] || SLOTS[SLOTS.length - 1]); i++; });
+      // القاعة لا تظهر فارغة: 20 كرسياً على الأقل في كل المراحل، والكراسي غير المشغولة خافتة ومنقطة.
+      // ما زاد عن 20 حاضراً يضيف كراسيه بنفسه.
       G.ghosts.innerHTML = '';
-      if (H.phase === 'wait') {
-        for (var j = i; j < Math.min(i + 8, SLOTS.length); j++) el('circle', { cx: SLOTS[j].x, cy: SLOTS[j].y, r: SLOTS[j].r, 'class': 'ghost' }, G.ghosts);
-      }
+      var frontUsed = uids.length - i, upto = Math.min(SLOTS.length, Math.max(i, MIN_SEATS - frontUsed));
+      for (var j = i; j < upto; j++) el('circle', { cx: SLOTS[j].x, cy: SLOTS[j].y, r: SLOTS[j].r, 'class': 'ghost' }, G.ghosts);
       G.slots.style.display = H.ranking ? 'none' : '';
       var n = uids.length;
       root.classList.toggle('names', n <= NAMES_MAX);

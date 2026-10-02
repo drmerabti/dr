@@ -163,7 +163,13 @@
     on(LR.roomRef(code, 'presence'), function (s) { S.presence = s.val() || {}; paintHall(); });
     on(LR.roomRef(code, 'scores'), function (s) { S.scores = s.val() || {}; paintHall(); });
     on(LR.roomRef(code, 'mine/' + uid), function (s) { S.mine = s.val(); });
-    on(LR.roomRef(code, 'host'), function (s) { S.host = !!s.val(); render(); });
+    // host: {on: المدرّب متصل, volume: مستوى صوت القاعة 0–100}. القيمة القديمة true تعني متصلاً.
+    on(LR.roomRef(code, 'host'), function (s) {
+      var h = s.val();
+      S.host = h === true || !!(h && h.on);
+      Sound.setLevel(h && typeof h.volume === 'number' ? h.volume : 100);
+      render();
+    });
     on(LR.roomRef(code, 'final'), function (s) { S.final = s.val(); render(); });
     on(LR.roomRef(code, 'current'), function (s) { S.current = s.val(); watchAnswered(); render(); });
     // التفاعلات: كل تغيير جديد يطير فوق مقعد صاحبه

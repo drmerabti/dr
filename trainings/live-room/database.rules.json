@@ -36,7 +36,12 @@
           "$other": { ".validate": false }
         },
 
-        "host": { ".read": "auth != null" },
+        "host": {
+          ".read": "auth != null",
+          "on": { ".validate": "newData.isBoolean()" },
+          "volume": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100" },
+          "$other": { ".validate": false }
+        },
         "current": { ".read": "auth != null" },
         "reveal": { ".read": "auth != null" },
         "scores": { ".read": "auth != null" },

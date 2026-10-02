@@ -374,3 +374,6 @@ button{ font-family:inherit; }
   .apanel .ch-opts{ gap:8px; }
   .apanel .opt{ min-height:62px; }
 }
+
+/* في القاعة الضوء يأتي من كشاف القبة نفسه (hall.js)، لا من أعلى الشاشة */
+body.in-hall .hall .spot{ display:none; }

@@ -14,6 +14,7 @@
     hall: null, secret: null, secretQid: null, share: false, loadedAt: 0
   };
   try { A.share = localStorage.getItem('lr_share') === '1'; } catch (e) {}
+  try { var v0 = parseInt(localStorage.getItem('lr_vol'), 10); A.volume = isNaN(v0) ? 100 : Math.min(100, Math.max(0, v0)); } catch (e) { A.volume = 100; }
   try { A.duration = Math.min(180, Math.max(5, parseInt(localStorage.getItem('lr_dur'), 10) || 20)); } catch (e) { A.duration = 20; }
 
   /* ================= البوابة ================= */
@@ -160,8 +161,14 @@
     $('bcUrl').textContent = url.replace(/^https?:\/\//, '');
     drawQr($('qr'), url, 5); drawQr($('bcQr'), url, 8);
 
-    var hostRef = LR.roomRef(code, 'host');
+    var hostRef = LR.roomRef(code, 'host/on');
     listen(LR.db.ref('.info/connected'), function (s) { if (s.val() === true) hostRef.onDisconnect().remove().then(function () { hostRef.set(true); }); });
+    // مستوى صوت القاعة: يبقى بعد انقطاع المدرّب، ويقرؤه المتدربون لحظياً
+    listen(LR.roomRef(code, 'host/volume'), function (s) {
+      var v = s.val();
+      if (typeof v !== 'number') { if (A.code === code) LR.roomRef(code, 'host/volume').set(A.volume); return; }
+      A.volume = v; paintVolume(); Sound.setLevel(v);
+    });
     listen(LR.roomRef(code, 'meta'), function (s) { A.meta = s.val(); paintRoom(); paintSim(); paintHall(); });
     listen(LR.roomRef(code, 'members'), function (s) { A.members = s.val() || {}; paintAttendees(); paintStandings(); paintLive(); paintHall(); });
     listen(LR.roomRef(code, 'presence'), function (s) { A.presence = s.val() || {}; paintAttendees(); paintLive(); paintHall(); });
@@ -634,7 +641,7 @@
       var code = A.code;
       stop();
       bots().forEach(function (u) { LR.roomRef(code, 'presence/' + u).onDisconnect().cancel(); });
-      LR.roomRef(code, 'host').onDisconnect().cancel();
+      LR.roomRef(code, 'host/on').onDisconnect().cancel();
       detach();
       var up = {};
       up['rooms/' + code] = null;
@@ -687,7 +694,7 @@
       A.lastReport = sessionRecord(code, meta, members, qlog, scores);
       return LR.db.ref().update(up);
     }).then(function () {
-      LR.roomRef(code, 'host').onDisconnect().cancel();
+      LR.roomRef(code, 'host/on').onDisconnect().cancel();
       LR.roomRef(code, 'host').remove();
       // حفظ السجل النهائي في Firestore ثم حذف الإجابات الخام
       // غرفة المحاكاة لا تُحفظ في التقارير أبداً
@@ -907,6 +914,8 @@
     $('endBtn').addEventListener('click', function () { endSession(false); });
     $('pdfBtn').addEventListener('click', function () { downloadReport(this); });
     $('answersToggle').addEventListener('click', function () { A.showAnswers = !A.showAnswers; this.classList.toggle('on', A.showAnswers); paintBank(); });
+    paintVolume();
+    $('volIn').addEventListener('input', function () { setVolume(parseInt(this.value, 10)); });
     $('durIn').value = A.duration;
     $('durIn').addEventListener('change', function () { setDur(parseInt(this.value, 10)); });
     document.querySelectorAll('.dur-b').forEach(function (b) { b.addEventListener('click', function () { setDur(A.duration + Number(b.getAttribute('data-d'))); }); });
@@ -925,6 +934,25 @@
     $('edType').addEventListener('change', function () { $('edText').value = ''; edFields(null); });
     $('edCancel').addEventListener('click', function () { $('editor').classList.add('hidden'); });
     $('edSave').addEventListener('click', saveEditor);
+  }
+  // شريط «مستوى صوت القاعة»: يُكتب في rooms/{code}/host/volume (كتابة مخففة كل 120 مللي ثانية أثناء السحب)
+  function paintVolume() {
+    var v = Math.round(A.volume);
+    if (document.activeElement !== $('volIn')) $('volIn').value = v;
+    $('volOut').textContent = v;
+    $('volIn').style.setProperty('--p', v + '%');
+  }
+  function setVolume(v) {
+    A.volume = Math.min(100, Math.max(0, isNaN(v) ? 100 : v));
+    try { localStorage.setItem('lr_vol', A.volume); } catch (e) {}
+    $('volOut').textContent = A.volume;
+    $('volIn').style.setProperty('--p', A.volume + '%');
+    Sound.setLevel(A.volume);
+    if (!A.code) return;
+    var code = A.code;
+    clearTimeout(A.volT);
+    var now = Date.now(), wait = Math.max(0, (A.volAt || 0) + 120 - now);
+    A.volT = setTimeout(function () { A.volAt = Date.now(); if (A.code === code) LR.roomRef(code, 'host/volume').set(A.volume).catch(function () {}); }, wait);
   }
   function setDur(v) {
     A.duration = Math.min(180, Math.max(5, v || 20));

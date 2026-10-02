@@ -217,7 +217,8 @@ var LR = (function () {
 
   /* ---------------- الأصوات ---------------- */
   // يبحث عن sounds/<name>.mp3؛ إن لم يوجد يستعمل صوتاً مولّداً بـ Web Audio أو الصمت.
-  var Sound = { muted: false, ctx: null, files: {}, unlocked: false, amb: null };
+  // كل الأصوات تمر عبر عقدة رئيسية واحدة Sound.master قيمتها = مستوى القاعة (يحدده المدرّب) × (0 إن كان المستخدم كاتماً، وإلا 1)
+  var Sound = { muted: false, ctx: null, files: {}, unlocked: false, amb: null, level: 1, master: null };
   var NAMES = ['ambience', 'bell', 'tick', 'heartbeat', 'correct', 'wrong', 'applause', 'cheer'];
   Sound.base = 'sounds/';
   Sound.init = function (base) {
@@ -234,8 +235,13 @@ var LR = (function () {
     var unlock = function () {
       if (Sound.unlocked) return;
       Sound.unlocked = true;
-      try { Sound.ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {}
-      if (Sound.ctx) { if (Sound.muted) Sound.ctx.suspend(); else if (Sound.ctx.state === 'suspended') Sound.ctx.resume(); }
+      try {
+        Sound.ctx = new (window.AudioContext || window.webkitAudioContext)();
+        Sound.master = Sound.ctx.createGain();
+        Sound.master.gain.value = gainNow();
+        Sound.master.connect(Sound.ctx.destination);
+      } catch (e) { Sound.master = null; }
+      if (Sound.ctx && Sound.ctx.state === 'suspended') Sound.ctx.resume();
       if (Sound._wantAmb) Sound.ambience(true);
       applyHum();
     };
@@ -244,12 +250,39 @@ var LR = (function () {
   Sound.setMuted = function (m) {
     Sound.muted = m;
     try { localStorage.setItem('lr_muted', m ? '1' : '0'); } catch (e) {}
-    // الكتم فوري: إيقاف محرك الصوت كله (الهمهمة والنغمات الجارية) لا خفضه تدريجياً
-    if (Sound.ctx) { if (m) Sound.ctx.suspend(); else Sound.ctx.resume(); }
+    applyMaster();
     if (m && Sound.amb) Sound.amb.pause();
     if (!m && Sound._wantAmb) Sound.ambience(true);
     applyHum();
   };
+  // مستوى صوت القاعة من المدرّب (0–100). لا يرفع الكتم الشخصي فوقه.
+  Sound.setLevel = function (pct) {
+    var v = Number(pct);
+    Sound.level = isFinite(v) ? Math.min(100, Math.max(0, v)) / 100 : 1;
+    applyMaster();
+  };
+  function gainNow() { return Sound.muted ? 0 : Sound.level; }
+  // التغيير فوري (ثابت زمني 15 مللي ثانية فقط لتفادي الطقطقة)
+  function applyMaster() {
+    var g = gainNow();
+    if (Sound.master) {
+      var c = Sound.ctx, p = Sound.master.gain;
+      p.cancelScheduledValues(c.currentTime);
+      p.setValueAtTime(p.value, c.currentTime);
+      p.setTargetAtTime(g, c.currentTime, 0.015);
+      if (c.state === 'suspended' && g > 0) c.resume();
+    } else if (Sound.amb) {
+      Sound.amb.volume = Math.min(1, (Sound._ambVol || 0.18) * g);
+    }
+  }
+  function out() { return Sound.master || Sound.ctx.destination; }
+  // يربط عنصر <audio> بالعقدة الرئيسية؛ دون Web Audio نضرب حجمه في المستوى
+  function route(a, vol) {
+    if (Sound.master) {
+      try { if (!a._lrSrc) { a._lrSrc = Sound.ctx.createMediaElementSource(a); a._lrSrc.connect(Sound.master); } a.volume = vol; return; } catch (e) {}
+    }
+    a.volume = Math.min(1, vol * gainNow());
+  }
   function tone(freq, dur, type, vol, when, slideTo) {
     var c = Sound.ctx; if (!c) return;
     var t0 = c.currentTime + (when || 0);
@@ -260,7 +293,7 @@ var LR = (function () {
     g.gain.setValueAtTime(0.0001, t0);
     g.gain.exponentialRampToValueAtTime(vol || 0.2, t0 + 0.01);
     g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
-    o.connect(g); g.connect(c.destination);
+    o.connect(g); g.connect(out());
     o.start(t0); o.stop(t0 + dur + 0.05);
   }
   var SYNTH = {
@@ -274,7 +307,7 @@ var LR = (function () {
     if (Sound.muted || !Sound.unlocked) return;
     var f = Sound.files[name];
     if (f && f.ok) {
-      try { var a = f.el.cloneNode(); a.volume = vol == null ? 1 : vol; a.play().catch(function () {}); } catch (e) {}
+      try { var a = f.el.cloneNode(); route(a, vol == null ? 1 : vol); a.play().catch(function () {}); } catch (e) {}
     } else if (SYNTH[name]) {
       if (Sound.ctx && Sound.ctx.state === 'suspended') Sound.ctx.resume();
       SYNTH[name]();
@@ -284,7 +317,8 @@ var LR = (function () {
     Sound._wantAmb = on;
     var f = Sound.files.ambience;
     if (!f || !f.ok) return; // لا بديل: صمت
-    if (!Sound.amb) { Sound.amb = f.el; Sound.amb.loop = true; Sound.amb.volume = 0.18; }
+    if (!Sound.amb) { Sound.amb = f.el; Sound.amb.loop = true; }
+    Sound._ambVol = 0.18; route(Sound.amb, 0.18);
     if (on && !Sound.muted && Sound.unlocked) Sound.amb.play().catch(function () {});
     else Sound.amb.pause();
   };
@@ -300,7 +334,7 @@ var LR = (function () {
     var lvl = humLevel(), f = Sound.files.ambience;
     if (f && f.ok) {
       if (!Sound.amb) { Sound.amb = f.el; Sound.amb.loop = true; }
-      Sound.amb.volume = Math.min(1, 0.06 + 0.3 * lvl);
+      Sound._ambVol = Math.min(1, 0.06 + 0.3 * lvl); route(Sound.amb, Sound._ambVol);
       if (lvl > 0 && Sound.unlocked) Sound.amb.play().catch(function () {});
       else if (!Sound._wantAmb || Sound.muted) Sound.amb.pause();
       return;
@@ -322,7 +356,7 @@ var LR = (function () {
         var lfo = c.createOscillator(), lfoG = c.createGain(); lfo.frequency.value = 0.23; lfoG.gain.value = 0.2;
         lfo.connect(lfoG); lfoG.connect(mod.gain);
         Sound.humGain = c.createGain(); Sound.humGain.gain.value = 0;
-        src.connect(bp); bp.connect(lp); lp.connect(mod); mod.connect(Sound.humGain); Sound.humGain.connect(c.destination);
+        src.connect(bp); bp.connect(lp); lp.connect(mod); mod.connect(Sound.humGain); Sound.humGain.connect(out());
         src.start(); lfo.start();
       } catch (e) { Sound.humGain = null; return; }
     }
