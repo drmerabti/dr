@@ -299,6 +299,7 @@ var LR_HALL = (function () {
       q('.lrh-board').classList.toggle('has-img', !!b.img);
       var box = q('.lrh-opts');
       box.innerHTML = '';
+      box.classList.remove('locked'); // قفل السؤال السابق لا ينتقل إلى الجديد
       box.classList.toggle('one', !!(b.opts && b.opts.length > 4));
       (b.opts || []).forEach(function (o, i) {
         var e = document.createElement(b.onPick ? 'button' : 'span');

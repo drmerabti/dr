@@ -235,7 +235,7 @@ var LR = (function () {
       if (Sound.unlocked) return;
       Sound.unlocked = true;
       try { Sound.ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {}
-      if (Sound.ctx && Sound.ctx.state === 'suspended') Sound.ctx.resume();
+      if (Sound.ctx) { if (Sound.muted) Sound.ctx.suspend(); else if (Sound.ctx.state === 'suspended') Sound.ctx.resume(); }
       if (Sound._wantAmb) Sound.ambience(true);
       applyHum();
     };
@@ -244,6 +244,8 @@ var LR = (function () {
   Sound.setMuted = function (m) {
     Sound.muted = m;
     try { localStorage.setItem('lr_muted', m ? '1' : '0'); } catch (e) {}
+    // الكتم فوري: إيقاف محرك الصوت كله (الهمهمة والنغمات الجارية) لا خفضه تدريجياً
+    if (Sound.ctx) { if (m) Sound.ctx.suspend(); else Sound.ctx.resume(); }
     if (m && Sound.amb) Sound.amb.pause();
     if (!m && Sound._wantAmb) Sound.ambience(true);
     applyHum();
@@ -324,6 +326,7 @@ var LR = (function () {
         src.start(); lfo.start();
       } catch (e) { Sound.humGain = null; return; }
     }
+    if (Sound.muted) { Sound.humGain.gain.cancelScheduledValues(c.currentTime); Sound.humGain.gain.setValueAtTime(0, c.currentTime); return; }
     if (c.state === 'suspended') c.resume();
     Sound.humGain.gain.setTargetAtTime(0.09 * lvl, c.currentTime, 0.8);
   }
