@@ -2,13 +2,12 @@
    hall.css — القاعة المشتركة (hall.js)
    كل الأحجام بوحدات cqw لتتناسب القاعة مع أي عرض شاشة.
    ============================================================ */
-.lrh-wrap{ position:relative; container-type:size; display:flex; align-items:center; justify-content:center; overflow:hidden;
-  background:radial-gradient(ellipse at 50% 35%,#0a1b38 0%,#02050d 70%); }
+.lrh-wrap{ position:relative; container-type:size; overflow:hidden; background:#03081a; }
 .lrh{ --gold:#f3c449; --silver:#d3dbe6; --bronze:#d68a4b; --ok:#3ddc84; --bad:#ff6b5e;
-  position:relative; width:min(100cqw,177.78cqh); aspect-ratio:16/9; container-type:inline-size; overflow:hidden;
+  position:absolute; left:0; top:0; width:min(100cqw,177.78cqh); aspect-ratio:16/9; container-type:inline-size; overflow:visible;
   color:#e6f0ff; font-family:'Tajawal',Tahoma,Arial,sans-serif; user-select:none; -webkit-user-select:none; }
 .lrh .hidden{ display:none !important; }
-.lrh-svg{ position:absolute; inset:0; width:100%; height:100%; display:block; }
+.lrh-svg{ position:absolute; inset:0; width:100%; height:100%; display:block; overflow:visible; }
 
 .lrh .lamp{ fill:#d8ecff; animation:lrhTw 4s ease-in-out infinite; }
 @keyframes lrhTw{ 0%,100%{ opacity:.25; } 50%{ opacity:1; } }
@@ -115,12 +114,12 @@ button.lrh-opt:focus-visible{ outline:.15cqw solid #fff; outline-offset:.1cqw; }
 .lrh-top5 li.me{ color:#fff; font-weight:800; }
 
 /* ---------- الشريط العلوي والإشعارات ---------- */
-.lrh-hud{ position:absolute; top:1.1cqw; right:1.4cqw; left:1.4cqw; display:flex; gap:.6cqw; align-items:center; pointer-events:none; }
+.lrh-hud{ position:absolute; top:calc(var(--vt,0px) + 1.1cqw); right:calc(var(--vr,0px) + 1.4cqw); left:calc(var(--vl,0px) + 1.4cqw); display:flex; gap:.6cqw; align-items:center; pointer-events:none; }
 .lrh-fill{ flex:1; }
 .lrh-chip{ background:#06122acc; border:.1cqw solid #24426e; border-radius:2cqw; padding:.35cqw 1cqw; font-size:.95cqw; font-weight:700; white-space:nowrap; }
 .lrh-chip .dot{ display:inline-block; width:.6cqw; height:.6cqw; border-radius:50%; background:#3ddc84; margin-inline-start:.4cqw; box-shadow:0 0 .6cqw #3ddc84; }
 .lrh-simchip{ background:#3a2a06cc; border-color:#a07a1c; color:#ffe19a; }
-.lrh-toasts{ position:absolute; top:4cqw; right:1.4cqw; display:flex; flex-direction:column; gap:.4cqw; align-items:flex-end; pointer-events:none; }
+.lrh-toasts{ position:absolute; top:calc(var(--vt,0px) + 4cqw); right:calc(var(--vr,0px) + 1.4cqw); display:flex; flex-direction:column; gap:.4cqw; align-items:flex-end; pointer-events:none; }
 .lrh-toast{ background:#0b1d3acc; border:.1cqw solid #2c4b77; border-radius:.6cqw; padding:.3cqw .8cqw; font-size:.9cqw; animation:lrhTin .4s ease-out; }
 @keyframes lrhTin{ from{ opacity:0; transform:translateX(-1cqw); } }
 .lrh-fly{ position:absolute; font-size:1.8cqw; pointer-events:none; animation:lrhFly 2s ease-out forwards; z-index:4; }

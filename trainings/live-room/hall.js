@@ -42,7 +42,7 @@ var LR_HALL = (function () {
     '<defs>' +
     '<radialGradient id="lrhCeil{N}" cx="50%" cy="10%" r="80%"><stop offset="0" stop-color="#14305a"/><stop offset="1" stop-color="#040b19"/></radialGradient>' +
     '<pattern id="lrhSlats{N}" width="9" height="10" patternUnits="userSpaceOnUse"><rect width="9" height="10" fill="#0b1c38"/><rect width="2" height="10" fill="#183663"/></pattern>' +
-    '<linearGradient id="lrhWall{N}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5aa0ff" stop-opacity=".18"/><stop offset=".6" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".5"/></linearGradient>' +
+    '<linearGradient id="lrhWall{N}" gradientUnits="userSpaceOnUse" x1="0" y1="300" x2="0" y2="655"><stop offset="0" stop-color="#5aa0ff" stop-opacity=".18"/><stop offset=".6" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".5"/></linearGradient>' +
     '<radialGradient id="lrhBack{N}" cx="50%" cy="45%" r="70%"><stop offset="0" stop-color="#3a7fcc"/><stop offset=".55" stop-color="#174276"/><stop offset="1" stop-color="#0a2140"/></radialGradient>' +
     '<pattern id="lrhDots{N}" width="12" height="12" patternUnits="userSpaceOnUse"><circle cx="6" cy="6" r="1" fill="#9fd0ff" opacity=".25"/></pattern>' +
     '<linearGradient id="lrhFloor{N}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0a1830"/><stop offset="1" stop-color="#02050d"/></linearGradient>' +
@@ -53,19 +53,27 @@ var LR_HALL = (function () {
     '<filter id="lrhSoft{N}"><feGaussianBlur stdDeviation="1.6"/></filter>' +
     '<clipPath id="lrhClip{N}"><circle r="14"/></clipPath>' +
     '</defs>' +
-    '<rect width="1600" height="900" fill="#03081a"/>' +
+    // المشهد ممتد خارج إطار 1600×900 (سقف وجدران وأرضية) ليملأ أي شاشة بلا فراغ أسود
+    '<rect x="-2400" y="-1600" width="6400" height="4100" fill="#03081a"/>' +
+    '<ellipse cx="800" cy="60" rx="2600" ry="700" fill="#061229" opacity=".7"/>' +
     '<ellipse cx="800" cy="60" rx="820" ry="360" fill="url(#lrhCeil{N})"/>' +
     '<ellipse cx="800" cy="150" rx="430" ry="128" fill="#050d1f" stroke="#21416f" stroke-width="2"/>' +
     '<ellipse cx="800" cy="146" rx="310" ry="86" fill="#020611"/>' +
     '<ellipse cx="800" cy="118" rx="70" ry="22" fill="#0f2547"/>' +
     '<ellipse cx="800" cy="118" rx="70" ry="22" fill="none" stroke="#9cc8ff" stroke-opacity=".45" stroke-width="1.5"/>' +
     '<g class="lrh-lamps"></g>' +
+    '<path d="M-2400 150 Q-1100 250 61 340 L31 656 Q-1100 720 -2400 800 Z" fill="url(#lrhSlats{N})"/>' +
+    '<path d="M-2400 150 Q-1100 250 61 340 L31 656 Q-1100 720 -2400 800 Z" fill="url(#lrhWall{N})"/>' +
+    '<path d="M4000 150 Q2700 250 1539 340 L1569 656 Q2700 720 4000 800 Z" fill="url(#lrhSlats{N})"/>' +
+    '<path d="M4000 150 Q2700 250 1539 340 L1569 656 Q2700 720 4000 800 Z" fill="url(#lrhWall{N})"/>' +
     '<path d="M60 340 Q300 255 560 300 L560 612 Q300 600 30 655 Z" fill="url(#lrhSlats{N})"/>' +
     '<path d="M60 340 Q300 255 560 300 L560 612 Q300 600 30 655 Z" fill="url(#lrhWall{N})"/>' +
     '<path d="M1540 340 Q1300 255 1040 300 L1040 612 Q1300 600 1570 655 Z" fill="url(#lrhSlats{N})"/>' +
     '<path d="M1540 340 Q1300 255 1040 300 L1040 612 Q1300 600 1570 655 Z" fill="url(#lrhWall{N})"/>' +
     '<path d="M70 448 Q300 410 560 432 L560 462 Q300 444 64 482 Z" fill="#040b18" opacity=".9"/>' +
     '<path d="M1530 448 Q1300 410 1040 432 L1040 462 Q1300 444 1536 482 Z" fill="#040b18" opacity=".9"/>' +
+    '<path d="M-2400 500 Q-1100 470 84 447 L78 483 Q-1100 505 -2400 540 Z" fill="#040b18" opacity=".9"/>' +
+    '<path d="M4000 500 Q2700 470 1516 447 L1522 483 Q2700 505 4000 540 Z" fill="#040b18" opacity=".9"/>' +
     '<ellipse class="lrh-wallglow" cx="800" cy="420" rx="300" ry="220" fill="#2f74c4" opacity=".35" filter="url(#lrhGlow{N})"/>' +
     '<rect x="575" y="255" width="450" height="330" fill="url(#lrhBack{N})"/>' +
     '<rect x="575" y="255" width="450" height="330" fill="url(#lrhDots{N})"/>' +
@@ -79,7 +87,8 @@ var LR_HALL = (function () {
     '</g>' +
     '<rect x="360" y="480" width="180" height="105" rx="4" fill="#050f20" stroke="#356aa8" stroke-width="2"/>' +
     '<rect x="1060" y="480" width="180" height="105" rx="4" fill="#050f20" stroke="#356aa8" stroke-width="2"/>' +
-    '<rect x="0" y="600" width="1600" height="300" fill="url(#lrhFloor{N})"/>' +
+    '<rect x="-2400" y="600" width="6400" height="300" fill="url(#lrhFloor{N})"/>' +
+    '<rect x="-2400" y="899" width="6400" height="1600" fill="#02050d"/>' +
     '<rect x="690" y="590" width="220" height="16" rx="3" fill="#0d2241"/>' +
     '<rect x="735" y="570" width="130" height="22" rx="3" fill="#15345f" stroke="#3b6aa6"/>' +
     '<g class="lrh-rays"></g><g class="lrh-slots"></g><g class="lrh-ghosts"></g><g class="lrh-seats"></g>' +
@@ -99,6 +108,29 @@ var LR_HALL = (function () {
       '<span class="lrh-fill"></span><span class="lrh-chip"><b class="lrh-cnt">0</b> في القاعة<span class="dot"></span></span></div>' +
       '<div class="lrh-toasts"></div>';
     host.appendChild(root);
+    // ملء الشاشة بطريقة cover، مع إبقاء المنطقة المهمة (الجدار والعدّاد والشاشتان والصف الأمامي) ظاهرة دائماً.
+    // إن لم تتسع لها cover نصغّر قليلاً، والمشهد الممتد يملأ ما حولها.
+    var SAFE = { x0: 340, x1: 1260, y0: 230, y1: 670 };
+    function fit() {
+      var W = host.clientWidth, Hh = host.clientHeight;
+      if (!W || !Hh) return;
+      var s = Math.min(Math.max(W / 1600, Hh / 900), W / (SAFE.x1 - SAFE.x0), Hh / (SAFE.y1 - SAFE.y0));
+      var w = 1600 * s, h = 900 * s;
+      function off(view, full, a, b) {
+        var o = (view - full) / 2;                 // التوسيط
+        return Math.min(Math.max(o, -a * s), view - b * s); // ثم إدخال المنطقة المهمة إن خرجت
+      }
+      var l = off(W, w, SAFE.x0, SAFE.x1), t = off(Hh, h, SAFE.y0, SAFE.y1);
+      root.style.width = w + 'px'; root.style.height = h + 'px';
+      root.style.left = l + 'px'; root.style.top = t + 'px';
+      // الحواف الظاهرة لتثبيت الشارات والإشعارات في زوايا الشاشة لا في زوايا المشهد
+      root.style.setProperty('--vl', Math.max(0, -l) + 'px');
+      root.style.setProperty('--vt', Math.max(0, -t) + 'px');
+      root.style.setProperty('--vr', Math.max(0, l + w - W) + 'px');
+    }
+    fit();
+    if (window.ResizeObserver) new ResizeObserver(fit).observe(host);
+    else window.addEventListener('resize', fit);
     var q = function (s) { return root.querySelector(s); };
     var svg = q('.lrh-svg'), G = { lamps: q('.lrh-lamps'), rays: q('.lrh-rays'), slots: q('.lrh-slots'), ghosts: q('.lrh-ghosts'), seats: q('.lrh-seats') };
 
@@ -111,8 +143,8 @@ var LR_HALL = (function () {
       }
     }
     ring(405, 118, 150, 74, 2.7); ring(350, 98, 150, 60, 2.2); ring(480, 148, 150, 42, 1.6);
-    for (var i = 0; i < 34; i++) {
-      var x = 120 + Math.random() * 1360, y = 30 + Math.random() * 250;
+    for (var i = 0; i < 110; i++) {
+      var x = -1400 + Math.random() * 4400, y = -500 + Math.random() * 780;
       if (Math.abs(x - 800) < 480 && y < 290) continue;
       el('circle', { cx: x, cy: y, r: 1.6, 'class': 'lamp' }, G.lamps).style.animationDelay = (Math.random() * 4).toFixed(2) + 's';
     }
