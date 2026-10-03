@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>نتائج الاستبيان — أكاديمية مرابطي</title>
+<title>نتائج الاستبيان — د. سفيان مرابطي</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="icon" type="image/x-icon" href="../../favicon.ico">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../style.css">
 <link rel="stylesheet" href="style.css">
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
@@ -16,33 +16,38 @@
 <body>
 
 <header class="topbar">
-  <a href="../../index.html" class="brand-logo" title="أكاديمية مرابطي">
-    <img src="../../apple-touch-icon.png" alt="أكاديمية مرابطي">
-  </a>
-  <a class="icon-btn" href="index.html" data-tiptext="استبياناتي" aria-label="رجوع">
-    <svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
-  </a>
-  <span class="tool-name">نتائج الاستبيان</span>
+  <div class="topbar-inner">
+    <a href="../../index.html" class="brand">د. سفيان مرابطي</a>
+  </div>
 </header>
 
+<nav class="breadcrumbs">
+  <a href="../../tools.html" class="back-arrow" title="رجوع للأدوات">→</a>
+  <a href="../../index.html" class="crumb-home">الرئيسية</a>
+  <span> / </span>
+  <a href="../../tools.html" class="crumb-home">الأدوات</a>
+  <span> / نتائج الاستبيان</span>
+</nav>
 
 <main id="app">
-  <section class="page-wrap results-page">
+  <section class="view">
     <div id="resultsWrap" class="survey-builder"></div>
 
     <div id="exportModal" class="sb-modal hidden">
       <div class="sb-modal-box" style="text-align:right;">
         <h3 style="text-align:center;">اختر الأسئلة المراد تصديرها</h3>
         <div id="exportChecklist" style="max-height:300px;overflow:auto;margin:14px 0;display:flex;flex-direction:column;gap:8px;"></div>
-        <button id="confirmExportBtn" class="sb-publish-btn">تحميل ملف Excel</button>
+        <button id="confirmExportBtn" class="sb-publish-btn">تحميل ملف Excel (CSV)</button>
         <button id="closeExportModal" class="sb-modal-close" style="display:block;margin:12px auto 0;">إلغاء</button>
       </div>
     </div>
   </section>
 </main>
 
+<footer class="site-footer">
+  <p>© 2026 د. سفيان مرابطي</p>
+</footer>
 
-<script src="docx-lite.js"></script>
 <script src="results.js"></script>
 </body>
 </html>
