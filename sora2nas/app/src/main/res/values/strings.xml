@@ -180,4 +180,11 @@
     <string name="licenses_text">Tesseract OCR و tessdata_best (Apache 2.0)\nTesseract4Android (Apache 2.0)\nOpenCV (Apache 2.0)\nPdfBox-Android (Apache 2.0)\nML Kit (شروط Google)\nخطوط Noto و Tajawal (SIL OFL 1.1)</string>
     <string name="hint_hold">ثبّت الهاتف قليلاً…</string>
     <string name="hint_ready">جاهز، التقط الصورة الآن</string>
+    <string name="share_via">مشاركة عبر</string>
+    <string name="share_more">المزيد</string>
+    <string name="share_email">البريد</string>
+    <string name="share_whatsapp">واتساب</string>
+    <string name="share_messenger">ماسنجر</string>
+    <string name="share_telegram">تيليغرام</string>
+    <string name="share_failed">تعذّرت المشاركة</string>
 </resources>

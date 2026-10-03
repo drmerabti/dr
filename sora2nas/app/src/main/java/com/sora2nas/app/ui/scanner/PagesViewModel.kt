@@ -33,6 +33,9 @@ data class ExportUi(
     /** Where the file(s) went, e.g. "Documents/sora2nas/scan_2026.pdf". */
     val savedPath: String? = null,
     val savedUri: Uri? = null,
+    /** Every saved file (several when pages are exported as separate images). */
+    val savedUris: List<Uri> = emptyList(),
+    val savedTitle: String? = null,
     val savedMime: String? = null,
     val error: Boolean = false,
 )
@@ -75,14 +78,18 @@ class PagesViewModel @Inject constructor(
                 val title = saver.timestampName("scan")
                 val q = settings.settings.first().scanQuality
                 val saved: MediaStoreSaver.Saved
+                val all: List<Uri>
                 val mime: String
                 if (pdf) {
                     saved = processor.exportPdf(list, q, _searchable.value, title) { done, total ->
                         _export.value = _export.value.copy(progress = done to total)
                     }
+                    all = listOf(saved.uri)
                     mime = "application/pdf"
                 } else {
-                    saved = processor.exportImages(list, title).first()
+                    val files = processor.exportImages(list, title)
+                    saved = files.first()
+                    all = files.map { it.uri }
                     mime = "image/jpeg"
                 }
                 val thumb = ImageIO.decodeFile(list.first().thumb, 480)
@@ -97,7 +104,7 @@ class PagesViewModel @Inject constructor(
                 )
                 thumb.recycle()
                 val shownPath = if (pdf || list.size == 1) saved.displayPath else saved.displayPath.substringBeforeLast('/')
-                _export.value = ExportUi(savedPath = shownPath, savedUri = saved.uri, savedMime = mime)
+                _export.value = ExportUi(savedPath = shownPath, savedUri = saved.uri, savedUris = all, savedTitle = title, savedMime = mime)
             } catch (e: Exception) {
                 _export.value = ExportUi(error = true)
             }

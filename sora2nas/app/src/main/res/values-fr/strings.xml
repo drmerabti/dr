@@ -178,4 +178,11 @@
     <string name="licenses_text">Tesseract OCR et tessdata_best (Apache 2.0)\nTesseract4Android (Apache 2.0)\nOpenCV (Apache 2.0)\nPdfBox-Android (Apache 2.0)\nML Kit (conditions Google)\nPolices Noto et Tajawal (SIL OFL 1.1)</string>
     <string name="hint_hold">Ne bougez plus…</string>
     <string name="hint_ready">Prêt, prenez la photo</string>
+    <string name="share_via">Partager via</string>
+    <string name="share_more">Plus</string>
+    <string name="share_email">E-mail</string>
+    <string name="share_whatsapp">WhatsApp</string>
+    <string name="share_messenger">Messenger</string>
+    <string name="share_telegram">Telegram</string>
+    <string name="share_failed">Partage impossible</string>
 </resources>

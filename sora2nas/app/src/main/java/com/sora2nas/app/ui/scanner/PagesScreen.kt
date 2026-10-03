@@ -24,7 +24,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Image
@@ -62,7 +61,7 @@ import com.sora2nas.app.data.settings.ScanQuality
 import com.sora2nas.app.scan.ScanPage
 import com.sora2nas.app.ui.components.AppTopBar
 import com.sora2nas.app.ui.components.ProgressPanel
-import com.sora2nas.app.ui.theme.Teal
+import com.sora2nas.app.ui.components.SavedShareSheet
 
 /** Multi-page editor: reorder, delete, edit, then save ONE PDF or the images. */
 @Composable
@@ -156,18 +155,14 @@ fun PagesScreen(
         })
     }
     export.savedPath?.let { path ->
-        AlertDialog(
-            onDismissRequest = { vm.finish(); onFinished() },
-            icon = { Icon(Icons.Filled.CheckCircle, null, tint = Teal, modifier = Modifier.size(40.dp)) },
-            title = { Text(stringResource(R.string.saved_title)) },
-            text = { Text(stringResource(R.string.saved_to, path)) },
-            confirmButton = {
-                Row {
-                    TextButton(onClick = vm::shareSaved) { Text(stringResource(R.string.share)) }
-                    TextButton(onClick = vm::openSaved) { Text(stringResource(R.string.open)) }
-                }
-            },
-            dismissButton = { TextButton(onClick = { vm.finish(); onFinished() }) { Text(stringResource(R.string.done)) } },
+        // Straight after the scan is saved: one tap to e-mail, WhatsApp, Messenger, Telegram.
+        SavedShareSheet(
+            path = stringResource(R.string.saved_to, path),
+            uris = export.savedUris.ifEmpty { listOfNotNull(export.savedUri) },
+            mime = export.savedMime ?: "application/pdf",
+            subject = export.savedTitle,
+            onOpen = vm::openSaved,
+            onDone = { vm.finish(); onFinished() },
         )
     }
     if (export.error) {

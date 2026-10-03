@@ -63,7 +63,7 @@ import com.sora2nas.app.data.settings.TableExportFormat
 import com.sora2nas.app.ui.components.AppTopBar
 import com.sora2nas.app.ui.components.MessageDialog
 import com.sora2nas.app.ui.components.ProgressPanel
-import com.sora2nas.app.ui.components.SavedFileDialog
+import com.sora2nas.app.ui.components.SavedShareSheet
 import com.sora2nas.app.ui.result.copyToClipboard
 import com.sora2nas.app.ui.theme.Amber
 
@@ -143,7 +143,14 @@ fun TableScreen(historyId: Long, onBack: () -> Unit, vm: TableViewModel = hiltVi
         )
     }
     ui.saved?.let { saved ->
-        SavedFileDialog(saved.displayPath, onShare = vm::shareSaved, onOpen = vm::openSaved, onDismiss = vm::dismissSaved)
+        SavedShareSheet(
+            path = stringResource(R.string.saved_to, saved.displayPath),
+            uris = listOf(saved.uri),
+            mime = ui.savedMime,
+            subject = ui.item?.title,
+            onOpen = vm::openSaved,
+            onDone = vm::dismissSaved,
+        )
     }
     ui.message?.let { MessageDialog(stringResource(it), vm::dismissMessage) }
 }
