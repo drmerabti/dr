@@ -73,13 +73,13 @@ html[lang="fr"] .tool-name, html[lang="en"] .tool-name{ direction:ltr; }
 }
 .lang-menu button:hover, .lang-menu button.on{ background: var(--accent-soft); }
 
-[data-tiptext]:hover::after{
+@media (hover: hover){ [data-tiptext]:hover::after{
   content: attr(data-tiptext);
   position:absolute; top: calc(100% + 8px); left:50%; transform:translateX(-50%);
   background: var(--ink); color:#fff; font-size:.72rem; font-weight:500;
   padding:5px 9px; border-radius:8px; white-space:nowrap; pointer-events:none; z-index:80;
   font-family: var(--ui-font);
-}
+} }
 
 /* ---------- Workspace (layout fixed: panel always on the right) ---------- */
 .workspace{
@@ -382,6 +382,15 @@ html[dir="rtl"] .back-btn svg{ transform: scaleX(-1); }
   .panel-toggle{ top:auto; bottom:18px; right:auto; left:18px; transform:none; width:52px; height:52px; border-radius:50%; background: var(--accent); color:#fff; }
   .workspace.collapsed .panel-toggle{ right:auto; transform:none; border-radius:50%; }
   .stage-bar{ flex-wrap:wrap; justify-content:center; width:calc(100% - 20px); }
+}
+@media (max-width: 480px){
+  .topbar{ padding:0 10px; gap:8px; }
+  .brand-logo{ width:32px; height:32px; }
+  .topbar-actions{ gap:6px; }
+  .icon-btn, .lang-toggle{ width:34px; height:34px; border-radius:10px; }
+  .icon-btn.pdf{ width:44px; }
+  .lang-toggle{ border-radius:50%; }
+  #btnFullscreen{ display:none; }
 }
 @media (prefers-reduced-motion: reduce){
   *{ transition:none !important; animation:none !important; }
