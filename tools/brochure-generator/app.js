@@ -38,7 +38,7 @@ const UI = {
     add_img:'إضافة صورة', next:'التالي', done:'تم',
     t_saved:'تم الحفظ', t_save_err:'تعذّر الحفظ: الصور كبيرة جدًا', t_pdf:'جاري تجهيز ملف PDF...', t_pdf_ok:'تم تحميل الملف',
     t_pdf_err:'تعذّر إنشاء PDF، استعمل زر الطباعة', t_print:'اطبع على الوجهين مع القلب على الحافة القصيرة',
-    t_tpl:'تم تطبيق القالب', t_reset:'تمت استعادة نصوص القالب', no_results:'لا توجد قوالب مطابقة'
+    t_tpl:'تم تطبيق القالب', t_img_err:'تعذّر قراءة الصورة، جرّب صيغة JPG أو PNG', t_reset:'تمت استعادة نصوص القالب', no_results:'لا توجد قوالب مطابقة'
   },
   fr: {
     tool_name:'Créateur de dépliants', gallery:'Galerie de modèles', search:'Rechercher un modèle...',
@@ -63,7 +63,7 @@ const UI = {
     add_img:'Ajouter une image', next:'Suivant', done:'Terminé',
     t_saved:'Enregistré', t_save_err:'Échec : images trop lourdes', t_pdf:'Préparation du PDF...', t_pdf_ok:'Fichier téléchargé',
     t_pdf_err:'PDF impossible, utilisez Imprimer', t_print:'Imprimez recto verso, retournement sur le bord court',
-    t_tpl:'Modèle appliqué', t_reset:'Textes du modèle rétablis', no_results:'Aucun modèle trouvé'
+    t_tpl:'Modèle appliqué', t_img_err:'Image illisible, essayez un JPG ou un PNG', t_reset:'Textes du modèle rétablis', no_results:'Aucun modèle trouvé'
   },
   en: {
     tool_name:'Brochure Maker', gallery:'Template gallery', search:'Search templates...',
@@ -88,7 +88,7 @@ const UI = {
     add_img:'Add image', next:'Next', done:'Done',
     t_saved:'Saved', t_save_err:'Could not save: images too large', t_pdf:'Preparing PDF...', t_pdf_ok:'File downloaded',
     t_pdf_err:'PDF failed, please use Print', t_print:'Print double-sided, flip on the short edge',
-    t_tpl:'Template applied', t_reset:'Template texts restored', no_results:'No matching templates'
+    t_tpl:'Template applied', t_img_err:'Could not read the image, try a JPG or PNG', t_reset:'Template texts restored', no_results:'No matching templates'
   }
 };
 
@@ -1230,7 +1230,9 @@ $('#accordion').addEventListener('change', e => {
   if (tg) { st[tg] = e.target.checked; scheduleRender(); return; }
   const ik = e.target.dataset.img;
   if (ik && e.target.files && e.target.files[0]) {
-    readImage(e.target.files[0], ik === 'logo').then(url => { st.img[ik] = url; rebuildKeepOpen(); scheduleRender(); });
+    readImage(e.target.files[0], ik === 'logo')
+      .then(url => { st.img[ik] = url; rebuildKeepOpen(); scheduleRender(); })
+      .catch(() => { e.target.value = ''; toast(T('t_img_err')); });
   }
 });
 function refreshStyleSection() {
@@ -1246,8 +1248,9 @@ function rebuildKeepOpen() {
 }
 
 function readImage(file, keepPng) {
-  return new Promise(res => {
+  return new Promise((res, rej) => {
     const fr = new FileReader();
+    fr.onerror = rej;
     fr.onload = () => {
       const im = new Image();
       im.onload = () => {
@@ -1258,6 +1261,7 @@ function readImage(file, keepPng) {
         cv.getContext('2d').drawImage(im, 0, 0, cv.width, cv.height);
         res(keepPng ? cv.toDataURL('image/png') : cv.toDataURL('image/jpeg', 0.86));
       };
+      im.onerror = rej;
       im.src = fr.result;
     };
     fr.readAsDataURL(file);
@@ -1350,7 +1354,14 @@ function saveNow(showToast) {
   try { localStorage.setItem(STORE_KEY, JSON.stringify(st)); if (showToast) toast(T('t_saved')); return true; }
   catch (e) { if (showToast) toast(T('t_save_err')); return false; }
 }
-function autosave() { clearTimeout(saveTimer); saveTimer = setTimeout(() => saveNow(false), 800); }
+let saveWarned = false;
+function autosave() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    if (saveNow(false)) saveWarned = false;
+    else if (!saveWarned) { saveWarned = true; toast(T('t_save_err')); }
+  }, 800);
+}
 
 function buildPrint(sides) {
   const ctx = currentCtx();
@@ -1388,11 +1399,12 @@ async function doPdf() {
     }
     const name = (st.c['cover.title'] || 'brochure').replace(/[\\/:*?"<>|]+/g, '').trim().slice(0, 60) || 'brochure';
     pdf.save(name + '.pdf');
-    $('#printRoot').innerHTML = '';
     toast(T('t_pdf_ok'));
   } catch (err) {
     console.error(err);
     toast(T('t_pdf_err'));
+  } finally {
+    $('#printRoot').innerHTML = '';
   }
 }
 window.addEventListener('afterprint', () => { $('#printRoot').innerHTML = ''; });
