@@ -6,6 +6,10 @@ const progressFill = document.getElementById('progressFill');
 const progressLabel = document.getElementById('progressLabel');
 
 let surveyData = null;
+let submitting = false;
+
+// تهريب النصوص قبل إدراجها في HTML (خيار يحتوي على علامة " كان يُقطع ولا يُطابق في النتائج)
+function esc(v){ return String(v ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 
 function updateProgress(){
   const inputs = surveyData.questions;
@@ -32,27 +36,27 @@ function renderChoicePills(q, opts, inputType){
     return `<div class="sb-icon-choice-row" data-qid="${q.id}">` + opts.map(o => {
       const meta = GENDER_ICONS[o];
       return `<label class="sb-icon-choice" style="background:${meta.bg};color:${meta.color};">
-        <input type="${inputType}" name="${q.id}" value="${o}" data-type="${inputType}" style="display:none;">
-        <span class="sic-icon">${meta.icon}</span><span class="sic-label">${o}</span>
+        <input type="${inputType}" name="${q.id}" value="${esc(o)}" data-type="${inputType}" style="display:none;">
+        <span class="sic-icon">${meta.icon}</span><span class="sic-label">${esc(o)}</span>
       </label>`;
     }).join('') + `</div>`;
   }
   return `<div class="sb-pill-choice" data-qid="${q.id}">` + opts.map(o => `
     <label class="sb-pill">
-      <input type="${inputType}" name="${q.id}" value="${o}" data-type="${inputType}" style="display:none;">
-      <span>${o}</span>
+      <input type="${inputType}" name="${q.id}" value="${esc(o)}" data-type="${inputType}" style="display:none;">
+      <span>${esc(o)}</span>
     </label>`).join('') + `</div>`;
 }
 
 function renderQuestionField(q){
   const box = document.createElement('div');
   box.className = 'sb-card';
-  let inner = `<label class="sb-label">${q.title}${q.required ? ' *' : ''}</label>`;
+  let inner = `<label class="sb-label">${esc(q.title)}${q.required ? ' *' : ''}</label>`;
   if (q.type === 'short') inner += `<input type="text" class="sb-input" data-qid="${q.id}" data-type="short">`;
   else if (q.type === 'long') inner += `<textarea class="sb-input" rows="3" data-qid="${q.id}" data-type="long"></textarea>`;
   else if (q.type === 'radio' || q.type === 'yesno') inner += renderChoicePills(q, q.type === 'yesno' ? ['نعم','لا'] : q.options, 'radio');
   else if (q.type === 'checkbox') inner += renderChoicePills(q, q.options, 'checkbox');
-  else if (q.type === 'dropdown') inner += `<select class="sb-input" data-qid="${q.id}" data-type="dropdown"><option value="">اختر...</option>${q.options.map(o=>`<option value="${o}">${o}</option>`).join('')}</select>`;
+  else if (q.type === 'dropdown') inner += `<select class="sb-input" data-qid="${q.id}" data-type="dropdown"><option value="">اختر...</option>${q.options.map(o=>`<option value="${esc(o)}">${esc(o)}</option>`).join('')}</select>`;
   else if (q.type === 'rating') inner += `<div class="sb-q-options" style="flex-direction:row;gap:8px;font-size:2rem;" data-qid="${q.id}" data-type="rating">${[1,2,3,4,5].map(n=>`<span class="rating-star" data-val="${n}" style="cursor:pointer;">☆</span>`).join('')}</div>`;
 
   box.innerHTML = inner;
@@ -81,20 +85,33 @@ async function init(){
     const welcome = document.createElement('div');
     welcome.className = 'sb-welcome-card';
     welcome.innerHTML = `
-      <h2 style="margin:0 0 10px;">${surveyData.title}</h2>
-      ${surveyData.description ? `<p style="color:var(--ink-soft);margin:0 0 18px;">${surveyData.description}</p>` : ''}
+      <h2 style="margin:0 0 10px;">${esc(surveyData.title)}</h2>
+      ${surveyData.description ? `<p style="color:var(--ink-soft);margin:0 0 18px;white-space:pre-line;">${esc(surveyData.description)}</p>` : ''}
       <button id="startBtn" class="sb-publish-btn" style="width:auto;padding:12px 32px;">ابدأ الآن</button>`;
     wrap.appendChild(welcome);
     welcome.querySelector('#startBtn').addEventListener('click', showQuestions);
   } catch (err){
-    wrap.innerHTML = `<div class="sb-card"><p>تعذّر تحميل الاستبيان: ${err.message}</p></div>`;
+    wrap.innerHTML = `<div class="sb-card"><p>تعذّر تحميل الاستبيان: ${esc(err.message)}</p></div>`;
   }
 }
 
 function showQuestions(){
   wrap.innerHTML = '';
   progressWrap.classList.remove('hidden');
-  surveyData.questions.forEach(q => wrap.appendChild(renderQuestionField(q)));
+  // عرض عنوان المحور عند تغيّره (إن كان الاستبيان يحتوي على أكثر من محور)
+  const multiSection = new Set(surveyData.questions.map(q => q.section || '')).size > 1;
+  let lastSection = null;
+  surveyData.questions.forEach(q => {
+    if (multiSection && q.section !== lastSection){
+      const h = document.createElement('h3');
+      h.className = 'sb-fill-section-title';
+      h.style.cssText = 'margin:22px 4px 8px;color:var(--accent);';
+      h.textContent = q.section || '';
+      wrap.appendChild(h);
+      lastSection = q.section;
+    }
+    wrap.appendChild(renderQuestionField(q));
+  });
   wrap.querySelectorAll('[data-type="rating"]').forEach(group => {
     group.addEventListener('click', e => {
       if (!e.target.classList.contains('rating-star')) return;
@@ -107,12 +124,14 @@ function showQuestions(){
   const submitBtn = document.createElement('button');
   submitBtn.className = 'sb-publish-btn';
   submitBtn.textContent = 'إرسال الإجابات';
+  submitBtn.id = 'submitAnswersBtn';
   submitBtn.addEventListener('click', submitAnswers);
   wrap.appendChild(submitBtn);
   updateProgress();
 }
 
 async function submitAnswers(){
+  if (submitting) return; // منع الإرسال المزدوج عند النقر مرتين
   const answers = {};
   for (const q of surveyData.questions){
     if (q.type === 'short' || q.type === 'long' || q.type === 'dropdown'){
@@ -136,25 +155,32 @@ async function submitAnswers(){
     }
   }
 
+  const submitBtn = document.getElementById('submitAnswersBtn');
+  submitting = true;
+  if (submitBtn){ submitBtn.disabled = true; submitBtn.textContent = 'جارٍ الإرسال...'; }
   try {
     const surveyRef = window.fbDb.collection('surveys').doc(surveyId);
+    const responseRef = surveyRef.collection('responses').doc();
     let respondentNumber = null;
+    // العدّاد والإجابة يُكتبان معًا في نفس المعاملة: إما ينجحان معًا أو يفشلان معًا
     await window.fbDb.runTransaction(async (tx) => {
       const doc = await tx.get(surveyRef);
       const newCount = (doc.data().responseCount || 0) + 1;
       tx.update(surveyRef, { responseCount: newCount });
+      tx.set(responseRef, { answers, createdAt: new Date().toISOString() });
       respondentNumber = newCount;
     });
-    await surveyRef.collection('responses').add({ answers, createdAt: new Date().toISOString() });
 
     progressWrap.classList.add('hidden');
     const thanks = surveyData.thanksMessage && surveyData.thanksMessage.trim() ? surveyData.thanksMessage : 'شكرًا لمشاركتك! 🙏';
     wrap.innerHTML = `<div class="sb-card" style="text-align:center;">
-      <h2 style="margin:0 0 10px;">${thanks}</h2>
+      <h2 style="margin:0 0 10px;">${esc(thanks)}</h2>
       <p style="color:var(--ink-soft);">أنت المُجيب رقم ${respondentNumber}</p>
     </div>`;
   } catch (err){
     alert('حدث خطأ أثناء الإرسال: ' + err.message);
+    submitting = false;
+    if (submitBtn){ submitBtn.disabled = false; submitBtn.textContent = 'إرسال الإجابات'; }
   }
 }
 
