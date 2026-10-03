@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>استبيان — د. سفيان مرابطي</title>
+<title>استبيان — أكاديمية مرابطي</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../../style.css">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/x-icon" href="../../favicon.ico">
 <link rel="stylesheet" href="style.css">
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
@@ -16,13 +16,14 @@
 <body>
 
 <header class="topbar">
-  <div class="topbar-inner">
-    <a href="../../index.html" class="brand">د. سفيان مرابطي</a>
-  </div>
+  <a href="../../index.html" class="brand-logo" title="أكاديمية مرابطي">
+    <img src="../../apple-touch-icon.png" alt="أكاديمية مرابطي">
+  </a>
+  <span class="tool-name">استبيان</span>
 </header>
 
 <main id="app">
-  <section class="view">
+  <section class="page-wrap fill-wrap">
     <div id="progressWrap" class="sb-progress-wrap survey-builder hidden">
       <div class="sb-progress-track"><div id="progressFill" class="sb-progress-fill" style="width:0%"></div></div>
       <p id="progressLabel" class="sb-progress-label"></p>
@@ -31,9 +32,6 @@
   </section>
 </main>
 
-<footer class="site-footer">
-  <p>© 2026 د. سفيان مرابطي</p>
-</footer>
 
 <script src="fill.js"></script>
 </body>
