@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android 13 themed icon: single-colour silhouette (the system tints it). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp" android:viewportWidth="108" android:viewportHeight="108">
+    <path android:strokeColor="#FFFFFF" android:strokeWidth="4" android:strokeLineCap="round" android:strokeLineJoin="round"
+        android:pathData="M28,42 L28,35 Q28,28 35,28 L42,28 M66,28 L73,28 Q80,28 80,35 L80,42 M80,66 L80,73 Q80,80 73,80 L66,80 M42,80 L35,80 Q28,80 28,73 L28,66" />
+    <path android:fillColor="#FFFFFF" android:fillType="evenOdd"
+        android:pathData="M42,36 L61,36 L69,44 L69,69 Q69,72 66,72 L42,72 Q39,72 39,69 L39,39 Q39,36 42,36 Z
+        M45,48.6 L63,48.6 L63,51.4 L45,51.4 Z M50,54.6 L63,54.6 L63,57.4 L50,57.4 Z M45,60.6 L63,60.6 L63,63.4 L45,63.4 Z M53,65.6 L63,65.6 L63,68.4 L53,68.4 Z" />
+</vector>

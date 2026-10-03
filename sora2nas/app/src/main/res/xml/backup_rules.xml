@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<full-backup-content>
+    <!-- The free-tier counter is device-bound (encrypted with a device key). -->
+    <exclude domain="sharedpref" path="usage_secure.xml" />
+    <exclude domain="file" path="tesseract/" />
+</full-backup-content>

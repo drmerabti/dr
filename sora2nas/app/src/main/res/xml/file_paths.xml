@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <cache-path name="share" path="share/" />
+    <cache-path name="camera" path="camera/" />
+    <!-- Android 7-9 only: files saved in Pictures/ and Documents/sora2nas -->
+    <external-path name="public" path="." />
+</paths>
