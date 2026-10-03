@@ -72,7 +72,12 @@ fun SettingsScreen(onBack: () -> Unit, onUpgrade: () -> Unit, vm: SettingsViewMo
         ) {
             Section(Icons.Filled.Language, Blue, stringResource(R.string.settings_language)) {
                 Chips(
-                    listOf(SettingsRepository.LANG_AR to stringResource(R.string.lang_arabic), SettingsRepository.LANG_FR to stringResource(R.string.lang_french)),
+                    // Each language is shown in its own script so it can be found from any UI language.
+                    listOf(
+                        SettingsRepository.LANG_EN to "English",
+                        SettingsRepository.LANG_AR to "العربية",
+                        SettingsRepository.LANG_FR to "Français",
+                    ),
                     s.language,
                     vm::setLanguage,
                 )

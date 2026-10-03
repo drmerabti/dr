@@ -37,13 +37,4 @@ internal object OoxmlUtil {
     }
 
     fun hasArabic(s: String): Boolean = s.any { it in '؀'..'ۿ' || it in 'ݐ'..'ݿ' }
-
-    /** True when the first strong character is right-to-left. */
-    fun startsRtl(s: String): Boolean {
-        for (c in s) {
-            if (c in '֐'..'ࣿ' || c in 'יִ'..'ﻼ') return true
-            if (c.isLetter()) return false
-        }
-        return false
-    }
 }

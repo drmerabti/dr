@@ -34,6 +34,7 @@ object LanguageDetector {
         "by", "it", "from", "was", "were", "or", "an", "at", "which", "have", "has", "not", "will",
         "can", "you", "your", "we", "our", "they", "their", "all", "been", "would", "there",
     )
+    private val LATIN_WORD = Regex("""[A-Za-zÀ-ɏ]{2,}""")
     private const val FRENCH_ACCENTS = "éèêëàâçùûôîïœÉÈÊÀÂÇÙÛÔÎ"
 
     fun isArabicLetter(c: Char): Boolean =
@@ -56,7 +57,9 @@ object LanguageDetector {
         val latinLang = latinLanguage(text)
         val arabicShare = arabic.toDouble() / letters
         return when {
-            arabicShare >= 0.85 -> DetectedLanguages(OcrLanguage.ARABIC, listOf(OcrLanguage.ARABIC))
+            // Arabic text with a few Latin words (Windows, PDF, ABB...): the Latin
+            // model is still needed or those words come out as garbage.
+            arabicShare >= 0.85 && !LATIN_WORD.containsMatchIn(text) -> DetectedLanguages(OcrLanguage.ARABIC, listOf(OcrLanguage.ARABIC))
             arabicShare >= 0.5 -> DetectedLanguages(OcrLanguage.ARABIC, listOf(OcrLanguage.ARABIC, latinLang))
             arabicShare >= 0.08 -> DetectedLanguages(latinLang, listOf(latinLang, OcrLanguage.ARABIC))
             else -> DetectedLanguages(latinLang, listOf(latinLang))

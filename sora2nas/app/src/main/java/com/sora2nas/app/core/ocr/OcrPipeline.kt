@@ -1,5 +1,6 @@
 package com.sora2nas.app.core.ocr
 
+import com.sora2nas.app.core.text.Bidi
 import com.sora2nas.app.core.text.DetectedLanguages
 import com.sora2nas.app.core.text.LanguageDetector
 import com.sora2nas.app.core.text.TextCleaner
@@ -92,7 +93,7 @@ class OcrPipeline<I>(
                 }
             }
             return Output(
-                text = TextCleaner.clean(result.text),
+                text = TextCleaner.clean(Bidi.fixOcrNumberOrder(result.text)),
                 rawText = result.text,
                 languages = usedLangs,
                 confidence = result.meanConfidence,

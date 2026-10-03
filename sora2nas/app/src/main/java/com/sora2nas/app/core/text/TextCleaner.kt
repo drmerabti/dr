@@ -8,7 +8,8 @@ import java.text.Normalizer
  *  - removes invisible characters and repeated spaces,
  *  - joins lines that were broken by the page layout while keeping paragraphs,
  *    list items, headings and lines that end a sentence,
- *  - re-joins Latin words hyphenated across a line break.
+ *  - re-joins Latin words hyphenated across a line break,
+ *  - marks the direction of mixed Arabic/Latin lines (see [Bidi]).
  */
 object TextCleaner {
 
@@ -28,7 +29,9 @@ object TextCleaner {
 
         val lines = text.split('\n').map { cleanLine(it) }
         val paragraphs = splitParagraphs(lines)
-        return paragraphs.joinToString("\n\n") { joinParagraph(it) }.trim()
+        val joined = paragraphs.joinToString("\n\n") { joinParagraph(it) }.trim()
+        // Mixed Arabic/Latin lines keep the right direction in every app.
+        return Bidi.markLines(joined)
     }
 
     /** NFKC folds Arabic presentation forms (U+FB50–U+FEFF) and ligatures back to letters. */

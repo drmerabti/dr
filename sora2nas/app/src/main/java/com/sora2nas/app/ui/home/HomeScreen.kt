@@ -59,6 +59,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -128,14 +129,14 @@ fun HomeScreen(
         item {
             Column(Modifier.padding(horizontal = 16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    FeatureButton(Icons.Filled.DocumentScanner, Blue, stringResource(R.string.home_scanner), stringResource(R.string.home_scanner_desc), Modifier.weight(1f), onScanner)
-                    FeatureButton(Icons.Filled.TextFields, Teal, stringResource(R.string.home_image_text), stringResource(R.string.home_image_text_desc), Modifier.weight(1f)) { sheet = SourceSheet.IMAGE_TEXT }
+                    FeatureButton(Icons.Filled.DocumentScanner, Blue, stringResource(R.string.home_scanner), Modifier.weight(1f), onScanner)
+                    FeatureButton(Icons.Filled.TextFields, Teal, stringResource(R.string.home_image_text), Modifier.weight(1f)) { sheet = SourceSheet.IMAGE_TEXT }
                 }
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    FeatureButton(Icons.Filled.PictureAsPdf, Violet, stringResource(R.string.home_pdf_text), stringResource(R.string.home_pdf_text_desc), Modifier.weight(1f)) {
+                    FeatureButton(Icons.Filled.PictureAsPdf, Violet, stringResource(R.string.home_pdf_text), Modifier.weight(1f)) {
                         pickPdfForText.launch(arrayOf("application/pdf"))
                     }
-                    FeatureButton(Icons.Filled.TableChart, Amber, stringResource(R.string.home_table), stringResource(R.string.home_table_desc), Modifier.weight(1f)) { sheet = SourceSheet.TABLE }
+                    FeatureButton(Icons.Filled.TableChart, Amber, stringResource(R.string.home_table), Modifier.weight(1f)) { sheet = SourceSheet.TABLE }
                 }
             }
         }
@@ -243,22 +244,31 @@ private fun Header(remaining: Int, limit: Int, isPro: Boolean, onSettings: () ->
 
 /** One of the 4 big home buttons. */
 @Composable
-private fun FeatureButton(icon: ImageVector, color: Color, title: String, subtitle: String, modifier: Modifier, onClick: () -> Unit) {
+private fun FeatureButton(icon: ImageVector, color: Color, title: String, modifier: Modifier, onClick: () -> Unit) {
     Card(
         onClick = onClick,
-        modifier = modifier.aspectRatio(0.95f),
+        modifier = modifier.aspectRatio(1.05f),
         shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         border = BorderStroke(1.dp, color.copy(alpha = 0.18f)),
     ) {
-        Column(Modifier.fillMaxSize().padding(16.dp), verticalArrangement = Arrangement.SpaceBetween) {
-            IconBadge(icon, color, size = 56)
-            Column {
-                Text(title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, maxLines = 2)
-                Spacer(Modifier.height(4.dp))
-                Text(subtitle, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 2, overflow = TextOverflow.Ellipsis)
-            }
+        // Icon in the middle, only the short name under it.
+        Column(
+            Modifier.fillMaxSize().padding(12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+        ) {
+            IconBadge(icon, color, size = 64)
+            Spacer(Modifier.height(12.dp))
+            Text(
+                title,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+            )
         }
     }
 }

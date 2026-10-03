@@ -4,7 +4,7 @@ An Android app that turns photos, scans and PDFs into editable text, Word and Ex
 Everything runs **on the device**. The internet is only used for Google Play Billing and for the
 one-time download of an offline translation language (ML Kit).
 
-Arabic is the default UI language (full RTL). French can be chosen in Settings.
+English is the default UI language. Arabic (full RTL) and French can be chosen in Settings.
 
 ## Features
 
@@ -165,7 +165,7 @@ Please run `./gradlew assembleDebug` and the manual test list below once on a re
 
 ### Manual test list (device)
 
-1. **Home.** The app opens in Arabic (RTL). Switch to French in Settings and check that the layout flips.
+1. **Home.** The app opens in English. Switch to Arabic in Settings and check that the layout flips to RTL, then try French.
 2. **Scanner.**
    - Check that the edges are detected and the corners can be dragged.
    - Try the flash and tap-to-focus.

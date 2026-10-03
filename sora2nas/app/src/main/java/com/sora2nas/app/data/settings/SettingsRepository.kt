@@ -23,7 +23,7 @@ enum class TextExportFormat { DOCX, TXT }
 enum class TableExportFormat { XLSX, DOCX }
 
 data class AppSettings(
-    val language: String = SettingsRepository.LANG_AR,
+    val language: String = SettingsRepository.LANG_EN,
     val scanQuality: ScanQuality = ScanQuality.MAX,
     val textExport: TextExportFormat = TextExportFormat.DOCX,
     val tableExport: TableExportFormat = TableExportFormat.XLSX,
@@ -50,7 +50,7 @@ class SettingsRepository @Inject constructor(@ApplicationContext private val con
         )
     }
 
-    fun appLanguageBlocking(): String = langPrefs.getString(KEY_LANG, LANG_AR) ?: LANG_AR
+    fun appLanguageBlocking(): String = langPrefs.getString(KEY_LANG, LANG_EN) ?: LANG_EN
 
     /** Saves and applies the UI language (the activity is recreated by AppCompat). */
     fun setAppLanguage(tag: String) {
@@ -63,6 +63,7 @@ class SettingsRepository @Inject constructor(@ApplicationContext private val con
     suspend fun setTableExport(f: TableExportFormat) = context.dataStore.edit { it[kTableExport] = f.name }
 
     companion object {
+        const val LANG_EN = "en"
         const val LANG_AR = "ar"
         const val LANG_FR = "fr"
         private const val KEY_LANG = "lang"

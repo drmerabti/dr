@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.sora2nas.app.R
 import com.sora2nas.app.core.export.DocxWriter
 import com.sora2nas.app.core.text.LanguageDetector
+import com.sora2nas.app.core.text.Bidi
 import com.sora2nas.app.core.text.OcrLanguage
 import com.sora2nas.app.data.history.HistoryEntity
 import com.sora2nas.app.data.history.HistoryRepository
@@ -79,7 +80,7 @@ class ResultViewModel @Inject constructor(
             val item = history.get(id)
             val format = settings.settings.first().textExport
             lastSaved = item?.text.orEmpty()
-            _ui.update { it.copy(item = item, loading = false, text = item?.text.orEmpty(), defaultFormat = format) }
+            _ui.update { it.copy(item = item, loading = false, text = Bidi.markLines(item?.text.orEmpty()), defaultFormat = format) }
         }
     }
 
@@ -130,7 +131,7 @@ class ResultViewModel @Inject constructor(
             _ui.update { it.copy(translating = true) }
             try {
                 val out = translator.translate(s.text, from, target) { _ui.update { it.copy(downloadingModel = true) } }
-                _ui.update { it.copy(translation = out, translationTarget = target, showTranslation = true) }
+                _ui.update { it.copy(translation = Bidi.markLines(out), translationTarget = target, showTranslation = true) }
             } catch (e: Exception) {
                 _ui.update { it.copy(message = R.string.error_translate) }
             } finally {

@@ -3,6 +3,7 @@ package com.sora2nas.app.core.export
 import com.sora2nas.app.core.export.OoxmlUtil.XML_HEADER
 import com.sora2nas.app.core.export.OoxmlUtil.esc
 import com.sora2nas.app.core.table.TableData
+import com.sora2nas.app.core.text.Bidi
 import java.io.OutputStream
 
 /**
@@ -65,8 +66,9 @@ object XlsxWriter {
             sb.append("<row r=\"${r + 1}\">")
             row.forEachIndexed { c, value ->
                 val ref = "${columnName(c)}${r + 1}"
-                val style = if (r == 0) 2 else 1
-                val v = value.trim()
+                val v = Bidi.stripMarks(value).trim()
+                // Arabic-majority cells read right to left even when they start with a Latin word.
+                val style = (if (r == 0) 2 else 1) + (if (Bidi.isRtl(v)) 3 else 0)
                 if (v.isEmpty()) {
                     sb.append("<c r=\"$ref\" s=\"$style\"/>")
                 } else if (r > 0 && NUMBER.matches(v)) {
@@ -134,9 +136,11 @@ object XlsxWriter {
         """<border><left style="thin"><color rgb="FF9AA5B1"/></left><right style="thin"><color rgb="FF9AA5B1"/></right>""" +
         """<top style="thin"><color rgb="FF9AA5B1"/></top><bottom style="thin"><color rgb="FF9AA5B1"/></bottom><diagonal/></border></borders>""" +
         """<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>""" +
-        """<cellXfs count="4"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>""" +
+        """<cellXfs count="6"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>""" +
         """<xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyBorder="1" applyAlignment="1"><alignment vertical="top" wrapText="1"/></xf>""" +
         """<xf numFmtId="0" fontId="1" fillId="2" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center" wrapText="1"/></xf>""" +
-        """<xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyBorder="1"/></cellXfs>""" +
+        """<xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyBorder="1"/>""" +
+        """<xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyBorder="1" applyAlignment="1"><alignment vertical="top" wrapText="1" readingOrder="2"/></xf>""" +
+        """<xf numFmtId="0" fontId="1" fillId="2" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center" wrapText="1" readingOrder="2"/></xf></cellXfs>""" +
         """<cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>"""
 }

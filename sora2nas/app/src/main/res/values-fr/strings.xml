@@ -6,13 +6,9 @@
     <string name="pro_active">Pro actif : conversions illimitées</string>
     <string name="remaining_today">Aujourd\'hui : %1$d sur %2$d conversions gratuites</string>
     <string name="home_scanner">Scanner</string>
-    <string name="home_scanner_desc">Documents vers PDF</string>
     <string name="home_image_text">Image en texte</string>
-    <string name="home_image_text_desc">Extraire le texte des photos</string>
     <string name="home_pdf_text">PDF en texte</string>
-    <string name="home_pdf_text_desc">Extraire le texte des PDF</string>
     <string name="home_table">Tableau en Excel/Word</string>
-    <string name="home_table_desc">Tableaux modifiables</string>
     <string name="home_recent">Historique</string>
     <string name="home_see_all">Tout voir</string>
     <string name="home_empty_history">Rien pour l\'instant. Commencez par scanner un document ou choisir une image.</string>

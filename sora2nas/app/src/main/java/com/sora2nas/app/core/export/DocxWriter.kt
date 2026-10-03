@@ -3,6 +3,7 @@ package com.sora2nas.app.core.export
 import com.sora2nas.app.core.export.OoxmlUtil.XML_HEADER
 import com.sora2nas.app.core.export.OoxmlUtil.esc
 import com.sora2nas.app.core.table.TableData
+import com.sora2nas.app.core.text.Bidi
 import java.io.OutputStream
 
 /**
@@ -48,17 +49,22 @@ object DocxWriter {
     }
 
     private fun paragraph(text: String, bold: Boolean, sizePt: Int, centered: Boolean = false): String {
-        val rtl = OoxmlUtil.startsRtl(text)
+        // Direction from the majority of letters, so an Arabic line that starts
+        // with a Latin word is still a right-to-left paragraph.
+        val clean = Bidi.stripMarks(text)
+        val rtl = Bidi.isRtl(clean)
         val sb = StringBuilder("<w:p><w:pPr>")
         if (rtl) sb.append("<w:bidi/>")
         if (centered) sb.append("<w:jc w:val=\"center\"/>")
         sb.append("<w:spacing w:after=\"80\"/></w:pPr>")
-        if (text.isNotEmpty()) {
+        // One run per direction: only Arabic runs are marked <w:rtl/>, so
+        // Latin words and numbers keep their own order inside the line.
+        for ((part, partRtl) in Bidi.runs(clean)) {
             sb.append("<w:r><w:rPr><w:rFonts w:ascii=\"Arial\" w:hAnsi=\"Arial\" w:cs=\"Arial\"/>")
             if (bold) sb.append("<w:b/><w:bCs/>")
-            if (rtl) sb.append("<w:rtl/>")
+            if (partRtl) sb.append("<w:rtl/>")
             sb.append("<w:sz w:val=\"${sizePt * 2}\"/><w:szCs w:val=\"${sizePt * 2}\"/></w:rPr>")
-            sb.append("<w:t xml:space=\"preserve\">").append(esc(text)).append("</w:t></w:r>")
+            sb.append("<w:t xml:space=\"preserve\">").append(esc(part)).append("</w:t></w:r>")
         }
         sb.append("</w:p>")
         return sb.toString()

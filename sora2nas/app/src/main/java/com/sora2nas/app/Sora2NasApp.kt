@@ -34,7 +34,7 @@ class Sora2NasApp : Application() {
         appScope.launch(Dispatchers.IO) { tessData.ensureInstalled() }
     }
 
-    /** Arabic by default; French when chosen in Settings. */
+    /** English by default; Arabic or French when chosen in Settings. */
     private fun applyAppLanguage() {
         val wanted = settings.appLanguageBlocking()
         val current = AppCompatDelegate.getApplicationLocales().toLanguageTags()
