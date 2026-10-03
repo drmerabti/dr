@@ -15,8 +15,8 @@ import javax.inject.Singleton
 /** Scan resolution. Max keeps the full camera resolution (default). */
 enum class ScanQuality(val maxSide: Int, val jpegQuality: Int) {
     NORMAL(1600, 75),
-    HIGH(2500, 82),
-    MAX(4200, 88),
+    HIGH(2800, 85),
+    MAX(4200, 92),
 }
 
 enum class TextExportFormat { DOCX, TXT }

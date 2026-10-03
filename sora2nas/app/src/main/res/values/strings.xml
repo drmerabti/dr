@@ -87,7 +87,7 @@
     <string name="move_after">نقل إلى الخلف</string>
     <string name="title_scan_images">مسح (%d صور)</string>
     <string name="edit_page">تعديل الصفحة</string>
-    <string name="filter_color">ألوان محسّنة</string>
+    <string name="filter_color">تحسين تلقائي</string>
     <string name="filter_original">الأصلية</string>
     <string name="filter_gray">رمادي</string>
     <string name="filter_bw">أبيض وأسود</string>
@@ -178,4 +178,6 @@
     <string name="version">الإصدار %s</string>
     <string name="licenses">تراخيص المكونات مفتوحة المصدر</string>
     <string name="licenses_text">Tesseract OCR و tessdata_best (Apache 2.0)\nTesseract4Android (Apache 2.0)\nOpenCV (Apache 2.0)\nPdfBox-Android (Apache 2.0)\nML Kit (شروط Google)\nخطوط Noto و Tajawal (SIL OFL 1.1)</string>
+    <string name="hint_hold">ثبّت الهاتف قليلاً…</string>
+    <string name="hint_ready">جاهز، التقط الصورة الآن</string>
 </resources>

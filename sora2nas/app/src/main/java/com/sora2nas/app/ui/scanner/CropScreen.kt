@@ -81,7 +81,10 @@ fun CropScreen(
         Box(Modifier.weight(1f).fillMaxWidth().padding(16.dp), contentAlignment = Alignment.Center) {
             val img = state.image
             val quad = state.quad
-            if (img == null || quad == null) {
+            val result = state.result
+            if (result != null) {
+                ScanReveal(result, onFinished = vm::finishReveal)
+            } else if (img == null || quad == null) {
                 CircularProgressIndicator(color = Color.White)
             } else {
                 BoxWithConstraints(Modifier.fillMaxSize()) {
@@ -133,14 +136,17 @@ fun CropScreen(
                     }
                 }
             }
-            if (state.working) {
-                Box(Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.5f)), contentAlignment = Alignment.Center) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        CircularProgressIndicator(color = Color.White)
-                        Spacer(Modifier.size(12.dp))
-                        Text(stringResource(R.string.enhancing), color = Color.White)
-                    }
-                }
+            if (state.working && result == null) {
+                ScanningOverlay()
+                Text(
+                    stringResource(R.string.enhancing),
+                    color = Color.White,
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .background(Color.Black.copy(alpha = 0.55f), androidx.compose.foundation.shape.RoundedCornerShape(50))
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                )
             }
         }
 
@@ -148,14 +154,14 @@ fun CropScreen(
             Modifier.fillMaxWidth().navigationBarsPadding().padding(16.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            OutlinedButton(onClick = { vm.retake(); onBack() }, modifier = Modifier.weight(1f)) {
+            OutlinedButton(onClick = { vm.retake(); onBack() }, enabled = !state.working && state.result == null, modifier = Modifier.weight(1f)) {
                 Icon(Icons.Filled.Replay, null, tint = Color.White)
                 Spacer(Modifier.size(6.dp))
                 Text(stringResource(R.string.retake), color = Color.White)
             }
             Button(
                 onClick = { vm.confirm(onOutcome) },
-                enabled = state.quad != null && !state.working,
+                enabled = state.quad != null && !state.working && state.result == null,
                 modifier = Modifier.weight(1.4f),
             ) {
                 Icon(Icons.Filled.Check, null)

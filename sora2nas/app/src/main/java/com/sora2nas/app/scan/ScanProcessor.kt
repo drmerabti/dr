@@ -38,13 +38,22 @@ class ScanProcessor @Inject constructor(
      * Normalises a new capture (EXIF rotation applied, resolution capped by the
      * quality setting) and detects the document edges.
      */
-    suspend fun prepare(source: File, quality: ScanQuality, pageId: Long? = null): PendingCapture = withContext(Dispatchers.Default) {
+    suspend fun prepare(
+        source: File,
+        quality: ScanQuality,
+        pageId: Long? = null,
+        /** Live outline from the camera (normalised 0..1, same field of view), used as a fallback. */
+        liveHint: Quad? = null,
+    ): PendingCapture = withContext(Dispatchers.Default) {
         val bmp = ImageIO.decodeFile(source, quality.maxSide)
         val original = session.newFile("orig")
         original.outputStream().use { ImageIO.writeJpeg(bmp, 95, it) }
         source.delete() // temporary camera/import file, replaced by the normalised original
         val mat = ImageIO.bitmapToRgb(bmp)
-        val quad = try { DocumentDetector.detect(mat) } finally { mat.release() }
+        val quad = try {
+            DocumentDetector.detectPrecise(mat)
+                ?: liveHint?.let { DocumentDetector.refine(mat, it.scaled(bmp.width.toDouble(), bmp.height.toDouble())) }
+        } finally { mat.release() }
         val p = PendingCapture(original, bmp.width, bmp.height, quad, pageId)
         bmp.recycle()
         p
@@ -71,7 +80,7 @@ class ScanProcessor @Inject constructor(
         val processed = session.newFile("page")
         processed.outputStream().use { ImageIO.writeJpeg(bmp, 92, it) }
         val thumb = session.newFile("thumb")
-        val small = ImageIO.thumbnail(bmp, 480)
+        val small = ImageIO.thumbnail(bmp, THUMB_SIDE)
         thumb.outputStream().use { ImageIO.writeJpeg(small, 80, it) }
         small.recycle()
         bmp.recycle()
@@ -106,7 +115,7 @@ class ScanProcessor @Inject constructor(
         val processed = session.newFile("page")
         processed.outputStream().use { ImageIO.writeJpeg(bmp, 92, it) }
         val thumb = session.newFile("thumb")
-        val small = ImageIO.thumbnail(bmp, 480)
+        val small = ImageIO.thumbnail(bmp, THUMB_SIDE)
         thumb.outputStream().use { ImageIO.writeJpeg(small, 80, it) }
         small.recycle()
         bmp.recycle()
@@ -143,7 +152,7 @@ class ScanProcessor @Inject constructor(
         val file = session.newFile("idcard")
         file.outputStream().use { ImageIO.writeJpeg(bmp, 92, it) }
         val thumb = session.newFile("thumb")
-        val small = ImageIO.thumbnail(bmp, 480)
+        val small = ImageIO.thumbnail(bmp, THUMB_SIDE)
         thumb.outputStream().use { ImageIO.writeJpeg(small, 80, it) }
         small.recycle()
         bmp.recycle()
@@ -186,7 +195,8 @@ class ScanProcessor @Inject constructor(
         }
 
     companion object {
-        const val PREVIEW_SIDE = 1100
+        const val PREVIEW_SIDE = 1600
+        const val THUMB_SIDE = 800
         /** PDFs never need more than ~300 dpi on A4. */
         const val PDF_MAX_SIDE = 3500
     }

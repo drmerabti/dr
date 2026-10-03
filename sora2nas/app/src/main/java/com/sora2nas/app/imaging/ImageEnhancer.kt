@@ -6,6 +6,7 @@ import org.opencv.core.Mat
 import org.opencv.core.Scalar
 import org.opencv.core.Size
 import org.opencv.imgproc.Imgproc
+import kotlin.math.abs
 
 /** Scan look. Colour is the default; black & white is never forced. */
 enum class ScanFilter { ENHANCED_COLOR, ORIGINAL, GRAYSCALE, BLACK_WHITE }
@@ -34,15 +35,11 @@ object ImageEnhancer {
     fun apply(rgb: Mat, adj: ScanAdjustments): Mat {
         val base: Mat = when (adj.filter) {
             ScanFilter.ORIGINAL -> rgb.clone()
-            ScanFilter.ENHANCED_COLOR -> {
-                val flat = removeShadows(rgb)
-                enhanceColor(flat).also { flat.release() }
-            }
+            ScanFilter.ENHANCED_COLOR -> magicColor(rgb)
             ScanFilter.GRAYSCALE -> {
-                val flat = removeShadows(rgb)
-                val g = MatUtils.toGray(flat)
-                flat.release()
-                stretchContrast(g)
+                val clean = magicColor(rgb, saturation = 1.0)
+                val g = MatUtils.toGray(clean)
+                clean.release()
                 MatUtils.toRgb(g).also { g.release() }
             }
             ScanFilter.BLACK_WHITE -> {
@@ -58,6 +55,130 @@ object ImageEnhancer {
         if (adj.sharpness > 0.01f) sharpen(base, adj.sharpness)
         return base
     }
+
+    /**
+     * "Magic colour" scan look (the default), like a flatbed scanner:
+     * 1. The paper colour under the actual light is estimated per channel
+     *    (morphological closing removes text and stamps, keeps shadow edges).
+     * 2. Every channel is divided by it: shadows, vignetting and the yellow
+     *    cast of indoor light disappear and the paper becomes neutral.
+     * 3. A tone curve clips the paper to pure white (hides sensor/JPEG noise)
+     *    and deepens the ink.
+     * 4. Saturation is boosted so stamps, signatures and colour ink stay vivid.
+     */
+    fun magicColor(rgb: Mat, saturation: Double = 1.3): Mat {
+        // 8-bit arithmetic throughout: a 13 MP page must fit in a phone's memory.
+        val bg = estimateColorBackground(rgb)
+        Core.max(bg, Scalar(10.0, 10.0, 10.0), bg)
+        val out = Mat()
+        Core.divide(rgb, bg, out, 255.0) // saturates: paper brighter than its estimate -> 255
+        bg.release()
+
+        // Tone curve: (v - black) / (white - black), clipped, then a gamma that darkens mid-tones.
+        val lum = MatUtils.toGray(out)
+        val black = (MatUtils.percentile(lum, 0.3) / 255.0).coerceIn(0.0, 0.45)
+        lum.release()
+        val lut = Mat(1, 256, CvType.CV_8UC1)
+        val table = ByteArray(256) { v ->
+            val x = ((v / 255.0 - black) / (PAPER_WHITE - black)).coerceIn(0.0, 1.0)
+            (Math.pow(x, INK_GAMMA) * 255.0 + 0.5).toInt().coerceIn(0, 255).toByte()
+        }
+        lut.put(0, 0, table)
+        Core.LUT(out, lut, out)
+        lut.release()
+
+        if (saturation != 1.0) {
+            val hsv = Mat()
+            Imgproc.cvtColor(out, hsv, Imgproc.COLOR_RGB2HSV)
+            val hs = ArrayList<Mat>()
+            Core.split(hsv, hs)
+            hs[1].convertTo(hs[1], -1, saturation, 0.0)
+            Core.merge(hs, hsv)
+            hs.forEach { it.release() }
+            Imgproc.cvtColor(hsv, out, Imgproc.COLOR_HSV2RGB)
+            hsv.release()
+        }
+        return out
+    }
+
+    /**
+     * Per-channel paper colour (8-bit RGB, full size).
+     *
+     * A fine estimate (~1000 px copy, closing = max then min filter) erases
+     * text while keeping the sharp edge of a hand shadow. A coarse estimate
+     * (~250 px copy, much larger closing) also erases logos, photos and big
+     * coloured blocks. Where the fine estimate differs from the paper in
+     * colour (a blue logo) or is far too dark to be a shadow (a black block),
+     * the coarse one is used, so such areas are not washed out to white.
+     */
+    private fun estimateColorBackground(rgb: Mat): Mat {
+        val fine = MatUtils.resizeMax(rgb, BG_WORK_SIDE)
+        val k = Imgproc.getStructuringElement(Imgproc.MORPH_ELLIPSE, Size(BG_KERNEL, BG_KERNEL))
+        Imgproc.morphologyEx(fine, fine, Imgproc.MORPH_CLOSE, k)
+        k.release()
+        Imgproc.medianBlur(fine, fine, 15)
+        val fine32 = Mat()
+        fine.convertTo(fine32, CvType.CV_32FC3, 1.0 / 255.0)
+        fine.release()
+
+        val coarse = MatUtils.resizeMax(rgb, BG_COARSE_SIDE)
+        val kc = Imgproc.getStructuringElement(Imgproc.MORPH_ELLIPSE, Size(BG_COARSE_KERNEL, BG_COARSE_KERNEL))
+        Imgproc.morphologyEx(coarse, coarse, Imgproc.MORPH_CLOSE, kc)
+        kc.release()
+        Imgproc.GaussianBlur(coarse, coarse, Size(0.0, 0.0), 3.0)
+        val coarse32 = Mat()
+        coarse.convertTo(coarse32, CvType.CV_32FC3, 1.0 / 255.0)
+        coarse.release()
+        val coarseUp = Mat()
+        Imgproc.resize(coarse32, coarseUp, fine32.size(), 0.0, 0.0, Imgproc.INTER_LINEAR)
+        coarse32.release()
+
+        // Weight 1 = trust the fine estimate (paper or shadow), 0 = use the coarse one.
+        val w = fine32.cols(); val h = fine32.rows()
+        val f = FloatArray(w * h * 3).also { fine32.get(0, 0, it) }
+        val c = FloatArray(w * h * 3).also { coarseUp.get(0, 0, it) }
+        val weight = FloatArray(w * h)
+        for (i in 0 until w * h) {
+            val fr = f[3 * i]; val fg = f[3 * i + 1]; val fb = f[3 * i + 2]
+            val cr = c[3 * i]; val cg = c[3 * i + 1]; val cb = c[3 * i + 2]
+            val fs = fr + fg + fb + 1e-4f; val cs = cr + cg + cb + 1e-4f
+            val chroma = maxOf(abs(fr / fs - cr / cs), abs(fg / fs - cg / cs), abs(fb / fs - cb / cs))
+            val ratio = fs / cs
+            val colourOk = ((0.06f - chroma) / 0.03f).coerceIn(0f, 1f)
+            val darkOk = ((ratio - 0.25f) / 0.15f).coerceIn(0f, 1f)
+            weight[i] = minOf(colourOk, darkOk)
+        }
+        val wm = Mat(h, w, CvType.CV_32FC1)
+        wm.put(0, 0, weight)
+        Imgproc.GaussianBlur(wm, wm, Size(0.0, 0.0), 4.0)
+        val w3 = Mat()
+        Core.merge(listOf(wm, wm, wm), w3)
+        wm.release()
+        // bg = coarse + w * (fine - coarse)
+        val diff = Mat()
+        Core.subtract(fine32, coarseUp, diff)
+        Core.multiply(diff, w3, diff)
+        val small = Mat()
+        Core.add(coarseUp, diff, small)
+        diff.release(); w3.release(); fine32.release(); coarseUp.release()
+        Imgproc.GaussianBlur(small, small, Size(0.0, 0.0), 2.0)
+
+        val small8 = Mat()
+        small.convertTo(small8, CvType.CV_8UC3, 255.0)
+        small.release()
+        val bg = Mat()
+        Imgproc.resize(small8, bg, rgb.size(), 0.0, 0.0, Imgproc.INTER_LINEAR)
+        small8.release()
+        return bg
+    }
+
+    private const val BG_WORK_SIDE = 1000
+    private const val BG_KERNEL = 15.0
+    private const val BG_COARSE_SIDE = 250
+    private const val BG_COARSE_KERNEL = 31.0
+    /** Normalised brightness at or above which a pixel is paper (pure white). */
+    private const val PAPER_WHITE = 0.86
+    private const val INK_GAMMA = 1.35
 
     /**
      * Removes shadows and uneven lighting while keeping ink and stamp colours:

@@ -13,6 +13,7 @@ import com.sora2nas.app.imaging.Quad
 import com.sora2nas.app.imaging.ScanAdjustments
 import com.sora2nas.app.platform.ImageIO
 import com.sora2nas.app.scan.ScanMode
+import com.sora2nas.app.scan.ScanPage
 import com.sora2nas.app.scan.ScanProcessor
 import com.sora2nas.app.scan.ScanSession
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -34,6 +35,8 @@ data class CropUiState(
     val working: Boolean = false,
     val mode: ScanMode = ScanMode.DOCUMENT,
     val idFrontDone: Boolean = false,
+    /** The cleaned page, shown with the scan animation before moving on. */
+    val result: Bitmap? = null,
 )
 
 @HiltViewModel
@@ -84,19 +87,25 @@ class CropViewModel @Inject constructor(
         _state.value = s.copy(quad = if (s.quad == full) (detectedDisplay ?: defaultQuad(img.width, img.height)) else full)
     }
 
+    private var pendingOutcome: (() -> Unit)? = null
+
     fun confirm(onOutcome: (CropOutcome) -> Unit) {
         val pending = session.pending ?: return
         val quadDisplay = _state.value.quad ?: return
         _state.value = _state.value.copy(working = true)
         viewModelScope.launch {
             val quad = quadDisplay.scaled(scaleToOriginal)
+            var shown: ScanPage? = null
             val outcome = try {
                 val editing = pending.pageId?.let(session::page)
                 if (editing != null) {
-                    session.replace(processor.buildPage(pending.original, quad, editing.rotation, editing.adjustments, existing = editing))
+                    val rebuilt = processor.buildPage(pending.original, quad, editing.rotation, editing.adjustments, existing = editing)
+                    session.replace(rebuilt)
+                    shown = rebuilt
                     CropOutcome.BACK_TO_EDIT
                 } else {
                     val page = processor.buildPage(pending.original, quad, 0, ScanAdjustments())
+                    shown = page
                     when (session.mode) {
                         ScanMode.DOCUMENT, ScanMode.QR -> { session.add(page); CropOutcome.NEXT_CAPTURE }
                         ScanMode.ID_CARD -> {
@@ -105,7 +114,9 @@ class CropViewModel @Inject constructor(
                                 session.idFront = page
                                 CropOutcome.NEXT_CAPTURE
                             } else {
-                                session.add(processor.composeIdCard(front, page))
+                                val card = processor.composeIdCard(front, page)
+                                session.add(card)
+                                shown = card
                                 session.idFront = null
                                 session.mode = ScanMode.DOCUMENT
                                 CropOutcome.PAGES
@@ -113,6 +124,7 @@ class CropViewModel @Inject constructor(
                         }
                         ScanMode.OCR, ScanMode.TABLE -> {
                             if (!usage.canConvert(1)) {
+                                shown = null
                                 CropOutcome.PAYWALL
                             } else {
                                 val kind = if (session.mode == ScanMode.OCR) WorkKind.IMAGE_TEXT else WorkKind.TABLE_IMAGE
@@ -122,12 +134,28 @@ class CropViewModel @Inject constructor(
                         }
                     }
                 }
-            } finally {
+            } catch (e: Exception) {
                 _state.value = _state.value.copy(working = false)
+                throw e
             }
             session.pending = null
-            onOutcome(outcome)
+            val result = shown?.let { p -> runCatching { withContext(Dispatchers.IO) { ImageIO.decodeFile(p.processed, DISPLAY_SIDE) } }.getOrNull() }
+            if (result == null) {
+                _state.value = _state.value.copy(working = false)
+                onOutcome(outcome)
+            } else {
+                // The screen plays the scan animation over the clean page, then calls finishReveal().
+                pendingOutcome = { onOutcome(outcome) }
+                _state.value = _state.value.copy(working = false, result = result)
+            }
         }
+    }
+
+    /** End of the scan animation. */
+    fun finishReveal() {
+        val next = pendingOutcome ?: return
+        pendingOutcome = null
+        next()
     }
 
     fun retake() {

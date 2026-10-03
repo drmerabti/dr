@@ -85,7 +85,7 @@
     <string name="move_after">Déplacer après</string>
     <string name="title_scan_images">Scan (%d images)</string>
     <string name="edit_page">Modifier la page</string>
-    <string name="filter_color">Couleur améliorée</string>
+    <string name="filter_color">Auto (magique)</string>
     <string name="filter_original">Originale</string>
     <string name="filter_gray">Gris</string>
     <string name="filter_bw">Noir et blanc</string>
@@ -176,4 +176,6 @@
     <string name="version">Version %s</string>
     <string name="licenses">Licences open source</string>
     <string name="licenses_text">Tesseract OCR et tessdata_best (Apache 2.0)\nTesseract4Android (Apache 2.0)\nOpenCV (Apache 2.0)\nPdfBox-Android (Apache 2.0)\nML Kit (conditions Google)\nPolices Noto et Tajawal (SIL OFL 1.1)</string>
+    <string name="hint_hold">Ne bougez plus…</string>
+    <string name="hint_ready">Prêt, prenez la photo</string>
 </resources>

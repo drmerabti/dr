@@ -20,9 +20,13 @@ import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.core.resolutionselector.AspectRatioStrategy
 import androidx.camera.core.resolutionselector.ResolutionSelector
+import androidx.camera.core.resolutionselector.ResolutionStrategy
+import android.util.Size
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -128,15 +132,28 @@ fun CameraScreen(
     val ratio43 = remember {
         ResolutionSelector.Builder().setAspectRatioStrategy(AspectRatioStrategy.RATIO_4_3_FALLBACK_AUTO_STRATEGY).build()
     }
+    // Photo: the sensor's full resolution, best quality JPEG.
     val imageCapture = remember {
         ImageCapture.Builder()
             .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
-            .setResolutionSelector(ratio43)
+            .setJpegQuality(98)
+            .setResolutionSelector(
+                ResolutionSelector.Builder()
+                    .setAspectRatioStrategy(AspectRatioStrategy.RATIO_4_3_FALLBACK_AUTO_STRATEGY)
+                    .setResolutionStrategy(ResolutionStrategy.HIGHEST_AVAILABLE_STRATEGY)
+                    .build(),
+            )
             .build()
     }
+    // Live edge tracking: ~1280x960 frames (sharper outline than the 640x480 default).
     val analysis = remember {
         ImageAnalysis.Builder()
-            .setResolutionSelector(ratio43)
+            .setResolutionSelector(
+                ResolutionSelector.Builder()
+                    .setAspectRatioStrategy(AspectRatioStrategy.RATIO_4_3_FALLBACK_AUTO_STRATEGY)
+                    .setResolutionStrategy(ResolutionStrategy(Size(1280, 960), ResolutionStrategy.FALLBACK_RULE_CLOSEST_LOWER_THEN_HIGHER))
+                    .build(),
+            )
             .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
             .build()
     }
@@ -148,7 +165,7 @@ fun CameraScreen(
         }
     }
     fun capture() {
-        vm.setBusy(true)
+        vm.beginCapture()
         val file = vm.newCaptureFile()
         imageCapture.takePicture(
             ImageCapture.OutputFileOptions.Builder(file).build(),
@@ -277,7 +294,13 @@ private fun Shutter(enabled: Boolean, onClick: () -> Unit) {
 
 @Composable
 private fun hintFor(state: CameraUiState): String = when (state.mode) {
-    ScanMode.DOCUMENT -> stringResource(R.string.hint_document)
+    ScanMode.DOCUMENT -> stringResource(
+        when {
+            state.liveQuad == null -> R.string.hint_document
+            state.liveSteady -> R.string.hint_ready
+            else -> R.string.hint_hold
+        },
+    )
     ScanMode.ID_CARD -> stringResource(if (state.idFrontDone) R.string.hint_id_back else R.string.hint_id_front)
     ScanMode.QR -> stringResource(R.string.hint_qr)
     ScanMode.OCR -> stringResource(R.string.home_image_text)
@@ -343,12 +366,24 @@ private fun CameraPreview(
     // Switch analyzer with the mode: edge detection for documents, ML Kit for QR.
     DisposableEffect(state.mode) {
         val barcode = if (state.mode == ScanMode.QR) BarcodeAnalyzer { vm.onBarcode(it) } else null
-        analysis.setAnalyzer(executor, barcode ?: DocumentAnalyzer { vm.onLiveQuad(it) })
+        analysis.setAnalyzer(executor, barcode ?: DocumentAnalyzer { q, steady -> vm.onLiveQuad(q, steady) })
         onDispose {
             analysis.clearAnalyzer()
             barcode?.close()
         }
     }
+    // The outline glides between detections instead of jumping, and fades in/out.
+    val target = state.liveQuad
+    var lastTarget by remember { mutableStateOf<com.sora2nas.app.imaging.Quad?>(null) }
+    if (target != null) lastTarget = target
+    val shownQuad = target ?: lastTarget
+    val animCorners = (0 until 4).map { i ->
+        val p = shownQuad?.points?.get(i)
+        val x by animateFloatAsState((p?.x ?: 0.5).toFloat(), tween(110, easing = LinearEasing), label = "x$i")
+        val y by animateFloatAsState((p?.y ?: 0.5).toFloat(), tween(110, easing = LinearEasing), label = "y$i")
+        Offset(x, y)
+    }
+    val outlineAlpha by animateFloatAsState(if (target != null) 1f else 0f, tween(220), label = "outline")
     Box(Modifier.fillMaxSize()) {
         Box(Modifier.align(Alignment.Center).fillMaxWidth().aspectRatio(3f / 4f)) {
             AndroidView(factory = { previewView }, modifier = Modifier.fillMaxSize())
@@ -364,16 +399,18 @@ private fun CameraPreview(
                     }
                 },
             ) {
-                val q = state.liveQuad
-                if (q != null && state.mode != ScanMode.QR) {
-                    val pts = q.points.map { Offset((it.x * size.width).toFloat(), (it.y * size.height).toFloat()) }
+                if (outlineAlpha > 0.01f && state.mode != ScanMode.QR) {
+                    val pts = animCorners.map { Offset(it.x * size.width, it.y * size.height) }
                     val path = Path().apply {
                         moveTo(pts[0].x, pts[0].y)
                         pts.drop(1).forEach { lineTo(it.x, it.y) }
                         close()
                     }
-                    drawPath(path, Teal.copy(alpha = 0.22f))
-                    drawPath(path, Teal, style = Stroke(width = 3.dp.toPx()))
+                    // White while searching, brand colour once the page is held still.
+                    val color = if (state.liveSteady) Teal else Color.White
+                    drawPath(path, color.copy(alpha = 0.20f * outlineAlpha))
+                    drawPath(path, color.copy(alpha = outlineAlpha), style = Stroke(width = 3.dp.toPx()))
+                    pts.forEach { drawCircle(color.copy(alpha = outlineAlpha), radius = 6.dp.toPx(), center = it) }
                 }
                 if (state.mode == ScanMode.QR) {
                     val s = size.minDimension * 0.62f

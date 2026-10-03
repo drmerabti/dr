@@ -10,20 +10,24 @@ import com.google.mlkit.vision.common.InputImage
 import com.sora2nas.app.imaging.DocumentDetector
 import com.sora2nas.app.imaging.MatUtils
 import com.sora2nas.app.imaging.Quad
+import com.sora2nas.app.imaging.QuadStabilizer
 import org.opencv.core.CvType
 import org.opencv.core.Mat
 
 /**
- * Live edge detection on camera frames (luminance plane only, ~6 fps).
- * Reports corners normalised to 0..1 of the upright frame.
+ * Live edge detection on camera frames (luminance plane only, ~10 fps).
+ * Detections go through a [QuadStabilizer] so the outline glides instead of
+ * jumping or flickering. Reports corners normalised to 0..1 of the upright
+ * frame, plus whether the outline is steady.
  */
-class DocumentAnalyzer(private val onQuad: (Quad?) -> Unit) : ImageAnalysis.Analyzer {
+class DocumentAnalyzer(private val onQuad: (Quad?, Boolean) -> Unit) : ImageAnalysis.Analyzer {
     private var last = 0L
+    private val stabilizer = QuadStabilizer()
 
     override fun analyze(image: ImageProxy) {
         try {
             val now = SystemClock.elapsedRealtime()
-            if (now - last < 160) return
+            if (now - last < 90) return
             last = now
             val gray = yPlaneToMat(image)
             val upright = MatUtils.rotate90(gray, image.imageInfo.rotationDegrees)
@@ -32,9 +36,10 @@ class DocumentAnalyzer(private val onQuad: (Quad?) -> Unit) : ImageAnalysis.Anal
             val w = upright.cols().toDouble()
             val h = upright.rows().toDouble()
             upright.release()
-            onQuad(quad?.scaled(1.0 / w, 1.0 / h))
+            val shown = stabilizer.update(quad?.scaled(1.0 / w, 1.0 / h), now)
+            onQuad(shown, stabilizer.isSteady)
         } catch (_: Throwable) {
-            onQuad(null)
+            onQuad(null, false)
         } finally {
             image.close()
         }

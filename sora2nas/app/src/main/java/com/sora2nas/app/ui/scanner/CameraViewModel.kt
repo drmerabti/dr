@@ -26,6 +26,8 @@ data class CameraUiState(
     val busy: Boolean = false,
     /** Live document outline, corners normalised to 0..1 of the upright frame. */
     val liveQuad: Quad? = null,
+    /** The live outline has been still for a moment: good time to shoot. */
+    val liveSteady: Boolean = false,
     /** ID card mode: true once the front side has been captured. */
     val idFrontDone: Boolean = false,
     val barcode: String? = null,
@@ -73,7 +75,13 @@ class CameraViewModel @Inject constructor(
         _state.value = _state.value.copy(flash = next)
     }
 
-    fun onLiveQuad(q: Quad?) { _state.value = _state.value.copy(liveQuad = q) }
+    /** Live outline at the moment the shutter was pressed (fallback if detection fails on the photo). */
+    private var captureHint: Quad? = null
+
+    fun onLiveQuad(q: Quad?, steady: Boolean) {
+        val s = _state.value
+        if (s.liveQuad != q || s.liveSteady != steady) _state.value = s.copy(liveQuad = q, liveSteady = steady)
+    }
 
     fun onBarcode(value: String) {
         if (_state.value.barcode == null) _state.value = _state.value.copy(barcode = value)
@@ -89,7 +97,7 @@ class CameraViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val quality = settings.settings.first().scanQuality
-                session.pending = processor.prepare(file, quality)
+                session.pending = processor.prepare(file, quality, liveHint = captureHint)
                 onReady()
             } catch (e: Exception) {
                 _state.value = _state.value.copy(error = true)
@@ -117,4 +125,10 @@ class CameraViewModel @Inject constructor(
     fun onCaptureFailed() { _state.value = _state.value.copy(busy = false, error = true) }
     fun clearError() { _state.value = _state.value.copy(error = false) }
     fun setBusy(b: Boolean) { _state.value = _state.value.copy(busy = b) }
+
+    /** Shutter pressed: remember the live outline, show the busy state. */
+    fun beginCapture() {
+        captureHint = _state.value.liveQuad
+        setBusy(true)
+    }
 }
