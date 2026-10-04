@@ -1,5 +1,5 @@
 /* =====================================================================
-   Sora2Nas (صورة إلى نص) — نسخة الويب، أكاديمية مرابطي
+   محوّل المستندات — أكاديمية مرابطي (ماسح، صورة إلى نص، PDF إلى نص، جدول إلى Excel/Word)
    كل المعالجة داخل المتصفح، لا يُرفع أي ملف إلى أي خادم:
    - Tesseract.js  : التعرف الضوئي على النص (عربي/فرنسي/إنجليزي)
    - OpenCV.js     : كشف حواف المستند، تصحيح المنظور، التحسين، كشف خطوط الجدول
@@ -37,16 +37,24 @@ try {
 const LI = () => ({ ar: 0, en: 1, fr: 2 })[LANG];
 
 const TX = {
-  brandSub: ['صورة إلى نص', 'Image to text', 'Image en texte'],
-  heroT: ['حوّل صورك وملفاتك إلى نص', 'Turn your images and files into text', 'Transformez vos images et fichiers en texte'],
-  heroP: ['بالعربية والفرنسية والإنجليزية، مع كشف اللغة تلقائيًا.', 'Arabic, French and English, with automatic language detection.', 'Arabe, français et anglais, avec détection automatique de la langue.'],
-  scan: ['الماسح الضوئي', 'Scanner', 'Scanner'],
+  appName: ['محوّل المستندات', 'Document Converter', 'Convertisseur de documents'],
+  brandSub: ['ماسح • نص • جداول', 'Scan • Text • Tables', 'Scan • Texte • Tableaux'],
+  heroT: ['حوّل صورك وملفاتك إلى نص قابل للنسخ', 'Turn your photos and files into editable text', 'Transformez vos photos et fichiers en texte modifiable'],
+  heroP: ['عربي، فرنسي وإنجليزي. نقوّم الورقة المصوّرة ونزيل الظل تلقائيًا قبل القراءة.', 'Arabic, French and English. Photographed pages are straightened and cleaned automatically before reading.', 'Arabe, français et anglais. Les pages photographiées sont redressées et nettoyées automatiquement.'],
+  privShort: ['ملفاتك لا تغادر جهازك', 'Your files never leave your device', 'Vos fichiers restent sur votre appareil'],
+  quickT: ['اسحب صورة أو ملف PDF إلى هنا', 'Drop an image or a PDF here', 'Déposez une image ou un PDF ici'],
+  quickP: ['نستخرج النص منه مباشرة، أو اختر خدمة من الأسفل', 'We extract its text right away, or pick a service below', 'Nous en extrayons le texte, ou choisissez un service ci-dessous'],
+  chooseFile: ['اختيار ملف', 'Choose a file', 'Choisir un fichier'],
+  dropT: ['اسحب الملف إلى هنا', 'Drop your file here', 'Déposez votre fichier ici'],
+  st1: ['اختر الملف', 'Choose', 'Choisir'], st2: ['راجِع', 'Review', 'Vérifier'], st3: ['احفظ', 'Save', 'Enregistrer'],
+  services: ['الخدمات', 'Services', 'Services'],
+  scan: ['ماسح المستندات', 'Document scanner', 'Scanner de documents'],
   scanD: ['صوّر مستنداتك واحفظها PDF', 'Scan documents to PDF', 'Numérisez vos documents en PDF'],
-  ocr: ['صورة إلى نص', 'Image to text', 'Image en texte'],
+  ocr: ['تحويل الصورة إلى نص', 'Image to text', 'Image en texte'],
   ocrD: ['استخرج النص من الصور', 'Extract text from images', 'Extraire le texte des images'],
-  pdf: ['PDF إلى نص', 'PDF to text', 'PDF en texte'],
+  pdf: ['تحويل PDF إلى نص', 'PDF to text', 'PDF en texte'],
   pdfD: ['نص قابل للنسخ من أي PDF', 'Copyable text from any PDF', 'Texte copiable depuis un PDF'],
-  table: ['جدول إلى Excel/Word', 'Table to Excel/Word', 'Tableau vers Excel/Word'],
+  table: ['تحويل الجدول إلى Excel/Word', 'Table to Excel/Word', 'Tableau vers Excel/Word'],
   tableD: ['حوّل صورة الجدول إلى ملف', 'Turn a table image into a file', 'Convertir un tableau en fichier'],
   history: ['السجل', 'History', 'Historique'],
   seeAll: ['عرض الكل', 'See all', 'Tout voir'],
@@ -158,6 +166,8 @@ function t(k, ...a) {
   a.forEach((x, i) => { s = s.split('{' + i + '}').join(x); });
   return s;
 }
+/** نص للعرض داخل HTML: المقاطع اللاتينية (PDF، Excel/Word…) تُعزل بـ <bdi> فلا تختلط بالعربية */
+const tb = (k, ...a) => esc(t(k, ...a)).replace(/[A-Za-z][A-Za-z0-9/&.+\-]*(?: [A-Za-z0-9][A-Za-z0-9/&.+\-]*)*/g, m => `<bdi dir="ltr">${m}</bdi>`);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -182,6 +192,8 @@ const IC = {
   rot: '<path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/>',
   crown: '<path d="M3 8l4 3 5-6 5 6 4-3-2 11H5z"/>',
   qr: '<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M17 20h4v-3"/>',
+  upload: '<path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/>',
+  lock: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
   doc: '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/>',
 };
 const svg = (n, cls = 'i') => `<svg class="${cls}" viewBox="0 0 24 24">${IC[n]}</svg>`;
@@ -362,7 +374,7 @@ const DB = {
   open() {
     if (this._db) return this._db;
     this._db = new Promise((res, rej) => {
-      const r = indexedDB.open('sora2nas', 1);
+      const r = indexedDB.open('sora2nas', 1); // اسم داخلي قديم: نبقيه حتى لا يضيع سجل المستخدمين
       r.onupgradeneeded = () => { const s = r.result.createObjectStore('items', { keyPath: 'id' }); s.createIndex('date', 'date'); };
       r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error);
     });
@@ -440,6 +452,44 @@ function detectLang(text) {
 }
 const isRtlText = s => { const d = detectLang(s || ''); return d.main === 'ar'; };
 
+/* ---- النص المختلط عربي/لاتيني (منقول من تطبيق أندرويد) ---- */
+const RLM = '\u200F', LRM = '\u200E';
+const isRtlCh = c => /[\u0590-\u08FF\uFB1D-\uFDFF\uFE70-\uFEFC]/.test(c);
+const isLtrCh = c => /[A-Za-z\u00C0-\u024F]/.test(c);
+function lineIsRtl(s) { let r = 0, l = 0; for (const c of s) { if (isRtlCh(c)) r++; else if (isLtrCh(c)) l++; } return r > 0 && r >= l; }
+function firstStrongRtl(s) { for (const c of s) { if (isRtlCh(c)) return true; if (isLtrCh(c)) return false; } return null; }
+/** علامة اتجاه غير مرئية أمام كل سطر يبدأ بحرف من الاتجاه المعاكس (سطر عربي يبدأ بـ Windows مثلًا) */
+function markLines(text) {
+  if (![...text].some(isRtlCh)) return text;
+  return text.split('\n').map(line => {
+    const clean = line.replace(/[\u200E\u200F]/g, '');
+    const first = firstStrongRtl(clean);
+    if (first === null) return clean;
+    const rtl = lineIsRtl(clean);
+    return rtl && !first ? RLM + clean : (!rtl && first ? LRM + clean : clean);
+  }).join('\n');
+}
+const stripMarks = s => (s || '').replace(/[\u200E\u200F]/g, '');
+const UNITS = new Set('V kV mV A mA kA W kW MW GW VA kVA MVA var kvar Wh kWh MWh Hz kHz MHz rpm bar mbar Pa kPa MPa K m cm mm km µm kg g t s ms min h l L Nm N kN dB F µF mF DA DZD EUR USD %'.split(' '));
+/** المحرك يضع الرقم قبل الكلمة اللاتينية داخل السطر العربي («نظام 11 Windows»): نعيده بعدها، إلا مع الوحدات («250 kW») */
+function fixNumberOrder(text) {
+  const isNum = t => /\d/.test(t) && !/\p{L}/u.test(t);
+  const isLat = t => [...t].some(isLtrCh) && ![...t].some(isRtlCh);
+  return text.split('\n').map(line => {
+    if (!lineIsRtl(line)) return line;
+    const k = line.split(' ');
+    for (let i = 0; i < k.length - 1; i++) {
+      if (isNum(k[i]) && isLat(k[i + 1]) && !UNITS.has(k[i + 1].replace(/[^\p{L}%µ]/gu, ''))) {
+        let j = i + 1;
+        while (j + 1 < k.length && isLat(k[j + 1])) j++;
+        k.splice(j, 0, k.splice(i, 1)[0]);
+        i = j;
+      }
+    }
+    return k.join(' ');
+  }).join('\n');
+}
+
 /* ================= محرك OCR (Tesseract.js) ================= */
 const OCR = {
   workers: {},
@@ -448,7 +498,7 @@ const OCR = {
     if (!this.workers[kind]) {
       this.workers[kind] = (async () => {
         await need('tess');
-        const langs = { all: ['ara', 'fra', 'eng'], lat: ['fra', 'eng'], ara: ['ara'] }[kind];
+        const langs = { all: ['ara', 'fra', 'eng'], lat: ['fra', 'eng'] }[kind];
         const w = await Tesseract.createWorker(langs, 1, {
           workerPath: CDN.tessWorker, corePath: CDN.tessCore,
           logger: m => {
@@ -478,38 +528,40 @@ const OCR = {
       await wl.setParameters({ tessedit_pageseg_mode: '3' });
       const r2 = await wl.recognize(canvas);
       if ((r2.data.confidence || 0) >= (data.confidence || 0) - 2) { data = r2.data; text = data.text || ''; lang = detectLang(text); }
-    }
-    // نص مختلط: أسطر عربية دخلتها كلمات لاتينية خاطئة → نعيد قراءتها بنموذج العربية وحده
-    else if (lang.arRatio >= 0.03 && data.lines && data.lines.length) {
-      const bad = data.lines.filter(l => { const d = detectLang(l.text); return d.arRatio > 0.5 && /[A-Za-z]{2,}/.test(l.text); });
-      if (bad.length) {
-        const wa = await this.get('ara');
-        this.onProgress = onP;
-        await wa.setParameters({ tessedit_pageseg_mode: '3' });
-        const ra = (await wa.recognize(canvas)).data;
-        const iou = (a, b) => {
-          const w = Math.min(a.x1, b.x1) - Math.max(a.x0, b.x0), h = Math.min(a.y1, b.y1) - Math.max(a.y0, b.y0);
-          if (w <= 0 || h <= 0) return 0;
-          const i = w * h; return i / ((a.x1 - a.x0) * (a.y1 - a.y0) + (b.x1 - b.x0) * (b.y1 - b.y0) - i);
-        };
-        const fix = new Map();
-        bad.forEach(l => {
-          let best = null, bs = 0.3;
-          (ra.lines || []).forEach(a => { const v = iou(l.bbox, a.bbox); if (v > bs) { bs = v; best = a; } });
-          if (best && detectLang(best.text).arRatio > 0.9) fix.set(l, best.text);
-        });
-        if (fix.size) {
-          const paras = (data.paragraphs || []).map(p => p.lines.map(l => (fix.get(data.lines.find(x => x.bbox.x0 === l.bbox.x0 && x.bbox.y0 === l.bbox.y0)) || l.text).replace(/\n$/, '')).join('\n'));
-          if (paras.length) text = paras.join('\n\n');
-        }
+    } else if (lang.arRatio > 0.3) text = await this.fixStrayLatin(w, canvas, data, text);
+    this.onProgress = null;
+    return { text: markLines(cleanText(fixNumberOrder(text))), lang, conf: data.confidence };
+  },
+  /** كلمة لاتينية قصيرة ضعيفة الثقة بين كلمتين عربيتين غالبًا كلمة عربية قُرئت خطأ (مثل «لذلك» ← WI): نعيد قراءتها وحدها */
+  async fixStrayLatin(w, canvas, data, text) {
+    const bare = s => s.replace(/[‎‏؜]/g, '');
+    const isAr = s => /[؀-ۿ]/.test(s);
+    const jobs = [];
+    for (const L of data.lines || []) {
+      const ws = L.words || [];
+      for (let i = 1; i < ws.length - 1; i++) {
+        const tx = bare(ws[i].text);
+        if (/^[A-Za-z]{1,3}$/.test(tx) && ws[i].confidence < 85 && isAr(ws[i - 1].text) && isAr(ws[i + 1].text)) jobs.push({ L, wd: ws[i] });
       }
     }
-    this.onProgress = null;
-    return { text: cleanText(text), lang, conf: data.confidence };
+    if (!jobs.length || jobs.length > 20) return text;
+    await w.setParameters({ tessedit_pageseg_mode: '8' });
+    for (const { L, wd } of jobs) {
+      const b = wd.bbox, pad = Math.round((b.y1 - b.y0) * 0.3);
+      const rect = { left: Math.max(0, b.x0 - pad), top: Math.max(0, b.y0 - pad), width: b.x1 - b.x0 + 2 * pad, height: b.y1 - b.y0 + 2 * pad };
+      const r = (await w.recognize(canvas, { rectangle: rect })).data;
+      const nt = bare(r.text || '').trim();
+      if (nt && isAr(nt) && !/[A-Za-z]/.test(nt) && !/\s/.test(nt)) {
+        const nl = L.text.replace(wd.text, nt);
+        if (nl !== L.text) { text = text.replace(L.text, nl); L.text = nl; }
+      }
+    }
+    await w.setParameters({ tessedit_pageseg_mode: '3' });
+    return text;
   },
 };
 
-/** تحسين الصورة قبل OCR: تكبير الصغير، رمادي، شد التباين، إزالة التشويش (median)، تصحيح الميلان */
+/** تحسين الصورة قبل OCR: تكبير الصغير، رمادي، شد التباين، إزالة التشويش (median)، تبييض الحواف، تصحيح الميلان */
 function preprocess(src) {
   const long = Math.max(src.width, src.height);
   let s = 1;
@@ -589,8 +641,9 @@ function applyLang() {
   h.lang = LANG; h.dir = LANG === 'ar' ? 'rtl' : 'ltr';
   $$('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === LANG));
   $('#brandSub').textContent = t('brandSub');
+  $('#brandName').textContent = t('appName');
   $('#privacyNote').textContent = t('privacy');
-  document.title = `${t('brandSub')} — Sora2Nas | ${LANG === 'ar' ? 'د. سفيان مرابطي' : 'Dr Soufiane Merabti'}`;
+  document.title = `${t('appName')} | ${LANG === 'ar' ? 'د. سفيان مرابطي' : 'Dr Soufiane Merabti'}`;
   updatePill();
 }
 
@@ -617,14 +670,31 @@ async function render() {
 
 /* ---------------- الرئيسية ---------------- */
 async function viewHome(v) {
-  const btn = (k, c, href) => `<a class="big-btn ${c}" href="${href}"><span class="ic">${svg(k)}</span><b>${t(k)}</b><small>${t(k + 'D')}</small></a>`;
+  const tile = (k, c) => `<a class="tile ${c}" href="#${k}"><span class="ic">${svg(k)}</span><span class="tx"><b>${tb(k)}</b><small>${tb(k + 'D')}</small></span><span class="go">${svg('chevE', 'i flip')}</span></a>`;
   v.innerHTML = `
-    <div class="hero"><h1>${t('heroT')}</h1><p>${t('heroP')}</p></div>
-    <div class="home-grid">
-      ${btn('scan', 'c1', '#scan')}${btn('ocr', 'c2', '#ocr')}${btn('pdf', 'c3', '#pdf')}${btn('table', 'c4', '#table')}
-    </div>
-    <div class="section-h"><h2>${t('history')}</h2><a class="link-btn" href="#history">${t('seeAll')}</a></div>
-    <div class="hist-list" id="hl"></div>`;
+    <section class="hero">
+      <span class="hero-badge">${svg('lock')}${t('privShort')}</span>
+      <h1>${tb('heroT')}</h1>
+      <p>${tb('heroP')}</p>
+      <div class="quick-drop" id="qd">
+        <span class="qd-ic">${svg('upload')}</span>
+        <b>${tb('quickT')}</b><small>${tb('quickP')}</small>
+        <button class="btn primary lg" id="qPick">${svg('plus')}${t('chooseFile')}</button>
+      </div>
+    </section>
+    <h2 class="sec-title">${t('services')}</h2>
+    <div class="home-grid">${tile('scan', 'c1')}${tile('ocr', 'c2')}${tile('pdf', 'c3')}${tile('table', 'c4')}</div>
+    <section class="card">
+      <div class="section-h"><h2>${t('history')}</h2><a class="link-btn" href="#history">${t('seeAll')}</a></div>
+      <div class="hist-list" id="hl"></div>
+    </section>`;
+  const go = files => {
+    const pdf = files.find(isPdf), imgs = files.filter(isImg);
+    if (imgs.length) runOcr(imgs); else if (pdf) runPdf(pdf); else toast(t('onlyImg'));
+  };
+  $('#qPick').onclick = e => { e.stopPropagation(); pick('anyIn', go); };
+  $('#qd').onclick = () => pick('anyIn', go);
+  enableDrop($('#qd'), go);
   const items = (await DB.all()).slice(0, 5);
   if ($('#hl')) renderHistList($('#hl'), items);
 }
@@ -664,7 +734,7 @@ function renderHistList(box, items) {
 }
 function openItem(it) {
   if (it.type === 'table') { TABLE = { rows: it.rows, rtl: it.rtl, id: it.id, title: it.title, noGrid: false }; location.hash = '#table/view'; return; }
-  if (it.type === 'scan') { if (it.file) saveBlob(it.file, it.fname || 'sora2nas.pdf'); return; }
+  if (it.type === 'scan') { if (it.file) saveBlob(it.file, it.fname || 'document.pdf'); return; }
   CUR = it; location.hash = '#result/' + it.id;
 }
 
@@ -703,15 +773,19 @@ function enableDrop(el, cb) {
     if (f.length) cb(f);
   };
 }
-function titleBlock(key, color) {
-  return `<div class="page-title"><span class="ic" style="background:${color[0]};color:${color[1]}">${svg(key)}</span><div><h1>${t(key)}</h1><p>${t(key + 'D')}</p></div></div>`;
+function titleBlock(key, color, step = 1) {
+  const st = [1, 2, 3].map(i => `<li class="${i < step ? 'done' : i === step ? 'on' : ''}"><span>${i}</span>${t('st' + i)}</li>`).join('');
+  return `<div class="tool-head">
+    <div class="th"><span class="ic" style="background:${color[0]};color:${color[1]}">${svg(key)}</span><div><h1>${tb(key)}</h1><p>${tb(key + 'D')}</p></div></div>
+    <ol class="steps">${st}</ol></div>`;
 }
 
 /* ---------------- صورة إلى نص ---------------- */
 function viewOcr(v) {
   v.innerHTML = `
     ${titleBlock('ocr', ['#DDF3E4', '#2E8A5B'])}
-    <div class="panel" id="dz">
+    <div class="panel dropzone" id="dz">
+      <div class="dz-art"><span class="qd-ic">${svg('upload')}</span><b>${tb('dropT')}</b></div>
       <div class="src-row">
         <button class="src-btn primary" id="bCam">${svg('camera')}${t('camera')}</button>
         <button class="src-btn" id="bGal">${svg('image')}${t('gallery')}</button>
@@ -738,7 +812,7 @@ async function runOcr(files) {
       const sub = files.length > 1 ? t('imgN', i + 1, files.length) : '';
       busy.set(t('prep'), sub, i / files.length);
       await nextFrame();
-      const c = await fileToCanvas(files[i]);
+      const c = await flattenIfDocument(await fileToCanvas(files[i]));
       if (!thumb) thumb = thumbOf(c);
       const pc = preprocess(c);
       busy.set(t('reading'), sub, i / files.length);
@@ -764,7 +838,8 @@ async function runOcr(files) {
 function viewPdf(v) {
   v.innerHTML = `
     ${titleBlock('pdf', ['#FBEAEA', '#C0392B'])}
-    <div class="panel" id="dz">
+    <div class="panel dropzone" id="dz">
+      <div class="dz-art"><span class="qd-ic">${svg('upload')}</span><b>${tb('dropT')}</b></div>
       <div class="src-row"><button class="src-btn primary" id="bPdf">${svg('pdf')}${t('choosePdf')}</button></div>
       <p class="drop-hint">${t('dropHint')}</p>
     </div>`;
@@ -858,9 +933,10 @@ async function viewResult(v, id) {
   const tag = lang.parts.length ? lang.parts.map(l => t('l_' + l)).join(' + ') : '—';
   const others = ['ar', 'fr', 'en'].filter(l => l !== lang.main);
   v.innerHTML = `
+    ${CUR.type === 'pdf' ? titleBlock('pdf', ['#FBEAEA', '#C0392B'], 3) : titleBlock('ocr', ['#DDF3E4', '#2E8A5B'], 3)}
     <div class="panel">
       <div class="res-head">
-        <div><b style="font-size:1.15rem">${esc(CUR.title)}</b><br><span class="lang-tag">${t('detected')} ${tag}</span></div>
+        <div><b style="font-size:1.15rem" dir="auto">${esc(CUR.title)}</b><br><span class="lang-tag">${t('detected')} ${tag}</span></div>
         <a class="btn" href="#${CUR.type === 'pdf' ? 'pdf' : 'ocr'}">${svg('plus')}${t('newConv')}</a>
       </div>
       <button class="copy-all" id="bCopy">${svg('copy')}${t('copyAll')}</button>
@@ -889,9 +965,9 @@ async function viewResult(v, id) {
     if (navigator.share) { try { await navigator.share({ title: CUR.title, text: getText() }); } catch (e) {} }
     else if (await copyText(getText())) toast(t('copied'));
   };
-  $('#bTxt').onclick = () => saveBlob(new Blob(['﻿' + getText().replace(/\n/g, '\r\n')], { type: 'text/plain;charset=utf-8' }), `${CUR.title || 'sora2nas'}.txt`);
+  $('#bTxt').onclick = () => saveBlob(new Blob(['﻿' + getText().replace(/\n/g, '\r\n')], { type: 'text/plain;charset=utf-8' }), `${CUR.title || 'document'}.txt`);
   $('#bDocx').onclick = async () => {
-    try { busy.show(t('building')); saveBlob(await textToDocx(getText()), `${CUR.title || 'sora2nas'}.docx`); busy.hide(); }
+    try { busy.show(t('building')); saveBlob(await textToDocx(getText()), `${CUR.title || 'document'}.docx`); busy.hide(); }
     catch (e) { fail(e); }
   };
   $('#bSpeak').onclick = () => speak(getText(), $('#bSpeak span'));
@@ -965,7 +1041,7 @@ async function textToDocx(text) {
       children: [new D.TextRun({ text: line, rightToLeft: rtl, font: rtl ? 'Arial' : 'Calibri', size: 24 })],
     });
   });
-  const doc = new D.Document({ creator: 'Sora2Nas — merabti.com', sections: [{ children: paras }] });
+  const doc = new D.Document({ creator: 'merabti.com', sections: [{ children: paras }] });
   return D.Packer.toBlob(doc);
 }
 
@@ -978,12 +1054,13 @@ function viewScan(v) {
   const hint = m === 'qr' ? t('qrHint') : m === 'id' ? (SCAN.idFront ? t('idBack') : t('idFront')) : '';
   v.innerHTML = `
     ${titleBlock('scan', ['#E3EEF4', '#2F5770'])}
-    <div class="panel" id="dz">
-      <div class="btn-row" style="justify-content:space-between;margin-bottom:14px">
+    <div class="panel dropzone" id="dz">
+      <div class="btn-row scan-opts">
         <div class="seg" id="segMode">${seg('mDoc', 'doc', m)}${seg('mId', 'id', m)}${seg('mQr', 'qr', m)}</div>
         ${m !== 'qr' ? `<div class="btn-row"><b style="font-size:.9rem">${t('quality')}</b><div class="seg" id="segQ">${seg('qN', 'n', SCAN.quality)}${seg('qH', 'h', SCAN.quality)}${seg('qX', 'x', SCAN.quality)}</div></div>` : ''}
       </div>
       ${hint ? `<div class="note">${hint}</div>` : ''}
+      <div class="dz-art"><span class="qd-ic">${svg(m === 'qr' ? 'qr' : 'camera')}</span><b>${tb('dropT')}</b></div>
       <div class="src-row">
         <button class="src-btn primary" id="bCam">${svg(m === 'qr' ? 'qr' : 'camera')}${t('camera')}</button>
         <button class="src-btn" id="bGal">${svg('image')}${t('gallery')}</button>
@@ -1023,7 +1100,7 @@ function viewScan(v) {
     $('#bSearch').onclick = () => exportScanPdf(true);
     $('#bImgs').onclick = async () => {
       for (let i = 0; i < SCAN.pages.length; i++) {
-        saveBlob(await (await fetch(SCAN.pages[i].out)).blob(), `sora2nas-${stamp()}-${i + 1}.jpg`);
+        saveBlob(await (await fetch(SCAN.pages[i].out)).blob(), `scan-${stamp()}-${i + 1}.jpg`);
         await sleep(350);
       }
     };
@@ -1115,11 +1192,154 @@ function detectQuad(canvas) {
     k.delete();
   } finally { src.delete(); gray.delete(); edges.delete(); tmp.delete(); }
   if (!quad) return { quad: defaultQuad(W, H), found: false };
+  const full = quad.map(p => ({ x: p.x / s, y: p.y / s }));
+  const ref = refineQuad(canvas, full);
+  if (ref) return { quad: ref.map(p => ({ x: Math.min(W, Math.max(0, p.x)), y: Math.min(H, Math.max(0, p.y)) })), found: true };
   // إزاحة الزوايا قليلًا نحو الداخل حتى لا تظهر حافة الخلفية في الصفحة
   const cx = quad.reduce((a, p) => a + p.x, 0) / 4, cy = quad.reduce((a, p) => a + p.y, 0) / 4;
   return { quad: quad.map(p => ({ x: Math.min(W, Math.max(0, (p.x + (cx - p.x) * 0.012) / s)), y: Math.min(H, Math.max(0, (p.y + (cy - p.y) * 0.012) / s)) })), found: true };
 }
 const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+
+/**
+ * ضبط الحواف بدقة أقل من بكسل (منقول من تطبيق أندرويد): على نسخة 2000 بكسل نبحث على امتداد كل ضلع
+ * عن أقوى حافة متعامدة عليه، ونمرر خطًا عبر هذه النقاط (مع إسقاط الشاذة)، والزوايا تقاطعات الخطوط.
+ * الخطوط تُزاح قليلًا للداخل حتى لا يبقى شريط من الطاولة. يُرجع null إذا لم تكن النتيجة موثوقة.
+ */
+function refineQuad(canvas, coarse) {
+  const sc = Math.min(1, 2000 / Math.max(canvas.width, canvas.height));
+  const m = cv.imread(sc === 1 ? canvas : scaleCanvas(canvas, sc)), g = new cv.Mat();
+  cv.cvtColor(m, g, cv.COLOR_RGBA2GRAY); m.delete();
+  cv.GaussianBlur(g, g, new cv.Size(0, 0), 1.2);
+  const gx = new cv.Mat(), gy = new cv.Mat();
+  cv.Sobel(g, gx, cv.CV_32F, 1, 0, 3); cv.Sobel(g, gy, cv.CV_32F, 0, 1, 3);
+  const w = g.cols, h = g.rows; g.delete();
+  const fx = gx.data32F.slice(), fy = gy.data32F.slice(); gx.delete(); gy.delete();
+  const p = coarse.map(q => ({ x: q.x * sc, y: q.y * sc }));
+  const cx = p.reduce((a, q) => a + q.x, 0) / 4, cy = p.reduce((a, q) => a + q.y, 0) / 4;
+  const radius = Math.max(6, Math.hypot(w, h) * 0.015), SAMPLES = 40, MIN_EDGE = 40, INSET = 2;
+  const lines = [];
+  for (let i = 0; i < 4; i++) {
+    const a = p[i], b = p[(i + 1) % 4], len = Math.hypot(b.x - a.x, b.y - a.y);
+    if (len < 20) return null;
+    const dx = (b.x - a.x) / len, dy = (b.y - a.y) / len;
+    let nx = -dy, ny = dx;
+    if ((cx - (a.x + b.x) / 2) * nx + (cy - (a.y + b.y) / 2) * ny < 0) { nx = -nx; ny = -ny; }
+    const ts = [], offs = [];
+    for (let k = 0; k < SAMPLES; k++) {
+      const tt = 0.08 + 0.84 * k / (SAMPLES - 1), sx = a.x + (b.x - a.x) * tt, sy = a.y + (b.y - a.y) * tt;
+      let bestO = 0, bestG = 0;
+      for (let o = -radius; o <= radius; o += 0.5) {
+        const x = (sx + o * nx) | 0, y = (sy + o * ny) | 0;
+        if (x > 0 && x < w - 1 && y > 0 && y < h - 1) { const id = y * w + x, gg = Math.abs(fx[id] * nx + fy[id] * ny); if (gg > bestG) { bestG = gg; bestO = o; } }
+      }
+      if (bestG > MIN_EDGE) { ts.push(tt * len); offs.push(bestO); }
+    }
+    if (ts.length < SAMPLES / 3) return null;
+    const fit = robustLine(ts, offs); if (!fit) return null;
+    const c0 = fit[0] + INSET, c1 = fit[1];
+    lines.push([a.x + nx * c0, a.y + ny * c0, dx + nx * c1, dy + ny * c1]);
+  }
+  const out = [];
+  for (let i = 0; i < 4; i++) {
+    const l1 = lines[(i + 3) % 4], l2 = lines[i], det = l1[2] * l2[3] - l1[3] * l2[2];
+    if (Math.abs(det) < 1e-9) return null;
+    const tt = ((l2[0] - l1[0]) * l2[3] - (l2[1] - l1[1]) * l2[2]) / det;
+    const c = { x: l1[0] + l1[2] * tt, y: l1[1] + l1[3] * tt };
+    if (Math.hypot(c.x - p[i].x, c.y - p[i].y) > radius * 1.5) return null;
+    out.push(c);
+  }
+  return out.map(q => ({ x: q.x / sc, y: q.y / sc }));
+}
+/** خط بالمربعات الصغرى y = a + b·x، يُعاد حسابه بعد حذف النقاط البعيدة */
+function robustLine(xs, ys) {
+  let idx = xs.map((_, i) => i), fit = null;
+  for (let r = 0; r < 3; r++) {
+    if (idx.length < 4) return fit;
+    const n = idx.length, mx = idx.reduce((a, i) => a + xs[i], 0) / n, my = idx.reduce((a, i) => a + ys[i], 0) / n;
+    let sxx = 0, sxy = 0; idx.forEach(i => { sxx += (xs[i] - mx) ** 2; sxy += (xs[i] - mx) * (ys[i] - my); });
+    const b = sxx > 1e-9 ? sxy / sxx : 0, a = my - b * mx; fit = [a, b];
+    const res = idx.map(i => Math.abs(ys[i] - (a + b * xs[i])));
+    const tol = Math.max(2, [...res].sort((u, v) => u - v)[res.length >> 1] * 2.5);
+    idx = idx.filter((_, j) => res[j] <= tol);
+  }
+  return fit;
+}
+
+/** صورة هاتف لورقة: نقص الورقة ونقوّمها قبل القراءة (أكبر فرق في الدقة). غير ذلك تُرجع كما هي */
+async function flattenIfDocument(c) {
+  await loadCV();
+  const q = detectQuad(c);
+  if (!q.found) return c;
+  const [a, b, d, e] = q.quad;
+  const area = Math.abs((a.x * b.y - b.x * a.y) + (b.x * d.y - d.x * b.y) + (d.x * e.y - e.x * d.y) + (e.x * a.y - a.x * e.y)) / 2;
+  if (area > c.width * c.height * 0.9) return c; // الصورة هي الورقة أصلًا (لقطة شاشة أو مسح)
+  return processPage({ src: c, quad: q.quad, filter: 'orig', bri: 0, con: 0, sharp: 0, quality: 'x' });
+}
+
+/**
+ * «الصفحة البيضاء النظيفة» (منقول من تطبيق أندرويد)، في مكانه على صورة RGB:
+ * 1) تقدير لون الورقة تحت الإضاءة الفعلية لكل قناة (closing يزيل النص والأختام ويُبقي حواف الظل)
+ * 2) قسمة كل قناة عليه: تختفي الظلال والتظليل والصفرة الناتجة عن إضاءة الغرفة
+ * 3) منحنى درجات يجعل الورقة بيضاء تمامًا ويعمّق الحبر
+ * 4) رفع التشبع حتى تبقى الأختام والتوقيعات الملونة واضحة
+ */
+function magicColor(rgb, saturation = 1.3) {
+  const bg = estimateColorBackground(rgb);
+  cv.divide(rgb, bg, rgb, 255); bg.delete();
+  const d = rgb.data, n = d.length / 3;
+  // نقطة السواد: 0.3% من أغمق البكسلات
+  const hist = new Uint32Array(256);
+  for (let i = 0; i < d.length; i += 3) hist[(d[i] * 299 + d[i + 1] * 587 + d[i + 2] * 114) / 1000 | 0]++;
+  let acc = 0, black = 0;
+  for (let v = 0; v < 256; v++) { acc += hist[v]; if (acc >= n * 0.003) { black = v; break; } }
+  black = Math.min(0.45, black / 255);
+  const WHITE = 0.86, GAMMA = 1.35, lut = new Uint8Array(256);
+  for (let v = 0; v < 256; v++) { const x = Math.min(1, Math.max(0, (v / 255 - black) / (WHITE - black))); lut[v] = Math.round(Math.pow(x, GAMMA) * 255); }
+  for (let i = 0; i < d.length; i++) d[i] = lut[d[i]];
+  if (saturation !== 1) {
+    const hsv = new cv.Mat(); cv.cvtColor(rgb, hsv, cv.COLOR_RGB2HSV);
+    const h = hsv.data; for (let i = 1; i < h.length; i += 3) h[i] = Math.min(255, h[i] * saturation);
+    cv.cvtColor(hsv, rgb, cv.COLOR_HSV2RGB); hsv.delete();
+  }
+}
+function resizeMax(m, side) {
+  const r = Math.min(1, side / Math.max(m.cols, m.rows)), o = new cv.Mat();
+  cv.resize(m, o, new cv.Size(Math.max(2, Math.round(m.cols * r)), Math.max(2, Math.round(m.rows * r))), 0, 0, cv.INTER_AREA);
+  return o;
+}
+/** لون الورقة لكل قناة: تقدير دقيق (يحفظ حافة الظل) وتقدير خشن (يمحو الشعارات والكتل الملونة)، ونختار بينهما لكل منطقة */
+function estimateColorBackground(rgb) {
+  const fine = resizeMax(rgb, 1000);
+  const k = cv.getStructuringElement(cv.MORPH_ELLIPSE, new cv.Size(15, 15));
+  cv.morphologyEx(fine, fine, cv.MORPH_CLOSE, k); k.delete();
+  cv.medianBlur(fine, fine, 15);
+  const coarse = resizeMax(rgb, 250);
+  const kc = cv.getStructuringElement(cv.MORPH_ELLIPSE, new cv.Size(31, 31));
+  cv.morphologyEx(coarse, coarse, cv.MORPH_CLOSE, kc); kc.delete();
+  cv.GaussianBlur(coarse, coarse, new cv.Size(0, 0), 3);
+  const cu = new cv.Mat(); cv.resize(coarse, cu, new cv.Size(fine.cols, fine.rows), 0, 0, cv.INTER_LINEAR); coarse.delete();
+  const w = fine.cols, h = fine.rows, f = fine.data, c = cu.data;
+  const wt = new Float32Array(w * h);
+  for (let i = 0; i < w * h; i++) {
+    const fr = f[3 * i], fg = f[3 * i + 1], fb = f[3 * i + 2], cr = c[3 * i], cg = c[3 * i + 1], cb = c[3 * i + 2];
+    const fs = fr + fg + fb + 0.03, cs = cr + cg + cb + 0.03;
+    const chroma = Math.max(Math.abs(fr / fs - cr / cs), Math.abs(fg / fs - cg / cs), Math.abs(fb / fs - cb / cs));
+    const colourOk = Math.min(1, Math.max(0, (0.06 - chroma) / 0.03));
+    const darkOk = Math.min(1, Math.max(0, (fs / cs - 0.25) / 0.15));
+    wt[i] = Math.min(colourOk, darkOk);
+  }
+  const wm = cv.matFromArray(h, w, cv.CV_32FC1, wt);
+  cv.GaussianBlur(wm, wm, new cv.Size(0, 0), 4);
+  const ww = wm.data32F, small = new cv.Mat(h, w, cv.CV_8UC3), sd = small.data;
+  for (let i = 0; i < w * h; i++) for (let ch = 0; ch < 3; ch++) {
+    const j = 3 * i + ch; sd[j] = Math.max(10, Math.round(c[j] + ww[i] * (f[j] - c[j])));
+  }
+  wm.delete(); fine.delete(); cu.delete();
+  cv.GaussianBlur(small, small, new cv.Size(0, 0), 2);
+  const bg = new cv.Mat(); cv.resize(small, bg, new cv.Size(rgb.cols, rgb.rows), 0, 0, cv.INTER_LINEAR); small.delete();
+  return bg;
+}
 
 /** قص + تصحيح منظور + تحسين الألوان + السطوع/التباين/الحدة */
 function processPage(p) {
@@ -1138,18 +1358,9 @@ function processPage(p) {
   cv.cvtColor(dst, dst, cv.COLOR_RGBA2RGB);
   const f = p.filter || 'enh';
   if (f === 'enh') {
-    // إزالة الظلال مع الحفاظ على الألوان: قسمة الصورة على خلفيتها المقدّرة
-    const sm = new cv.Mat(), bg = new cv.Mat();
-    const r = Math.min(1, 600 / Math.max(w, h));
-    cv.resize(dst, sm, new cv.Size(Math.max(8, Math.round(w * r)), Math.max(8, Math.round(h * r))), 0, 0, cv.INTER_AREA);
-    const k = cv.getStructuringElement(cv.MORPH_RECT, new cv.Size(9, 9));
-    cv.dilate(sm, sm, k); k.delete();
-    cv.medianBlur(sm, sm, 21);
-    cv.resize(sm, bg, new cv.Size(w, h), 0, 0, cv.INTER_LINEAR);
-    cv.divide(dst, bg, dst, 255);
-    dst.convertTo(dst, -1, 1.12, -14);   // تباين خفيف بعد التبييض
-    sm.delete(); bg.delete();
+    magicColor(dst, 1.3);
   } else if (f === 'gray' || f === 'bw') {
+    if (f === 'gray') magicColor(dst, 1.0);
     const g = new cv.Mat(); cv.cvtColor(dst, g, cv.COLOR_RGB2GRAY);
     if (f === 'bw') cv.adaptiveThreshold(g, g, 255, cv.ADAPTIVE_THRESH_GAUSSIAN_C, cv.THRESH_BINARY, 31, 12);
     cv.cvtColor(g, dst, cv.COLOR_GRAY2RGB); g.delete();
@@ -1186,7 +1397,7 @@ function viewEditor(v) {
   const seg = (k, val) => `<button data-v="${val}" class="${p.filter === val ? 'on' : ''}">${t(k)}</button>`;
   const sl = (k, min, max) => `<div class="slider"><label for="s_${k}">${t(k)}</label><input id="s_${k}" type="range" min="${min}" max="${max}" value="${k === 'sharp' ? p.sharp : p[k]}"><output id="o_${k}">${k === 'sharp' ? p.sharp : p[k]}</output></div>`;
   v.innerHTML = `
-    ${titleBlock('scan', ['#E3EEF4', '#2F5770'])}
+    ${titleBlock('scan', ['#E3EEF4', '#2F5770'], 2)}
     <div class="editor">
       <div class="panel">
         <p style="margin:0 0 10px;color:var(--ink-soft)">${t('adjust')}</p>
@@ -1333,8 +1544,13 @@ async function readQr(file) {
 }
 
 /* ---- تصدير PDF من الصفحات الممسوحة ---- */
-/** أفضل نسخة من الصفحة للقراءة الضوئية (PNG إن وُجد) */
-function pageCanvas(p) { return dataUrlToCanvas(p.png ? URL.createObjectURL(p.png) : p.out); }
+/** أفضل نسخة من الصفحة للقراءة الضوئية: الورقة المقوّمة بألوانها الأصلية (أدق للقراءة من نسخة التحسين) */
+function pageCanvas(p) {
+  if (p.src && p.quad && window.cv && cv.Mat) {
+    try { return Promise.resolve(processPage(Object.assign({}, p, { filter: 'orig', bri: 0, con: 0, sharp: 0 }))); } catch (e) { console.error(e); }
+  }
+  return dataUrlToCanvas(p.png ? URL.createObjectURL(p.png) : p.out);
+}
 function dataUrlToCanvas(url) {
   return new Promise((res, rej) => { const i = new Image(); i.onload = () => { const c = document.createElement('canvas'); c.width = i.naturalWidth; c.height = i.naturalHeight; c.getContext('2d').drawImage(i, 0, 0); res(c); }; i.onerror = rej; i.src = url; });
 }
@@ -1343,7 +1559,7 @@ async function exportScanPdf(searchable) {
   if (searchable && !canConvert(1)) return;
   busy.show(t('building'));
   try {
-    const name = `sora2nas-${stamp()}.pdf`;
+    const name = `scan-${stamp()}.pdf`;
     let blob;
     const A4 = [595.28, 841.89];
     const pageSize = p => {
@@ -1380,7 +1596,7 @@ async function exportScanPdf(searchable) {
         OCR.onProgress = pr => busy.set(null, null, (i + pr) / SCAN.pages.length);
         await w.setParameters({ tessedit_pageseg_mode: '3' });
         const c = await pageCanvas(p);
-        const r = await w.recognize(c, { pdfTitle: 'sora2nas', pdfTextOnly: true }, { pdf: true, text: false, blocks: false, hocr: false, tsv: false });
+        const r = await w.recognize(c, { pdfTitle: 'scan', pdfTextOnly: true }, { pdf: true, text: false, blocks: false, hocr: false, tsv: false });
         OCR.onProgress = null;
         if (r.data.pdf) {
           const tdoc = await PDFLib.PDFDocument.load(new Uint8Array(r.data.pdf));
@@ -1427,7 +1643,8 @@ function viewTable(v, arg) {
   if (arg === 'view' && TABLE) return viewTableEdit(v);
   v.innerHTML = `
     ${titleBlock('table', ['#F0E3F8', '#7A4FA3'])}
-    <div class="panel" id="dz">
+    <div class="panel dropzone" id="dz">
+      <div class="dz-art"><span class="qd-ic">${svg('upload')}</span><b>${tb('dropT')}</b></div>
       <div class="src-row">
         <button class="src-btn primary" id="bCam">${svg('camera')}${t('camera')}</button>
         <button class="src-btn" id="bGal">${svg('image')}${t('gallery')}</button>
@@ -1461,7 +1678,7 @@ async function runTable(file) {
         busy.show(t('loadCv'));
       }
       canvas = await renderPdfPage(doc, n, 2.8);
-    } else canvas = await fileToCanvas(file, 4000);
+    } else canvas = await flattenIfDocument(await fileToCanvas(file, 4000));
     await Promise.all([loadCV(), OCR.get('all')]);
     busy.set(t('tblGrid'), '', null);
     await nextFrame();
@@ -1591,7 +1808,7 @@ function viewTableEdit(v) {
   const T = TABLE;
   const C = Math.max(0, ...T.rows.map(r => r.length));
   v.innerHTML = `
-    ${titleBlock('table', ['#F0E3F8', '#7A4FA3'])}
+    ${titleBlock('table', ['#F0E3F8', '#7A4FA3'], 3)}
     <div class="panel">
       <div class="res-head"><div><b style="font-size:1.1rem">${esc(T.title)}</b><br><span class="lang-tag">${t('rowsCols', T.rows.length, C)}</span></div>
         <a class="btn" href="#table">${svg('plus')}${t('newConv')}</a></div>
@@ -1624,7 +1841,7 @@ function viewTableEdit(v) {
       const wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, 'Table');
       if (T.rtl) wb.Workbook = { Views: [{ RTL: true }] };
-      XLSX.writeFile(wb, `${T.title || 'sora2nas'}.xlsx`);
+      XLSX.writeFile(wb, `${T.title || 'table'}.xlsx`);
       lsSet('s2n_tfmt', 'xlsx');
     } catch (e) { fail(e); }
   };
@@ -1640,8 +1857,8 @@ function viewTableEdit(v) {
           })),
         })),
       });
-      const doc = new D.Document({ creator: 'Sora2Nas — merabti.com', sections: [{ properties: rows[0] && rows[0].length > 6 ? { page: { size: { orientation: D.PageOrientation.LANDSCAPE } } } : {}, children: [tbl] }] });
-      saveBlob(await D.Packer.toBlob(doc), `${T.title || 'sora2nas'}.docx`);
+      const doc = new D.Document({ creator: 'merabti.com', sections: [{ properties: rows[0] && rows[0].length > 6 ? { page: { size: { orientation: D.PageOrientation.LANDSCAPE } } } : {}, children: [tbl] }] });
+      saveBlob(await D.Packer.toBlob(doc), `${T.title || 'table'}.docx`);
       lsSet('s2n_tfmt', 'docx');
     } catch (e) { fail(e); }
   };
