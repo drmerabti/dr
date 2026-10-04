@@ -846,8 +846,24 @@ function renderCoursesSection(){
     </div>
   `).join('');
   wrap.querySelectorAll('.course-card').forEach(card => {
-    card.addEventListener('click', () => showTrainingCoursePaymentModal());
+    card.addEventListener('click', async () => {
+      // Admins open the course directly; everyone else still sees the "قريبًا" modal.
+      // The course pages themselves re-check access (courses/course-guard.js).
+      if (await isAdminUser()){
+        const item = items.find(i => i.id === card.dataset.courseId);
+        if (item) window.location.href = courseUrlFor(item);
+        return;
+      }
+      showTrainingCoursePaymentModal();
+    });
   });
+}
+
+// Courses with a dedicated page keep their own url; the rest open in the
+// shared player (courses/player.html?course=word for id "course-word").
+function courseUrlFor(item){
+  if (item.url) return item.url;
+  return 'courses/player.html?course=' + encodeURIComponent(item.id.replace(/^course-/, ''));
 }
 
 async function renderSectionItems(){
