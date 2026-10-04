@@ -4,38 +4,50 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>مولّد الامتحانات</title>
+<link rel="icon" type="image/x-icon" href="../../favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="tools.css">
+<link rel="stylesheet" href="shell.css">
 </head>
 <body>
 
 <header class="topbar">
-  <a href="../../index.html" class="brand-link">
-    <svg class="back-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
-    <span data-i18n="backHome">الرئيسية</span>
+  <a href="../../index.html" class="brand-logo" data-l-tip="أكاديمية مرابطي|Merabti Academy|Académie Merabti">
+    <img src="../../apple-touch-icon.png" alt="">
   </a>
+  <a class="icon-btn back-btn" href="../../tools.html" data-l-tip="العودة إلى الأدوات|Back to tools|Retour aux outils" aria-label="back">
+    <svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>
+  </a>
+  <span class="tool-name" data-i18n="title">مولّد الامتحانات</span>
   <div class="topbar-actions">
-    <span class="save-status" id="saveStatus"><span class="save-dot" id="saveDot"></span><span id="saveText" data-i18n-inline="savedLocal">تم الحفظ</span></span>
-    <button class="btn btn-cloud hidden" id="saveCloudBtn">
-      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 18a4 4 0 01-.6-7.96A5.5 5.5 0 0117 9a4.5 4.5 0 01.5 8.98"/></svg>
-      <span data-i18n-inline="saveCloudBtn">حفظ في حسابي</span>
-    </button>
-    <button class="btn btn-cloud hidden" id="signInBtn">
-      <svg viewBox="0 0 24 24" width="15" height="15"><path fill="currentColor" d="M21.35 11.1h-9.2v2.8h5.3c-.23 1.4-1.6 4.1-5.3 4.1-3.2 0-5.8-2.6-5.8-5.9s2.6-5.9 5.8-5.9c1.8 0 3 .76 3.7 1.42l2.5-2.42C16.7 3.6 14.6 2.6 12.15 2.6 6.9 2.6 2.7 6.8 2.7 12s4.2 9.4 9.45 9.4c5.45 0 9.06-3.83 9.06-9.23 0-.62-.07-1.1-.16-1.07z"/></svg>
-      <span data-i18n-inline="signInBtn">تسجيل الدخول</span>
-    </button>
-    <button id="langToggle" class="lang-toggle" type="button">EN</button>
+    <button class="icon-btn" id="btnFullscreen" type="button" data-l-tip="ملء الشاشة|Full screen|Plein écran"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+    <button class="icon-btn" id="btnMine" type="button" data-l-tip="امتحاناتي|My exams|Mes examens"><svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></button>
+    <button class="icon-btn ed-only" id="designBtn" type="button" data-l-tip="الشكل والقالب|Look &amp; template|Apparence"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18c1 0 1.6-.8 1.6-1.6 0-.5-.2-.8-.4-1.1-.3-.3-.4-.7-.4-1.1 0-.9.7-1.6 1.6-1.6H16a5 5 0 0 0 5-5c0-4.1-4-7.6-9-7.6z"/><circle cx="7.5" cy="11" r="1.2"/><circle cx="10.5" cy="7" r="1.2"/><circle cx="15" cy="7.5" r="1.2"/></svg></button>
+    <button class="icon-btn ed-only" id="shareBtn" type="button" data-l-tip="مشاركة|Share|Partager"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg></button>
+    <button class="icon-btn ed-only" id="saveCloudBtn" type="button" data-l-tip="حفظ في حسابي|Save to my account|Enregistrer sur mon compte"><svg viewBox="0 0 24 24"><path d="M7 18a4 4 0 0 1-.6-7.96A5.5 5.5 0 0 1 17 9a4.5 4.5 0 0 1 .5 8.98"/><path d="M12 12v6M9.5 14.5L12 12l2.5 2.5"/></svg></button>
+    <button class="icon-btn ed-only" id="printBtn" type="button" data-l-tip="طباعة|Print|Imprimer"><svg viewBox="0 0 24 24"><path d="M7 9V4h10v5M7 17H4v-7h16v7h-3"/><path d="M7 14h10v6H7z"/></svg></button>
+    <button class="icon-btn pdf ed-only" id="pdfBtn" type="button" data-l-tip="حفظ PDF|Save as PDF|Enregistrer en PDF"><span>PDF</span></button>
+    <button class="icon-btn word ed-only" id="wordBtn" type="button" data-l-tip="تحميل Word|Download Word|Télécharger Word"><span>W</span></button>
+    <div class="lang-wrap">
+      <button class="lang-toggle" id="langToggle" type="button">AR</button>
+      <div class="lang-menu hidden" id="langMenu">
+        <button type="button" data-setlang="ar">العربية</button>
+        <button type="button" data-setlang="fr">Français</button>
+        <button type="button" data-setlang="en">English</button>
+      </div>
+    </div>
   </div>
 </header>
 
-<div class="hero">
-  <h1 class="tool-title" id="heroTitle" data-i18n="title">مولّد الامتحانات</h1>
-  <p class="tool-sub" id="heroSub" data-i18n="subtitleList">أنشئ ورقة امتحان احترافية دون الحاجة لإتقان Word</p>
-</div>
-
-<main>
-
+<!-- ============ PAGES (home, library, settings, templates) ============ -->
+<div class="page-area" id="pageArea">
+  <div class="view-head" id="viewHead">
+    <h1 class="tool-title" id="heroTitle" data-i18n="title">مولّد الامتحانات</h1>
+    <p class="tool-sub" id="heroSub" data-i18n="subtitleList">أنشئ ورقة امتحان احترافية دون الحاجة لإتقان Word</p>
+  </div>
+  <main>
   <!-- ============ LIST VIEW ============ -->
   <section id="listView" class="view">
     <div class="hub-grid">
@@ -70,73 +82,139 @@
     </div>
 
     <div class="exam-list-section">
-      <h3 data-i18n="myExamsTitle">امتحاناتي</h3>
+      <div class="exams-head">
+        <h3 data-i18n="myExamsTitle">امتحاناتي</h3>
+        <input class="search-input" id="examSearch" data-l-ph="ابحث بالعنوان أو المادة أو المستوى...|Search by title, subject or level...|Rechercher..." placeholder="ابحث بالعنوان أو المادة أو المستوى...">
+      </div>
       <div class="exam-grid" id="examGrid"></div>
       <p class="empty-note hidden" id="emptyNote" data-i18n="emptyNote">لا توجد امتحانات محفوظة بعد. أنشئ أول امتحان من الأعلى.</p>
     </div>
   </section>
 
-  <!-- ============ EDITOR VIEW ============ -->
-  <section id="editorView" class="view hidden">
-    <div class="editor-head">
-      <button class="btn btn-ghost btn-back" id="backToListBtn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M15 18l-6-6 6-6"/></svg>
-        <span data-i18n-inline="backToList">امتحاناتي</span>
-      </button>
-      <div class="editor-head-actions">
-        <button class="btn btn-ghost" id="shareBtn" data-i18n="shareBtn">مشاركة</button>
-        <button class="btn btn-ghost" id="printBtn" data-i18n="printBtn">طباعة / تصدير</button>
-      </div>
-    </div>
+  
+  <section id="libraryView" class="view hidden"></section>
+  <section id="settingsView" class="view hidden"></section>
+  <section id="templatesView" class="view hidden"></section>
+  </main>
+</div>
 
-    <div class="editor-wrap">
-      <div class="tools-col">
-        <div class="tools-title" data-i18n="toolsTitle">الأدوات</div>
-        <button class="tool-btn q-normal" data-type="normal"><span class="tool-ic">✏️</span> <span data-i18n-inline="toolNormal">سؤال عادي</span></button>
-        <button class="tool-btn q-mcq" data-type="mcq"><span class="tool-ic">✅</span> <span data-i18n-inline="toolMcq">اختيار من متعدد</span></button>
-        <button class="tool-btn q-tf" data-type="tf"><span class="tool-ic">☑️</span> <span data-i18n-inline="toolTf">صح / خطأ</span></button>
-        <button class="tool-btn q-blank" data-type="blank"><span class="tool-ic">🧩</span> <span data-i18n-inline="toolBlank">أكمل الفراغ</span></button>
-        <button class="tool-btn q-table" data-type="table"><span class="tool-ic">📊</span> <span data-i18n-inline="toolTable">جدول</span></button>
-        <button class="tool-btn q-image" id="imageToolBtn"><span class="tool-ic">🖼️</span> <span data-i18n-inline="toolImage">صورة</span></button>
-        <button class="tool-btn q-symbols" id="symbolsToolBtn"><span class="tool-ic">🔣</span> <span data-i18n-inline="toolSymbols">رموز</span></button>
-        <div id="imageHintWrap"></div>
-        <div class="tools-divider"></div>
-        <button class="lib-btn" id="libBtn" data-i18n="libBtn" title="متوفر في مرحلة لاحقة">📚 إدراج من مكتبتي</button>
-        <input type="file" id="imgFileInput" accept="image/*" class="hidden">
-      </div>
+<!-- ============ EDITOR VIEW ============ -->
+<section id="editorView" class="view workspace hidden">
+  <aside class="panel" id="panel">
+    <div class="accordion" id="accordion">
 
-      <div class="page-col">
-        <div class="totals-bar">
-          <span><span data-i18n-inline="qCountLabel">عدد التمارين:</span> <b id="qCount">0</b></span>
-          <span><span data-i18n-inline="totalLabel">المجموع:</span> <span class="points" id="totalPoints">0</span> / <input id="maxPoints" type="number" value="20"></span>
-        </div>
-        <div class="a4-page" id="examPage">
-          <div class="exam-header">
-            <div class="top-line" data-i18n="repLine1">الجمهورية الجزائرية الديمقراطية الشعبية</div>
-            <div class="top-line" data-i18n="repLine2">وزارة التربية الوطنية</div>
-            <div class="school-fields">
-              <input id="hInstitution" data-i18n-placeholder="institutionPh" placeholder="اسم المؤسسة">
-              <input id="hTeacher" data-i18n-placeholder="teacherPh" placeholder="أستاذ: ..............">
-            </div>
-            <input class="title-field" id="hTitle" value="اختبار الفصل الأول">
-            <div class="meta-row">
-              <span><b data-i18n-inline="subjectLabel">المادة:</b> <span class="resize-field meta-field"><input id="hSubject" placeholder="..."></span></span>
-              <span><b data-i18n-inline="gradeLabel">المستوى:</b> <span class="resize-field meta-field"><input id="hGrade" placeholder="..."></span></span>
-              <span><b data-i18n-inline="durationLabel">المدة:</b> <span class="resize-field meta-field" style="width:60px;"><input id="hDuration" placeholder="..."></span></span>
-            </div>
+      <section class="acc" data-sec="header" style="--sc:#1F6F63">
+        <button type="button" class="acc-head"><span class="acc-num">1</span>
+          <span class="acc-title"><b data-l="الترويسة|Header|En-tête">الترويسة</b><small data-sum="header"></small></span><svg class="acc-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="acc-body"><div class="acc-inner"><div class="acc-content">
+          <div class="field"><label data-l="المؤسسة|School|Établissement">المؤسسة</label><input type="text" data-hfield="institution"></div>
+          <div class="field-row">
+            <div class="field"><label data-l="السنة الدراسية|School year|Année scolaire">السنة الدراسية</label><input type="text" data-hfield="year" dir="ltr"></div>
+            <div class="field"><label data-l="المدة|Duration|Durée">المدة</label><input type="text" data-hfield="duration"></div>
           </div>
-          <div id="questionsWrap"></div>
-          <div class="empty-page-hint" id="emptyHint" data-i18n="emptyPageHint">اختر أداة من القائمة على اليمين لبدء إنشاء الامتحان</div>
-        </div>
-      </div>
+          <div class="field-row">
+            <div class="field"><label data-l="المادة|Subject|Matière">المادة</label><input type="text" data-hfield="subject" list="panelSubs"></div>
+            <div class="field"><label data-l="المستوى|Level|Niveau">المستوى</label><input type="text" data-hfield="grade" list="panelLevels"></div>
+          </div>
+          <div class="field"><label data-l="عنوان الامتحان|Exam title|Titre de l’examen">عنوان الامتحان</label><input type="text" data-hfield="title"></div>
+          <div class="field"><label data-l="الأستاذ(ة)|Teacher|Enseignant(e)">الأستاذ(ة)</label><input type="text" data-hfield="teacher"></div>
+          <datalist id="panelSubs"></datalist><datalist id="panelLevels"></datalist>
+          <button type="button" class="acc-next" data-next="header"><span data-l="التالي|Next|Suivant">التالي</span><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        </div></div></div>
+      </section>
 
-      <div class="props-col">
-        <div id="propsPanel"><div class="props-empty" data-i18n="propsEmpty">اختر سؤالاً لعرض خصائصه هنا (النقاط...)</div></div>
+      <section class="acc" data-sec="add" style="--sc:#3B82C4">
+        <button type="button" class="acc-head"><span class="acc-num">2</span>
+          <span class="acc-title"><b data-l="إضافة سؤال|Add a question|Ajouter une question">إضافة سؤال</b><small data-sum="add"></small></span><svg class="acc-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="acc-body"><div class="acc-inner"><div class="acc-content">
+          <div class="qtype-grid">
+            <button class="tool-btn q-normal" data-type="normal"><span class="tool-ic">✏️</span> <span data-i18n-inline="toolNormal">سؤال عادي</span></button>
+            <button class="tool-btn q-mcq" data-type="mcq"><span class="tool-ic">✅</span> <span data-i18n-inline="toolMcq">اختيار من متعدد</span></button>
+            <button class="tool-btn q-tf" data-type="tf"><span class="tool-ic">☑️</span> <span data-i18n-inline="toolTf">صح / خطأ</span></button>
+            <button class="tool-btn q-blank" data-type="blank"><span class="tool-ic">🧩</span> <span data-i18n-inline="toolBlank">أكمل الفراغ</span></button>
+            <button class="tool-btn q-image" id="imageToolBtn"><span class="tool-ic">🖼️</span> <span data-i18n-inline="toolImage">صورة</span></button>
+            <button class="tool-btn q-symbols" id="symbolsToolBtn"><span class="tool-ic">🔣</span> <span data-i18n-inline="toolSymbols">رموز</span></button>
+          </div>
+          <div id="imageHintWrap"></div>
+          <input type="file" id="imgFileInput" accept="image/*" class="hidden">
+          <button type="button" class="acc-next" data-next="add"><span data-l="التالي|Next|Suivant">التالي</span><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        </div></div></div>
+      </section>
+
+      <section class="acc" data-sec="insert" style="--sc:#8B5CF6">
+        <button type="button" class="acc-head"><span class="acc-num">3</span>
+          <span class="acc-title"><b data-l="أدوات الإدراج|Insert tools|Outils d’insertion">أدوات الإدراج</b><small data-sum="insert"></small></span><svg class="acc-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="acc-body"><div class="acc-inner"><div class="acc-content">
+          <div class="big-tools">
+            <button class="big-tool" data-obj="eq" style="--c:#2563EB"><span class="bt-ic">∑</span><span data-l="معادلة|Equation|Équation">معادلة</span></button>
+            <button class="big-tool" data-obj="plot" style="--c:#059669"><span class="bt-ic">📈</span><span data-l="منحنى|Curve|Courbe">منحنى</span></button>
+            <button class="big-tool" data-obj="draw" style="--c:#D97706"><span class="bt-ic">📐</span><span data-l="رسم|Drawing|Dessin">رسم</span></button>
+            <button class="big-tool" data-obj="table" style="--c:#7C3AED"><span class="bt-ic">▦</span><span data-l="جدول|Table|Tableau">جدول</span></button>
+          </div>
+          <button class="lib-btn" id="libBtn" data-i18n="libBtn">📚 إدراج من مكتبتي</button>
+          <p class="acc-hint" data-l="اضغط داخل نص السؤال في الورقة لتحديد مكان الإدراج.|Click inside a question on the paper to choose where to insert.|Cliquez dans une question pour choisir l’emplacement.">اضغط داخل نص السؤال في الورقة لتحديد مكان الإدراج.</p>
+          <button type="button" class="acc-next" data-next="insert"><span data-l="التالي|Next|Suivant">التالي</span><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        </div></div></div>
+      </section>
+
+      <section class="acc" data-sec="questions" style="--sc:#E08E3E">
+        <button type="button" class="acc-head"><span class="acc-num">4</span>
+          <span class="acc-title"><b data-l="الأسئلة|Questions|Questions">الأسئلة</b><small data-sum="questions"></small></span><svg class="acc-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="acc-body"><div class="acc-inner"><div class="acc-content">
+          <div class="q-list" id="qList"></div>
+          <div id="propsPanel"></div>
+          <button type="button" class="acc-next" data-next="questions"><span data-l="التالي|Next|Suivant">التالي</span><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        </div></div></div>
+      </section>
+
+      <section class="acc" data-sec="points" style="--sc:#2E9E6D">
+        <button type="button" class="acc-head"><span class="acc-num">5</span>
+          <span class="acc-title"><b data-l="التنقيط|Scoring|Barème">التنقيط</b><small data-sum="points"></small></span><svg class="acc-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="acc-body"><div class="acc-inner"><div class="acc-content">
+          <div class="field"><label data-l="العلامة الكاملة|Full mark|Note maximale">العلامة الكاملة</label><input type="number" id="maxPoints" value="20" min="1"></div>
+          <div class="pts-list" id="ptsList"></div>
+          <button type="button" class="acc-next" data-next="points"><span data-l="التالي|Next|Suivant">التالي</span><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        </div></div></div>
+      </section>
+
+      <section class="acc" data-sec="format" style="--sc:#D6558C">
+        <button type="button" class="acc-head"><span class="acc-num">6</span>
+          <span class="acc-title"><b data-l="التنسيق|Formatting|Mise en forme">التنسيق</b><small data-sum="format"></small></span><svg class="acc-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="acc-body"><div class="acc-inner"><div class="acc-content" id="formatBox"></div></div></div>
+      </section>
+
+    </div>
+  </aside>
+
+  <button class="panel-toggle" id="panelToggle" type="button" data-l-tip="إخفاء/إظهار حيّز الملء|Hide/show panel|Masquer/afficher le panneau">
+    <svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>
+  </button>
+
+  <main class="stage" id="stage">
+    <div class="stage-bar">
+      <div class="stat-box">
+        <span><span data-i18n-inline="qCountLabel">عدد التمارين:</span> <b id="qCount">0</b></span>
+        <span class="sep"></span>
+        <span><span data-i18n-inline="totalLabel">المجموع:</span> <b class="points" id="totalPoints">0</b> / <b id="maxPointsView">20</b></span>
+      </div>
+      <div class="zoom" id="zoomCtl">
+        <button type="button" id="zoomOut" aria-label="-"><svg viewBox="0 0 24 24"><path d="M6 12h12"/></svg></button>
+        <span id="zoomVal">100%</span>
+        <button type="button" id="zoomIn" aria-label="+"><svg viewBox="0 0 24 24"><path d="M6 12h12M12 6v12"/></svg></button>
+        <button type="button" id="zoomFit" data-l-tip="ملاءمة الشاشة|Fit to screen|Ajuster"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
       </div>
     </div>
-  </section>
-
-</main>
+    <div class="flat-view" id="flatView">
+      <div class="page-holder" id="pageHolder">
+        <div class="a4-page" id="examPage">
+          <div class="exam-header" id="examHeader"></div>
+          <div id="questionsWrap"></div>
+          <div class="empty-page-hint" id="emptyHint" data-l="ابدأ من حيّز الملء على اليمين: «2. إضافة سؤال»|Start from the panel on the right: “2. Add a question”|Commencez par le panneau de droite : « 2. Ajouter une question »">ابدأ من حيّز الملء على اليمين: «2. إضافة سؤال»</div>
+        </div>
+      </div>
+    </div>
+  </main>
+</section>
 
 <!-- ============ Share link popover ============ -->
 <div class="popover-backdrop hidden" id="shareBackdrop">
@@ -168,6 +246,24 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="../../firebase-init.js"></script>
+<script src="js/store.js"></script>
 <script src="app.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/objects.js"></script>
+<script src="js/header.js"></script>
+<script src="js/eq.js"></script>
+<script src="js/plot.js"></script>
+<script src="js/draw.js"></script>
+<script src="js/shapes.js"></script>
+<script src="js/tables.js"></script>
+<script src="js/library.js"></script>
+<script src="js/settings.js"></script>
+<script src="js/templates.js"></script>
+<script src="js/exam-templates.js"></script>
+<script src="js/examslist.js"></script>
+<script src="js/export-docx.js"></script>
+<script src="js/hub.js"></script>
+<script src="js/panel.js"></script>
+<script>bootApp();</script>
 </body>
 </html>

@@ -1,175 +1,429 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" id="htmlRoot">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>مولّد بيان الإرسال — أكاديمية مرابطي</title>
-<meta name="description" content="أنشئ بيان إرسال رسمي بصيغة A4 مع إشعار استلام، واحتفظ بمحفظة من كل ما أرسلت.">
+<title>مولّد وصل الاستلام — أكاديمية مرابطي</title>
+<meta name="description" content="أنشئ وصل استلام أو بيان إرسال رسميًا بصيغة A4، مع ترقيم تلقائي وكتابة المبلغ بالحروف، وحمّله PDF أو Word.">
+<script src="/analytics.js"></script>
+<link rel="icon" type="image/x-icon" href="../../favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="../../apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Cairo:wght@400;600;800&family=Noto+Naskh+Arabic:wght@400;600;700&family=Aref+Ruqaa:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Inter:wght@400;500;600;700;800&family=Amiri:wght@400;700&family=Noto+Naskh+Arabic:wght@400;600;700&family=Aref+Ruqaa:wght@400;700&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="topbar">
-  <a href="../../tools.html" class="icon-btn" id="backBtn" aria-label="back">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
+<header class="topbar">
+  <a href="../../index.html" class="brand-logo" title="أكاديمية مرابطي">
+    <img src="../../apple-touch-icon.png" alt="أكاديمية مرابطي">
   </a>
-  <span class="topbar-title" data-i18n="pageTitle">مولّد بيان الإرسال</span>
+  <a class="icon-btn back-btn" href="../../tools.html" data-tip="back_tools" aria-label="back">
+    <svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>
+  </a>
+  <span class="tool-name" data-i18n="topbarTitle">مولّد وصل الاستلام</span>
   <div class="topbar-actions">
-    <div class="topbar-editor-actions hidden" id="topbarEditorActions">
-      <button type="button" class="btn btn-primary btn-sm" id="saveBtn">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>
-        <span data-i18n="saveBtn">حفظ</span>
-      </button>
-      <button type="button" class="btn btn-secondary btn-sm" id="downloadPdfBtn">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M5 21h14"/></svg>
-        <span data-i18n="downloadBtn">تحميل PDF</span>
-      </button>
-      <button type="button" class="btn btn-secondary btn-sm" id="printBtn">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>
-        <span>طباعة</span>
-      </button>
+    <button class="icon-btn" id="btnFullscreen" type="button" data-tip="fullscreen">
+      <svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+    </button>
+    <button class="icon-btn" id="btnMine" type="button" data-tip="mine">
+      <svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+    </button>
+    <button class="icon-btn" id="saveBtn" type="button" data-tip="save">
+      <svg viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5z"/><path d="M8 4v5h7V4M8 20v-6h8v6"/></svg>
+    </button>
+    <button class="icon-btn" id="printBtn" type="button" data-tip="print">
+      <svg viewBox="0 0 24 24"><path d="M7 9V4h10v5M7 17H4v-7h16v7h-3"/><path d="M7 14h10v6H7z"/></svg>
+    </button>
+    <button class="icon-btn word" id="wordBtn" type="button" data-tip="word">
+      <span>W</span>
+    </button>
+    <button class="icon-btn pdf" id="downloadPdfBtn" type="button" data-tip="pdf">
+      <span>PDF</span>
+    </button>
+    <div class="lang-wrap">
+      <button class="lang-toggle" id="langToggle" type="button">AR</button>
+      <div class="lang-menu hidden" id="langMenu">
+        <button type="button" class="lang-btn" data-lang="ar">العربية</button>
+        <button type="button" class="lang-btn" data-lang="fr">Français</button>
+        <button type="button" class="lang-btn" data-lang="en">English</button>
+      </div>
     </div>
-    <div class="lang-switch">
-      <button type="button" class="lang-btn" data-lang="ar">عربي</button>
-      <button type="button" class="lang-btn" data-lang="en">EN</button>
-      <button type="button" class="lang-btn" data-lang="fr">FR</button>
+  </div>
+</header>
+
+<div class="workspace" id="workspace">
+  <aside class="panel" id="panel">
+    <button class="gallery-open" id="btnGallery" type="button">
+      <span class="go-thumb" id="currentThumb"></span>
+      <span class="go-text">
+        <strong data-i18n="gallery">معرض النماذج</strong>
+        <small id="currentTplName"></small>
+      </span>
+      <svg viewBox="0 0 24 24"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></svg>
+    </button>
+
+    <div class="accordion" id="accordion">
+      <section class="acc" data-sec="type" style="--sc:#2F6F9F">
+        <button type="button" class="acc-head"><span class="acc-num">1</span>
+          <span class="acc-title"><b data-i18n="sec_type">نوع الوصل والنموذج</b><small data-sum="type"></small></span>
+          <svg class="acc-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="acc-body"><div class="acc-inner"><div class="acc-content">
+          <div class="field">
+            <label data-i18n="receiptType">نوع الوصل</label>
+            <div class="type-grid" id="typeGrid"></div>
+            <p class="hint" data-i18n="typeHint"></p>
+          </div>
+          <div class="field">
+            <label data-i18n="design">التصميم</label>
+            <div class="tpl-strip" id="designStrip"></div>
+          </div>
+          <div class="field">
+            <label class="switch-row" for="f_twoCopies">
+              <input type="checkbox" id="f_twoCopies">
+              <span class="switch"></span>
+              <span data-i18n="twoCopies">طباعة نسختين في نفس الورقة (أصل ونسخة)</span>
+            </label>
+            <p class="hint" data-i18n="twoCopiesHint"></p>
+          </div>
+          <button type="button" class="acc-next" data-next><span data-i18n="next">التالي</span><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        </div></div></div>
+      </section>
+
+      <section class="acc" data-sec="org" style="--sc:#0F766E">
+        <button type="button" class="acc-head"><span class="acc-num">2</span>
+          <span class="acc-title"><b data-i18n="sec_org">المؤسسة أو الجهة</b><small data-sum="org"></small></span>
+          <svg class="acc-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="acc-body"><div class="acc-inner"><div class="acc-content">
+          <div class="field">
+            <label data-i18n="headerMode">الترويسة</label>
+            <div class="seg-ui" id="headerModeSeg">
+              <button type="button" data-mode="simple" data-i18n="headerModeSimple">شعار واسم</button>
+              <button type="button" data-mode="image" data-i18n="headerModeImage">صورة كاملة</button>
+            </div>
+          </div>
+          <div id="headerSimpleFields" class="sub-fields">
+            <div class="field">
+              <div class="upload-box" id="logoBox">
+              <input type="file" id="logoInput" accept="image/*" hidden>
+              <div class="upload-placeholder" id="logoPlaceholder"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M21 15l-4.5-4.5a2 2 0 0 0-2.8 0L7 17"/></svg><span data-i18n="uploadLogo">رفع الشعار</span></div>
+              <img id="logoPreview" class="upload-img hidden" alt="">
+              <button type="button" class="upload-remove hidden" id="logoRemove" data-tip="remove"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+            </div>
+            </div>
+          <div class="field">
+            <label for="f_issuerName" data-i18n="issuerName">اسم المؤسسة أو الجهة</label>
+            <input type="text" id="f_issuerName" data-f="issuerName">
+          </div>
+          <div class="field">
+            <label for="f_issuerContact" data-i18n="issuerContact">العنوان / الهاتف / البريد</label>
+            <input type="text" id="f_issuerContact" data-f="issuerContact">
+          </div>
+          </div>
+          <div id="headerImageField" class="sub-fields hidden">
+            <div class="field">
+              <div class="upload-box wide" id="headerImgBox">
+              <input type="file" id="headerImgInput" accept="image/*" hidden>
+              <div class="upload-placeholder" id="headerImgPlaceholder"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M21 15l-4.5-4.5a2 2 0 0 0-2.8 0L7 17"/></svg><span data-i18n="uploadHeader">رفع صورة الترويسة</span></div>
+              <img id="headerImgPreview" class="upload-img hidden" alt="">
+              <button type="button" class="upload-remove hidden" id="headerImgRemove" data-tip="remove"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+            </div>
+              <p class="hint" data-i18n="headerHint"></p>
+            </div>
+          </div>
+          <div class="field">
+            <label for="f_ref" data-i18n="refNo">رقم الوصل</label>
+            <div class="ref-row">
+              <input type="text" id="f_ref" data-f="ref" class="ltr-input">
+              <button type="button" class="soft-btn" id="newRefBtn"><svg viewBox="0 0 24 24"><path d="M4 4v6h6M4 10a8 8 0 1 1 2 6"/></svg><span data-i18n="newRef">رقم جديد</span></button>
+            </div>
+            <p class="hint" data-i18n="refHint"></p>
+          </div>
+          <div class="field-row2">
+            <div class="field">
+              <label for="f_date" data-i18n="dateLbl">التاريخ</label>
+              <input type="date" id="f_date" data-f="date">
+            </div>
+            <div class="field">
+              <label for="f_place" data-i18n="placeLbl">المكان (اختياري)</label>
+              <input type="text" id="f_place" data-f="place">
+            </div>
+          </div>
+          <button type="button" class="acc-next" data-next><span data-i18n="next">التالي</span><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        </div></div></div>
+      </section>
+
+      <section class="acc" data-sec="giver" style="--sc:#16A34A">
+        <button type="button" class="acc-head"><span class="acc-num">3</span>
+          <span class="acc-title"><b data-i18n="sec_giver">المسلِّم</b><small data-sum="giver"></small></span>
+          <svg class="acc-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="acc-body"><div class="acc-inner"><div class="acc-content">
+          <div class="field">
+            <label for="f_giverName" data-i18n="giverName">اسم المسلِّم</label>
+            <input type="text" id="f_giverName" data-f="giverName">
+          </div>
+          <div class="field">
+            <label for="f_giverRole" data-i18n="giverRole">صفته أو الجهة التي يمثلها</label>
+            <input type="text" id="f_giverRole" data-f="giverRole">
+          </div>
+          <button type="button" class="acc-next" data-next><span data-i18n="next">التالي</span><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        </div></div></div>
+      </section>
+
+      <section class="acc" data-sec="receiver" style="--sc:#D97706">
+        <button type="button" class="acc-head"><span class="acc-num">4</span>
+          <span class="acc-title"><b data-i18n="sec_receiver">المستلِم</b><small data-sum="receiver"></small></span>
+          <svg class="acc-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="acc-body"><div class="acc-inner"><div class="acc-content">
+          <div class="field">
+            <label for="f_destinataire" data-i18n="destinataire">الجهة المستلِمة / المرسل إليه</label>
+            <input type="text" id="f_destinataire" data-f="destinataire">
+          </div>
+          <div class="field-row2">
+          <div class="field">
+            <label for="f_receiverName" data-i18n="receiverName">اسم المستلِم</label>
+            <input type="text" id="f_receiverName" data-f="receiverName">
+          </div>
+          <div class="field">
+            <label for="f_receiverRole" data-i18n="receiverRole">صفته</label>
+            <input type="text" id="f_receiverRole" data-f="receiverRole">
+          </div>
+          </div>
+          <div class="field">
+            <label for="f_ackText" data-i18n="ackTextLbl">نص الإقرار</label>
+            <textarea id="f_ackText" data-f="ackText" rows="4"></textarea>
+            <p class="hint" data-i18n="ackHint"></p>
+          </div>
+          <button type="button" class="acc-next" data-next><span data-i18n="next">التالي</span><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        </div></div></div>
+      </section>
+
+      <section class="acc" data-sec="items" style="--sc:#7C3AED">
+        <button type="button" class="acc-head"><span class="acc-num">5</span>
+          <span class="acc-title"><b data-i18n="sec_items">تفاصيل الاستلام</b><small data-sum="items"></small></span>
+          <svg class="acc-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="acc-body"><div class="acc-inner"><div class="acc-content">
+          <div class="field">
+            <label for="f_objet" data-i18n="objet">الموضوع</label>
+            <input type="text" id="f_objet" data-f="objet">
+          </div>
+          <div class="field">
+            <label data-i18n="itemsLbl">جدول الاستلام</label>
+            <div id="itemsList" class="items-list"></div>
+            <button type="button" class="add-btn" id="addItemBtn">
+              <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span data-i18n="addItem">إضافة سطر</span>
+            </button>
+            <p class="hint" data-i18n="itemsHint"></p>
+            <datalist id="stateList"></datalist>
+          </div>
+          <button type="button" class="acc-next" data-next><span data-i18n="next">التالي</span><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        </div></div></div>
+      </section>
+
+      <section class="acc" data-sec="amount" style="--sc:#0891B2">
+        <button type="button" class="acc-head"><span class="acc-num">6</span>
+          <span class="acc-title"><b data-i18n="sec_amount">المبلغ (إن وُجد)</b><small data-sum="amount"></small></span>
+          <svg class="acc-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="acc-body"><div class="acc-inner"><div class="acc-content">
+          <div class="field-row2">
+            <div class="field">
+              <label for="f_amount" data-i18n="amountLbl">المبلغ</label>
+              <input type="text" id="f_amount" data-f="amount" class="ltr-input" inputmode="decimal">
+            </div>
+            <div class="field">
+              <label for="f_currency" data-i18n="currencyLbl">العملة</label>
+              <select id="f_currency" data-f="currency"></select>
+            </div>
+          </div>
+          <div class="field">
+            <label data-i18n="amountWordsLbl">المبلغ بالحروف (تلقائي)</label>
+            <div class="amount-words" id="amountWords"></div>
+            <p class="hint" data-i18n="amountHint"></p>
+          </div>
+          <div class="field">
+            <label for="f_payMethod" data-i18n="payLbl">طريقة الدفع</label>
+            <input type="text" id="f_payMethod" data-f="payMethod" list="payList">
+            <datalist id="payList"></datalist>
+          </div>
+          <button type="button" class="acc-next" data-next><span data-i18n="next">التالي</span><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        </div></div></div>
+      </section>
+
+      <section class="acc" data-sec="notes" style="--sc:#CA8A04">
+        <button type="button" class="acc-head"><span class="acc-num">7</span>
+          <span class="acc-title"><b data-i18n="sec_notes">الملاحظات</b><small data-sum="notes"></small></span>
+          <svg class="acc-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="acc-body"><div class="acc-inner"><div class="acc-content">
+          <div class="field">
+            <label for="f_notes" data-i18n="notesLbl">ملاحظات</label>
+            <textarea id="f_notes" data-f="notes" rows="4"></textarea>
+          </div>
+          <button type="button" class="acc-next" data-next><span data-i18n="next">التالي</span><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        </div></div></div>
+      </section>
+
+      <section class="acc" data-sec="sign" style="--sc:#DB2777">
+        <button type="button" class="acc-head"><span class="acc-num">8</span>
+          <span class="acc-title"><b data-i18n="sec_sign">التوقيعات والختم</b><small data-sum="sign"></small></span>
+          <svg class="acc-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="acc-body"><div class="acc-inner"><div class="acc-content">
+          <div class="field">
+            <label data-i18n="signGiver">توقيع وختم المسلِّم</label>
+            <div class="upload-box" id="signBox">
+              <input type="file" id="signInput" accept="image/*" hidden>
+              <div class="upload-placeholder" id="signPlaceholder"><svg viewBox="0 0 24 24"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg><span data-i18n="uploadStamp">رفع صورة الختم أو التوقيع</span></div>
+              <img id="signPreview" class="upload-img hidden" alt="">
+              <button type="button" class="upload-remove hidden" id="signRemove" data-tip="remove"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+            </div>
+          </div>
+          <div class="field">
+            <label data-i18n="signReceiver">ختم أو توقيع المستلِم (اختياري)</label>
+            <div class="upload-box" id="rsignBox">
+              <input type="file" id="rsignInput" accept="image/*" hidden>
+              <div class="upload-placeholder" id="rsignPlaceholder"><svg viewBox="0 0 24 24"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg><span data-i18n="uploadStamp">رفع صورة الختم أو التوقيع</span></div>
+              <img id="rsignPreview" class="upload-img hidden" alt="">
+              <button type="button" class="upload-remove hidden" id="rsignRemove" data-tip="remove"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+            </div>
+            <p class="hint" data-i18n="signHint"></p>
+          </div>
+          <button type="button" class="acc-next" data-next><span data-i18n="next">التالي</span><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        </div></div></div>
+      </section>
+
+      <section class="acc" data-sec="style" style="--sc:#64748B">
+        <button type="button" class="acc-head"><span class="acc-num">9</span>
+          <span class="acc-title"><b data-i18n="sec_style">التنسيق والخط</b><small data-sum="style"></small></span>
+          <svg class="acc-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="acc-body"><div class="acc-inner"><div class="acc-content">
+          <div class="field">
+            <label data-i18n="fontSectionLabel">الخط</label>
+            <div class="font-grid" id="fontFilter"></div>
+          </div>
+          <div class="field">
+            <label data-i18n="fontSizeLbl">حجم خط الوصل</label>
+            <div class="size-ctl" role="group">
+              <button type="button" id="fsDown" data-tip="fsDown" dir="ltr">A−</button>
+              <span class="size-val" id="fsVal" dir="ltr">100%</span>
+              <button type="button" id="fsUp" data-tip="fsUp" dir="ltr">A+</button>
+              <button type="button" id="fsReset" data-tip="fsReset"><svg viewBox="0 0 24 24"><path d="M4 4v6h6M4 10a8 8 0 1 1 2 6"/></svg></button>
+            </div>
+            <p class="hint" data-i18n="fontSizeHint"></p>
+            <div class="size-warn hidden" id="fsWarn"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><span data-i18n="overflowWarn"></span></div>
+          </div>
+          <div class="field">
+            <button type="button" class="soft-btn danger" id="clearAllBtn">
+              <svg viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>
+              <span data-i18n="clearAllText">تفريغ الخانات</span>
+            </button>
+          </div>
+          <button type="button" class="acc-next" data-next><span data-i18n="done">تم</span><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg></button>
+        </div></div></div>
+      </section>
+    </div>
+  </aside>
+
+  <button class="panel-toggle" id="panelToggle" type="button" data-tip="toggle_panel">
+    <svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>
+  </button>
+
+  <main class="stage" id="stage">
+    <div class="stage-bar">
+      <div class="zoom" id="zoomCtl">
+        <button type="button" id="zoomOut" aria-label="-"><svg viewBox="0 0 24 24"><path d="M6 12h12"/></svg></button>
+        <span id="zoomVal">100%</span>
+        <button type="button" id="zoomIn" aria-label="+"><svg viewBox="0 0 24 24"><path d="M6 12h12M12 6v12"/></svg></button>
+        <button type="button" id="zoomFit" data-tip="fit"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+      </div>
+      <div class="page-warn hidden" id="pageWarn"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><span data-i18n="overflowShort"></span></div>
+    </div>
+
+    <div class="flat-view" id="flatView">
+      <div class="sheet-holder" id="sheetHolder">
+        <div class="rc-page d-classic" id="rcPage"></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Templates gallery -->
+<div class="gallery hidden" id="gallery" role="dialog" aria-modal="true">
+  <div class="gallery-box">
+    <div class="gallery-head">
+      <h2 data-i18n="gallery">معرض النماذج</h2>
+      <div class="chips" id="gTabs">
+        <button type="button" class="chip on" data-tab="types" data-i18n="g_types">أنواع الوصولات</button>
+        <button type="button" class="chip" data-tab="designs" data-i18n="g_designs">التصاميم</button>
+      </div>
+      <div class="g-search">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21"/></svg>
+        <input type="text" id="gSearch" data-i18n-placeholder="search">
+      </div>
+      <button class="icon-btn" id="gClose" type="button" aria-label="close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="g-grid" id="gGrid"></div>
+  </div>
+</div>
+
+<!-- My receipts -->
+<div class="gallery hidden" id="mine" role="dialog" aria-modal="true">
+  <div class="gallery-box">
+    <div class="gallery-head">
+      <h2 data-i18n="mine">وصولاتي</h2>
+      <div class="chips" id="mineTabs">
+        <button type="button" class="chip on" data-src="all" data-i18n="src_all">الكل</button>
+        <button type="button" class="chip" data-src="local" data-i18n="src_local">على الجهاز</button>
+        <button type="button" class="chip" data-src="cloud" data-i18n="src_cloud">في حسابي</button>
+      </div>
+      <button class="icon-btn" id="mClose" type="button" aria-label="close" style="margin-inline-start:auto"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="mine-login hidden" id="mineLogin">
+      <span data-i18n="mine_login_hint"></span>
+      <button type="button" class="soft-btn primary" id="mineLoginBtn" data-i18n="sign_in">تسجيل الدخول</button>
+    </div>
+    <div class="g-grid mine-grid" id="mGrid"></div>
+  </div>
+</div>
+
+<!-- Login prompt -->
+<div class="gallery hidden" id="login" role="dialog" aria-modal="true">
+  <div class="login-box">
+    <div class="login-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></div>
+    <h3 id="loginTitle" data-i18n="login_title">سجّل دخولك</h3>
+    <p id="loginText" data-i18n="login_text"></p>
+    <button type="button" class="login-google" id="loginGoogle">
+      <svg viewBox="0 0 48 48" style="stroke:none"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>
+      <span data-i18n="googleBtn">المتابعة عبر Google</span>
+    </button>
+    <div class="auth-divider"><span data-i18n="or">أو</span></div>
+    <div class="auth-tabs">
+      <button type="button" class="auth-tab on" data-mode="login" id="tabLogin" data-i18n="tabLogin">تسجيل الدخول</button>
+      <button type="button" class="auth-tab" data-mode="signup" id="tabSignup" data-i18n="tabSignup">إنشاء حساب</button>
+    </div>
+    <form id="authCardForm" class="auth-form">
+      <input type="text" id="acName" class="hidden" data-i18n-placeholder="namePh">
+      <input type="email" id="acEmail" required class="ltr-input" data-i18n-placeholder="emailPh">
+      <input type="password" id="acPassword" required minlength="6" class="ltr-input" data-i18n-placeholder="passwordPh">
+      <p class="auth-card-error hidden" id="authCardError"></p>
+      <button type="submit" class="soft-btn primary" id="acSubmitBtn" data-i18n="loginBtn">تسجيل الدخول</button>
+    </form>
+    <button type="button" class="login-cancel" id="loginCancel" data-i18n="cancel">إلغاء</button>
+  </div>
+</div>
+
+<!-- Confirm dialog -->
+<div class="gallery hidden" id="confirmDlg" role="dialog" aria-modal="true">
+  <div class="login-box">
+    <div class="login-ico warn"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg></div>
+    <p id="confirmText"></p>
+    <div class="dlg-actions">
+      <button type="button" class="soft-btn" id="confirmNo" data-i18n="cancel">إلغاء</button>
+      <button type="button" class="soft-btn danger solid" id="confirmYes" data-i18n="confirm_ok">تأكيد</button>
     </div>
   </div>
 </div>
 
-<main class="wrap">
-
-  <section id="loadingScreen" class="screen loading-screen">
-    <div class="loading-spinner"></div>
-  </section>
-
-  <!-- ============ Locked / auth screen ============ -->
-  <section id="lockedScreen" class="screen hidden">
-    <div class="locked-hero">
-      <div class="locked-icon">🔒</div>
-      <h1 data-i18n="lockedTitle">سجّل دخولك لاستخدام مولّد بيان الإرسال</h1>
-      <p data-i18n="lockedSub">هذه الأداة، ومحفظتك الخاصة بها، متاحة للمستخدمين المسجّلين فقط.</p>
-    </div>
-    <div class="auth-card">
-      <div class="auth-tabs">
-        <button type="button" class="auth-tab active" data-mode="login" id="tabLogin">تسجيل الدخول</button>
-        <button type="button" class="auth-tab" data-mode="signup" id="tabSignup">إنشاء حساب</button>
-      </div>
-      <p class="auth-card-error hidden" id="authCardError"></p>
-      <form id="authCardForm">
-        <input type="text" id="acName" class="cv-input hidden" data-i18n-placeholder="nameLabel" placeholder="الاسم الكامل">
-        <input type="email" id="acEmail" class="cv-input" required data-i18n-placeholder="emailLabel" placeholder="البريد الإلكتروني">
-        <input type="password" id="acPassword" class="cv-input" required minlength="6" data-i18n-placeholder="passwordLabel" placeholder="كلمة المرور">
-        <button type="submit" class="btn btn-primary btn-block" id="acSubmitBtn">تسجيل الدخول</button>
-      </form>
-      <div class="auth-divider" data-i18n="orDivider">أو</div>
-      <button type="button" class="auth-google-btn" id="acGoogleBtn">
-        <svg viewBox="0 0 48 48" width="18" height="18"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 8 3l6-6C34.5 5.1 29.5 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21 21-9.4 21-21c0-1.2-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.6 15.6 18.9 13 24 13c3.1 0 5.8 1.1 8 3l6-6C34.5 5.1 29.5 3 24 3c-7.6 0-14.1 4.3-17.7 10.7z"/><path fill="#4CAF50" d="M24 45c5.3 0 10.2-2 13.9-5.3l-6.4-5.4C29.3 36 26.8 37 24 37c-5.2 0-9.6-3.1-11.4-7.6l-6.6 5.1C9.8 40.6 16.3 45 24 45z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.2-4.2 5.6l6.4 5.4C40.5 36.6 43 30.8 43 24c0-1.2-.1-2.4-.4-3.5z"/></svg>
-        <span data-i18n="googleBtn">المتابعة عبر Google</span>
-      </button>
-    </div>
-  </section>
-
-  <!-- ============ Portfolio screen ============ -->
-  <section id="portfolioScreen" class="screen hidden">
-    <div class="portfolio-head">
-      <h1 id="portfolioTitleEl" data-i18n="portfolioTitle">محفظتي</h1>
-      <button type="button" class="btn btn-primary" id="newBordereauBtn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-        <span data-i18n="newBtn">بيان إرسال جديد</span>
-      </button>
-    </div>
-    <p class="portfolio-empty hidden" id="portfolioEmpty" data-i18n="portfolioEmpty">لا توجد بيانات إرسال محفوظة بعد.</p>
-    <div class="portfolio-list" id="portfolioList"></div>
-  </section>
-
-  <!-- ============ Editor screen ============ -->
-  <section id="editorScreen" class="screen hidden">
-    <h1 class="page-title" data-i18n="pageTitle">مولّد بيان الإرسال</h1>
-
-    <div class="format-select-row" id="formatSelectRow"></div>
-
-    <div class="editor-grid">
-      <div class="editor-form">
-
-        <div class="form-card" id="letterheadFormCard">
-          <h2 class="form-card-title" data-i18n="letterheadCard">ترويسة الجهة المرسلة</h2>
-          <div class="header-mode-toggle">
-            <button type="button" class="header-mode-btn active" data-header-mode="simple" data-i18n="headerModeSimple">شعار واسم</button>
-            <button type="button" class="header-mode-btn" data-header-mode="image" data-i18n="headerModeImage">صورة كاملة</button>
-          </div>
-          <div id="headerSimpleFields">
-            <div class="upload-box" id="logoBox"></div>
-            <input type="file" id="logoInput" accept="image/*" hidden>
-            <label class="field-label" data-i18n="issuerName">اسم الجهة أو الشخص</label>
-            <input type="text" id="issuerName" class="cv-input" style="margin-bottom:12px;">
-            <label class="field-label" data-i18n="issuerContact">العنوان / الهاتف / البريد</label>
-            <input type="text" id="issuerContact" class="cv-input" style="margin-bottom:0;">
-          </div>
-          <div id="headerImageField" class="hidden">
-            <div class="upload-box upload-box-wide" id="headerImgBox"></div>
-            <input type="file" id="headerImgInput" accept="image/*" hidden>
-          </div>
-        </div>
-
-        <div class="form-card">
-          <h2 class="form-card-title" data-i18n="refCard">المرجع والوجهة</h2>
-          <div class="field-row">
-            <div>
-              <label class="field-label" data-i18n="refNo">المرجع</label>
-              <input type="text" id="refNo" class="cv-input">
-            </div>
-            <div>
-              <label class="field-label" data-i18n="refDate">التاريخ</label>
-              <input type="date" id="refDate" class="cv-input">
-            </div>
-          </div>
-          <label class="field-label" data-i18n="destinataire">المرسل إليه</label>
-          <input type="text" id="destinataire" class="cv-input">
-          <label class="field-label" data-i18n="objet">الموضوع</label>
-          <input type="text" id="objet" class="cv-input" style="margin-bottom:0;">
-        </div>
-
-        <div class="form-card" id="docsFormCard">
-          <h2 class="form-card-title" data-i18n="docsCard">الوثائق المرفقة</h2>
-          <div id="docRowsList"></div>
-          <button type="button" class="add-row-btn" id="addDocRowBtn">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-            <span data-i18n="addDocRow">إضافة وثيقة</span>
-          </button>
-        </div>
-
-        <div class="form-card">
-          <h2 class="form-card-title" data-i18n="signCard">توقيع وختم المرسل</h2>
-          <div class="upload-box" id="signBox"></div>
-          <input type="file" id="signInput" accept="image/*" hidden>
-        </div>
-
-        <div class="form-card" id="ackFormCard">
-          <h2 class="form-card-title" data-i18n="ackCard">إشعار الاستلام</h2>
-          <label class="field-label" data-i18n="ackTextLabel">نص الإقرار</label>
-          <textarea id="ackText" class="cv-textarea"></textarea>
-          <label class="field-label" data-i18n="receiverName">اسم المستلم</label>
-          <input type="text" id="receiverName" class="cv-input">
-          <label class="field-label" data-i18n="receiverRole">الصفة</label>
-          <input type="text" id="receiverRole" class="cv-input" style="margin-bottom:0;">
-        </div>
-      </div>
-
-      <div class="editor-preview-col">
-        <div class="preview-toolbar">
-          <div class="font-filter" id="fontFilter"></div>
-        </div>
-        <div class="editor-preview">
-          <div id="previewContainer"></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-</main>
+<div class="toast" id="toast"></div>
+<div class="print-root" id="printRoot" aria-hidden="true"></div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -177,6 +431,9 @@
 <script src="../../firebase-init.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="i18n.js"></script>
+<script src="templates.js"></script>
+<script src="numwords.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
