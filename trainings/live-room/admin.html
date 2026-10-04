@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>لوحة المدرّب — غرفة التدريب المباشر | Dr Soufiane Merabti</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#05070D">
+<link rel="icon" href="../../favicon-32x32.png">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="hall.css">
+<link rel="stylesheet" href="admin.css">
+<script src="/analytics.js"></script>
+</head>
+<body class="lr adm">
+
+<div class="hall" id="hall" aria-hidden="true">
+  <div class="beam b1"></div><div class="beam b2"></div>
+  <div class="spot"></div>
+  <div class="vignette"></div>
+</div>
+
+<header class="tb" dir="ltr">
+  <a class="tb-logo" href="../../index.html" aria-label="Dr Soufiane Merabti"><img src="../../apple-touch-icon.png" alt="Dr Soufiane Merabti"></a>
+  <a class="tb-icon" href="../../resources.html" data-t-title="back">
+    <svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
+  </a>
+  <div class="tb-title" data-t="admin_title" dir="rtl"></div>
+  <div class="tb-fill"></div>
+  <button type="button" class="tb-btn" id="answersToggle" dir="rtl" title="إظهار/إخفاء الإجابات الصحيحة في البنك (احذر عند مشاركة الشاشة)">
+    <svg viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+    <span>الإجابات</span>
+  </button>
+  <button type="button" class="tb-icon" id="muteBtn">
+    <svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path class="wave" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/><path class="x" d="M16 9l6 6M22 9l-6 6"/></svg>
+  </button>
+  <button type="button" class="tb-icon" id="fsBtn" data-t-title="fullscreen">
+    <svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+  </button>
+</header>
+
+<main class="adm-main">
+
+  <!-- البوابة: تحميل / تسجيل دخول / ليس أدمن / إعداد -->
+  <section class="gate" id="gate">
+    <div class="card">
+      <img src="../../apple-touch-icon.png" alt="" class="card-logo">
+      <div class="spin" id="gateSpin"></div>
+      <h1 id="gateTitle"></h1>
+      <div id="gateBody" class="gate-body"></div>
+      <button type="button" class="btn btn-light btn-block hidden" id="gateLogin">المتابعة عبر Google</button>
+    </div>
+  </section>
+
+  <!-- لا توجد غرفة: إنشاء + الجلسات السابقة -->
+  <section class="home hidden" id="home">
+    <div class="card create-card">
+      <div class="big-ico">🎤</div>
+      <h1>غرفة جديدة</h1>
+      <p class="muted">يُولَّد رمز من 6 أرقام صالح حتى تُنهي الجلسة أو لمدة 3 ساعات كحد أقصى.</p>
+      <button type="button" class="btn btn-gold btn-block btn-xl" id="createBtn">إنشاء غرفة</button>
+      <p class="err" id="createErr"></p>
+    </div>
+    <div class="card sim-card">
+      <div class="big-ico">🧪</div>
+      <h2>جرّب القاعة بمحاكاة</h2>
+      <p class="muted">متدربون وهميون يجيبون عشوائياً في غرفة تجريبية مقفلة، تُحذف بزر «إنهاء المحاكاة» ولا تُحفظ في التقارير.</p>
+      <div class="sim-row" id="homeSim">
+        <button type="button" class="btn btn-sm btn-ghost" data-sim="10">10</button>
+        <button type="button" class="btn btn-sm btn-ghost" data-sim="20">20</button>
+        <button type="button" class="btn btn-sm btn-ghost" data-sim="50">50</button>
+        <button type="button" class="btn btn-sm btn-ghost" data-sim="100">100</button>
+      </div>
+    </div>
+    <div class="card past-card">
+      <h2>الجلسات السابقة</h2>
+      <div id="pastList" class="past-list"><p class="muted">…</p></div>
+    </div>
+  </section>
+
+  <!-- الغرفة: القاعة في الوسط + الشريط الجانبي -->
+  <section class="adm-room hidden" id="room">
+
+    <aside class="side" id="side">
+
+      <!-- 1) الغرفة -->
+      <details class="sec" open>
+        <summary>الغرفة <span class="status" id="lockState">مفتوحة</span></summary>
+        <div class="box">
+          <div class="code-box">
+            <div class="code-lbl">رمز الغرفة</div>
+            <div class="code-big" id="codeBig" dir="ltr">000 000</div>
+            <div class="qr" id="qr"></div>
+            <div class="link-row">
+              <input type="text" id="linkIn" readonly dir="ltr">
+              <button type="button" class="btn btn-sm btn-gold" id="copyBtn">نسخ الرابط</button>
+            </div>
+            <button type="button" class="btn btn-sm btn-ghost btn-block" id="bigCodeBtn">عرض الرمز بشاشة كاملة</button>
+            <div class="exp" id="expText"></div>
+          </div>
+          <div class="room-actions">
+            <button type="button" class="btn btn-sm btn-ghost" id="lockBtn">🔓 قفل الغرفة</button>
+            <button type="button" class="btn btn-sm btn-ghost" id="shareBtn" title="يخفي الشريط وألوان الصح والخطأ لمشاركة القاعة على زووم">🖥 وضع المشاركة</button>
+          </div>
+          <div class="dur-row">
+            <span>مدة السؤال</span>
+            <div class="dur">
+              <button type="button" class="dur-b" data-d="-5">−</button>
+              <input type="number" id="durIn" min="5" max="180" value="20">
+              <button type="button" class="dur-b" data-d="5">+</button>
+              <span>ث</span>
+            </div>
+          </div>
+          <div class="vol-row">
+            <label for="volIn">🔊 مستوى صوت القاعة</label>
+            <input type="range" id="volIn" min="0" max="100" step="1" value="100">
+            <b id="volOut" dir="ltr">100</b>
+          </div>
+          <button type="button" class="btn btn-sm btn-danger btn-block" id="endBtn">⏹ إنهاء الجلسة</button>
+          <details class="att-box">
+            <summary class="att-h"><span>الحاضرون</span><b id="attCount">0</b></summary>
+            <div class="att-list" id="attList"></div>
+          </details>
+        </div>
+      </details>
+
+      <!-- السؤال الحالي (التقدم، والنتيجة التفصيلية بعد التصحيح) -->
+      <details class="sec" open>
+        <summary>السؤال الحالي</summary>
+        <div class="box"><div class="live-box" id="liveBox"></div></div>
+      </details>
+
+      <!-- 2) بنك الأسئلة -->
+      <details class="sec" open>
+        <summary>بنك الأسئلة</summary>
+        <div class="box">
+          <div class="stage-tabs" id="stageTabs"></div>
+          <div class="type-chips" id="typeChips"></div>
+          <input type="search" class="bank-search" id="bankSearch" placeholder="ابحث في الأسئلة">
+          <div class="bank-sub">
+            <span id="bankCount"></span>
+            <span class="bank-btns">
+              <button type="button" class="btn btn-sm btn-go" id="stopQBtn" disabled>⏭ إنهاء السؤال الآن</button>
+              <button type="button" class="btn btn-sm btn-ghost" id="addQBtn">＋ سؤال خاص</button>
+            </span>
+          </div>
+          <div class="bank-list" id="bankList"></div>
+        </div>
+      </details>
+
+      <!-- 3) الترتيب الكامل -->
+      <details class="sec" open>
+        <summary>الترتيب الكامل</summary>
+        <div class="box">
+          <div class="tbl-wrap rank-wrap"><table class="tbl" id="standTbl"></table></div>
+          <button type="button" class="btn btn-sm btn-ghost btn-block" id="pdfBtn">⬇ تقرير PDF</button>
+        </div>
+      </details>
+
+      <!-- 4) المحاكاة -->
+      <details class="sec" id="simSec">
+        <summary>المحاكاة</summary>
+        <div class="box">
+          <p class="sim-note" id="simNote">متدربون وهميون يجيبون عشوائياً في غرفة تجريبية منفصلة ومقفلة. لا تُحفظ في التقارير.</p>
+          <div class="sim-row">
+            <button type="button" class="btn btn-sm btn-ghost" data-sim="10">10</button>
+            <button type="button" class="btn btn-sm btn-ghost" data-sim="20">20</button>
+            <button type="button" class="btn btn-sm btn-ghost" data-sim="50">50</button>
+            <button type="button" class="btn btn-sm btn-ghost" data-sim="100">100</button>
+          </div>
+          <button type="button" class="btn btn-sm btn-danger btn-block hidden" id="simEnd">إنهاء المحاكاة</button>
+        </div>
+      </details>
+    </aside>
+
+    <div class="adm-hall">
+      <div class="lrh-wrap" id="hallWrap"></div>
+      <div class="share-tools">
+        <button type="button" class="btn btn-sm btn-gold" id="showTools">إظهار الأدوات</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- عرض الرمز بشاشة كاملة (لمشاركة الشاشة على زووم) -->
+<div class="overlay hidden" id="bigCode">
+  <div class="big-code-inner">
+    <div class="bc-lbl">ادخل إلى الغرفة بالرمز</div>
+    <div class="bc-code" id="bcCode" dir="ltr"></div>
+    <div class="bc-qr" id="bcQr"></div>
+    <div class="bc-url" id="bcUrl" dir="ltr"></div>
+    <div class="bc-count"><b id="bcCount">0</b> متدرب في الغرفة</div>
+    <button type="button" class="btn btn-light" id="bcClose">إغلاق</button>
+  </div>
+</div>
+
+<!-- محرّر الأسئلة الخاصة -->
+<div class="overlay hidden" id="editor">
+  <div class="card ed-card">
+    <h2 id="edTitle">سؤال خاص</h2>
+    <div class="ed-grid">
+      <label>المرحلة <select id="edStage"></select></label>
+      <label>النوع <select id="edType"></select></label>
+    </div>
+    <label class="ed-full">نص السؤال <input type="text" id="edText" maxlength="160"></label>
+    <p class="ed-note">يمكنك استعمال {CLICK} و {DBL} و {RC} لتتحوّل تلقائياً إلى «انقر/المس» حسب الجهاز.</p>
+    <div id="edFields"></div>
+    <p class="err" id="edErr"></p>
+    <div class="ed-actions">
+      <button type="button" class="btn btn-ghost" id="edCancel">إلغاء</button>
+      <button type="button" class="btn btn-gold" id="edSave">حفظ</button>
+    </div>
+  </div>
+</div>
+
+<!-- حاوية التقرير (خارج الشاشة) -->
+<div id="reportHost" class="report-host" aria-hidden="true"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="../../firebase-init.js"></script>
+<script src="core.js"></script>
+<script src="parts-svg.js"></script>
+<script src="bank-stage1.js"></script>
+<script src="hall.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>
