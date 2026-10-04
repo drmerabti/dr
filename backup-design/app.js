@@ -159,6 +159,7 @@ const ICONS = {
   brochureApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gBro" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8FD0F5"/><stop offset="1" stop-color="#2F6FB0"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><path d="M6 10l12 -3v31l-12 3z" fill="url(#gBro)" opacity=".75"/><path d="M18 7l12 3v31l-12 -3z" fill="url(#gBro)"/><path d="M30 10l12 -3v31l-12 3z" fill="url(#gBro)" opacity=".75"/><rect x="21" y="15" width="6" height="2" rx="1" fill="#fff" opacity=".9"/><rect x="21" y="20" width="6" height="2" rx="1" fill="#fff" opacity=".6"/></svg>`,
   encouragementApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gEnc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F6A83C"/><stop offset="1" stop-color="#E8622C"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="9" y="7" width="30" height="34" rx="4" fill="url(#gEnc)"/><rect x="13" y="11" width="22" height="26" rx="2.5" fill="none" stroke="#fff" stroke-width="1.4" opacity=".55"/><path d="M24 16l2.6 5.6 6.1.9-4.4 4.3 1 6-5.3-2.8-5.3 2.8 1-6-4.4-4.3 6.1-.9z" fill="#fff"/></svg>`,
   coverPageApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gCov" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#93B4E8"/><stop offset="1" stop-color="#2F5CA8"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="10" y="6" width="28" height="36" rx="3" fill="url(#gCov)"/><rect x="15" y="14" width="18" height="3" rx="1.5" fill="#fff" opacity=".9"/><rect x="15" y="21" width="12" height="2" rx="1" fill="#fff" opacity=".6"/><rect x="15" y="26" width="12" height="2" rx="1" fill="#fff" opacity=".6"/></svg>`,
+  leaveCalcApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gLeave" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8FD0C0"/><stop offset="1" stop-color="#2F8A74"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="8" y="10" width="32" height="30" rx="4" fill="url(#gLeave)"/><rect x="8" y="10" width="32" height="8" rx="4" fill="#fff" opacity=".25"/><rect x="15" y="6" width="3" height="8" rx="1.5" fill="#2F8A74"/><rect x="30" y="6" width="3" height="8" rx="1.5" fill="#2F8A74"/><path d="M17 29l5 5 9-10" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
   maintKpiApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gMkpi" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7FB3A6"/><stop offset="1" stop-color="#2F6F63"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><circle cx="24" cy="24" r="16" fill="url(#gMkpi)"/><path d="M13 28a11 11 0 0 1 22 0" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round" opacity=".55"/><path d="M13 28a11 11 0 0 1 16.5-9.5" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round"/><path d="M24 28l5.5-6.5" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/><circle cx="24" cy="28" r="2.2" fill="#fff"/></svg>`,
   adminReqApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gAdm" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8FA8C7"/><stop offset="1" stop-color="#3A5A7D"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="9" y="7" width="30" height="34" rx="3" fill="url(#gAdm)"/><rect x="15" y="15" width="18" height="2.5" rx="1" fill="#fff" opacity=".9"/><rect x="15" y="22" width="18" height="2.5" rx="1" fill="#fff" opacity=".7"/><path d="M16 31l3 3 6-6" stroke="#fff" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
   salaryApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gSal" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D6A8E8"/><stop offset="1" stop-color="#7A3FA8"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><circle cx="24" cy="24" r="17" fill="url(#gSal)"/><text x="24" y="31" text-anchor="middle" font-family="Inter,sans-serif" font-size="18" font-weight="800" fill="#fff">$</text></svg>`,
@@ -186,7 +187,12 @@ const ICONS = {
   refManagerApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gRefM" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#93B4E8"/><stop offset="1" stop-color="#2F5CA8"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="9" y="8" width="10" height="30" rx="1.5" fill="url(#gRefM)"/><rect x="20" y="12" width="10" height="26" rx="1.5" fill="url(#gRefM)" opacity=".8"/><rect x="31" y="16" width="8" height="22" rx="1.5" fill="url(#gRefM)" opacity=".6"/></svg>`,
   pdfToImgApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gP2I" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8FA8C7"/><stop offset="1" stop-color="#3A5A7D"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="6" y="8" width="20" height="26" rx="2.5" fill="url(#gP2I)"/><rect x="22" y="16" width="20" height="24" rx="2.5" fill="#fff" stroke="#8FA8C7" stroke-width="1.5"/><circle cx="28" cy="23" r="2" fill="#F0C56B"/><path d="M24 34l4-5 4 4 5-6 5 7" fill="none" stroke="#3A5A7D" stroke-width="1.6"/></svg>`,
   excelToPdfApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gE2P" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6FCF97"/><stop offset="1" stop-color="#1D7A46"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="6" y="8" width="20" height="26" rx="2.5" fill="url(#gE2P)"/><rect x="22" y="16" width="20" height="24" rx="2.5" fill="#C0392B"/><text x="32" y="32" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" font-weight="800" fill="#fff">PDF</text></svg>`,
+  s2nScanApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gS2nS" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7FB0CF"/><stop offset="1" stop-color="#2F5770"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="11" y="6" width="26" height="32" rx="3" fill="#fff" stroke="#7FB0CF" stroke-width="1.5"/><path d="M15 13h18M15 18h14M15 23h18M15 28h10" stroke="#B9CCD9" stroke-width="1.8" stroke-linecap="round"/><path d="M7 14V8a2 2 0 0 1 2-2h6M33 6h6a2 2 0 0 1 2 2v6M41 30v6a2 2 0 0 1-2 2h-6M15 38H9a2 2 0 0 1-2-2v-6" fill="none" stroke="url(#gS2nS)" stroke-width="3" stroke-linecap="round"/><rect x="6" y="21" width="36" height="3" rx="1.5" fill="#2E8A5B" opacity=".85"/></svg>`,
+  s2nOcrApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gS2nO" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6FCF97"/><stop offset="1" stop-color="#1D7A46"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="5" y="8" width="22" height="20" rx="3" fill="url(#gS2nO)"/><circle cx="12" cy="14" r="2.4" fill="#F0C56B"/><path d="M7 26l7-7 5 5 3-3 5 5" fill="none" stroke="#fff" stroke-width="1.8"/><rect x="21" y="18" width="22" height="22" rx="3" fill="#fff" stroke="#6FCF97" stroke-width="1.5"/><text x="32" y="34" text-anchor="middle" font-family="Tajawal,Inter,sans-serif" font-size="13" font-weight="800" fill="#1D7A46">نص</text></svg>`,
+  s2nPdfTextApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gS2nP" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E8776B"/><stop offset="1" stop-color="#A23024"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="6" y="8" width="20" height="26" rx="2.5" fill="url(#gS2nP)"/><text x="16" y="25" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" font-weight="800" fill="#fff">PDF</text><rect x="22" y="16" width="20" height="24" rx="2.5" fill="#fff" stroke="#E8776B" stroke-width="1.5"/><path d="M26 23h12M26 28h9M26 33h12" stroke="#A23024" stroke-width="1.8" stroke-linecap="round"/></svg>`,
+  s2nTableApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gS2nT" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C9A3E6"/><stop offset="1" stop-color="#7A4FA3"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="5" y="9" width="24" height="22" rx="3" fill="url(#gS2nT)"/><path d="M5 16h24M5 23h24M13 9v22M21 9v22" stroke="#fff" stroke-width="1.5" opacity=".9"/><rect x="25" y="20" width="9" height="20" rx="2" fill="#1D7A46"/><text x="29.5" y="34" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" font-weight="800" fill="#fff">X</text><rect x="35" y="20" width="9" height="20" rx="2" fill="#1857A8"/><text x="39.5" y="34" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" font-weight="800" fill="#fff">W</text></svg>`,
   wordToPdfApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gW2P" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4A9AE8"/><stop offset="1" stop-color="#1857A8"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="6" y="8" width="20" height="26" rx="2.5" fill="url(#gW2P)"/><rect x="22" y="16" width="20" height="24" rx="2.5" fill="#C0392B"/><text x="32" y="32" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" font-weight="800" fill="#fff">PDF</text></svg>`,
+  liveRoomApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gLive" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F7C76A"/><stop offset="1" stop-color="#C47F12"/></linearGradient><linearGradient id="gLiveP" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6E8DB5"/><stop offset="1" stop-color="#2E4A6E"/></linearGradient></defs><ellipse cx="24" cy="43" rx="17" ry="2.2" fill="#1E2F40" opacity=".1"/><path d="M14 4h20l-5 22h-10z" fill="#FFE9B0" opacity=".45"/><rect x="18" y="26" width="12" height="16" rx="1.5" fill="url(#gLiveP)"/><rect x="6" y="32" width="12" height="10" rx="1.5" fill="url(#gLiveP)" opacity=".85"/><rect x="30" y="35" width="12" height="7" rx="1.5" fill="url(#gLiveP)" opacity=".75"/><path d="M18.5 15l2.5 3 3-5 3 5 2.5-3-1 8h-9z" fill="url(#gLive)"/><circle cx="24" cy="31" r="2" fill="#fff" opacity=".9"/><circle cx="40" cy="9" r="3" fill="#22C55E"/><circle cx="40" cy="9" r="5.5" fill="none" stroke="#22C55E" stroke-width="1.2" opacity=".5"/></svg>`,
   keyboardApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gKbd" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7DD6A8"/><stop offset="1" stop-color="#1E8A52"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="4" y="13" width="40" height="23" rx="4.5" fill="url(#gKbd)"/><rect x="4" y="13" width="40" height="6" rx="4.5" fill="#fff" opacity=".2"/><g fill="#fff" opacity=".92"><rect x="9" y="18" width="4" height="3.6" rx="1"/><rect x="15" y="18" width="4" height="3.6" rx="1"/><rect x="21" y="18" width="4" height="3.6" rx="1"/><rect x="27" y="18" width="4" height="3.6" rx="1"/><rect x="33" y="18" width="6" height="3.6" rx="1"/><rect x="9" y="24" width="6" height="3.6" rx="1"/><rect x="17" y="24" width="4" height="3.6" rx="1"/><rect x="29" y="24" width="4" height="3.6" rx="1"/><rect x="35" y="24" width="4" height="3.6" rx="1"/><rect x="14" y="30" width="20" height="3.2" rx="1.2"/></g><rect x="23" y="24" width="4" height="3.6" rx="1" fill="#F0C56B"/></svg>`,
   lessons: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
     <defs>
@@ -454,6 +460,10 @@ const CONTENT = {
       desc_ar: 'احسب OEE و MTBF و MTTR والتوفرية فورًا أثناء الكتابة، مع عدادات ملونة ورسم لسلسلة الخسائر — بثلاث لغات.',
       desc_en: 'Compute OEE, MTBF, MTTR and availability instantly as you type, with colored gauges and a loss-cascade chart — in three languages.',
       url: 'tools/maintenance-kpi/', icon: ICONS.maintKpiApp, family: 'admin', tier: 'free', comingSoon: true },
+    { id: 'tool-leave-calculator', title_ar: 'حاسبة العطل', title_en: 'Leave Calculator',
+      desc_ar: 'احسب تاريخ الرجوع إلى العمل فورًا، مع أيام العمل ونهاية الأسبوع والعطل الرسمية الجزائرية والتقويم الهجري — بثلاث لغات.',
+      desc_en: 'Instantly find your return-to-work date, with working days, weekends, Algerian public holidays and the Hijri calendar — in three languages.',
+      url: 'tools/leave-calculator/', icon: ICONS.leaveCalcApp, family: ['admin', 'calc'], tier: 'free', comingSoon: true },
     { id: 'tool-cv-builder', title_ar: 'منشئ السيرة الذاتية', title_en: 'CV Builder',
       desc_ar: 'أنشئ سيرة ذاتية احترافية بمعاينة حية وتصدير PDF — يتطلب تسجيل الدخول.',
       desc_en: 'Build a professional CV with live preview and PDF export — requires login.',
@@ -552,6 +562,23 @@ const CONTENT = {
       desc_ar: 'حوّل ملف PDF إلى مستند Word قابل للتعديل مباشرة.',
       desc_en: 'Convert a PDF file into an editable Word document.',
       icon: ICONS.pdfToImgApp, family: 'pdf', tier: 'pro', comingSoon: true },
+    // Sora2Nas — نسخة الويب من تطبيق «صورة إلى نص»: تطبيق واحد في tools/sora2nas/ بأربع خدمات
+    { id: 'tool-s2n-ocr', title_ar: 'صورة إلى نص', title_en: 'Image to Text',
+      desc_ar: 'استخرج النص من الصور بالعربية والفرنسية والإنجليزية مع كشف اللغة تلقائيًا، وانسخه بنقرة واحدة.',
+      desc_en: 'Extract text from images in Arabic, French and English with automatic language detection, then copy it in one click.',
+      url: 'tools/sora2nas/#ocr', icon: ICONS.s2nOcrApp, family: 'pdf', tier: 'free' },
+    { id: 'tool-s2n-pdf', title_ar: 'PDF إلى نص', title_en: 'PDF to Text',
+      desc_ar: 'حوّل أي ملف PDF إلى نص قابل للنسخ، حتى الملفات الممسوحة ضوئيًا.',
+      desc_en: 'Turn any PDF into copyable text, including scanned files.',
+      url: 'tools/sora2nas/#pdf', icon: ICONS.s2nPdfTextApp, family: 'pdf', tier: 'free' },
+    { id: 'tool-s2n-scan', title_ar: 'الماسح الضوئي', title_en: 'Document Scanner',
+      desc_ar: 'صوّر مستنداتك مع قص تلقائي وتحسين الألوان، واحفظها PDF متعدد الصفحات أو PDF قابل للبحث.',
+      desc_en: 'Scan documents with automatic cropping and color enhancement, then save a multi-page or searchable PDF.',
+      url: 'tools/sora2nas/#scan', icon: ICONS.s2nScanApp, family: 'pdf', tier: 'free' },
+    { id: 'tool-s2n-table', title_ar: 'جدول إلى Excel/Word', title_en: 'Table to Excel/Word',
+      desc_ar: 'حوّل صورة جدول أو صفحة PDF إلى ملف Excel أو Word قابل للتعديل.',
+      desc_en: 'Turn a table image or PDF page into an editable Excel or Word file.',
+      url: 'tools/sora2nas/#table', icon: ICONS.s2nTableApp, family: 'pdf', tier: 'free' },
     // لإضافة أداة جديدة أضف سطرًا هنا بنفس الشكل:
     // { id:'tool-distance', title_ar:'حساب المسافة بين منطقتين', title_en:'Distance Calculator',
     //   desc_ar:'احسب المسافة بين نقطتين جغرافيتين بسهولة.', desc_en:'Calculate distance between two locations.',
@@ -577,6 +604,15 @@ const CONTENT = {
       desc_en: '8 progressive stages to learn touch typing in Arabic, French and English, with the key you need lighting up.',
       url: 'trainings/keyboard-typing/',
       icon: ICONS.keyboardApp,
+    },
+    {
+      id: 'training-live-room',
+      title_ar: 'غرفة التدريب المباشر',
+      title_en: 'Live Training Room',
+      desc_ar: 'مسابقة حيّة أثناء الدرس: ادخل الغرفة برمز المدرّب، أجب أسرع من زملائك، وتابع ترتيبك لحظة بلحظة.',
+      desc_en: 'A live in-class contest: join with the trainer\'s code, answer faster than your classmates and follow your rank in real time.',
+      url: 'trainings/live-room/',
+      icon: ICONS.liveRoomApp,
     },
     { id: 'training-excel', title_ar: 'تدريب شامل في إكسل', title_en: 'Complete Excel Training',
       desc_ar: '5 مستويات بصعوبة تصاعدية لاختبار معلوماتك في إكسل.', desc_en: '5 levels of increasing difficulty to test your Excel knowledge.',
@@ -846,8 +882,24 @@ function renderCoursesSection(){
     </div>
   `).join('');
   wrap.querySelectorAll('.course-card').forEach(card => {
-    card.addEventListener('click', () => showTrainingCoursePaymentModal());
+    card.addEventListener('click', async () => {
+      // Admins open the course directly; everyone else still sees the "قريبًا" modal.
+      // The course pages themselves re-check access (courses/course-guard.js).
+      if (await isAdminUser()){
+        const item = items.find(i => i.id === card.dataset.courseId);
+        if (item) window.location.href = courseUrlFor(item);
+        return;
+      }
+      showTrainingCoursePaymentModal();
+    });
   });
+}
+
+// Courses with a dedicated page keep their own url; the rest open in the
+// shared player (courses/player.html?course=word for id "course-word").
+function courseUrlFor(item){
+  if (item.url) return item.url;
+  return 'courses/player.html?course=' + encodeURIComponent(item.id.replace(/^course-/, ''));
 }
 
 async function renderSectionItems(){
