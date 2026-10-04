@@ -585,8 +585,8 @@ html[lang="ar"] .request-page *{ letter-spacing: 0 !important; }
   *{ -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
 }
 
-/* example values shown on screen only (left blank in print / PDF / Word) */
-.request-page .ph{ color:#9AA5B1; }
+/* example values: they read like a real request (and are printed as shown while untouched) */
+.request-page .ph{ color: inherit; }
 
 /* text size control (section 7) */
 .size-ctl{ display:flex; align-items:center; gap:8px; }
@@ -610,3 +610,78 @@ html[lang="ar"] .request-page *{ letter-spacing: 0 !important; }
 .stage-bar .page-warn{ display:flex; align-items:center; gap:7px; padding:8px 12px; background:#FFF6E5; border-color:#F3D9A4; color:#8A5A00;
   font-size:.82rem; font-weight:700; white-space:nowrap; direction: var(--dir, rtl); }
 .stage-bar .page-warn svg{ width:16px; height:16px; flex:none; }
+
+/* =========================================================
+   Fill panel clarity
+   ========================================================= */
+:root{
+  --field-line: #C3CDD6;
+  --field-ph: #A7B2BD;
+  --field-ink: #0F1A24;
+  --ok: #16A34A;
+  --ok-ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='10' fill='%2316A34A'/%3E%3Cpath d='M7 12.4l3.3 3.3L17 9' fill='none' stroke='%23fff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+/* open section: body tinted with the section colour, the rest of the list fades back */
+.acc.open .acc-body{
+  background: color-mix(in srgb, var(--sc) 7%, #fff);
+  border-top: 1px solid color-mix(in srgb, var(--sc) 16%, transparent);
+}
+.acc.open .acc-content{ padding-top: 16px; }
+.accordion .acc{ transition: box-shadow .2s, border-color .2s, opacity .2s; }
+.accordion.has-open .acc:not(.open){ opacity: .6; }
+.accordion.has-open .acc:not(.open):hover{ opacity: 1; }
+
+/* labels */
+.field label{ color: #15212D; font-weight: 800; font-size: .9rem; }
+
+/* every input: pure white, clear grey border, dark text, light-grey examples */
+.field input[type=text], .field input[type=date], .field input[type=number], .field input[type=tel], .field input[type=email],
+.field textarea, .field select, .dyn-row input{
+  background: #fff;
+  border: 1.5px solid var(--field-line);
+  color: var(--field-ink);
+  font-weight: 500;
+  box-shadow: 0 1px 2px rgba(15,26,36,.04);
+}
+.field input::placeholder, .field textarea::placeholder, .dyn-row input::placeholder{ color: var(--field-ph); font-weight: 400; opacity: 1; }
+.field input:hover, .field textarea:hover, .dyn-row input:hover{ border-color: #A9B6C2; }
+.field input:focus, .field textarea:focus, .field select:focus, .dyn-row input:focus{
+  background: #fff;
+  border-color: var(--sc, var(--accent));
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--sc, var(--accent)) 16%, transparent), 0 4px 12px rgba(15,26,36,.08);
+}
+
+/* small green tick inside a filled field (on the visual end side) */
+.field input[type=text]:not(:placeholder-shown), .field input[type=tel]:not(:placeholder-shown),
+.field input[type=email]:not(:placeholder-shown), .field textarea:not(:placeholder-shown), .dyn-row input:not(:placeholder-shown){
+  background-image: var(--ok-ico); background-repeat: no-repeat; background-size: 17px 17px;
+}
+html[dir="rtl"] .field input:not(:placeholder-shown), html[dir="rtl"] .dyn-row input:not(:placeholder-shown){ background-position: left 12px center; padding-left: 38px; }
+html[dir="ltr"] .field input:not(:placeholder-shown), html[dir="ltr"] .dyn-row input:not(:placeholder-shown){ background-position: right 12px center; padding-right: 38px; }
+html[dir="rtl"] .field textarea:not(:placeholder-shown){ background-position: left 12px top 12px; padding-left: 38px; }
+html[dir="ltr"] .field textarea:not(:placeholder-shown){ background-position: right 12px top 12px; padding-right: 38px; }
+.field input[type=date]{ background-image: none; }
+
+/* cards and buttons inside the tinted body stay white so they stand out */
+.acc.open .type-card, .acc.open .font-btn, .acc.open .tpl-chip, .acc.open .size-ctl button,
+.acc.open .chips.suggest .chip, .acc.open .soft-btn:not(.primary):not(.solid){ background: #fff; }
+.acc.open .ai-box{ background: color-mix(in srgb, var(--sc) 4%, #fff); border-color: color-mix(in srgb, var(--sc) 24%, transparent); }
+.acc.open .upload-box{ background: #fff; }
+
+.body-tools{ display:flex; margin-top:8px; }
+.body-tools .soft-btn{ font-size:.84rem; }
+.body-tools .soft-btn svg{ color: var(--sc, var(--accent)); }
+
+/* =========================================================
+   Example request text on the sheet
+   ========================================================= */
+.req-body-wrap{ position: relative; margin-bottom: 36px; }
+.req-body-wrap > .req-body{ margin-bottom: 0; }
+.req-body-ex{ display: none; pointer-events: none; }
+.req-body-wrap.is-ex > .req-body-ex{ display: block; }
+/* the empty editable body lies over the example: clicking it and typing replaces the example */
+.req-body-wrap.is-ex > #reqBody, .req-body-wrap.is-ex > .req-body:not(.req-body-ex){ position: absolute; inset: 0; min-height: 0; z-index: 1; }
+.req-body-wrap.is-ex > .req-body:empty::before{ content: none; }
+.flat-view .req-body-wrap.is-ex > #reqBody:focus + .req-body-ex{ opacity: .35; }
+.req-signature-name{ font-size: calc(15px * var(--fs, 1)); font-weight: 700; margin-bottom: 4px !important; }
