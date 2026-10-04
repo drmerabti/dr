@@ -638,12 +638,24 @@ html:has(body.ui-v2){ scroll-behavior: smooth; }
   gap: 12px;
 }
 .ui-v2 .brand-logo{
+  position: relative;
   width: var(--ui-ctl-h); height: var(--ui-ctl-h);
-}
-/* The real logo image, shown as-is: no background, padding, frame or filter */
-.ui-v2 .brand-logo img{
-  width: 100%; height: 100%;
   border-radius: 50%;
+  overflow: hidden;
+}
+/* The real logo image, shown as-is: no background, padding, frame or filter.
+   apple-touch-icon.png is a 180px square whose logo circle is only ~136px
+   wide (center 87.4,85 / r 68); the square's corners around it are an extra
+   rim that isn't part of the logo. The image is enlarged so the 42px frame's
+   circle lands exactly on the logo's own circle. */
+.ui-v2 .brand-logo img{
+  position: absolute;
+  width: calc(var(--ui-ctl-h) * 1.3235);
+  height: calc(var(--ui-ctl-h) * 1.3235);
+  max-width: none;
+  left: calc(var(--ui-ctl-h) * -0.1427);
+  top: calc(var(--ui-ctl-h) * -0.125);
+  border-radius: 0;
   object-fit: contain;
   background: none; padding: 0; border: 0; box-shadow: none; filter: none;
 }
