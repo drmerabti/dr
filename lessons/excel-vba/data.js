@@ -190,7 +190,7 @@ End Sub
 
 Private Sub SoftSound()
     Dim f As String
-    f = Environ("windir") & "\\Media\\Windows Notify System Generic.wav"
+    f = Environ("windir") & "\\Media\\Windows Navigation Start.wav"
     If Dir(f) <> "" Then
         PlaySound f, 0, SND_FILENAME Or SND_ASYNC Or SND_NODEFAULT
     End If
