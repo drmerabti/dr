@@ -31,72 +31,208 @@
 
 const VBA_LESSONS = [
   // ================= الدرس 1 =================
-  // 👇 لإضافة الفيديو: الصق رابط يوتيوب كاملًا بين علامتي '' في السطر youtubeUrl أدناه
-  //    مثال:  youtubeUrl: 'https://www.youtube.com/watch?v=AbC123xYz_0',
-  //    أو:    youtubeUrl: 'https://youtu.be/AbC123xYz_0',
-  // 👇 الكودان الموجودان في codes تجريبيان للتأكد من الطي والنسخ — استبدلهما بأكواد الدرس الحقيقية.
+  // 👇 رابط الفيديو: الصق رابط يوتيوب كاملًا بين علامتي '' في السطر youtubeUrl أدناه
+  //    (يقبل youtube.com/watch?v=... أو youtu.be/... أو youtube.com/embed/... أو المعرّف وحده)
+  // 👇 الأكواد: كل كود عنصر { title: '...', code: `...` } داخل codes
   {
     title: 'نموذج إدراج بيانات شخصية (UserForm)',
     title_en: 'Personal Data Entry Form (UserForm)',
-    youtubeUrl: '', // ← الصق هنا رابط فيديو يوتيوب للدرس 1
+    youtubeUrl: 'https://youtu.be/TsVqQ0XoOzo', // ← رابط فيديو يوتيوب للدرس 1
     description:
-      'افتح محرر VBA بالضغط على Alt + F11 ثم أدرج نموذجًا جديدًا من Insert ← UserForm.\n' +
-      'أضف مربعات النص (TextBox) للاسم واللقب وتاريخ الميلاد والهاتف، وقائمة منسدلة (ComboBox) للجنس.\n' +
-      'أضف زر "حفظ" يكتب البيانات في أول سطر فارغ في ورقة قاعدة البيانات، وزر "مسح" لتفريغ الحقول.\n' +
-      'أضف التحقق من الحقول الإجبارية قبل الحفظ، ثم اربط النموذج بزر على الورقة لفتحه بضغطة واحدة.',
+      'افتح محرر VBA بالضغط على Alt + F11، ثم أدرج نموذجًا جديدًا من Insert ← UserForm وسمِّه frmData من نافذة الخصائص.\n' +
+      'انقر مرتين على النموذج والصق "كود النموذج" كاملًا: ينشئ الحقول والأزرار تلقائيًا من عناوين ورقة Data (وينشئ الورقة إن لم تكن موجودة).\n' +
+      'أدرج وحدة جديدة من Insert ← Module والصق فيها ماكرو OpenForm الذي يفتح النموذج.\n' +
+      'الأزرار: Insert لحفظ السجل في أول سطر فارغ، ‎+ Add Field لإضافة حقل جديد، Delete Field لحذف حقل وبياناته، Clear للمسح، Close للإغلاق.\n' +
+      'احفظ الملف بصيغة .xlsm، ثم اربط الماكرو OpenForm بزر على الورقة لفتح النموذج بضغطة واحدة.',
     description_en:
-      'Open the VBA editor with Alt + F11, then insert a new form from Insert → UserForm.\n' +
-      'Add TextBoxes for first name, last name, birth date and phone, and a ComboBox for gender.\n' +
-      'Add a "Save" button that writes the data to the first empty row of the database sheet, and a "Clear" button to empty the fields.\n' +
-      'Validate required fields before saving, then link the form to a button on the sheet to open it in one click.',
+      'Open the VBA editor with Alt + F11, insert a new form from Insert → UserForm and name it frmData in the Properties window.\n' +
+      'Double-click the form and paste the whole "form code": it builds the fields and buttons automatically from the headers of the Data sheet (and creates the sheet if missing).\n' +
+      'Insert a new module from Insert → Module and paste the OpenForm macro that opens the form.\n' +
+      'Buttons: Insert saves the record to the first empty row, + Add Field adds a new field, Delete Field removes a field and its data, Clear empties the fields, Close closes the form.\n' +
+      'Save the workbook as .xlsm, then assign the OpenForm macro to a button on the sheet to open the form in one click.',
     codes: [
-      // ← كودان تجريبيان: استبدلهما بأكواد الدرس، وأضف ما شئت بنفس الشكل { title: '...', code: `...` },
       {
-        title: 'كود زر الحفظ',
-        code: `Private Sub btnSave_Click()
-    ' حفظ بيانات النموذج في أول سطر فارغ من ورقة "البيانات"
-    Dim ws As Worksheet
-    Dim r As Long
+        title: 'كود النموذج frmData',
+        code: `Option Explicit
+Private ws As Worksheet
+Private n As Long
+Private WithEvents bIns As MSForms.CommandButton
+Private WithEvents bAdd As MSForms.CommandButton
+Private WithEvents bDel As MSForms.CommandButton
+Private WithEvents bClear As MSForms.CommandButton
+Private WithEvents bClose As MSForms.CommandButton
+Private hdr As MSForms.Label
 
-    If Trim(Me.txtName.Value) = "" Then
-        MsgBox "الرجاء إدخال الاسم", vbExclamation
-        Me.txtName.SetFocus
-        Exit Sub
+Private Const TOP0 As Single = 75
+Private Const ROWH As Single = 40
+
+Private Sub UserForm_Initialize()
+    Dim c As Range
+    On Error Resume Next
+    Set ws = ThisWorkbook.Sheets("Data")
+    On Error GoTo 0
+    If ws Is Nothing Then
+        Set ws = ThisWorkbook.Sheets.Add
+        ws.Name = "Data"
+    End If
+    If ws.Range("A1").Value = "" Then
+        ws.Range("A1:E1").Value = Array("First Name", "Last Name", "Age", "Date of Birth", "Place of Birth")
     End If
 
-    Set ws = ThisWorkbook.Sheets("البيانات")
+    Me.Caption = "Data Entry"
+    Me.BackColor = RGB(248, 250, 253)
+    Me.Width = 480
+
+    Set hdr = Me.Controls.Add("Forms.Label.1")
+    With hdr
+        .Caption = "   Personal Information"
+        .Left = 0: .Top = 0: .Width = 480: .Height = 50
+        .BackColor = RGB(21, 101, 192): .ForeColor = vbWhite
+        .Font.Name = "Segoe UI": .Font.Size = 16: .Font.Bold = True
+        .TextAlign = fmTextAlignLeft
+    End With
+
+    Set bIns = MakeBtn("Insert", RGB(46, 125, 50))
+    Set bAdd = MakeBtn("+ Add Field", RGB(21, 101, 192))
+    Set bDel = MakeBtn("Delete Field", RGB(198, 40, 40))
+    Set bClear = MakeBtn("Clear", RGB(245, 124, 0))
+    Set bClose = MakeBtn("Close", RGB(117, 117, 117))
+
+    For Each c In ws.Range(ws.Cells(1, 1), ws.Cells(1, ws.Columns.Count).End(xlToLeft))
+        AddField CStr(c.Value)
+    Next
+    FormatHeader
+End Sub
+
+Private Function MakeBtn(cap As String, col As Long) As MSForms.CommandButton
+    Set MakeBtn = Me.Controls.Add("Forms.CommandButton.1")
+    With MakeBtn
+        .Caption = cap: .Width = 84: .Height = 32
+        .BackColor = col: .ForeColor = vbWhite
+        .Font.Name = "Segoe UI": .Font.Size = 10: .Font.Bold = True
+    End With
+End Function
+
+Private Sub AddField(ByVal cap As String)
+    Dim t As Single
+    n = n + 1
+    t = TOP0 + (n - 1) * ROWH
+    With Me.Controls.Add("Forms.Label.1", "lbl" & n)
+        .Caption = cap
+        .Left = 25: .Top = t + 5: .Width = 130: .Height = 22
+        .Font.Name = "Segoe UI": .Font.Size = 11: .Font.Bold = True
+        .ForeColor = RGB(55, 71, 79): .BackStyle = fmBackStyleTransparent
+    End With
+    With Me.Controls.Add("Forms.TextBox.1", "txt" & n)
+        .Left = 160: .Top = t: .Width = 280: .Height = 28
+        .Font.Name = "Segoe UI": .Font.Size = 11
+        .SpecialEffect = fmSpecialEffectFlat
+        .BorderStyle = fmBorderStyleSingle
+        .BorderColor = RGB(176, 190, 197)
+    End With
+    Arrange
+End Sub
+
+Private Sub Arrange()
+    Dim t As Single
+    t = TOP0 + n * ROWH + 15
+    bIns.Top = t: bIns.Left = 20
+    bAdd.Top = t: bAdd.Left = 108
+    bDel.Top = t: bDel.Left = 196
+    bClear.Top = t: bClear.Left = 284
+    bClose.Top = t: bClose.Left = 372
+    Me.Height = t + 75
+End Sub
+
+Private Sub FormatHeader()
+    If n = 0 Then Exit Sub
+    With ws.Range(ws.Cells(1, 1), ws.Cells(1, n))
+        .Font.Bold = True: .Font.Color = vbWhite
+        .Interior.Color = RGB(21, 101, 192)
+        .HorizontalAlignment = xlCenter
+    End With
+    ws.Columns.AutoFit
+End Sub
+
+Private Sub bIns_Click()
+    Dim r As Long, i As Long, v As String
+    If Trim(Me.Controls("txt1").Value) = "" Then
+        MsgBox "Please fill the first field.", vbExclamation: Exit Sub
+    End If
     r = ws.Cells(ws.Rows.Count, 1).End(xlUp).Row + 1
+    For i = 1 To n
+        v = Me.Controls("txt" & i).Value
+        If InStr(1, ws.Cells(1, i).Value, "Date", vbTextCompare) > 0 And IsDate(v) Then
+            ws.Cells(r, i).Value = CDate(v)
+            ws.Cells(r, i).NumberFormat = "dd/mm/yyyy"
+        Else
+            ws.Cells(r, i).Value = v
+        End If
+    Next
+    ws.Range(ws.Cells(r, 1), ws.Cells(r, n)).Borders.LineStyle = xlContinuous
+    ws.Columns.AutoFit
+    ClearAll
+    MsgBox "Record added successfully.", vbInformation
+End Sub
 
-    ws.Cells(r, 1).Value = r - 1                  ' الرقم التسلسلي
-    ws.Cells(r, 2).Value = Me.txtName.Value       ' الاسم
-    ws.Cells(r, 3).Value = Me.txtLastName.Value   ' اللقب
-    ws.Cells(r, 4).Value = CDate(Me.txtBirth.Value) ' تاريخ الميلاد
-    ws.Cells(r, 5).Value = Me.cboGender.Value     ' الجنس
-    ws.Cells(r, 6).Value = Me.txtPhone.Value      ' الهاتف
+Private Sub ClearAll()
+    Dim i As Long
+    For i = 1 To n
+        Me.Controls("txt" & i).Value = ""
+    Next
+    If n > 0 Then Me.Controls("txt1").SetFocus
+End Sub
 
-    MsgBox "تم حفظ البيانات بنجاح", vbInformation
-    Call btnClear_Click
+Private Sub bClear_Click()
+    ClearAll
+End Sub
+
+Private Sub bAdd_Click()
+    Dim s As String
+    s = Trim(InputBox("New field name:", "Add Field"))
+    If s = "" Then Exit Sub
+    ws.Cells(1, n + 1).Value = s
+    AddField s
+    FormatHeader
+End Sub
+
+Private Sub bDel_Click()
+    Dim i As Long, s As String, k As Variant
+    If n <= 1 Then MsgBox "At least one field is required.", vbExclamation: Exit Sub
+    For i = 1 To n
+        s = s & i & " - " & ws.Cells(1, i).Value & vbCrLf
+    Next
+    k = InputBox("Enter the number of the field to delete:" & vbCrLf & vbCrLf & s, "Delete Field")
+    If Not IsNumeric(k) Then Exit Sub
+    k = CLng(k)
+    If k < 1 Or k > n Then MsgBox "Invalid number.", vbExclamation: Exit Sub
+    If MsgBox("Delete field """ & ws.Cells(1, k).Value & """ and all its data?", _
+              vbYesNo + vbQuestion, "Confirm") = vbNo Then Exit Sub
+    ws.Columns(k).Delete
+    Rebuild
+End Sub
+
+Private Sub Rebuild()
+    Dim i As Long, c As Range
+    For i = n To 1 Step -1
+        Me.Controls.Remove "lbl" & i
+        Me.Controls.Remove "txt" & i
+    Next
+    n = 0
+    For Each c In ws.Range(ws.Cells(1, 1), ws.Cells(1, ws.Columns.Count).End(xlToLeft))
+        AddField CStr(c.Value)
+    Next
+    FormatHeader
+End Sub
+
+Private Sub bClose_Click()
+    Unload Me
 End Sub`,
       },
       {
-        title: 'كود زر المسح وتهيئة النموذج',
-        code: `Private Sub btnClear_Click()
-    ' تفريغ كل مربعات النص في النموذج
-    Dim ctl As Control
-    For Each ctl In Me.Controls
-        If TypeName(ctl) = "TextBox" Then ctl.Value = ""
-    Next ctl
-    Me.cboGender.ListIndex = -1
-    Me.txtName.SetFocus
-End Sub
-
-Private Sub UserForm_Initialize()
-    ' تعبئة قائمة الجنس عند فتح النموذج
-    With Me.cboGender
-        .Clear
-        .AddItem "ذكر"
-        .AddItem "أنثى"
-    End With
+        title: 'كود فتح النموذج (Module)',
+        code: `Sub OpenForm()
+    frmData.Show
 End Sub`,
       },
     ],
