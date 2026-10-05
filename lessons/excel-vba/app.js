@@ -20,7 +20,7 @@ const I18N = {
     download: 'تحميل ملف التطبيق .xlsm',
     prev: 'الدرس السابق', next: 'الدرس التالي',
     watched: 'تمت المشاهدة ✓', markWatched: 'تحديد كمُشاهَد',
-    soon: 'قريبًا', lockedT: 'هذا الدرس قريبًا ✨', lockedP: 'نعمل على تجهيز هذا الدرس بعناية، وسيكون متاحًا قريبًا.',
+    soon: 'قريبًا', soonShort: 'قريبًا', lockedT: 'هذا الدرس قريبًا ✨', lockedP: 'نعمل على تجهيز هذا الدرس بعناية، وسيكون متاحًا قريبًا.',
     admin: 'وضع الأدمن — هذا الدرس مقفل لبقية الزوار',
   },
   en: {
@@ -33,7 +33,7 @@ const I18N = {
     download: 'Download the .xlsm file',
     prev: 'Previous lesson', next: 'Next lesson',
     watched: 'Watched ✓', markWatched: 'Mark as watched',
-    soon: 'Coming soon', lockedT: 'This lesson is coming soon ✨', lockedP: 'We are carefully preparing this lesson; it will be available soon.',
+    soon: 'Coming soon', soonShort: 'Soon', lockedT: 'This lesson is coming soon ✨', lockedP: 'We are carefully preparing this lesson; it will be available soon.',
     admin: 'Admin mode — this lesson is locked for other visitors',
   },
 };
@@ -80,6 +80,7 @@ const ICON = {
   next: '<svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>',
   play: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M10 8l6 4-6 4z" fill="currentColor"/></svg>',
   code: '<svg viewBox="0 0 24 24"><path d="M16 18l6-6-6-6"/><path d="M8 6l-6 6 6 6"/></svg>',
+  chev: '<svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>',
   steps: '<svg viewBox="0 0 24 24"><path d="M9 6h11"/><path d="M9 12h11"/><path d="M9 18h11"/><path d="M4 6h.01"/><path d="M4 12h.01"/><path d="M4 18h.01"/></svg>',
 };
 
@@ -91,12 +92,10 @@ const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;'
 function renderSide() {
   $('#sideNav').innerHTML = LESSONS.map((l, i) => {
     const done = S.watched.has(i + 1);
-    const lockIc = l.locked ? `<span class="nav-lock">${S.admin ? ICON.unlock : ICON.lock}</span>` : '';
     return `<button type="button" class="nav-item${i === S.idx ? ' on' : ''}${l.locked && !S.admin ? ' locked' : ''}" data-i="${i}">
       <span class="nav-num${done ? ' done' : ''}">${done ? ICON.check : i + 1}</span>
-      <span class="nav-txt tx" dir="${textDir()}"><b>${esc(L(l, 'title'))}</b>
-        ${l.locked ? `<small class="soon-badge">${T('soon')}</small>` : ''}</span>
-      ${lockIc}
+      <b class="nav-txt tx" dir="${textDir()}">${esc(L(l, 'title'))}</b>
+      ${l.locked ? `<small class="nav-soon">${S.admin ? ICON.unlock : ICON.lock}<span>${T('soonShort')}</span></small>` : ''}
     </button>`;
   }).join('');
   $('#mobNum').textContent = S.idx + 1;
@@ -108,25 +107,49 @@ function renderSide() {
 /* =====================================================================
    الدرس الحالي
 ===================================================================== */
+// يقبل رابط يوتيوب كاملًا (watch?v= / youtu.be / embed / shorts / live) أو المعرّف وحده
+function youtubeIdOf(l) {
+  const v = String(l.youtubeUrl || l.youtubeId || '').trim();
+  if (!v) return '';
+  if (/^[\w-]{11}$/.test(v)) return v;
+  try {
+    const u = new URL(/^https?:\/\//i.test(v) ? v : `https://${v}`);
+    const host = u.hostname.replace(/^(www|m|music)\./, '');
+    let id = '';
+    if (host === 'youtu.be') id = u.pathname.split('/')[1] || '';
+    else if (/(^|\.)youtube(-nocookie)?\.com$/.test(host)) {
+      id = u.searchParams.get('v') || '';
+      const m = /^\/(?:embed|shorts|live|v)\/([^/?#]+)/.exec(u.pathname);
+      if (!id && m) id = m[1];
+    }
+    return /^[\w-]{11}$/.test(id) ? id : '';
+  } catch (e) { return ''; }
+}
+
 function videoHTML(l) {
-  if (l.youtubeId) {
-    const src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(l.youtubeId)}?rel=0&modestbranding=1`;
+  const id = youtubeIdOf(l);
+  if (id) {
+    const src = `https://www.youtube-nocookie.com/embed/${id}?rel=0&modestbranding=1`;
     return `<iframe src="${src}" title="${esc(l.title)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
   }
   return `<div class="video-empty">${ICON.play}<span class="tx" dir="${textDir()}">${T('noVideo')}</span></div>`;
 }
 
-function codeCardHTML(c, k) {
+// أكثر من كود: كل كود في بطاقة قابلة للطي (الأول مفتوح والباقي مطوي)
+function codeCardHTML(c, k, all) {
   const lines = String(c.code || '').replace(/\r\n?/g, '\n').replace(/\n+$/, '').split('\n').length;
   const nums = Array.from({ length: lines }, (_, n) => n + 1).join('\n');
-  return `<div class="code-card" data-k="${k}" dir="ltr">
-    <div class="code-top">
+  const acc = all.length > 1;
+  const open = !acc || k === 0;
+  return `<div class="code-card${acc ? ' acc' : ''}${open ? ' open' : ''}" data-k="${k}" dir="ltr">
+    <div class="code-top"${acc ? ` role="button" tabindex="0" aria-expanded="${open}"` : ''}>
+      <button type="button" class="code-btn copy-btn" data-k="${k}">${ICON.copy}<span>${T('copy')}</span></button>
+      <button type="button" class="code-btn icon-only max-btn" data-k="${k}" title="${T('expand')}" aria-label="${T('expand')}">${ICON.expand}</button>
       <span class="code-title" dir="auto">${esc(c.title || `${T('codes')} ${k + 1}`)}</span>
       <span class="code-lang">VBA</span>
-      <button type="button" class="code-btn copy-btn" data-k="${k}">${ICON.copy}<span data-t="copy">${T('copy')}</span></button>
-      <button type="button" class="code-btn icon-only max-btn" data-k="${k}" title="${T('expand')}" aria-label="${T('expand')}">${ICON.expand}</button>
+      ${acc ? `<span class="acc-chev">${ICON.chev}</span>` : ''}
     </div>
-    <div class="code-body"><pre class="ln" aria-hidden="true">${nums}</pre><pre class="code language-vba"><code class="language-vba"></code></pre></div>
+    <div class="code-fold"><div class="code-body"><pre class="ln" aria-hidden="true">${nums}</pre><pre class="code language-vba"><code class="language-vba"></code></pre></div></div>
   </div>`;
 }
 
@@ -140,11 +163,14 @@ function renderLesson() {
   const d = textDir();
 
   const head = `<div class="lesson-head">
-      <div class="lesson-meta tx" dir="${d}">
-        <span class="lesson-n">${T('lesson')} ${n} ${T('of')} ${LESSONS.length}</span>
-        ${l.locked ? `<span class="soon-badge">${T('soon')}</span>` : ''}
+      <span class="lesson-badge"><small>${T('lesson')}</small>${n}</span>
+      <div class="lesson-hd-txt">
+        <div class="lesson-meta tx" dir="${d}">
+          <span class="lesson-n">${T('lesson')} ${n} ${T('of')} ${LESSONS.length}</span>
+          ${l.locked ? `<span class="soon-badge">${T('soon')}</span>` : ''}
+        </div>
+        <h1 class="lesson-title tx" dir="${d}">${esc(L(l, 'title'))}</h1>
       </div>
-      <h1 class="lesson-title tx" dir="${d}">${esc(L(l, 'title'))}</h1>
       ${open ? `<button type="button" class="watch-btn${done ? ' on' : ''}" id="watchBtn">${ICON.check}<span>${T(done ? 'watched' : 'markWatched')}</span></button>` : ''}
     </div>`;
 
@@ -170,22 +196,25 @@ function renderLesson() {
   box.innerHTML = `${head}
     <div class="video-wrap">
       <div class="video" id="video">${videoHTML(l)}</div>
-      ${l.youtubeId ? `<button type="button" class="full-btn" id="fullBtn">${ICON.full}<span>${T('fullscreen')}</span></button>` : ''}
+      ${youtubeIdOf(l) ? `<button type="button" class="full-btn" id="fullBtn">${ICON.full}<span>${T('fullscreen')}</span></button>` : ''}
     </div>
 
-    <section class="card">
-      <h2 class="card-h">${ICON.steps}<span class="tx" dir="${d}">${T('steps')}</span></h2>
-      ${descHTML(l)}
-    </section>
+    <!-- الخطوات (يمين) والأكواد (يسار) جنبًا إلى جنب على الشاشات الكبيرة، وتحت بعضها على الهاتف -->
+    <div class="split">
+      <section class="card steps-card">
+        <h2 class="card-h">${ICON.steps}<span class="tx" dir="${d}">${T('steps')}</span></h2>
+        ${descHTML(l)}
+      </section>
 
-    <section class="card">
-      <div class="card-h codes-h">
-        <h2>${ICON.code}<span class="tx" dir="${d}">${T('codes')}</span>${codes.length ? `<small>${codes.length}</small>` : ''}</h2>
-        ${codes.length > 1 ? `<button type="button" class="code-btn copy-all" id="copyAllBtn">${ICON.copy}<span>${T('copyAll')}</span></button>` : ''}
-      </div>
-      ${codes.length ? `<div class="codes">${codes.map(codeCardHTML).join('')}</div>`
-        : `<p class="empty tx" dir="${d}">${T('noCodes')}</p>`}
-    </section>
+      <section class="card codes-card">
+        <div class="card-h codes-h">
+          <h2>${ICON.code}<span class="tx" dir="${d}">${T('codes')}</span>${codes.length ? `<small>${codes.length}</small>` : ''}</h2>
+          ${codes.length ? `<button type="button" class="code-btn copy-all" id="copyAllBtn">${ICON.copy}<span>${T('copyAll')}</span></button>` : ''}
+        </div>
+        ${codes.length ? `<div class="codes">${codes.map(codeCardHTML).join('')}</div>`
+          : `<p class="empty tx" dir="${d}">${T('noCodes')}</p>`}
+      </section>
+    </div>
 
     ${l.fileUrl ? `<a class="dl-btn" href="${esc(l.fileUrl)}" download>${ICON.download}<span>${T('download')}</span></a>` : ''}
 
@@ -215,10 +244,22 @@ function bindLesson(codes = []) {
   $('#nextBtn').addEventListener('click', () => go(S.idx + 1));
   const f = $('#fullBtn');
   if (f) f.addEventListener('click', () => toggleFull($('#video')));
-  $$('#lesson .copy-btn').forEach(b => b.addEventListener('click', () => copyText(codes[+b.dataset.k].code, b)));
+  // أزرار رأس البطاقة لا تفتح ولا تطوي البطاقة (stopPropagation)
+  $$('#lesson .copy-btn').forEach(b => b.addEventListener('click', e => { e.stopPropagation(); copyText(codes[+b.dataset.k].code, b); }));
+  $$('#lesson .code-card.acc .code-top').forEach(h => {
+    h.addEventListener('click', () => toggleAcc(h.closest('.code-card')));
+    h.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target === h) { e.preventDefault(); toggleAcc(h.closest('.code-card')); } });
+  });
   const all = $('#copyAllBtn');
   if (all) all.addEventListener('click', () => copyText(codes.map(c => `' ===== ${c.title || ''} =====\n${String(c.code).replace(/\s+$/, '')}`).join('\n\n'), all));
-  $$('#lesson .max-btn').forEach(b => b.addEventListener('click', () => toggleCodeMax(b.closest('.code-card'), b)));
+  $$('#lesson .max-btn').forEach(b => b.addEventListener('click', e => { e.stopPropagation(); toggleCodeMax(b.closest('.code-card'), b); }));
+}
+
+function toggleAcc(card, force) {
+  if (card.classList.contains('max')) return;
+  const open = force ?? !card.classList.contains('open');
+  card.classList.toggle('open', open);
+  card.querySelector('.code-top').setAttribute('aria-expanded', open);
 }
 
 /* =====================================================================
@@ -272,7 +313,7 @@ async function copyText(text, btn) {
   btn.classList.add('done');
   span.textContent = T('copied');
   clearTimeout(btn._t);
-  btn._t = setTimeout(() => { btn.classList.remove('done'); span.textContent = orig; }, 1800);
+  btn._t = setTimeout(() => { btn.classList.remove('done'); span.textContent = orig; }, 2000);
 }
 
 const fsEl = () => document.fullscreenElement || document.webkitFullscreenElement;
@@ -284,6 +325,7 @@ function toggleFull(el) {
 
 function toggleCodeMax(card, btn) {
   const on = !card.classList.contains('max');
+  if (on && card.classList.contains('acc')) toggleAcc(card, true);
   card.classList.toggle('max', on);
   document.body.classList.toggle('code-max', on);
   btn.innerHTML = on ? ICON.shrink : ICON.expand;

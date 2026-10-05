@@ -5,9 +5,13 @@
 //
 //   title        : عنوان الدرس (بالعربية)
 //   title_en     : (اختياري) العنوان بالإنجليزية عند تبديل اللغة
-//   youtubeId    : معرّف فيديو يوتيوب فقط، وليس الرابط كاملًا
-//                  مثال: https://www.youtube.com/watch?v=AbC123xYz  ←  youtubeId: 'AbC123xYz'
-//                  اتركه '' فيظهر مكان الفيديو "الفيديو قريبًا".
+//   youtubeUrl   : رابط فيديو يوتيوب كما تنسخه من المتصفح، أو المعرّف وحده — كلها مقبولة:
+//                    'https://www.youtube.com/watch?v=AbC123xYz_0'
+//                    'https://youtu.be/AbC123xYz_0'
+//                    'https://www.youtube.com/embed/AbC123xYz_0'
+//                    'AbC123xYz_0'
+//                  المعرّف يُستخرج تلقائيًا. اتركه '' فيظهر مكان الفيديو "الفيديو قريبًا".
+//                  (الحقل القديم youtubeId ما يزال مدعومًا أيضًا)
 //   description  : شرح مختصر لخطوات الدرس (كل سطر جديد \n يظهر كخطوة مستقلة)
 //   description_en : (اختياري) الشرح بالإنجليزية
 //   codes        : قائمة الأكواد، كل كود له عنوان خاص:
@@ -26,10 +30,15 @@
 // ============================================================
 
 const VBA_LESSONS = [
+  // ================= الدرس 1 =================
+  // 👇 لإضافة الفيديو: الصق رابط يوتيوب كاملًا بين علامتي '' في السطر youtubeUrl أدناه
+  //    مثال:  youtubeUrl: 'https://www.youtube.com/watch?v=AbC123xYz_0',
+  //    أو:    youtubeUrl: 'https://youtu.be/AbC123xYz_0',
+  // 👇 الكودان الموجودان في codes تجريبيان للتأكد من الطي والنسخ — استبدلهما بأكواد الدرس الحقيقية.
   {
     title: 'نموذج إدراج بيانات شخصية (UserForm)',
     title_en: 'Personal Data Entry Form (UserForm)',
-    youtubeId: '', // ← ضع هنا معرّف فيديو يوتيوب للدرس 1
+    youtubeUrl: '', // ← الصق هنا رابط فيديو يوتيوب للدرس 1
     description:
       'افتح محرر VBA بالضغط على Alt + F11 ثم أدرج نموذجًا جديدًا من Insert ← UserForm.\n' +
       'أضف مربعات النص (TextBox) للاسم واللقب وتاريخ الميلاد والهاتف، وقائمة منسدلة (ComboBox) للجنس.\n' +
@@ -41,10 +50,55 @@ const VBA_LESSONS = [
       'Add a "Save" button that writes the data to the first empty row of the database sheet, and a "Clear" button to empty the fields.\n' +
       'Validate required fields before saving, then link the form to a button on the sheet to open it in one click.',
     codes: [
-      // ← أضف أكواد الدرس 1 هنا، مثال:
-      // { title: 'كود زر الحفظ', code: `Private Sub btnSave_Click()
-      //     ...
-      // End Sub` },
+      // ← كودان تجريبيان: استبدلهما بأكواد الدرس، وأضف ما شئت بنفس الشكل { title: '...', code: `...` },
+      {
+        title: 'كود زر الحفظ',
+        code: `Private Sub btnSave_Click()
+    ' حفظ بيانات النموذج في أول سطر فارغ من ورقة "البيانات"
+    Dim ws As Worksheet
+    Dim r As Long
+
+    If Trim(Me.txtName.Value) = "" Then
+        MsgBox "الرجاء إدخال الاسم", vbExclamation
+        Me.txtName.SetFocus
+        Exit Sub
+    End If
+
+    Set ws = ThisWorkbook.Sheets("البيانات")
+    r = ws.Cells(ws.Rows.Count, 1).End(xlUp).Row + 1
+
+    ws.Cells(r, 1).Value = r - 1                  ' الرقم التسلسلي
+    ws.Cells(r, 2).Value = Me.txtName.Value       ' الاسم
+    ws.Cells(r, 3).Value = Me.txtLastName.Value   ' اللقب
+    ws.Cells(r, 4).Value = CDate(Me.txtBirth.Value) ' تاريخ الميلاد
+    ws.Cells(r, 5).Value = Me.cboGender.Value     ' الجنس
+    ws.Cells(r, 6).Value = Me.txtPhone.Value      ' الهاتف
+
+    MsgBox "تم حفظ البيانات بنجاح", vbInformation
+    Call btnClear_Click
+End Sub`,
+      },
+      {
+        title: 'كود زر المسح وتهيئة النموذج',
+        code: `Private Sub btnClear_Click()
+    ' تفريغ كل مربعات النص في النموذج
+    Dim ctl As Control
+    For Each ctl In Me.Controls
+        If TypeName(ctl) = "TextBox" Then ctl.Value = ""
+    Next ctl
+    Me.cboGender.ListIndex = -1
+    Me.txtName.SetFocus
+End Sub
+
+Private Sub UserForm_Initialize()
+    ' تعبئة قائمة الجنس عند فتح النموذج
+    With Me.cboGender
+        .Clear
+        .AddItem "ذكر"
+        .AddItem "أنثى"
+    End With
+End Sub`,
+      },
     ],
     fileUrl: '', // ← ضع هنا رابط ملف .xlsm للدرس 1
     locked: false,
@@ -52,7 +106,7 @@ const VBA_LESSONS = [
   {
     title: 'مدخل إلى محرر VBA وتسجيل الماكرو',
     title_en: 'Introduction to the VBA Editor and Recording Macros',
-    youtubeId: '', // ← معرّف فيديو يوتيوب للدرس 2
+    youtubeUrl: '', // ← رابط فيديو يوتيوب للدرس 2
     description:
       'تفعيل تبويب المطور (Developer) وحفظ الملف بصيغة .xlsm.\n' +
       'تسجيل ماكرو بسيط ثم قراءة الكود الناتج داخل محرر VBA.\n' +
@@ -68,7 +122,7 @@ const VBA_LESSONS = [
   {
     title: 'المتغيرات والشروط والحلقات',
     title_en: 'Variables, Conditions and Loops',
-    youtubeId: '', // ← معرّف فيديو يوتيوب للدرس 3
+    youtubeUrl: '', // ← رابط فيديو يوتيوب للدرس 3
     description:
       'تعريف المتغيرات بأنواعها (Dim … As) وأهمية Option Explicit.\n' +
       'كتابة الشروط بـ If … Then … Else و Select Case.\n' +
@@ -84,7 +138,7 @@ const VBA_LESSONS = [
   {
     title: 'البحث والتعديل والحذف في قاعدة بيانات إكسل',
     title_en: 'Search, Edit and Delete in an Excel Database',
-    youtubeId: '', // ← معرّف فيديو يوتيوب للدرس 4
+    youtubeUrl: '', // ← رابط فيديو يوتيوب للدرس 4
     description:
       'البحث عن سجل برقم أو اسم باستخدام Range.Find.\n' +
       'تحميل بيانات السجل في النموذج لتعديلها ثم حفظ التعديل في نفس السطر.\n' +
@@ -100,7 +154,7 @@ const VBA_LESSONS = [
   {
     title: 'إنشاء فاتورة تلقائية وترقيمها',
     title_en: 'Automatic Invoice Creation and Numbering',
-    youtubeId: '', // ← معرّف فيديو يوتيوب للدرس 5
+    youtubeUrl: '', // ← رابط فيديو يوتيوب للدرس 5
     description:
       'تصميم قالب الفاتورة وتوليد رقم تسلسلي تلقائي لكل فاتورة جديدة.\n' +
       'حفظ الفاتورة في سجل الفواتير ثم تفريغ القالب لفاتورة جديدة.',
@@ -114,7 +168,7 @@ const VBA_LESSONS = [
   {
     title: 'تصدير الأوراق إلى PDF بضغطة زر',
     title_en: 'Export Sheets to PDF with One Click',
-    youtubeId: '', // ← معرّف فيديو يوتيوب للدرس 6
+    youtubeUrl: '', // ← رابط فيديو يوتيوب للدرس 6
     description:
       'تصدير الورقة الحالية أو مجموعة أوراق إلى PDF باستخدام ExportAsFixedFormat.\n' +
       'تسمية الملف تلقائيًا بالتاريخ أو برقم الفاتورة وحفظه في مجلد محدد.',
@@ -128,7 +182,7 @@ const VBA_LESSONS = [
   {
     title: 'دمج عدة ملفات إكسل في ملف واحد',
     title_en: 'Merge Multiple Excel Files into One',
-    youtubeId: '', // ← معرّف فيديو يوتيوب للدرس 7
+    youtubeUrl: '', // ← رابط فيديو يوتيوب للدرس 7
     description:
       'اختيار مجلد وقراءة كل ملفات إكسل داخله باستخدام Dir.\n' +
       'نسخ بيانات كل ملف إلى ورقة واحدة مجمّعة دون تكرار العناوين.',
@@ -142,7 +196,7 @@ const VBA_LESSONS = [
   {
     title: 'إرسال بريد إلكتروني من إكسل عبر Outlook',
     title_en: 'Send Emails from Excel via Outlook',
-    youtubeId: '', // ← معرّف فيديو يوتيوب للدرس 8
+    youtubeUrl: '', // ← رابط فيديو يوتيوب للدرس 8
     description:
       'إنشاء رسالة Outlook من إكسل وتعبئة المرسل إليه والموضوع والنص.\n' +
       'إرفاق ملف (مثل فاتورة PDF) وإرسال رسائل متعددة من قائمة عناوين.',
@@ -156,7 +210,7 @@ const VBA_LESSONS = [
   {
     title: 'شاشة تسجيل دخول بكلمة مرور',
     title_en: 'Password Login Screen',
-    youtubeId: '', // ← معرّف فيديو يوتيوب للدرس 9
+    youtubeUrl: '', // ← رابط فيديو يوتيوب للدرس 9
     description:
       'تصميم نموذج تسجيل دخول باسم مستخدم وكلمة مرور عند فتح الملف.\n' +
       'إخفاء الأوراق حتى نجاح الدخول، وتحديد عدد المحاولات المسموح بها.',
@@ -170,7 +224,7 @@ const VBA_LESSONS = [
   {
     title: 'قوائم منسدلة مترابطة بالكود',
     title_en: 'Dependent Drop-down Lists with Code',
-    youtubeId: '', // ← معرّف فيديو يوتيوب للدرس 10
+    youtubeUrl: '', // ← رابط فيديو يوتيوب للدرس 10
     description:
       'تعبئة قائمة منسدلة أولى من ورقة البيانات تلقائيًا.\n' +
       'تحديث القائمة الثانية حسب اختيار الأولى (مثل: الولاية ← البلدية).',
