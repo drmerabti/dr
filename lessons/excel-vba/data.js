@@ -42,32 +42,49 @@ const VBA_LESSONS = [
       'افتح محرر VBA بالضغط على Alt + F11، ثم أدرج نموذجًا جديدًا من Insert ← UserForm وسمِّه frmData من نافذة الخصائص.\n' +
       'انقر مرتين على النموذج والصق "كود النموذج" كاملًا: ينشئ الحقول والأزرار تلقائيًا من عناوين ورقة Data (وينشئ الورقة إن لم تكن موجودة).\n' +
       'أدرج وحدة جديدة من Insert ← Module والصق فيها ماكرو OpenForm الذي يفتح النموذج.\n' +
-      'الأزرار: Insert لحفظ السجل في أول سطر فارغ، ‎+ Add Field لإضافة حقل جديد، Delete Field لحذف حقل وبياناته، Clear للمسح، Close للإغلاق.\n' +
+      'أدرج وحدة كلاس من Insert ← Class Module وسمِّها clsTxt (بنفس الاسم تمامًا)، ثم الصق فيها كود الكلاس: يجعل زر Backspace في حقل فارغ يمسح كل الحقول.\n' +
+      'الأزرار: Insert (أو Enter) يحفظ السجل في أول سطر فارغ ويلوّنه بالأصفر مع صوت تنبيه خفيف، ‎+ Add Field لإضافة حقل، Delete Field لحذف حقل وبياناته، Clear للمسح، Close للإغلاق، وزر M يفتح موقع merabti.com.\n' +
       'احفظ الملف بصيغة .xlsm، ثم اربط الماكرو OpenForm بزر على الورقة لفتح النموذج بضغطة واحدة.',
     description_en:
       'Open the VBA editor with Alt + F11, insert a new form from Insert → UserForm and name it frmData in the Properties window.\n' +
       'Double-click the form and paste the whole "form code": it builds the fields and buttons automatically from the headers of the Data sheet (and creates the sheet if missing).\n' +
       'Insert a new module from Insert → Module and paste the OpenForm macro that opens the form.\n' +
-      'Buttons: Insert saves the record to the first empty row, + Add Field adds a new field, Delete Field removes a field and its data, Clear empties the fields, Close closes the form.\n' +
+      'Insert a class module from Insert → Class Module, name it exactly clsTxt, and paste the class code: pressing Backspace in an empty field clears all fields.\n' +
+      'Buttons: Insert (or Enter) saves the record to the first empty row, highlights it in yellow and plays a soft sound; + Add Field adds a field, Delete Field removes a field and its data, Clear empties the fields, Close closes the form, and the M button opens merabti.com.\n' +
       'Save the workbook as .xlsm, then assign the OpenForm macro to a button on the sheet to open the form in one click.',
     codes: [
       {
         title: 'كود النموذج frmData',
         code: `Option Explicit
+
+#If VBA7 Then
+    Private Declare PtrSafe Function PlaySound Lib "winmm.dll" Alias "PlaySoundA" _
+        (ByVal pszSound As String, ByVal hmod As LongPtr, ByVal fdwSound As Long) As Long
+#Else
+    Private Declare Function PlaySound Lib "winmm.dll" Alias "PlaySoundA" _
+        (ByVal pszSound As String, ByVal hmod As Long, ByVal fdwSound As Long) As Long
+#End If
+
 Private ws As Worksheet
 Private n As Long
+Private tbs As Collection
 Private WithEvents bIns As MSForms.CommandButton
 Private WithEvents bAdd As MSForms.CommandButton
 Private WithEvents bDel As MSForms.CommandButton
 Private WithEvents bClear As MSForms.CommandButton
 Private WithEvents bClose As MSForms.CommandButton
+Private WithEvents lnk As MSForms.CommandButton
 Private hdr As MSForms.Label
 
 Private Const TOP0 As Single = 75
 Private Const ROWH As Single = 40
+Private Const SND_ASYNC As Long = &H1
+Private Const SND_NODEFAULT As Long = &H2
+Private Const SND_FILENAME As Long = &H20000
 
 Private Sub UserForm_Initialize()
     Dim c As Range
+    Set tbs = New Collection
     On Error Resume Next
     Set ws = ThisWorkbook.Sheets("Data")
     On Error GoTo 0
@@ -92,7 +109,20 @@ Private Sub UserForm_Initialize()
         .TextAlign = fmTextAlignLeft
     End With
 
+    Set lnk = Me.Controls.Add("Forms.CommandButton.1")
+    With lnk
+        .Caption = "M"
+        .Left = 425: .Top = 7: .Width = 36: .Height = 36
+        .BackColor = vbWhite
+        .ForeColor = RGB(21, 101, 192)
+        .Font.Name = "Segoe UI": .Font.Size = 18: .Font.Bold = True
+        .ControlTipText = "merabti.com"
+        .TakeFocusOnClick = False
+        .TabStop = False
+    End With
+
     Set bIns = MakeBtn("Insert", RGB(46, 125, 50))
+    bIns.Default = True
     Set bAdd = MakeBtn("+ Add Field", RGB(21, 101, 192))
     Set bDel = MakeBtn("Delete Field", RGB(198, 40, 40))
     Set bClear = MakeBtn("Clear", RGB(245, 124, 0))
@@ -115,6 +145,7 @@ End Function
 
 Private Sub AddField(ByVal cap As String)
     Dim t As Single
+    Dim h As clsTxt
     n = n + 1
     t = TOP0 + (n - 1) * ROWH
     With Me.Controls.Add("Forms.Label.1", "lbl" & n)
@@ -130,6 +161,10 @@ Private Sub AddField(ByVal cap As String)
         .BorderStyle = fmBorderStyleSingle
         .BorderColor = RGB(176, 190, 197)
     End With
+    Set h = New clsTxt
+    Set h.tb = Me.Controls("txt" & n)
+    Set h.Frm = Me
+    tbs.Add h
     Arrange
 End Sub
 
@@ -151,7 +186,19 @@ Private Sub FormatHeader()
         .Interior.Color = RGB(21, 101, 192)
         .HorizontalAlignment = xlCenter
     End With
-    ws.Columns.AutoFit
+End Sub
+
+Private Sub SoftSound()
+    Dim f As String
+    f = Environ("windir") & "\\Media\\Windows Notify System Generic.wav"
+    If Dir(f) <> "" Then
+        PlaySound f, 0, SND_FILENAME Or SND_ASYNC Or SND_NODEFAULT
+    End If
+End Sub
+
+Private Sub lnk_Click()
+    On Error Resume Next
+    ThisWorkbook.FollowHyperlink "https://merabti.com"
 End Sub
 
 Private Sub bIns_Click()
@@ -170,12 +217,15 @@ Private Sub bIns_Click()
         End If
     Next
     ws.Range(ws.Cells(r, 1), ws.Cells(r, n)).Borders.LineStyle = xlContinuous
-    ws.Columns.AutoFit
+
+    If r > 2 Then ws.Range(ws.Cells(2, 1), ws.Cells(r - 1, n)).Interior.Pattern = xlNone
+    ws.Range(ws.Cells(r, 1), ws.Cells(r, n)).Interior.Color = RGB(255, 243, 156)
+
+    SoftSound
     ClearAll
-    MsgBox "Record added successfully.", vbInformation
 End Sub
 
-Private Sub ClearAll()
+Public Sub ClearAll()
     Dim i As Long
     For i = 1 To n
         Me.Controls("txt" & i).Value = ""
@@ -214,6 +264,7 @@ End Sub
 
 Private Sub Rebuild()
     Dim i As Long, c As Range
+    Set tbs = New Collection
     For i = n To 1 Step -1
         Me.Controls.Remove "lbl" & i
         Me.Controls.Remove "txt" & i
@@ -233,6 +284,19 @@ End Sub`,
         title: 'كود فتح النموذج (Module)',
         code: `Sub OpenForm()
     frmData.Show
+End Sub`,
+      },
+      {
+        title: 'كلاس clsTxt (Class Module)',
+        code: `Option Explicit
+Public WithEvents tb As MSForms.TextBox
+Public Frm As Object
+
+Private Sub tb_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
+    If KeyCode = vbKeyBack And tb.Text = "" Then
+        KeyCode = 0
+        Frm.ClearAll
+    End If
 End Sub`,
       },
     ],
