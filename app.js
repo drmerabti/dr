@@ -367,6 +367,17 @@ const CONTENT = {
       icon: ICONS.excelApp,
     },
     {
+      id: 'lesson-excel-vba',
+      title_ar: 'أتمتة إكسل بلغة VBA: من الصفر إلى الاحتراف',
+      title_en: 'Excel Automation with VBA: From Zero to Pro',
+      desc_ar: '10 دروس فيديو عملية مع أكواد جاهزة للنسخ وملفات تطبيقية — من نموذج UserForm إلى الفواتير وPDF وOutlook.',
+      desc_en: '10 hands-on video lessons with copy-ready code and practice files — from UserForms to invoices, PDF, and Outlook.',
+      category: 'Excel',
+      url: 'lessons/excel-vba/',
+      icon: ICONS.excelApp,
+      badge: 'VBA',
+    },
+    {
       id: 'lesson-access-database',
       title_ar: 'قاعدة بيانات Access خطوة بخطوة',
       title_en: 'Access Database Step by Step',
@@ -902,7 +913,8 @@ async function renderSectionItems(){
       }
       const showFav = (key === 'tools' || key === 'apps');
       const tierBadge = item.tier === 'pro' ? `<span class="tier-badge tier-pro">Pro</span>`
-        : item.tier === 'promax' ? `<span class="tier-badge tier-promax">Pro Max</span>` : '';
+        : item.tier === 'promax' ? `<span class="tier-badge tier-promax">Pro Max</span>`
+        : item.badge ? `<span class="tier-badge tier-tag">${item.badge}</span>` : '';
       // Admin previewing a not-yet-launched item: keep the same "coming soon" look
       // everyone else sees, but this instance is a real, clickable link underneath.
       const comingSoonBadge = (item.comingSoon && admin) ? `<span class="coming-soon-badge">${lang === 'ar' ? 'قريبًا' : 'Coming soon'}</span>` : '';

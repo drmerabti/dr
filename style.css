@@ -383,6 +383,7 @@ main{ position: relative; z-index: 2; max-width: 1080px; margin: 0 auto; padding
 }
 .tier-badge.tier-pro{ background: linear-gradient(135deg, #C4CDD6 0%, #7A8794 100%); }
 .tier-badge.tier-promax{ background: linear-gradient(135deg, #F7D989 0%, #C9861B 100%); }
+.tier-badge.tier-tag{ background: linear-gradient(135deg, #6FCF97 0%, #1D7A46 100%); font-family: 'Inter', sans-serif; letter-spacing: .04em; }
 .fav-star-btn:hover{ transform: scale(1.15); }
 .fav-star-btn.active{ color: #E0A020; }
 
