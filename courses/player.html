@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>الدورات — أكاديمية مرابطي</title>
+<!-- Access gate: course id comes from ?course= -->
+<script src="course-guard.js"></script>
+<link rel="icon" type="image/x-icon" href="../favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@1,600;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="courses.css">
+</head>
+<body class="cp-page">
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="../index.html" class="brand-logo">
+      <img src="../apple-touch-icon.png" alt="أكاديمية مرابطي">
+    </a>
+    <div class="topbar-actions">
+      <a href="../lessons.html" class="cp-btn cp-btn-light cp-btn-sm" data-i18n="back_courses">الدورات</a>
+      <button id="langToggle" class="lang-toggle" type="button">EN</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div id="cpLoading" class="cp-empty cp-muted" data-i18n="loading">جارٍ التحميل...</div>
+
+  <div id="cpEmpty" class="cp-card cp-empty hidden">
+    <h2 data-i18n="no_lessons_title">لا توجد دروس بعد</h2>
+    <p class="cp-muted" data-i18n="no_lessons_desc">ستُضاف دروس هذه الدورة قريبًا.</p>
+  </div>
+
+  <div id="cpLayout" class="cp-layout hidden">
+    <!-- Sidebar: chapters + lessons + progress -->
+    <aside class="cp-card cp-sidebar" id="cpSidebar">
+      <div class="cp-side-head">
+        <div class="ad-row" style="justify-content:space-between;">
+          <h2 id="cpCourseTitle"></h2>
+          <button type="button" class="cp-btn cp-btn-light cp-btn-sm cp-sidebar-toggle" id="cpSidebarToggle" data-i18n="toggle_list">قائمة الدروس</button>
+        </div>
+        <div class="cp-progress-row">
+          <div class="cp-progress"><span id="cpProgressFill"></span></div>
+          <span id="cpProgressText">0%</span>
+        </div>
+      </div>
+      <nav class="cp-side-list" id="cpSideList"></nav>
+    </aside>
+
+    <!-- Main: protected player -->
+    <section class="cp-main">
+      <div class="cp-lesson-head">
+        <div>
+          <div class="cp-chapter-label" id="cpChapterLabel"></div>
+          <h1 id="cpLessonTitle"></h1>
+        </div>
+        <button type="button" class="cp-btn cp-btn-light" id="cpWatchedBtn"></button>
+      </div>
+
+      <div class="cp-wrap" id="cpWrap" tabindex="0">
+        <div class="cp-stage"><div id="cpYt"></div></div>
+        <div class="cp-shield" id="cpShield"></div>
+        <div class="cp-cover" id="cpCover">
+          <button type="button" class="cp-big-play" id="cpBigPlay" aria-label="Play">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          </button>
+        </div>
+        <div class="cp-watermark" id="cpWatermark"></div>
+
+        <div class="cp-controls" id="cpControls">
+          <div class="cp-bar" id="cpBar">
+            <div class="cp-bar-buffer" id="cpBarBuffer"></div>
+            <div class="cp-bar-fill" id="cpBarFill"></div>
+            <div class="cp-bar-knob" id="cpBarKnob"></div>
+          </div>
+          <div class="cp-ctrl-row">
+            <button type="button" class="cp-ctrl" id="cpPlayBtn" aria-label="Play / Pause"></button>
+            <button type="button" class="cp-ctrl" id="cpMuteBtn" aria-label="Mute"></button>
+            <input type="range" class="cp-volume" id="cpVolume" min="0" max="100" value="100" aria-label="Volume">
+            <span class="cp-time" id="cpTime">0:00 / 0:00</span>
+            <span class="cp-spacer"></span>
+            <button type="button" class="cp-ctrl cp-speed" id="cpSpeedBtn" aria-label="Speed">1x</button>
+            <button type="button" class="cp-ctrl" id="cpFsBtn" aria-label="Fullscreen"></button>
+          </div>
+        </div>
+        <div class="cp-speed-menu hidden" id="cpSpeedMenu"></div>
+
+        <div class="cp-soon hidden" id="cpSoon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+          <strong data-i18n="soon">قريبًا ✨</strong>
+          <span data-i18n="soon_desc">فيديو هذا الدرس قيد الإعداد.</span>
+        </div>
+      </div>
+
+      <div class="cp-nav-row">
+        <button type="button" class="cp-btn" id="cpPrevBtn"></button>
+        <button type="button" class="cp-btn" id="cpNextBtn"></button>
+      </div>
+    </section>
+  </div>
+</main>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="../firebase-init.js"></script>
+<script src="player.js"></script>
+</body>
+</html>

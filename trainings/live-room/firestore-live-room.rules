@@ -1,0 +1,21 @@
+// ============================================================
+// قواعد Firestore الخاصة بغرفة التدريب المباشر
+// لا تستبدل قواعدك الحالية: انسخ الدالة والكتلتين داخل
+//   match /databases/{database}/documents { ... }
+// الموجودة عندك في Firebase Console ← Firestore ← Rules
+// ============================================================
+
+    function isLiveAdmin() {
+      return request.auth != null
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+    }
+
+    // أسئلة المدرّب الخاصة
+    match /liveQuestions/{id} {
+      allow read, write: if isLiveAdmin();
+    }
+
+    // سجل الجلسات المنتهية (للتقارير)
+    match /liveSessions/{id} {
+      allow read, write: if isLiveAdmin();
+    }

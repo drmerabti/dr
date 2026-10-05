@@ -1,0 +1,83 @@
+// =====================================================================
+// Firestore Security Rules — course platform (courses/player.html, courses/admin.html)
+// Merge these blocks into your existing rules in Firebase Console →
+// Firestore Database → Rules. Keep your other match blocks (favorites,
+// notebooks, questions, ...) as they are.
+// =====================================================================
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---------- Helpers ----------
+    function signedIn() {
+      return request.auth != null;
+    }
+    function userDoc() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+    function isAdmin() {
+      return signedIn() && userDoc().get('isAdmin', false) == true;
+    }
+    // Active member: courses/{courseId}/members/{uid} written by admin/backend.
+    function isMember(courseId) {
+      let path = /databases/$(database)/documents/courses/$(courseId)/members/$(request.auth.uid);
+      return signedIn() && exists(path)
+        && get(path).data.get('active', false) == true
+        && (get(path).data.get('expiresAt', null) == null
+            || get(path).data.expiresAt > request.time);
+    }
+    // Legacy per-course field on the user doc, e.g. users/{uid}.wordCourseSubscription
+    function hasLegacySub(courseId) {
+      let sub = userDoc().get(courseId + 'CourseSubscription', null);
+      return sub != null && sub.get('active', false) == true && sub.expiresAt > request.time;
+    }
+    function canWatch(courseId) {
+      return isAdmin() || isMember(courseId) || hasLegacySub(courseId);
+    }
+
+    // ---------- Courses ----------
+    match /courses/{courseId} {
+      // Course title only (no videos here).
+      allow read: if signedIn();
+      allow write: if isAdmin();
+
+      match /chapters/{chapterId} {
+        allow read: if canWatch(courseId);
+        allow write: if isAdmin();
+      }
+
+      // Holds videoId → readable only by admin or a member of THIS course.
+      match /lessons/{lessonId} {
+        allow read: if canWatch(courseId);
+        allow write: if isAdmin();
+      }
+
+      // Who is subscribed. Only admin / server (Admin SDK bypasses rules) writes.
+      match /members/{uid} {
+        allow read: if isAdmin() || (signedIn() && request.auth.uid == uid);
+        allow write: if isAdmin();
+      }
+    }
+
+    // ---------- Per-user progress ----------
+    match /users/{uid}/courseProgress/{courseId} {
+      allow read, write: if signedIn() && request.auth.uid == uid;
+    }
+
+    // ---------- IMPORTANT: protect the user doc itself ----------
+    // Everything above trusts users/{uid}.isAdmin and *CourseSubscription.
+    // If your current rules let users write their own users/{uid} freely,
+    // anyone could make themselves admin. Make sure your users rule
+    // looks like this (adapt the field list to what you store):
+    //
+    // match /users/{uid} {
+    //   allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
+    //   allow create: if signedIn() && request.auth.uid == uid
+    //     && !request.resource.data.keys().hasAny(['isAdmin', 'subscription',
+    //          'wordCourseSubscription', 'excelCourseSubscription']);
+    //   allow update: if signedIn() && request.auth.uid == uid
+    //     && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['isAdmin',
+    //          'subscription', 'wordCourseSubscription', 'excelCourseSubscription']);
+    // }
+  }
+}

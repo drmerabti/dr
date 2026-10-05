@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>إدارة الدورات — أكاديمية مرابطي</title>
+<!-- Admins only -->
+<script src="course-guard.js" data-admin-only></script>
+<link rel="icon" type="image/x-icon" href="../favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@1,600;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="courses.css">
+</head>
+<body class="cp-page">
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="../index.html" class="brand-logo">
+      <img src="../apple-touch-icon.png" alt="أكاديمية مرابطي">
+    </a>
+    <div class="topbar-actions">
+      <a href="#" id="adPreviewLink" class="cp-btn cp-btn-light cp-btn-sm" target="_blank" rel="noopener">معاينة الدورة</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <h1 class="view-title">إدارة الدورات</h1>
+
+  <div class="ad-grid">
+    <!-- Left column: course + chapter + lesson forms -->
+    <div style="display:flex; flex-direction:column; gap:22px;">
+      <section class="cp-card ad-card">
+        <h2>الدورة</h2>
+        <label class="ad-field"><span>اختر الدورة</span>
+          <select id="adCourseSelect" class="ad-input"></select>
+        </label>
+        <form id="adCourseForm">
+          <label class="ad-field"><span>معرّف الدورة (بالإنجليزية، مثل word)</span>
+            <input id="adCourseId" class="ad-input" required pattern="[a-z0-9-]+" placeholder="word" dir="ltr">
+          </label>
+          <p class="ad-hint">رابط الدورة: courses/player.html?course=<b id="adCourseIdEcho">word</b></p>
+          <label class="ad-field"><span>العنوان بالعربية</span>
+            <input id="adCourseTitleAr" class="ad-input" required placeholder="دورة Word التفاعلية">
+          </label>
+          <label class="ad-field"><span>العنوان بالإنجليزية</span>
+            <input id="adCourseTitleEn" class="ad-input" placeholder="Interactive Word Course" dir="ltr">
+          </label>
+          <div class="ad-row">
+            <button type="submit" class="cp-btn" id="adCourseSave">حفظ الدورة</button>
+            <button type="button" class="cp-btn cp-btn-light" id="adCourseNew">دورة جديدة</button>
+            <button type="button" class="cp-btn cp-btn-danger" id="adCourseDelete">حذف</button>
+          </div>
+        </form>
+        <div class="ad-status" id="adCourseStatus"></div>
+      </section>
+
+      <section class="cp-card ad-card">
+        <h2>إضافة فصل</h2>
+        <form id="adChapterForm">
+          <label class="ad-field"><span>عنوان الفصل بالعربية</span>
+            <input id="adChapterTitleAr" class="ad-input" required placeholder="الفصل الأول: الأساسيات">
+          </label>
+          <label class="ad-field"><span>عنوان الفصل بالإنجليزية</span>
+            <input id="adChapterTitleEn" class="ad-input" placeholder="Chapter 1: Basics" dir="ltr">
+          </label>
+          <button type="submit" class="cp-btn">إضافة الفصل</button>
+        </form>
+        <div class="ad-status" id="adChapterStatus"></div>
+      </section>
+
+      <section class="cp-card ad-card">
+        <h2 id="adLessonFormTitle">إضافة درس</h2>
+        <form id="adLessonForm">
+          <label class="ad-field"><span>الفصل</span>
+            <select id="adLessonChapter" class="ad-input" required></select>
+          </label>
+          <label class="ad-field"><span>عنوان الدرس بالعربية</span>
+            <input id="adLessonTitleAr" class="ad-input" required>
+          </label>
+          <label class="ad-field"><span>عنوان الدرس بالإنجليزية</span>
+            <input id="adLessonTitleEn" class="ad-input" dir="ltr">
+          </label>
+          <label class="ad-field"><span>فيديو YouTube (رابط أو معرّف)</span>
+            <input id="adLessonVideo" class="ad-input" dir="ltr" placeholder="https://youtu.be/XXXXXXXXXXX">
+          </label>
+          <p class="ad-hint">اتركه فارغًا ليظهر «قريبًا» مكان المشغل.</p>
+          <div class="ad-row">
+            <button type="submit" class="cp-btn" id="adLessonSave">إضافة الدرس</button>
+            <button type="button" class="cp-btn cp-btn-light hidden" id="adLessonCancel">إلغاء التعديل</button>
+          </div>
+        </form>
+        <div class="ad-status" id="adLessonStatus"></div>
+      </section>
+    </div>
+
+    <!-- Right column: structure -->
+    <section class="cp-card ad-card">
+      <h2>الفصول والدروس</h2>
+      <div id="adTree"><p class="cp-muted">اختر دورة أو أنشئ واحدة.</p></div>
+    </section>
+  </div>
+</main>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="../firebase-init.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>
