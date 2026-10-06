@@ -188,6 +188,7 @@ const ICONS = {
   pdfToImgApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gP2I" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8FA8C7"/><stop offset="1" stop-color="#3A5A7D"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="6" y="8" width="20" height="26" rx="2.5" fill="url(#gP2I)"/><rect x="22" y="16" width="20" height="24" rx="2.5" fill="#fff" stroke="#8FA8C7" stroke-width="1.5"/><circle cx="28" cy="23" r="2" fill="#F0C56B"/><path d="M24 34l4-5 4 4 5-6 5 7" fill="none" stroke="#3A5A7D" stroke-width="1.6"/></svg>`,
   excelToPdfApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gE2P" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6FCF97"/><stop offset="1" stop-color="#1D7A46"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="6" y="8" width="20" height="26" rx="2.5" fill="url(#gE2P)"/><rect x="22" y="16" width="20" height="24" rx="2.5" fill="#C0392B"/><text x="32" y="32" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" font-weight="800" fill="#fff">PDF</text></svg>`,
   wordToPdfApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gW2P" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4A9AE8"/><stop offset="1" stop-color="#1857A8"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="6" y="8" width="20" height="26" rx="2.5" fill="url(#gW2P)"/><rect x="22" y="16" width="20" height="24" rx="2.5" fill="#C0392B"/><text x="32" y="32" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" font-weight="800" fill="#fff">PDF</text></svg>`,
+  liveRoomApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gLive" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F7C76A"/><stop offset="1" stop-color="#C47F12"/></linearGradient><linearGradient id="gLiveP" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6E8DB5"/><stop offset="1" stop-color="#2E4A6E"/></linearGradient></defs><ellipse cx="24" cy="43" rx="17" ry="2.2" fill="#1E2F40" opacity=".1"/><path d="M14 4h20l-5 22h-10z" fill="#FFE9B0" opacity=".45"/><rect x="18" y="26" width="12" height="16" rx="1.5" fill="url(#gLiveP)"/><rect x="6" y="32" width="12" height="10" rx="1.5" fill="url(#gLiveP)" opacity=".85"/><rect x="30" y="35" width="12" height="7" rx="1.5" fill="url(#gLiveP)" opacity=".75"/><path d="M18.5 15l2.5 3 3-5 3 5 2.5-3-1 8h-9z" fill="url(#gLive)"/><circle cx="24" cy="31" r="2" fill="#fff" opacity=".9"/><circle cx="40" cy="9" r="3" fill="#22C55E"/><circle cx="40" cy="9" r="5.5" fill="none" stroke="#22C55E" stroke-width="1.2" opacity=".5"/></svg>`,
   keyboardApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gKbd" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7DD6A8"/><stop offset="1" stop-color="#1E8A52"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="4" y="13" width="40" height="23" rx="4.5" fill="url(#gKbd)"/><rect x="4" y="13" width="40" height="6" rx="4.5" fill="#fff" opacity=".2"/><g fill="#fff" opacity=".92"><rect x="9" y="18" width="4" height="3.6" rx="1"/><rect x="15" y="18" width="4" height="3.6" rx="1"/><rect x="21" y="18" width="4" height="3.6" rx="1"/><rect x="27" y="18" width="4" height="3.6" rx="1"/><rect x="33" y="18" width="6" height="3.6" rx="1"/><rect x="9" y="24" width="6" height="3.6" rx="1"/><rect x="17" y="24" width="4" height="3.6" rx="1"/><rect x="29" y="24" width="4" height="3.6" rx="1"/><rect x="35" y="24" width="4" height="3.6" rx="1"/><rect x="14" y="30" width="20" height="3.2" rx="1.2"/></g><rect x="23" y="24" width="4" height="3.6" rx="1" fill="#F0C56B"/></svg>`,
   lessons: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
     <defs>
@@ -366,6 +367,17 @@ const CONTENT = {
       category: 'Excel',
       url: 'lessons/excel-shortcuts/',
       icon: ICONS.excelApp,
+    },
+    {
+      id: 'lesson-excel-vba',
+      title_ar: 'أتمتة إكسل بلغة VBA: من الصفر إلى الاحتراف',
+      title_en: 'Excel Automation with VBA: From Zero to Pro',
+      desc_ar: '10 دروس فيديو عملية مع أكواد جاهزة للنسخ وملفات تطبيقية — من نموذج UserForm إلى الفواتير وPDF وOutlook.',
+      desc_en: '10 hands-on video lessons with copy-ready code and practice files — from UserForms to invoices, PDF, and Outlook.',
+      category: 'Excel',
+      url: 'lessons/excel-vba/',
+      icon: ICONS.excelApp,
+      badge: 'VBA',
     },
     {
       id: 'lesson-access-database',
@@ -582,6 +594,15 @@ const CONTENT = {
       desc_en: '8 progressive stages to learn touch typing in Arabic, French and English, with the key you need lighting up.',
       url: 'trainings/keyboard-typing/',
       icon: ICONS.keyboardApp,
+    },
+    {
+      id: 'training-live-room',
+      title_ar: 'غرفة التدريب المباشر',
+      title_en: 'Live Training Room',
+      desc_ar: 'مسابقة حيّة أثناء الدرس: ادخل الغرفة برمز المدرّب، أجب أسرع من زملائك، وتابع ترتيبك لحظة بلحظة.',
+      desc_en: 'A live in-class contest: join with the trainer\'s code, answer faster than your classmates and follow your rank in real time.',
+      url: 'trainings/live-room/',
+      icon: ICONS.liveRoomApp,
     },
     { id: 'training-excel', title_ar: 'تدريب شامل في إكسل', title_en: 'Complete Excel Training',
       desc_ar: '5 مستويات بصعوبة تصاعدية لاختبار معلوماتك في إكسل.', desc_en: '5 levels of increasing difficulty to test your Excel knowledge.',
@@ -851,8 +872,24 @@ function renderCoursesSection(){
     </div>
   `).join('');
   wrap.querySelectorAll('.course-card').forEach(card => {
-    card.addEventListener('click', () => showTrainingCoursePaymentModal());
+    card.addEventListener('click', async () => {
+      // Admins open the course directly; everyone else still sees the "قريبًا" modal.
+      // The course pages themselves re-check access (courses/course-guard.js).
+      if (await isAdminUser()){
+        const item = items.find(i => i.id === card.dataset.courseId);
+        if (item) window.location.href = courseUrlFor(item);
+        return;
+      }
+      showTrainingCoursePaymentModal();
+    });
   });
+}
+
+// Courses with a dedicated page keep their own url; the rest open in the
+// shared player (courses/player.html?course=word for id "course-word").
+function courseUrlFor(item){
+  if (item.url) return item.url;
+  return 'courses/player.html?course=' + encodeURIComponent(item.id.replace(/^course-/, ''));
 }
 
 async function renderSectionItems(){
@@ -907,7 +944,8 @@ async function renderSectionItems(){
       }
       const showFav = (key === 'tools' || key === 'apps');
       const tierBadge = item.tier === 'pro' ? `<span class="tier-badge tier-pro">Pro</span>`
-        : item.tier === 'promax' ? `<span class="tier-badge tier-promax">Pro Max</span>` : '';
+        : item.tier === 'promax' ? `<span class="tier-badge tier-promax">Pro Max</span>`
+        : item.badge ? `<span class="tier-badge tier-tag">${item.badge}</span>` : '';
       // Admin previewing a not-yet-launched item: keep the same "coming soon" look
       // everyone else sees, but this instance is a real, clickable link underneath.
       const comingSoonBadge = (item.comingSoon && admin) ? `<span class="coming-soon-badge">${lang === 'ar' ? 'قريبًا' : 'Coming soon'}</span>` : '';

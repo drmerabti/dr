@@ -169,7 +169,13 @@
           </div>
           <div class="field">
             <label for="fBody" data-i18n="bodyLbl">نص الطلب</label>
-            <textarea id="fBody" class="body-textarea" data-i18n-placeholder="bodyPlaceholder"></textarea>
+            <textarea id="fBody" class="body-textarea"></textarea>
+            <div class="body-tools">
+              <button type="button" class="soft-btn" id="useExampleBtn">
+                <svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13 7l4 4"/></svg>
+                <span data-i18n="useExample">الانطلاق من نص المثال</span>
+              </button>
+            </div>
             <p class="hint" data-i18n="bodyHint"></p>
           </div>
           <button type="button" class="acc-next" data-next><span data-i18n="next">التالي</span><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
@@ -313,14 +319,18 @@
 
           <p class="req-subject" data-sec="subject"><span class="req-label" id="reqLabelSubject">الموضوع: </span><span class="req-value" id="reqSubjectValue"></span></p>
 
-          <div class="req-body" id="reqBody" contenteditable="true" data-sec="subject"></div>
+          <div class="req-body-wrap is-ex" id="reqBodyWrap">
+            <div class="req-body" id="reqBody" contenteditable="true" data-sec="subject"></div>
+            <div class="req-body req-body-ex ph" id="reqBodyEx" data-ex="body" aria-hidden="true"></div>
+          </div>
 
           <div class="req-attach hidden" id="reqAttach" data-sec="attach">
             <p class="req-label" id="reqLabelAttach">المرفقات:</p>
-            <div id="reqAttachList"></div>
+            <div id="reqAttachList" class="req-attach-list"></div>
           </div>
 
           <div class="req-signature" data-sec="sign">
+            <p class="req-signature-name" id="reqSignName"></p>
             <p class="req-signature-caption" id="reqSignatureCaption"></p>
             <img id="reqStamp" class="req-stamp-img hidden" alt="">
             <button type="button" class="req-remove-btn hidden" id="removeStampBtn">

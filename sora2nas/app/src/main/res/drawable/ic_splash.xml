@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Splash icon (Android 12 SplashScreen): the launcher art scaled into the 2/3 circle. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="288dp" android:height="288dp" android:viewportWidth="108" android:viewportHeight="108">
+    <group android:scaleX="0.54" android:scaleY="0.54" android:pivotX="54" android:pivotY="54">
+        <path android:pathData="M26,0 L82,0 Q108,0 108,26 L108,82 Q108,108 82,108 L26,108 Q0,108 0,82 L0,26 Q0,0 26,0 Z">
+            <aapt:attr name="android:fillColor">
+            <gradient android:type="linear" android:startX="0" android:startY="0" android:endX="108" android:endY="108">
+                <item android:offset="0" android:color="#FF163BA6" />
+                <item android:offset="0.5" android:color="#FF1E4FD8" />
+                <item android:offset="1" android:color="#FF12B5A6" />
+            </gradient>
+        </aapt:attr>
+        </path>
+        <group android:scaleX="1.25" android:scaleY="1.25" android:pivotX="54" android:pivotY="54">
+        <path android:strokeColor="#FFFFFF" android:strokeWidth="4" android:strokeLineCap="round" android:strokeLineJoin="round"
+        android:pathData="M28,42 L28,35 Q28,28 35,28 L42,28 M66,28 L73,28 Q80,28 80,35 L80,42 M80,66 L80,73 Q80,80 73,80 L66,80 M42,80 L35,80 Q28,80 28,73 L28,66" />
+    <path android:fillColor="#FFFFFF"
+        android:pathData="M42,36 L61,36 L69,44 L69,69 Q69,72 66,72 L42,72 Q39,72 39,69 L39,39 Q39,36 42,36 Z" />
+    <path android:fillColor="#BFD0FF" android:pathData="M61,36 L61,41 Q61,44 64,44 L69,44 Z" />
+    <path android:strokeColor="#1E4FD8" android:strokeWidth="2.8" android:strokeLineCap="round"
+        android:pathData="M45,50 L63,50 M50,56 L63,56 M45,62 L63,62" />
+    <path android:strokeColor="#12B5A6" android:strokeWidth="2.8" android:strokeLineCap="round" android:pathData="M53,67 L63,67" />
+        </group>
+    </group>
+</vector>

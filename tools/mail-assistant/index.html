@@ -1,156 +1,364 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" id="htmlRoot">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>مساعد البريد المهني — أكاديمية مرابطي</title>
-<meta name="description" content="اكتب نقاطك، واختر درجة الرسمية ولغة الإيميل، ودع الذكاء الاصطناعي يصيغ لك إيميلًا احترافيًا كاملًا.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<meta name="description" content="اختر نموذجًا واكتب فكرتك بكلماتك، ودع الذكاء الاصطناعي يصيغ لك رسالة بريد مهنية كاملة، ثم انسخها أو افتحها في Gmail أو Outlook.">
 <script src="/analytics.js"></script>
+<link rel="icon" type="image/x-icon" href="../../favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="../../apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="topbar-inner">
-  <a class="back-link" href="../../tools.html" id="backLink">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-    <span id="backLabel">رجوع إلى الأدوات</span>
+<header class="topbar">
+  <a href="../../index.html" class="brand-logo" title="أكاديمية مرابطي">
+    <img src="../../apple-touch-icon.png" alt="أكاديمية مرابطي">
   </a>
+  <a class="icon-btn back-btn" href="../../tools.html" data-tip="back_tools" aria-label="back">
+    <svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>
+  </a>
+  <span class="tool-name" data-i18n="topbarTitle">مساعد البريد المهني</span>
   <div class="topbar-actions">
-    <select id="uiLangSelect" class="lang-select">
-      <option value="ar">AR</option>
-      <option value="en">EN</option>
-      <option value="fr">FR</option>
-    </select>
-    <div class="auth-wrap" id="authWrap">
-      <button class="auth-btn" id="authBtn" type="button"></button>
-      <div class="auth-menu hidden" id="authMenu"></div>
-    </div>
-  </div>
-</div>
-
-<div class="hero">
-  <div class="hero-icon">
-    <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="gMailHero" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#F0A8B8"/><stop offset="1" stop-color="#B1345A"/>
-        </linearGradient>
-      </defs>
-      <rect x="6" y="12" width="36" height="24" rx="4" fill="url(#gMailHero)"/>
-      <path d="M6 14l18 13 18-13" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-  </div>
-  <h1 id="heroTitle">مساعد البريد المهني</h1>
-  <p id="heroSub">اكتب نقاطك، واختر درجة الرسمية ولغة الإيميل، ودع الذكاء الاصطناعي يصيغ لك المسودة كاملة.</p>
-</div>
-
-<main class="layout">
-
-  <section class="form-panel">
-
-    <div class="panel-card">
-      <div class="panel-title" id="secEmailInfo">بيانات الإيميل</div>
-      <div class="grid-2">
-        <div class="field"><label id="lRecipient">المستلم (اختياري)</label><input type="text" id="fRecipient" class="field-input"></div>
-        <div class="field"><label id="lSubject">الموضوع</label><input type="text" id="fSubject" class="field-input"></div>
-      </div>
-      <div class="field" style="margin-top:12px;">
-        <label id="lPurpose">الغرض من الإيميل</label>
-        <select id="fPurpose" class="field-input"></select>
-      </div>
-    </div>
-
-    <div class="panel-card">
-      <div class="panel-title" id="secPoints">النقاط الرئيسية</div>
-      <textarea id="fPoints" class="field-input" rows="4"></textarea>
-    </div>
-
-    <div class="panel-card">
-      <div class="panel-title" id="secSettings">الإعدادات</div>
-      <div class="field" style="margin-bottom:14px;">
-        <label id="lTone">درجة الرسمية</label>
-        <div class="segmented" id="toneSegmented"></div>
-      </div>
-      <div class="field">
-        <label id="lEmailLang">لغة الإيميل</label>
-        <select id="fEmailLang" class="field-input" style="max-width:220px;"></select>
-      </div>
-    </div>
-
-    <button type="button" class="primary-btn full-width" id="generateBtn">
-      <i class="icon-sparkle"></i><span id="generateBtnLabel">صياغة الإيميل بالذكاء الاصطناعي</span>
+    <button class="icon-btn" id="btnFullscreen" type="button" data-tip="fullscreen">
+      <svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
     </button>
-    <div class="hint-note" id="authHintNote">تحتاج تسجيل الدخول لاستخدام هذه الميزة.</div>
-
-  </section>
-
-  <section class="result-panel">
-    <div class="result-card">
-      <div class="panel-title" id="secDraft">المسودة (قابلة للتعديل المباشر)</div>
-      <textarea id="draftOutput" class="draft-box" rows="12" placeholder=""></textarea>
-
-      <div class="quick-actions" id="quickActions">
-        <button type="button" class="quick-chip" data-action="rewrite"><i class="icon-refresh"></i><span id="qaRewrite">أعد الصياغة</span></button>
-        <button type="button" class="quick-chip" data-action="shorten"><i class="icon-shrink"></i><span id="qaShorten">اختصار</span></button>
-        <button type="button" class="quick-chip" data-action="more_formal"><i class="icon-formal"></i><span id="qaFormal">أكثر رسمية</span></button>
-        <button type="button" class="quick-chip" data-action="more_friendly"><i class="icon-friendly"></i><span id="qaFriendly">أكثر ودية</span></button>
+    <button class="icon-btn" id="btnMine" type="button" data-tip="mine">
+      <svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+    </button>
+    <button class="icon-btn" id="saveBtn" type="button" data-tip="save">
+      <svg viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5z"/><path d="M8 4v5h7V4M8 20v-6h8v6"/></svg>
+    </button>
+    <div class="lang-wrap">
+      <button class="lang-toggle" id="langToggle" type="button">AR</button>
+      <div class="lang-menu hidden" id="langMenu">
+        <button type="button" class="lang-btn" data-lang="ar">العربية</button>
+        <button type="button" class="lang-btn" data-lang="fr">Français</button>
+        <button type="button" class="lang-btn" data-lang="en">English</button>
       </div>
-
-      <button type="button" class="secondary-btn full-width" id="copyBtn">
-        <i class="icon-copy"></i><span id="copyBtnLabel">نسخ الإيميل</span>
-      </button>
-      <div class="copied-note hidden" id="copiedNote">تم النسخ ✓</div>
     </div>
-  </section>
+  </div>
+</header>
 
-</main>
+<div class="workspace" id="workspace">
+  <aside class="panel" id="panel">
+    <button class="gallery-open" id="btnGallery" type="button">
+      <span class="go-thumb" id="currentThumb"></span>
+      <span class="go-text">
+        <strong data-i18n="gallery">معرض النماذج</strong>
+        <small id="currentTplName"></small>
+      </span>
+      <svg viewBox="0 0 24 24"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></svg>
+    </button>
 
-<footer class="site-footer" id="footerText">© 2026 أكاديمية مرابطي</footer>
+    <div class="accordion" id="accordion">
+      <section class="acc" data-sec="type" style="--sc:#2F6F9F">
+        <button type="button" class="acc-head"><span class="acc-num">1</span>
+          <span class="acc-title"><b data-i18n="sec_type">نوع الرسالة والنموذج</b><small data-sum="type"></small></span>
+          <svg class="acc-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="acc-body"><div class="acc-inner"><div class="acc-content">
+          <div class="field">
+            <label data-i18n="typeLbl">نوع الرسالة</label>
+            <div class="type-grid" id="typeGrid"></div>
+            <p class="hint" data-i18n="typeHint"></p>
+          </div>
+          <button type="button" class="acc-next" data-next><span data-i18n="next">التالي</span><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        </div></div></div>
+      </section>
 
-<!-- ============ نافذة تسجيل الدخول ============ -->
-<div class="modal-overlay hidden" id="authOverlay">
-  <div class="modal-card">
-    <button class="modal-close" id="authCloseBtn" type="button">×</button>
-    <h3 id="authModalTitle">تسجيل الدخول</h3>
-    <p class="modal-sub" id="authModalSub">سجّل دخولك لاستخدام مساعد البريد</p>
-    <div class="auth-error hidden" id="authError"></div>
-    <form id="authForm">
-      <div class="field hidden" id="authNameField">
-        <label id="authNameLabel">الاسم</label>
-        <input type="text" id="authName" class="field-input">
+      <section class="acc" data-sec="sender" style="--sc:#16A34A">
+        <button type="button" class="acc-head"><span class="acc-num">2</span>
+          <span class="acc-title"><b data-i18n="sec_sender">المرسل</b><small data-sum="sender"></small></span>
+          <svg class="acc-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="acc-body"><div class="acc-inner"><div class="acc-content">
+          <div class="field-row2">
+          <div class="field">
+            <label for="f_sName" data-i18n="nameLbl">الاسم</label>
+            <input type="text" id="f_sName" data-f="sName">
+          </div>
+          <div class="field">
+            <label for="f_sJob" data-i18n="jobLbl">الوظيفة</label>
+            <input type="text" id="f_sJob" data-f="sJob">
+          </div>
+          </div>
+          <div class="field">
+            <label for="f_sOrg" data-i18n="orgLbl">المؤسسة</label>
+            <input type="text" id="f_sOrg" data-f="sOrg">
+          </div>
+          <div class="field-row2">
+          <div class="field">
+            <label for="f_sEmail" data-i18n="emailLbl">البريد الإلكتروني</label>
+            <input type="email" id="f_sEmail" data-f="sEmail" class="ltr-input">
+          </div>
+          <div class="field">
+            <label for="f_sPhone" data-i18n="phoneLbl">الهاتف (اختياري)</label>
+            <input type="tel" id="f_sPhone" data-f="sPhone" class="ltr-input">
+          </div>
+          </div>
+          <div class="field">
+            <label for="f_sExtra" data-i18n="sigExtraLbl">سطر إضافي في التوقيع (اختياري)</label>
+            <input type="text" id="f_sExtra" data-f="sExtra" data-i18n-placeholder="sigExtraPh">
+          </div>
+          <div class="field">
+            <label class="switch-row" for="f_sigOn">
+              <input type="checkbox" id="f_sigOn" checked>
+              <span class="switch"></span>
+              <span data-i18n="sigToggle">إضافة التوقيع أسفل الرسالة</span>
+            </label>
+          </div>
+          <button type="button" class="acc-next" data-next><span data-i18n="next">التالي</span><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        </div></div></div>
+      </section>
+
+      <section class="acc" data-sec="to" style="--sc:#D97706">
+        <button type="button" class="acc-head"><span class="acc-num">3</span>
+          <span class="acc-title"><b data-i18n="sec_to">المستلم</b><small data-sum="to"></small></span>
+          <svg class="acc-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="acc-body"><div class="acc-inner"><div class="acc-content">
+          <div class="field-row2">
+          <div class="field">
+            <label for="f_toName" data-i18n="toNameLbl">اسم المستلم</label>
+            <input type="text" id="f_toName" data-f="toName">
+          </div>
+          <div class="field">
+            <label for="f_toTitle" data-i18n="toTitleLbl">صفته</label>
+            <input type="text" id="f_toTitle" data-f="toTitle">
+          </div>
+          </div>
+          <div class="field">
+            <label for="f_toOrg" data-i18n="toOrgLbl">مؤسسته</label>
+            <input type="text" id="f_toOrg" data-f="toOrg">
+          </div>
+          <div class="field">
+            <label for="f_toEmail" data-i18n="toEmailLbl">بريده الإلكتروني</label>
+            <input type="email" id="f_toEmail" data-f="toEmail" class="ltr-input">
+          </div>
+          <p class="hint sec-hint" data-i18n="toHint"></p>
+          <button type="button" class="acc-next" data-next><span data-i18n="next">التالي</span><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        </div></div></div>
+      </section>
+
+      <section class="acc" data-sec="details" style="--sc:#7C3AED">
+        <button type="button" class="acc-head"><span class="acc-num">4</span>
+          <span class="acc-title"><b data-i18n="sec_details">الموضوع والتفاصيل</b><small data-sum="details"></small></span>
+          <svg class="acc-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="acc-body"><div class="acc-inner"><div class="acc-content">
+          <div class="field">
+            <label for="f_subject" data-i18n="subjectLbl">الموضوع</label>
+            <input type="text" id="f_subject" data-f="subject">
+          </div>
+          <div class="field ai-box">
+            <label for="f_points"><span data-i18n="pointsLbl">ما تريد قوله بكلماتك البسيطة</span> <span class="badge-ai">AI</span></label>
+            <textarea id="f_points" data-f="points" rows="4"></textarea>
+            <p class="hint" data-i18n="pointsHint"></p>
+            <button type="button" class="soft-btn primary write-btn" id="writeBtn"><svg viewBox="0 0 24 24"><path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8z"/></svg><span data-i18n="write">اكتب الرسالة</span></button>
+            <p class="ai-error hidden" id="aiError"></p>
+          </div>
+          <div class="field">
+            <label for="f_body" data-i18n="bodyLbl">نص الرسالة (قابل للتعديل)</label>
+            <textarea id="f_body" class="body-textarea"></textarea>
+            <div class="body-tools">
+              <button type="button" class="soft-btn" id="useExampleBtn">
+                <svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13 7l4 4"/></svg>
+                <span data-i18n="useExample">الانطلاق من نص المثال</span>
+              </button>
+            </div>
+            <p class="hint" data-i18n="bodyHint"></p>
+          </div>
+          <button type="button" class="acc-next" data-next><span data-i18n="next">التالي</span><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        </div></div></div>
+      </section>
+
+      <section class="acc" data-sec="style" style="--sc:#0891B2">
+        <button type="button" class="acc-head"><span class="acc-num">5</span>
+          <span class="acc-title"><b data-i18n="sec_style">الأسلوب</b><small data-sum="style"></small></span>
+          <svg class="acc-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="acc-body"><div class="acc-inner"><div class="acc-content">
+          <div class="field">
+            <label data-i18n="toneLbl">النبرة</label>
+            <div class="chips pick" id="toneChips"></div>
+          </div>
+          <div class="field">
+            <label data-i18n="lengthLbl">الطول</label>
+            <div class="seg-ui" id="lengthSeg"></div>
+          </div>
+          <div class="field">
+            <label data-i18n="emailLangLbl">لغة الرسالة</label>
+            <div class="seg-ui" id="langSeg"></div>
+          </div>
+          <div class="field">
+            <button type="button" class="soft-btn danger" id="clearAllBtn">
+              <svg viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>
+              <span data-i18n="clearAllText">تفريغ الخانات</span>
+            </button>
+          </div>
+          <button type="button" class="acc-next" data-next><span data-i18n="done">تم</span><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg></button>
+        </div></div></div>
+      </section>
+    </div>
+  </aside>
+
+  <button class="panel-toggle" id="panelToggle" type="button" data-tip="toggle_panel">
+    <svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>
+  </button>
+
+  <main class="stage" id="stage">
+    <div class="mail-view" id="mailView">
+
+      <div class="mail-win" id="mailWin">
+        <div class="mw-top">
+          <span class="mw-dots"><i></i><i></i><i></i></span>
+          <b data-i18n="w_new">رسالة جديدة</b>
+          <span class="mw-tag" id="mwTag" data-sec="type"></span>
+        </div>
+        <div class="mw-row" data-sec="sender">
+          <span class="mw-lbl" data-i18n="w_from">من</span>
+          <span class="mw-addr"><span class="mw-av" id="mwFromAv"></span><b id="mwFromName"></b><small id="mwFromEmail" dir="ltr"></small></span>
+        </div>
+        <div class="mw-row" data-sec="to">
+          <span class="mw-lbl" data-i18n="w_to">إلى</span>
+          <span class="mw-addr"><span class="mw-av alt" id="mwToAv"></span><b id="mwToName"></b><small id="mwToEmail" dir="ltr"></small></span>
+        </div>
+        <div class="mw-row mw-subj" data-sec="details">
+          <span class="mw-lbl" data-i18n="w_subject">الموضوع</span>
+          <b id="mwSubject"></b>
+        </div>
+        <div class="mw-body" id="mwBody">
+          <div class="mw-text-wrap is-ex" id="mwTextWrap" data-sec="details">
+            <div class="mw-text" id="mwText" contenteditable="true"></div>
+            <div class="mw-text mw-text-ex" id="mwTextEx" aria-hidden="true"></div>
+          </div>
+          <div class="mw-sig" id="mwSig" data-sec="sender"></div>
+        </div>
       </div>
-      <div class="field">
-        <label id="authEmailLabel">البريد الإلكتروني</label>
-        <input type="email" id="authEmail" required class="field-input">
+
+      <div class="mw-dock" id="mwDock">
+      <div class="ai-bar" id="aiBar">
+        <button type="button" class="ai-write" id="writeBtn2"><svg viewBox="0 0 24 24"><path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8z"/></svg><span data-i18n="write">اكتب الرسالة</span></button>
+        <div class="ai-chips" id="aiChips">
+          <button type="button" class="quick-chip" data-action="rewrite" data-i18n="q_rewrite">أعد الصياغة</button>
+          <button type="button" class="quick-chip" data-action="shorten" data-i18n="q_shorten">أقصر</button>
+          <button type="button" class="quick-chip" data-action="lengthen" data-i18n="q_lengthen">أطول</button>
+          <button type="button" class="quick-chip" data-action="more_formal" data-i18n="q_formal">أكثر رسمية</button>
+          <button type="button" class="quick-chip" data-action="more_friendly" data-i18n="q_friendly">أكثر ودية</button>
+          <button type="button" class="quick-chip" data-action="fix" data-i18n="q_fix">تصحيح الأخطاء</button>
+          <div class="tr-wrap">
+            <button type="button" class="quick-chip" id="translateBtn"><span data-i18n="q_translate">ترجمة</span> ▾</button>
+            <div class="tr-menu hidden" id="trMenu"></div>
+          </div>
+        </div>
+        <p class="ai-hint" id="aiHint" data-i18n="ai_hint"></p>
       </div>
-      <div class="field">
-        <label id="authPasswordLabel">كلمة المرور</label>
-        <input type="password" id="authPassword" required minlength="6" class="field-input">
+      <div class="mw-actions" id="mwActions">
+        <button type="button" class="mw-act primary" id="copyBtn"><svg viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg><span data-i18n="a_copy">نسخ الرسالة</span></button>
+        <button type="button" class="mw-act " id="copySubjectBtn"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h7"/></svg><span data-i18n="a_copySubject">نسخ الموضوع</span></button>
+        <button type="button" class="mw-act " id="gmailBtn"><svg viewBox="0 0 24 24" style="stroke:none"><path fill="#4285F4" d="M2 7v11c0 .8.7 1.5 1.5 1.5H7V11z"/><path fill="#34A853" d="M17 11v8.5h3.5c.8 0 1.5-.7 1.5-1.5V7z"/><path fill="#EA4335" d="M2 7l10 7.3L22 7V6c0-1.2-1.4-1.9-2.4-1.2L12 10.6 4.4 4.8C3.4 4.1 2 4.8 2 6z"/><path fill="#FBBC04" d="M22 6v1l-5 4V6.6l2.6-1.8C20.6 4.1 22 4.8 22 6z"/><path fill="#C5221F" d="M2 6v1l5 4V6.6L4.4 4.8C3.4 4.1 2 4.8 2 6z"/></svg><span data-i18n="a_gmail">فتح في Gmail</span></button>
+        <button type="button" class="mw-act " id="outlookBtn"><svg viewBox="0 0 24 24" style="stroke:none"><rect x="9" y="5" width="13" height="14" rx="1.5" fill="#28A8EA"/><path d="M9 9l6.5 4L22 9" fill="none" stroke="#fff" stroke-width="1.4"/><rect x="2" y="7" width="10" height="10" rx="1.5" fill="#0364B8"/><circle cx="7" cy="12" r="2.6" fill="none" stroke="#fff" stroke-width="1.6"/></svg><span data-i18n="a_outlook">فتح في Outlook</span></button>
+        <button type="button" class="mw-act " id="mailtoBtn"><svg viewBox="0 0 24 24"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4z"/></svg><span data-i18n="a_mailto">إرسال عبر البريد</span></button>
+        <button type="button" class="mw-act " id="wordBtn"><span class="w-ico">W</span><span data-i18n="a_word">تحميل Word</span></button>
       </div>
-      <button type="submit" class="primary-btn full-width" id="authSubmitBtn" style="margin-top:14px;">دخول</button>
+
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Templates gallery -->
+<div class="gallery hidden" id="gallery" role="dialog" aria-modal="true">
+  <div class="gallery-box">
+    <div class="gallery-head">
+      <h2 data-i18n="gallery">معرض النماذج</h2>
+      <div class="chips" id="gCats">
+        <button type="button" class="chip on" data-cat="all" data-i18n="cat_all">الكل</button>
+        <button type="button" class="chip" data-cat="req" data-i18n="cat_req">طلبات</button>
+        <button type="button" class="chip" data-cat="follow" data-i18n="cat_follow">متابعة وردود</button>
+        <button type="button" class="chip" data-cat="rel" data-i18n="cat_rel">علاقات مهنية</button>
+        <button type="button" class="chip" data-cat="career" data-i18n="cat_career">عمل ومسار مهني</button>
+      </div>
+      <div class="g-search">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21"/></svg>
+        <input type="text" id="gSearch" data-i18n-placeholder="search">
+      </div>
+      <button class="icon-btn" id="gClose" type="button" aria-label="close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="g-grid" id="gGrid"></div>
+  </div>
+</div>
+
+<!-- My messages -->
+<div class="gallery hidden" id="mine" role="dialog" aria-modal="true">
+  <div class="gallery-box">
+    <div class="gallery-head">
+      <h2 data-i18n="mine">رسائلي</h2>
+      <div class="chips" id="mineTabs">
+        <button type="button" class="chip on" data-src="all" data-i18n="src_all">الكل</button>
+        <button type="button" class="chip" data-src="local" data-i18n="src_local">على الجهاز</button>
+        <button type="button" class="chip" data-src="cloud" data-i18n="src_cloud">في حسابي</button>
+      </div>
+      <button class="icon-btn" id="mClose" type="button" aria-label="close" style="margin-inline-start:auto"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="mine-login hidden" id="mineAccount">
+      <span class="acct"><span class="acct-av" id="acctAv"></span><span id="acctName"></span></span>
+      <button type="button" class="soft-btn" id="logoutBtn" data-i18n="logout">تسجيل الخروج</button>
+    </div>
+    <div class="mine-login hidden" id="mineLogin">
+      <span data-i18n="mine_login_hint"></span>
+      <button type="button" class="soft-btn primary" id="mineLoginBtn" data-i18n="sign_in">تسجيل الدخول</button>
+    </div>
+    <div class="g-grid mine-grid" id="mGrid"></div>
+  </div>
+</div>
+
+<!-- Login prompt -->
+<div class="gallery hidden" id="login" role="dialog" aria-modal="true">
+  <div class="login-box">
+    <div class="login-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></div>
+    <h3 id="loginTitle" data-i18n="login_title">سجّل دخولك</h3>
+    <p id="loginText" data-i18n="login_text"></p>
+    <button type="button" class="login-google" id="loginGoogle">
+      <svg viewBox="0 0 48 48" style="stroke:none"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>
+      <span data-i18n="googleBtn">المتابعة عبر Google</span>
+    </button>
+    <div class="auth-divider"><span data-i18n="or">أو</span></div>
+    <div class="auth-tabs">
+      <button type="button" class="auth-tab on" data-mode="login" id="tabLogin" data-i18n="tabLogin">تسجيل الدخول</button>
+      <button type="button" class="auth-tab" data-mode="signup" id="tabSignup" data-i18n="tabSignup">إنشاء حساب</button>
+    </div>
+    <form id="authCardForm" class="auth-form">
+      <input type="text" id="acName" class="hidden" data-i18n-placeholder="namePh">
+      <input type="email" id="acEmail" required class="ltr-input" data-i18n-placeholder="emailPh">
+      <input type="password" id="acPassword" required minlength="6" class="ltr-input" data-i18n-placeholder="passwordPh">
+      <p class="auth-card-error hidden" id="authCardError"></p>
+      <button type="submit" class="soft-btn primary" id="acSubmitBtn" data-i18n="loginBtn">تسجيل الدخول</button>
     </form>
-    <div class="modal-divider" id="authOrDivider">أو</div>
-    <button type="button" class="google-btn" id="googleAuthBtn">
-      <svg viewBox="0 0 48 48" width="18" height="18"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 8 3l6-6C34.5 5.1 29.5 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21 21-9.4 21-21c0-1.2-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.6 15.6 18.9 13 24 13c3.1 0 5.8 1.1 8 3l6-6C34.5 5.1 29.5 3 24 3c-7.6 0-14.1 4.3-17.7 10.7z"/><path fill="#4CAF50" d="M24 45c5.3 0 10.2-2 13.9-5.3l-6.4-5.4C29.3 36 26.8 37 24 37c-5.2 0-9.6-3.1-11.4-7.6l-6.6 5.1C9.8 40.6 16.3 45 24 45z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.2-4.2 5.6l6.4 5.4C40.5 36.6 43 30.8 43 24c0-1.2-.1-2.4-.4-3.5z"/></svg>
-      <span id="googleAuthLabel">المتابعة عبر Google</span>
-    </button>
-    <div class="modal-switch">
-      <span id="authSwitchText">ليس لديك حساب؟</span>
-      <button type="button" id="authSwitchBtn">إنشاء حساب</button>
+    <button type="button" class="login-cancel" id="loginCancel" data-i18n="cancel">إلغاء</button>
+  </div>
+</div>
+
+<!-- Confirm dialog -->
+<div class="gallery hidden" id="confirmDlg" role="dialog" aria-modal="true">
+  <div class="login-box">
+    <div class="login-ico warn"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg></div>
+    <p id="confirmText"></p>
+    <div class="dlg-actions">
+      <button type="button" class="soft-btn" id="confirmNo" data-i18n="cancel">إلغاء</button>
+      <button type="button" class="soft-btn danger solid" id="confirmYes" data-i18n="confirm_ok">تأكيد</button>
     </div>
   </div>
 </div>
 
-<!-- Firebase (compat) -->
+<div class="toast" id="toast"></div>
+
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-functions-compat.js"></script>
 <script src="../../firebase-init.js"></script>
-
+<script src="i18n.js"></script>
+<script src="templates.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

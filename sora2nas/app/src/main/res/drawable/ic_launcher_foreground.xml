@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Launcher glyph: document inside scan brackets (fits the 72dp visible zone). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp" android:viewportWidth="108" android:viewportHeight="108">
+    <path android:strokeColor="#FFFFFF" android:strokeWidth="4" android:strokeLineCap="round" android:strokeLineJoin="round"
+        android:pathData="M28,42 L28,35 Q28,28 35,28 L42,28 M66,28 L73,28 Q80,28 80,35 L80,42 M80,66 L80,73 Q80,80 73,80 L66,80 M42,80 L35,80 Q28,80 28,73 L28,66" />
+    <path android:fillColor="#FFFFFF"
+        android:pathData="M42,36 L61,36 L69,44 L69,69 Q69,72 66,72 L42,72 Q39,72 39,69 L39,39 Q39,36 42,36 Z" />
+    <path android:fillColor="#BFD0FF" android:pathData="M61,36 L61,41 Q61,44 64,44 L69,44 Z" />
+    <path android:strokeColor="#1E4FD8" android:strokeWidth="2.8" android:strokeLineCap="round"
+        android:pathData="M45,50 L63,50 M50,56 L63,56 M45,62 L63,62" />
+    <path android:strokeColor="#12B5A6" android:strokeWidth="2.8" android:strokeLineCap="round" android:pathData="M53,67 L63,67" />
+</vector>

@@ -61,13 +61,13 @@
     companyLogoPlaceholder: $('companyLogoPlaceholder'), companyLogoRemove: $('companyLogoRemove'),
     stampBox: $('stampBox'), stampInput: $('stampInput'), stampPreview: $('stampPreview'), stampPlaceholder: $('stampPlaceholder'), stampRemove: $('stampRemove'),
     fontFilter: $('fontFilter'), typeGrid: $('typeGrid'), designStrip: $('designStrip'), toSuggest: $('toSuggest'),
-    requestPage: $('requestPage'), sheetHolder: $('sheetHolder'),
+    requestPage: $('requestPage'), sheetHolder: $('sheetHolder'), reqBodyWrap: $('reqBodyWrap'), reqBodyEx: $('reqBodyEx'),
     reqHeader: $('reqHeader'), reqCompanyLogo: $('reqCompanyLogo'), removeHeaderBtn: $('removeHeaderBtn'), removeStampBtn: $('removeStampBtn'),
     reqDate: $('reqDate'), reqLabelName: $('reqLabelName'), reqLabelLastName: $('reqLabelLastName'), reqLabelPhone: $('reqLabelPhone'),
     reqLabelEmail: $('reqLabelEmail'), reqLabelSubject: $('reqLabelSubject'), reqLabelAttach: $('reqLabelAttach'),
     reqSenderFirst: $('reqSenderFirst'), reqSenderLast: $('reqSenderLast'), reqSenderPhone: $('reqSenderPhone'), reqSenderEmail: $('reqSenderEmail'),
     reqExtraInfo: $('reqExtraInfo'), reqAddressed: $('reqAddressed'), reqSubjectValue: $('reqSubjectValue'), reqBody: $('reqBody'),
-    reqAttach: $('reqAttach'), reqAttachList: $('reqAttachList'), reqStamp: $('reqStamp'), reqSignatureCaption: $('reqSignatureCaption'),
+    reqAttach: $('reqAttach'), reqAttachList: $('reqAttachList'), reqStamp: $('reqStamp'), reqSignatureCaption: $('reqSignatureCaption'), reqSignName: $('reqSignName'),
     saveBtn: $('saveBtn'), printBtn: $('printBtn'), wordBtn: $('wordBtn'), downloadPdfBtn: $('downloadPdfBtn'), clearAllBtn: $('clearAllBtn'),
   };
 
@@ -92,13 +92,27 @@
   $('confirmNo').addEventListener('click', () => closeConfirm(false));
   $('confirmDlg').addEventListener('click', (e) => { if (e.target.id === 'confirmDlg') closeConfirm(false); });
 
-  /* ================= Example values (shown greyed until filled) ================= */
-  const DEFAULTS = {
-    ar: { firstName: 'سفيان', lastName: 'مرابطي', subject: 'طلب إجازة سنوية' },
-    fr: { firstName: 'Sofiane', lastName: 'Merabti', subject: 'Demande de congé annuel' },
-    en: { firstName: 'Sofiane', lastName: 'Merabti', subject: 'Annual leave request' },
-  };
-  const DEFAULT_PHONE = '0555 12 34 56', DEFAULT_EMAIL = 'sofiane@email.com';
+  /* ================= Example request (shown in place of every empty field) ================= */
+  // A complete example per request type and language. It only fills the sheet while a field
+  // is empty, so the user's data never contains it; an untouched example is printed as shown.
+  const EXAMPLES = window.ADMINREQ_EXAMPLES;
+  const EXAMPLE_SENDER = window.ADMINREQ_EXAMPLE_SENDER;
+  function exampleFor(id, l) {
+    l = l || lang;
+    const s = EXAMPLE_SENDER[l];
+    const x = (EXAMPLES[id] || EXAMPLES.free)[l];
+    const ty = TYPE_BY_ID[id];
+    return {
+      firstName: s.firstName, lastName: s.lastName, phone: s.phone, email: s.email, place: s.place,
+      extras: x.extras || s.extras, attach: x.attach || [],
+      to: x.to, subject: x.subject || (ty && ty.subject[l]) || EXAMPLES.free[l].subject, body: x.body,
+    };
+  }
+  const ex = () => exampleFor(tplId);
+  function isExampleBody(text) {
+    const v = (text || '').trim();
+    return !!v && Object.values(EXAMPLES).some((e) => ['ar', 'fr', 'en'].some((l) => e[l].body.trim() === v));
+  }
 
   /* ================= Fonts ================= */
   function renderFontFilter() {
@@ -160,15 +174,32 @@
     els.reqBody.innerText = text || '';
     els.fBody.value = text || '';
     syncAiButtons();
+    syncBodyExample();
   }
+  // The example text stays under the (empty) editable body until the user types.
+  function syncBodyExample() {
+    const empty = !els.reqBody.innerText.trim();
+    els.reqBodyWrap.classList.toggle('is-ex', empty);
+    if (empty && els.reqBody.innerHTML) els.reqBody.innerHTML = ''; // drop a leftover <br>
+  }
+  // "Start from the example": copies the example into the body (and subject) to edit it.
+  $('useExampleBtn').addEventListener('click', () => {
+    const e = ex();
+    if (!els.fSubjectTitle.value.trim()) els.fSubjectTitle.value = e.subject;
+    setBody(e.body);
+    bodyIsOwned = true;
+    refresh(); saveDraft();
+    els.fBody.focus();
+  });
   els.fBody.addEventListener('input', () => {
     els.reqBody.innerText = els.fBody.value;
     bodyIsOwned = els.fBody.value.trim().length > 0;
-    syncAiButtons(); saveDraft(); refreshLight();
+    syncAiButtons(); syncBodyExample(); saveDraft(); refreshLight();
   });
   els.reqBody.addEventListener('input', () => {
     bodyIsOwned = els.reqBody.innerText.trim().length > 0;
     els.fBody.value = getBody();
+    els.reqBodyWrap.classList.toggle('is-ex', !els.reqBody.innerText.trim()); // keep the caret: no innerHTML reset while typing
     syncAiButtons(); saveDraft(); refreshLight();
   });
   // Live-mirror the idea textarea into the body as a draft, until the body becomes "owned"
@@ -183,10 +214,12 @@
   }
 
   /* ================= Preview ================= */
-  function setVal(el, value, fallback) {
+  // Shows the user's value, or the example (class "ph" + data-ex key) while the field is empty.
+  function setVal(el, value, fallback, key) {
     const v = (value || '').trim();
     el.textContent = v || fallback;
     el.classList.toggle('ph', !v);
+    if (key) el.dataset.ex = key;
   }
   function formatDate(iso, l) {
     const d = iso ? new Date(iso + 'T12:00:00') : new Date();
@@ -194,46 +227,74 @@
     try { return d.toLocaleDateString(loc, { year: 'numeric', month: 'long', day: 'numeric', numberingSystem: 'latn' }); }
     catch (e) { return d.toLocaleDateString(loc, { year: 'numeric', month: 'long', day: 'numeric' }); }
   }
-  function dateLine() {
-    const place = els.fPlace.value.trim();
-    const date = formatDate(els.fDate.value);
+  function placeDate(place, date) {
     if (!place) return date;
     if (lang === 'ar') return `${place} في ${date}`;
     if (lang === 'fr') return `${place}, le ${date}`;
     return `${place}, ${date}`;
   }
+  function dateLine() { return placeDate(els.fPlace.value.trim(), formatDate(els.fDate.value)); }
+  function sheetDateLine() { return placeDate(els.fPlace.value.trim() || ex().place, formatDate(els.fDate.value)); }
+
+  // extra info / attachments shown on the sheet (the example ones while the user has none)
+  const realExtras = () => extraFields.filter((f) => (f.key || '').trim() || (f.val || '').trim());
+  const sheetExtras = () => { const r = realExtras(); return r.length ? r : ex().extras.map(([key, val]) => ({ key, val })); };
+  const realAttach = () => attachments.filter((a) => (a || '').trim());
+  const sheetAttach = () => { const r = realAttach(); return r.length ? r : ex().attach; };
+  function extrasHtml(list) {
+    return list.map((f) => `<p><span class="req-label">${escapeHtml(f.key)}${(f.key || '').trim() ? ': ' : ''}</span><span class="req-value">${escapeHtml(f.val)}</span></p>`).join('');
+  }
+  function attachHtml(list) { return list.map((a, i) => `<p><span class="req-att-n">${i + 1}.</span> ${escapeHtml(a)}</p>`).join(''); }
+  function signName() {
+    const e = ex();
+    const first = els.fFirstName.value.trim(), last = els.fLastName.value.trim();
+    return first || last ? [first, last].filter(Boolean).join(' ') : `${e.firstName} ${e.lastName}`;
+  }
 
   function renderPreview() {
-    const def = DEFAULTS[lang];
+    const e = ex();
     const hasHeader = !!companyLogoDataUrl;
     els.reqHeader.classList.toggle('hidden', !hasHeader);
     els.reqCompanyLogo.classList.toggle('hidden', !hasHeader);
     if (hasHeader) els.reqCompanyLogo.src = companyLogoDataUrl;
 
-    els.reqDate.textContent = dateLine();
-    setVal(els.reqSenderFirst, els.fFirstName.value, def.firstName);
-    setVal(els.reqSenderLast, els.fLastName.value, def.lastName);
-    setVal(els.reqSenderPhone, els.fPhone.value, DEFAULT_PHONE);
-    setVal(els.reqSenderEmail, els.fEmail.value, DEFAULT_EMAIL);
+    els.reqDate.textContent = sheetDateLine();
+    setVal(els.reqSenderFirst, els.fFirstName.value, e.firstName, 'firstName');
+    setVal(els.reqSenderLast, els.fLastName.value, e.lastName, 'lastName');
+    setVal(els.reqSenderPhone, els.fPhone.value, e.phone, 'phone');
+    setVal(els.reqSenderEmail, els.fEmail.value, e.email, 'email');
 
-    els.reqExtraInfo.innerHTML = extraFields
-      .filter((f) => (f.key || '').trim() || (f.val || '').trim())
-      .map((f) => `<p><span class="req-label">${escapeHtml(f.key)}${f.key.trim() ? ': ' : ''}</span><span class="req-value">${escapeHtml(f.val)}</span></p>`)
-      .join('');
+    els.reqExtraInfo.innerHTML = extrasHtml(sheetExtras());
+    els.reqExtraInfo.classList.toggle('ph', !realExtras().length);
 
-    setVal(els.reqAddressed, els.fAddressedTo.value, t('defaultAddressed'));
-    const typeSubject = (TYPE_BY_ID[tplId] && TYPE_BY_ID[tplId].subject[lang]) || def.subject;
-    setVal(els.reqSubjectValue, els.fSubjectTitle.value, typeSubject);
+    setVal(els.reqAddressed, els.fAddressedTo.value, e.to, 'to');
+    setVal(els.reqSubjectValue, els.fSubjectTitle.value, e.subject, 'subject');
+    els.reqBodyEx.textContent = e.body;
+    syncBodyExample();
 
-    const att = attachments.filter((a) => (a || '').trim());
+    const att = sheetAttach();
     els.reqAttach.classList.toggle('hidden', !att.length);
-    els.reqAttachList.innerHTML = att.map((a, i) => `<p><span class="req-att-n">${i + 1}.</span> ${escapeHtml(a)}</p>`).join('');
+    els.reqAttach.classList.toggle('ph', !realAttach().length);
+    els.reqAttachList.innerHTML = attachHtml(att);
 
     els.reqStamp.classList.toggle('hidden', !stampDataUrl);
     els.removeStampBtn.classList.toggle('hidden', !stampDataUrl);
     if (stampDataUrl) els.reqStamp.src = stampDataUrl;
+    els.reqSignName.textContent = signName();
 
-    els.reqBody.setAttribute('data-placeholder', t('bodyPlaceholder'));
+    syncExamplePlaceholders(e);
+  }
+
+  // The panel's empty fields show the same example, in light grey.
+  function syncExamplePlaceholders(e) {
+    els.fFirstName.placeholder = e.firstName;
+    els.fLastName.placeholder = e.lastName;
+    els.fPhone.placeholder = e.phone;
+    els.fEmail.placeholder = e.email;
+    els.fAddressedTo.placeholder = e.to;
+    els.fSubjectTitle.placeholder = e.subject;
+    els.fPlace.placeholder = e.place;
+    els.fBody.placeholder = e.body;
   }
 
   /* refresh = preview + summaries + zoom + thumbs */
@@ -348,19 +409,15 @@
   function isTemplateText(text) {
     const v = (text || '').trim();
     if (!v) return true;
-    return TYPES.some((x) => ['ar', 'fr', 'en'].some((l) => x.body[l].trim() === v));
+    return isExampleBody(v) || TYPES.some((x) => ['ar', 'fr', 'en'].some((l) => x.body[l].trim() === v));
   }
-  async function applyType(id, fromGallery) {
+  const isTemplateSubject = (v) => !!(v || '').trim() && TYPES.some((x) => ['ar', 'fr', 'en'].some((l) => x.subject[l] === v.trim()));
+  // Choosing a type swaps in that type's complete example. Text the user wrote stays;
+  // an untouched template text gives way so the new example shows.
+  function applyType(id, fromGallery) {
     const x = TYPE_BY_ID[id]; if (!x) return;
-    if (x.id !== 'free' && x.body[lang]) {
-      const cur = getBody();
-      if (!isTemplateText(cur) && cur.trim() !== x.body[lang].trim()) {
-        if (!(await askConfirm(t('confirmTpl')))) return;
-      }
-      els.fSubjectTitle.value = x.subject[lang];
-      setBody(x.body[lang]);
-      bodyIsOwned = true;
-    }
+    if (isTemplateText(getBody())) { setBody(''); bodyIsOwned = false; }
+    if (isTemplateSubject(els.fSubjectTitle.value)) els.fSubjectTitle.value = '';
     tplId = x.id;
     renderTypeGrid();
     if (fromGallery) closeGallery();
@@ -371,7 +428,11 @@
   // When the language changes, an untouched template follows it.
   function translateUntouchedTemplate(oldLang) {
     const x = TYPE_BY_ID[tplId];
-    if (!x || x.id === 'free') return;
+    if (!x) return;
+    const eo = exampleFor(tplId, oldLang), en = exampleFor(tplId, lang);
+    if (getBody().trim() === eo.body.trim()) setBody(en.body);
+    if (els.fSubjectTitle.value.trim() === eo.subject) els.fSubjectTitle.value = en.subject;
+    if (x.id === 'free') return;
     if (getBody().trim() === x.body[oldLang].trim()) setBody(x.body[lang]);
     if (els.fSubjectTitle.value.trim() === x.subject[oldLang]) els.fSubjectTitle.value = x.subject[lang];
   }
@@ -402,9 +463,16 @@
       clone.classList.add('d-' + opts.design);
       setAccent(clone, DESIGN_BY_ID[opts.design].color);
     }
-    if (opts && opts.type && opts.type.id !== 'free') {
-      const sv = clone.querySelector('.req-subject .req-value'); if (sv) { sv.textContent = opts.type.subject[lang]; sv.classList.remove('ph'); }
-      const b = clone.querySelector('.req-body'); if (b) b.textContent = opts.type.body[lang];
+    if (opts && opts.type) {
+      // gallery card: the type's own example (the user's own values stay)
+      const e = exampleFor(opts.type.id);
+      $$('.ph[data-ex]', clone).forEach((n) => { n.textContent = e[n.dataset.ex]; });
+      const sv = clone.querySelector('.req-subject .req-value'); if (sv) sv.textContent = e.subject;
+      const xi = clone.querySelector('.req-sender-block > div.ph'); if (xi) xi.innerHTML = extrasHtml(e.extras.map(([key, val]) => ({ key, val })));
+      const at = clone.querySelector('.req-attach.ph');
+      if (at) { at.classList.toggle('hidden', !e.attach.length); at.querySelector('.req-attach-list').innerHTML = attachHtml(e.attach); }
+      const w = clone.querySelector('.req-body-wrap');
+      if (w) { w.classList.add('is-ex'); w.querySelector('.req-body:not(.req-body-ex)').textContent = ''; w.querySelector('.req-body-ex').textContent = e.body; }
     }
     clone.classList.add('mini');
     return clone;
@@ -532,6 +600,7 @@
   function toggleSec(id, force) {
     openSec = (force === undefined ? openSec !== id : force) ? id : null;
     $$('.acc').forEach((a) => a.classList.toggle('open', a.dataset.sec === openSec));
+    $('accordion').classList.toggle('has-open', !!openSec);
     if (openSec === 'type') setTimeout(renderDesignStrip, 30);
     highlight();
   }
@@ -924,7 +993,7 @@
   function updateUsageIndicator() { els.usageIndicator.textContent = t('usageIndicator')(dailyUsage.used, dailyUsage.max); }
 
   /* ================= Print / PDF ================= */
-  // A clean, unscaled copy of the sheet for printing and PDF capture (example values are left blank).
+  // A clean, unscaled copy of the sheet for printing and PDF capture (what the preview shows).
   function buildPrintCopy() {
     const root = $('printRoot');
     const clone = els.requestPage.cloneNode(true);
@@ -933,7 +1002,6 @@
     $$('[id]', clone).forEach((n) => n.removeAttribute('id'));
     $$('.hl', clone).forEach((n) => n.classList.remove('hl'));
     $$('.req-remove-btn', clone).forEach((n) => n.remove());
-    $$('.ph', clone).forEach((n) => { n.textContent = ''; });
     $$('[contenteditable]', clone).forEach((n) => { n.removeAttribute('contenteditable'); n.removeAttribute('data-placeholder'); });
     root.innerHTML = '';
     root.appendChild(clone);
@@ -997,7 +1065,7 @@
       images.push({ type: m[1], data: m[2], loc });
       return loc;
     }
-    const v = (el) => (el.classList.contains('ph') ? '' : el.textContent);
+    const v = (el) => el.textContent;
     const p = (html, style) => `<p class=MsoNormal dir=${dir} style="${style || ''}">${html}</p>`;
     const lbl = (s) => `<b style="color:${ac}">${escapeHtml(s)}</b>`;
 
@@ -1007,7 +1075,7 @@
     const senderRows = [
       [t('labelName'), v(els.reqSenderFirst)], [t('labelLastName'), v(els.reqSenderLast)],
       [t('labelPhone'), v(els.reqSenderPhone)], [t('labelEmail'), v(els.reqSenderEmail)],
-    ].concat(extraFields.filter((f) => (f.key || '').trim() || (f.val || '').trim()).map((f) => [f.key ? f.key + ': ' : '', f.val]));
+    ].concat(sheetExtras().map((f) => [f.key ? f.key + ': ' : '', f.val]));
     const sender = senderRows.map(([k, val]) => p(`${lbl(k)}${escapeHtml(val)}`, 'margin:0 0 3pt 0')).join('');
     body += `<table dir=${dir} width="100%" style="width:100%;border-collapse:collapse;margin-bottom:22pt"><tr>
       <td valign=top style="padding:0">${sender}</td>
@@ -1015,17 +1083,17 @@
     body += `<table dir=${dir} width="100%" style="width:100%;border-collapse:collapse;margin-bottom:20pt"><tr><td width="46%" style="width:46%;padding:0"></td>
       <td style="padding:0">${p(`<b>${escapeHtml(v(els.reqAddressed)).replace(/\n/g, '<br>')}</b>`, `font-size:${pt(13)}`)}</td></tr></table>`;
     body += p(`${lbl(t('labelSubject'))}<b>${escapeHtml(v(els.reqSubjectValue))}</b>`, `text-align:center;font-size:${pt(13.5)};margin:0 0 18pt 0`);
-    getBody().split('\n').forEach((line) => {
+    (getBody().trim() ? getBody() : ex().body).split('\n').forEach((line) => {
       body += p(line.trim() ? escapeHtml(line) : '&nbsp;', 'text-align:justify;line-height:180%;margin:0');
     });
-    const att = attachments.filter((a) => (a || '').trim());
+    const att = sheetAttach();
     if (att.length) {
       body += p(lbl(t('labelAttach')), 'margin:18pt 0 4pt 0');
       att.forEach((a, i) => { body += p(`${i + 1}. ${escapeHtml(a)}`, `margin:0 0 2pt 0;padding-${start}:14pt`); });
     }
     const stamp = stampDataUrl && imgPart(stampDataUrl, 'stamp');
     body += `<table dir=${dir} width="100%" style="width:100%;border-collapse:collapse;margin-top:24pt"><tr><td style="padding:0"></td>
-      <td width=230 align=center style="width:6cm;padding:0;text-align:center">${p(`<b>${escapeHtml(t('signatureCaption'))}</b>`, 'text-align:center')}
+      <td width=230 align=center style="width:6cm;padding:0;text-align:center">${p(`<b>${escapeHtml(t('signatureCaption'))}</b>`, 'text-align:center')}${p(escapeHtml(signName()), 'text-align:center')}
       ${stamp ? `<p class=MsoNormal align=center style="text-align:center"><img src="${stamp}" width=160 style="width:4.2cm"></p>` : ''}</td></tr></table>`;
 
     const html = `<html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">

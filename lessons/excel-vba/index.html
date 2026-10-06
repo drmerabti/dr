@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ar" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>أتمتة إكسل بلغة VBA | Dr Soufiane Merabti</title>
+<meta name="description" content="أتمتة إكسل بلغة VBA من الصفر إلى الاحتراف: دروس فيديو مع أكواد جاهزة للنسخ وملفات تطبيقية.">
+<link rel="icon" href="../../favicon-32x32.png">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Tajawal:wght@400;500;700;800;900&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script src="/analytics.js"></script>
+</head>
+<body>
+
+<!-- الشريط العلوي: الشعار + كل الأزرار في نفس الصف (اتجاه ثابت حتى لا يتحرك شيء عند تغيير اللغة) -->
+<header class="tb" dir="ltr">
+  <a class="tb-logo" href="../../index.html" aria-label="Dr Soufiane Merabti"><img src="../../apple-touch-icon.png" alt="Dr Soufiane Merabti"></a>
+  <a class="tb-icon" href="../../lessons.html" id="backBtn" data-t-title="back">
+    <svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="7" height="7" rx="2"/><rect x="13.5" y="13.5" width="7" height="7" rx="2"/></svg>
+  </a>
+  <button type="button" class="tb-icon" id="sideBtn" data-t-title="toggleSide">
+    <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M9 4v16"/></svg>
+  </button>
+  <div class="tb-title tx" data-t="title"></div>
+  <div class="tb-fill"></div>
+
+  <div class="tb-progress" id="progress" data-t-title="progress">
+    <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+    <span id="progressTxt">0/10</span>
+  </div>
+  <div class="langs" id="langs" role="group" aria-label="Language">
+    <button type="button" data-l="ar">ع</button><button type="button" data-l="en">EN</button>
+  </div>
+</header>
+
+<div class="app" id="app" dir="ltr">
+  <!-- القائمة الجانبية: الدروس (قابلة للطي، وتصبح قائمة منسدلة على الهاتف) -->
+  <aside class="side" id="side">
+    <div class="side-title tx" data-t="lessons"></div>
+    <nav class="side-nav" id="sideNav"></nav>
+  </aside>
+
+  <!-- المنطقة الرئيسية -->
+  <main class="work" id="work">
+    <button type="button" class="mob-bar" id="mobBar" aria-haspopup="true">
+      <span class="mob-num" id="mobNum">1</span>
+      <span class="mob-title tx" id="mobTitle"></span>
+      <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+
+    <div class="lesson" id="lesson"></div>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Prism.js لتلوين صيغة VBA (التلوين نفسه معرّف في style.css بخلفية داكنة) -->
+<script>window.Prism = window.Prism || {}; window.Prism.manual = true;</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-visual-basic.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="../../firebase-init.js"></script>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
