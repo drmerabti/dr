@@ -1018,7 +1018,7 @@ Private Function Penalty() As Long
 End Function`,
       },
     ],
-    fileUrl: '', // ← ملف .xlsm للدرس 2
+    fileUrl: 'files/lesson-02-qr-code.xlsm', // ← ملف .xlsm للدرس 2
     locked: false,
   },
   {
