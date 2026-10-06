@@ -307,7 +307,7 @@ End Sub`,
   {
     title: 'إنشاء QR Code في Excel باستخدام VBA',
     title_en: 'Create a QR Code in Excel with VBA',
-    youtubeUrl: 'https://youtu.be/TsVqQ0XoOzo', // ← رابط مؤقت للدرس 2 (يُستبدل بالرابط الرسمي)
+    youtubeUrl: 'https://youtu.be/wLoZpjCq95c', // ← رابط فيديو يوتيوب للدرس 2
     description:
       'افتح محرر VBA بالضغط على Alt + F11، ثم أدرج نموذجًا جديدًا من Insert ← UserForm وسمِّه frmQR (بنفس الاسم تمامًا) من نافذة الخصائص.\n' +
       'انقر مرتين على النموذج والصق "كود النموذج frmQR" كاملًا: ينشئ الواجهة تلقائيًا (حقل البيانات، الألوان، النمط، وزرَّي Generate و Close).\n' +
