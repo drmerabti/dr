@@ -37,7 +37,7 @@ const VBA_LESSONS = [
   {
     title: 'نموذج إدراج بيانات شخصية (UserForm)',
     title_en: 'Personal Data Entry Form (UserForm)',
-    youtubeUrl: 'https://youtu.be/TsVqQ0XoOzo', // ← رابط فيديو يوتيوب للدرس 1
+    youtubeUrl: 'https://youtu.be/nKCF6_tTffQ', // ← رابط فيديو يوتيوب للدرس 1
     description:
       'افتح محرر VBA بالضغط على Alt + F11، ثم أدرج نموذجًا جديدًا من Insert ← UserForm وسمِّه frmData من نافذة الخصائص.\n' +
       'انقر مرتين على النموذج والصق "كود النموذج" كاملًا: ينشئ الحقول والأزرار تلقائيًا من عناوين ورقة Data (وينشئ الورقة إن لم تكن موجودة).\n' +
