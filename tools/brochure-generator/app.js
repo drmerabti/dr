@@ -1551,7 +1551,7 @@ function applyUiLang() {
   $$('[data-tip]').forEach(el => el.setAttribute('data-tiptext', T(el.dataset.tip)));
   $('#langToggle').textContent = uiLang.toUpperCase();
   $$('#langMenu button').forEach(b => b.classList.toggle('on', b.dataset.lang === uiLang));
-  document.title = T('tool_name') + ' — Merabti Academy';
+  document.title = uiLang === 'ar' ? 'تصميم مطويات أونلاين بقوالب جاهزة — أكاديمية مرابطي' : T('tool_name') + ' — Merabti Academy';
   buildAccordion();
   renderCurrentThumb();
   if (!$('#gallery').classList.contains('hidden')) buildGallery();

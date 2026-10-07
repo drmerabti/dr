@@ -14,7 +14,7 @@
 
   const UI = {
     ar: {
-      dir: 'rtl', pageTitleTag: 'تدريب شامل في وورد — أكاديمية مرابطي', topbarTitle: 'تدريب شامل في وورد',
+      dir: 'rtl', pageTitleTag: 'اختبار وتدريب مايكروسوفت وورد Word بالعربية — أكاديمية مرابطي', topbarTitle: 'تدريب شامل في وورد',
       pageTitle: 'اختر المستوى', pageSub: '5 مستويات، 30 سؤال لكل مستوى — كل سؤال 15 ثانية',
       levelLabels: { 1: 'أساسي', 2: 'أساسي متقدم', 3: 'متوسط', 4: 'متقدم', 5: 'احترافي' },
       questionsCount: 'سؤال', bestScore: 'أفضل نتيجة', loginRequired: 'يتطلب تسجيل الدخول',

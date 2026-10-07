@@ -229,7 +229,7 @@ const FONT = '"Tajawal",Tahoma,sans-serif';
 function applyLang(){
   document.documentElement.lang = LANG;            // الاتجاه يبقى rtl دائمًا
   document.body.classList.toggle('ltr', LANG !== 'ar');
-  document.title = t('root') + ' | Dr Soufiane Merabti';
+  document.title = LANG === 'ar' ? 'دمج وتقسيم وتحويل ملفات PDF أونلاين — أكاديمية مرابطي' : t('root') + ' | Dr Soufiane Merabti';
   $('#crumbTools').textContent = t('tools');
   $('#crumbRoot').textContent = t('root');
   $('#btnReset').innerHTML = svg('reset') + `<span class="t">${t('reset')}</span>`; $('#btnReset').title = t('reset');

@@ -428,7 +428,7 @@
     $$("[data-tip]").forEach((n) => { n.setAttribute("data-tiptext", t(n.dataset.tip)); n.setAttribute("aria-label", t(n.dataset.tip)); });
     $$(".lang-btn").forEach((b) => b.classList.toggle("on", b.dataset.lang === lang));
     $("#langToggle").textContent = lang.toUpperCase();
-    document.title = t("appTitle") + " — Merabti Academy";
+    document.title = lang === 'ar' ? "إنشاء تقرير مهني احترافي بصيغة Word — أكاديمية مرابطي" : t("appTitle") + " — Merabti Academy";
     if (state) {
       buildStyleControls();
       renderSectionsEditor();

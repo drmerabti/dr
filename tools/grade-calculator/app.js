@@ -8,7 +8,7 @@
   /* ================= i18n ================= */
   const I18N = {
     ar: {
-      dir: 'rtl', pageTitleTag: 'حاسبة المعدل — أكاديمية مرابطي',
+      dir: 'rtl', pageTitleTag: 'حساب المعدل الدراسي بالمعاملات أونلاين — أكاديمية مرابطي',
       pageTitle: 'حاسبة المعدل', pageSubtitle: 'أضف موادك، عدّل المكوّنات والمعاملات كما تريد، وشوف معدلك يتحدّث فورًا',
       componentsSectionLabel: 'المكوّنات (تنطبق على كل المواد)', addComponentBtnText: 'إضافة مكوّن',
       addSubjectBtnText: 'إضافة مادة', resultLabel: 'المعدل العام',

@@ -1518,7 +1518,7 @@ function applyUiLang(){
   $$('[data-tip]').forEach(el => { el.setAttribute('data-tiptext', t(el.dataset.tip)); el.setAttribute('aria-label', t(el.dataset.tip)); });
   $('langToggle').textContent = uiLang.toUpperCase();
   $$('#langMenu button').forEach(b => b.classList.toggle('on', b.dataset.lang === uiLang));
-  document.title = t('tool_name') + (uiLang === 'ar' ? ' — أكاديمية مرابطي' : ' — Merabti Academy');
+  document.title = uiLang === 'ar' ? 'مولد مذكرة تحضير الدروس للأساتذة — أكاديمية مرابطي' : t('tool_name') + (uiLang === 'ar' ? ' — أكاديمية مرابطي' : ' — Merabti Academy');
   $('colorHint').textContent = t('color_hint', { list: COLOR_TPLS.map(k => k.slice(1)).join('، ').replace(/، /g, uiLang === 'ar' ? '، ' : ', ') });
   setAuthMode(authMode);
   renderAuthUI();
