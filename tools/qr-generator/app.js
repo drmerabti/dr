@@ -14,6 +14,21 @@
       namePh: 'الاسم واللقب', phonePh: 'رقم الهاتف', jobPh: 'المهنة', emailPh: 'البريد الإلكتروني', notePh: 'ملاحظة حرة (اختياري)',
       download: 'تحميل الصورة', emptyHint: 'أدخل بياناتك ليظهر الرمز هنا',
       alertEmpty: 'الرجاء إدخال بياناتك أولًا لإنشاء الرمز.',
+      guideWhatTitle: 'ما هي الأداة؟',
+      guideWhat: 'مولّد QR Code يحوّل بيانات اتصالك (الاسم، الهاتف، المهنة، البريد الإلكتروني) إلى رمز QR بصيغة بطاقة اتصال vCard. عند مسح الرمز بالهاتف يقترح حفظ بياناتك مباشرة كجهة اتصال جديدة.',
+      guideHowTitle: 'كيف تستعملها؟',
+      guideSteps: [
+        'أدخل بياناتك في الخانات: الاسم واللقب، رقم الهاتف، المهنة، البريد الإلكتروني، وملاحظة إن أردت.',
+        'شاهد الرمز يتحدّث فورًا في المعاينة مع كل حرف تكتبه، دون الحاجة إلى أي زر.',
+        'اضغط «تحميل الصورة» لحفظ الرمز صورة PNG، ثم ضعه على بطاقة أعمالك أو سيرتك الذاتية أو أي ملصق.',
+      ],
+      guideFaqTitle: 'أسئلة شائعة',
+      guideFaq: [
+        ['هل يجب ملء كل الخانات؟', 'لا، يكفي ملء خانة واحدة ليظهر الرمز، وكل خانة تتركها فارغة لا تُضاف إلى بطاقة الاتصال.'],
+        ['هل تُرسل بياناتي إلى أي خادم؟', 'لا، يُنشأ الرمز داخل متصفحك مباشرة، ولا تُحفظ بياناتك ولا تُرسل إلى أي مكان.'],
+        ['كيف أمسح الرمز بالهاتف؟', 'افتح كاميرا الهاتف ووجّهها نحو الرمز، أو استعمل تطبيقًا لقراءة QR، ثم اختر «إضافة جهة اتصال» لحفظ البيانات.'],
+      ],
+      guideVideo: 'شاهد شرح الأداة بالفيديو',
     },
     en: {
       dir: 'ltr', pageTitleTag: 'QR Code Generator — Merabti Academy',
@@ -22,6 +37,21 @@
       namePh: 'Full name', phonePh: 'Phone number', jobPh: 'Job title', emailPh: 'Email', notePh: 'Free note (optional)',
       download: 'Download Image', emptyHint: 'Enter your details for the code to appear here',
       alertEmpty: 'Please enter your details first to generate the code.',
+      guideWhatTitle: 'What is this tool?',
+      guideWhat: 'The QR Code Generator turns your contact details (name, phone, job title, email) into a QR code in vCard contact format. When the code is scanned, the phone offers to save your details straight away as a new contact.',
+      guideHowTitle: 'How to use it',
+      guideSteps: [
+        'Fill in your details: full name, phone number, job title, email, and a note if you like.',
+        'Watch the code update instantly in the preview as you type — no button needed.',
+        'Click “Download Image” to save the code as a PNG, then put it on your business card, CV or any poster.',
+      ],
+      guideFaqTitle: 'Frequently asked questions',
+      guideFaq: [
+        ['Do I have to fill in every field?', 'No. One field is enough for the code to appear, and any field you leave empty is simply left out of the contact card.'],
+        ['Is my data sent to a server?', 'No. The code is created right in your browser; your details are not stored or sent anywhere.'],
+        ['How do I scan the code with my phone?', 'Point your phone camera at the code, or use a QR reader app, then choose “Add contact” to save the details.'],
+      ],
+      guideVideo: 'Watch the video tutorial',
     },
     fr: {
       dir: 'ltr', pageTitleTag: 'Générateur de QR Code — Académie Merabti',
@@ -30,6 +60,21 @@
       namePh: 'Nom complet', phonePh: 'Numéro de téléphone', jobPh: 'Profession', emailPh: 'E-mail', notePh: 'Note libre (optionnel)',
       download: "Télécharger l'image", emptyHint: 'Saisissez vos informations pour voir le code apparaître ici',
       alertEmpty: "Veuillez d'abord saisir vos informations pour générer le code.",
+      guideWhatTitle: "Qu'est-ce que cet outil ?",
+      guideWhat: "Le générateur de QR Code transforme vos coordonnées (nom, téléphone, profession, e-mail) en code QR au format de carte de contact vCard. Une fois le code scanné, le téléphone propose d'enregistrer directement vos informations comme nouveau contact.",
+      guideHowTitle: "Comment l'utiliser ?",
+      guideSteps: [
+        "Saisissez vos informations : nom complet, numéro de téléphone, profession, e-mail, et une note si vous le souhaitez.",
+        "Regardez le code se mettre à jour instantanément dans l'aperçu à chaque caractère, sans aucun bouton.",
+        "Cliquez sur « Télécharger l'image » pour enregistrer le code en PNG, puis placez-le sur votre carte de visite, votre CV ou une affiche.",
+      ],
+      guideFaqTitle: 'Questions fréquentes',
+      guideFaq: [
+        ['Dois-je remplir tous les champs ?', "Non. Un seul champ suffit pour faire apparaître le code, et tout champ laissé vide n'est pas ajouté à la carte de contact."],
+        ['Mes données sont-elles envoyées à un serveur ?', "Non. Le code est créé directement dans votre navigateur ; vos informations ne sont ni enregistrées ni envoyées nulle part."],
+        ['Comment scanner le code avec mon téléphone ?', "Pointez l'appareil photo de votre téléphone vers le code, ou utilisez une application de lecture QR, puis choisissez « Ajouter un contact »."],
+      ],
+      guideVideo: "Regarder la vidéo explicative",
     },
   };
 
@@ -58,9 +103,33 @@
     els.qEmail.placeholder = dict.emailPh;
     els.qNote.placeholder = dict.notePh;
     els.downloadBtnText.textContent = dict.download;
+    applyGuide(dict);
     els.langBtns.forEach((b) => b.classList.toggle('active', b.getAttribute('data-lang') === lang));
     localStorage.setItem('qrgen:lang', lang);
     renderQr();
+  }
+  // قسم الشرح أسفل الأداة: ما هي، كيف تستعملها، أسئلة شائعة، رابط الفيديو
+  function applyGuide(dict) {
+    $('guideWhatTitle').textContent = dict.guideWhatTitle;
+    $('guideWhat').textContent = dict.guideWhat;
+    $('guideHowTitle').textContent = dict.guideHowTitle;
+    $('guideSteps').replaceChildren(...dict.guideSteps.map((step) => {
+      const li = document.createElement('li');
+      li.textContent = step;
+      return li;
+    }));
+    $('guideFaqTitle').textContent = dict.guideFaqTitle;
+    $('guideFaq').replaceChildren(...dict.guideFaq.map(([q, a]) => {
+      const item = document.createElement('details');
+      const summary = document.createElement('summary');
+      const answer = document.createElement('p');
+      summary.textContent = q;
+      answer.textContent = a;
+      item.append(summary, answer);
+      return item;
+    }));
+    const videoText = $('guideVideoText');
+    if (videoText) videoText.textContent = dict.guideVideo;
   }
   els.langBtns.forEach((btn) => btn.addEventListener('click', () => { lang = btn.getAttribute('data-lang'); applyLanguage(); }));
 
