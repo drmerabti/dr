@@ -558,7 +558,7 @@ function applyLang() {
   $$('[data-t-title]').forEach(el => { el.title = T(el.dataset.tTitle); el.setAttribute('aria-label', T(el.dataset.tTitle)); });
   $$('#langs button').forEach(b => b.classList.toggle('on', b.dataset.l === S.lang));
   $$('.date-txt').forEach(el => { el.placeholder = T('dmy'); });
-  document.title = `${T('title')} | Dr Soufiane Merabti`;
+  document.title = S.lang === 'ar' ? 'حاسبة العطل وتاريخ الرجوع إلى العمل في الجزائر — أكاديمية مرابطي' : `${T('title')} | Dr Soufiane Merabti`;
   if (S.gateState !== 'open') gate(S.gateState);
   update();
 }

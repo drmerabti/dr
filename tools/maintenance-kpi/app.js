@@ -305,7 +305,7 @@ function applyLang() {
   $$('[data-t]').forEach(el => { el.textContent = T(el.dataset.t); });
   $$('[data-t-title]').forEach(el => { el.title = T(el.dataset.tTitle); el.setAttribute('aria-label', T(el.dataset.tTitle)); });
   $$('#langs button').forEach(b => b.classList.toggle('on', b.dataset.l === S.lang));
-  document.title = `${T('title')} | Dr Soufiane Merabti`;
+  document.title = S.lang === 'ar' ? 'حساب مؤشرات الصيانة OEE و MTBF و MTTR — أكاديمية مرابطي' : `${T('title')} | Dr Soufiane Merabti`;
   if (!$('#exampleNote').classList.contains('hidden')) $('#exampleNote').textContent = T('exNote');
   if (S.gateState !== 'open') gate(S.gateState);
   applyUnitLabels();

@@ -270,7 +270,7 @@ function applyLang(){
   const html = document.documentElement;
   html.lang = state.lang;
   html.dir = state.lang === 'ar' ? 'rtl' : 'ltr';
-  document.title = T('title') + ' | Dr Soufiane Merabti';
+  document.title = state.lang === 'ar' ? 'محول الوحدات: الطول والوزن والضغط والطاقة — أكاديمية مرابطي' : T('title') + ' | Dr Soufiane Merabti';
   el.title.textContent = T('title');
   el.sub.textContent = T('sub');
   el.fromLbl.textContent = T('from');

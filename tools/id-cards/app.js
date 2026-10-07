@@ -1058,7 +1058,7 @@ function applyUiLang() {
   $$('[data-tip]').forEach(el => el.setAttribute('data-tiptext', T(el.dataset.tip)));
   $('#langToggle').textContent = uiLang.toUpperCase();
   $$('#langMenu button').forEach(b => b.classList.toggle('on', b.dataset.lang === uiLang));
-  document.title = T('tool_name') + ' — Merabti Academy';
+  document.title = uiLang === 'ar' ? 'تصميم بطاقة أعمال Business Card أونلاين — أكاديمية مرابطي' : T('tool_name') + ' — Merabti Academy';
 }
 $('#langToggle').addEventListener('click', e => { e.stopPropagation(); closeDrops(); $('#langMenu').classList.toggle('hidden'); });
 $('#langMenu').addEventListener('click', e => {

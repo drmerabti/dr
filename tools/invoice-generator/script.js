@@ -267,7 +267,7 @@
       btn.classList.toggle("on", btn.getAttribute("data-lang") === lang);
     });
     $("#langToggle").textContent = lang.toUpperCase();
-    document.title = t("appTitle") + " — Merabti Academy";
+    document.title = lang === 'ar' ? "إنشاء فاتورة أونلاين مع TVA والمبلغ بالحروف — أكاديمية مرابطي" : t("appTitle") + " — Merabti Academy";
 
     // amount-in-words placeholder state
     if (state.wordsIsStale) {

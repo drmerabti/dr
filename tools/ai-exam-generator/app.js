@@ -707,7 +707,7 @@ function applyUI() {
   $$('[data-ph]').forEach(el => { el.placeholder = T(el.dataset.ph); });
   $$('[data-tip]').forEach(el => { el.dataset.tipText = T(el.dataset.tip); el.setAttribute('aria-label', T(el.dataset.tip)); });
   $('#langBtn').textContent = S.uiLang === 'ar' ? 'EN' : 'ع';
-  document.title = `${T('app_title')} — Merabti Academy`;
+  document.title = S.uiLang === 'ar' ? 'مولد امتحانات بالذكاء الاصطناعي للأساتذة — أكاديمية مرابطي' : `${T('app_title')} — Merabti Academy`;
   DD.forEach(d => d.paint());
   renderUnits(); renderCards(); paintPaste(); paintFold();
   if (!shown().length) renderPaper();

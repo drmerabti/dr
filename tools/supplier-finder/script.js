@@ -1141,7 +1141,7 @@ function downloadTemplate(){
 /* ---------------- اللغة ---------------- */
 function applyLang(){
   const html=document.documentElement; html.lang=S.lang; html.dir=S.lang==='ar'?'rtl':'ltr';
-  document.title=T('title')+' | Dr Soufiane Merabti';
+  document.title = S.lang === 'ar' ? 'دليل الموردين وقطع الغيار ومقارنة الأسعار — أكاديمية مرابطي' : T('title')+' | Dr Soufiane Merabti';
   document.querySelectorAll('[data-i]').forEach(e=>{ e.textContent=T(e.getAttribute('data-i')); });
   document.querySelectorAll('[data-ip]').forEach(e=>{ e.placeholder=T(e.getAttribute('data-ip')); });
   document.querySelectorAll('#sfLangs button').forEach(b=>b.classList.toggle('on',b.dataset.l===S.lang));
