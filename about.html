@@ -20,11 +20,28 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@1,600;1,700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+<style>
+  .about-wrap{ max-width: 780px; margin: 0 auto; padding: 24px 24px 64px; }
+  .about-wrap h1{ font-size: 1.7rem; font-weight: 900; margin: 0 0 6px; }
+  .about-role{ color: var(--ui-ink-soft, #64768A); font-size: .95rem; margin: 0 0 28px; }
+  .about-wrap h2{ font-size: 1.15rem; font-weight: 800; margin: 32px 0 10px; }
+  .about-wrap p, .about-wrap li{ font-size: .95rem; line-height: 1.9; color: var(--ui-ink, #1E2F40); }
+  .about-wrap ul.about-points{ padding-inline-start: 22px; margin: 8px 0; }
+  .about-wrap a{ color: var(--ui-brand, #2F5CA8); text-decoration: none; }
+  .about-wrap a:hover{ text-decoration: underline; }
+  .soc-list{ list-style: none; padding: 0; margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+  .soc-list a{ display: grid; grid-template-columns: 36px 1fr; grid-template-rows: auto auto; column-gap: 12px; align-items: center;
+    padding: 10px 14px; border: 1px solid var(--ui-line, #DCE3EA); border-radius: 16px; background: var(--ui-surface-glass, #fff); color: var(--ui-ink, #1E2F40); }
+  .soc-list a:hover{ text-decoration: none; border-color: var(--ui-brand, #2F5CA8); }
+  .soc-list svg{ grid-row: 1 / 3; width: 36px; height: 36px; border-radius: 50%; }
+  .soc-name{ font-weight: 800; font-size: .92rem; }
+  .soc-url{ font-size: .76rem; color: var(--ui-ink-soft, #64768A); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: end; }
+</style>
 <link rel="canonical" href="https://merabti.com/about">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6597793750103940"
      crossorigin="anonymous"></script>
 </head>
-<body>
+<body class="ui-v2">
 
 <header class="topbar">
   <div class="topbar-inner">
@@ -49,19 +66,47 @@
 
 <main id="app">
   <section class="view">
-    <div class="about-card">
-      <h2 data-i18n="about_title">عن د. سفيان مرابطي</h2>
-      <p data-i18n="about_body">أشارك دروسًا وتطبيقات عملية لتسهيل استخدام برامج مايكروسوفت للجميع.</p>
-      <div class="about-links">
-        <a href="https://www.youtube.com/mrmerabti" target="_blank" rel="noopener">YouTube</a>
-        <a href="https://www.facebook.com/DrMerabti" target="_blank" rel="noopener">Facebook</a>
-      </div>
-    </div>
+    <article class="about-wrap" dir="rtl" lang="ar">
+      <h1>د. سفيان مرابطي</h1>
+      <p class="about-role">دكتوراه في إلكترونيك الطاقة · رئيس مكتب الدراسات في مصنع إسمنت · باحث في المشاريع الطاقوية</p>
+
+      <h2>من هو د. سفيان مرابطي؟</h2>
+      <p>الدكتور سفيان مرابطي حاصل على شهادة الدكتوراه في إلكترونيك الطاقة، ويشغل منصب رئيس مكتب الدراسات في مصنع إسمنت، حيث يتخصّص في التقنية والصيانة الصناعية ومتابعة التجهيزات ورفع موثوقيتها.</p>
+      <p>إلى جانب عمله الصناعي، هو باحث في المشاريع الطاقوية، وينشر أعماله العلمية في مجلات علمية مصنّفة. يجمع في عمله بين الخبرة الميدانية في المصنع والبحث العلمي الأكاديمي.</p>
+      <ul class="about-points">
+        <li>دكتوراه في إلكترونيك الطاقة.</li>
+        <li>رئيس مكتب الدراسات في مصنع إسمنت.</li>
+        <li>متخصّص في التقنية والصيانة الصناعية.</li>
+        <li>باحث في المشاريع الطاقوية، ينشر في مجلات علمية مصنّفة.</li>
+      </ul>
+
+      <h2>عن أكاديمية مرابطي</h2>
+      <p>أكاديمية مرابطي (merabti.com) منصّة تعليمية رقمية أسّسها د. سفيان مرابطي، تقدّم دروسًا وتدريبات عملية ودورات تسهّل استخدام برامج مايكروسوفت مثل Word وExcel وAccess، إلى جانب أدوات وتطبيقات مجانية تساعد على إنجاز المهام الإدارية والتعليمية والتقنية اليومية بسرعة وسهولة.</p>
+      <p>هدف الأكاديمية أن تنقل الخبرة العملية بلغة بسيطة وواضحة، وأن تجعل التعلّم الرقمي متاحًا للجميع: الطلبة والأساتذة والموظفين والمهنيين.</p>
+
+      <h2>تابعوني على</h2>
+      <ul class="soc-list">
+        <li><a href="https://www.facebook.com/DrMerabti" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path fill="#1877F2" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg><span class="soc-name">Facebook</span><span class="soc-url" dir="ltr">facebook.com/DrMerabti</span></a></li>
+        <li><a href="https://www.instagram.com/DrMerabti" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><defs><linearGradient id="igGradA" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#FED373"/><stop offset=".5" stop-color="#E1306C"/><stop offset="1" stop-color="#833AB4"/></linearGradient></defs><path fill="url(#igGradA)" d="M12 2.16c3.2 0 3.58.01 4.85.07 3.25.15 4.77 1.69 4.92 4.92.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.15 3.23-1.66 4.77-4.92 4.92-1.27.06-1.64.07-4.85.07s-3.58-.01-4.85-.07c-3.26-.15-4.77-1.7-4.92-4.92-.06-1.27-.07-1.64-.07-4.85s.01-3.58.07-4.85C2.33 3.9 3.85 2.35 7.15 2.23 8.42 2.17 8.8 2.16 12 2.16zM12 0C8.74 0 8.33.01 7.05.07 2.7.27.27 2.69.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.2 4.36 2.62 6.78 6.98 6.98C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c4.35-.2 6.78-2.62 6.98-6.98.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.2-4.35-2.62-6.78-6.98-6.98C15.67.01 15.26 0 12 0zm0 5.84A6.16 6.16 0 1 0 12 18.16 6.16 6.16 0 0 0 12 5.84zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.41-10.85a1.44 1.44 0 1 0 0 2.88 1.44 1.44 0 0 0 0-2.88z"/></svg><span class="soc-name">Instagram</span><span class="soc-url" dir="ltr">instagram.com/DrMerabti</span></a></li>
+        <li><a href="https://www.youtube.com/mrmerabti" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path fill="#FF0000" d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg><span class="soc-name">YouTube</span><span class="soc-url" dir="ltr">youtube.com/mrmerabti</span></a></li>
+        <li><a href="https://www.tiktok.com/@drmerabti" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path fill="#000" d="M16.6 5.82s.51.5 0 0A4.278 4.278 0 0 1 15.54 3h-3.09v12.4a2.592 2.592 0 0 1-2.59 2.5c-1.42 0-2.6-1.16-2.6-2.6 0-1.72 1.66-3.01 3.37-2.48V9.66c-3.45-.46-6.47 2.22-6.47 5.64 0 3.33 2.76 5.7 5.69 5.7 3.14 0 5.69-2.55 5.69-5.7V9.01a7.35 7.35 0 0 0 4.3 1.38V7.3s-1.88.09-3.24-1.48z"/></svg><span class="soc-name">TikTok</span><span class="soc-url" dir="ltr">tiktok.com/@drmerabti</span></a></li>
+        <li><a href="https://www.linkedin.com/in/soufiane-merabti" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path fill="#0A66C2" d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 1 1 0-4.124 2.062 2.062 0 0 1 0 4.124zM7.119 20.452H3.554V9h3.565v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg><span class="soc-name">LinkedIn</span><span class="soc-url" dir="ltr">linkedin.com/in/soufiane-merabti</span></a></li>
+        <li><a href="https://www.researchgate.net/profile/Soufiane-Merabti" target="_blank" rel="noopener"><svg viewBox="0 0 42 42"><circle cx="21" cy="21" r="21" fill="#00CCBB"/><text x="21" y="27" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#fff" text-anchor="middle">RG</text></svg><span class="soc-name">ResearchGate</span><span class="soc-url" dir="ltr">researchgate.net/profile/Soufiane-Merabti</span></a></li>
+      </ul>
+
+      <h2>التواصل</h2>
+      <p>للاستفسارات والتعاون: <a href="mailto:contact@merabti.com" dir="ltr">contact@merabti.com</a> — أو عبر <a href="contact.html">صفحة اتصل بنا</a>.</p>
+    </article>
   </section>
 </main>
 
 <footer class="site-footer">
   <p data-i18n="footer_text">© 2026 د. سفيان مرابطي</p>
+  <p class="footer-links">
+    <a href="about.html">من نحن</a>
+    <a href="privacy-policy.html">سياسة الخصوصية</a>
+    <a href="contact.html">اتصل بنا</a>
+  </p>
 </footer>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -69,5 +114,6 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="firebase-init.js"></script>
 <script src="app.js"></script>
+<script src="site-nav.js"></script>
 </body>
 </html>
