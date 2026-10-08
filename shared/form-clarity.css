@@ -1,0 +1,79 @@
+/* =====================================================================
+   form-clarity.css — shared clarity rules for every tool with a fill
+   panel made of collapsible sections (reference: tools/admin-request).
+
+   STANDING RULE: any new tool with a similar fill panel links this file
+   in <head>, right after its own stylesheet(s), together with
+   /shared/form-clarity.js (which marks filled fields for the tick).
+
+   Shared markup it expects (add the classes if a tool names them differently):
+     .acc-group / .accordion   the list of sections
+     .acc                      one section   (style="--sc:<section colour>")
+     .acc.open                 the open section
+     .acc-head / .acc-body     its header / its body
+   Fields: any input / textarea / select inside .acc-body.
+   ===================================================================== */
+:root{
+  --tint: 12%;            /* how much of the section colour tints an open section body */
+  --fc-fade: .6;          /* opacity of the other sections while one is open */
+  --fc-line: #C3CDD6;     /* field border */
+  --fc-line-hover: #A9B6C2;
+  --fc-ph: #A7B2BD;       /* example text (placeholder) */
+  --fc-ink: #0F1A24;      /* text the user types */
+  --fc-label: #15212D;    /* labels above fields */
+  --fc-ok-ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='10' fill='%2316A34A'/%3E%3Cpath d='M7 12.4l3.3 3.3L17 9' fill='none' stroke='%23fff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+/* ---- 1. open section: body tinted with the section colour ---- */
+.acc.open > .acc-body{
+  background-color: color-mix(in srgb, var(--sc, #2F5770) var(--tint), #fff);
+  border-top: 1px solid color-mix(in srgb, var(--sc, #2F5770) 22%, transparent);
+}
+
+/* ---- 2. while one section is open, the others fade back (normal again on hover) ---- */
+.acc{ transition: box-shadow .2s, border-color .2s, opacity .2s; }
+:is(.acc-group, .accordion):has(> .acc.open) > .acc:not(.open){ opacity: var(--fc-fade); }
+:is(.acc-group, .accordion):has(> .acc.open) > .acc:not(.open):hover{ opacity: 1; }
+
+/* ---- 3. labels above the fields: darker and clearer ---- */
+.acc .acc-body :is(.field > label, .fld > label, .field > .f-label, .f > span:first-child, .fc-label){
+  color: var(--fc-label);
+  font-weight: 800;
+}
+
+/* ---- 4. fields: pure white, clear grey border, dark text ---- */
+.acc .acc-body :is(
+  input:not([type]), input[type=text], input[type=email], input[type=tel], input[type=url], input[type=search],
+  input[type=password], input[type=number], input[type=date], input[type=time], input[type=month], input[type=datetime-local],
+  textarea, select
+){
+  background-color: #fff;
+  border: 1.5px solid var(--fc-line);
+  color: var(--fc-ink);
+  box-shadow: 0 1px 2px rgba(15,26,36,.04);
+  transition: border-color .15s, background-color .15s, box-shadow .15s; /* the tick appears in place, it does not slide */
+}
+.acc .acc-body :is(input, textarea)::placeholder{ color: var(--fc-ph); font-weight: 400; opacity: 1; }
+.acc .acc-body :is(input, textarea, select):hover:not(:focus){ border-color: var(--fc-line-hover); }
+
+/* ---- 5. typing: border in the section colour + a soft glow ---- */
+.acc .acc-body :is(input, textarea, select):focus{
+  background-color: #fff;
+  border-color: var(--sc, #2F5770);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--sc, #2F5770) 16%, transparent), 0 4px 12px rgba(15,26,36,.08);
+  outline: none;
+}
+
+/* ---- 6. a small green tick inside every filled field (visual end side).
+   Fields with their own button at the end (e.g. a typed date with a calendar
+   button) carry .fc-no-tick. ---- */
+.acc .acc-body :is(input:not([type]), input[type=text], input[type=email], input[type=tel], input[type=url], textarea):is(.fc-filled, [placeholder]:not(:placeholder-shown)):not(.fc-no-tick){
+  background-image: var(--fc-ok-ico);
+  background-repeat: no-repeat;
+  background-size: 16px 16px;
+  background-position: right 10px center;
+  padding-inline-end: 34px;
+}
+.acc .acc-body :is(input:not([type]), input[type=text], input[type=email], input[type=tel], input[type=url]):is(.fc-filled, [placeholder]:not(:placeholder-shown)):not(.fc-no-tick):dir(rtl){ background-position: left 10px center; }
+.acc .acc-body textarea:is(.fc-filled, [placeholder]:not(:placeholder-shown)):not(.fc-no-tick){ background-position: right 10px top 11px; }
+.acc .acc-body textarea:is(.fc-filled, [placeholder]:not(:placeholder-shown)):not(.fc-no-tick):dir(rtl){ background-position: left 10px top 11px; }
