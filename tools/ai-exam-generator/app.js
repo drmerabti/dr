@@ -887,6 +887,7 @@ function paintFold() {
     const k = sec.dataset.step, f = !!S.fold[k];
     sec.classList.toggle('folded', f);
     $('.step-h', sec).setAttribute('aria-expanded', String(!f));
+    sec.classList.toggle('open', !f); // shared form-clarity.css styles the open section
   });
   const set = (id, t) => { const e = $(id); if (e) e.textContent = t; };
   set('#sum1', [countryName(uil()), gradeLabel(S.cur.grade, uil()), isUni() ? S.cur.module.trim() : subjLabel(S.cur.subject, uil())].filter(Boolean).join(' · '));

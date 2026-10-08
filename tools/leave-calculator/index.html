@@ -20,6 +20,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="../../shared/form-clarity.css">
 <link rel="canonical" href="https://merabti.com/tools/leave-calculator/">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6597793750103940"
      crossorigin="anonymous"></script>
@@ -81,7 +82,7 @@
       <div class="field">
         <span class="f-label tx" data-t="start"></span>
         <div class="date-box">
-          <input type="text" id="startDate" class="big-in date-txt" dir="ltr" inputmode="numeric" maxlength="10" autocomplete="off" placeholder="DD/MM/YYYY">
+          <input type="text" id="startDate" class="big-in date-txt fc-no-tick" dir="ltr" inputmode="numeric" maxlength="10" autocomplete="off" placeholder="DD/MM/YYYY">
           <button type="button" class="date-pick" aria-label="calendar"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></button>
           <input type="date" class="date-native" tabindex="-1" aria-hidden="true">
         </div>
@@ -115,9 +116,9 @@
   </section>
 
   <!-- الخيارات الإضافية -->
-  <section class="accs" id="accs">
+  <section class="accs acc-group" id="accs">
 
-    <div class="acc" data-acc="settings">
+    <div class="acc" style="--sc:#2F6FB0" data-acc="settings">
       <button type="button" class="acc-head">
         <span class="acc-ico c-blue"><svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2.3"/><circle cx="8" cy="17" r="2.3"/></svg></span>
         <span class="acc-title tx"><b data-t="acc_settings"></b><small data-t="acc_settings_s"></small></span>
@@ -150,7 +151,7 @@
       </div></div></div>
     </div>
 
-    <div class="acc" data-acc="types">
+    <div class="acc" style="--sc:#7A3FA8" data-acc="types">
       <button type="button" class="acc-head">
         <span class="acc-ico c-purple"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2.5"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M3 12h18"/></svg></span>
         <span class="acc-title tx"><b data-t="acc_types"></b><small data-t="acc_types_s"></small></span>
@@ -162,7 +163,7 @@
       </div></div></div>
     </div>
 
-    <div class="acc" data-acc="reverse">
+    <div class="acc" style="--sc:#1F8A8A" data-acc="reverse">
       <button type="button" class="acc-head">
         <span class="acc-ico c-teal"><svg viewBox="0 0 24 24"><path d="M4 8h14l-3-3M20 16H6l3 3"/></svg></span>
         <span class="acc-title tx"><b data-t="acc_reverse"></b><small data-t="acc_reverse_s"></small></span>
@@ -173,7 +174,7 @@
           <div class="field">
             <span class="f-label tx" data-t="start"></span>
             <div class="date-box">
-          <input type="text" id="revStart" class="big-in date-txt" dir="ltr" inputmode="numeric" maxlength="10" autocomplete="off" placeholder="DD/MM/YYYY">
+          <input type="text" id="revStart" class="big-in date-txt fc-no-tick" dir="ltr" inputmode="numeric" maxlength="10" autocomplete="off" placeholder="DD/MM/YYYY">
           <button type="button" class="date-pick" aria-label="calendar"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></button>
           <input type="date" class="date-native" tabindex="-1" aria-hidden="true">
         </div>
@@ -181,7 +182,7 @@
           <div class="field">
             <span class="f-label tx" data-t="returnDate"></span>
             <div class="date-box">
-          <input type="text" id="revEnd" class="big-in date-txt" dir="ltr" inputmode="numeric" maxlength="10" autocomplete="off" placeholder="DD/MM/YYYY">
+          <input type="text" id="revEnd" class="big-in date-txt fc-no-tick" dir="ltr" inputmode="numeric" maxlength="10" autocomplete="off" placeholder="DD/MM/YYYY">
           <button type="button" class="date-pick" aria-label="calendar"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></button>
           <input type="date" class="date-native" tabindex="-1" aria-hidden="true">
         </div>
@@ -191,7 +192,7 @@
       </div></div></div>
     </div>
 
-    <div class="acc" data-acc="balance">
+    <div class="acc" style="--sc:#2E8B57" data-acc="balance">
       <button type="button" class="acc-head">
         <span class="acc-ico c-green"><svg viewBox="0 0 24 24"><path d="M12 3v18M5 7h14"/><path d="M5 7l-3 7a3.5 3.5 0 0 0 6 0zM19 7l-3 7a3.5 3.5 0 0 0 6 0z"/></svg></span>
         <span class="acc-title tx"><b data-t="acc_balance"></b><small data-t="acc_balance_s"></small></span>
@@ -212,7 +213,7 @@
       </div></div></div>
     </div>
 
-    <div class="acc" data-acc="calendar">
+    <div class="acc" style="--sc:#D9731A" data-acc="calendar">
       <button type="button" class="acc-head">
         <span class="acc-ico c-orange"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/><path d="M8 14h2M14 14h2M8 17h2"/></svg></span>
         <span class="acc-title tx"><b data-t="acc_calendar"></b><small data-t="acc_calendar_s"></small></span>
@@ -233,6 +234,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="../../firebase-init.js"></script>
+<script src="../../shared/form-clarity.js" defer></script>
 <script src="app.js"></script>
 <footer class="mrb-footer">
   <p class="footer-links">

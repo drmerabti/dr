@@ -101,12 +101,12 @@ body.readonly .panel, body.readonly .panel-toggle{ display:none; }
 #accordion .acc-next svg{ width:16px; height:16px; }
 html[dir="rtl"] #accordion .acc-next svg{ transform:scaleX(-1); }
 #accordion .acc-hint{ font-size:.8rem; color:var(--sh-ink-soft); margin:0; line-height:1.6; }
-#accordion .field label{ display:block; font-size:.8rem; font-weight:700; color:var(--sh-ink-soft); margin-bottom:5px; }
+#accordion .field label{ display:block; font-size:.8rem; margin-bottom:5px; } /* colour & weight: /shared/form-clarity.css */
 #accordion .field input[type=text], #accordion .field input[type=number], #accordion .field select{
-  width:100%; border:1px solid var(--sh-line); border-radius:11px; background:#F5F8FA; padding:10px 12px;
-  font:inherit; font-size:.92rem; color:var(--sh-ink); outline:none; transition:border-color .15s, background .15s;
+  width:100%; border-radius:11px; padding:10px 12px; /* background, border, colour: /shared/form-clarity.css */
+  font:inherit; font-size:.92rem; outline:none; transition:border-color .15s, background .15s, box-shadow .15s;
 }
-#accordion .field input:focus{ border-color:var(--sc); background:#fff; }
+
 #accordion .field-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
 #accordion .seg-ui{ display:flex; background:#EEF3F6; border-radius:12px; padding:3px; gap:3px; }
 #accordion .seg-ui button{ flex:1; border:0; background:none; padding:8px 6px; border-radius:9px; cursor:pointer; font-size:.85rem; font-weight:700; color:var(--sh-ink-soft); font-family:inherit; }
