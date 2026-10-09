@@ -28,6 +28,8 @@
 //   locked       : true = الدرس مقفل بشارة "قريبًا" لكل الزوار، ومفتوح للأدمن فقط.
 //                  اجعله false عند نشر الدرس.
 //
+// ⚠ عند إضافة درس جديد: يأخذ مكان أول درس وهمي مقفل (locked: true) ويُحذف ذلك الدرس،
+//   فيبقى عدد الدروس 10.
 // ⚠ بعد أي تعديل في هذا الملف غيّر رقم الإصدار ?v=... في index.html (سطر data.js)
 //   حتى لا يعرض المتصفح النسخة القديمة المحفوظة.
 // ============================================================
@@ -2926,29 +2928,13 @@ Private Sub btnRemarks_Click()
 End Sub`,
       },
     ],
-    fileUrl: '', // ← ملف .xlsm للدرس 3
+    fileUrl: 'files/lesson-03-student-grades.xlsm', // ← ملف .xlsm للدرس 3
     locked: false,
-  },
-  {
-    title: 'المتغيرات والشروط والحلقات',
-    title_en: 'Variables, Conditions and Loops',
-    youtubeUrl: '', // ← رابط فيديو يوتيوب للدرس 4
-    description:
-      'تعريف المتغيرات بأنواعها (Dim … As) وأهمية Option Explicit.\n' +
-      'كتابة الشروط بـ If … Then … Else و Select Case.\n' +
-      'تكرار العمليات على الخلايا بحلقات For و For Each و Do While.',
-    description_en:
-      'Declaring typed variables (Dim … As) and why Option Explicit matters.\n' +
-      'Writing conditions with If … Then … Else and Select Case.\n' +
-      'Looping over cells with For, For Each and Do While.',
-    codes: [ /* ← أكواد الدرس 4 */ ],
-    fileUrl: '', // ← ملف .xlsm للدرس 4
-    locked: true,
   },
   {
     title: 'البحث والتعديل والحذف في قاعدة بيانات إكسل',
     title_en: 'Search, Edit and Delete in an Excel Database',
-    youtubeUrl: '', // ← رابط فيديو يوتيوب للدرس 5
+    youtubeUrl: '', // ← رابط فيديو يوتيوب للدرس 4
     description:
       'البحث عن سجل برقم أو اسم باستخدام Range.Find.\n' +
       'تحميل بيانات السجل في النموذج لتعديلها ثم حفظ التعديل في نفس السطر.\n' +
@@ -2957,92 +2943,92 @@ End Sub`,
       'Find a record by ID or name with Range.Find.\n' +
       'Load the record into the form, edit it, then save it back to the same row.\n' +
       'Delete the record after a confirmation message.',
-    codes: [ /* ← أكواد الدرس 5 */ ],
-    fileUrl: '', // ← ملف .xlsm للدرس 5
+    codes: [ /* ← أكواد الدرس 4 */ ],
+    fileUrl: '', // ← ملف .xlsm للدرس 4
     locked: true,
   },
   {
     title: 'إنشاء فاتورة تلقائية وترقيمها',
     title_en: 'Automatic Invoice Creation and Numbering',
-    youtubeUrl: '', // ← رابط فيديو يوتيوب للدرس 6
+    youtubeUrl: '', // ← رابط فيديو يوتيوب للدرس 5
     description:
       'تصميم قالب الفاتورة وتوليد رقم تسلسلي تلقائي لكل فاتورة جديدة.\n' +
       'حفظ الفاتورة في سجل الفواتير ثم تفريغ القالب لفاتورة جديدة.',
     description_en:
       'Design the invoice template and generate an automatic serial number for each new invoice.\n' +
       'Save the invoice to the invoice log, then clear the template for the next one.',
-    codes: [ /* ← أكواد الدرس 6 */ ],
-    fileUrl: '', // ← ملف .xlsm للدرس 6
+    codes: [ /* ← أكواد الدرس 5 */ ],
+    fileUrl: '', // ← ملف .xlsm للدرس 5
     locked: true,
   },
   {
     title: 'تصدير الأوراق إلى PDF بضغطة زر',
     title_en: 'Export Sheets to PDF with One Click',
-    youtubeUrl: '', // ← رابط فيديو يوتيوب للدرس 7
+    youtubeUrl: '', // ← رابط فيديو يوتيوب للدرس 6
     description:
       'تصدير الورقة الحالية أو مجموعة أوراق إلى PDF باستخدام ExportAsFixedFormat.\n' +
       'تسمية الملف تلقائيًا بالتاريخ أو برقم الفاتورة وحفظه في مجلد محدد.',
     description_en:
       'Export the active sheet or a group of sheets to PDF with ExportAsFixedFormat.\n' +
       'Name the file automatically by date or invoice number and save it to a chosen folder.',
-    codes: [ /* ← أكواد الدرس 7 */ ],
-    fileUrl: '', // ← ملف .xlsm للدرس 7
+    codes: [ /* ← أكواد الدرس 6 */ ],
+    fileUrl: '', // ← ملف .xlsm للدرس 6
     locked: true,
   },
   {
     title: 'دمج عدة ملفات إكسل في ملف واحد',
     title_en: 'Merge Multiple Excel Files into One',
-    youtubeUrl: '', // ← رابط فيديو يوتيوب للدرس 8
+    youtubeUrl: '', // ← رابط فيديو يوتيوب للدرس 7
     description:
       'اختيار مجلد وقراءة كل ملفات إكسل داخله باستخدام Dir.\n' +
       'نسخ بيانات كل ملف إلى ورقة واحدة مجمّعة دون تكرار العناوين.',
     description_en:
       'Pick a folder and read every Excel file inside it with Dir.\n' +
       'Copy each file’s data into one combined sheet without repeating headers.',
-    codes: [ /* ← أكواد الدرس 8 */ ],
-    fileUrl: '', // ← ملف .xlsm للدرس 8
+    codes: [ /* ← أكواد الدرس 7 */ ],
+    fileUrl: '', // ← ملف .xlsm للدرس 7
     locked: true,
   },
   {
     title: 'إرسال بريد إلكتروني من إكسل عبر Outlook',
     title_en: 'Send Emails from Excel via Outlook',
-    youtubeUrl: '', // ← رابط فيديو يوتيوب للدرس 9
+    youtubeUrl: '', // ← رابط فيديو يوتيوب للدرس 8
     description:
       'إنشاء رسالة Outlook من إكسل وتعبئة المرسل إليه والموضوع والنص.\n' +
       'إرفاق ملف (مثل فاتورة PDF) وإرسال رسائل متعددة من قائمة عناوين.',
     description_en:
       'Create an Outlook message from Excel and fill in the recipient, subject and body.\n' +
       'Attach a file (such as a PDF invoice) and send multiple emails from an address list.',
-    codes: [ /* ← أكواد الدرس 9 */ ],
-    fileUrl: '', // ← ملف .xlsm للدرس 9
+    codes: [ /* ← أكواد الدرس 8 */ ],
+    fileUrl: '', // ← ملف .xlsm للدرس 8
     locked: true,
   },
   {
     title: 'شاشة تسجيل دخول بكلمة مرور',
     title_en: 'Password Login Screen',
-    youtubeUrl: '', // ← رابط فيديو يوتيوب للدرس 10
+    youtubeUrl: '', // ← رابط فيديو يوتيوب للدرس 9
     description:
       'تصميم نموذج تسجيل دخول باسم مستخدم وكلمة مرور عند فتح الملف.\n' +
       'إخفاء الأوراق حتى نجاح الدخول، وتحديد عدد المحاولات المسموح بها.',
     description_en:
       'Build a username/password login form that opens with the workbook.\n' +
       'Hide the sheets until login succeeds and limit the number of attempts.',
-    codes: [ /* ← أكواد الدرس 10 */ ],
-    fileUrl: '', // ← ملف .xlsm للدرس 10
+    codes: [ /* ← أكواد الدرس 9 */ ],
+    fileUrl: '', // ← ملف .xlsm للدرس 9
     locked: true,
   },
   {
     title: 'قوائم منسدلة مترابطة بالكود',
     title_en: 'Dependent Drop-down Lists with Code',
-    youtubeUrl: '', // ← رابط فيديو يوتيوب للدرس 11
+    youtubeUrl: '', // ← رابط فيديو يوتيوب للدرس 10
     description:
       'تعبئة قائمة منسدلة أولى من ورقة البيانات تلقائيًا.\n' +
       'تحديث القائمة الثانية حسب اختيار الأولى (مثل: الولاية ← البلدية).',
     description_en:
       'Fill a first drop-down list automatically from the data sheet.\n' +
       'Update the second list based on the first choice (e.g. province → town).',
-    codes: [ /* ← أكواد الدرس 11 */ ],
-    fileUrl: '', // ← ملف .xlsm للدرس 11
+    codes: [ /* ← أكواد الدرس 10 */ ],
+    fileUrl: '', // ← ملف .xlsm للدرس 10
     locked: true,
   },
 ];
