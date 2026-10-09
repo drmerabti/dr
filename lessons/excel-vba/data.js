@@ -2202,7 +2202,7 @@ Public Function TX(ByVal key As String) As String
         Case "count": TX = U("0639 062F 062F 0020 0627 0644 062A 0644 0627 0645 064A 0630 003A")   ' :
         Case "select": TX = U("0627 062E 062A 0631 0020 062A 0644 0645 064A 0630 0627 0020 0645 0646 0020 0627 0644 0642 0627 0626 0645 0629")   ' select
         Case "tests": TX = U("0627 0644 0641 0631 0648 0636")   ' tests
-        Case "save": TX = U("062D 0641 0638 0020 0020 0028 0045 006E 0074 0065 0072 0029")   ' (Enter)
+        Case "save": TX = U("062D 0641 0638 0020 0627 0644 0643 0644")   ' save
         Case "delete": TX = U("062D 0630 0641")   ' delete
         Case "pdf": TX = U("0643 0634 0641 0020 0627 0644 062A 0644 0645 064A 0630 0020 0050 0044 0046")   ' PDF
         Case "classPdf": TX = U("0643 0634 0648 0641 0020 0627 0644 0642 0633 0645 0020 0050 0044 0046")   ' PDF
@@ -2253,7 +2253,13 @@ Private WithEvents btnSave As MSForms.CommandButton
 Private WithEvents btnDelete As MSForms.CommandButton
 Private WithEvents btnPDF As MSForms.CommandButton
 Private WithEvents btnClassPDF As MSForms.CommandButton
-Private txtCA As MSForms.TextBox
+Private WithEvents txtCA As MSForms.TextBox
+Private WithEvents txtT1 As MSForms.TextBox     ' test boxes (up to 6)
+Private WithEvents txtT2 As MSForms.TextBox
+Private WithEvents txtT3 As MSForms.TextBox
+Private WithEvents txtT4 As MSForms.TextBox
+Private WithEvents txtT5 As MSForms.TextBox
+Private WithEvents txtT6 As MSForms.TextBox
 Private fraTests As MSForms.Frame
 Private lblCount As MSForms.Label
 Private lblName As MSForms.Label
@@ -2371,9 +2377,13 @@ Private Sub StyleAll()
                 ctl.Font.Bold = True
                 ctl.Font.Size = 10
             Case "Label"
-                If ctl.Name <> "lnTabs" Then ctl.BackStyle = 0
-                ctl.ForeColor = RGB(55, 65, 85)
-                ctl.Font.Size = 10
+                If ctl.Name Like "chk*" Then
+                    StyleCheck ctl
+                Else
+                    If ctl.Name <> "lnTabs" Then ctl.BackStyle = 0
+                    ctl.ForeColor = RGB(55, 65, 85)
+                    ctl.Font.Size = 10
+                End If
             Case "TextBox", "ComboBox", "ListBox"
                 ctl.Font.Size = 11
                 ctl.SpecialEffect = 0
@@ -2588,6 +2598,8 @@ Private Sub BuildGradesTab()
     Set txtCA = AddCtl("TextBox", "txtCA", "", r2, 76, half, 26, fraG)
     AddCtl "Label", "capExam", TX("hExam"), r2 + half + 10, 58, half, 16, fraG
     Set txtExam = AddCtl("TextBox", "txtExam", "", r2 + half + 10, 76, half, 26, fraG)
+    AddCtl "Label", "chk0", "", r2 + half - 22, 78, 20, 22, fraG
+    AddCtl "Label", "chkE", "", r2 + 2 * half - 12, 78, 20, 22, fraG
 
     ' (a frame cannot be created inside another frame, so it sits on the form)
     Set fraTests = AddCtl("Frame", "fraTests", "", r2, fraG.Top + 112, CW, 104)
@@ -2611,6 +2623,8 @@ Private Sub BuildTestBoxes()
     Dim i As Long, lb As Object, tb As Object, cap As Object
     Dim bw As Single, fr As Single, t As Single
 
+    Set txtT1 = Nothing: Set txtT2 = Nothing: Set txtT3 = Nothing
+    Set txtT4 = Nothing: Set txtT5 = Nothing: Set txtT6 = Nothing
     For i = fraTests.Controls.Count - 1 To 0 Step -1
         fraTests.Controls.Remove fraTests.Controls(i).Name
     Next i
@@ -2632,7 +2646,180 @@ Private Sub BuildTestBoxes()
             .SpecialEffect = 0: .BorderStyle = 1
             .BorderColor = RGB(170, 188, 215)
         End With
+        StyleCheck AddCtl("Label", "chk" & i, "", fr + bw - 20, t + 15, 18, 20, fraTests)
+        Select Case i
+            Case 1: Set txtT1 = tb
+            Case 2: Set txtT2 = tb
+            Case 3: Set txtT3 = tb
+            Case 4: Set txtT4 = tb
+            Case 5: Set txtT5 = tb
+            Case 6: Set txtT6 = tb
+        End Select
     Next i
+End Sub
+
+' Green check mark shown when a score is saved
+Private Sub StyleCheck(lbl As Object)
+    With lbl
+        .Caption = ChrW(&H2713)
+        .BackStyle = 0
+        .ForeColor = RGB(0, 150, 70)
+        .Font.Name = "Segoe UI Symbol"
+        .Font.Size = 12
+        .Font.Bold = True
+        .TextAlign = 2
+        .Visible = False
+    End With
+End Sub
+
+'--------------------------------------------------------------
+'  Score boxes: 0 = CA, 1..mTests = tests, mTests + 1 = exam
+'--------------------------------------------------------------
+Private Function BoxAt(ByVal k As Long) As Object
+    If k = 0 Then
+        Set BoxAt = txtCA
+    ElseIf k <= mTests Then
+        Set BoxAt = TestBox(k)
+    Else
+        Set BoxAt = txtExam
+    End If
+End Function
+
+Private Function ChkAt(ByVal k As Long) As Object
+    If k = 0 Then
+        Set ChkAt = fraG.Controls("chk0")
+    ElseIf k <= mTests Then
+        Set ChkAt = fraTests.Controls("chk" & k)
+    Else
+        Set ChkAt = fraG.Controls("chkE")
+    End If
+End Function
+
+Private Function ColAt(ByVal k As Long) As Long
+    If k > mTests Then ColAt = ColOf(TX("hExam")) Else ColAt = ColOf(TX("hCA")) + k
+End Function
+
+Private Sub FocusBox(ByVal k As Long)
+    With BoxAt(k)
+        .SetFocus
+        .SelStart = 0
+        .SelLength = Len(.Text)
+    End With
+End Sub
+
+' Saves one score, then shows the green check mark
+Private Function SaveBox(ByVal k As Long) As Boolean
+    Dim g As Worksheet, v As Variant, a As Variant, mx As Double
+
+    If mRow = 0 Then MsgBox "Select a student first.", vbExclamation: Exit Function
+    mx = MaxScore()
+    If Not ValidBox(BoxAt(k), mx) Then Exit Function
+    ParseScore BoxAt(k).Text, v, mx
+
+    Set g = WsG
+    Application.EnableEvents = False
+    g.Cells(mRow, ColAt(k)).Value = v
+    ' this student's average and remark (ranks are updated with the next student)
+    a = CalcAverage(mRow)
+    g.Cells(mRow, ColOf(TX("hAvg"))).Value = a
+    If IsEmpty(a) Then
+        g.Cells(mRow, ColOf(TX("hRemark"))).Value = ""
+    Else
+        g.Cells(mRow, ColOf(TX("hRemark"))).Value = RemarkFor(CDbl(a))
+    End If
+    Application.EnableEvents = True
+
+    ChkAt(k).Visible = Not IsEmpty(v)
+    ShowResult
+    SaveBox = True
+End Function
+
+' Enter or Tab: save the score and go to the next box (Shift+Tab: previous box)
+Private Sub ScoreKey(ByVal k As Long, ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
+    Dim key As Long
+    key = KeyCode
+    If key <> vbKeyReturn And key <> vbKeyTab Then Exit Sub
+    KeyCode = 0
+    If Not SaveBox(k) Then Exit Sub
+    If key = vbKeyTab And (Shift And 1) = 1 Then
+        If k > 0 Then FocusBox k - 1
+    ElseIf k < mTests + 1 Then
+        FocusBox k + 1
+    Else
+        NextStudent
+    End If
+End Sub
+
+Private Sub NextStudent()
+    Dim idx As Long
+    RecalcAll
+    lblStatus.Caption = TX("saved") & " " & WsG.Cells(mRow, 3).Value
+    idx = lstStudents.ListIndex
+    If idx < lstStudents.ListCount - 1 Then
+        lstStudents.ListIndex = idx + 1
+        lstStudents_Click
+        FocusBox 0
+    Else
+        ShowResult
+    End If
+End Sub
+
+Private Sub HideChecks()
+    Dim k As Long
+    For k = 0 To mTests + 1
+        ChkAt(k).Visible = False
+    Next k
+End Sub
+
+Private Sub txtCA_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
+    ScoreKey 0, KeyCode, Shift
+End Sub
+Private Sub txtT1_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
+    ScoreKey 1, KeyCode, Shift
+End Sub
+Private Sub txtT2_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
+    ScoreKey 2, KeyCode, Shift
+End Sub
+Private Sub txtT3_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
+    ScoreKey 3, KeyCode, Shift
+End Sub
+Private Sub txtT4_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
+    ScoreKey 4, KeyCode, Shift
+End Sub
+Private Sub txtT5_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
+    ScoreKey 5, KeyCode, Shift
+End Sub
+Private Sub txtT6_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
+    ScoreKey 6, KeyCode, Shift
+End Sub
+Private Sub txtExam_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
+    ScoreKey mTests + 1, KeyCode, Shift
+End Sub
+
+' Typing a new value hides the check mark until it is saved
+Private Sub txtCA_Change()
+    ChkAt(0).Visible = False
+End Sub
+Private Sub txtT1_Change()
+    ChkAt(1).Visible = False
+End Sub
+Private Sub txtT2_Change()
+    ChkAt(2).Visible = False
+End Sub
+Private Sub txtT3_Change()
+    ChkAt(3).Visible = False
+End Sub
+Private Sub txtT4_Change()
+    ChkAt(4).Visible = False
+End Sub
+Private Sub txtT5_Change()
+    ChkAt(5).Visible = False
+End Sub
+Private Sub txtT6_Change()
+    ChkAt(6).Visible = False
+End Sub
+Private Sub txtExam_Change()
+    ChkAt(mTests + 1).Visible = False
 End Sub
 
 Private Function TestBox(ByVal i As Long) As Object
@@ -2670,6 +2857,7 @@ Private Sub ClearBoxes()
     Next i
     lblAvg.Caption = ""
     lblRemark.Caption = ""
+    HideChecks
 End Sub
 
 Private Function ShowNum(ByVal v As Variant) As String
@@ -2688,6 +2876,9 @@ Private Sub LoadStudent()
     Next i
     txtExam.Text = ShowNum(g.Cells(mRow, ColOf(TX("hExam"))).Value)
     txtCA.BackColor = vbWhite: txtExam.BackColor = vbWhite
+    For i = 0 To mTests + 1
+        ChkAt(i).Visible = (BoxAt(i).Text <> "")
+    Next i
     ShowResult
 End Sub
 
@@ -2733,7 +2924,7 @@ Private Sub lstStudents_Click()
 End Sub
 
 Private Sub btnSave_Click()
-    Dim g As Worksheet, v As Variant, i As Long, cCA As Long, mx As Double, idx As Long, saved As String
+    Dim g As Worksheet, v As Variant, i As Long, cCA As Long, mx As Double
 
     If mRow = 0 Then MsgBox "Select a student first.", vbExclamation: Exit Sub
     Set g = WsG: cCA = ColOf(TX("hCA")): mx = MaxScore()
@@ -2754,27 +2945,11 @@ Private Sub btnSave_Click()
     ParseScore txtExam.Text, v, mx: g.Cells(mRow, ColOf(TX("hExam"))).Value = v
     Application.EnableEvents = True
 
-    ' 3) Average, rank and remark
-    RecalcAll
-    saved = g.Cells(mRow, 3).Value
-    lblStatus.Caption = TX("saved") & " " & saved
-
-    ' 4) Jump to the next student (fast entry)
-    idx = lstStudents.ListIndex
-    If idx < lstStudents.ListCount - 1 Then
-        lstStudents.ListIndex = idx + 1
-        lstStudents_Click
-        txtCA.SetFocus
-    Else
-        ShowResult
-    End If
-End Sub
-
-Private Sub txtExam_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
-    If KeyCode = vbKeyReturn Then
-        KeyCode = 0
-        btnSave_Click
-    End If
+    ' 3) Average, rank and remark, then the next student
+    For i = 0 To mTests + 1
+        ChkAt(i).Visible = (BoxAt(i).Text <> "")
+    Next i
+    NextStudent
 End Sub
 
 Private Sub btnDelete_Click()
@@ -2929,7 +3104,7 @@ End Sub`,
       },
     ],
     fileUrl: 'files/lesson-03-student-grades.xlsm', // ← ملف .xlsm للدرس 3
-    locked: false,
+    locked: true,
   },
   {
     title: 'البحث والتعديل والحذف في قاعدة بيانات إكسل',
