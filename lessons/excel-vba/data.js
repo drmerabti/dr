@@ -3104,7 +3104,7 @@ End Sub`,
       },
     ],
     fileUrl: 'files/lesson-03-student-grades.xlsm', // ← ملف .xlsm للدرس 3
-    locked: false,
+    locked: true,
   },
   {
     title: 'البحث والتعديل والحذف في قاعدة بيانات إكسل',
