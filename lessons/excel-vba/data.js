@@ -2926,7 +2926,7 @@ Private Sub btnRemarks_Click()
 End Sub`,
       },
     ],
-    fileUrl: '', // ← ملف .xlsm للدرس 3
+    fileUrl: 'files/lesson-03-student-grades.xlsm', // ← ملف .xlsm للدرس 3
     locked: false,
   },
   {
