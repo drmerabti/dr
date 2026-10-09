@@ -22,7 +22,7 @@
       warnT: '⚠ خطوات مهمة بعد التحميل',
       warn1: 'زر الفأرة الأيمن على الملف ← خصائص ← حدد "إلغاء الحظر" ← موافق',
       warn2: 'افتح الملف واضغط "تمكين المحتوى"',
-      err: 'حدث خطأ، حاول مرة أخرى.', loginErr: 'تعذّر تسجيل الدخول، حاول مرة أخرى.',
+      err: 'حدث خطأ، حاول مرة أخرى.', errCode: 'رمز الخطأ', loginErr: 'تعذّر تسجيل الدخول، حاول مرة أخرى.',
       paidWait: 'تم الدفع ✓ جارٍ تأكيد الشراء...', paidOk: 'تم تأكيد الشراء ✓ يمكنك الآن تحميل الملف.',
       paidLate: 'تم الدفع، وسيُفعَّل التحميل خلال لحظات. حدّث الصفحة بعد قليل.',
       failed: 'لم تكتمل عملية الدفع.', preparing: 'جارٍ تجهيز رابط التحميل...',
@@ -38,7 +38,7 @@
       warnT: '⚠ Important steps after downloading',
       warn1: 'Right-click the file → Properties → tick "Unblock" → OK',
       warn2: 'Open the file and click "Enable Content"',
-      err: 'Something went wrong, please try again.', loginErr: 'Sign-in failed, please try again.',
+      err: 'Something went wrong, please try again.', errCode: 'error code', loginErr: 'Sign-in failed, please try again.',
       paidWait: 'Payment received ✓ Confirming your purchase...', paidOk: 'Purchase confirmed ✓ You can now download the file.',
       paidLate: 'Payment received; the download will be ready in a moment. Refresh the page shortly.',
       failed: 'The payment was not completed.', preparing: 'Preparing the download link...',
@@ -105,7 +105,7 @@
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}`, ...(opts.headers || {}) },
     });
     const data = await r.json().catch(() => ({}));
-    if (!r.ok) { const e = new Error(data.error || 'http_' + r.status); e.code = data.error || 'http_' + r.status; throw e; }
+    if (!r.ok) { const e = new Error(data.error || 'http_' + r.status); e.code = data.error || 'http_' + r.status; e.data = data; throw e; }
     return data;
   }
 
@@ -252,7 +252,8 @@
       btn.disabled = false;
       renderAuthBits();
       if (e.code === 'already_owned') { await refresh(); close(); toast(t('owned'), true); return; }
-      setMsg(id, t('err'));
+      console.error('[purchase] checkout failed:', e.code, e.data || '');
+      setMsg(id, `${t('err')} (${t('errCode')}: ${e.code})`);
     }
   }
 
@@ -263,7 +264,8 @@
       const d = await api('/api/download', { method: 'POST', body: JSON.stringify({ productId: id }) });
       window.location.href = d.url;
     } catch (e) {
-      toast(t(e.code === 'file_missing' ? 'missing' : e.code === 'not_purchased' ? 'notOwned' : 'err'));
+      console.error('[purchase] download failed:', e.code, e.data || '');
+      toast(e.code === 'file_missing' ? t('missing') : e.code === 'not_purchased' ? t('notOwned') : `${t('err')} (${t('errCode')}: ${e.code})`);
       if (e.code === 'not_purchased') { await refresh(); }
     }
   }

@@ -6,7 +6,9 @@
 // This is the only place a DZD purchase is recorded.
 // =====================================================================
 const crypto = require('crypto');
-const { firebase, productById, send, readRaw, purchaseRef } = require('./_lib/server');
+const { firebase, chargilyConfig, productById, send, readRaw, purchaseRef, log } = require('./_lib/server');
+
+const FN = 'webhook';
 
 function validSignature(raw, signature, secret) {
   if (!signature || !secret) return false;
@@ -26,15 +28,26 @@ module.exports = async (req, res) => {
   if (req.method !== 'POST') return send(res, 405, { error: 'method_not_allowed' });
 
   const raw = await readRaw(req);
-  if (!validSignature(raw, req.headers.signature, process.env.CHARGILY_SECRET_KEY)) {
+  const { key } = chargilyConfig();
+  if (!key) {
+    log(FN, 'chargily_key_missing', { hint: 'set CHARGILY_SECRET_KEY in Vercel, then redeploy' });
+    return send(res, 500, { error: 'chargily_key_missing' });       // non-2xx → Chargily retries later
+  }
+  if (!validSignature(raw, req.headers.signature, key)) {
+    log(FN, 'invalid_signature', { hasSignatureHeader: !!req.headers.signature, bodyBytes: raw.length,
+      hint: 'the key must be the same secret key that created the checkout' });
     return send(res, 403, { error: 'invalid_signature' });
   }
 
   let event;
-  try { event = JSON.parse(raw.toString('utf8')); } catch (e) { return send(res, 400, { error: 'invalid_json' }); }
+  try { event = JSON.parse(raw.toString('utf8')); } catch (e) {
+    log(FN, 'invalid_json', { bodyBytes: raw.length });
+    return send(res, 400, { error: 'invalid_json' });
+  }
 
   const checkout = event && event.data;
   if (!event || event.type !== 'checkout.paid' || !checkout || checkout.status !== 'paid') {
+    console.log(`[purchase:${FN}] ignored event`, JSON.stringify({ type: event && event.type, status: checkout && checkout.status }));
     return send(res, 200, { ok: true, ignored: true });
   }
 
@@ -42,7 +55,7 @@ module.exports = async (req, res) => {
   const product = productById(meta.productId);
   const uid = typeof meta.uid === 'string' ? meta.uid : '';
   if (!product || !uid) {
-    console.error('checkout.paid without a known product/uid', checkout.id, meta);
+    log(FN, 'unknown_product_or_uid', { checkoutId: checkout.id, metadata: meta });
     return send(res, 200, { ok: true, ignored: true });
   }
 
@@ -64,9 +77,10 @@ module.exports = async (req, res) => {
         paidAt: admin.firestore.FieldValue.serverTimestamp(),
       });
     });
+    console.log(`[purchase:${FN}] recorded`, JSON.stringify({ uid, productId: product.id, checkoutId: checkout.id }));
     return send(res, 200, { ok: true });
   } catch (e) {
-    console.error('recording purchase failed', e);
-    return send(res, 500, { error: 'server_error' });   // non-2xx → Chargily retries
+    log(FN, 'firestore_error', { uid, productId: product.id, checkoutId: checkout.id, message: e.message });
+    return send(res, 500, { error: 'firestore_error' });   // non-2xx → Chargily retries
   }
 };

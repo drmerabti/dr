@@ -43,3 +43,7 @@ Paid ready-made files (e.g. the lesson 3 workbook) go through one shared system:
   `chargily-webhook` (signature check → `purchases/{uid}/items/{productId}`; the only place a purchase is recorded),
   `purchase-status`, `download` (signed Storage URL, 10 minutes; admins download free).
 - USD goes through the Gumroad overlay (`gumroadUrl`); Gumroad delivers the file itself.
+- Diagnostics: `GET /api/purchase-health` (config yes/no, never a secret); every failure is logged as
+  `[purchase:<function>] <code> {details}` in Vercel → Logs.
+- Read request bodies with `readRaw`/`readJson` from `api/_lib/server.js` only: on Vercel the helpers have already
+  consumed the stream, and `for await (const chunk of req)` returns 0 bytes there.

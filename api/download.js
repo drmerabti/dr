@@ -3,27 +3,36 @@
 // Checks the purchase (or admin), then returns a signed Firebase Storage
 // URL for the product file, valid for 10 minutes → { url }.
 // =====================================================================
-const { firebase, productById, send, readJson, currentUser, isAdmin, hasPurchase } = require('./_lib/server');
+const { firebase, productById, send, readJson, authUser, isAdmin, hasPurchase, log } = require('./_lib/server');
+
+const FN = 'download';
 
 const TEN_MINUTES = 10 * 60 * 1000;
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return send(res, 405, { error: 'method_not_allowed' });
 
-  const user = await currentUser(req);
-  if (!user) return send(res, 401, { error: 'login_required' });
+  const auth = await authUser(req, FN);
+  if (!auth.user) return send(res, auth.status, { error: auth.error });
+  const user = auth.user;
 
   const body = await readJson(req);
   const product = body && productById(body.productId);
-  if (!product || !product.storagePath) return send(res, 404, { error: 'unknown_product' });
+  if (!product || !product.storagePath) {
+    log(FN, 'unknown_product', { productId: body && body.productId });
+    return send(res, 404, { error: 'unknown_product' });
+  }
 
   try {
     const allowed = (await isAdmin(user.uid)) || (await hasPurchase(user.uid, product.id));
-    if (!allowed) return send(res, 403, { error: 'not_purchased' });
+    if (!allowed) { log(FN, 'not_purchased', { uid: user.uid, productId: product.id }); return send(res, 403, { error: 'not_purchased' }); }
 
     const file = firebase().storage().bucket().file(product.storagePath);
     const [exists] = await file.exists();
-    if (!exists) return send(res, 404, { error: 'file_missing' });
+    if (!exists) {
+      log(FN, 'file_missing', { storagePath: product.storagePath, hint: 'upload the file to Firebase Storage at this path' });
+      return send(res, 404, { error: 'file_missing' });
+    }
 
     const fileName = product.fileName || product.storagePath.split('/').pop();
     const [url] = await file.getSignedUrl({
@@ -34,7 +43,7 @@ module.exports = async (req, res) => {
     });
     return send(res, 200, { url });
   } catch (e) {
-    console.error('download link failed', e);
+    log(FN, 'server_error', { uid: user.uid, productId: product.id, message: e.message });
     return send(res, 500, { error: 'server_error' });
   }
 };

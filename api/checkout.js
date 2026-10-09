@@ -3,9 +3,11 @@
 // Creates a Chargily Pay V2 checkout for a product paid in DZD and returns
 // { checkoutUrl }. The purchase itself is recorded only by the webhook
 // (api/chargily-webhook.js), never by the success page.
+// Errors → { error: <code>, ... } and a "[purchase:checkout] <code>" log line.
 // =====================================================================
-const { productById, send, readJson, currentUser, hasPurchase, siteUrl } = require('./_lib/server');
+const { chargilyConfig, productById, send, readJson, authUser, hasPurchase, siteUrl, log } = require('./_lib/server');
 
+const FN = 'checkout';
 const CHARGILY_API = {
   live: 'https://pay.chargily.net/api/v2',
   test: 'https://pay.chargily.net/test/api/v2',
@@ -23,25 +25,35 @@ function backUrl(base, returnPath, state, productId) {
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return send(res, 405, { error: 'method_not_allowed' });
 
-  const secret = process.env.CHARGILY_SECRET_KEY;
-  if (!secret) return send(res, 500, { error: 'not_configured' });
+  const cfg = chargilyConfig();
+  if (!cfg.key) {
+    log(FN, 'chargily_key_missing', { hint: 'set CHARGILY_SECRET_KEY in Vercel (Production and Preview), then redeploy' });
+    return send(res, 500, { error: 'chargily_key_missing' });
+  }
+  if (cfg.mismatch) {
+    log(FN, 'chargily_mode_mismatch', { keyType: cfg.keyType, CHARGILY_MODE: cfg.envMode, hint: 'a test_sk_ key needs CHARGILY_MODE=test, a live_sk_ key needs live (or remove CHARGILY_MODE)' });
+    return send(res, 500, { error: 'chargily_mode_mismatch' });
+  }
 
-  const user = await currentUser(req);
-  if (!user) return send(res, 401, { error: 'login_required' });
+  const auth = await authUser(req, FN);
+  if (!auth.user) return send(res, auth.status, { error: auth.error });
+  const user = auth.user;
 
   const body = await readJson(req);
   const product = body && productById(body.productId);
-  if (!product || !product.chargilyPriceId) return send(res, 404, { error: 'unknown_product' });
+  if (!product || !product.chargilyPriceId) {
+    log(FN, 'unknown_product', { productId: body && body.productId, bodyType: body === null ? 'invalid JSON' : typeof body });
+    return send(res, 404, { error: 'unknown_product' });
+  }
 
   try {
     if (await hasPurchase(user.uid, product.id)) return send(res, 409, { error: 'already_owned' });
   } catch (e) {
-    console.error('purchase lookup failed', e);
-    return send(res, 500, { error: 'server_error' });
+    log(FN, 'firestore_error', { uid: user.uid, message: e.message });
+    return send(res, 500, { error: 'firestore_error' });
   }
 
   const base = siteUrl(req);
-  const mode = process.env.CHARGILY_MODE === 'test' ? 'test' : 'live';
   const payload = {
     items: [{ price: product.chargilyPriceId, quantity: 1 }],
     success_url: backUrl(base, body.returnPath, 'success', product.id),
@@ -53,20 +65,30 @@ module.exports = async (req, res) => {
     metadata: { productId: product.id, uid: user.uid },
   };
 
+  let r, data, text = '';
   try {
-    const r = await fetch(`${CHARGILY_API[mode]}/checkouts`, {
+    r = await fetch(`${CHARGILY_API[cfg.mode]}/checkouts`, {
       method: 'POST',
-      headers: { Authorization: `Bearer ${secret}`, 'Content-Type': 'application/json', Accept: 'application/json' },
+      headers: { Authorization: `Bearer ${cfg.key}`, 'Content-Type': 'application/json', Accept: 'application/json' },
       body: JSON.stringify(payload),
     });
-    const data = await r.json().catch(() => ({}));
-    if (!r.ok || !data.checkout_url) {
-      console.error('chargily checkout failed', r.status, data);
-      return send(res, 502, { error: 'payment_provider_error' });
-    }
-    return send(res, 200, { checkoutUrl: data.checkout_url });
+    text = await r.text();
+    try { data = JSON.parse(text); } catch (e) { data = null; }
   } catch (e) {
-    console.error('chargily request failed', e);
-    return send(res, 502, { error: 'payment_provider_error' });
+    log(FN, 'chargily_unreachable', { mode: cfg.mode, message: e.message });
+    return send(res, 502, { error: 'chargily_unreachable' });
   }
+
+  if (!r.ok || !data || !data.checkout_url) {
+    // 401 → wrong/revoked key or key of the other mode; 422 → e.g. price_id unknown in this mode
+    const code = r.status === 401 || r.status === 403 ? 'chargily_auth_failed'
+      : r.status === 422 ? 'chargily_rejected_request' : 'chargily_error';
+    log(FN, code, {
+      httpStatus: r.status, mode: cfg.mode, keyType: cfg.keyType, priceId: product.chargilyPriceId,
+      chargily: data || text.slice(0, 500),
+      hint: r.status === 422 ? 'check that the price_id exists in the same mode (live/test) as the key' : undefined,
+    });
+    return send(res, 502, { error: code, httpStatus: r.status, message: (data && data.message) || null });
+  }
+  return send(res, 200, { checkoutUrl: data.checkout_url });
 };
