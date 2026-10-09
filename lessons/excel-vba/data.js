@@ -25,6 +25,9 @@
 //                  اتركها [] فتظهر رسالة "لا توجد أكواد بعد".
 //   fileUrl      : رابط ملف التطبيق .xlsm (مثال: 'files/lesson-01.xlsm' داخل هذا المجلد)
 //                  اتركه '' فيختفي زر التحميل تلقائيًا.
+//   product      : (اختياري) معرّف منتج مدفوع من products.json في جذر الموقع (مثال: 'grades-manager').
+//                  يظهر زر "تحميل الملف الجاهز": يفتح نافذة الشراء، أو يحمّل مباشرة لمن اشترى وللأدمن.
+//                  الملف نفسه في Firebase Storage وليس في المستودع.
 //   locked       : true = الدرس مقفل بشارة "قريبًا" لكل الزوار، ومفتوح للأدمن فقط.
 //                  اجعله false عند نشر الدرس.
 //
@@ -1030,7 +1033,7 @@ End Function`,
   {
     title: 'برنامج تسيير نقاط التلاميذ وكشوف النقاط',
     title_en: 'Student Grades & Report Cards Manager',
-    youtubeUrl: 'https://youtu.be/TsVqQ0XoOzo', // ← رابط فيديو يوتيوب للدرس 3
+    youtubeUrl: 'https://youtu.be/s1j1I7qoibk', // ← رابط فيديو يوتيوب للدرس 3
     description:
       'افتح مصنفًا جديدًا واحفظه بصيغة .xlsm\n' +
       'اضغط Alt + F11 ثم Insert ← Module، والصق الكود الأول كاملًا\n' +
@@ -3103,8 +3106,9 @@ Private Sub btnRemarks_Click()
 End Sub`,
       },
     ],
-    fileUrl: 'files/lesson-03-student-grades.xlsm', // ← ملف .xlsm للدرس 3
-    locked: true,
+    fileUrl: '',
+    product: 'grades-manager', // ← الملف الجاهز مدفوع: زر "تحميل الملف الجاهز" يفتح نافذة الشراء (products.json)
+    locked: false,
   },
   {
     title: 'البحث والتعديل والحذف في قاعدة بيانات إكسل',

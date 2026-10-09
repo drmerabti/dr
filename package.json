@@ -1,0 +1,8 @@
+{
+  "name": "merabti-site",
+  "private": true,
+  "description": "Static site + Vercel API functions (api/) for paid downloads",
+  "dependencies": {
+    "firebase-admin": "^13.10.0"
+  }
+}

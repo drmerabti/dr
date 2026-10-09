@@ -1,0 +1,120 @@
+/* =====================================================================
+   Purchase window (shared): see shared/purchase.js
+   Layout direction is fixed (RTL) so nothing moves when the language
+   changes; only the texts change direction.
+   ===================================================================== */
+.pm-overlay{
+  --pm-ink:#1E2F40; --pm-soft:#64768A; --pm-line:rgba(30,47,64,.10);
+  --pm-green:#1D6F42; --pm-green-2:#21A366; --pm-gold:#C99A06;
+  --pm-grad:linear-gradient(120deg, #0E5A30 0%, #1D6F42 45%, #21A366 100%);
+  --pm-usd:linear-gradient(120deg, #1E3A8A 0%, #2563EB 55%, #3B82F6 100%);
+  position:fixed; inset:0; z-index:1000;
+  /* anchored from the top + fixed text heights: nothing moves when the language changes */
+  display:flex; align-items:flex-start; justify-content:center; padding:max(24px, 7vh) 16px 24px;
+  background:rgba(12,24,18,.55);
+  -webkit-backdrop-filter:blur(7px); backdrop-filter:blur(7px);
+  opacity:0; visibility:hidden; transition:opacity .22s ease, visibility 0s linear .22s;
+  font-family:'Tajawal','Inter',sans-serif; color:var(--pm-ink);
+}
+html[lang="en"] .pm-overlay{ font-family:'Inter','Tajawal',sans-serif; }
+.pm-overlay.open{ opacity:1; visibility:visible; transition:opacity .22s ease; }
+html.pm-lock, html.pm-lock body{ overflow:hidden !important; }
+
+.pm-modal{
+  position:relative; width:min(720px, 100%); max-height:calc(100dvh - max(24px, 7vh) - 24px); overflow-y:auto;
+  background:#fff; border-radius:22px; padding:24px;
+  box-shadow:0 30px 80px rgba(8,30,18,.30), 0 8px 24px rgba(8,30,18,.12);
+  transform:translateY(14px) scale(.97); transition:transform .26s cubic-bezier(.2,.8,.25,1);
+}
+.pm-overlay.open .pm-modal{ transform:none; }
+.pm-modal *{ box-sizing:border-box; }
+.pm-modal svg{ flex:none; }
+
+.pm-close{
+  position:absolute; top:14px; left:14px; width:38px; height:38px; border-radius:12px;
+  border:1px solid var(--pm-line); background:#F4F7F6; color:var(--pm-soft);
+  font-size:1.05rem; line-height:1; cursor:pointer; display:grid; place-items:center;
+  transition:background .2s, color .2s, transform .2s;
+}
+.pm-close:hover{ background:#E8EFEB; color:var(--pm-ink); transform:rotate(90deg); }
+
+/* ---------- header: image, name, short description ---------- */
+.pm-head{ display:flex; align-items:center; gap:16px; padding-left:44px; margin-bottom:20px; }
+.pm-img{ width:76px; height:76px; border-radius:18px; flex:none; object-fit:cover; box-shadow:0 8px 20px rgba(29,111,66,.22); }
+.pm-head-tx{ min-width:0; flex:1; }
+.pm-title{ margin:0 0 6px; font-family:'Cairo','Tajawal','Inter',sans-serif; font-weight:900; font-size:1.35rem; line-height:1.35; color:var(--pm-green);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.pm-desc{ margin:0; font-size:.95rem; line-height:1.6; height:calc(1.6em * 2); overflow:hidden; color:var(--pm-soft); }
+
+/* ---------- the two payment cards ---------- */
+.pm-cards{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.pm-card{
+  display:flex; flex-direction:column; align-items:center; text-align:center; gap:6px;
+  border:1.5px solid var(--pm-line); border-radius:18px; padding:20px 16px 18px; background:#fff;
+  transition:border-color .2s, box-shadow .2s, transform .2s;
+}
+.pm-card:hover{ transform:translateY(-2px); box-shadow:0 14px 30px rgba(21,36,49,.10); }
+.pm-dzd{ background:linear-gradient(180deg, #FFFBEA 0%, #FFFFFF 60%); border-color:#F1DE9B; }
+.pm-dzd:hover{ border-color:#E2C254; }
+.pm-usd{ background:linear-gradient(180deg, #EEF4FF 0%, #FFFFFF 60%); border-color:#C9DAFB; }
+.pm-usd:hover{ border-color:#93B4F5; }
+.pm-card-ic{ width:86px; height:58px; margin-bottom:4px; }
+.pm-card-ic svg{ width:100%; height:100%; display:block; }
+.pm-card-t{ font-family:'Cairo','Tajawal','Inter',sans-serif; font-weight:800; font-size:1.08rem; line-height:1.5; height:1.5em; }
+.pm-card-s{ font-size:.84rem; color:var(--pm-soft); line-height:1.4; height:1.4em; max-width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.pm-card-t, .pm-card-s, .pm-note{ width:100%; }
+.pm-price{ display:flex; align-items:baseline; justify-content:center; gap:5px; margin:6px 0 10px; font-family:'Inter',sans-serif; }
+.pm-price b{ font-size:2.1rem; font-weight:900; letter-spacing:-.5px; color:var(--pm-ink); }
+.pm-price span{ font-size:1rem; font-weight:800; color:var(--pm-soft); font-family:'Tajawal','Inter',sans-serif; }
+
+.pm-modal .pm-pay{
+  width:100%; height:48px; border:0; border-radius:14px; cursor:pointer;
+  display:flex !important; align-items:center; justify-content:center; gap:8px;
+  font:800 1rem/1 'Tajawal','Inter',sans-serif !important; color:#fff !important; text-decoration:none !important;
+  box-shadow:0 8px 18px rgba(21,36,49,.18) !important; padding:0 14px !important; margin:0 !important;
+  transition:transform .2s, filter .2s, box-shadow .2s; text-shadow:none !important;
+}
+.pm-modal .pm-pay:hover{ transform:translateY(-1px); filter:brightness(1.06); }
+.pm-modal .pm-pay:disabled{ cursor:wait; filter:saturate(.6) brightness(.95); transform:none; }
+.pm-modal .pm-pay-dzd{ background:var(--pm-grad) !important; }
+.pm-modal .pm-pay-usd{ background:var(--pm-usd) !important; border:0 !important; }
+.pm-modal .pm-pay svg{ width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; }
+.pm-modal .gumroad-button-logo{ display:none !important; }
+.pm-note{ font-size:.8rem; color:var(--pm-soft); margin-top:6px; line-height:1.45; height:calc(1.45em * 2); overflow:hidden; }
+
+/* ---------- yellow "after download" box ---------- */
+.pm-warn{
+  margin-top:16px; border:1.5px solid #F2C94C; background:#FFF8DB; border-radius:16px; padding:14px 18px;
+}
+.pm-warn-t{ font-family:'Cairo','Tajawal','Inter',sans-serif; font-weight:900; font-size:1rem; color:#8A5A00; margin-bottom:6px; }
+.pm-warn ol{ margin:0; padding-inline-start:22px; color:#5C4300; font-size:.93rem; line-height:1.75; }
+.pm-warn li{ min-height:calc(1.75em * 1); }
+.pm-warn li::marker{ font-weight:800; color:#B7791F; }
+
+.pm-msg{ margin-top:12px; min-height:0; font-size:.9rem; font-weight:700; color:#B42318; text-align:center; }
+.pm-msg:empty{ display:none; }
+
+/* ---------- small notice (after returning from payment, download errors) ---------- */
+.pm-toast{
+  position:fixed; left:50%; bottom:24px; z-index:1001; max-width:min(560px, calc(100vw - 32px));
+  transform:translate(-50%, 20px); opacity:0; pointer-events:none;
+  background:#1E2F40; color:#fff; padding:12px 18px; border-radius:14px; font-weight:700; font-size:.92rem; line-height:1.5;
+  box-shadow:0 14px 34px rgba(0,0,0,.22); transition:opacity .25s, transform .25s; text-align:center;
+  font-family:'Tajawal','Inter',sans-serif;
+}
+.pm-toast.show{ opacity:1; transform:translate(-50%, 0); }
+.pm-toast.ok{ background:#1D6F42; }
+
+/* ---------- phone: full width, cards stacked ---------- */
+@media (max-width:640px){
+  .pm-overlay{ padding:0; align-items:flex-start; }
+  .pm-modal{ width:100%; max-height:100dvh; min-height:100dvh; border-radius:0; padding:20px 16px calc(18px + env(safe-area-inset-bottom)); }
+  .pm-cards{ grid-template-columns:1fr; }
+  .pm-head{ gap:12px; }
+  .pm-img{ width:60px; height:60px; border-radius:15px; }
+  .pm-title{ font-size:1.15rem; }
+  .pm-desc{ font-size:.88rem; height:calc(1.6em * 3); }
+}
+@media (prefers-reduced-motion:reduce){
+  .pm-overlay, .pm-modal, .pm-card, .pm-pay, .pm-close, .pm-toast{ transition:none !important; }
+}

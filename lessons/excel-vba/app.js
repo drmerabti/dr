@@ -17,7 +17,7 @@ const I18N = {
     steps: 'خطوات الدرس', codes: 'الأكواد', noCodes: 'لا توجد أكواد لهذا الدرس بعد.',
     copy: 'نسخ', copied: 'تم النسخ ✓', copyAll: 'نسخ كل الأكواد', copyErr: 'تعذّر النسخ، انسخ الكود يدويًا.',
     expand: 'تكبير', shrink: 'تصغير',
-    download: 'تحميل ملف التطبيق .xlsm',
+    download: 'تحميل ملف التطبيق .xlsm', getFile: 'تحميل الملف الجاهز', downloadNow: 'تحميل',
     prev: 'الدرس السابق', next: 'الدرس التالي',
     watched: 'تمت المشاهدة ✓', markWatched: 'تحديد كمُشاهَد',
     soon: 'قريبًا', soonShort: 'قريبًا', lockedT: 'هذا الدرس قريبًا ✨', lockedP: 'نعمل على تجهيز هذا الدرس بعناية، وسيكون متاحًا قريبًا.',
@@ -30,7 +30,7 @@ const I18N = {
     steps: 'Lesson steps', codes: 'Code', noCodes: 'No code for this lesson yet.',
     copy: 'Copy', copied: 'Copied ✓', copyAll: 'Copy all code', copyErr: 'Copy failed — please copy the code manually.',
     expand: 'Expand', shrink: 'Shrink',
-    download: 'Download the .xlsm file',
+    download: 'Download the .xlsm file', getFile: 'Get the ready-made file', downloadNow: 'Download',
     prev: 'Previous lesson', next: 'Next lesson',
     watched: 'Watched ✓', markWatched: 'Mark as watched',
     soon: 'Coming soon', soonShort: 'Soon', lockedT: 'This lesson is coming soon ✨', lockedP: 'We are carefully preparing this lesson; it will be available soon.',
@@ -216,7 +216,8 @@ function renderLesson() {
       </section>
     </div>
 
-    ${l.fileUrl ? `<a class="dl-btn" href="${esc(l.fileUrl)}" download>${ICON.download}<span>${T('download')}</span></a>` : ''}
+    ${l.product ? `<button type="button" class="dl-btn" id="buyBtn">${ICON.download}<span>${T(canGet(l.product) ? 'downloadNow' : 'getFile')}</span></button>`
+      : l.fileUrl ? `<a class="dl-btn" href="${esc(l.fileUrl)}" download>${ICON.download}<span>${T('download')}</span></a>` : ''}
 
     ${pager}`;
 
@@ -250,9 +251,25 @@ function bindLesson(codes = []) {
     h.addEventListener('click', () => toggleAcc(h.closest('.code-card')));
     h.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target === h) { e.preventDefault(); toggleAcc(h.closest('.code-card')); } });
   });
+  const buy = $('#buyBtn');
+  if (buy) buy.addEventListener('click', () => getFile(LESSONS[S.idx].product));
   const all = $('#copyAllBtn');
   if (all) all.addEventListener('click', () => copyText(codes.map(c => `' ===== ${c.title || ''} =====\n${String(c.code).replace(/\s+$/, '')}`).join('\n\n'), all));
   $$('#lesson .max-btn').forEach(b => b.addEventListener('click', e => { e.stopPropagation(); toggleCodeMax(b.closest('.code-card'), b); }));
+}
+
+/* =====================================================================
+   الملف الجاهز المدفوع (shared/purchase.js): تحميل مباشر لمن اشترى أو للأدمن،
+   وإلا تُفتح نافذة الشراء
+===================================================================== */
+const canGet = id => S.admin || !!(window.MPurchase && MPurchase.canDownload(id));
+function getFile(id) {
+  if (!window.MPurchase) return;
+  if (canGet(id)) MPurchase.download(id); else MPurchase.open(id);
+}
+function updateBuyBtn() {
+  const b = $('#buyBtn'), l = LESSONS[S.idx];
+  if (b && l && l.product) b.querySelector('span').textContent = T(canGet(l.product) ? 'downloadNow' : 'getFile');
 }
 
 function toggleAcc(card, force) {
@@ -436,5 +453,6 @@ function init() {
 
   applyLang();
   watchAdmin();
+  if (window.MPurchase) MPurchase.onChange(updateBuyBtn);
 }
 init();
