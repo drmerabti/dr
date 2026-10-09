@@ -2,17 +2,15 @@
   "products": [
     {
       "id": "grades-manager",
+      "serverId": "gradesManager",
       "title": "برنامج تسيير نقاط التلاميذ",
       "title_en": "Student Grades Manager",
       "description": "ملف إكسل جاهز: إدخال النقاط، المعدلات والترتيب، الملاحظات، كشوف النقاط PDF والإحصائيات.",
       "description_en": "Ready-to-use Excel file: grade entry, averages and ranks, remarks, PDF report cards and statistics.",
       "image": "/shared/products/grades-manager.svg",
       "priceDZD": 500,
-      "chargilyPriceId": "01m4gp4rm39he1rzpavz3zt9kw",
       "priceUSD": 2.5,
-      "gumroadUrl": "https://drmerabti.gumroad.com/l/grades-manager",
-      "storagePath": "products/grades-manager.xlsm",
-      "fileName": "grades-manager.xlsm"
+      "gumroadUrl": "https://drmerabti.gumroad.com/l/grades-manager"
     }
   ]
 }

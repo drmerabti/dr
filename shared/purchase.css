@@ -105,6 +105,27 @@ html.pm-lock, html.pm-lock body{ overflow:hidden !important; }
 .pm-toast.show{ opacity:1; transform:translate(-50%, 0); }
 .pm-toast.ok{ background:#1D6F42; }
 
+/* ---------- payment confirmation notice (stays until closed) ---------- */
+.pm-notice{
+  position:fixed; left:50%; bottom:24px; z-index:1001; width:max-content; max-width:min(560px, calc(100vw - 32px));
+  transform:translate(-50%, 20px); opacity:0; pointer-events:none; transition:opacity .25s, transform .25s;
+  display:flex; align-items:center; gap:12px; padding:12px 14px 12px 18px; border-radius:16px;
+  background:#1E2F40; color:#fff; box-shadow:0 14px 34px rgba(0,0,0,.24);
+  font-family:'Tajawal','Inter',sans-serif; font-weight:700; font-size:.95rem; line-height:1.5;
+}
+.pm-notice.show{ opacity:1; transform:translate(-50%, 0); pointer-events:auto; }
+.pm-notice.ok{ background:#1D6F42; }
+.pm-notice-tx{ flex:1; min-width:0; }
+.pm-notice-spin{ display:none; width:18px; height:18px; flex:none; border-radius:50%; border:2.5px solid rgba(255,255,255,.35); border-top-color:#fff; animation:pm-spin .8s linear infinite; }
+.pm-notice.busy .pm-notice-spin{ display:block; }
+@keyframes pm-spin{ to{ transform:rotate(360deg); } }
+.pm-notice-btn{
+  flex:none; height:38px; padding:0 16px; border:0; border-radius:11px; cursor:pointer;
+  background:#fff; color:#1D6F42; font:800 .92rem/1 'Tajawal','Inter',sans-serif;
+}
+.pm-notice-btn[hidden]{ display:none; }
+.pm-notice-x{ flex:none; width:30px; height:30px; border:0; border-radius:9px; cursor:pointer; background:rgba(255,255,255,.14); color:#fff; font-size:.85rem; }
+
 /* ---------- phone: full width, cards stacked ---------- */
 @media (max-width:640px){
   .pm-overlay{ padding:0; align-items:flex-start; }
@@ -116,5 +137,6 @@ html.pm-lock, html.pm-lock body{ overflow:hidden !important; }
   .pm-desc{ font-size:.88rem; height:calc(1.6em * 3); }
 }
 @media (prefers-reduced-motion:reduce){
-  .pm-overlay, .pm-modal, .pm-card, .pm-pay, .pm-close, .pm-toast{ transition:none !important; }
+  .pm-overlay, .pm-modal, .pm-card, .pm-pay, .pm-close, .pm-toast, .pm-notice{ transition:none !important; }
+  .pm-notice-spin{ animation-duration:2s; }
 }

@@ -4,6 +4,3 @@ backup-design
 sora2nas
 wrangler.toml
 *.md
-api
-package.json
-node_modules

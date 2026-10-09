@@ -31,22 +31,18 @@ Do not copy these rules into a tool's own stylesheet; change them in `shared/for
 
 ## Paid downloads (products.json)
 
-Paid ready-made files (e.g. the lesson 3 workbook) go through one shared system:
+Paid ready-made files (e.g. the lesson 3 workbook) go through one shared system. The site is static;
+the backend is **Firebase Functions** (us-central1), outside this repo.
 
-- `products.json` (site root): one entry per product — `id, title, image, priceDZD, chargilyPriceId,
-  priceUSD, gumroadUrl, storagePath` (+ optional `title_en`, `description`, `description_en`, `fileName`).
-- The file itself lives in Firebase Storage at `storagePath`, never in the repo.
-- Page side: `shared/purchase.css` + `shared/purchase.js` (after `firebase-init.js`) → `MPurchase.open(id)`,
+- `products.json` (site root): one entry per product — `id` (used in the page, e.g. `product: 'grades-manager'`
+  in `lessons/excel-vba/data.js`), `serverId` (the product key of the Firebase Functions, e.g. `gradesManager`),
+  `title`, `description` (+ `_en`), `image`, `priceDZD`, `priceUSD`, `gumroadUrl`.
+- Page side: `shared/purchase.css` + `shared/purchase.js`, loaded after the Firebase compat SDK
+  (app, auth, firestore, **functions**) and `firebase-init.js` → `MPurchase.open(id)`, `MPurchase.act(id)`,
   `MPurchase.download(id)`, `MPurchase.canDownload(id)`, `MPurchase.onChange(fn)`.
-  In `lessons/excel-vba/data.js` a lesson only needs `product: '<id>'`.
-- Server side (Vercel functions in `api/`): `checkout` (Chargily V2, DZD, signed-in users only),
-  `chargily-webhook` (signature check → `purchases/{uid}/items/{productId}`; the only place a purchase is recorded),
-  `purchase-status`, `download` (signed Storage URL, 10 minutes; admins download free).
+- DZD: callable `createSubscriptionCheckout({ product: serverId })` → `{ checkoutUrl }` (sign-in required first).
+- Bought = Firestore `users/{uid}/purchases/{serverId}.paid === true` (written by the backend); admins = `users/{uid}.isAdmin`.
+- Download: callable `getProductDownload({ product: serverId })` → `{ fileName, base64 }`, saved as a Blob;
+  `permission-denied` = not bought → the purchase window opens. The file is never in the repo.
+- Back from Chargily: `?paid=<serverId>` (wait for `paid` with onSnapshot) or `?payfail=1`.
 - USD goes through the Gumroad overlay (`gumroadUrl`); Gumroad delivers the file itself.
-- Hosting: merabti.com is served by the Cloudflare Worker (`worker.js`, deployed by Workers Builds); it forwards
-  the purchase paths to Vercel (`VERCEL_API_ORIGIN` in `wrangler.toml`), where `api/` runs. Without that forwarding
-  a POST to /api/* gets Cloudflare's static-assets 405. A new purchase endpoint must be added to `PURCHASE_API`.
-- Diagnostics: `GET /api/purchase-health` (config yes/no, never a secret); every failure is logged as
-  `[purchase:<function>] <code> {details}` in Vercel → Logs.
-- Read request bodies with `readRaw`/`readJson` from `api/_lib/server.js` only: on Vercel the helpers have already
-  consumed the stream, and `for await (const chunk of req)` returns 0 bytes there.

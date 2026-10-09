@@ -265,7 +265,7 @@ function bindLesson(codes = []) {
 const canGet = id => S.admin || !!(window.MPurchase && MPurchase.canDownload(id));
 function getFile(id) {
   if (!window.MPurchase) return;
-  if (canGet(id)) MPurchase.download(id); else MPurchase.open(id);
+  if (S.admin) MPurchase.download(id); else MPurchase.act(id);
 }
 function updateBuyBtn() {
   const b = $('#buyBtn'), l = LESSONS[S.idx];
