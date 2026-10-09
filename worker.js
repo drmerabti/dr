@@ -14,33 +14,6 @@ function uid() {
   return crypto.randomUUID().replace(/-/g, '').slice(0, 12);
 }
 
-/* ---------------------------------------------------------------------
-   الملفات المدفوعة: دوال الشراء (api/*.js) تعمل على Vercel وليس هنا.
-   merabti.com يخدمه هذا الـ Worker، فتُمرَّر هذه المسارات كما هي إلى Vercel
-   (الطريقة، الترويسات، والجسم الخام بالبايت حتى يبقى توقيع Chargily صحيحًا).
-   VERCEL_API_ORIGIN في wrangler.toml ← [vars]
---------------------------------------------------------------------- */
-const PURCHASE_API = /^\/api\/(checkout|chargily-webhook|purchase-status|download|purchase-health)\/?$/;
-
-async function proxyToVercel(request, env, url) {
-  const origin = String(env.VERCEL_API_ORIGIN || '').replace(/\/+$/, '');
-  if (!origin) return json({ error: 'vercel_origin_not_configured' }, 500);
-  const headers = new Headers(request.headers);
-  headers.delete('host');
-  headers.set('x-merabti-origin', url.origin);   // where the buyer comes back after paying
-  const init = { method: request.method, headers, redirect: 'manual' };
-  if (request.method !== 'GET' && request.method !== 'HEAD') init.body = await request.arrayBuffer();
-  let r;
-  try {
-    r = await fetch(origin + url.pathname + url.search, init);
-  } catch (e) {
-    return json({ error: 'api_unreachable', message: String(e && e.message || e) }, 502);
-  }
-  const out = new Headers(r.headers);
-  out.set('x-purchase-api', 'vercel');
-  return new Response(r.body, { status: r.status, statusText: r.statusText, headers: out });
-}
-
 async function ensureTables(db) {
   await db.batch([
     db.prepare(`CREATE TABLE IF NOT EXISTS surveys (
@@ -68,9 +41,6 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     const path = url.pathname;
-
-    // ============ الملفات المدفوعة → دوال Vercel ============
-    if (PURCHASE_API.test(path)) return proxyToVercel(request, env, url);
 
     // ============ إنشاء استبيان ============
     if (path === '/api/surveys' && request.method === 'POST') {

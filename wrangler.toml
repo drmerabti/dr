@@ -2,12 +2,6 @@ name = "dr"
 main = "worker.js"
 compatibility_date = "2025-01-01"
 
-# Paid downloads: /api/checkout, /api/chargily-webhook, /api/purchase-status,
-# /api/download and /api/purchase-health are forwarded by worker.js to the
-# Vercel deployment of main (the functions in api/ run there).
-[vars]
-VERCEL_API_ORIGIN = "https://dr-git-main-merabti.vercel.app"
-
 [assets]
 directory = "./"
 binding = "ASSETS"

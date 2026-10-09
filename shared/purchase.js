@@ -5,9 +5,13 @@
 //   MPurchase.canDownload(id)  → true when bought (or admin)
 //   MPurchase.act(id)          → downloads if bought, otherwise opens the window
 //   MPurchase.onChange(fn)     → called when the bought/admin state changes
-// Needs firebase-init.js (window.fbAuth) loaded before this file, plus
-// shared/purchase.css. Server side: api/checkout.js, api/chargily-webhook.js,
-// api/purchase-status.js, api/download.js.
+// Needs the Firebase compat SDK (app, auth, firestore, functions) + firebase-init.js
+// loaded before this file, plus shared/purchase.css.
+// Server side = Firebase Functions (us-central1), each product has a "serverId":
+//   createSubscriptionCheckout({ product })  → { checkoutUrl }        (Chargily, DZD)
+//   getProductDownload({ product })          → { fileName, base64 }   (bought or admin)
+//   Firestore users/{uid}/purchases/{serverId}.paid === true          (written by the backend)
+// Chargily brings the buyer back with ?paid=<serverId> or ?payfail=1.
 // =====================================================================
 (function () {
   'use strict';
@@ -23,10 +27,9 @@
       warn1: 'زر الفأرة الأيمن على الملف ← خصائص ← حدد "إلغاء الحظر" ← موافق',
       warn2: 'افتح الملف واضغط "تمكين المحتوى"',
       err: 'حدث خطأ، حاول مرة أخرى.', errCode: 'رمز الخطأ', loginErr: 'تعذّر تسجيل الدخول، حاول مرة أخرى.',
-      paidWait: 'تم الدفع ✓ جارٍ تأكيد الشراء...', paidOk: 'تم تأكيد الشراء ✓ يمكنك الآن تحميل الملف.',
-      paidLate: 'تم الدفع، وسيُفعَّل التحميل خلال لحظات. حدّث الصفحة بعد قليل.',
-      failed: 'لم تكتمل عملية الدفع.', preparing: 'جارٍ تجهيز رابط التحميل...',
-      missing: 'الملف غير متوفر حاليًا، تواصل معنا.', notOwned: 'لم نجد عملية شراء لهذا الملف في حسابك.',
+      paidWait: 'جارٍ تأكيد الدفع...', paidOk: '✓ تم الدفع بنجاح', downloadNow: 'تحميل الآن',
+      paidLate: 'لم يصل تأكيد الدفع بعد. إن خُصم المبلغ فسيظهر زر التحميل خلال دقائق، حدّث الصفحة لاحقًا.',
+      failed: 'لم تكتمل عملية الدفع', preparing: 'جارٍ تجهيز الملف...',
       owned: 'لقد اشتريت هذا الملف سابقًا ✓',
     },
     en: {
@@ -39,10 +42,9 @@
       warn1: 'Right-click the file → Properties → tick "Unblock" → OK',
       warn2: 'Open the file and click "Enable Content"',
       err: 'Something went wrong, please try again.', errCode: 'error code', loginErr: 'Sign-in failed, please try again.',
-      paidWait: 'Payment received ✓ Confirming your purchase...', paidOk: 'Purchase confirmed ✓ You can now download the file.',
-      paidLate: 'Payment received; the download will be ready in a moment. Refresh the page shortly.',
-      failed: 'The payment was not completed.', preparing: 'Preparing the download link...',
-      missing: 'The file is not available right now, please contact us.', notOwned: 'No purchase of this file was found on your account.',
+      paidWait: 'Confirming your payment...', paidOk: '✓ Payment successful', downloadNow: 'Download now',
+      paidLate: 'The payment confirmation has not arrived yet. If you were charged, the download will appear within minutes; refresh the page later.',
+      failed: 'The payment was not completed', preparing: 'Preparing the file...',
       owned: 'You already bought this file ✓',
     },
   };
@@ -96,32 +98,56 @@
   function onChange(fn) { S.listeners.push(fn); }
   function emit() { S.listeners.forEach(fn => { try { fn(); } catch (e) {} }); }
 
-  async function api(path, opts = {}) {
-    const user = auth() && auth().currentUser;
-    if (!user) { const e = new Error('login_required'); e.code = 'login_required'; throw e; }
-    const token = await user.getIdToken();
-    const r = await fetch(path, {
-      ...opts,
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}`, ...(opts.headers || {}) },
-    });
-    const data = await r.json().catch(() => ({}));
-    if (!r.ok) { const e = new Error(data.error || 'http_' + r.status); e.code = data.error || 'http_' + r.status; e.data = data; throw e; }
-    return data;
+  const db = () => (window.fbDb || (window.firebase && firebase.firestore && firebase.firestore()) || null);
+  const serverId = id => (S.products[id] && S.products[id].serverId) || id;
+  const purchaseDoc = (uid, id) => db().collection('users').doc(uid).collection('purchases').doc(serverId(id));
+  // "functions/permission-denied" (compat SDK) → "permission-denied"
+  const errCode = e => String((e && e.code) || 'unknown').replace(/^functions\//, '');
+
+  // Firebase callable function, same way as the other tools of the site
+  function callable(name) {
+    if (!window.firebase || !firebase.functions) throw Object.assign(new Error('functions_sdk_missing'), { code: 'functions_sdk_missing' });
+    return firebase.functions().httpsCallable(name);
   }
 
+  // Bought (users/{uid}/purchases/{serverId}.paid) and admin (users/{uid}.isAdmin), read from Firestore
   async function refresh() {
     const ids = Object.keys(S.products);
     const before = JSON.stringify([S.admin, S.owned]);
-    if (!S.user || !ids.length) {
+    const user = auth() && auth().currentUser;
+    if (!user || !db()) {
       S.admin = false; S.owned = {};
     } else {
       try {
-        const d = await api('/api/purchase-status?products=' + encodeURIComponent(ids.join(',')));
-        S.admin = !!d.admin; S.owned = d.owned || {};
-      } catch (e) { /* keep the previous state */ }
+        const u = await db().collection('users').doc(user.uid).get();
+        S.admin = !!(u.exists && u.data().isAdmin === true);
+      } catch (e) { S.admin = false; }
+      await Promise.all(ids.map(async id => {
+        try { const d = await purchaseDoc(user.uid, id).get(); S.owned[id] = !!(d.exists && d.data().paid === true); }
+        catch (e) { /* keep the previous value */ }
+      }));
     }
     if (JSON.stringify([S.admin, S.owned]) !== before) emit();
     renderAuthBits();
+  }
+
+  // Resolves true as soon as purchases/{serverId}.paid becomes true (false after the timeout)
+  function waitForPaid(id, timeoutMs) {
+    return new Promise(resolve => {
+      const user = auth() && auth().currentUser;
+      if (!user || !db()) return resolve(false);
+      let done = false, unsub = () => {};
+      const finish = v => { if (done) return; done = true; clearTimeout(timer); try { unsub(); } catch (e) {} resolve(v); };
+      const timer = setTimeout(() => finish(false), timeoutMs);
+      unsub = purchaseDoc(user.uid, id).onSnapshot(snap => {
+        if (snap.exists && snap.data().paid === true) {
+          const changed = !S.owned[id];
+          S.owned[id] = true;
+          if (changed) emit();
+          finish(true);
+        }
+      }, () => {});
+    });
   }
 
   /* ------------------------------ window ----------------------------- */
@@ -243,34 +269,60 @@
     btn.disabled = true;
     label.textContent = t('redirect');
     try {
-      const d = await api('/api/checkout', {
-        method: 'POST',
-        body: JSON.stringify({ productId: id, returnPath: location.pathname + location.hash, lang: lang() }),
-      });
-      window.location.href = d.checkoutUrl;
+      const res = await callable('createSubscriptionCheckout')({ product: serverId(id) });
+      const url = res && res.data && res.data.checkoutUrl;
+      if (!url) throw Object.assign(new Error('no checkoutUrl'), { code: 'no_checkout_url' });
+      window.location.href = url;
     } catch (e) {
       btn.disabled = false;
       renderAuthBits();
-      if (e.code === 'already_owned') { await refresh(); close(); toast(t('owned'), true); return; }
-      console.error('[purchase] checkout failed:', e.code, e.data || '');
-      setMsg(id, `${t('err')} (${t('errCode')}: ${e.code})`);
+      console.error('[purchase] createSubscriptionCheckout failed:', e && e.code, e && e.message, e && e.details);
+      setMsg(id, `${t('err')} (${t('errCode')}: ${errCode(e)})`);
     }
   }
 
   /* ----------------------------- download ---------------------------- */
+  // getProductDownload → { fileName, base64 } → Blob → saved under the same name
+  function saveBase64(fileName, base64) {
+    const bin = atob(base64);
+    const bytes = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    const blob = new Blob([bytes], { type: 'application/vnd.ms-excel.sheet.macroEnabled.12' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = fileName; a.style.display = 'none';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 30000);
+  }
+
   async function download(id) {
+    if (!auth() || !auth().currentUser) { open(id); return; }
     toast(t('preparing'));
     try {
-      const d = await api('/api/download', { method: 'POST', body: JSON.stringify({ productId: id }) });
-      window.location.href = d.url;
+      const res = await callable('getProductDownload')({ product: serverId(id) });
+      const d = (res && res.data) || {};
+      if (!d.base64) throw Object.assign(new Error('empty file'), { code: 'empty_file' });
+      saveBase64(d.fileName || (serverId(id) + '.xlsm'), d.base64);
+      hideToast();
     } catch (e) {
-      console.error('[purchase] download failed:', e.code, e.data || '');
-      toast(e.code === 'file_missing' ? t('missing') : e.code === 'not_purchased' ? t('notOwned') : `${t('err')} (${t('errCode')}: ${e.code})`);
-      if (e.code === 'not_purchased') { await refresh(); }
+      const code = errCode(e);
+      console.error('[purchase] getProductDownload failed:', e && e.code, e && e.message, e && e.details);
+      if (code === 'permission-denied' || code === 'unauthenticated') {     // not bought yet → purchase window
+        hideToast();
+        if (S.owned[id]) { S.owned[id] = false; emit(); }
+        open(id);
+        return;
+      }
+      toast(`${t('err')} (${t('errCode')}: ${code})`);
     }
   }
 
-  function act(id) { if (canDownload(id)) download(id); else open(id); }
+  // Download button: signed-in buyers (paid = true) and admins download, everyone else gets the window
+  async function act(id) {
+    if (!auth() || !auth().currentUser) { open(id); return; }
+    if (!canDownload(id)) await refresh();
+    if (canDownload(id)) download(id); else open(id);
+  }
 
   /* ------------------------------ notices ---------------------------- */
   let toastTimer;
@@ -284,25 +336,45 @@
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => el.classList.remove('show'), 4200);
   }
+  function hideToast() { const el = document.getElementById('pm-toast'); if (el) el.classList.remove('show'); clearTimeout(toastTimer); }
 
-  // Back from Chargily: ?purchase=success|failed&product=<id>
+  // Notice that stays on screen (payment confirmation), with an optional button
+  function notice(msg, { ok = false, busy = false, button = null } = {}) {
+    let el = document.getElementById('pm-notice');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'pm-notice'; el.className = 'pm-notice'; el.setAttribute('role', 'status'); el.setAttribute('aria-live', 'polite');
+      el.innerHTML = '<span class="pm-notice-spin" aria-hidden="true"></span><span class="pm-notice-tx"></span><button type="button" class="pm-notice-btn"></button><button type="button" class="pm-notice-x" aria-label="✕">✕</button>';
+      el.querySelector('.pm-notice-x').addEventListener('click', () => el.classList.remove('show'));
+      document.body.appendChild(el);
+    }
+    el.setAttribute('dir', lang() === 'ar' ? 'rtl' : 'ltr');
+    el.classList.toggle('ok', ok);
+    el.classList.toggle('busy', busy);
+    el.querySelector('.pm-notice-tx').textContent = msg;
+    const b = el.querySelector('.pm-notice-btn');
+    b.hidden = !button;
+    if (button) { b.textContent = button.label; b.onclick = button.onClick; }
+    el.classList.add('show');
+  }
+
+  // Back from Chargily: ?paid=<serverId>  or  ?payfail=1
   async function handleReturn() {
     const u = new URL(location.href);
-    const state = u.searchParams.get('purchase');
-    const id = u.searchParams.get('product');
-    if (!state) return;
-    u.searchParams.delete('purchase'); u.searchParams.delete('product');
+    const paid = u.searchParams.get('paid');
+    const fail = u.searchParams.get('payfail');
+    if (!paid && !fail) return;
+    u.searchParams.delete('paid'); u.searchParams.delete('payfail');
     try { history.replaceState(history.state, '', u.pathname + u.search + u.hash); } catch (e) {}
-    if (state !== 'success') { toast(t('failed')); return; }
-    toast(t('paidWait'));
+    if (!paid) { notice(t('failed')); return; }
+    const p = Object.values(S.products).find(x => x.serverId === paid || x.id === paid);
+    if (!p) return;
+    notice(t('paidWait'), { busy: true });
     await ready;
-    // the webhook records the purchase; wait for it (up to ~30 s)
-    for (let i = 0; i < 10; i++) {
-      await refresh();
-      if (canDownload(id)) { toast(t('paidOk'), true); return; }
-      await new Promise(r => setTimeout(r, 3000));
-    }
-    toast(t('paidLate'));
+    // the backend marks the purchase paid when Chargily confirms it (may take a few seconds)
+    const ok = (S.owned[p.id] === true) || await waitForPaid(p.id, 90000);
+    if (ok) notice(t('paidOk'), { ok: true, button: { label: t('downloadNow'), onClick: () => download(p.id) } });
+    else notice(t('paidLate'));
   }
 
   /* ------------------------------- start ----------------------------- */
