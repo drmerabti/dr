@@ -123,9 +123,15 @@ async function hasPurchase(uid, productId) {
   return (await purchaseRef(uid, productId).get()).exists;
 }
 
+// Site the buyer returns to after paying (also the base of the webhook URL sent to Chargily).
+// merabti.com is served by the Cloudflare Worker (worker.js), which forwards the purchase
+// calls here and says where they came from in x-merabti-origin (only merabti.com is accepted).
+const SITE_ORIGINS = /^https:\/\/(www\.)?merabti\.com$/;
 function siteUrl(req) {
   const env = (process.env.SITE_URL || '').trim().replace(/\/+$/, '');
   if (env) return env;
+  const fwd = String(req.headers['x-merabti-origin'] || '').trim();
+  if (SITE_ORIGINS.test(fwd)) return fwd;
   const host = req.headers['x-forwarded-host'] || req.headers.host;
   return `https://${host}`;
 }
