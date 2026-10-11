@@ -60,6 +60,8 @@ const T = k => (I18N[S.lang][k] ?? I18N.ar[k] ?? k);
 const L = (o, k) => (S.lang === 'en' && o[k + '_en']) ? o[k + '_en'] : (o[k] || '');
 const textDir = () => (S.lang === 'ar' ? 'rtl' : 'ltr');
 const isOpen = i => !LESSONS[i].locked || S.admin;
+// Locked (coming soon) lessons sit at the end of LESSONS; visitors don't see them listed.
+const shownCount = () => S.admin ? LESSONS.length : LESSONS.filter(l => !l.locked).length;
 
 const ICON = {
   lock: '<svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>',
@@ -80,6 +82,7 @@ const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;'
 ===================================================================== */
 function renderSide() {
   $('#sideNav').innerHTML = LESSONS.map((l, i) => {
+    if (l.locked && !S.admin) return '';
     const done = S.watched.has(i + 1);
     return `<button type="button" class="nav-item${i === S.idx ? ' on' : ''}${l.locked && !S.admin ? ' locked' : ''}" data-i="${i}">
       <span class="nav-num${done ? ' done' : ''}">${done ? ICON.check : i + 1}</span>
@@ -90,7 +93,7 @@ function renderSide() {
   $('#mobNum').textContent = S.idx + 1;
   $('#mobTitle').textContent = LESSONS[S.idx] ? L(LESSONS[S.idx], 'title') : '';
   $('#mobTitle').setAttribute('dir', textDir());
-  $('#progressTxt').textContent = `${S.watched.size}/${LESSONS.length}`;
+  $('#progressTxt').textContent = `${S.watched.size}/${shownCount()}`;
 }
 
 /* =====================================================================
@@ -137,7 +140,7 @@ function renderLesson() {
       <span class="lesson-badge"><small>${T('lesson')}</small>${n}</span>
       <div class="lesson-hd-txt">
         <div class="lesson-meta tx" dir="${d}">
-          <span class="lesson-n">${T('lesson')} ${n} ${T('of')} ${LESSONS.length}</span>
+          <span class="lesson-n">${T('lesson')} ${n} ${T('of')} ${shownCount()}</span>
           ${l.locked ? `<span class="soon-badge">${T('soon')}</span>` : ''}
         </div>
         <h1 class="lesson-title tx" dir="${d}">${esc(L(l, 'title'))}</h1>
@@ -147,7 +150,7 @@ function renderLesson() {
 
   const pager = `<nav class="pager">
       <button type="button" class="pg-btn" id="prevBtn" ${S.idx === 0 ? 'disabled' : ''}>${ICON.prev}<span>${T('prev')}</span></button>
-      <button type="button" class="pg-btn pg-next" id="nextBtn" ${S.idx === LESSONS.length - 1 ? 'disabled' : ''}><span>${T('next')}</span>${ICON.next}</button>
+      <button type="button" class="pg-btn pg-next" id="nextBtn" ${S.idx >= shownCount() - 1 ? 'disabled' : ''}><span>${T('next')}</span>${ICON.next}</button>
     </nav>`;
 
   if (!open) {
