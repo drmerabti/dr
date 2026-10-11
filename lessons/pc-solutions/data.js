@@ -11,7 +11,7 @@
 //                    'AbC123xYz_0'
 //                  اتركه '' فيظهر مكان الفيديو "الفيديو قريبًا".
 //   fileUrl      : رابط الملف المضغوط للتحميل، والملفات في المجلد downloads/pc-solutions/ بجذر الموقع
-//                  (مثال: '../../downloads/pc-solutions/lesson-01.zip').
+//                  (مثال: '../../downloads/pc-solutions/PC-Phone.zip').
 //                  اتركه '' فيختفي زر "تحميل الملفات" تلقائيًا. حجم الملف يُقرأ تلقائيًا ويظهر بجانب الزر.
 //   fileSize     : (اختياري) حجم الملف كما يُكتب بجانب الزر (مثال: '24 KB') إن أردت تثبيته يدويًا.
 //   note         : (اختياري) ملاحظة قصيرة تحت زر التحميل (كل سطر جديد \n يظهر كنقطة مستقلة)
@@ -27,7 +27,7 @@ const PC_LESSONS = [
     title: 'نقل الملفات بين الهاتف والحاسوب بدون إنترنت',
     title_en: 'Transfer files between your phone and PC without internet',
     youtubeUrl: 'https://youtu.be/TsVqQ0XoOzo', // ← رابط فيديو يوتيوب للدرس 1
-    fileUrl: '../../downloads/pc-solutions/lesson-01.zip', // ← الملف المضغوط (server.ps1 + Start-Server.bat)
+    fileUrl: '../../downloads/pc-solutions/PC-Phone.zip', // ← الملف المضغوط (server.ps1 + Start-Server.bat)
     note: 'يجب أن يكون الحاسوب والهاتف متصلين بنفس الراوتر.\n' +
           'فك الضغط عن الملف، ثم شغّل Start-Server.bat\n' +
           'إذا ظهر تحذير ويندوز اضغط More info ثم Run anyway، واقبل صلاحية المسؤول.\n' +
