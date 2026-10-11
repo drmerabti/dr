@@ -447,11 +447,11 @@ const CONTENT = {
     { id: 'app-ai-detector', title_ar: 'كاشف النص الآلي', title_en: 'AI Text Detector', title_fr: 'Détecteur de texte IA',
       desc_ar: 'تقدير استرشادي بمساعدة الذكاء الاصطناعي لاحتمال أن يكون نص معين مولّدًا آليًا — يتطلب تسجيل الدخول.',
       desc_en: 'AI-assisted indicative estimate of how likely a text was AI-generated — requires login.',
-      url: 'tools/ai-detector/', icon: ICONS.aiDetectorApp, comingSoon: true },
+      url: 'tools/ai-detector/', icon: ICONS.aiDetectorApp },
     { id: 'app-humanizer', title_ar: 'تحويل النص من آلي إلى بشري', title_en: 'AI to Humane', title_fr: 'IA vers Humain',
       desc_ar: 'أعد صياغة نصك بأسلوب أكثر طبيعية مع الحفاظ التام على المعنى — يتطلب تسجيل الدخول.',
       desc_en: 'Rewrite your text in a more natural style while fully preserving its meaning — requires login.',
-      url: 'tools/humanizer/', icon: ICONS.humanizerApp, comingSoon: true },
+      url: 'tools/humanizer/', icon: ICONS.humanizerApp },
     {
       id: 'app-summarizer',
       title_ar: 'AI Summarizer',
@@ -660,18 +660,14 @@ const SECTIONS_ROW1 = [
 const SECTIONS_ROW2 = [
   { key: 'lessons',   icon: ICONS.lessons,  badge: 'badge-lessons',   href: 'lessons.html' },
   { key: 'trainings', icon: ICONS.training, badge: 'badge-training',  href: 'resources.html' },
-  { key: 'services',  icon: ICONS.services, badge: 'badge-services',  href: 'services.html' },
+  { key: 'services',  icon: ICONS.services, badge: 'badge-services',  href: 'services.html', comingSoon: true },
 ];
 const SECTIONS = [...SECTIONS_ROW1, ...SECTIONS_ROW2];
 
 // Items still "coming soon" or without a page of their own stay out of every
-// list for visitors (admins still see them, to preview). A section left with
-// nothing to show is hidden from the home grid the same way.
+// list for visitors (admins still see them, to preview).
 function isListed(item){ return !item.comingSoon && !!item.url; }
-let showAllSections = false; // true for admins
-function sectionShown(s){
-  return s.key === 'favorites' || showAllSections || (CONTENT[s.key] || []).some(isListed);
-}
+let homeAdmin = false; // admins can open the "coming soon" home cards
 
 /* =====================================================================
    I18N
@@ -685,17 +681,17 @@ const I18N = {
     footer_text: '© 2026 د. سفيان مرابطي',
     section_lessons: 'الدروس', section_apps: 'التطبيقات', section_tools: 'الأدوات',
     courses_title: 'دورات تكوينية',
-    section_trainings: 'تدريب', section_services: 'الخدمات', section_favorites: 'المفضلة',
+    section_trainings: 'تدريب', section_services: 'الكتب', section_favorites: 'المفضلة',
     section_lessons_desc: 'دروس مصورة خطوة بخطوة', section_apps_desc: 'تطبيقات عملية للتنزيل',
     section_tools_desc: 'أدوات مساعدة سريعة', section_trainings_desc: 'اختبارات وتمارين تفاعلية',
-    section_services_desc: 'خدمات واستشارات',
+    section_services_desc: 'كتب ومؤلفات',
     section_favorites_desc: 'أدواتك وتطبيقاتك المفضّلة',
     go_to_training: 'الذهاب إلى التمرين', review_lesson: 'مراجعة الدرس',
     watch_video: 'مشاهدة الفيديو', open_app: 'فتح على Google Play',
     open_tool: 'فتح الأداة',
     no_results: 'لا نتائج مطابقة', empty_section: 'لا يوجد محتوى هنا بعد.',
     type_lessons: 'درس', type_apps: 'تطبيق', type_tools: 'أداة',
-    type_trainings: 'تدريب', type_services: 'خدمة',
+    type_trainings: 'تدريب', type_services: 'كتاب',
     back_to_list: 'رجوع للقائمة',
     login: 'تسجيل الدخول', signup: 'إنشاء حساب', logout: 'تسجيل الخروج',
     login_with_google: 'المتابعة عبر Google',
@@ -712,17 +708,17 @@ const I18N = {
     footer_text: '© 2026 Dr. Sofiane Merabti',
     section_lessons: 'Lessons', section_apps: 'Apps', section_tools: 'Tools',
     courses_title: 'Training Courses',
-    section_trainings: 'Training', section_services: 'Services', section_favorites: 'Favorites',
+    section_trainings: 'Training', section_services: 'Books', section_favorites: 'Favorites',
     section_lessons_desc: 'Step-by-step video lessons', section_apps_desc: 'Practical apps to download',
     section_tools_desc: 'Quick helper tools', section_trainings_desc: 'Interactive quizzes and exercises',
-    section_services_desc: 'Services and consulting',
+    section_services_desc: 'Books and publications',
     section_favorites_desc: 'Your favorite tools and apps',
     go_to_training: 'Go to training', review_lesson: 'Review lesson',
     watch_video: 'Watch video', open_app: 'Open on Google Play',
     open_tool: 'Open tool',
     no_results: 'No matching results', empty_section: 'No content here yet.',
     type_lessons: 'Lesson', type_apps: 'App', type_tools: 'Tool',
-    type_trainings: 'Training', type_services: 'Service',
+    type_trainings: 'Training', type_services: 'Book',
     back_to_list: 'Back to list',
     login: 'Log in', signup: 'Sign up', logout: 'Log out',
     login_with_google: 'Continue with Google',
@@ -763,57 +759,30 @@ function renderHomeGrid(){
   if (!grid) return;
   grid.innerHTML = '';
   if (grid2) grid2.innerHTML = '';
-  SECTIONS_ROW1.filter(sectionShown).forEach(s => {
-    const card = document.createElement('a');
-    card.className = 'section-card';
-    card.href = s.href;
-    card.style.textDecoration = 'none';
-    card.style.color = 'inherit';
-    card.style.display = 'block';
-    card.innerHTML = `
-      <span class="icon-badge ${s.badge}">${s.icon}</span>
-      <h3>${t('section_' + s.key)}</h3>
-      <p>${t('section_' + s.key + '_desc')}</p>
-    `;
-    grid.appendChild(card);
-  });
-  SECTIONS_ROW2.filter(sectionShown).forEach(s => {
-    const card = document.createElement('a');
-    card.className = 'section-card';
-    card.href = s.href;
-    card.style.textDecoration = 'none';
-    card.style.color = 'inherit';
-    card.style.display = 'block';
-    card.innerHTML = `
-      <span class="icon-badge ${s.badge}">${s.icon}</span>
-      <h3>${t('section_' + s.key)}</h3>
-      <p>${t('section_' + s.key + '_desc')}</p>
-    `;
-    (grid2 || grid).appendChild(card);
-  });
-  [grid, grid2].forEach(fitSectionRow);
+  SECTIONS_ROW1.forEach(s => grid.appendChild(sectionCard(s)));
+  SECTIONS_ROW2.forEach(s => (grid2 || grid).appendChild(sectionCard(s)));
 }
 
-// A row with fewer than 3 cards keeps the cards at their usual width and
-// centres them, instead of leaving an empty slot at the end of the row.
-function fitSectionRow(row){
-  if (!row) return;
-  row.style.gridTemplateColumns = row.style.maxWidth = row.style.marginInline = '';
-  const n = row.children.length;
-  if (n === 0 || n >= 3) return;
-  const gap = parseFloat(getComputedStyle(row).columnGap) || 0;
-  row.style.gridTemplateColumns = `repeat(${n}, minmax(0, 1fr))`;
-  row.style.maxWidth = `calc((100% + ${gap}px) * ${n} / 3 - ${gap}px)`;
-  row.style.marginInline = 'auto';
+// A "coming soon" section shows its badge; for visitors it is a plain,
+// faded card that does not open, admins still get the link.
+function sectionCard(s){
+  const locked = s.comingSoon && !homeAdmin;
+  const card = document.createElement(locked ? 'div' : 'a');
+  card.className = 'section-card' + (locked ? ' coming-soon-card' : '');
+  if (!locked){
+    card.href = s.href;
+    card.style.textDecoration = 'none';
+    card.style.color = 'inherit';
+  }
+  card.style.display = 'block';
+  card.innerHTML = `
+      <span class="icon-badge ${s.badge}">${s.icon}</span>
+      <h3>${t('section_' + s.key)}</h3>
+      <p>${t('section_' + s.key + '_desc')}</p>
+      ${s.comingSoon ? `<span class="coming-soon-badge" style="position:absolute; top:8px; inset-inline-start:8px; margin:0; font-size:.62rem; padding:2px 8px;">${lang === 'ar' ? 'قريبًا' : 'Coming soon'}</span>` : ''}
+    `;
+  return card;
 }
-let fitRowsTimer;
-window.addEventListener('resize', () => {
-  clearTimeout(fitRowsTimer);
-  fitRowsTimer = setTimeout(() => {
-    fitSectionRow(document.getElementById('sectionGrid'));
-    fitSectionRow(document.getElementById('sectionGridRow2'));
-  }, 150);
-});
 
 /* =====================================================================
    SECTION LIST + DETAIL (lessons / apps / tools / resources / services)
@@ -1610,7 +1579,7 @@ function initAuth(){
       if (section === 'favorites') renderFavoritesPage();
       else if (section) renderSectionItems();
       renderCoursesSection();
-      showAllSections = await isAdminUser();
+      homeAdmin = await isAdminUser();
       renderHomeGrid();
       await refreshSubscriptionStatus();
       wrap.classList.remove('auth-pending');

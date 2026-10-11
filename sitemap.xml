@@ -16,6 +16,11 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://merabti.com/apps</loc>
+    <lastmod>2026-10-04</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://merabti.com/favorites</loc>
     <lastmod>2026-10-04</lastmod>
     <priority>0.8</priority>
@@ -81,6 +86,11 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://merabti.com/tools/ai-detector/</loc>
+    <lastmod>2026-09-25</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://merabti.com/tools/attendance-payroll/</loc>
     <lastmod>2026-09-25</lastmod>
     <priority>0.7</priority>
@@ -122,6 +132,11 @@
   </url>
   <url>
     <loc>https://merabti.com/tools/hijri/</loc>
+    <lastmod>2026-09-25</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://merabti.com/tools/humanizer/</loc>
     <lastmod>2026-09-25</lastmod>
     <priority>0.7</priority>
   </url>
