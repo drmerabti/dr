@@ -27,15 +27,17 @@ const PC_LESSONS = [
     title: 'نقل الملفات بين الهاتف والحاسوب بدون إنترنت',
     title_en: 'Transfer files between your phone and PC without internet',
     youtubeUrl: 'https://youtu.be/mZ6YX5SfcFQ', // ← رابط فيديو يوتيوب للدرس 1
-    fileUrl: '../../downloads/pc-solutions/PC-Phone.zip', // ← الملف المضغوط (server.ps1 + Start-Server.bat)
+    fileUrl: '../../downloads/pc-solutions/PC-Phone.zip?v=2', // ← الملف المضغوط (server.ps1 + Start-Server.bat)؛ غيّر ?v= عند استبدال الملف
     note: 'يجب أن يكون الحاسوب والهاتف متصلين بنفس الراوتر.\n' +
           'فك الضغط عن الملف، ثم شغّل Start-Server.bat\n' +
           'إذا ظهر تحذير ويندوز اضغط More info ثم Run anyway، واقبل صلاحية المسؤول.\n' +
-          'اكتب في متصفح الهاتف العنوان الذي يظهر في النافذة السوداء.',
+          'اكتب في متصفح الهاتف العنوان الذي يظهر في النافذة السوداء.\n' +
+          'يعمل على ويندوز 7 و10 و11.',
     note_en: 'The PC and the phone must be connected to the same router.\n' +
              'Unzip the file, then run Start-Server.bat\n' +
              'If a Windows warning appears, click More info, then Run anyway, and accept the administrator prompt.\n' +
-             'Type the address shown in the black window into your phone’s browser.',
+             'Type the address shown in the black window into your phone’s browser.\n' +
+             'Works on Windows 7, 10 and 11.',
     locked: false,
   },
 
