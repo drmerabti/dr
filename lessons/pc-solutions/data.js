@@ -26,7 +26,7 @@ const PC_LESSONS = [
   {
     title: 'نقل الملفات بين الهاتف والحاسوب بدون إنترنت',
     title_en: 'Transfer files between your phone and PC without internet',
-    youtubeUrl: 'https://youtu.be/TsVqQ0XoOzo', // ← رابط فيديو يوتيوب للدرس 1
+    youtubeUrl: 'https://youtu.be/mZ6YX5SfcFQ', // ← رابط فيديو يوتيوب للدرس 1
     fileUrl: '../../downloads/pc-solutions/PC-Phone.zip', // ← الملف المضغوط (server.ps1 + Start-Server.bat)
     note: 'يجب أن يكون الحاسوب والهاتف متصلين بنفس الراوتر.\n' +
           'فك الضغط عن الملف، ثم شغّل Start-Server.bat\n' +
@@ -41,61 +41,75 @@ const PC_LESSONS = [
 
   // ================= الدرس 2 =================
   {
+    title: 'احذف فيروسات الفلاش USB نهائياً بدون أي برنامج',
+    title_en: 'Remove USB flash drive viruses for good, without any software',
+    youtubeUrl: 'https://www.youtube.com/embed/K62Ngal9Zlw', fileUrl: '', locked: false,
+  },
+
+  // ================= الدرس 3 =================
+  {
+    title: 'تنظيف الحاسوب من الفيروسات وإصلاح النظام واسترجاع الملفات المفقودة',
+    title_en: 'Clean your PC of viruses, repair the system and recover lost files',
+    youtubeUrl: 'https://www.youtube.com/embed/KV9XPHBCHMg', fileUrl: '', locked: false,
+  },
+
+  // ================= الدرس 4 =================
+  {
+    title: 'كيفية قراءة الملفات بدون فتحها',
+    title_en: 'How to read files without opening them',
+    youtubeUrl: 'https://www.youtube.com/embed/aQ0E6iW_eRg', fileUrl: '', locked: false,
+  },
+
+  // ================= الدرس 5 =================
+  {
     title: 'معرفة الأجهزة المتصلة بشبكة الواي فاي',
     title_en: 'See which devices are connected to your Wi-Fi',
     youtubeUrl: '', fileUrl: '', locked: true,
   },
 
-  // ================= الدرس 3 =================
+  // ================= الدرس 6 =================
   {
     title: 'فتح الحاسوب بالهاتف عن بعد',
     title_en: 'Control your PC remotely from your phone',
     youtubeUrl: '', fileUrl: '', locked: true,
   },
 
-  // ================= الدرس 4 =================
-  {
-    title: 'استرجاع ملف حذفته بالخطأ',
-    title_en: 'Recover a file you deleted by mistake',
-    youtubeUrl: '', fileUrl: '', locked: true,
-  },
-
-  // ================= الدرس 5 =================
+  // ================= الدرس 7 =================
   {
     title: 'حماية مجلد بكلمة سر',
     title_en: 'Protect a folder with a password',
     youtubeUrl: '', fileUrl: '', locked: true,
   },
 
-  // ================= الدرس 6 =================
+  // ================= الدرس 8 =================
   {
     title: 'تحويل الهاتف إلى كاميرا ويب',
     title_en: 'Turn your phone into a webcam',
     youtubeUrl: '', fileUrl: '', locked: true,
   },
 
-  // ================= الدرس 7 =================
+  // ================= الدرس 9 =================
   {
     title: 'معرفة سبب بطء الحاسوب',
     title_en: 'Find out why your PC is slow',
     youtubeUrl: '', fileUrl: '', locked: true,
   },
 
-  // ================= الدرس 8 =================
+  // ================= الدرس 10 =================
   {
     title: 'استعمال الحاسوب كشاشة ثانية',
     title_en: 'Use a computer as a second screen',
     youtubeUrl: '', fileUrl: '', locked: true,
   },
 
-  // ================= الدرس 9 =================
+  // ================= الدرس 11 =================
   {
     title: 'إصلاح فلاشة لا تفتح',
     title_en: 'Fix a USB flash drive that won’t open',
     youtubeUrl: '', fileUrl: '', locked: true,
   },
 
-  // ================= الدرس 10 =================
+  // ================= الدرس 12 =================
   {
     title: 'نقل البرامج والملفات إلى حاسوب جديد',
     title_en: 'Move your programs and files to a new PC',

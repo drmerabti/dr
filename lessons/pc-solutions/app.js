@@ -60,8 +60,8 @@ const T = k => (I18N[S.lang][k] ?? I18N.ar[k] ?? k);
 const L = (o, k) => (S.lang === 'en' && o[k + '_en']) ? o[k + '_en'] : (o[k] || '');
 const textDir = () => (S.lang === 'ar' ? 'rtl' : 'ltr');
 const isOpen = i => !LESSONS[i].locked || S.admin;
-// Locked (coming soon) lessons sit at the end of LESSONS; visitors don't see them listed.
-const shownCount = () => S.admin ? LESSONS.length : LESSONS.filter(l => !l.locked).length;
+// Every lesson is listed (coming-soon ones with their badge): counter and "lesson X of N" use all of them.
+const shownCount = () => LESSONS.length;
 
 const ICON = {
   lock: '<svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>',
@@ -82,7 +82,6 @@ const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;'
 ===================================================================== */
 function renderSide() {
   $('#sideNav').innerHTML = LESSONS.map((l, i) => {
-    if (l.locked && !S.admin) return '';
     const done = S.watched.has(i + 1);
     return `<button type="button" class="nav-item${i === S.idx ? ' on' : ''}${l.locked && !S.admin ? ' locked' : ''}" data-i="${i}">
       <span class="nav-num${done ? ' done' : ''}">${done ? ICON.check : i + 1}</span>
