@@ -173,19 +173,46 @@ function renderLesson() {
       ${youtubeIdOf(l) ? `<button type="button" class="full-btn" id="fullBtn">${ICON.full}<span>${T('fullscreen')}</span></button>` : ''}
     </div>
 
-    ${l.fileUrl ? `<a class="dl-btn" href="${esc(l.fileUrl)}" download>${ICON.download}<span>${T('download')}</span></a>` : ''}
+    ${l.fileUrl ? `<div class="dl-row" id="dlRow">
+      <a class="dl-btn" href="${esc(l.fileUrl)}" download>${ICON.download}<span>${T('download')}</span></a>
+      <span class="dl-size" id="dlSize" dir="ltr">${esc(l.fileSize || '')}</span>
+    </div>` : ''}
 
     ${noteHTML(l)}
 
     ${pager}`;
   bindLesson();
+  if (l.fileUrl && !l.fileSize) showFileSize(l.fileUrl);
+}
+
+// حجم الملف بجانب زر التحميل (يُقرأ من الخادم، فيبقى صحيحًا عند تغيير الملف).
+// إن لم يكن الملف موجودًا بعد (404) يُخفى الزر بدل رابط معطّل.
+const FILE_SIZES = {};
+function fmtSize(n) {
+  if (n >= 1048576) return (n / 1048576).toFixed(n >= 10485760 ? 0 : 1) + ' MB';
+  return Math.max(1, Math.round(n / 1024)) + ' KB';
+}
+async function showFileSize(url) {
+  if (!(url in FILE_SIZES)) {
+    FILE_SIZES[url] = null;
+    try {
+      const r = await fetch(url, { method: 'HEAD', cache: 'no-cache' });
+      const n = +r.headers.get('content-length');
+      FILE_SIZES[url] = r.status === 404 ? 'missing' : (r.ok && n > 0 ? fmtSize(n) : '');
+    } catch (e) { FILE_SIZES[url] = ''; }
+  }
+  const v = FILE_SIZES[url];
+  const row = $('#dlRow'), size = $('#dlSize');
+  if (!row || !size || v === null || row.querySelector('a').getAttribute('href') !== url) return;
+  if (v === 'missing') { row.hidden = true; return; }
+  size.textContent = v;
 }
 
 // الكلمات اللاتينية (More info / Run anyway) تُكتب بخط واضح داخل النص العربي
 function noteHTML(l) {
   const lines = L(l, 'note').split('\n').map(s => s.trim()).filter(Boolean);
   if (!lines.length) return '';
-  const fmt = s => S.lang === 'en' ? esc(s) : esc(s).replace(/([A-Za-z][A-Za-z .]*[A-Za-z])/g, '<b dir="ltr">$1</b>');
+  const fmt = s => S.lang === 'en' ? esc(s) : esc(s).replace(/([A-Za-z][A-Za-z0-9 .\-]*[A-Za-z0-9])/g, '<b dir="ltr">$1</b>');
   return `<div class="dl-note tx" dir="${textDir()}">${ICON.info}
     ${lines.length === 1 ? `<span>${fmt(lines[0])}</span>` : `<ul>${lines.map(s => `<li>${fmt(s)}</li>`).join('')}</ul>`}
   </div>`;

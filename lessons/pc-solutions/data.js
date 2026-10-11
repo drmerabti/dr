@@ -10,8 +10,10 @@
 //                    'https://youtu.be/AbC123xYz_0'
 //                    'AbC123xYz_0'
 //                  اتركه '' فيظهر مكان الفيديو "الفيديو قريبًا".
-//   fileUrl      : رابط الملف المضغوط للتحميل (مثال: 'files/lesson-01.zip' داخل هذا المجلد)
-//                  اتركه '' فيختفي زر "تحميل الملفات" تلقائيًا.
+//   fileUrl      : رابط الملف المضغوط للتحميل، والملفات في المجلد downloads/pc-solutions/ بجذر الموقع
+//                  (مثال: '../../downloads/pc-solutions/PC-Phone.zip').
+//                  اتركه '' فيختفي زر "تحميل الملفات" تلقائيًا. حجم الملف يُقرأ تلقائيًا ويظهر بجانب الزر.
+//   fileSize     : (اختياري) حجم الملف كما يُكتب بجانب الزر (مثال: '24 KB') إن أردت تثبيته يدويًا.
 //   note         : (اختياري) ملاحظة قصيرة تحت زر التحميل (كل سطر جديد \n يظهر كنقطة مستقلة)
 //   note_en      : (اختياري) الملاحظة بالإنجليزية
 //   description  : (اختياري) شرح مختصر يظهر في بطاقة الدرس المقفل
@@ -24,10 +26,16 @@ const PC_LESSONS = [
   {
     title: 'نقل الملفات بين الهاتف والحاسوب بدون إنترنت',
     title_en: 'Transfer files between your phone and PC without internet',
-    youtubeUrl: '', // ← ضع هنا رابط فيديو يوتيوب للدرس 1
-    fileUrl: 'files/lesson-01.zip', // ← ضع الملف المضغوط (server.ps1 + Start-Server.bat) في المجلد files باسم lesson-01.zip
-    note: 'يجب أن يكون الحاسوب والهاتف متصلين بنفس الراوتر.\nإذا ظهر تحذير ويندوز اضغط More info ثم Run anyway.',
-    note_en: 'The PC and the phone must be connected to the same router.\nIf a Windows warning appears, click More info, then Run anyway.',
+    youtubeUrl: 'https://youtu.be/TsVqQ0XoOzo', // ← رابط فيديو يوتيوب للدرس 1
+    fileUrl: '../../downloads/pc-solutions/PC-Phone.zip', // ← الملف المضغوط (server.ps1 + Start-Server.bat)
+    note: 'يجب أن يكون الحاسوب والهاتف متصلين بنفس الراوتر.\n' +
+          'فك الضغط عن الملف، ثم شغّل Start-Server.bat\n' +
+          'إذا ظهر تحذير ويندوز اضغط More info ثم Run anyway، واقبل صلاحية المسؤول.\n' +
+          'اكتب في متصفح الهاتف العنوان الذي يظهر في النافذة السوداء.',
+    note_en: 'The PC and the phone must be connected to the same router.\n' +
+             'Unzip the file, then run Start-Server.bat\n' +
+             'If a Windows warning appears, click More info, then Run anyway, and accept the administrator prompt.\n' +
+             'Type the address shown in the black window into your phone’s browser.',
     locked: false,
   },
 
