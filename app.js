@@ -104,6 +104,21 @@ const ICONS = {
     <path d="M25 6v7c0 1.1.9 2 2 2h7z" fill="#8FC2F5" opacity=".6"/>
     <path d="M13.5 22.5h3.2l2.1 10.4 2.4-10.4h3.6l2.4 10.4 2.1-10.4h3.2l-3.6 15h-3.6l-2.3-9.7-2.3 9.7h-3.6z" fill="#fff"/>
   </svg>`,
+  pcSolutionsApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="gPcSol" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#8ED4F8"/><stop offset="1" stop-color="#2E8BD6"/>
+      </linearGradient>
+    </defs>
+    <ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/>
+    <rect x="6" y="6" width="36" height="35" rx="8" fill="url(#gPcSol)"/>
+    <rect x="11.5" y="12" width="25" height="17" rx="2.5" fill="#fff"/>
+    <path d="M21.5 29h5l1 4.5h-7z" fill="#fff" opacity=".85"/>
+    <rect x="17" y="33.2" width="14" height="2.4" rx="1.2" fill="#fff"/>
+    <path d="M21 23.8l4.6-4.6" stroke="#2E8BD6" stroke-width="2.4" stroke-linecap="round"/>
+    <circle cx="26.4" cy="18.4" r="2.9" fill="#2E8BD6"/>
+    <circle cx="27.7" cy="17.1" r="1.25" fill="#fff"/>
+  </svg>`,
   excelApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <linearGradient id="gExcelA" x1="0" y1="0" x2="0" y2="1">
@@ -349,6 +364,28 @@ const CONTENT = {
   ],
   lessons: [
     {
+      id: 'lesson-pc-solutions',
+      title_ar: 'حلول عملية للحاسوب',
+      title_en: 'Practical PC Solutions',
+      desc_ar: '10 دروس فيديو قصيرة مع ملفات جاهزة للتحميل — من نقل الملفات بين الهاتف والحاسوب بدون إنترنت إلى إصلاح الفلاشة ونقل البرامج إلى حاسوب جديد.',
+      desc_en: '10 short video lessons with ready-to-download files — from moving files between your phone and PC without internet to fixing a flash drive and moving to a new PC.',
+      url: 'lessons/pc-solutions/',
+      icon: ICONS.pcSolutionsApp,
+      badge: 'جديد',
+      badge_en: 'New',
+    },
+    {
+      id: 'lesson-excel-vba',
+      title_ar: 'أتمتة إكسل بلغة VBA: من الصفر إلى الاحتراف',
+      title_en: 'Excel Automation with VBA: From Zero to Pro',
+      desc_ar: '10 دروس فيديو عملية مع أكواد جاهزة للنسخ وملفات تطبيقية — من نموذج UserForm إلى الفواتير وPDF وOutlook.',
+      desc_en: '10 hands-on video lessons with copy-ready code and practice files — from UserForms to invoices, PDF, and Outlook.',
+      category: 'Excel',
+      url: 'lessons/excel-vba/',
+      icon: ICONS.excelApp,
+      badge: 'VBA',
+    },
+    {
       id: 'lesson-word-shortcuts',
       title_ar: 'اختصارات لوحة المفاتيح في وورد',
       title_en: 'Word Keyboard Shortcuts',
@@ -367,17 +404,6 @@ const CONTENT = {
       category: 'Excel',
       url: 'lessons/excel-shortcuts/',
       icon: ICONS.excelApp,
-    },
-    {
-      id: 'lesson-excel-vba',
-      title_ar: 'أتمتة إكسل بلغة VBA: من الصفر إلى الاحتراف',
-      title_en: 'Excel Automation with VBA: From Zero to Pro',
-      desc_ar: '10 دروس فيديو عملية مع أكواد جاهزة للنسخ وملفات تطبيقية — من نموذج UserForm إلى الفواتير وPDF وOutlook.',
-      desc_en: '10 hands-on video lessons with copy-ready code and practice files — from UserForms to invoices, PDF, and Outlook.',
-      category: 'Excel',
-      url: 'lessons/excel-vba/',
-      icon: ICONS.excelApp,
-      badge: 'VBA',
     },
     {
       id: 'lesson-access-database',
@@ -945,7 +971,7 @@ async function renderSectionItems(){
       const showFav = (key === 'tools' || key === 'apps');
       const tierBadge = item.tier === 'pro' ? `<span class="tier-badge tier-pro">Pro</span>`
         : item.tier === 'promax' ? `<span class="tier-badge tier-promax">Pro Max</span>`
-        : item.badge ? `<span class="tier-badge tier-tag">${item.badge}</span>` : '';
+        : item.badge ? `<span class="tier-badge tier-tag">${(lang === 'en' && item.badge_en) || item.badge}</span>` : '';
       // Admin previewing a not-yet-launched item: keep the same "coming soon" look
       // everyone else sees, but this instance is a real, clickable link underneath.
       const comingSoonBadge = (item.comingSoon && admin) ? `<span class="coming-soon-badge">${lang === 'ar' ? 'قريبًا' : 'Coming soon'}</span>` : '';
