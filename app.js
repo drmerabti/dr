@@ -104,6 +104,21 @@ const ICONS = {
     <path d="M25 6v7c0 1.1.9 2 2 2h7z" fill="#8FC2F5" opacity=".6"/>
     <path d="M13.5 22.5h3.2l2.1 10.4 2.4-10.4h3.6l2.4 10.4 2.1-10.4h3.2l-3.6 15h-3.6l-2.3-9.7-2.3 9.7h-3.6z" fill="#fff"/>
   </svg>`,
+  pcSolutionsApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="gPcSol" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#8ED4F8"/><stop offset="1" stop-color="#2E8BD6"/>
+      </linearGradient>
+    </defs>
+    <ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/>
+    <rect x="6" y="6" width="36" height="35" rx="8" fill="url(#gPcSol)"/>
+    <rect x="11.5" y="12" width="25" height="17" rx="2.5" fill="#fff"/>
+    <path d="M21.5 29h5l1 4.5h-7z" fill="#fff" opacity=".85"/>
+    <rect x="17" y="33.2" width="14" height="2.4" rx="1.2" fill="#fff"/>
+    <path d="M21 23.8l4.6-4.6" stroke="#2E8BD6" stroke-width="2.4" stroke-linecap="round"/>
+    <circle cx="26.4" cy="18.4" r="2.9" fill="#2E8BD6"/>
+    <circle cx="27.7" cy="17.1" r="1.25" fill="#fff"/>
+  </svg>`,
   excelApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <linearGradient id="gExcelA" x1="0" y1="0" x2="0" y2="1">
@@ -349,6 +364,28 @@ const CONTENT = {
   ],
   lessons: [
     {
+      id: 'lesson-pc-solutions',
+      title_ar: 'حلول عملية للحاسوب',
+      title_en: 'Practical PC Solutions',
+      desc_ar: '10 دروس فيديو قصيرة مع ملفات جاهزة للتحميل — من نقل الملفات بين الهاتف والحاسوب بدون إنترنت إلى إصلاح الفلاشة ونقل البرامج إلى حاسوب جديد.',
+      desc_en: '10 short video lessons with ready-to-download files — from moving files between your phone and PC without internet to fixing a flash drive and moving to a new PC.',
+      url: 'lessons/pc-solutions/',
+      icon: ICONS.pcSolutionsApp,
+      badge: 'جديد',
+      badge_en: 'New',
+    },
+    {
+      id: 'lesson-excel-vba',
+      title_ar: 'أتمتة إكسل بلغة VBA: من الصفر إلى الاحتراف',
+      title_en: 'Excel Automation with VBA: From Zero to Pro',
+      desc_ar: '10 دروس فيديو عملية مع أكواد جاهزة للنسخ وملفات تطبيقية — من نموذج UserForm إلى الفواتير وPDF وOutlook.',
+      desc_en: '10 hands-on video lessons with copy-ready code and practice files — from UserForms to invoices, PDF, and Outlook.',
+      category: 'Excel',
+      url: 'lessons/excel-vba/',
+      icon: ICONS.excelApp,
+      badge: 'VBA',
+    },
+    {
       id: 'lesson-word-shortcuts',
       title_ar: 'اختصارات لوحة المفاتيح في وورد',
       title_en: 'Word Keyboard Shortcuts',
@@ -367,17 +404,6 @@ const CONTENT = {
       category: 'Excel',
       url: 'lessons/excel-shortcuts/',
       icon: ICONS.excelApp,
-    },
-    {
-      id: 'lesson-excel-vba',
-      title_ar: 'أتمتة إكسل بلغة VBA: من الصفر إلى الاحتراف',
-      title_en: 'Excel Automation with VBA: From Zero to Pro',
-      desc_ar: '10 دروس فيديو عملية مع أكواد جاهزة للنسخ وملفات تطبيقية — من نموذج UserForm إلى الفواتير وPDF وOutlook.',
-      desc_en: '10 hands-on video lessons with copy-ready code and practice files — from UserForms to invoices, PDF, and Outlook.',
-      category: 'Excel',
-      url: 'lessons/excel-vba/',
-      icon: ICONS.excelApp,
-      badge: 'VBA',
     },
     {
       id: 'lesson-access-database',
@@ -421,11 +447,11 @@ const CONTENT = {
     { id: 'app-ai-detector', title_ar: 'كاشف النص الآلي', title_en: 'AI Text Detector', title_fr: 'Détecteur de texte IA',
       desc_ar: 'تقدير استرشادي بمساعدة الذكاء الاصطناعي لاحتمال أن يكون نص معين مولّدًا آليًا — يتطلب تسجيل الدخول.',
       desc_en: 'AI-assisted indicative estimate of how likely a text was AI-generated — requires login.',
-      url: 'tools/ai-detector/', icon: ICONS.aiDetectorApp, comingSoon: true },
+      url: 'tools/ai-detector/', icon: ICONS.aiDetectorApp },
     { id: 'app-humanizer', title_ar: 'تحويل النص من آلي إلى بشري', title_en: 'AI to Humane', title_fr: 'IA vers Humain',
       desc_ar: 'أعد صياغة نصك بأسلوب أكثر طبيعية مع الحفاظ التام على المعنى — يتطلب تسجيل الدخول.',
       desc_en: 'Rewrite your text in a more natural style while fully preserving its meaning — requires login.',
-      url: 'tools/humanizer/', icon: ICONS.humanizerApp, comingSoon: true },
+      url: 'tools/humanizer/', icon: ICONS.humanizerApp },
     {
       id: 'app-summarizer',
       title_ar: 'AI Summarizer',
@@ -634,9 +660,14 @@ const SECTIONS_ROW1 = [
 const SECTIONS_ROW2 = [
   { key: 'lessons',   icon: ICONS.lessons,  badge: 'badge-lessons',   href: 'lessons.html' },
   { key: 'trainings', icon: ICONS.training, badge: 'badge-training',  href: 'resources.html' },
-  { key: 'services',  icon: ICONS.services, badge: 'badge-services',  href: 'services.html' },
+  { key: 'services',  icon: ICONS.services, badge: 'badge-services',  href: 'services.html', comingSoon: true },
 ];
 const SECTIONS = [...SECTIONS_ROW1, ...SECTIONS_ROW2];
+
+// Items still "coming soon" or without a page of their own stay out of every
+// list for visitors (admins still see them, to preview).
+function isListed(item){ return !item.comingSoon && !!item.url; }
+let homeAdmin = false; // admins can open the "coming soon" home cards
 
 /* =====================================================================
    I18N
@@ -650,17 +681,17 @@ const I18N = {
     footer_text: '© 2026 د. سفيان مرابطي',
     section_lessons: 'الدروس', section_apps: 'التطبيقات', section_tools: 'الأدوات',
     courses_title: 'دورات تكوينية',
-    section_trainings: 'تدريب', section_services: 'الخدمات', section_favorites: 'المفضلة',
+    section_trainings: 'تدريب', section_services: 'الكتب', section_favorites: 'المفضلة',
     section_lessons_desc: 'دروس مصورة خطوة بخطوة', section_apps_desc: 'تطبيقات عملية للتنزيل',
     section_tools_desc: 'أدوات مساعدة سريعة', section_trainings_desc: 'اختبارات وتمارين تفاعلية',
-    section_services_desc: 'خدمات واستشارات',
+    section_services_desc: 'كتب ومؤلفات',
     section_favorites_desc: 'أدواتك وتطبيقاتك المفضّلة',
     go_to_training: 'الذهاب إلى التمرين', review_lesson: 'مراجعة الدرس',
     watch_video: 'مشاهدة الفيديو', open_app: 'فتح على Google Play',
     open_tool: 'فتح الأداة',
     no_results: 'لا نتائج مطابقة', empty_section: 'لا يوجد محتوى هنا بعد.',
     type_lessons: 'درس', type_apps: 'تطبيق', type_tools: 'أداة',
-    type_trainings: 'تدريب', type_services: 'خدمة',
+    type_trainings: 'تدريب', type_services: 'كتاب',
     back_to_list: 'رجوع للقائمة',
     login: 'تسجيل الدخول', signup: 'إنشاء حساب', logout: 'تسجيل الخروج',
     login_with_google: 'المتابعة عبر Google',
@@ -677,17 +708,17 @@ const I18N = {
     footer_text: '© 2026 Dr. Sofiane Merabti',
     section_lessons: 'Lessons', section_apps: 'Apps', section_tools: 'Tools',
     courses_title: 'Training Courses',
-    section_trainings: 'Training', section_services: 'Services', section_favorites: 'Favorites',
+    section_trainings: 'Training', section_services: 'Books', section_favorites: 'Favorites',
     section_lessons_desc: 'Step-by-step video lessons', section_apps_desc: 'Practical apps to download',
     section_tools_desc: 'Quick helper tools', section_trainings_desc: 'Interactive quizzes and exercises',
-    section_services_desc: 'Services and consulting',
+    section_services_desc: 'Books and publications',
     section_favorites_desc: 'Your favorite tools and apps',
     go_to_training: 'Go to training', review_lesson: 'Review lesson',
     watch_video: 'Watch video', open_app: 'Open on Google Play',
     open_tool: 'Open tool',
     no_results: 'No matching results', empty_section: 'No content here yet.',
     type_lessons: 'Lesson', type_apps: 'App', type_tools: 'Tool',
-    type_trainings: 'Training', type_services: 'Service',
+    type_trainings: 'Training', type_services: 'Book',
     back_to_list: 'Back to list',
     login: 'Log in', signup: 'Sign up', logout: 'Log out',
     login_with_google: 'Continue with Google',
@@ -728,34 +759,29 @@ function renderHomeGrid(){
   if (!grid) return;
   grid.innerHTML = '';
   if (grid2) grid2.innerHTML = '';
-  SECTIONS_ROW1.forEach(s => {
-    const card = document.createElement('a');
-    card.className = 'section-card';
+  SECTIONS_ROW1.forEach(s => grid.appendChild(sectionCard(s)));
+  SECTIONS_ROW2.forEach(s => (grid2 || grid).appendChild(sectionCard(s)));
+}
+
+// A "coming soon" section shows its badge; for visitors it is a plain,
+// faded card that does not open, admins still get the link.
+function sectionCard(s){
+  const locked = s.comingSoon && !homeAdmin;
+  const card = document.createElement(locked ? 'div' : 'a');
+  card.className = 'section-card' + (locked ? ' coming-soon-card' : '');
+  if (!locked){
     card.href = s.href;
     card.style.textDecoration = 'none';
     card.style.color = 'inherit';
-    card.style.display = 'block';
-    card.innerHTML = `
+  }
+  card.style.display = 'block';
+  card.innerHTML = `
       <span class="icon-badge ${s.badge}">${s.icon}</span>
       <h3>${t('section_' + s.key)}</h3>
       <p>${t('section_' + s.key + '_desc')}</p>
+      ${s.comingSoon ? `<span class="coming-soon-badge" style="position:absolute; top:8px; inset-inline-start:8px; margin:0; font-size:.62rem; padding:2px 8px;">${lang === 'ar' ? 'قريبًا' : 'Coming soon'}</span>` : ''}
     `;
-    grid.appendChild(card);
-  });
-  SECTIONS_ROW2.forEach(s => {
-    const card = document.createElement('a');
-    card.className = 'section-card';
-    card.href = s.href;
-    card.style.textDecoration = 'none';
-    card.style.color = 'inherit';
-    card.style.display = 'block';
-    card.innerHTML = `
-      <span class="icon-badge ${s.badge}">${s.icon}</span>
-      <h3>${t('section_' + s.key)}</h3>
-      <p>${t('section_' + s.key + '_desc')}</p>
-    `;
-    (grid2 || grid).appendChild(card);
-  });
+  return card;
 }
 
 /* =====================================================================
@@ -860,10 +886,15 @@ function showTrainingCoursePaymentModal(){
   overlay.querySelector('#coursePaymentClose').addEventListener('click', close);
 }
 
-function renderCoursesSection(){
+async function renderCoursesSection(){
   const wrap = document.getElementById('coursesSection');
   if (!wrap) return; // only present on lessons.html
-  const items = CONTENT.trainingCourses || [];
+  const admin = await isAdminUser();
+  const items = (CONTENT.trainingCourses || []).filter(i => admin || !i.comingSoon);
+  // no course open to visitors yet: hide the block and its title
+  const title = wrap.previousElementSibling;
+  wrap.classList.toggle('hidden', items.length === 0);
+  if (title && title.classList.contains('view-title')) title.classList.toggle('hidden', items.length === 0);
   wrap.innerHTML = items.map((item) => `
     <div class="item-card course-card" data-course-id="${item.id}" style="cursor:pointer;">
       ${item.icon ? `<span class="icon-badge badge-lessons">${item.icon}</span>` : ''}
@@ -896,7 +927,8 @@ async function renderSectionItems(){
   const wrap = document.getElementById('sectionItems');
   if (!wrap) return;
   const key = document.body.dataset.section;
-  const allItems = CONTENT[key] || [];
+  const admin = await isAdminUser();
+  const allItems = (CONTENT[key] || []).filter(i => admin || isListed(i));
 
   if (key === 'tools'){
     renderFamilyFilter(allItems);
@@ -909,7 +941,7 @@ async function renderSectionItems(){
   // otherwise disturbing the order authors set in CONTENT.
   items = [...items].sort((a, b) => (a.comingSoon ? 1 : 0) - (b.comingSoon ? 1 : 0));
 
-  const [, admin] = await Promise.all([loadUserOrder(), isAdminUser()]);
+  await loadUserOrder();
   const orderKey = key === 'tools' && activeFamily ? `${key}:${activeFamily}` : key;
   items = applyUserOrder(orderKey, items);
 
@@ -920,17 +952,7 @@ async function renderSectionItems(){
   }
 
   items.forEach(item => {
-    if (item.comingSoon && !admin){
-      const card = document.createElement('div');
-      card.className = 'item-card coming-soon-card';
-      card.innerHTML = `
-        ${item.icon ? `<span class="icon-badge badge-${key}">${item.icon}</span>` : ''}
-        <h3>${lang === 'ar' ? item.title_ar : item.title_en}</h3>
-        <p>${lang === 'ar' ? item.desc_ar : item.desc_en}</p>
-        <span class="coming-soon-badge">${lang === 'ar' ? 'قريبًا' : 'Coming soon'}</span>
-      `;
-      wrap.appendChild(card);
-    } else if (item.url){
+    if (item.url){
       const card = document.createElement('a');
       card.className = 'item-card';
       card.href = item.url;
@@ -945,7 +967,7 @@ async function renderSectionItems(){
       const showFav = (key === 'tools' || key === 'apps');
       const tierBadge = item.tier === 'pro' ? `<span class="tier-badge tier-pro">Pro</span>`
         : item.tier === 'promax' ? `<span class="tier-badge tier-promax">Pro Max</span>`
-        : item.badge ? `<span class="tier-badge tier-tag">${item.badge}</span>` : '';
+        : item.badge ? `<span class="tier-badge tier-tag">${(lang === 'en' && item.badge_en) || item.badge}</span>` : '';
       // Admin previewing a not-yet-launched item: keep the same "coming soon" look
       // everyone else sees, but this instance is a real, clickable link underneath.
       const comingSoonBadge = (item.comingSoon && admin) ? `<span class="coming-soon-badge">${lang === 'ar' ? 'قريبًا' : 'Coming soon'}</span>` : '';
@@ -1053,7 +1075,7 @@ function handleHash(){
 function buildSearchIndex(){
   const index = [];
   Object.keys(CONTENT).forEach(key => {
-    (CONTENT[key] || []).forEach(item => {
+    (CONTENT[key] || []).filter(isListed).forEach(item => {
       index.push({ listKey: key, id: item.id, title_ar: item.title_ar, title_en: item.title_en, url: item.url });
     });
   });
@@ -1555,8 +1577,10 @@ function initAuth(){
       await loadFavorites();
       const section = document.body.dataset.section;
       if (section === 'favorites') renderFavoritesPage();
-      else if (section === 'tools' || section === 'apps') renderSectionItems();
+      else if (section) renderSectionItems();
       renderCoursesSection();
+      homeAdmin = await isAdminUser();
+      renderHomeGrid();
       await refreshSubscriptionStatus();
       wrap.classList.remove('auth-pending');
       const proBtnEl = document.getElementById('proBtn');
