@@ -664,6 +664,15 @@ const SECTIONS_ROW2 = [
 ];
 const SECTIONS = [...SECTIONS_ROW1, ...SECTIONS_ROW2];
 
+// Items still "coming soon" or without a page of their own stay out of every
+// list for visitors (admins still see them, to preview). A section left with
+// nothing to show is hidden from the home grid the same way.
+function isListed(item){ return !item.comingSoon && !!item.url; }
+let showAllSections = false; // true for admins
+function sectionShown(s){
+  return s.key === 'favorites' || showAllSections || (CONTENT[s.key] || []).some(isListed);
+}
+
 /* =====================================================================
    I18N
 ===================================================================== */
@@ -754,7 +763,7 @@ function renderHomeGrid(){
   if (!grid) return;
   grid.innerHTML = '';
   if (grid2) grid2.innerHTML = '';
-  SECTIONS_ROW1.forEach(s => {
+  SECTIONS_ROW1.filter(sectionShown).forEach(s => {
     const card = document.createElement('a');
     card.className = 'section-card';
     card.href = s.href;
@@ -768,7 +777,7 @@ function renderHomeGrid(){
     `;
     grid.appendChild(card);
   });
-  SECTIONS_ROW2.forEach(s => {
+  SECTIONS_ROW2.filter(sectionShown).forEach(s => {
     const card = document.createElement('a');
     card.className = 'section-card';
     card.href = s.href;
@@ -782,7 +791,29 @@ function renderHomeGrid(){
     `;
     (grid2 || grid).appendChild(card);
   });
+  [grid, grid2].forEach(fitSectionRow);
 }
+
+// A row with fewer than 3 cards keeps the cards at their usual width and
+// centres them, instead of leaving an empty slot at the end of the row.
+function fitSectionRow(row){
+  if (!row) return;
+  row.style.gridTemplateColumns = row.style.maxWidth = row.style.marginInline = '';
+  const n = row.children.length;
+  if (n === 0 || n >= 3) return;
+  const gap = parseFloat(getComputedStyle(row).columnGap) || 0;
+  row.style.gridTemplateColumns = `repeat(${n}, minmax(0, 1fr))`;
+  row.style.maxWidth = `calc((100% + ${gap}px) * ${n} / 3 - ${gap}px)`;
+  row.style.marginInline = 'auto';
+}
+let fitRowsTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(fitRowsTimer);
+  fitRowsTimer = setTimeout(() => {
+    fitSectionRow(document.getElementById('sectionGrid'));
+    fitSectionRow(document.getElementById('sectionGridRow2'));
+  }, 150);
+});
 
 /* =====================================================================
    SECTION LIST + DETAIL (lessons / apps / tools / resources / services)
@@ -886,10 +917,15 @@ function showTrainingCoursePaymentModal(){
   overlay.querySelector('#coursePaymentClose').addEventListener('click', close);
 }
 
-function renderCoursesSection(){
+async function renderCoursesSection(){
   const wrap = document.getElementById('coursesSection');
   if (!wrap) return; // only present on lessons.html
-  const items = CONTENT.trainingCourses || [];
+  const admin = await isAdminUser();
+  const items = (CONTENT.trainingCourses || []).filter(i => admin || !i.comingSoon);
+  // no course open to visitors yet: hide the block and its title
+  const title = wrap.previousElementSibling;
+  wrap.classList.toggle('hidden', items.length === 0);
+  if (title && title.classList.contains('view-title')) title.classList.toggle('hidden', items.length === 0);
   wrap.innerHTML = items.map((item) => `
     <div class="item-card course-card" data-course-id="${item.id}" style="cursor:pointer;">
       ${item.icon ? `<span class="icon-badge badge-lessons">${item.icon}</span>` : ''}
@@ -922,7 +958,8 @@ async function renderSectionItems(){
   const wrap = document.getElementById('sectionItems');
   if (!wrap) return;
   const key = document.body.dataset.section;
-  const allItems = CONTENT[key] || [];
+  const admin = await isAdminUser();
+  const allItems = (CONTENT[key] || []).filter(i => admin || isListed(i));
 
   if (key === 'tools'){
     renderFamilyFilter(allItems);
@@ -935,7 +972,7 @@ async function renderSectionItems(){
   // otherwise disturbing the order authors set in CONTENT.
   items = [...items].sort((a, b) => (a.comingSoon ? 1 : 0) - (b.comingSoon ? 1 : 0));
 
-  const [, admin] = await Promise.all([loadUserOrder(), isAdminUser()]);
+  await loadUserOrder();
   const orderKey = key === 'tools' && activeFamily ? `${key}:${activeFamily}` : key;
   items = applyUserOrder(orderKey, items);
 
@@ -946,17 +983,7 @@ async function renderSectionItems(){
   }
 
   items.forEach(item => {
-    if (item.comingSoon && !admin){
-      const card = document.createElement('div');
-      card.className = 'item-card coming-soon-card';
-      card.innerHTML = `
-        ${item.icon ? `<span class="icon-badge badge-${key}">${item.icon}</span>` : ''}
-        <h3>${lang === 'ar' ? item.title_ar : item.title_en}</h3>
-        <p>${lang === 'ar' ? item.desc_ar : item.desc_en}</p>
-        <span class="coming-soon-badge">${lang === 'ar' ? 'قريبًا' : 'Coming soon'}</span>
-      `;
-      wrap.appendChild(card);
-    } else if (item.url){
+    if (item.url){
       const card = document.createElement('a');
       card.className = 'item-card';
       card.href = item.url;
@@ -1079,7 +1106,7 @@ function handleHash(){
 function buildSearchIndex(){
   const index = [];
   Object.keys(CONTENT).forEach(key => {
-    (CONTENT[key] || []).forEach(item => {
+    (CONTENT[key] || []).filter(isListed).forEach(item => {
       index.push({ listKey: key, id: item.id, title_ar: item.title_ar, title_en: item.title_en, url: item.url });
     });
   });
@@ -1581,8 +1608,10 @@ function initAuth(){
       await loadFavorites();
       const section = document.body.dataset.section;
       if (section === 'favorites') renderFavoritesPage();
-      else if (section === 'tools' || section === 'apps') renderSectionItems();
+      else if (section) renderSectionItems();
       renderCoursesSection();
+      showAllSections = await isAdminUser();
+      renderHomeGrid();
       await refreshSubscriptionStatus();
       wrap.classList.remove('auth-pending');
       const proBtnEl = document.getElementById('proBtn');

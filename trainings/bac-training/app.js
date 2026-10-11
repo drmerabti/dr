@@ -351,7 +351,8 @@ function renderSubjects(){
   $('heroIconWrap').innerHTML = SVG.trophy;
   const grid = $('subjectsGrid');
   grid.innerHTML = '';
-  SUBJECTS.forEach(subj => {
+  // subjects not ready yet stay out of the list
+  SUBJECTS.filter(subj => subj.available).forEach(subj => {
     const card = document.createElement('div');
     card.className = 'subject-card' + (subj.available ? '' : ' locked');
     card.innerHTML = `
