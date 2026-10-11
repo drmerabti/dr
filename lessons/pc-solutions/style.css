@@ -2,14 +2,17 @@
    حلول عملية للحاسوب — صفحة الدروس (نفس تصميم سلسلة VBA)
    ============================================================ */
 :root{
-  --ink:#1E2F40; --ink-soft:#64768A; --accent:#1D6F42; --accent-2:#21A366; --accent-3:#33C481; --accent-soft:#E3F3EA;
-  --sky:#EEF4F1; --mist:#CFE3D7; --line:rgba(30,47,64,.09);
-  --card:#FFFFFF; --field:#F4F8F6;
+  /* ثيم أزرق تقني (الحاسوب / ويندوز): أساسي #0067C0، فاتح #E6F0FB، لمسة سماوية #00B4D8 */
+  --ink:#1E2F40; --ink-soft:#64768A; --accent:#0067C0; --accent-2:#0078D4; --accent-3:#00B4D8; --accent-soft:#E6F0FB;
+  --cyan:#00B4D8;
+  --sky:#EEF3FA; --mist:#C7DAF1; --line:rgba(30,47,64,.09);
+  --card:#FFFFFF; --field:#F3F7FC;
   --soon:#B7791F; --soon-bg:#FFF4DE;
-  --grad:linear-gradient(120deg, #0E5A30 0%, #1D6F42 45%, #21A366 100%);
-  --grad-text:linear-gradient(110deg, #0E5A30 0%, #1D6F42 40%, #21A366 100%);
+  --grad-bar:linear-gradient(120deg, #0A2A5E 0%, #0A4A93 55%, #0067C0 100%);   /* الشريط العلوي */
+  --grad:linear-gradient(120deg, #0057A8 0%, #0067C0 55%, #0078D4 100%);       /* الأزرار والعناصر النشطة ورقم الدرس */
+  --grad-text:linear-gradient(110deg, #0A2A5E 0%, #0057A8 45%, #0067C0 100%);
   --shadow:0 2px 6px rgba(21,36,49,.04), 0 10px 28px rgba(21,36,49,.06);
-  --shadow-hover:0 4px 10px rgba(21,36,49,.06), 0 18px 40px rgba(29,111,66,.12);
+  --shadow-hover:0 4px 10px rgba(21,36,49,.06), 0 18px 40px rgba(0,103,192,.12);
   --code-bg:#1E1E1E; --code-top:#262A2B; --code-gutter:#232323; --code-ln:#6E7681; --code-fg:#E1E4E8;
   --mono:'JetBrains Mono','Consolas','Courier New',monospace;
   --font:'Tajawal','Inter',sans-serif;
@@ -27,8 +30,8 @@ svg{ fill:none; stroke:currentColor; stroke-width:1.9; stroke-linecap:round; str
 /* ---------- الشريط العلوي: تدرّج أخضر إكسل (عناصر بعرض ثابت) ---------- */
 .tb{
   height:var(--tb-h); display:flex; align-items:center; gap:8px; padding:0 14px;
-  background:var(--grad); color:#fff; position:relative; z-index:30;
-  box-shadow:0 4px 18px rgba(14,90,48,.25);
+  background:var(--grad-bar); color:#fff; position:relative; z-index:30;
+  box-shadow:0 4px 18px rgba(10,42,94,.3);
 }
 .tb::after{ content:""; position:absolute; inset:0; pointer-events:none; background:radial-gradient(600px 120px at 85% -40%, rgba(255,255,255,.18), transparent 70%); }
 .tb > *{ position:relative; z-index:1; }
@@ -75,8 +78,8 @@ svg{ fill:none; stroke:currentColor; stroke-width:1.9; stroke-linecap:round; str
 }
 .nav-item:hover{ background:var(--field); transform:translateX(2px); }
 .nav-item.on{
-  background:linear-gradient(100deg, #DDF2E5 0%, #EEF8F2 60%, #FFFFFF 100%);
-  border-color:#BFE0CC; box-shadow:inset 4px 0 0 var(--accent-2), 0 4px 12px rgba(29,111,66,.08);
+  background:linear-gradient(100deg, #E6F0FB 0%, #F1F6FD 60%, #FFFFFF 100%);
+  border-color:#BCD5F1; box-shadow:inset 4px 0 0 var(--accent), 0 4px 12px rgba(0,103,192,.08);
 }
 .nav-item.locked .nav-txt{ color:var(--ink-soft); }
 .nav-num{
@@ -85,7 +88,7 @@ svg{ fill:none; stroke:currentColor; stroke-width:1.9; stroke-linecap:round; str
   font-weight:800; font-size:.82rem; font-family:'Inter',sans-serif;
 }
 .nav-num svg{ width:15px; height:15px; stroke-width:3; }
-.nav-item.on .nav-num{ background:var(--grad); color:#fff; border-color:transparent; box-shadow:0 3px 8px rgba(29,111,66,.3); }
+.nav-item.on .nav-num{ background:var(--grad); color:#fff; border-color:transparent; box-shadow:0 3px 8px rgba(0,103,192,.3); }
 .nav-num.done{ background:var(--accent-2); color:#fff; border-color:var(--accent-2); }
 .nav-txt{ flex:1; min-width:0; font-size:.86rem; font-weight:700; line-height:1.45; }
 .nav-item.on .nav-txt{ color:var(--accent); }
@@ -111,11 +114,11 @@ svg{ fill:none; stroke:currentColor; stroke-width:1.9; stroke-linecap:round; str
   background:var(--card); border:1px solid var(--line); border-radius:20px; padding:14px 18px; box-shadow:var(--shadow);
   position:relative; overflow:hidden;
 }
-.lesson-head::before{ content:""; position:absolute; inset:0 0 auto 0; height:4px; background:var(--grad); }
+.lesson-head::before{ content:""; position:absolute; inset:0 0 auto 0; height:4px; background:linear-gradient(90deg, var(--accent) 0%, var(--cyan) 100%); }
 .lesson-badge{
   width:62px; height:62px; flex:none; border-radius:18px; background:var(--grad); color:#fff;
   display:flex; flex-direction:column; align-items:center; justify-content:center; line-height:1;
-  font-family:'Inter',sans-serif; font-weight:900; font-size:1.6rem; box-shadow:0 8px 18px rgba(29,111,66,.3);
+  font-family:'Inter',sans-serif; font-weight:900; font-size:1.6rem; box-shadow:0 8px 18px rgba(0,103,192,.3);
 }
 .lesson-badge small{ font-family:var(--head); font-size:.62rem; font-weight:700; opacity:.85; margin-bottom:3px; }
 .lesson-hd-txt{ min-width:0; display:flex; flex-direction:column; gap:3px; }
@@ -134,17 +137,17 @@ svg{ fill:none; stroke:currentColor; stroke-width:1.9; stroke-linecap:round; str
 .watch-btn span{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .watch-btn svg{ width:18px; height:18px; stroke-width:2.6; opacity:.35; }
 .watch-btn:hover{ background:var(--field); transform:translateY(-1px); }
-.watch-btn.on{ background:var(--grad); border-color:transparent; color:#fff; box-shadow:0 6px 16px rgba(29,111,66,.28); }
+.watch-btn.on{ background:var(--grad); border-color:transparent; color:#fff; box-shadow:0 6px 16px rgba(0,103,192,.28); }
 .watch-btn.on svg{ opacity:1; }
 
 /* ---------- الفيديو 16:9 ---------- */
 .video-wrap{ display:flex; flex-direction:column; align-items:flex-end; gap:8px; width:min(100%, calc((100dvh - var(--tb-h) - 150px) * 16 / 9)); min-width:min(100%, 560px); margin:0 auto; }
-.video{ position:relative; width:100%; aspect-ratio:16 / 9; background:#0F1A14; border-radius:16px; overflow:hidden; box-shadow:0 10px 30px rgba(21,36,49,.18); }
+.video{ position:relative; width:100%; aspect-ratio:16 / 9; background:#0B1526; border-radius:16px; overflow:hidden; box-shadow:0 10px 30px rgba(21,36,49,.18); }
 .video iframe{ position:absolute; inset:0; width:100%; height:100%; border:0; }
 .video:fullscreen{ border-radius:0; aspect-ratio:auto; }
 .video:-webkit-full-screen{ border-radius:0; width:100%; height:100%; }
-.video-empty{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; color:#CFE3D7; font-weight:800; font-size:1.1rem;
-  background:radial-gradient(circle at 50% 40%, #24533A 0%, #0F1A14 70%); }
+.video-empty{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; color:#C7DAF1; font-weight:800; font-size:1.1rem;
+  background:radial-gradient(circle at 50% 40%, #1B3E6E 0%, #0B1526 70%); }
 .video-empty svg{ width:64px; height:64px; stroke-width:1.4; opacity:.8; }
 .full-btn{
   width:150px; height:36px; display:flex; align-items:center; justify-content:center; gap:7px;
@@ -161,7 +164,7 @@ svg{ fill:none; stroke:currentColor; stroke-width:1.9; stroke-linecap:round; str
   background:var(--card); border:1px solid var(--line); border-radius:20px; padding:18px 20px; box-shadow:var(--shadow);
   transition:box-shadow .25s ease, transform .25s ease, border-color .25s ease;
 }
-.card:hover{ box-shadow:var(--shadow-hover); border-color:rgba(29,111,66,.16); }
+.card:hover{ box-shadow:var(--shadow-hover); border-color:rgba(0,103,192,.16); }
 .card-h, .codes-h h2{ margin:0 0 14px; font-family:var(--head); font-size:1.12rem; font-weight:800; color:var(--accent); display:flex; align-items:center; gap:9px; }
 .card-h > svg, .codes-h h2 > svg{
   width:32px; height:32px; padding:7px; border-radius:10px; background:var(--accent-soft); color:var(--accent); stroke-width:2.2;
@@ -208,7 +211,7 @@ svg{ fill:none; stroke:currentColor; stroke-width:1.9; stroke-linecap:round; str
 .code-card.acc .code-top:hover{ background:linear-gradient(180deg, #33393A, #2A2F30); }
 .code-card.acc .code-top:focus-visible{ outline:2px solid var(--accent-3); outline-offset:-2px; }
 .code-title{ flex:1; min-width:0; color:#F3F4F5; font-weight:700; font-size:.92rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; unicode-bidi:plaintext; padding:0 4px; }
-.code-lang{ flex:none; font-family:var(--mono); font-size:.68rem; font-weight:600; color:#8FD3A8; background:rgba(33,163,102,.15); border:1px solid rgba(33,163,102,.35); padding:2px 8px; border-radius:6px; }
+.code-lang{ flex:none; font-family:var(--mono); font-size:.68rem; font-weight:600; color:#7FD8EE; background:rgba(0,180,216,.15); border:1px solid rgba(0,180,216,.35); padding:2px 8px; border-radius:6px; }
 .acc-chev{ flex:none; width:26px; height:26px; display:grid; place-items:center; color:#B9C0C4; transition:transform .25s; }
 .acc-chev svg{ width:18px; height:18px; stroke-width:2.4; }
 .code-card.open .acc-chev{ transform:rotate(180deg); }
@@ -222,10 +225,10 @@ svg{ fill:none; stroke:currentColor; stroke-width:1.9; stroke-linecap:round; str
 .code-btn svg{ width:15px; height:15px; }
 .code-btn:hover{ background:#41474A; transform:translateY(-1px); }
 .code-btn.icon-only{ width:32px; padding:0; }
-.copy-btn{ background:linear-gradient(135deg, #21A366, #1D7A46); border-color:#26A86B; color:#fff; }
-.copy-btn:hover{ background:linear-gradient(135deg, #27B571, #1F8550); }
-.code-btn.done{ background:#E8F7EE; border-color:#E8F7EE; color:var(--accent); }
-.copy-all{ width:170px; height:38px; background:var(--grad); border:0; color:#fff; box-shadow:0 6px 14px rgba(29,111,66,.25); }
+.copy-btn{ background:linear-gradient(135deg, #0078D4, #0057A8); border-color:#1A85D6; color:#fff; }
+.copy-btn:hover{ background:linear-gradient(135deg, #1A85D6, #0067C0); }
+.code-btn.done{ background:#E6F0FB; border-color:#E6F0FB; color:var(--accent); }
+.copy-all{ width:170px; height:38px; background:var(--grad); border:0; color:#fff; box-shadow:0 6px 14px rgba(0,103,192,.25); }
 .copy-all:hover{ background:var(--grad); filter:brightness(1.08); }
 .copy-all.done{ background:var(--accent-soft); border:1.5px solid var(--accent-2); color:var(--accent); box-shadow:none; }
 
@@ -271,10 +274,10 @@ body.code-max{ overflow:hidden; }
   align-self:center; display:flex; align-items:center; justify-content:center; gap:9px;
   width:min(100%, 320px); height:48px; border-radius:14px; text-decoration:none;
   background:var(--grad); color:#fff; font-weight:800; font-size:.98rem;
-  box-shadow:0 8px 20px rgba(29,111,66,.25); transition:transform .2s, box-shadow .2s;
+  box-shadow:0 8px 20px rgba(0,103,192,.25); transition:transform .2s, box-shadow .2s;
 }
 .dl-btn svg{ width:20px; height:20px; stroke-width:2.2; }
-.dl-btn:hover{ transform:translateY(-2px); box-shadow:0 12px 26px rgba(29,111,66,.32); }
+.dl-btn:hover{ transform:translateY(-2px); box-shadow:0 12px 26px rgba(0,103,192,.32); }
 .dl-note{
   align-self:center; display:flex; align-items:flex-start; gap:10px; width:min(100%, 640px);
   background:var(--accent-soft); border:1px solid var(--mist); border-radius:14px; padding:12px 16px;
@@ -356,3 +359,17 @@ body.code-max{ overflow:hidden; }
   .code-title{ font-size:.82rem; }
   .code-lang{ display:none; }
 }
+
+/* ---------- ثيم «حلول عملية للحاسوب»: لمسات خاصة ---------- */
+/* نقش دوائر إلكترونية خفيف جدًا خلف منطقة الدرس */
+body{
+  background-color:var(--sky);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cg fill='none' stroke='%230067C0' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round' opacity='.07'%3E%3Cpath d='M0 30h40l15 15h40'/%3E%3Cpath d='M95 45h30l10-10h45'/%3E%3Cpath d='M30 180v-40l20-20V90'/%3E%3Cpath d='M120 180v-30l-15-15H75'/%3E%3Cpath d='M150 0v25l-15 15v30'/%3E%3Cpath d='M0 120h25l10 10h20'/%3E%3C/g%3E%3Cg fill='%230067C0' opacity='.09'%3E%3Ccircle cx='95' cy='45' r='3'/%3E%3Ccircle cx='50' cy='90' r='3'/%3E%3Ccircle cx='75' cy='135' r='3'/%3E%3Ccircle cx='135' cy='70' r='3'/%3E%3Ccircle cx='55' cy='130' r='3'/%3E%3Ccircle cx='40' cy='30' r='2.2'/%3E%3C/g%3E%3C/svg%3E");
+  background-size:180px 180px;
+}
+/* أيقونة السلسلة بجانب العنوان (شاشة حاسوب فيها مفتاح ربط) */
+.tb-app{ width:32px; height:32px; flex:none; display:grid; place-items:center; filter:drop-shadow(0 2px 4px rgba(0,0,0,.22)); }
+.tb .tb-app svg{ width:32px; height:32px; display:block; fill:initial; stroke:none; }
+/* عداد التقدم: لمسة سماوية */
+.tb-progress{ border-color:rgba(0,180,216,.75); background:rgba(0,180,216,.2); }
+.tb-progress svg{ color:#7FE3F7; }
