@@ -34,7 +34,7 @@
       err: 'تعذّر الإرسال، حاول مرة أخرى.', errAuth: 'التقييم غير متاح حاليًا.',
       'auth/operation-not-allowed': 'الدخول المجهول (Anonymous) غير مفعّل في Firebase.',
       'auth/unauthorized-domain': 'هذا النطاق غير مضاف في Firebase (Authorized domains).',
-      'auth/admin-restricted-operation': 'إنشاء الحسابات المجهولة ممنوع في إعدادات Firebase.',
+      'auth/admin-restricted-operation': 'فعّل Anonymous في Firebase (Authentication ← Sign-in method)، وفعّل إنشاء الحسابات (Settings ← User actions).',
       'permission-denied': 'قواعد Firestore لا تسمح بالإرسال (أضف قاعدة lesson_ratings).',
     },
     en: {
@@ -47,7 +47,7 @@
       err: 'Could not send, please try again.', errAuth: 'Rating is not available right now.',
       'auth/operation-not-allowed': 'Anonymous sign-in is not enabled in Firebase.',
       'auth/unauthorized-domain': 'This domain is not in Firebase Authorized domains.',
-      'auth/admin-restricted-operation': 'Anonymous sign-up is blocked in the Firebase settings.',
+      'auth/admin-restricted-operation': 'Enable Anonymous in Firebase (Authentication → Sign-in method) and account creation (Settings → User actions).',
       'permission-denied': 'The Firestore rules refuse the rating (add the lesson_ratings rule).',
     },
   };
