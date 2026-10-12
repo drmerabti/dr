@@ -5,7 +5,7 @@
 // lesson-rating.css, firestore-lesson-ratings.rules).
 // A page uses it by:
 //   1) loading lesson-rating.css + this file (after the Firebase compat SDK
-//      app/auth/firestore and firebase-init.js),
+//      app + firestore and firebase-init.js),
 //   2) rendering one element where the section goes:
 //        <div class="lr-slot" data-rating="pc-solutions-1"></div>
 //      (the value is the lesson id stored in Firestore).
@@ -13,15 +13,14 @@
 // Firestore: collection "lesson_ratings", one document per visitor and lesson:
 //   lesson_ratings/{lessonId}_{uid} = { lessonId, uid, stars 1-5, worked true/false,
 //                                       windows '7'|'10'|'11', createdAt }
-// "uid" comes from Firebase anonymous sign-in in a SEPARATE Firebase app
-// ("lessonRatings"), so the site's real sign-in is never touched. The visitor
-// gets that id only when pressing "Send". Rules: create once, never update/delete.
+// "uid" is a random visitor id kept in this browser (localStorage "lr_visitor",
+// "v_" + 20 letters/digits). No Firebase sign-in is needed. Rules: create once
+// per id, never update/delete.
 // =====================================================================
 (function () {
   'use strict';
 
   const COLLECTION = 'lesson_ratings';
-  const APP_NAME = 'lessonRatings';
 
   const TXT = {
     ar: {
@@ -31,11 +30,8 @@
       qWorked: 'هل اشتغل الملف معك؟', yes: 'نعم', no: 'لا',
       qWindows: 'نسخة الويندوز:', send: 'إرسال', sending: 'جارٍ الإرسال...',
       need: 'اختر إجابة لكل سؤال.', thanks: 'شكرًا لتقييمك!', yours: 'تقييمك:',
-      err: 'تعذّر الإرسال، حاول مرة أخرى.', errAuth: 'التقييم غير متاح حاليًا.',
-      'auth/operation-not-allowed': 'الدخول المجهول (Anonymous) غير مفعّل في Firebase.',
-      'auth/unauthorized-domain': 'هذا النطاق غير مضاف في Firebase (Authorized domains).',
-      'auth/admin-restricted-operation': 'إنشاء الحسابات المجهولة ممنوع في إعدادات Firebase.',
-      'permission-denied': 'قواعد Firestore لا تسمح بالإرسال (أضف قاعدة lesson_ratings).',
+      err: 'تعذّر الإرسال، حاول مرة أخرى.',
+      'permission-denied': 'قواعد Firestore لا تسمح بالإرسال (انشر قاعدة lesson_ratings الجديدة).',
     },
     en: {
       title: 'Rate this lesson', first: 'Be the first to rate this lesson',
@@ -44,11 +40,8 @@
       qWorked: 'Did the file work for you?', yes: 'Yes', no: 'No',
       qWindows: 'Windows version:', send: 'Send', sending: 'Sending...',
       need: 'Please answer both questions.', thanks: 'Thanks for your rating!', yours: 'Your rating:',
-      err: 'Could not send, please try again.', errAuth: 'Rating is not available right now.',
-      'auth/operation-not-allowed': 'Anonymous sign-in is not enabled in Firebase.',
-      'auth/unauthorized-domain': 'This domain is not in Firebase Authorized domains.',
-      'auth/admin-restricted-operation': 'Anonymous sign-up is blocked in the Firebase settings.',
-      'permission-denied': 'The Firestore rules refuse the rating (add the lesson_ratings rule).',
+      err: 'Could not send, please try again.',
+      'permission-denied': 'The Firestore rules refuse the rating (publish the new lesson_ratings rule).',
     },
   };
   const lang = () => (document.documentElement.lang === 'en' ? 'en' : 'ar');
@@ -66,26 +59,27 @@
   }
 
   /* ----------------------------- Firebase ---------------------------- */
-  let app = null;
-  function ratingApp() {
-    if (app) return app;
-    if (!window.firebase || !firebase.apps || !firebase.apps.length || !firebase.firestore || !firebase.auth) return null;
-    try { app = firebase.app(APP_NAME); }
-    catch (e) { app = firebase.initializeApp(firebase.app().options, APP_NAME); }
-    return app;
-  }
-  const db = () => ratingApp().firestore();
+  function firestoreOk() { return !!(window.firebase && firebase.apps && firebase.apps.length && firebase.firestore); }
+  const db = () => window.fbDb || firebase.firestore();
   const docId = (lessonId, uid) => `${lessonId}_${uid}`;
 
-  // The anonymous id saved from an earlier rating in this browser (null if none)
-  let authReady = null;
-  function savedUser() {
-    if (!authReady) {
-      authReady = new Promise(resolve => {
-        const unsub = ratingApp().auth().onAuthStateChanged(u => { unsub(); resolve(u || null); });
-      });
-    }
-    return authReady;
+  // Random visitor id, kept in this browser (one rating per lesson per browser)
+  const VID_KEY = 'lr_visitor';
+  let memVid = null;
+  function newVid() {
+    const abc = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const r = new Uint8Array(20);
+    (window.crypto || window.msCrypto).getRandomValues(r);
+    return 'v_' + Array.from(r, b => abc[b % abc.length]).join('');
+  }
+  function visitorId(create) {
+    let v = null;
+    try { v = localStorage.getItem(VID_KEY); } catch (e) { v = memVid; }
+    if (v && /^v_[A-Za-z0-9]{20}$/.test(v)) return v;
+    if (!create) return null;
+    v = newVid(); memVid = v;
+    try { localStorage.setItem(VID_KEY, v); } catch (e) {}
+    return v;
   }
 
   const stats = {};   // lessonId → { count, avg, workedPct } (cached between re-renders)
@@ -101,9 +95,9 @@
   const mine = {};    // lessonId → my rating document (or null)
   async function loadMine(lessonId) {
     if (lessonId in mine) return mine[lessonId];
-    const u = await savedUser();
-    if (!u) return (mine[lessonId] = null);
-    const d = await db().collection(COLLECTION).doc(docId(lessonId, u.uid)).get();
+    const vid = visitorId(false);
+    if (!vid) return (mine[lessonId] = null);
+    const d = await db().collection(COLLECTION).doc(docId(lessonId, vid)).get();
     return (mine[lessonId] = d.exists ? d.data() : null);
   }
 
@@ -165,14 +159,12 @@
     if (!state.stars || !state.worked || !state.windows) { state.msg = t('need'); render(slot, state); return; }
     state.busy = true; state.msg = ''; render(slot, state);
     try {
-      const a = ratingApp().auth();
-      const u = a.currentUser || (await a.signInAnonymously()).user;
-      authReady = Promise.resolve(u);
+      const vid = visitorId(true);
       const data = {
-        lessonId, uid: u.uid, stars: state.stars, worked: state.worked === 'yes', windows: state.windows,
+        lessonId, uid: vid, stars: state.stars, worked: state.worked === 'yes', windows: state.windows,
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       };
-      await db().collection(COLLECTION).doc(docId(lessonId, u.uid)).set(data);   // create only (rules)
+      await db().collection(COLLECTION).doc(docId(lessonId, vid)).set(data);   // create only (rules)
       mine[lessonId] = data;
       await loadStats(lessonId, true).catch(() => {});
     } catch (e) {
@@ -183,7 +175,7 @@
       // show the exact Firebase error code (trial) so the cause is visible on the page
       if (!mine[lessonId]) {
         const code = (e && e.code) || 'unknown';
-        const base = t(/^auth\//.test(code) ? 'errAuth' : 'err');
+        const base = t('err');
         const hint = TXT[lang()][code] || TXT.ar[code];
         state.msg = `${base}${hint ? ' ' + hint : ''} (${code})`;
       }
@@ -193,7 +185,7 @@
 
   async function mount(slot) {
     slot.dataset.lr = '1';
-    if (!ratingApp()) { slot.hidden = true; return; }
+    if (!firestoreOk()) { slot.hidden = true; return; }
     const state = { stars: 0, worked: null, windows: null, busy: false, msg: '' };
     slot.addEventListener('click', e => {
       const star = e.target.closest('[data-star]');

@@ -9,14 +9,15 @@
       // everyone can read (to show the average, the count and "worked for N%")
       allow read: if true;
 
-      // a visitor (anonymous sign-in) can ADD one rating per lesson, with valid values only
-      allow create: if request.auth != null
-        && request.resource.data.keys().hasOnly(['lessonId', 'uid', 'stars', 'worked', 'windows', 'createdAt'])
+      // a visitor can ADD one rating per lesson (id = lessonId_visitorId), with valid values only.
+      // visitorId = random id kept in the visitor's browser: "v_" + 20 letters/digits (no sign-in needed)
+      allow create: if request.resource.data.keys().hasOnly(['lessonId', 'uid', 'stars', 'worked', 'windows', 'createdAt'])
         && request.resource.data.keys().hasAll(['lessonId', 'uid', 'stars', 'worked', 'windows', 'createdAt'])
-        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.uid is string
+        && request.resource.data.uid.matches('^v_[A-Za-z0-9]{20}$')
         && request.resource.data.lessonId is string
         && request.resource.data.lessonId.matches('^[a-z0-9-]{1,60}$')
-        && ratingId == request.resource.data.lessonId + '_' + request.auth.uid
+        && ratingId == request.resource.data.lessonId + '_' + request.resource.data.uid
         && request.resource.data.stars is int
         && request.resource.data.stars >= 1 && request.resource.data.stars <= 5
         && request.resource.data.worked is bool
