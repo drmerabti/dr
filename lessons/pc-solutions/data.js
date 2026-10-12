@@ -38,6 +38,7 @@ const PC_LESSONS = [
              'If a Windows warning appears, click More info, then Run anyway, and accept the administrator prompt.\n' +
              'Type the address shown in the black window into your phone’s browser.\n' +
              'Works on Windows 7, 10 and 11.',
+    rating: 'pc-solutions-1', // ← تجربة التقييم (shared/lesson-rating): معرّف الدرس في Firestore lesson_ratings
     locked: false,
   },
 
