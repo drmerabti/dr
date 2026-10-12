@@ -32,6 +32,10 @@
       qWindows: 'نسخة الويندوز:', send: 'إرسال', sending: 'جارٍ الإرسال...',
       need: 'اختر إجابة لكل سؤال.', thanks: 'شكرًا لتقييمك!', yours: 'تقييمك:',
       err: 'تعذّر الإرسال، حاول مرة أخرى.', errAuth: 'التقييم غير متاح حاليًا.',
+      'auth/operation-not-allowed': 'الدخول المجهول (Anonymous) غير مفعّل في Firebase.',
+      'auth/unauthorized-domain': 'هذا النطاق غير مضاف في Firebase (Authorized domains).',
+      'auth/admin-restricted-operation': 'إنشاء الحسابات المجهولة ممنوع في إعدادات Firebase.',
+      'permission-denied': 'قواعد Firestore لا تسمح بالإرسال (أضف قاعدة lesson_ratings).',
     },
     en: {
       title: 'Rate this lesson', first: 'Be the first to rate this lesson',
@@ -41,6 +45,10 @@
       qWindows: 'Windows version:', send: 'Send', sending: 'Sending...',
       need: 'Please answer both questions.', thanks: 'Thanks for your rating!', yours: 'Your rating:',
       err: 'Could not send, please try again.', errAuth: 'Rating is not available right now.',
+      'auth/operation-not-allowed': 'Anonymous sign-in is not enabled in Firebase.',
+      'auth/unauthorized-domain': 'This domain is not in Firebase Authorized domains.',
+      'auth/admin-restricted-operation': 'Anonymous sign-up is blocked in the Firebase settings.',
+      'permission-denied': 'The Firestore rules refuse the rating (add the lesson_ratings rule).',
     },
   };
   const lang = () => (document.documentElement.lang === 'en' ? 'en' : 'ar');
@@ -172,7 +180,13 @@
       state.busy = false;
       // already rated from this browser (create refused) → show the thank-you
       if (e && e.code === 'permission-denied') { delete mine[lessonId]; await loadMine(lessonId).catch(() => {}); }
-      if (!mine[lessonId]) state.msg = t(e && /^auth\//.test(e.code || '') ? 'errAuth' : 'err');
+      // show the exact Firebase error code (trial) so the cause is visible on the page
+      if (!mine[lessonId]) {
+        const code = (e && e.code) || 'unknown';
+        const base = t(/^auth\//.test(code) ? 'errAuth' : 'err');
+        const hint = TXT[lang()][code] || TXT.ar[code];
+        state.msg = `${base}${hint ? ' ' + hint : ''} (${code})`;
+      }
     }
     render(slot, state);
   }
