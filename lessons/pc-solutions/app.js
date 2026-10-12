@@ -179,6 +179,8 @@ function renderLesson() {
 
     ${noteHTML(l)}
 
+    ${l.rating ? `<div class="lr-slot" data-rating="${esc(l.rating)}"></div>` : ''}
+
     ${pager}`;
   bindLesson();
   if (l.fileUrl && !l.fileSize) showFileSize(l.fileUrl);
