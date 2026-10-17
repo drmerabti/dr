@@ -146,81 +146,149 @@ svg{ fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; s
   35%{ box-shadow: 0 0 0 4px rgba(217,154,43,.55), 0 -10px 24px rgba(19,40,58,.06); }
 }
 
-.pay{
-  display: flex; align-items: center; gap: 14px;
-  width: 100%; min-height: 76px;
-  padding: 12px 18px;
-  border: 0; border-radius: 16px;
-  font-family: inherit; text-align: start;
-  cursor: pointer;
+/* prices beside the order buttons */
+.buy-grid{
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;   /* RTL: buttons on the right, prices on the left */
+  gap: 12px;
+  align-items: stretch;
+}
+.buy-btns{ display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.buy-prices{
+  grid-column: 2; grid-row: 1;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  min-width: 132px; padding: 10px 14px;
+  border-radius: 16px;
+  background: var(--surface);
+  border: 1.5px solid var(--gold);
   box-shadow: var(--shadow-md);
-  transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
 }
-.pay:not(:disabled):hover{ transform: translateY(-2px); box-shadow: var(--shadow-lg); }
-.pay{ position: relative; }
-.pay:disabled{ cursor: not-allowed; }
-.pay:disabled::after{                 /* until Chargily / Gumroad are wired */
-  content: "قريبًا";
-  position: absolute; top: -8px; inset-inline-end: 14px;
-  padding: 2px 9px; border-radius: 999px;
-  background: #fff; color: var(--brand-strong);
-  border: 1px solid var(--line-strong);
-  font: 800 .66rem/1.4 var(--font-ar);
-}
-.pay:focus-visible, .pay-mail:focus-visible, .pv-end-btn:focus-visible{ outline: 3px solid var(--gold); outline-offset: 3px; }
-
-.pay-ico{
-  position: relative; flex-shrink: 0;
-  width: 58px; height: 40px;
-  display: inline-flex; align-items: center; justify-content: center;
-}
-.pay-ico svg{ width: 58px; height: 40px; stroke: none; filter: drop-shadow(0 2px 3px rgba(0,0,0,.18)); }
-.pay-ico em{
-  position: absolute; bottom: -7px; inset-inline-start: -6px;
-  font: 800 .62rem/1 var(--font-en); font-style: normal; letter-spacing: .04em;
-  padding: 3px 6px; border-radius: 6px;
-  background: #fff; color: #1D5C78; border: 1.5px solid #1D5C78;
-}
-.pay-txt{ display: flex; flex-direction: column; gap: 3px; min-width: 0; flex: 1; }
-.pay-txt[dir="ltr"]{ text-align: right; }   /* English label hugs the icon */
-.pay-txt strong{ font-size: 1.12rem; font-weight: 900; }
-.pay-txt[lang="en"] strong{ font-family: var(--font-en); font-weight: 800; font-size: 1.06rem; }
-.pay-txt small{ font-size: .78rem; font-weight: 600; opacity: .85; }
-.pay-txt[lang="en"] small{ font-family: var(--font-en); }
-.pay-price{
-  flex-shrink: 0;
-  font: 900 2rem/1 var(--font-en);
+.price{ display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.price-num{
+  font: 900 2.05rem/1 var(--font-en);
+  color: var(--brand-strong);
   letter-spacing: -.01em;
   white-space: nowrap;
 }
-.pay-price i{ font-style: normal; font-family: var(--font-ar); font-size: 1.05rem; font-weight: 800; }
-.pay-usd .pay-price i{ font-family: var(--font-en); font-size: 1.4rem; }
+.price-num i{ font-style: normal; font-family: var(--font-ar); font-size: 1.05rem; font-weight: 800; color: var(--ink); }
+.price-num[dir="ltr"] i{ font-family: var(--font-en); font-size: 1.45rem; }
+.price small{ font-size: .74rem; font-weight: 700; color: var(--ink-soft); }
+.price-or{
+  font-size: .72rem; font-weight: 800; color: #9B6A12;
+  background: var(--gold-soft); padding: 1px 10px; border-radius: 999px;
+}
 
-/* DZD: brand teal, gold card */
-.pay-dzd{
-  color: #fff;
+.order{
+  display: flex; align-items: center; gap: 13px;
+  padding: 12px 16px;
+  border-radius: 16px;
+  color: #fff; text-decoration: none;
+  box-shadow: var(--shadow-md);
+  transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.order:hover{ transform: translateY(-2px); box-shadow: var(--shadow-lg); filter: brightness(1.04); }
+.order:active{ transform: translateY(0) scale(.99); }
+.order:focus-visible, .pv-end-btn:focus-visible, .ct-copy:focus-visible, .ct-open:focus-visible, .ct-close:focus-visible{
+  outline: 3px solid var(--gold); outline-offset: 3px;
+}
+.order-ico{
+  flex-shrink: 0;
+  width: 46px; height: 46px; border-radius: 13px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,.18);
+}
+.order-ico svg{ width: 26px; height: 26px; }
+.order-txt{ display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.order-txt strong{ font-size: 1.12rem; font-weight: 900; line-height: 1.3; }
+.order-txt small{ font-size: .8rem; font-weight: 600; opacity: .9; }
+
+/* main: e-mail, brand teal, gold icon */
+.order-mail{
+  min-height: 78px;
   background: linear-gradient(135deg, #2A7899 0%, var(--brand) 55%, var(--brand-strong) 100%);
 }
-/* USD: site gold, dark text */
-.pay-usd{
-  color: var(--ink);
-  background: linear-gradient(135deg, #F6CE6E 0%, #EDB247 55%, var(--gold) 100%);
+.order-mail .order-ico{ background: var(--gold); color: var(--brand-strong); }
+/* WhatsApp green (dark enough for white text) */
+.order-wa{
+  min-height: 62px;
+  background: linear-gradient(135deg, #22B35E 0%, #179246 100%);
 }
-.pay-usd .pay-ico em{ display: none; }
+.order-wa .order-ico{ width: 40px; height: 40px; border-radius: 50%; background: #fff; color: #179246; }
+.order-wa .order-ico svg{ width: 24px; height: 24px; }
+.order-wa .order-txt strong{ font-size: 1.04rem; }
 
-.pay-mail{
-  display: flex; align-items: center; justify-content: center; gap: 9px;
-  min-height: 50px; padding: 0 18px;
+.buy-note{ margin: 0; font-size: .82rem; font-weight: 600; color: var(--ink-soft); text-align: center; line-height: 1.6; }
+
+/* ---------- contact window (e-mail / WhatsApp number + copy) ---------- */
+.ct-overlay{
+  position: fixed; inset: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px;
+  background: rgba(12,28,40,.5);
+  animation: ctFade .18s ease;
+}
+.ct-overlay[hidden]{ display: none; }
+@keyframes ctFade{ from{ opacity: 0; } }
+.ct-box{
+  position: relative;
+  width: 100%; max-width: 430px;
+  padding: 28px 24px 22px;
+  border-radius: 22px;
+  background: var(--surface);
+  box-shadow: 0 24px 60px rgba(12,28,40,.3);
+  text-align: center;
+  animation: ctPop .2s cubic-bezier(.2,.7,.2,1);
+}
+@keyframes ctPop{ from{ transform: translateY(10px) scale(.97); } }
+.ct-close{
+  position: absolute; top: 12px; inset-inline-end: 12px;
+  width: 36px; height: 36px; border-radius: 50%;
+  border: 0; background: var(--page-bg); color: var(--ink-soft);
+  display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer;
+}
+.ct-close:hover{ color: var(--ink); background: var(--brand-soft); }
+.ct-close svg{ width: 18px; height: 18px; }
+.ct-ico{
+  width: 58px; height: 58px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  margin-bottom: 8px;
+  background: var(--brand-soft); color: var(--brand);
+}
+.ct-ico svg{ width: 30px; height: 30px; }
+.ct-box.is-wa .ct-ico{ background: #E3F6EA; color: #179246; }
+.ct-box h3{ margin: 0 0 4px; font-size: 1.2rem; font-weight: 900; }
+.ct-hint{ margin: 0 0 14px; font-size: .88rem; color: var(--ink-soft); line-height: 1.6; }
+.ct-value{
+  padding: 14px 12px;
   border-radius: 14px;
-  border: 1.5px solid var(--brand);
-  background: var(--surface); color: var(--brand);
-  font-weight: 800; font-size: 1rem; text-decoration: none;
-  transition: background .15s ease;
+  background: var(--page-bg);
+  border: 1.5px dashed var(--line-strong);
+  font: 800 1.32rem/1.3 var(--font-en);
+  color: var(--ink);
+  word-break: break-all;
+  user-select: all; -webkit-user-select: all;
+  cursor: text;
 }
-.pay-mail:hover{ background: var(--brand-soft); }
-.pay-mail svg{ width: 21px; height: 21px; }
-
-.pay-note{ margin: 0; font-size: .8rem; color: var(--ink-soft); text-align: center; line-height: 1.6; }
+.ct-actions{ display: flex; gap: 10px; margin-top: 14px; }
+.ct-copy, .ct-open{
+  flex: 1;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 50px; padding: 0 14px;
+  border-radius: 14px;
+  font-family: inherit; font-size: 1rem; font-weight: 800;
+  text-decoration: none; cursor: pointer;
+}
+.ct-copy{ border: 1.5px solid var(--brand); background: var(--surface); color: var(--brand); }
+.ct-copy:hover{ background: var(--brand-soft); }
+.ct-copy.done{ border-color: #179246; background: #E3F6EA; color: #127A3A; }
+.ct-copy svg, .ct-open svg{ width: 19px; height: 19px; }
+.ct-open{ border: 0; background: var(--brand); color: #fff; }
+.ct-open:hover{ background: var(--brand-strong); }
+.ct-box.is-wa .ct-open{ background: #179246; }
+.ct-box.is-wa .ct-open:hover{ background: #127A3A; }
+.ct-note{ margin: 14px 0 0; font-size: .8rem; color: var(--ink-soft); line-height: 1.6; }
 
 /* ---------- left: preview ---------- */
 .bk-preview{
@@ -319,7 +387,8 @@ svg{ fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; s
   .bk-cover{ width: 112px; }
   .bk-title{ font-size: 1.24rem; }
   .bk-chapters ol{ grid-template-columns: 1fr; }
-  .pay-price{ font-size: 1.75rem; }
+  .buy-grid{ grid-template-columns: 1fr; }
+  .buy-prices{ grid-column: 1; grid-row: 1; flex-direction: row; justify-content: space-around; padding: 10px 12px; }
 }
 
 /* ---------- short desktop screens: keep the purchase box compact ---------- */
@@ -329,9 +398,9 @@ svg{ fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; s
   .bk-title{ font-size: 1.16rem; }
   .bk-facts li{ padding: 5px 9px; }
   .bk-buy{ gap: 9px; padding-top: 14px; padding-bottom: 14px; }
-  .pay{ min-height: 64px; padding-block: 9px; }
-  .pay-price{ font-size: 1.7rem; }
-  .pay-mail{ min-height: 44px; }
+  .order-mail{ min-height: 66px; padding-block: 9px; }
+  .order-wa{ min-height: 54px; padding-block: 7px; }
+  .price-num{ font-size: 1.8rem; }
 }
 
 /* ---------- phones / tablets: one column, page scrolls ---------- */
@@ -360,7 +429,8 @@ svg{ fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; s
 }
 @media (max-width: 400px){
   .bk-chapters ol{ grid-template-columns: 1fr; }
-  .pay{ gap: 10px; padding: 12px 14px; }
-  .pay-ico, .pay-ico svg{ width: 48px; height: 33px; }
-  .pay-price{ font-size: 1.6rem; }
+  .order{ gap: 10px; padding: 11px 13px; }
+  .order-txt strong{ font-size: 1.02rem; }
+  .price-num{ font-size: 1.75rem; }
+  .ct-value{ font-size: 1.14rem; }
 }
