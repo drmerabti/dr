@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+<!-- "/books/word" without the final slash would break every relative path (cover, css, js, pdf) -->
+<script>if (!/\/$|\.html$/.test(location.pathname)) location.replace(location.pathname + '/' + location.search + location.hash);</script>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6PKBD7XR0M"></script>
 <script>
@@ -23,7 +25,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Inter:wght@500;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261017c">
+<link rel="stylesheet" href="style.css?v=20261017d">
 <script src="/analytics.js"></script>
 <link rel="canonical" href="https://merabti.com/books/word/">
 <script type="application/ld+json">
@@ -61,7 +63,7 @@
   <aside class="bk-side" id="bookSide">
 
     <section class="bk-head">
-      <img class="bk-cover" src="cover.jpg" width="737" height="1040" alt="غلاف كتاب حتى لو كنت من قوم ثمود ستفهم برنامج وورد">
+      <img class="bk-cover" id="bkCover" src="cover.webp" width="480" height="677" onerror="if(!this.dataset.f){this.dataset.f=1;this.src='cover.jpg';}else{this.classList.add('missing');}" alt="غلاف كتاب حتى لو كنت من قوم ثمود ستفهم برنامج وورد">
       <div class="bk-head-txt">
         <span class="bk-kicker">كتاب PDF</span>
         <h1 class="bk-title">حتى لو كنت من قوم ثمود ستفهم برنامج وورد</h1>
@@ -159,6 +161,7 @@
     </div>
 
     <div class="fb-stage" id="fbStage">
+      <p class="fb-hint" id="fbHint" aria-hidden="true">اسحب طرف الصفحة أو استعمل الأسهم للتقليب</p>
       <div class="fb-book" id="fbBook" dir="ltr"></div>
       <p class="pv-status" id="pvStatus"><span class="fb-spin" aria-hidden="true"></span>جارٍ تحميل المعاينة…</p>
     </div>
@@ -209,6 +212,12 @@
   </div>
 </div>
 
+<!-- phones: always-visible shortcut to the order block -->
+<a class="m-cta" id="mCta" href="#buyBox">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6L5 3H2"/><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/></svg>
+  <span>اطلب الكتاب — <b>1200 دج</b></span>
+</a>
+
 <footer class="bk-foot">
   <p class="footer-links">
     <a href="../../about.html">من نحن</a>
@@ -221,7 +230,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="../../shared/vendor/page-flip/page-flip.browser.js"></script>
-<script src="app.js?v=20261017c"></script>
+<script src="app.js?v=20261017d"></script>
 <script src="../../site-nav.js"></script>
 </body>
 </html>
