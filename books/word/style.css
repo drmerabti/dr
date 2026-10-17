@@ -2,8 +2,9 @@
    Book page — Word book
    Desktop: full-screen split — info column on the right (32%), flipbook
    preview on the left (68%).
-   Phone: one column — the flipbook first, then the book details, then
-   the order block, with a fixed order button at the bottom of the screen.
+   Phone (max-width: 860px, its own media query below): one column — the
+   preview as a plain list of pages, then the book details, then the order
+   block, with a fixed order button at the bottom of the screen.
    Colours mirror the --ui-* tokens of the site's style.css.
 ===================================================================== */
 :root{
@@ -124,7 +125,8 @@ svg{ fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; s
 .bk-chapters h2, .bk-buy h2{ margin: 0 0 10px; font-size: 1.02rem; font-weight: 800; }
 .bk-chapters ol{
   list-style: none; margin: 0; padding: 0;
-  display: grid; grid-template-columns: 1fr; gap: 6px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 6px 14px;
+  grid-template-rows: repeat(5, auto); grid-auto-flow: column;   /* 1–5 | 6–10 */
 }
 .bk-chapters li{
   display: flex; align-items: center; gap: 9px;
@@ -336,23 +338,8 @@ svg{ fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; s
   display: flex; align-items: center; justify-content: center;
   padding: 16px 24px 6px;
 }
-.fb-book{ visibility: hidden; transition: transform .6s cubic-bezier(.2,.7,.2,1), opacity .45s ease; }   /* shown once the first pages are drawn */
-.fb-book.ready{ visibility: visible; }
-.fb-book.fb-fade{ opacity: 0; }           /* auto-play going back to the cover */
-/* shadow on the pages themselves (a filter on the whole book would be redrawn on every frame) */
-.fb-book .stf__item{ box-shadow: 0 16px 26px -12px rgba(19,40,58,.35); }
-
-.fb-hint{
-  position: absolute; top: 8px; left: 50%; z-index: 5;
-  transform: translateX(-50%);
-  margin: 0; padding: 6px 14px;
-  border-radius: 999px;
-  background: rgba(19,40,58,.82); color: #fff;
-  font-size: .82rem; font-weight: 700; white-space: nowrap;
-  pointer-events: none;
-  opacity: 0; transition: opacity .4s ease;
-}
-.fb-hint.on{ opacity: 1; }
+.fb-book{ visibility: hidden; transition: transform .6s cubic-bezier(.2,.7,.2,1); }   /* shown once the first pages are drawn */
+.fb-book.ready{ visibility: visible; filter: drop-shadow(0 18px 30px rgba(19,40,58,.22)); }
 .pv-status{
   position: absolute; inset: 0; margin: 0;
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
@@ -365,7 +352,6 @@ svg{ fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; s
 .fb-page{ background: #fff; overflow: hidden; }
 .fb-page img{
   position: absolute; inset: 0;
-  -webkit-backface-visibility: hidden; backface-visibility: hidden;
   display: block; width: 100%; height: 100%;
   user-select: none; -webkit-user-drag: none; pointer-events: none;
 }
@@ -445,8 +431,8 @@ svg{ fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; s
 .bk-preview.fb-pseudo-fs{ position: fixed; inset: 0; z-index: 90; height: 100%; }
 body.fb-lock{ overflow: hidden; }
 
-/* ---------- phones: fixed order button ---------- */
-.m-cta{ display: none; }
+/* ---------- phones only (shown by the phone media query) ---------- */
+.pv-list, .m-cta{ display: none; }
 
 /* ---------- footer ---------- */
 .bk-foot{
@@ -486,9 +472,14 @@ body.fb-lock{ overflow: hidden; }
 @media (max-width: 860px){
   :root{ --top-h: 56px; }
   body{ height: auto; display: block; overflow: visible; padding-bottom: calc(72px + env(safe-area-inset-bottom)); }
-  .bk-top{ position: sticky; top: 0; height: var(--top-h); padding: 0 14px; }
-  .bk-brand span{ font-size: .95rem; }
-  /* book first, then the details, then the order block */
+  .bk-top{ position: sticky; top: 0; height: var(--top-h); padding: 0 14px; gap: 8px; }
+  .bk-brand{ min-width: 0; }
+  .bk-brand span{ font-size: .95rem; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tb-actions{ flex-shrink: 0; }
+  /* "all books": one line, icon beside the text */
+  .bk-back{ flex-shrink: 0; white-space: nowrap; padding: 0 14px; }
+  .bk-back svg{ flex-shrink: 0; }
+  /* preview first, then the details, then the order block */
   .bk-main{ display: flex; flex-direction: column; }
   .bk-preview{ order: -1; overflow: visible; }
   .bk-side{ overflow: visible; padding: 18px 16px 22px; border-top: 1px solid var(--line); }
@@ -496,12 +487,21 @@ body.fb-lock{ overflow: hidden; }
   .bk-details{ order: 2; }
   .bk-buy{ order: 3; scroll-margin-top: calc(var(--top-h) + 12px); }
   .bk-cover{ width: 76px; }
-  .bk-chapters ol{ grid-template-columns: 1fr 1fr; }
+  .bk-chapters ol{ grid-template-columns: 1fr 1fr; grid-template-rows: none; grid-auto-flow: row; }
   .pv-bar{ padding: 7px 10px; }
-  .pv-tools .fb-tool-fs span{ display: none; }
-  .fb-stage{ padding: 10px 8px 2px; min-height: 300px; }
-  .bk-preview.fb-pseudo-fs .fb-stage{ min-height: 0; }
-  .fb-hint{ font-size: .78rem; }
+
+  /* preview: a plain PDF-style list — no book, no turning, no effects */
+  .pv-tools, .fb-stage, .fb-nav{ display: none; }
+  .pv-list{ display: flex; flex-direction: column; gap: 12px; padding: 12px 8px 18px; }
+  .pv-list-status{ margin: 40px 0; font-weight: 700; color: var(--ink-soft); text-align: center; }
+  .pv-list-status a{ color: var(--brand); }
+  .pv-pg{ position: relative; width: 100%; background: #fff; box-shadow: 0 1px 4px rgba(19,40,58,.14); }
+  .pv-pg img{ display: block; width: 100%; height: 100%; user-select: none; -webkit-user-drag: none; }
+  .pv-list-end{
+    border-radius: 16px;
+    background: linear-gradient(160deg, var(--brand) 0%, var(--brand-strong) 100%);
+  }
+  .pv-list-end .pv-end{ position: static; padding: 26px 18px; }
 
   .m-cta{
     position: fixed; z-index: 80;
@@ -518,7 +518,6 @@ body.fb-lock{ overflow: hidden; }
   .m-cta b{ color: var(--gold); font-weight: 900; }
   .m-cta svg{ width: 21px; height: 21px; }
   .m-cta.off{ transform: translateY(140%); opacity: 0; pointer-events: none; }
-  body.fb-lock .m-cta{ display: none; }
 }
 @media (max-width: 400px){
   .bk-chapters ol{ grid-template-columns: 1fr; }

@@ -25,7 +25,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Inter:wght@500;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261017d">
+<link rel="stylesheet" href="style.css?v=20261017e">
 <script src="/analytics.js"></script>
 <link rel="canonical" href="https://merabti.com/books/word/">
 <script type="application/ld+json">
@@ -161,9 +161,13 @@
     </div>
 
     <div class="fb-stage" id="fbStage">
-      <p class="fb-hint" id="fbHint" aria-hidden="true">اسحب طرف الصفحة أو استعمل الأسهم للتقليب</p>
       <div class="fb-book" id="fbBook" dir="ltr"></div>
       <p class="pv-status" id="pvStatus"><span class="fb-spin" aria-hidden="true"></span>جارٍ تحميل المعاينة…</p>
+    </div>
+
+    <!-- phones: plain list, pages one under the other (filled by app.js) -->
+    <div class="pv-list" id="pvList">
+      <p class="pv-list-status">جارٍ تحميل المعاينة…</p>
     </div>
 
     <div class="fb-nav">
@@ -177,15 +181,15 @@
       </button>
     </div>
 
-    <!-- آخر صفحة في الكتاب (ينقلها app.js داخل العارض) -->
+    <!-- آخر صفحة: داخل الكتاب على الحاسوب، وبعد آخر صفحة على الهاتف (ينسخها app.js) -->
     <template id="fbEndTpl">
       <div class="pv-end">
         <span class="pv-lock" aria-hidden="true">
           <svg viewBox="0 0 24 24"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15.5" r="1.6" fill="currentColor" stroke="none"/></svg>
         </span>
         <strong>باقي الكتاب متاح بعد الشراء</strong>
-        <span class="pv-end-sub" id="pvRest">باقي 187 صفحة من الفصول العشرة بانتظارك</span>
-        <button type="button" class="pv-end-btn" id="goBuy">احصل على الكتاب كاملًا</button>
+        <span class="pv-end-sub">باقي 187 صفحة من الفصول العشرة بانتظارك</span>
+        <button type="button" class="pv-end-btn">احصل على الكتاب كاملًا</button>
       </div>
     </template>
   </section>
@@ -230,7 +234,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="../../shared/vendor/page-flip/page-flip.browser.js"></script>
-<script src="app.js?v=20261017d"></script>
+<script src="app.js?v=20261017e"></script>
 <script src="../../site-nav.js"></script>
 </body>
 </html>
