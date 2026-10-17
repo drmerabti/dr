@@ -23,7 +23,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Inter:wght@500;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261017b">
+<link rel="stylesheet" href="style.css?v=20261017c">
 <script src="/analytics.js"></script>
 <link rel="canonical" href="https://merabti.com/books/word/">
 <script type="application/ld+json">
@@ -57,7 +57,7 @@
 
 <main class="bk-main">
 
-  <!-- اليمين: معلومات الكتاب والشراء (ثابت أثناء تمرير المعاينة) -->
+  <!-- اليمين: غلاف صغير، ثم السعر وأزرار الطلب، ثم التفاصيل -->
   <aside class="bk-side" id="bookSide">
 
     <section class="bk-head">
@@ -66,29 +66,7 @@
         <span class="bk-kicker">كتاب PDF</span>
         <h1 class="bk-title">حتى لو كنت من قوم ثمود ستفهم برنامج وورد</h1>
         <p class="bk-author">تأليف: <strong>د. سفيان مرابطي</strong></p>
-        <ul class="bk-facts">
-          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h5"/></svg><b>202</b> صفحة</li>
-          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg><b>10</b> فصول</li>
-          <li><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="3" width="12" height="18" rx="1.5"/><path d="M3 7v10M21 7v10"/></svg>المقاس <b dir="ltr">17×24</b></li>
-          <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="9" r="3"/><circle cx="16" cy="9" r="3"/><circle cx="12" cy="16" r="3"/></svg>نسخة <b>PDF</b> ملوّنة</li>
-        </ul>
       </div>
-    </section>
-
-    <section class="bk-chapters" aria-labelledby="chTitle">
-      <h2 id="chTitle">فصول الكتاب</h2>
-      <ol>
-        <li style="--c:#2459C6"><span>1</span>تعرّف على صديقك الحاسوب</li>
-        <li style="--c:#D93A3A"><span>2</span>أول لقاء مع وورد</li>
-        <li style="--c:#23963F"><span>3</span>تنسيق الكتابة</li>
-        <li style="--c:#E07A12"><span>4</span>الصفحة: إعدادها وطباعتها</li>
-        <li style="--c:#7A45C2"><span>5</span>الجداول</li>
-        <li style="--c:#1A93A6"><span>6</span>الصور والأشكال</li>
-        <li style="--c:#D6336C"><span>7</span>أدوات توفّر وقتك</li>
-        <li style="--c:#4352B8"><span>8</span>الاختصارات</li>
-        <li style="--c:#B07E12"><span>9</span>مشاريع عملية</li>
-        <li style="--c:#2E3C4F"><span>10</span>الذكاء الاصطناعي</li>
-      </ol>
     </section>
 
     <section class="bk-buy" id="buyBox" aria-labelledby="buyTitle">
@@ -134,29 +112,79 @@
       <p class="buy-note">سيصلك رد خلال 24 ساعة بطريقة الدفع، ثم يُرسل لك الكتاب.</p>
     </section>
 
+    <section class="bk-details" aria-labelledby="chTitle">
+      <ul class="bk-facts">
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h5"/></svg><b>202</b> صفحة</li>
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg><b>10</b> فصول</li>
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="3" width="12" height="18" rx="1.5"/><path d="M3 7v10M21 7v10"/></svg>المقاس <b dir="ltr">17×24</b></li>
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="9" r="3"/><circle cx="16" cy="9" r="3"/><circle cx="12" cy="16" r="3"/></svg>نسخة <b>PDF</b> ملوّنة</li>
+      </ul>
+      <div class="bk-chapters">
+        <h2 id="chTitle">فصول الكتاب</h2>
+        <ol>
+          <li style="--c:#2459C6"><span>1</span>تعرّف على صديقك الحاسوب</li>
+          <li style="--c:#D93A3A"><span>2</span>أول لقاء مع وورد</li>
+          <li style="--c:#23963F"><span>3</span>تنسيق الكتابة</li>
+          <li style="--c:#E07A12"><span>4</span>الصفحة: إعدادها وطباعتها</li>
+          <li style="--c:#7A45C2"><span>5</span>الجداول</li>
+          <li style="--c:#1A93A6"><span>6</span>الصور والأشكال</li>
+          <li style="--c:#D6336C"><span>7</span>أدوات توفّر وقتك</li>
+          <li style="--c:#4352B8"><span>8</span>الاختصارات</li>
+          <li style="--c:#B07E12"><span>9</span>مشاريع عملية</li>
+          <li style="--c:#2E3C4F"><span>10</span>الذكاء الاصطناعي</li>
+        </ol>
+      </div>
+    </section>
+
   </aside>
 
-  <!-- اليسار: معاينة الكتاب صفحة تحت صفحة -->
+  <!-- اليسار: معاينة الكتاب على شكل كتاب حقيقي (StPageFlip + pdf.js)، يُقلَّب من اليمين إلى اليسار -->
   <section class="bk-preview" id="preview" aria-label="معاينة الكتاب">
     <div class="pv-bar">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
-      <span>معاينة مجانية: <b id="pvCount">…</b> صفحة من 202</span>
-    </div>
-
-    <div class="pv-pages" id="pages">
-      <p class="pv-status" id="pvStatus">جارٍ تحميل المعاينة…</p>
-    </div>
-
-    <div class="pv-end">
-      <span class="pv-lock" aria-hidden="true">
-        <svg viewBox="0 0 24 24"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15.5" r="1.6" fill="currentColor" stroke="none"/></svg>
+      <span class="pv-label">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+        <span>معاينة مجانية: <b id="pvCount">15</b> صفحة من 202</span>
       </span>
-      <strong>باقي الكتاب متاح بعد الشراء</strong>
-      <span class="pv-end-sub" id="pvRest">باقي الفصول العشرة بانتظارك</span>
-      <button type="button" class="pv-end-btn" id="goBuy">احصل على الكتاب كاملًا</button>
+      <span class="pv-tools">
+        <button type="button" class="fb-tool" id="fbSound" aria-pressed="false" title="كتم صوت التقليب" aria-label="كتم صوت التقليب">
+          <svg class="ico-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/></svg>
+          <svg class="ico-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M16 9.5l5 5M21 9.5l-5 5"/></svg>
+        </button>
+        <button type="button" class="fb-tool fb-tool-fs" id="fbFull" aria-pressed="false">
+          <svg class="ico-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+          <svg class="ico-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg>
+          <span>ملء الشاشة</span>
+        </button>
+      </span>
     </div>
 
-    <div class="pv-counter-wrap" aria-hidden="true"><span class="pv-counter" id="pvCounter"></span></div>
+    <div class="fb-stage" id="fbStage">
+      <div class="fb-book" id="fbBook" dir="ltr"></div>
+      <p class="pv-status" id="pvStatus"><span class="fb-spin" aria-hidden="true"></span>جارٍ تحميل المعاينة…</p>
+    </div>
+
+    <div class="fb-nav">
+      <!-- RTL: السهم الأيمن يرجع، والأيسر يتقدّم -->
+      <button type="button" class="fb-arrow" id="fbPrev" aria-label="الصفحة السابقة">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+      </button>
+      <span class="fb-counter" id="pvCounter" aria-live="polite">&nbsp;</span>
+      <button type="button" class="fb-arrow" id="fbNext" aria-label="الصفحة التالية">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+      </button>
+    </div>
+
+    <!-- آخر صفحة في الكتاب (ينقلها app.js داخل العارض) -->
+    <template id="fbEndTpl">
+      <div class="pv-end">
+        <span class="pv-lock" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15.5" r="1.6" fill="currentColor" stroke="none"/></svg>
+        </span>
+        <strong>باقي الكتاب متاح بعد الشراء</strong>
+        <span class="pv-end-sub" id="pvRest">باقي 187 صفحة من الفصول العشرة بانتظارك</span>
+        <button type="button" class="pv-end-btn" id="goBuy">احصل على الكتاب كاملًا</button>
+      </div>
+    </template>
   </section>
 
 </main>
@@ -192,7 +220,8 @@
 </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script src="app.js?v=20261017b"></script>
+<script src="../../shared/vendor/page-flip/page-flip.browser.js"></script>
+<script src="app.js?v=20261017c"></script>
 <script src="../../site-nav.js"></script>
 </body>
 </html>

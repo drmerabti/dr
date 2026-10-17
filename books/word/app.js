@@ -158,91 +158,210 @@
 })();
 
 /* =====================================================================
-   Word book page — preview pages rendered with pdf.js, one under the
-   other. Each page is drawn only when it scrolls near view, then kept as
-   a JPEG <img> (lighter than a live canvas on phones).
+   Word book page — the preview is shown as a real book (StPageFlip, pages
+   drawn with pdf.js). It opens right-to-left: StPageFlip only turns
+   left-to-right, so the pages are handed to it in reverse order and the
+   book starts on its last index (the Arabic front cover).
+   Every page is drawn to a JPEG before it is reached (nearest pages
+   first); until then it shows a spinner.
    Orders go by e-mail or WhatsApp (order block first, so a failed
    pdf.js load can never take the buttons down with it).
 ===================================================================== */
 (function(){
   var PDF_URL = 'preview/word-book-preview.pdf';
   var TOTAL_PAGES = 202;
-  var MAX_PX = 1700;                 /* cap on the rendered bitmap width */
+  var MAX_PX = 1800;                 /* cap on the rendered bitmap width */
+  var MIN_PAGE = 280;                /* narrower pages → one page at a time */
 
-  var pagesEl = document.getElementById('pages');
-  var statusEl = document.getElementById('pvStatus');
   var previewEl = document.getElementById('preview');
+  var stage = document.getElementById('fbStage');
+  var bookEl = document.getElementById('fbBook');
+  var statusEl = document.getElementById('pvStatus');
   var counterEl = document.getElementById('pvCounter');
+  var prevBtn = document.getElementById('fbPrev');
+  var nextBtn = document.getElementById('fbNext');
+  var soundBtn = document.getElementById('fbSound');
+  var fullBtn = document.getElementById('fbFull');
   var desktop = window.matchMedia('(min-width: 861px)');
 
-  /* ---------- "get the full book" button under the last page ---------- */
-  document.getElementById('goBuy').addEventListener('click', function(){
-    var box = document.getElementById('buyBox');
-    box.scrollIntoView({ behavior: 'smooth', block: desktop.matches ? 'end' : 'center' });
-    box.classList.remove('flash');
-    void box.offsetWidth;
-    box.classList.add('flash');
-  });
+  var doc = null, flip = null, ratio = 0.708, n = 0, total = 0;
+  var pages = [];                    /* reading order: { el, r, num (0 = end page), width, busy } */
+  var busy = false;
 
-  if (!window.pdfjsLib){ fail(); return; }
+  if (!window.pdfjsLib || !window.St){ fail(); return; }
   pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-
-  var doc = null;
-  var slots = [];                    /* { el, num, width (rendered px), busy } */
-  var observer = null;
 
   pdfjsLib.getDocument(PDF_URL).promise.then(function(pdf){
     doc = pdf;
     return pdf.getPage(1);
   }).then(function(first){
     var vp = first.getViewport({ scale: 1 });
-    var ratio = (vp.width / vp.height).toFixed(4);
-    var n = doc.numPages;
-
+    ratio = vp.width / vp.height;
+    n = doc.numPages;
+    total = n + 1;                   /* + the "rest after purchase" page */
     document.getElementById('pvCount').textContent = n;
-    document.getElementById('pvRest').textContent = 'باقي ' + (TOTAL_PAGES - n) + ' صفحة من الفصول العشرة بانتظارك';
-    statusEl.remove();
-
-    for (var i = 1; i <= n; i++){
-      var el = document.createElement('div');
-      el.className = 'pv-page';
-      el.style.setProperty('--ar', ratio);
-      el.dataset.num = i;
-      el.setAttribute('role', 'img');
-      el.setAttribute('aria-label', 'صفحة ' + i + ' من المعاينة');
-      pagesEl.appendChild(el);
-      slots.push({ el: el, num: i, width: 0, busy: false });
-    }
-    watch();
-    updateCounter();
+    build();
   }).catch(fail);
 
   function fail(){
     statusEl.innerHTML = 'تعذّر عرض المعاينة هنا. <a href="' + PDF_URL + '" target="_blank" rel="noopener">افتح ملف المعاينة</a>';
   }
 
-  /* ---------- lazy rendering ---------- */
-  function watch(){
-    if (observer) observer.disconnect();
-    /* on desktop the preview column is the scroller; on phones the page is */
-    observer = new IntersectionObserver(function(entries){
-      entries.forEach(function(e){
-        if (e.isIntersecting) render(slots[+e.target.dataset.num - 1]);
-      });
-    }, { root: desktop.matches ? previewEl : null, rootMargin: '900px 0px' });
-    slots.forEach(function(s){ observer.observe(s.el); });
+  /* ---------- book ---------- */
+  function build(){
+    for (var r = 0; r < total; r++){
+      var el = document.createElement('div');
+      el.className = 'fb-page';
+      var p = { el: el, r: r, num: r < n ? r + 1 : 0, width: 0, busy: false };
+      if (p.num){
+        el.innerHTML = '<span class="fb-shade"></span><span class="fb-spin" aria-hidden="true"></span>';
+        el.setAttribute('aria-label', 'صفحة ' + p.num + ' من المعاينة');
+      } else {
+        el.className += ' fb-page-end done';
+        el.appendChild(document.getElementById('fbEndTpl').content.cloneNode(true));
+        el.insertAdjacentHTML('afterbegin', '<span class="fb-shade"></span>');
+        el.querySelector('#pvRest').textContent = 'باقي ' + (TOTAL_PAGES - n) + ' صفحة من الفصول العشرة بانتظارك';
+        el.querySelector('#goBuy').addEventListener('click', goBuy);
+      }
+      pages.push(p);
+    }
+    var libOrder = pages.slice().reverse().map(function(p){ return p.el; });
+    libOrder.forEach(function(el){ bookEl.appendChild(el); });
+
+    sizeBook();
+    flip = new St.PageFlip(bookEl, {
+      width: 708, height: Math.round(708 / ratio),
+      size: 'stretch',
+      minWidth: MIN_PAGE, maxWidth: 2000, minHeight: 100, maxHeight: 4000,
+      showCover: true,
+      usePortrait: true,
+      startPage: total - 1,          /* the front cover */
+      flippingTime: 700,
+      maxShadowOpacity: 0.45,
+      mobileScrollSupport: true
+    });
+    flip.loadFromHTML(libOrder);
+    sizeBook();                      /* StPageFlip resets max-width once, at start */
+    flip.update();
+    flip.on('init', function(){ updateNav(); pump(); });
+    flip.on('flip', function(){ updateNav(); pump(); });
+    flip.on('changeOrientation', function(){ updateNav(); pump(); });
+    /* 'flipping' = turned by click / arrows / keys; 'user_fold' = the page is lifted by a drag */
+    flip.on('changeState', function(e){ if (e.data === 'flipping' || e.data === 'user_fold') playFlip(); });
+    pump();
   }
 
-  function wantedWidth(s){
-    var dpr = Math.min(window.devicePixelRatio || 1, 2.5);
-    return Math.min(Math.round(s.el.clientWidth * dpr), MAX_PX);
+  /* width of the book box: two pages side by side on computers, one on phones */
+  function sizeBook(){
+    var fs = isFull();
+    var cs = getComputedStyle(stage);
+    var w = stage.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    var h;
+    if (desktop.matches || fs){
+      h = stage.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+    } else {                         /* phones: the page scrolls, keep the book within one screen */
+      var bar = previewEl.querySelector('.pv-bar').offsetHeight + previewEl.querySelector('.fb-nav').offsetHeight;
+      h = window.innerHeight - 56 - bar - 30;
+    }
+    var two = Math.min(w / 2, h * ratio);
+    var one = Math.min(w, h * ratio);
+    var wantTwo = (desktop.matches || (fs && window.innerWidth > window.innerHeight)) && two >= MIN_PAGE;
+    /* one page must stay under 2 × minWidth, or StPageFlip switches back to two */
+    var bookW = wantTwo ? two * 2 : Math.min(one, MIN_PAGE * 2 - 2);
+    /* StPageFlip keeps the box at width:100%, so the size goes through max-width */
+    bookEl.style.width = '100%';
+    bookEl.style.maxWidth = Math.max(Math.floor(bookW), MIN_PAGE) + 'px';
   }
 
-  function render(s){
-    var w = wantedWidth(s);
-    if (s.busy || !w || s.width >= w * 0.85) return;
-    s.busy = true;
-    doc.getPage(s.num).then(function(page){
+  function relayout(){
+    requestAnimationFrame(function(){
+      sizeBook();
+      if (flip){ flip.update(); updateNav(); pump(); }
+    });
+  }
+  var resizeT = 0;
+  window.addEventListener('resize', function(){ clearTimeout(resizeT); resizeT = setTimeout(relayout, 120); });
+  if (desktop.addEventListener) desktop.addEventListener('change', relayout);
+
+  /* ---------- which pages are open (in reading order) ---------- */
+  function visibleReading(){
+    if (!flip) return [0];
+    var i = flip.getCurrentPageIndex(), lib;
+    if (flip.getOrientation() === 'portrait' || i === 0) lib = [i];
+    else {
+      var a = (i % 2 === 1) ? i : i - 1;
+      lib = a + 1 <= total - 1 ? [a, a + 1] : [a];
+    }
+    return lib.map(function(x){ return total - 1 - x; }).sort(function(x, y){ return x - y; });
+  }
+
+  function updateNav(){
+    var vis = visibleReading();
+    var nums = vis.filter(function(r){ return r < n; }).map(function(r){ return r + 1; });
+    counterEl.textContent = nums.length
+      ? (nums.length > 1 ? nums[0] + '–' + nums[nums.length - 1] : nums[0]) + ' / ' + n
+      : 'نهاية المعاينة';
+    prevBtn.disabled = vis[0] === 0;
+    nextBtn.disabled = vis[vis.length - 1] === total - 1;
+    /* a lone cover sits on one half of the open book: slide it to the middle */
+    var shift = '';
+    if (flip && flip.getOrientation() === 'landscape' && vis.length === 1){
+      shift = vis[0] === 0 ? 'translateX(25%)' : 'translateX(-25%)';
+    }
+    bookEl.style.transform = shift;
+  }
+
+  /* reading forward = StPageFlip backward */
+  function goNext(){ if (flip) flip.flipPrev('bottom'); }
+  function goPrev(){ if (flip) flip.flipNext('bottom'); }
+  nextBtn.addEventListener('click', goNext);
+  prevBtn.addEventListener('click', goPrev);
+  document.addEventListener('keydown', function(e){
+    if (e.altKey || e.ctrlKey || e.metaKey || !flip) return;
+    var t = e.target.tagName;
+    if (t === 'INPUT' || t === 'TEXTAREA' || t === 'SELECT') return;
+    var ov = document.getElementById('ctOverlay');
+    if (ov && !ov.hidden) return;
+    if (e.key === 'ArrowLeft'){ e.preventDefault(); goNext(); }
+    else if (e.key === 'ArrowRight'){ e.preventDefault(); goPrev(); }
+    else if (e.key === 'Escape' && previewEl.classList.contains('fb-pseudo-fs')) pseudoFs(false);
+  });
+
+  function goBuy(){
+    if (isFull()) toggleFull();
+    var box = document.getElementById('buyBox');
+    box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    box.classList.remove('flash');
+    void box.offsetWidth;
+    box.classList.add('flash');
+  }
+
+  /* ---------- drawing pages, nearest first ---------- */
+  function wantedWidth(){
+    var b = flip && flip.getBoundsRect();
+    var pw = b ? b.pageWidth : parseFloat(bookEl.style.maxWidth) / 2;
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    return Math.min(Math.round(pw * dpr), MAX_PX);
+  }
+
+  function pump(){
+    if (busy || !doc) return;
+    var want = wantedWidth(), vis = visibleReading(), cur = vis[0], best = null;
+    pages.forEach(function(p){
+      if (!p.num || p.width >= want * 0.85) return;
+      if (!best || Math.abs(p.r - cur) < Math.abs(best.r - cur)) best = p;
+    });
+    if (!best) return;
+    busy = true;
+    draw(best, want).then(function(){
+      busy = false;
+      if (best.r === 0) bookEl.classList.add('ready');
+      pump();
+    });
+  }
+
+  function draw(p, w){
+    return doc.getPage(p.num).then(function(page){
       var vp = page.getViewport({ scale: 1 });
       var viewport = page.getViewport({ scale: w / vp.width });
       var canvas = document.createElement('canvas');
@@ -254,49 +373,102 @@
       return page.render({ canvasContext: ctx, viewport: viewport }).promise.then(function(){
         return new Promise(function(done){ canvas.toBlob(done, 'image/jpeg', 0.9); });
       }).then(function(blob){
-        var img = s.el.querySelector('img') || document.createElement('img');
+        var img = p.el.querySelector('img') || document.createElement('img');
         var old = img.src;
         img.alt = '';
         img.draggable = false;
         img.src = URL.createObjectURL(blob);
         if (old) URL.revokeObjectURL(old);
-        if (!img.parentNode) s.el.appendChild(img);
-        s.el.classList.add('done');
-        s.width = canvas.width;
+        if (!img.parentNode) p.el.insertBefore(img, p.el.firstChild);
+        p.el.classList.add('done');
+        p.width = canvas.width;
         canvas.width = canvas.height = 0;
         page.cleanup();
       });
-    }).catch(function(){ /* leave the placeholder; it retries when seen again */ })
-      .then(function(){ s.busy = false; });
+    }).catch(function(){
+      p.width = Infinity;            /* don't loop on a broken page; its spinner stays */
+    });
   }
 
-  /* wider window (or phone ↔ desktop switch): sharpen what is near view */
-  var resizeT = 0;
-  window.addEventListener('resize', function(){
-    clearTimeout(resizeT);
-    resizeT = setTimeout(function(){ if (doc) watch(); }, 250);
+  /* ---------- page-turn sound (synthesised, no file to load) ---------- */
+  var audioCtx = null, muted = false, lastSound = 0;
+  try { muted = localStorage.getItem('merabti:flipSound') === 'off'; } catch (e) { /* ignore */ }
+  setSoundUi();
+  soundBtn.addEventListener('click', function(){
+    muted = !muted;
+    try { localStorage.setItem('merabti:flipSound', muted ? 'off' : 'on'); } catch (e) { /* ignore */ }
+    setSoundUi();
   });
-  if (desktop.addEventListener) desktop.addEventListener('change', function(){ if (doc) watch(); });
+  function setSoundUi(){
+    var label = muted ? 'تشغيل صوت التقليب' : 'كتم صوت التقليب';
+    soundBtn.setAttribute('aria-pressed', muted ? 'true' : 'false');
+    soundBtn.title = label;
+    soundBtn.setAttribute('aria-label', label);
+  }
+  function playFlip(){
+    if (muted) return;
+    var now = Date.now();
+    if (now - lastSound < 250) return;
+    lastSound = now;
+    try {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+      audioCtx = audioCtx || new AC();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      var t = audioCtx.currentTime, dur = 0.3, rate = audioCtx.sampleRate;
+      var buf = audioCtx.createBuffer(1, Math.floor(rate * dur), rate);
+      var d = buf.getChannelData(0);
+      for (var k = 0; k < d.length; k++){
+        var x = k / d.length;
+        d[k] = (Math.random() * 2 - 1) * Math.pow(1 - x, 1.6) * (0.65 + 0.35 * Math.sin(x * 38));
+      }
+      var src = audioCtx.createBufferSource();
+      src.buffer = buf;
+      var band = audioCtx.createBiquadFilter();
+      band.type = 'bandpass';
+      band.Q.value = 0.9;
+      band.frequency.setValueAtTime(3400, t);
+      band.frequency.exponentialRampToValueAtTime(800, t + dur);
+      var gain = audioCtx.createGain();
+      gain.gain.setValueAtTime(0.0001, t);
+      gain.gain.exponentialRampToValueAtTime(0.2, t + 0.035);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      src.connect(band); band.connect(gain); gain.connect(audioCtx.destination);
+      src.start(t);
+      src.stop(t + dur);
+    } catch (e) { /* no sound, no problem */ }
+  }
 
-  /* ---------- "page x / n" pill ---------- */
-  var counterT = 0, ticking = false;
-  function updateCounter(){
-    ticking = false;
-    if (!slots.length) return;
-    var mid = window.innerHeight / 2, cur = 1;
-    for (var i = 0; i < slots.length; i++){
-      var r = slots[i].el.getBoundingClientRect();
-      if (r.top <= mid) cur = i + 1; else break;
+  /* ---------- full screen ---------- */
+  function fsElement(){ return document.fullscreenElement || document.webkitFullscreenElement || null; }
+  function isFull(){ return !!fsElement() || previewEl.classList.contains('fb-pseudo-fs'); }
+  function toggleFull(){
+    if (fsElement()){
+      (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+    } else if (previewEl.classList.contains('fb-pseudo-fs')){
+      pseudoFs(false);
+    } else if (previewEl.requestFullscreen){
+      previewEl.requestFullscreen().catch(function(){ pseudoFs(true); });
+    } else if (previewEl.webkitRequestFullscreen){
+      previewEl.webkitRequestFullscreen();
+    } else {
+      pseudoFs(true);                /* iPhone: no element full screen */
     }
-    counterEl.textContent = cur + ' / ' + slots.length;
   }
-  function onScroll(){
-    if (previewEl.getBoundingClientRect().top > window.innerHeight / 2) return;
-    if (!ticking){ ticking = true; requestAnimationFrame(updateCounter); }
-    counterEl.classList.add('on');
-    clearTimeout(counterT);
-    counterT = setTimeout(function(){ counterEl.classList.remove('on'); }, 1200);
+  function pseudoFs(on){
+    previewEl.classList.toggle('fb-pseudo-fs', on);
+    document.body.classList.toggle('fb-lock', on);
+    setFullUi();
+    relayout();
   }
-  previewEl.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('scroll', onScroll, { passive: true });
+  function setFullUi(){
+    var on = isFull();
+    fullBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    fullBtn.querySelector('span').textContent = on ? 'خروج من ملء الشاشة' : 'ملء الشاشة';
+    fullBtn.title = on ? 'خروج من ملء الشاشة' : 'ملء الشاشة';
+  }
+  fullBtn.addEventListener('click', toggleFull);
+  document.addEventListener('fullscreenchange', function(){ setFullUi(); relayout(); });
+  document.addEventListener('webkitfullscreenchange', function(){ setFullUi(); relayout(); });
+  setFullUi();
 })();
