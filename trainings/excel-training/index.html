@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="htmlRoot">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="pageTitleTag">اختبار وتدريب مايكروسوفت إكسل Excel بالعربية — أكاديمية مرابطي</title>
+<meta name="description" content="اختبر مستواك في مايكروسوفت إكسل Excel عبر 5 مستويات تصاعدية، 30 سؤالًا لكل مستوى: من واجهة البرنامج إلى الدوال، VLOOKUP وXLOOKUP، الجداول المحورية والماكرو. شرح بعد كل إجابة وشهادة عند النجاح.">
+<link rel="icon" href="../../favicon.ico">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+<link rel="canonical" href="https://merabti.com/trainings/excel-training/">
+<script src="/analytics.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6597793750103940"
+     crossorigin="anonymous"></script>
+</head>
+<body>
+
+<!-- Top bar: logo + every button on one row. Fixed LTR order so nothing moves when the language changes. -->
+<header class="tb" dir="ltr">
+  <a class="tb-logo" href="../../index.html" aria-label="Dr Soufiane Merabti"><img src="../../apple-touch-icon.png" alt="Dr Soufiane Merabti"></a>
+  <a href="../../resources.html" class="icon-btn" id="backBtn" aria-label="رجوع للموقع" title="رجوع للموقع">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
+  </a>
+  <span class="tb-title" id="topbarTitle">تدريب شامل في إكسل</span>
+  <div class="tb-fill"></div>
+  <div class="lang-switch" role="group" aria-label="Language switcher">
+    <button type="button" class="lang-btn" data-lang="ar">عربي</button>
+    <button type="button" class="lang-btn" data-lang="en">EN</button>
+    <button type="button" class="lang-btn" data-lang="fr">FR</button>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ LEVEL SELECT SCREEN ============ -->
+  <section id="levelSelectScreen" class="screen">
+    <h1 class="page-title" id="pageTitle">اختر المستوى</h1>
+    <p class="page-sub" id="pageSub"></p>
+    <div class="levels-grid" id="levelsGrid"></div>
+    <p class="formula-note" id="formulaNote"></p>
+  </section>
+
+  <!-- ============ QUIZ SCREEN ============ -->
+  <section id="quizScreen" class="screen hidden">
+    <div class="quiz-head">
+      <div class="quiz-meta">
+        <span class="meta-chip" id="levelChip"></span>
+        <div class="timer-display" id="timerDisplay">
+          <span class="timer-emoji">⏰</span>
+          <span id="timerText">00:15</span>
+        </div>
+        <span class="meta-chip meta-score" id="scoreChip">✓ 0</span>
+      </div>
+      <div class="time-track"><div class="time-fill" id="timeFill"></div></div>
+      <div class="progress-dots" id="progressDots" dir="ltr"></div>
+      <p class="progress-label" id="progressLabel">سؤال 1 من 30</p>
+    </div>
+
+    <div class="question-card">
+      <p class="question-text" id="questionText"></p>
+      <div class="options-grid" id="optionsGrid"></div>
+
+      <div class="feedback hidden" id="feedback" aria-live="polite">
+        <p class="fb-status" id="fbStatus"></p>
+        <p class="fb-answer" id="fbAnswer"></p>
+        <p class="fb-exp" id="fbExp"></p>
+        <button type="button" class="btn btn-primary fb-next" id="nextBtn">التالي</button>
+      </div>
+    </div>
+    <button type="button" class="quit-btn" id="quitBtn">إنهاء المحاولة</button>
+  </section>
+
+  <!-- ============ RESULT SCREEN ============ -->
+  <section id="resultScreen" class="screen hidden">
+    <div class="result-card">
+      <div class="result-emoji" id="resultEmoji">🎉</div>
+      <h2 class="result-title" id="resultTitle">أحسنت!</h2>
+      <p class="result-msg" id="resultMsg"></p>
+      <div class="result-pct" id="resultPct">0%</div>
+      <p class="result-score" id="resultScore"></p>
+      <p class="cert-hint hidden" id="certHint"></p>
+      <button type="button" class="btn btn-cert hidden" id="getCertBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15a5 5 0 1 0 0-10 5 5 0 0 0 0 10z"/><path d="M8.5 13.5L7 22l5-3 5 3-1.5-8.5"/></svg>
+        <span id="getCertText">احصل على شهادتك</span>
+      </button>
+      <div class="result-actions">
+        <button type="button" class="btn btn-secondary hidden" id="reviewBtn"></button>
+        <button type="button" class="btn btn-secondary" id="retryBtn">أعد المحاولة</button>
+        <button type="button" class="btn btn-primary" id="backToLevelsBtn">رجوع للمستويات</button>
+      </div>
+      <div class="share-row">
+        <span class="share-label" id="shareLabel">شارك إنجازك:</span>
+        <a class="share-btn" id="shareWhatsapp" href="#" target="_blank" rel="noopener" title="WhatsApp" aria-label="WhatsApp">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 5L2 22l5.2-1.4c1.4.8 3.1 1.2 4.8 1.2 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18c-1.5 0-3-.4-4.2-1.1l-.3-.2-3.1.8.8-3-.2-.3C4.4 15 4 13.5 4 12c0-4.4 3.6-8 8-8s8 3.6 8 8-3.6 8-8 8z"/></svg>
+        </a>
+        <a class="share-btn" id="shareTelegram" href="#" target="_blank" rel="noopener" title="Telegram" aria-label="Telegram">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 2 2 10l6 2 2 7 4-4 5 4 3-17z"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- review of wrong answers -->
+    <div class="review-box hidden" id="reviewBox">
+      <h3 class="review-title" id="reviewTitle"></h3>
+      <ol class="review-list" id="reviewList"></ol>
+    </div>
+  </section>
+
+  <!-- ============ CERTIFICATE NAME / LANGUAGE MODAL ============ -->
+  <div class="overlay hidden" id="certNameOverlay">
+    <div class="overlay-box">
+      <h3 class="overlay-title" id="certNameTitle">بيانات الشهادة</h3>
+      <p class="overlay-hint" id="certNameHint">هذه البيانات تُستخدم لإصدار شهادتك عند إنهاء أي مستوى بنجاح.</p>
+      <input type="text" id="certFirstName" class="cert-input" placeholder="" autocomplete="given-name">
+      <input type="text" id="certLastName" class="cert-input" placeholder="" autocomplete="family-name">
+      <div class="cert-lang-row" id="certLangRow">
+        <button type="button" class="cert-lang-btn" data-clang="ar">عربي</button>
+        <button type="button" class="cert-lang-btn" data-clang="en">English</button>
+      </div>
+      <div class="overlay-actions">
+        <button type="button" class="btn btn-primary btn-block" id="certNameContinueBtn">متابعة</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ CERTIFICATE PREVIEW / DOWNLOAD ============ -->
+  <div class="overlay hidden" id="certPreviewOverlay">
+    <div class="overlay-box overlay-box-wide">
+      <h3 class="overlay-title" id="certPreviewTitle">شهادتك جاهزة!</h3>
+      <div class="cert-preview-wrap">
+        <img id="certPreviewImg" alt="Certificate">
+      </div>
+      <div class="overlay-actions cert-preview-actions">
+        <button type="button" class="btn btn-secondary" id="certCloseBtn">إغلاق</button>
+        <button type="button" class="btn btn-secondary" id="certShareBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 3.9M15.4 6.6L8.6 10.5"/></svg>
+          <span id="certShareText">مشاركة</span>
+        </button>
+        <button type="button" class="btn btn-primary" id="certDownloadBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M5 21h14"/></svg>
+          <span id="certDownloadText">تحميل</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ LOGIN REQUIRED SCREEN ============ -->
+  <section id="lockedScreen" class="screen hidden">
+    <div class="locked-card">
+      <div class="locked-icon">🔒</div>
+      <h2 class="locked-title" id="lockedTitle">هذا المستوى يتطلب تسجيل الدخول</h2>
+      <p class="locked-msg" id="lockedMsg">سجّل دخولك من الصفحة الرئيسية لفتح المستويات 3، 4، و5، ولحفظ تقدمك.</p>
+      <div class="result-actions">
+        <a href="../../index.html" class="btn btn-primary" id="goLoginBtn">الذهاب لتسجيل الدخول</a>
+        <button type="button" class="btn btn-secondary" id="lockedBackBtn">رجوع للمستويات</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p id="fCopy">© 2026 د. سفيان مرابطي</p>
+  <p class="footer-links">
+    <a href="../../about.html" id="fAbout">من نحن</a>
+    <a href="../../contact.html" id="fContact">اتصل بنا</a>
+    <a href="../../privacy-policy.html" id="fPrivacy">سياسة الخصوصية</a>
+    <a href="../../terms-of-service.html" id="fTerms">الشروط والأحكام</a>
+  </p>
+</footer>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="../../firebase-init.js"></script>
+<script src="questions.js"></script>
+<script src="script.js"></script>
+<script src="../../site-nav.js"></script>
+</body>
+</html>
