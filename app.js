@@ -601,7 +601,25 @@ const CONTENT = {
     //   url:'tools/distance-calculator/' },
   ],
   resources: [],
-  services: [],
+  // الكتب: soon = بطاقة «قريبًا» ظاهرة للجميع لكنها غير قابلة للضغط
+  services: [
+    { id: 'book-word', title_ar: 'حتى لو كنت من قوم ثمود ستفهم برنامج وورد', title_en: 'Even a Thamud Could Understand Word',
+      desc_ar: 'دليل مصوّر خطوة بخطوة في 10 فصول و202 صفحة، من أول نقرة إلى أول مشروع حقيقي.',
+      desc_en: 'An illustrated step-by-step guide in 10 chapters and 202 pages, from the first click to a real project.',
+      url: 'books/word/', icon: ICONS.wordApp, badge: 'PDF' },
+    { id: 'book-excel', title_ar: 'كتاب Excel', title_en: 'Excel Book',
+      desc_ar: 'كتاب مصوّر في برنامج إكسل.', desc_en: 'An illustrated book on Excel.',
+      icon: ICONS.excelApp, comingSoon: true, soon: true },
+    { id: 'book-access', title_ar: 'كتاب Access', title_en: 'Access Book',
+      desc_ar: 'كتاب مصوّر في قواعد بيانات Access.', desc_en: 'An illustrated book on Access databases.',
+      icon: ICONS.accessApp, comingSoon: true, soon: true },
+    { id: 'book-powerbi', title_ar: 'كتاب Power BI', title_en: 'Power BI Book',
+      desc_ar: 'كتاب مصوّر في تحليل البيانات بـ Power BI.', desc_en: 'An illustrated book on data analysis with Power BI.',
+      icon: ICONS.powerbiApp, comingSoon: true, soon: true },
+    { id: 'book-spss', title_ar: 'كتاب SPSS', title_en: 'SPSS Book',
+      desc_ar: 'كتاب مصوّر في التحليل الإحصائي بـ SPSS.', desc_en: 'An illustrated book on statistical analysis with SPSS.',
+      icon: ICONS.spssApp, comingSoon: true, soon: true },
+  ],
   trainings: [
     {
       id: 'training-word-basics',
@@ -611,6 +629,15 @@ const CONTENT = {
       desc_en: '5 levels, 30 questions each (shortcuts and general knowledge), increasing difficulty.',
       url: 'trainings/word-training/',
       icon: ICONS.wordApp,
+    },
+    {
+      id: 'training-excel',
+      title_ar: 'تدريب شامل في إكسل',
+      title_en: 'Complete Excel Training',
+      desc_ar: '5 مستويات، 30 سؤال لكل مستوى: من الواجهة إلى VLOOKUP والجداول المحورية والماكرو، مع شرح بعد كل إجابة.',
+      desc_en: '5 levels, 30 questions each: from the interface to VLOOKUP, PivotTables and macros, with an explanation after every answer.',
+      url: 'trainings/excel-training/',
+      icon: ICONS.excelCourseApp,
     },
     {
       id: 'training-keyboard-typing',
@@ -630,9 +657,6 @@ const CONTENT = {
       url: 'trainings/live-room/',
       icon: ICONS.liveRoomApp,
     },
-    { id: 'training-excel', title_ar: 'تدريب شامل في إكسل', title_en: 'Complete Excel Training',
-      desc_ar: '5 مستويات بصعوبة تصاعدية لاختبار معلوماتك في إكسل.', desc_en: '5 levels of increasing difficulty to test your Excel knowledge.',
-      icon: ICONS.excelCourseApp, comingSoon: true },
     { id: 'training-ppt', title_ar: 'تدريب شامل في PowerPoint', title_en: 'Complete PowerPoint Training',
       desc_ar: '5 مستويات بصعوبة تصاعدية لاختبار معلوماتك في PowerPoint.', desc_en: '5 levels of increasing difficulty to test your PowerPoint knowledge.',
       icon: ICONS.pptApp, comingSoon: true },
@@ -660,7 +684,7 @@ const SECTIONS_ROW1 = [
 const SECTIONS_ROW2 = [
   { key: 'lessons',   icon: ICONS.lessons,  badge: 'badge-lessons',   href: 'lessons.html' },
   { key: 'trainings', icon: ICONS.training, badge: 'badge-training',  href: 'resources.html' },
-  { key: 'services',  icon: ICONS.services, badge: 'badge-services',  href: 'services.html', comingSoon: true },
+  { key: 'services',  icon: ICONS.services, badge: 'badge-services',  href: 'services.html' },
 ];
 const SECTIONS = [...SECTIONS_ROW1, ...SECTIONS_ROW2];
 
@@ -928,7 +952,7 @@ async function renderSectionItems(){
   if (!wrap) return;
   const key = document.body.dataset.section;
   const admin = await isAdminUser();
-  const allItems = (CONTENT[key] || []).filter(i => admin || isListed(i));
+  const allItems = (CONTENT[key] || []).filter(i => admin || isListed(i) || i.soon);
 
   if (key === 'tools'){
     renderFamilyFilter(allItems);
@@ -952,7 +976,18 @@ async function renderSectionItems(){
   }
 
   items.forEach(item => {
-    if (item.url){
+    if (item.soon){
+      // announced but no page yet: same card, faded, not clickable
+      const card = document.createElement('div');
+      card.className = 'item-card coming-soon-card';
+      card.innerHTML = `
+        ${item.icon ? `<span class="icon-badge badge-${key}">${item.icon}</span>` : ''}
+        <h3>${lang === 'ar' ? item.title_ar : item.title_en}</h3>
+        <p>${lang === 'ar' ? item.desc_ar : item.desc_en}</p>
+        <span class="coming-soon-badge">${lang === 'ar' ? 'قريبًا' : 'Coming soon'}</span>
+      `;
+      wrap.appendChild(card);
+    } else if (item.url){
       const card = document.createElement('a');
       card.className = 'item-card';
       card.href = item.url;
