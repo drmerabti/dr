@@ -975,7 +975,7 @@ html:has(body.ui-v2){ scroll-behavior: smooth; }
 .ui-v2 .fav-star-btn.active{ color: var(--ui-gold); background: var(--ui-gold-soft); }
 .ui-v2 .tag{ background: var(--ui-brand-soft); color: var(--ui-brand); font-weight: 700; }
 
-.ui-v2 .coming-soon-card{ opacity: .62; filter: grayscale(.35); cursor: default; }
+.ui-v2 .coming-soon-card{ opacity: .62; filter: grayscale(.35); cursor: default; animation: none; }  /* the card fade-in would hold opacity at 1 */
 .ui-v2 .coming-soon-badge{
   margin-top: 12px;
   color: var(--ui-brand-strong);
