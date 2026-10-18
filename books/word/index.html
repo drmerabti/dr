@@ -25,7 +25,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Inter:wght@500;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261017e">
+<link rel="stylesheet" href="style.css?v=20261018a">
 <script src="/analytics.js"></script>
 <link rel="canonical" href="https://merabti.com/books/word/">
 <script type="application/ld+json">
@@ -75,14 +75,22 @@
       <h2 id="buyTitle">احصل على الكتاب كاملًا</h2>
 
       <div class="buy-grid">
+        <!-- الأرقام تُملأ من PRICES في أعلى app.js (المكان الوحيد لتغيير السعر) -->
         <div class="buy-prices" aria-label="السعر">
+          <span class="offer-badge" data-offer></span>
           <div class="price">
-            <span class="price-num">1200 <i>دج</i></span>
+            <span class="price-line">
+              <s class="price-was" data-offer><bdi dir="ltr" data-price="dzd.was"></bdi> دج</s>
+              <span class="price-num"><bdi dir="ltr" data-price="dzd.now"></bdi> <i>دج</i></span>
+            </span>
             <small>بالدينار الجزائري</small>
           </div>
           <span class="price-or">أو</span>
-          <div class="price">
-            <span class="price-num" dir="ltr">7 <i>$</i></span>
+          <div class="price price-usd">
+            <span class="price-line">
+              <s class="price-was" data-offer dir="ltr"><bdi data-price="usd.was"></bdi> $</s>
+              <span class="price-num" dir="ltr"><bdi data-price="usd.now"></bdi> <i>$</i></span>
+            </span>
             <small>بالدولار</small>
           </div>
         </div>
@@ -219,7 +227,7 @@
 <!-- phones: always-visible shortcut to the order block -->
 <a class="m-cta" id="mCta" href="#buyBox">
   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6L5 3H2"/><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/></svg>
-  <span>اطلب الكتاب — <b>1200 دج</b></span>
+  <span>اطلب الكتاب — <b><bdi dir="ltr" data-price="dzd.now"></bdi> دج</b></span>
 </a>
 
 <footer class="bk-foot">
@@ -234,7 +242,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="../../shared/vendor/page-flip/page-flip.browser.js"></script>
-<script src="app.js?v=20261017e"></script>
+<script src="app.js?v=20261018a"></script>
 <script src="../../site-nav.js"></script>
 </body>
 </html>
