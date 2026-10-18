@@ -1,4 +1,27 @@
 /* =====================================================================
+   PRICES — the only place to change the price of the book.
+   After the launch offer: set offer to false (only the "now" prices are
+   shown, without the badge and the struck-through prices), and put the
+   new price in "now".
+===================================================================== */
+var PRICES = {
+  offer: true,                      /* launch offer on: badge + struck-through old prices */
+  offerLabel: 'عرض الإطلاق 🔥',
+  dzd: { was: 1200, now: 800 },     /* Algerian dinar (دج) */
+  usd: { was: 8, now: 6 }           /* US dollar ($) */
+};
+
+(function(){
+  document.querySelectorAll('[data-price]').forEach(function(el){
+    var path = el.getAttribute('data-price').split('.');
+    el.textContent = PRICES[path[0]][path[1]];
+  });
+  document.querySelectorAll('.offer-badge').forEach(function(el){ el.textContent = PRICES.offerLabel; });
+  document.querySelectorAll('[data-offer]').forEach(function(el){ el.hidden = !PRICES.offer; });
+  document.querySelectorAll('.buy-prices').forEach(function(el){ el.classList.toggle('has-offer', PRICES.offer); });
+})();
+
+/* =====================================================================
    Order buttons. A bare mailto: does nothing for visitors without a mail
    app, so the e-mail button always opens a window with the address
    written out, a copy button and an "open mail" link. WhatsApp opens the
