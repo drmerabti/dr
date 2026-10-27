@@ -187,8 +187,7 @@ fillPrices(document);
    Book preview — pages drawn with pdf.js. Also used by the free books
    (books/word-shortcuts/): #preview may carry data-pdf (file),
    data-total (pages in the whole book), data-end (counter text on the
-   last page) and data-zoom (zoom viewer: «تكبير» button on computers,
-   tap a page on phones).
+   last page) and data-zoom (zoom bar − / + as in Word, see Zoom below).
    Computers (≥ 861 px): a real book (StPageFlip) that opens right-to-left.
      StPageFlip only turns left-to-right, so the pages are handed to it in
      reverse order and the book starts on its last index (the Arabic front
@@ -259,18 +258,6 @@ fillPrices(document);
   function drawPage(num, w){
     var have = drawn[num];
     if (have && have.width >= w * 0.85) return Promise.resolve(have);
-    return renderPage(num, w).then(function(res){
-      drawn[num] = res;
-      /* no cover image on the server: show the drawn first page instead */
-      if (num === 1 && coverImg && coverImg.classList.contains('missing')){
-        coverImg.classList.remove('missing');
-        coverImg.src = res.url;
-      }
-      return res;
-    });
-  }
-
-  function renderPage(num, w){
     return doc.getPage(num).then(function(page){
       var vp = page.getViewport({ scale: 1 });
       var viewport = page.getViewport({ scale: w / vp.width });
@@ -284,8 +271,17 @@ fillPrices(document);
         return new Promise(function(done){ canvas.toBlob(done, 'image/jpeg', 0.9); });
       }).then(function(blob){
         var res = { url: URL.createObjectURL(blob), width: canvas.width };
+        var old = drawn[num];
+        drawn[num] = res;
+        /* redrawn sharper (zoom): free the old bitmap once the new one is in place */
+        if (old) setTimeout(function(){ URL.revokeObjectURL(old.url); }, 4000);
         canvas.width = canvas.height = 0;
         page.cleanup();
+        /* no cover image on the server: show the drawn first page instead */
+        if (num === 1 && coverImg && coverImg.classList.contains('missing')){
+          coverImg.classList.remove('missing');
+          coverImg.src = res.url;
+        }
         return res;
       });
     });
@@ -327,7 +323,7 @@ fillPrices(document);
      Phones: pages one under the other
   ================================================================= */
   var List = (function(){
-    var built = false, items = [], observer = null, queue = Promise.resolve();
+    var built = false, items = [], observer = null, queue = Promise.resolve(), zoomF = 1;
 
     function init(){
       if (built){ watch(); return; }
@@ -339,7 +335,6 @@ fillPrices(document);
         box.style.aspectRatio = ratio.toFixed(4);
         box.setAttribute('role', 'img');
         box.setAttribute('aria-label', 'صفحة ' + i + ' من المعاينة');
-        if (ZOOM) Zoom.bind(box, i);
         listEl.appendChild(box);
         items.push({ el: box, num: i, width: 0, queued: false });
       }
@@ -368,7 +363,7 @@ fillPrices(document);
 
     function load(it){
       var dpr = Math.min(window.devicePixelRatio || 1, 2);
-      var w = Math.min(Math.round(it.el.clientWidth * dpr), MAX_PX_PHONE);
+      var w = Math.min(Math.round(it.el.clientWidth * dpr), Math.round(MAX_PX_PHONE * Math.min(zoomF, 2.4)));
       if (!w || it.queued || it.width >= w * 0.85) return;
       it.queued = true;
       /* one page at a time, in the order they come into reach */
@@ -380,14 +375,35 @@ fillPrices(document);
       }).catch(function(){}).then(function(){ it.queued = false; });
     }
 
-    return { init: init };
+    /* zoom: wider pages, the list scrolls sideways; the page at the top of
+       the screen stays at the top */
+    function zoom(f){
+      zoomF = f;
+      if (!built) return;
+      var top = (document.querySelector('.bk-top') || {}).offsetHeight || 0;
+      var bar = previewEl.querySelector('.pv-bar');
+      var anchorY = top + (bar ? bar.offsetHeight : 0) + 8, anchor = null, frac = 0;
+      for (var i = 0; i < items.length; i++){
+        var r = items[i].el.getBoundingClientRect();
+        if (r.bottom > anchorY){ anchor = items[i].el; frac = (anchorY - r.top) / r.height; break; }
+      }
+      listEl.style.setProperty('--z', f);
+      listEl.classList.toggle('zoomed', f > 1);
+      if (anchor){
+        var nr = anchor.getBoundingClientRect();
+        window.scrollBy(0, nr.top + frac * nr.height - anchorY);
+      }
+      watch();                       /* redraw the pages in reach, sharper */
+    }
+
+    return { init: init, zoom: zoom };
   })();
 
   /* =================================================================
      Computers: the flipbook
   ================================================================= */
   var Book = (function(){
-    var flip = null, pages = [], busy = false, built = false;
+    var flip = null, pages = [], busy = false, built = false, zoomF = 1;
 
     function init(){
       if (built){ relayout(); return; }
@@ -455,9 +471,11 @@ fillPrices(document);
       var wantTwo = (desktop.matches || (fs && window.innerWidth > window.innerHeight)) && two >= MIN_PAGE;
       /* one page must stay under 2 × minWidth, or StPageFlip switches back to two */
       var bookW = wantTwo ? two * 2 : Math.min(one, MIN_PAGE * 2 - 2);
-      /* StPageFlip keeps the box at width:100%, so the size goes through max-width */
-      bookEl.style.width = '100%';
-      bookEl.style.maxWidth = Math.max(Math.floor(bookW), MIN_PAGE) + 'px';
+      bookW = Math.floor(Math.max(Math.floor(bookW), MIN_PAGE) * zoomF);
+      /* StPageFlip keeps the box at width:100%, so the size goes through max-width;
+         zoomed past the stage, the width is set outright and the stage scrolls */
+      bookEl.style.width = zoomF > 1 ? bookW + 'px' : '100%';
+      bookEl.style.maxWidth = bookW + 'px';
     }
 
     function relayout(){
@@ -509,7 +527,6 @@ fillPrices(document);
       if (t === 'INPUT' || t === 'TEXTAREA' || t === 'SELECT') return;
       var ov = document.getElementById('ctOverlay');
       if (ov && !ov.hidden) return;
-      if (Zoom.isOpen()) return;
       if (e.key === 'ArrowLeft'){ e.preventDefault(); goNext(); }
       else if (e.key === 'ArrowRight'){ e.preventDefault(); goPrev(); }
       else if (e.key === 'Escape' && previewEl.classList.contains('fb-pseudo-fs')) pseudoFs(false);
@@ -520,20 +537,24 @@ fillPrices(document);
       var b = flip && flip.getBoundsRect();
       var pw = b ? b.pageWidth : parseFloat(bookEl.style.maxWidth) / 2;
       var dpr = Math.min(window.devicePixelRatio || 1, 2);
-      return Math.min(Math.round(pw * dpr), MAX_PX);
+      return Math.min(Math.round(pw * dpr), zoomF > 1 ? 3200 : MAX_PX);
     }
 
     function pump(){
       if (busy || !doc || !desktop.matches) return;
       if (flip && flip.getState() !== 'read') return;   /* resumes on the next 'read' state */
-      var want = wantedWidth(), vis = visibleReading(), cur = vis[0], best = null;
+      var want = wantedWidth(), vis = visibleReading(), cur = vis[0], best = null, bestW = 0;
+      /* zoomed: only the pages around the open ones are drawn big */
+      var base = Math.min(want, Math.round(want / zoomF));
       pages.forEach(function(p){
-        if (!p.num || p.width >= want * 0.85) return;
-        if (!best || Math.abs(p.r - cur) < Math.abs(best.r - cur)) best = p;
+        if (!p.num) return;
+        var w = Math.abs(p.r - cur) <= 3 ? want : base;
+        if (p.width >= w * 0.85) return;
+        if (!best || Math.abs(p.r - cur) < Math.abs(best.r - cur)){ best = p; bestW = w; }
       });
       if (!best) return;
       busy = true;
-      drawPage(best.num, want).then(function(res){
+      drawPage(best.num, bestW).then(function(res){
         best.width = res.width;
         return showImg(best.el, res.url);
       }).catch(function(){
@@ -627,255 +648,80 @@ fillPrices(document);
     document.addEventListener('webkitfullscreenchange', function(){ setFullUi(); relayout(); });
     setFullUi();
 
-    /* first page open in the book (for the zoom viewer) */
-    function openPage(){
-      var nums = visibleReading().filter(function(r){ return r < n; });
-      return nums.length ? nums[0] + 1 : n;
+    /* zoom: bigger book, the stage scrolls; the middle of the view stays put */
+    function zoom(f){
+      var cx = 0.5, cy = 0.5;
+      if (zoomF > 1){
+        cx = (stage.scrollLeft + stage.clientWidth / 2) / stage.scrollWidth;
+        cy = (stage.scrollTop + stage.clientHeight / 2) / stage.scrollHeight;
+      }
+      zoomF = f;
+      stage.classList.toggle('zoomed', f > 1);
+      if (!flip || !desktop.matches) return;
+      sizeBook();
+      flip.update();
+      updateNav();
+      if (f > 1){
+        stage.scrollLeft = cx * stage.scrollWidth - stage.clientWidth / 2;
+        stage.scrollTop = cy * stage.scrollHeight - stage.clientHeight / 2;
+      }
+      pump();
     }
 
-    return { init: init, isFull: isFull, toggleFull: toggleFull, openPage: openPage };
+    return { init: init, isFull: isFull, toggleFull: toggleFull, zoom: zoom };
   })();
 
   /* =================================================================
-     Zoom viewer (only with data-zoom on #preview): one page, drawn
-     sharp for the zoom level, scrolled / dragged around.
-     Computers: the «تكبير» button opens the page shown in the book;
-       ctrl + wheel (or a trackpad pinch) zooms, drag moves the page.
-     Phones: tap a page; pinch zooms, one finger scrolls.
-     Built inside #preview so it also shows over the book in full screen.
+     Zoom bar, as in Word / Excel (only with data-zoom on #preview):
+     − [slider] + 100 %; a click on the percentage goes back to 100 %.
+     Computers: the book itself grows and the area around it scrolls
+       (ctrl + wheel zooms too). Phones: the pages grow and the list
+       scrolls sideways.
   ================================================================= */
   var Zoom = (function(){
-    var LEVELS = [1, 1.5, 2, 2.5, 3, 4];
-    var MIN = 1, MAX = 4;
-    var ov = null, scroller, img, label, pctEl, prevB, nextB, closeB, outB, inB;
-    var open = false, num = 1, zoom = 1, baseW = 0, shown = null, job = 0, lastTrigger = null, bodyOverflow = '';
+    var MIN = 100, MAX = 300, STEP = 10;
+    var z = 100, outB, inB, range, pct;
 
     function init(){
-      var btn = document.getElementById('fbZoom');
-      if (btn){
-        btn.hidden = false;
-        btn.addEventListener('click', function(){ show(Book.openPage(), btn); });
-      }
-      listEl.classList.add('zoomable');
-    }
-
-    /* phones: a tap (not a scroll) on a page opens it */
-    function bind(box, page){
-      box.tabIndex = 0;
-      box.setAttribute('aria-label', 'صفحة ' + page + ' — اضغط للتكبير');
-      box.addEventListener('click', function(){ show(page, box); });
-      box.addEventListener('keydown', function(e){
-        if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); show(page, box); }
-      });
-    }
-
-    function build(){
-      ov = document.createElement('div');
-      ov.className = 'zm-overlay';
-      ov.hidden = true;
-      ov.setAttribute('role', 'dialog');
-      ov.setAttribute('aria-modal', 'true');
-      ov.setAttribute('aria-label', 'تكبير الصفحة');
-      ov.innerHTML =
-        '<div class="zm-bar">' +
-          '<button type="button" class="zm-btn zm-close" aria-label="إغلاق"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>' +
-          '<span class="zm-pages">' +
-            '<button type="button" class="zm-btn zm-prev" aria-label="الصفحة السابقة"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>' +
-            '<span class="zm-label" aria-live="polite"></span>' +
-            '<button type="button" class="zm-btn zm-next" aria-label="الصفحة التالية"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>' +
-          '</span>' +
-          '<span class="zm-zoom">' +
-            '<button type="button" class="zm-btn zm-out" aria-label="تصغير"><svg viewBox="0 0 24 24"><path d="M6 12h12"/></svg></button>' +
-            '<span class="zm-pct" dir="ltr"></span>' +
-            '<button type="button" class="zm-btn zm-in" aria-label="تكبير"><svg viewBox="0 0 24 24"><path d="M12 6v12M6 12h12"/></svg></button>' +
-          '</span>' +
-        '</div>' +
-        '<div class="zm-scroll"><div class="zm-sheet"><img alt="" draggable="false"><span class="fb-spin" aria-hidden="true"></span></div></div>';
-      previewEl.appendChild(ov);
-      scroller = ov.querySelector('.zm-scroll');
-      img = ov.querySelector('img');
-      label = ov.querySelector('.zm-label');
-      pctEl = ov.querySelector('.zm-pct');
-      prevB = ov.querySelector('.zm-prev');
-      nextB = ov.querySelector('.zm-next');
-      closeB = ov.querySelector('.zm-close');
-      outB = ov.querySelector('.zm-out');
-      inB = ov.querySelector('.zm-in');
-
-      closeB.addEventListener('click', hide);
-      prevB.addEventListener('click', function(){ go(num - 1); });
-      nextB.addEventListener('click', function(){ go(num + 1); });
-      inB.addEventListener('click', function(){ step(1); });
-      outB.addEventListener('click', function(){ step(-1); });
-      img.addEventListener('dblclick', function(e){ setZoom(zoom < 2 ? 2 : 1, e.clientX, e.clientY); });
-
-      document.addEventListener('keydown', function(e){
-        if (!open) return;
-        if (e.key === 'Escape'){ e.preventDefault(); hide(); }
-        else if (e.key === '+' || e.key === '='){ e.preventDefault(); step(1); }
-        else if (e.key === '-' || e.key === '_'){ e.preventDefault(); step(-1); }
-        else if (e.key === 'ArrowLeft' && zoom === 1){ e.preventDefault(); go(num + 1); }    /* RTL: left = forward */
-        else if (e.key === 'ArrowRight' && zoom === 1){ e.preventDefault(); go(num - 1); }
-        else if (e.key === 'Tab'){                                                          /* focus stays inside */
-          var f = ov.querySelectorAll('button:not(:disabled)');
-          var first = f[0], last = f[f.length - 1];
-          if (e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
-          else if (!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
-        }
-      });
-
-      /* ctrl + wheel, and trackpad pinch (sent as ctrl + wheel) */
-      scroller.addEventListener('wheel', function(e){
-        if (!e.ctrlKey) return;
+      var ui = document.getElementById('pvZoom');
+      if (!ui) return;
+      ui.hidden = false;
+      outB = ui.querySelector('.zb-out');
+      inB = ui.querySelector('.zb-in');
+      range = ui.querySelector('.zb-range');
+      pct = ui.querySelector('.zb-pct');
+      range.min = MIN; range.max = MAX; range.step = STEP;
+      outB.addEventListener('click', function(){ set(z - STEP); });
+      inB.addEventListener('click', function(){ set(z + STEP); });
+      range.addEventListener('input', function(){ set(+range.value); });
+      pct.addEventListener('click', function(){ set(100); });
+      stage.addEventListener('wheel', function(e){
+        if (!e.ctrlKey) return;      /* ctrl + wheel, or a trackpad pinch */
         e.preventDefault();
-        setZoom(zoom * Math.exp(-e.deltaY * 0.01), e.clientX, e.clientY, true);
-        drawSoon();
+        set(z + (e.deltaY < 0 ? STEP : -STEP));
       }, { passive: false });
-
-      /* mouse: drag the page around */
-      var drag = null;
-      scroller.addEventListener('pointerdown', function(e){
-        if (e.pointerType !== 'mouse' || e.button !== 0) return;
-        drag = { x: e.clientX, y: e.clientY, l: scroller.scrollLeft, t: scroller.scrollTop };
-        scroller.classList.add('dragging');
-      });
-      window.addEventListener('pointermove', function(e){
-        if (!drag) return;
-        scroller.scrollLeft = drag.l - (e.clientX - drag.x);
-        scroller.scrollTop = drag.t - (e.clientY - drag.y);
-      });
-      window.addEventListener('pointerup', function(){
-        if (!drag) return;
-        drag = null;
-        scroller.classList.remove('dragging');
-      });
-
-      /* touch: two fingers zoom, one finger scrolls (native) */
-      var pinch = null;
-      function dist(t){ return Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY); }
-      scroller.addEventListener('touchstart', function(e){
-        if (e.touches.length === 2) pinch = { d: dist(e.touches), z: zoom };
-      }, { passive: true });
-      scroller.addEventListener('touchmove', function(e){
-        if (!pinch || e.touches.length !== 2) return;
-        e.preventDefault();
-        var t = e.touches;
-        setZoom(pinch.z * dist(t) / pinch.d, (t[0].clientX + t[1].clientX) / 2, (t[0].clientY + t[1].clientY) / 2, true);
-      }, { passive: false });
-      scroller.addEventListener('touchend', function(e){
-        if (pinch && e.touches.length < 2){ pinch = null; draw(); }
-      });
-
-      var resizeT = 0;
-      window.addEventListener('resize', function(){
-        if (!open) return;
-        clearTimeout(resizeT);
-        resizeT = setTimeout(function(){ measure(); setZoom(zoom); }, 150);
-      });
+      sync();
     }
 
-    function show(page, trigger){
-      if (!doc) return;
-      if (!ov) build();
-      lastTrigger = trigger || null;
-      open = true;
-      ov.hidden = false;
-      bodyOverflow = document.body.style.overflow;
-      document.body.style.overflow = 'hidden';
-      measure();
-      go(page, true);
-      closeB.focus();
-      try { if (window.gtag) gtag('event', 'book_zoom', { book: document.body.getAttribute('data-book') || 'book', page: page }); } catch (e) { /* ignore */ }
+    function set(v){
+      v = Math.min(MAX, Math.max(MIN, Math.round(v / STEP) * STEP));
+      if (v === z) return;
+      z = v;
+      sync();
+      Book.zoom(z / 100);
+      List.zoom(z / 100);
     }
 
-    function hide(){
-      if (!open) return;
-      open = false;
-      ov.hidden = true;
-      job++;
-      document.body.style.overflow = bodyOverflow;
-      if (lastTrigger) lastTrigger.focus({ preventScroll: true });
+    function sync(){
+      range.value = z;
+      range.style.setProperty('--fill', ((z - MIN) / (MAX - MIN) * 100) + '%');
+      pct.textContent = z + '%';
+      pct.title = z === 100 ? 'التكبير' : 'العودة إلى 100%';
+      outB.disabled = z <= MIN;
+      inB.disabled = z >= MAX;
     }
 
-    /* page width at 100 %: the width of the window, up to a comfortable reading size */
-    function measure(){
-      var pad = desktop.matches ? 48 : 16;
-      baseW = Math.max(200, Math.min(scroller.clientWidth - pad, 900, (scroller.clientHeight - pad) * ratio * 1.6));
-    }
-
-    function go(page, first){
-      if (page < 1 || page > n) return;
-      num = page;
-      label.textContent = 'صفحة ' + num + ' / ' + n;
-      prevB.disabled = num <= 1;
-      nextB.disabled = num >= n;
-      if (shown){ URL.revokeObjectURL(shown.url); shown = null; }
-      img.removeAttribute('src');
-      img.parentNode.classList.remove('done');
-      /* a sharp-enough copy from the book while the big one is drawn */
-      var have = drawn[num];
-      if (have){ img.src = have.url; img.parentNode.classList.add('done'); }
-      setZoom(first ? 1 : zoom);
-      scroller.scrollTop = 0;
-      scroller.scrollLeft = scroller.scrollWidth;   /* RTL page: start on its right edge */
-      draw();
-    }
-
-    function step(dir){
-      var i, z = zoom;
-      if (dir > 0){ for (i = 0; i < LEVELS.length; i++) if (LEVELS[i] > z + 0.01){ z = LEVELS[i]; break; } }
-      else { for (i = LEVELS.length - 1; i >= 0; i--) if (LEVELS[i] < z - 0.01){ z = LEVELS[i]; break; } }
-      setZoom(z);
-      draw();
-    }
-
-    /* resize the page, keeping the point under (cx, cy) — or the middle — in place */
-    function setZoom(z, cx, cy, live){
-      z = Math.min(MAX, Math.max(MIN, z));
-      var r = scroller.getBoundingClientRect();
-      var px = (cx == null ? r.left + r.width / 2 : cx) - r.left;
-      var py = (cy == null ? r.top + r.height / 2 : cy) - r.top;
-      var sheet = img.parentNode;
-      var oldW = sheet.offsetWidth || baseW * zoom;
-      var fx = (scroller.scrollLeft + px - sheet.offsetLeft) / oldW;
-      var fy = (scroller.scrollTop + py - sheet.offsetTop) / (oldW / ratio);
-      zoom = z;
-      var w = Math.round(baseW * zoom);
-      sheet.style.width = w + 'px';
-      sheet.style.height = Math.round(w / ratio) + 'px';
-      scroller.scrollLeft = sheet.offsetLeft + fx * w - px;
-      scroller.scrollTop = sheet.offsetTop + fy * (w / ratio) - py;
-      pctEl.textContent = Math.round(zoom * 100) + '%';
-      outB.disabled = zoom <= MIN + 0.01;
-      inB.disabled = zoom >= MAX - 0.01;
-      ov.classList.toggle('zoomed', zoom > 1.01);
-    }
-
-    var drawT = 0;
-    function drawSoon(){ clearTimeout(drawT); drawT = setTimeout(draw, 200); }
-
-    /* draw the page for the current size (capped: big canvases fail on phones) */
-    function draw(){
-      var dpr = Math.min(window.devicePixelRatio || 1, 2);
-      var cap = desktop.matches ? 3600 : 2600;
-      var want = Math.min(Math.round(baseW * zoom * dpr), cap);
-      if (shown && shown.num === num && shown.width >= want * 0.9) return;
-      var my = ++job, page = num;
-      renderPage(page, want).then(function(res){
-        if (my !== job || page !== num){ URL.revokeObjectURL(res.url); return; }
-        var tmp = new Image();
-        tmp.src = res.url;
-        return (tmp.decode ? tmp.decode() : Promise.resolve()).catch(function(){}).then(function(){
-          if (my !== job){ URL.revokeObjectURL(res.url); return; }
-          img.src = res.url;
-          img.parentNode.classList.add('done');
-          if (shown) URL.revokeObjectURL(shown.url);
-          shown = { url: res.url, width: res.width, num: page };
-        });
-      }).catch(function(){});
-    }
-
-    return { init: init, bind: bind, isOpen: function(){ return open; } };
+    return { init: init };
   })();
 })();
 

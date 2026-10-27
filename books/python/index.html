@@ -26,7 +26,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Inter:wght@500;700;800&display=swap" rel="stylesheet">
 <!-- same layout as the Word book page, plus what a free book needs -->
-<link rel="stylesheet" href="../word/style.css?v=20261028b">
+<link rel="stylesheet" href="../word/style.css?v=20261028c">
 <link rel="stylesheet" href="../shared/free.css?v=20261027c">
 <script src="/analytics.js"></script>
 <link rel="canonical" href="https://merabti.com/books/python/">
@@ -141,22 +141,19 @@
     <div class="pv-bar">
       <span class="pv-label">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
-        <span>اقرأ الكتاب كاملًا هنا: <b id="pvCount">114</b> صفحة</span>
-      </span>
-      <!-- phones: tap a page to zoom -->
-      <span class="pv-zoom-hint">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5 5M10.5 8v5M8 10.5h5"/></svg>
-        اضغط للتكبير
+        <span><span class="pv-label-long">اقرأ الكتاب كاملًا هنا: </span><b id="pvCount">114</b> صفحة</span>
       </span>
       <span class="pv-tools">
+        <!-- zoom as in Word: − [slider] + 100 % (shown by app.js once the book is loaded) -->
+        <span class="pv-zoom" id="pvZoom" role="group" aria-label="التكبير" hidden>
+          <button type="button" class="zb-btn zb-out" aria-label="تصغير" title="تصغير"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+          <input type="range" class="zb-range" aria-label="نسبة التكبير" value="100">
+          <button type="button" class="zb-btn zb-in" aria-label="تكبير" title="تكبير"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+          <button type="button" class="zb-pct">100%</button>
+        </span>
         <button type="button" class="fb-tool" id="fbSound" aria-pressed="false" title="كتم صوت التقليب" aria-label="كتم صوت التقليب">
           <svg class="ico-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/></svg>
           <svg class="ico-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M16 9.5l5 5M21 9.5l-5 5"/></svg>
-        </button>
-        <!-- shown by app.js once the book is loaded -->
-        <button type="button" class="fb-tool fb-tool-zoom" id="fbZoom" title="تكبير الصفحة" hidden>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5 5M10.5 8v5M8 10.5h5"/></svg>
-          <span>تكبير</span>
         </button>
         <button type="button" class="fb-tool fb-tool-fs" id="fbFull" aria-pressed="false">
           <svg class="ico-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
@@ -250,7 +247,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="../../shared/vendor/page-flip/page-flip.browser.js"></script>
 <!-- the Word book's script: flipbook / phone list -->
-<script src="../word/app.js?v=20261028a"></script>
+<script src="../word/app.js?v=20261028c"></script>
 <script src="../shared/free.js?v=20261027c"></script>
 <script src="../../site-nav.js"></script>
 </body>
