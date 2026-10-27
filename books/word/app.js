@@ -186,8 +186,9 @@ fillPrices(document);
 /* =====================================================================
    Book preview — pages drawn with pdf.js. Also used by the free books
    (books/word-shortcuts/): #preview may carry data-pdf (file),
-   data-total (pages in the whole book) and data-end (counter text on the
-   last page).
+   data-total (pages in the whole book), data-end (counter text on the
+   last page) and data-zoom (zoom viewer: «تكبير» button on computers,
+   tap a page on phones).
    Computers (≥ 861 px): a real book (StPageFlip) that opens right-to-left.
      StPageFlip only turns left-to-right, so the pages are handed to it in
      reverse order and the book starts on its last index (the Arabic front
@@ -202,6 +203,7 @@ fillPrices(document);
   var previewEl = document.getElementById('preview');
   var PDF_URL = previewEl.getAttribute('data-pdf') || 'preview/word-book-preview.pdf';
   var TOTAL_PAGES = +previewEl.getAttribute('data-total') || 202;
+  var ZOOM = previewEl.hasAttribute('data-zoom');
   var MAX_PX = 1800;                 /* cap on the rendered bitmap width (computers) */
   var MAX_PX_PHONE = 1000;           /* phones: sharp enough, light to scroll */
   var MIN_PAGE = 280;                /* narrower pages → one page at a time */
@@ -236,6 +238,7 @@ fillPrices(document);
     document.getElementById('pvCount').textContent = n;
     pickMode();
     if (desktop.addEventListener) desktop.addEventListener('change', pickMode);
+    if (ZOOM) Zoom.init();
   }).catch(fail);
 
   function fail(){
@@ -256,6 +259,18 @@ fillPrices(document);
   function drawPage(num, w){
     var have = drawn[num];
     if (have && have.width >= w * 0.85) return Promise.resolve(have);
+    return renderPage(num, w).then(function(res){
+      drawn[num] = res;
+      /* no cover image on the server: show the drawn first page instead */
+      if (num === 1 && coverImg && coverImg.classList.contains('missing')){
+        coverImg.classList.remove('missing');
+        coverImg.src = res.url;
+      }
+      return res;
+    });
+  }
+
+  function renderPage(num, w){
     return doc.getPage(num).then(function(page){
       var vp = page.getViewport({ scale: 1 });
       var viewport = page.getViewport({ scale: w / vp.width });
@@ -269,14 +284,8 @@ fillPrices(document);
         return new Promise(function(done){ canvas.toBlob(done, 'image/jpeg', 0.9); });
       }).then(function(blob){
         var res = { url: URL.createObjectURL(blob), width: canvas.width };
-        drawn[num] = res;
         canvas.width = canvas.height = 0;
         page.cleanup();
-        /* no cover image on the server: show the drawn first page instead */
-        if (num === 1 && coverImg && coverImg.classList.contains('missing')){
-          coverImg.classList.remove('missing');
-          coverImg.src = res.url;
-        }
         return res;
       });
     });
@@ -330,6 +339,7 @@ fillPrices(document);
         box.style.aspectRatio = ratio.toFixed(4);
         box.setAttribute('role', 'img');
         box.setAttribute('aria-label', 'صفحة ' + i + ' من المعاينة');
+        if (ZOOM) Zoom.bind(box, i);
         listEl.appendChild(box);
         items.push({ el: box, num: i, width: 0, queued: false });
       }
@@ -499,6 +509,7 @@ fillPrices(document);
       if (t === 'INPUT' || t === 'TEXTAREA' || t === 'SELECT') return;
       var ov = document.getElementById('ctOverlay');
       if (ov && !ov.hidden) return;
+      if (Zoom.isOpen()) return;
       if (e.key === 'ArrowLeft'){ e.preventDefault(); goNext(); }
       else if (e.key === 'ArrowRight'){ e.preventDefault(); goPrev(); }
       else if (e.key === 'Escape' && previewEl.classList.contains('fb-pseudo-fs')) pseudoFs(false);
@@ -616,7 +627,255 @@ fillPrices(document);
     document.addEventListener('webkitfullscreenchange', function(){ setFullUi(); relayout(); });
     setFullUi();
 
-    return { init: init, isFull: isFull, toggleFull: toggleFull };
+    /* first page open in the book (for the zoom viewer) */
+    function openPage(){
+      var nums = visibleReading().filter(function(r){ return r < n; });
+      return nums.length ? nums[0] + 1 : n;
+    }
+
+    return { init: init, isFull: isFull, toggleFull: toggleFull, openPage: openPage };
+  })();
+
+  /* =================================================================
+     Zoom viewer (only with data-zoom on #preview): one page, drawn
+     sharp for the zoom level, scrolled / dragged around.
+     Computers: the «تكبير» button opens the page shown in the book;
+       ctrl + wheel (or a trackpad pinch) zooms, drag moves the page.
+     Phones: tap a page; pinch zooms, one finger scrolls.
+     Built inside #preview so it also shows over the book in full screen.
+  ================================================================= */
+  var Zoom = (function(){
+    var LEVELS = [1, 1.5, 2, 2.5, 3, 4];
+    var MIN = 1, MAX = 4;
+    var ov = null, scroller, img, label, pctEl, prevB, nextB, closeB, outB, inB;
+    var open = false, num = 1, zoom = 1, baseW = 0, shown = null, job = 0, lastTrigger = null, bodyOverflow = '';
+
+    function init(){
+      var btn = document.getElementById('fbZoom');
+      if (btn){
+        btn.hidden = false;
+        btn.addEventListener('click', function(){ show(Book.openPage(), btn); });
+      }
+      listEl.classList.add('zoomable');
+    }
+
+    /* phones: a tap (not a scroll) on a page opens it */
+    function bind(box, page){
+      box.tabIndex = 0;
+      box.setAttribute('aria-label', 'صفحة ' + page + ' — اضغط للتكبير');
+      box.addEventListener('click', function(){ show(page, box); });
+      box.addEventListener('keydown', function(e){
+        if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); show(page, box); }
+      });
+    }
+
+    function build(){
+      ov = document.createElement('div');
+      ov.className = 'zm-overlay';
+      ov.hidden = true;
+      ov.setAttribute('role', 'dialog');
+      ov.setAttribute('aria-modal', 'true');
+      ov.setAttribute('aria-label', 'تكبير الصفحة');
+      ov.innerHTML =
+        '<div class="zm-bar">' +
+          '<button type="button" class="zm-btn zm-close" aria-label="إغلاق"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>' +
+          '<span class="zm-pages">' +
+            '<button type="button" class="zm-btn zm-prev" aria-label="الصفحة السابقة"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>' +
+            '<span class="zm-label" aria-live="polite"></span>' +
+            '<button type="button" class="zm-btn zm-next" aria-label="الصفحة التالية"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>' +
+          '</span>' +
+          '<span class="zm-zoom">' +
+            '<button type="button" class="zm-btn zm-out" aria-label="تصغير"><svg viewBox="0 0 24 24"><path d="M6 12h12"/></svg></button>' +
+            '<span class="zm-pct" dir="ltr"></span>' +
+            '<button type="button" class="zm-btn zm-in" aria-label="تكبير"><svg viewBox="0 0 24 24"><path d="M12 6v12M6 12h12"/></svg></button>' +
+          '</span>' +
+        '</div>' +
+        '<div class="zm-scroll"><div class="zm-sheet"><img alt="" draggable="false"><span class="fb-spin" aria-hidden="true"></span></div></div>';
+      previewEl.appendChild(ov);
+      scroller = ov.querySelector('.zm-scroll');
+      img = ov.querySelector('img');
+      label = ov.querySelector('.zm-label');
+      pctEl = ov.querySelector('.zm-pct');
+      prevB = ov.querySelector('.zm-prev');
+      nextB = ov.querySelector('.zm-next');
+      closeB = ov.querySelector('.zm-close');
+      outB = ov.querySelector('.zm-out');
+      inB = ov.querySelector('.zm-in');
+
+      closeB.addEventListener('click', hide);
+      prevB.addEventListener('click', function(){ go(num - 1); });
+      nextB.addEventListener('click', function(){ go(num + 1); });
+      inB.addEventListener('click', function(){ step(1); });
+      outB.addEventListener('click', function(){ step(-1); });
+      img.addEventListener('dblclick', function(e){ setZoom(zoom < 2 ? 2 : 1, e.clientX, e.clientY); });
+
+      document.addEventListener('keydown', function(e){
+        if (!open) return;
+        if (e.key === 'Escape'){ e.preventDefault(); hide(); }
+        else if (e.key === '+' || e.key === '='){ e.preventDefault(); step(1); }
+        else if (e.key === '-' || e.key === '_'){ e.preventDefault(); step(-1); }
+        else if (e.key === 'ArrowLeft' && zoom === 1){ e.preventDefault(); go(num + 1); }    /* RTL: left = forward */
+        else if (e.key === 'ArrowRight' && zoom === 1){ e.preventDefault(); go(num - 1); }
+        else if (e.key === 'Tab'){                                                          /* focus stays inside */
+          var f = ov.querySelectorAll('button:not(:disabled)');
+          var first = f[0], last = f[f.length - 1];
+          if (e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+          else if (!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+        }
+      });
+
+      /* ctrl + wheel, and trackpad pinch (sent as ctrl + wheel) */
+      scroller.addEventListener('wheel', function(e){
+        if (!e.ctrlKey) return;
+        e.preventDefault();
+        setZoom(zoom * Math.exp(-e.deltaY * 0.01), e.clientX, e.clientY, true);
+        drawSoon();
+      }, { passive: false });
+
+      /* mouse: drag the page around */
+      var drag = null;
+      scroller.addEventListener('pointerdown', function(e){
+        if (e.pointerType !== 'mouse' || e.button !== 0) return;
+        drag = { x: e.clientX, y: e.clientY, l: scroller.scrollLeft, t: scroller.scrollTop };
+        scroller.classList.add('dragging');
+      });
+      window.addEventListener('pointermove', function(e){
+        if (!drag) return;
+        scroller.scrollLeft = drag.l - (e.clientX - drag.x);
+        scroller.scrollTop = drag.t - (e.clientY - drag.y);
+      });
+      window.addEventListener('pointerup', function(){
+        if (!drag) return;
+        drag = null;
+        scroller.classList.remove('dragging');
+      });
+
+      /* touch: two fingers zoom, one finger scrolls (native) */
+      var pinch = null;
+      function dist(t){ return Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY); }
+      scroller.addEventListener('touchstart', function(e){
+        if (e.touches.length === 2) pinch = { d: dist(e.touches), z: zoom };
+      }, { passive: true });
+      scroller.addEventListener('touchmove', function(e){
+        if (!pinch || e.touches.length !== 2) return;
+        e.preventDefault();
+        var t = e.touches;
+        setZoom(pinch.z * dist(t) / pinch.d, (t[0].clientX + t[1].clientX) / 2, (t[0].clientY + t[1].clientY) / 2, true);
+      }, { passive: false });
+      scroller.addEventListener('touchend', function(e){
+        if (pinch && e.touches.length < 2){ pinch = null; draw(); }
+      });
+
+      var resizeT = 0;
+      window.addEventListener('resize', function(){
+        if (!open) return;
+        clearTimeout(resizeT);
+        resizeT = setTimeout(function(){ measure(); setZoom(zoom); }, 150);
+      });
+    }
+
+    function show(page, trigger){
+      if (!doc) return;
+      if (!ov) build();
+      lastTrigger = trigger || null;
+      open = true;
+      ov.hidden = false;
+      bodyOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      measure();
+      go(page, true);
+      closeB.focus();
+      try { if (window.gtag) gtag('event', 'book_zoom', { book: document.body.getAttribute('data-book') || 'book', page: page }); } catch (e) { /* ignore */ }
+    }
+
+    function hide(){
+      if (!open) return;
+      open = false;
+      ov.hidden = true;
+      job++;
+      document.body.style.overflow = bodyOverflow;
+      if (lastTrigger) lastTrigger.focus({ preventScroll: true });
+    }
+
+    /* page width at 100 %: the width of the window, up to a comfortable reading size */
+    function measure(){
+      var pad = desktop.matches ? 48 : 16;
+      baseW = Math.max(200, Math.min(scroller.clientWidth - pad, 900, (scroller.clientHeight - pad) * ratio * 1.6));
+    }
+
+    function go(page, first){
+      if (page < 1 || page > n) return;
+      num = page;
+      label.textContent = 'صفحة ' + num + ' / ' + n;
+      prevB.disabled = num <= 1;
+      nextB.disabled = num >= n;
+      if (shown){ URL.revokeObjectURL(shown.url); shown = null; }
+      img.removeAttribute('src');
+      img.parentNode.classList.remove('done');
+      /* a sharp-enough copy from the book while the big one is drawn */
+      var have = drawn[num];
+      if (have){ img.src = have.url; img.parentNode.classList.add('done'); }
+      setZoom(first ? 1 : zoom);
+      scroller.scrollTop = 0;
+      scroller.scrollLeft = scroller.scrollWidth;   /* RTL page: start on its right edge */
+      draw();
+    }
+
+    function step(dir){
+      var i, z = zoom;
+      if (dir > 0){ for (i = 0; i < LEVELS.length; i++) if (LEVELS[i] > z + 0.01){ z = LEVELS[i]; break; } }
+      else { for (i = LEVELS.length - 1; i >= 0; i--) if (LEVELS[i] < z - 0.01){ z = LEVELS[i]; break; } }
+      setZoom(z);
+      draw();
+    }
+
+    /* resize the page, keeping the point under (cx, cy) — or the middle — in place */
+    function setZoom(z, cx, cy, live){
+      z = Math.min(MAX, Math.max(MIN, z));
+      var r = scroller.getBoundingClientRect();
+      var px = (cx == null ? r.left + r.width / 2 : cx) - r.left;
+      var py = (cy == null ? r.top + r.height / 2 : cy) - r.top;
+      var sheet = img.parentNode;
+      var oldW = sheet.offsetWidth || baseW * zoom;
+      var fx = (scroller.scrollLeft + px - sheet.offsetLeft) / oldW;
+      var fy = (scroller.scrollTop + py - sheet.offsetTop) / (oldW / ratio);
+      zoom = z;
+      var w = Math.round(baseW * zoom);
+      sheet.style.width = w + 'px';
+      sheet.style.height = Math.round(w / ratio) + 'px';
+      scroller.scrollLeft = sheet.offsetLeft + fx * w - px;
+      scroller.scrollTop = sheet.offsetTop + fy * (w / ratio) - py;
+      pctEl.textContent = Math.round(zoom * 100) + '%';
+      outB.disabled = zoom <= MIN + 0.01;
+      inB.disabled = zoom >= MAX - 0.01;
+      ov.classList.toggle('zoomed', zoom > 1.01);
+    }
+
+    var drawT = 0;
+    function drawSoon(){ clearTimeout(drawT); drawT = setTimeout(draw, 200); }
+
+    /* draw the page for the current size (capped: big canvases fail on phones) */
+    function draw(){
+      var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      var cap = desktop.matches ? 3600 : 2600;
+      var want = Math.min(Math.round(baseW * zoom * dpr), cap);
+      if (shown && shown.num === num && shown.width >= want * 0.9) return;
+      var my = ++job, page = num;
+      renderPage(page, want).then(function(res){
+        if (my !== job || page !== num){ URL.revokeObjectURL(res.url); return; }
+        var tmp = new Image();
+        tmp.src = res.url;
+        return (tmp.decode ? tmp.decode() : Promise.resolve()).catch(function(){}).then(function(){
+          if (my !== job){ URL.revokeObjectURL(res.url); return; }
+          img.src = res.url;
+          img.parentNode.classList.add('done');
+          if (shown) URL.revokeObjectURL(shown.url);
+          shown = { url: res.url, width: res.width, num: page };
+        });
+      }).catch(function(){});
+    }
+
+    return { init: init, bind: bind, isOpen: function(){ return open; } };
   })();
 })();
 
