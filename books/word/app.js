@@ -11,15 +11,17 @@ var PRICES = {
   usd: { was: 8, now: 6 }           /* US dollar ($) */
 };
 
-(function(){
-  document.querySelectorAll('[data-price]').forEach(function(el){
+/* also used for content cloned from a <template> later (the free book's end page) */
+function fillPrices(root){
+  root.querySelectorAll('[data-price]').forEach(function(el){
     var path = el.getAttribute('data-price').split('.');
     el.textContent = PRICES[path[0]][path[1]];
   });
-  document.querySelectorAll('.offer-badge').forEach(function(el){ el.textContent = PRICES.offerLabel; });
-  document.querySelectorAll('[data-offer]').forEach(function(el){ el.hidden = !PRICES.offer; });
-  document.querySelectorAll('.buy-prices').forEach(function(el){ el.classList.toggle('has-offer', PRICES.offer); });
-})();
+  root.querySelectorAll('.offer-badge').forEach(function(el){ el.textContent = PRICES.offerLabel; });
+  root.querySelectorAll('[data-offer]').forEach(function(el){ el.hidden = !PRICES.offer; });
+  root.querySelectorAll('.buy-prices').forEach(function(el){ el.classList.toggle('has-offer', PRICES.offer); });
+}
+fillPrices(document);
 
 /* =====================================================================
    Order buttons. A bare mailto: does nothing for visitors without a mail
@@ -37,6 +39,7 @@ var PRICES = {
 
   var mailBtn = document.getElementById('orderMail');
   var waBtn = document.getElementById('orderWa');
+  if (!mailBtn || !waBtn) return;    /* free books: no order buttons */
   var overlay = document.getElementById('ctOverlay');
   var box = overlay.querySelector('.ct-box');
   var copyBtn = document.getElementById('ctCopy');
@@ -181,7 +184,10 @@ var PRICES = {
 })();
 
 /* =====================================================================
-   Word book page — preview pages drawn with pdf.js.
+   Book preview — pages drawn with pdf.js. Also used by the free books
+   (books/word-shortcuts/): #preview may carry data-pdf (file),
+   data-total (pages in the whole book) and data-end (counter text on the
+   last page).
    Computers (≥ 861 px): a real book (StPageFlip) that opens right-to-left.
      StPageFlip only turns left-to-right, so the pages are handed to it in
      reverse order and the book starts on its last index (the Arabic front
@@ -193,13 +199,13 @@ var PRICES = {
    pdf.js load can never take the buttons down with it).
 ===================================================================== */
 (function(){
-  var PDF_URL = 'preview/word-book-preview.pdf';
-  var TOTAL_PAGES = 202;
+  var previewEl = document.getElementById('preview');
+  var PDF_URL = previewEl.getAttribute('data-pdf') || 'preview/word-book-preview.pdf';
+  var TOTAL_PAGES = +previewEl.getAttribute('data-total') || 202;
   var MAX_PX = 1800;                 /* cap on the rendered bitmap width (computers) */
   var MAX_PX_PHONE = 1000;           /* phones: sharp enough, light to scroll */
   var MIN_PAGE = 280;                /* narrower pages → one page at a time */
 
-  var previewEl = document.getElementById('preview');
   var stage = document.getElementById('fbStage');
   var bookEl = document.getElementById('fbBook');
   var statusEl = document.getElementById('pvStatus');
@@ -291,8 +297,10 @@ var PRICES = {
 
   function endPage(){
     var frag = document.getElementById('fbEndTpl').content.cloneNode(true);
-    frag.querySelector('.pv-end-sub').textContent = 'باقي ' + (TOTAL_PAGES - n) + ' صفحة من الفصول العشرة بانتظارك';
-    frag.querySelector('.pv-end-btn').addEventListener('click', goBuy);
+    var sub = frag.querySelector('.pv-end-sub'), btn = frag.querySelector('.pv-end-btn');
+    if (sub && TOTAL_PAGES > n) sub.textContent = 'باقي ' + (TOTAL_PAGES - n) + ' صفحة من الفصول العشرة بانتظارك';
+    if (btn) btn.addEventListener('click', goBuy);
+    fillPrices(frag);
     return frag;
   }
 
@@ -465,7 +473,7 @@ var PRICES = {
       var nums = vis.filter(function(r){ return r < n; }).map(function(r){ return r + 1; });
       counterEl.textContent = nums.length
         ? (nums.length > 1 ? nums[0] + '–' + nums[nums.length - 1] : nums[0]) + ' / ' + n
-        : 'نهاية المعاينة';
+        : (previewEl.getAttribute('data-end') || 'نهاية المعاينة');
       prevBtn.disabled = vis[0] === 0;
       nextBtn.disabled = vis[vis.length - 1] === total - 1;
       /* a lone cover sits on one half of the open book: slide it to the middle */
@@ -610,11 +618,12 @@ var PRICES = {
 
 /* =====================================================================
    Phones: fixed "order" button at the bottom of the screen, hidden while
-   the order block itself is on screen.
+   the block it points to (its href: order block, or download block on
+   free books) is on screen.
 ===================================================================== */
 (function(){
   var cta = document.getElementById('mCta');
-  var box = document.getElementById('buyBox');
+  var box = cta && document.querySelector(cta.getAttribute('href'));
   if (!cta || !box) return;
   cta.addEventListener('click', function(e){
     e.preventDefault();
