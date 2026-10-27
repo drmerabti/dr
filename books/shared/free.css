@@ -1,5 +1,5 @@
 /* =====================================================================
-   Free book page — on top of ../word/style.css (same layout).
+   Free book pages — on top of books/word/style.css (same layout).
    Adds: the free download block, the share button, and the banner for
    the other books (under the book on computers, last page of the book /
    after the last page on phones).
@@ -9,8 +9,8 @@
   --free-soft: #E3F6EA;
 }
 
-/* 8 sections: 1–4 | 5–8 */
-.bk-free .bk-chapters ol{ grid-template-rows: repeat(4, auto); }
+/* two columns, filled top to bottom: --rows = half the chapters */
+.bk-free .bk-chapters ol{ grid-template-rows: repeat(var(--rows, 4), auto); }
 
 /* ---------- free download ---------- */
 .get-free{
@@ -110,6 +110,9 @@
 .mb-feat-txt{ min-width: 0; display: flex; flex-direction: column; gap: 3px; }
 .mb-feat-txt b{ font-size: .86rem; font-weight: 900; line-height: 1.4; }
 .mb-feat-txt > span{ font-size: .72rem; font-weight: 600; color: var(--ink-soft); }
+.mb-feats{ width: 100%; max-width: 300px; display: flex; flex-direction: column; gap: 8px; }
+.mb-feats .mb-feat{ padding: 8px; }
+.mb-feats .mb-feat img{ max-width: 52px; width: 22%; }
 .pv-end-link{
   padding: 10px 24px; border-radius: 999px;
   background: var(--gold); color: var(--ink);

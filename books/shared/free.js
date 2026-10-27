@@ -1,14 +1,16 @@
 /* =====================================================================
-   Free book page — loaded after ../word/app.js (which builds the book,
-   the phone list and the fixed phone button, and fills the Word book's
-   prices in the banner and the last page).
+   Free book pages (books/word-shortcuts/, books/python/) — loaded after
+   ../word/app.js (which builds the book, the phone list and the fixed
+   phone button).
    Here: download / share buttons and click counts on the other-books
-   banner.
+   banner. The book comes from <body data-book data-share>, the link from
+   <link rel="canonical">.
 ===================================================================== */
 (function(){
-  var BOOK = 'word-shortcuts';
-  var PAGE_URL = 'https://merabti.com/books/word-shortcuts/';
-  var SHARE_TEXT = 'دليل اختصارات برنامج وورد — كتاب PDF مجاني من د. سفيان مرابطي';
+  var BOOK = document.body.getAttribute('data-book');
+  var canon = document.querySelector('link[rel="canonical"]');
+  var PAGE_URL = canon ? canon.href : location.href;
+  var SHARE_TEXT = document.body.getAttribute('data-share') || document.title;
 
   function track(name, params){
     try { if (window.gtag) gtag('event', name, params); } catch (e) { /* ignore */ }

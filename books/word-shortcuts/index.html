@@ -27,7 +27,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Inter:wght@500;700;800&display=swap" rel="stylesheet">
 <!-- same layout as the Word book page, plus what a free book needs -->
 <link rel="stylesheet" href="../word/style.css?v=20261018a">
-<link rel="stylesheet" href="free.css?v=20261027b">
+<link rel="stylesheet" href="../shared/free.css?v=20261027c">
 <script src="/analytics.js"></script>
 <link rel="canonical" href="https://merabti.com/books/word-shortcuts/">
 <script type="application/ld+json">
@@ -46,7 +46,7 @@
 }
 </script>
 </head>
-<body class="bk-free">
+<body class="bk-free" data-book="word-shortcuts" data-share="دليل اختصارات برنامج وورد — كتاب PDF مجاني من د. سفيان مرابطي">
 
 <header class="bk-top">
   <a class="bk-brand" href="../../index.html">
@@ -187,20 +187,28 @@
     <template id="fbEndTpl">
       <div class="pv-end mb-end">
         <span class="mb-end-kicker">هل أعجبك هذا الدليل؟</span>
-        <strong>تعلّم وورد من الصفر إلى الاحتراف</strong>
-        <a class="mb-feat" href="../word/" data-more="end">
-          <img src="../word/cover.webp" width="480" height="677" alt="غلاف كتاب حتى لو كنت من قوم ثمود ستفهم برنامج وورد" onerror="this.src='../word/cover.jpg'">
-          <span class="mb-feat-txt">
-            <b>حتى لو كنت من قوم ثمود ستفهم برنامج وورد</b>
-            <span>202 صفحة · 10 فصول · PDF ملوّن</span>
-          </span>
-        </a>
-        <a class="pv-end-link" href="../word/" data-more="end-btn">اكتشف الكتاب</a>
+        <strong>اكتشف كتبي الأخرى</strong>
+        <span class="mb-feats">
+          <a class="mb-feat" href="../word/" data-more="end-word">
+            <img src="../word/cover.webp" width="480" height="677" alt="غلاف كتاب حتى لو كنت من قوم ثمود ستفهم برنامج وورد" onerror="this.src='../word/cover.jpg'">
+            <span class="mb-feat-txt">
+              <b>حتى لو كنت من قوم ثمود ستفهم برنامج وورد</b>
+              <span>202 صفحة · 10 فصول · PDF ملوّن</span>
+            </span>
+          </a>
+          <a class="mb-feat" href="../python/" data-more="end-python">
+            <img src="../python/cover.webp" width="480" height="679" alt="غلاف كتاب برمجة بايثون كأن لم تعرفها من قبل" onerror="this.src='../python/cover.jpg'">
+            <span class="mb-feat-txt">
+              <b>برمجة بايثون كأن لم تعرفها من قبل</b>
+              <span>114 صفحة · 14 فصلًا · PDF ملوّن</span>
+            </span>
+          </a>
+        </span>
+        <a class="pv-end-link" href="../../services.html" data-more="all">كل الكتب</a>
         <span class="mb-soon">
           <span>قريبًا:</span>
           <i>Excel</i><i>Access</i><i>Power BI</i><i>SPSS</i>
         </span>
-        <a class="mb-all" href="../../services.html" data-more="all">كل الكتب ←</a>
       </div>
     </template>
   </section>
@@ -226,8 +234,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="../../shared/vendor/page-flip/page-flip.browser.js"></script>
 <!-- the Word book's script: flipbook / phone list -->
-<script src="../word/app.js?v=20261027a"></script>
-<script src="free.js?v=20261027a"></script>
+<script src="../word/app.js?v=20261027c"></script>
+<script src="../shared/free.js?v=20261027c"></script>
 <script src="../../site-nav.js"></script>
 </body>
 </html>

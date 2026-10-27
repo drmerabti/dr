@@ -232,6 +232,7 @@ fillPrices(document);
     ratio = vp.width / vp.height;
     n = doc.numPages;
     total = n + 1;                   /* + the "rest after purchase" page */
+    if (total % 2) total++;          /* + a plain back cover: with an odd count the front cover would open beside page 2 */
     document.getElementById('pvCount').textContent = n;
     pickMode();
     if (desktop.addEventListener) desktop.addEventListener('change', pickMode);
@@ -388,10 +389,13 @@ fillPrices(document);
         if (p.num){
           el.innerHTML = '<span class="fb-shade"></span><span class="fb-spin" aria-hidden="true"></span>';
           el.setAttribute('aria-label', 'صفحة ' + p.num + ' من المعاينة');
-        } else {
+        } else if (r === n){
           el.className += ' fb-page-end done';
           el.appendChild(endPage());
           el.insertAdjacentHTML('afterbegin', '<span class="fb-shade"></span>');
+        } else {
+          el.className += ' fb-page-end done';   /* back cover */
+          el.innerHTML = '<span class="fb-shade"></span>';
         }
         pages.push(p);
       }
@@ -475,7 +479,7 @@ fillPrices(document);
         ? (nums.length > 1 ? nums[0] + '–' + nums[nums.length - 1] : nums[0]) + ' / ' + n
         : (previewEl.getAttribute('data-end') || 'نهاية المعاينة');
       prevBtn.disabled = vis[0] === 0;
-      nextBtn.disabled = vis[vis.length - 1] === total - 1;
+      nextBtn.disabled = vis[vis.length - 1] >= n;   /* stop at the last page (n), not the plain back cover */
       /* a lone cover sits on one half of the open book: slide it to the middle */
       var shift = '';
       if (flip && flip.getOrientation() === 'landscape' && vis.length === 1){
