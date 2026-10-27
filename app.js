@@ -104,6 +104,24 @@ const ICONS = {
     <path d="M25 6v7c0 1.1.9 2 2 2h7z" fill="#8FC2F5" opacity=".6"/>
     <path d="M13.5 22.5h3.2l2.1 10.4 2.4-10.4h3.6l2.4 10.4 2.1-10.4h3.2l-3.6 15h-3.6l-2.3-9.7-2.3 9.7h-3.6z" fill="#fff"/>
   </svg>`,
+  /* Word page + a "Ctrl" key: the Word shortcuts book */
+  wordShortcutsApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="gWordK" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#4A9AE8"/><stop offset="1" stop-color="#1857A8"/>
+      </linearGradient>
+      <linearGradient id="gWordKey" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#E4EDF7"/>
+      </linearGradient>
+    </defs>
+    <ellipse cx="25" cy="43.5" rx="16" ry="2.2" fill="#1E2F40" opacity=".1"/>
+    <path d="M8 4c-1.7 0-3 1.3-3 3v26c0 1.7 1.3 3 3 3h20c1.7 0 3-1.3 3-3V12l-8-8H8z" fill="url(#gWordK)"/>
+    <path d="M23 4v6c0 1.1.9 2 2 2h6z" fill="#8FC2F5" opacity=".6"/>
+    <path d="M9.6 14.5h3l1.9 9.3 2.2-9.3h3.2l2.2 9.3 1.9-9.3h3l-3.3 13.4h-3.2l-2.2-8.7-2.2 8.7h-3.2z" fill="#fff"/>
+    <rect x="19" y="27.5" width="25" height="15" rx="3.6" fill="#B9CCE2"/>
+    <rect x="19" y="26" width="25" height="14" rx="3.6" fill="url(#gWordKey)" stroke="#1857A8" stroke-opacity=".25" stroke-width=".8"/>
+    <text x="31.5" y="35.6" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="8.2" font-weight="800" fill="#1857A8">Ctrl</text>
+</svg>`,
   pcSolutionsApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <linearGradient id="gPcSol" x1="0" y1="0" x2="0" y2="1">
@@ -611,7 +629,7 @@ const CONTENT = {
     { id: 'book-word-shortcuts', title_ar: 'دليل اختصارات برنامج وورد', title_en: 'Microsoft Word Shortcuts Guide',
       desc_ar: 'كتاب مجاني: أكثر من 60 اختصارًا في وورد، مصوّرة ومشروحة في 8 أبواب — اقرأه أو حمّله PDF.',
       desc_en: 'A free book: over 60 Word shortcuts, illustrated and explained in 8 sections — read it or download the PDF.',
-      url: 'books/word-shortcuts/', icon: ICONS.keyboardApp, badge: 'مجاني', badge_en: 'Free' },
+      url: 'books/word-shortcuts/', icon: ICONS.wordShortcutsApp, badge: 'مجاني', badge_en: 'Free' },
     { id: 'book-python', title_ar: 'برمجة بايثون كأن لم تعرفها من قبل', title_en: 'Python Programming as if You Never Knew It',
       desc_ar: 'كتاب مجاني: تعلّم بايثون من الصفر في 14 فصلًا و114 صفحة ملوّنة، من أول سطر برمجي إلى أول مشروع حقيقي.',
       desc_en: 'A free book: learn Python from scratch in 14 chapters and 114 colourful pages, from the first line of code to a real project.',
