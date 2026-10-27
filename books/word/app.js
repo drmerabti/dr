@@ -11,15 +11,17 @@ var PRICES = {
   usd: { was: 8, now: 6 }           /* US dollar ($) */
 };
 
-(function(){
-  document.querySelectorAll('[data-price]').forEach(function(el){
+/* also used for content cloned from a <template> later (the free book's end page) */
+function fillPrices(root){
+  root.querySelectorAll('[data-price]').forEach(function(el){
     var path = el.getAttribute('data-price').split('.');
     el.textContent = PRICES[path[0]][path[1]];
   });
-  document.querySelectorAll('.offer-badge').forEach(function(el){ el.textContent = PRICES.offerLabel; });
-  document.querySelectorAll('[data-offer]').forEach(function(el){ el.hidden = !PRICES.offer; });
-  document.querySelectorAll('.buy-prices').forEach(function(el){ el.classList.toggle('has-offer', PRICES.offer); });
-})();
+  root.querySelectorAll('.offer-badge').forEach(function(el){ el.textContent = PRICES.offerLabel; });
+  root.querySelectorAll('[data-offer]').forEach(function(el){ el.hidden = !PRICES.offer; });
+  root.querySelectorAll('.buy-prices').forEach(function(el){ el.classList.toggle('has-offer', PRICES.offer); });
+}
+fillPrices(document);
 
 /* =====================================================================
    Order buttons. A bare mailto: does nothing for visitors without a mail
@@ -37,6 +39,7 @@ var PRICES = {
 
   var mailBtn = document.getElementById('orderMail');
   var waBtn = document.getElementById('orderWa');
+  if (!mailBtn || !waBtn) return;    /* free books: no order buttons */
   var overlay = document.getElementById('ctOverlay');
   var box = overlay.querySelector('.ct-box');
   var copyBtn = document.getElementById('ctCopy');
@@ -181,7 +184,10 @@ var PRICES = {
 })();
 
 /* =====================================================================
-   Word book page — preview pages drawn with pdf.js.
+   Book preview — pages drawn with pdf.js. Also used by the free books
+   (books/word-shortcuts/): #preview may carry data-pdf (file),
+   data-total (pages in the whole book), data-end (counter text on the
+   last page) and data-zoom (zoom bar − / + as in Word, see Zoom below).
    Computers (≥ 861 px): a real book (StPageFlip) that opens right-to-left.
      StPageFlip only turns left-to-right, so the pages are handed to it in
      reverse order and the book starts on its last index (the Arabic front
@@ -193,13 +199,14 @@ var PRICES = {
    pdf.js load can never take the buttons down with it).
 ===================================================================== */
 (function(){
-  var PDF_URL = 'preview/word-book-preview.pdf';
-  var TOTAL_PAGES = 202;
+  var previewEl = document.getElementById('preview');
+  var PDF_URL = previewEl.getAttribute('data-pdf') || 'preview/word-book-preview.pdf';
+  var TOTAL_PAGES = +previewEl.getAttribute('data-total') || 202;
+  var ZOOM = previewEl.hasAttribute('data-zoom');
   var MAX_PX = 1800;                 /* cap on the rendered bitmap width (computers) */
   var MAX_PX_PHONE = 1000;           /* phones: sharp enough, light to scroll */
   var MIN_PAGE = 280;                /* narrower pages → one page at a time */
 
-  var previewEl = document.getElementById('preview');
   var stage = document.getElementById('fbStage');
   var bookEl = document.getElementById('fbBook');
   var statusEl = document.getElementById('pvStatus');
@@ -226,9 +233,11 @@ var PRICES = {
     ratio = vp.width / vp.height;
     n = doc.numPages;
     total = n + 1;                   /* + the "rest after purchase" page */
+    if (total % 2) total++;          /* + a plain back cover: with an odd count the front cover would open beside page 2 */
     document.getElementById('pvCount').textContent = n;
     pickMode();
     if (desktop.addEventListener) desktop.addEventListener('change', pickMode);
+    if (ZOOM) Zoom.init();
   }).catch(fail);
 
   function fail(){
@@ -262,7 +271,10 @@ var PRICES = {
         return new Promise(function(done){ canvas.toBlob(done, 'image/jpeg', 0.9); });
       }).then(function(blob){
         var res = { url: URL.createObjectURL(blob), width: canvas.width };
+        var old = drawn[num];
         drawn[num] = res;
+        /* redrawn sharper (zoom): free the old bitmap once the new one is in place */
+        if (old) setTimeout(function(){ URL.revokeObjectURL(old.url); }, 4000);
         canvas.width = canvas.height = 0;
         page.cleanup();
         /* no cover image on the server: show the drawn first page instead */
@@ -291,8 +303,10 @@ var PRICES = {
 
   function endPage(){
     var frag = document.getElementById('fbEndTpl').content.cloneNode(true);
-    frag.querySelector('.pv-end-sub').textContent = 'باقي ' + (TOTAL_PAGES - n) + ' صفحة من الفصول العشرة بانتظارك';
-    frag.querySelector('.pv-end-btn').addEventListener('click', goBuy);
+    var sub = frag.querySelector('.pv-end-sub'), btn = frag.querySelector('.pv-end-btn');
+    if (sub && TOTAL_PAGES > n) sub.textContent = 'باقي ' + (TOTAL_PAGES - n) + ' صفحة من الفصول العشرة بانتظارك';
+    if (btn) btn.addEventListener('click', goBuy);
+    fillPrices(frag);
     return frag;
   }
 
@@ -309,7 +323,7 @@ var PRICES = {
      Phones: pages one under the other
   ================================================================= */
   var List = (function(){
-    var built = false, items = [], observer = null, queue = Promise.resolve();
+    var built = false, items = [], observer = null, queue = Promise.resolve(), zoomF = 1;
 
     function init(){
       if (built){ watch(); return; }
@@ -349,7 +363,7 @@ var PRICES = {
 
     function load(it){
       var dpr = Math.min(window.devicePixelRatio || 1, 2);
-      var w = Math.min(Math.round(it.el.clientWidth * dpr), MAX_PX_PHONE);
+      var w = Math.min(Math.round(it.el.clientWidth * dpr), Math.round(MAX_PX_PHONE * Math.min(zoomF, 2.4)));
       if (!w || it.queued || it.width >= w * 0.85) return;
       it.queued = true;
       /* one page at a time, in the order they come into reach */
@@ -361,14 +375,35 @@ var PRICES = {
       }).catch(function(){}).then(function(){ it.queued = false; });
     }
 
-    return { init: init };
+    /* zoom: wider pages, the list scrolls sideways; the page at the top of
+       the screen stays at the top */
+    function zoom(f){
+      zoomF = f;
+      if (!built) return;
+      var top = (document.querySelector('.bk-top') || {}).offsetHeight || 0;
+      var bar = previewEl.querySelector('.pv-bar');
+      var anchorY = top + (bar ? bar.offsetHeight : 0) + 8, anchor = null, frac = 0;
+      for (var i = 0; i < items.length; i++){
+        var r = items[i].el.getBoundingClientRect();
+        if (r.bottom > anchorY){ anchor = items[i].el; frac = (anchorY - r.top) / r.height; break; }
+      }
+      listEl.style.setProperty('--z', f);
+      listEl.classList.toggle('zoomed', f > 1);
+      if (anchor){
+        var nr = anchor.getBoundingClientRect();
+        window.scrollBy(0, nr.top + frac * nr.height - anchorY);
+      }
+      watch();                       /* redraw the pages in reach, sharper */
+    }
+
+    return { init: init, zoom: zoom };
   })();
 
   /* =================================================================
      Computers: the flipbook
   ================================================================= */
   var Book = (function(){
-    var flip = null, pages = [], busy = false, built = false;
+    var flip = null, pages = [], busy = false, built = false, zoomF = 1;
 
     function init(){
       if (built){ relayout(); return; }
@@ -380,10 +415,13 @@ var PRICES = {
         if (p.num){
           el.innerHTML = '<span class="fb-shade"></span><span class="fb-spin" aria-hidden="true"></span>';
           el.setAttribute('aria-label', 'صفحة ' + p.num + ' من المعاينة');
-        } else {
+        } else if (r === n){
           el.className += ' fb-page-end done';
           el.appendChild(endPage());
           el.insertAdjacentHTML('afterbegin', '<span class="fb-shade"></span>');
+        } else {
+          el.className += ' fb-page-end done';   /* back cover */
+          el.innerHTML = '<span class="fb-shade"></span>';
         }
         pages.push(p);
       }
@@ -433,9 +471,11 @@ var PRICES = {
       var wantTwo = (desktop.matches || (fs && window.innerWidth > window.innerHeight)) && two >= MIN_PAGE;
       /* one page must stay under 2 × minWidth, or StPageFlip switches back to two */
       var bookW = wantTwo ? two * 2 : Math.min(one, MIN_PAGE * 2 - 2);
-      /* StPageFlip keeps the box at width:100%, so the size goes through max-width */
-      bookEl.style.width = '100%';
-      bookEl.style.maxWidth = Math.max(Math.floor(bookW), MIN_PAGE) + 'px';
+      bookW = Math.floor(Math.max(Math.floor(bookW), MIN_PAGE) * zoomF);
+      /* StPageFlip keeps the box at width:100%, so the size goes through max-width;
+         zoomed past the stage, the width is set outright and the stage scrolls */
+      bookEl.style.width = zoomF > 1 ? bookW + 'px' : '100%';
+      bookEl.style.maxWidth = bookW + 'px';
     }
 
     function relayout(){
@@ -465,9 +505,9 @@ var PRICES = {
       var nums = vis.filter(function(r){ return r < n; }).map(function(r){ return r + 1; });
       counterEl.textContent = nums.length
         ? (nums.length > 1 ? nums[0] + '–' + nums[nums.length - 1] : nums[0]) + ' / ' + n
-        : 'نهاية المعاينة';
+        : (previewEl.getAttribute('data-end') || 'نهاية المعاينة');
       prevBtn.disabled = vis[0] === 0;
-      nextBtn.disabled = vis[vis.length - 1] === total - 1;
+      nextBtn.disabled = vis[vis.length - 1] >= n;   /* stop at the last page (n), not the plain back cover */
       /* a lone cover sits on one half of the open book: slide it to the middle */
       var shift = '';
       if (flip && flip.getOrientation() === 'landscape' && vis.length === 1){
@@ -497,20 +537,24 @@ var PRICES = {
       var b = flip && flip.getBoundsRect();
       var pw = b ? b.pageWidth : parseFloat(bookEl.style.maxWidth) / 2;
       var dpr = Math.min(window.devicePixelRatio || 1, 2);
-      return Math.min(Math.round(pw * dpr), MAX_PX);
+      return Math.min(Math.round(pw * dpr), zoomF > 1 ? 3200 : MAX_PX);
     }
 
     function pump(){
       if (busy || !doc || !desktop.matches) return;
       if (flip && flip.getState() !== 'read') return;   /* resumes on the next 'read' state */
-      var want = wantedWidth(), vis = visibleReading(), cur = vis[0], best = null;
+      var want = wantedWidth(), vis = visibleReading(), cur = vis[0], best = null, bestW = 0;
+      /* zoomed: only the pages around the open ones are drawn big */
+      var base = Math.min(want, Math.round(want / zoomF));
       pages.forEach(function(p){
-        if (!p.num || p.width >= want * 0.85) return;
-        if (!best || Math.abs(p.r - cur) < Math.abs(best.r - cur)) best = p;
+        if (!p.num) return;
+        var w = Math.abs(p.r - cur) <= 3 ? want : base;
+        if (p.width >= w * 0.85) return;
+        if (!best || Math.abs(p.r - cur) < Math.abs(best.r - cur)){ best = p; bestW = w; }
       });
       if (!best) return;
       busy = true;
-      drawPage(best.num, want).then(function(res){
+      drawPage(best.num, bestW).then(function(res){
         best.width = res.width;
         return showImg(best.el, res.url);
       }).catch(function(){
@@ -604,17 +648,91 @@ var PRICES = {
     document.addEventListener('webkitfullscreenchange', function(){ setFullUi(); relayout(); });
     setFullUi();
 
-    return { init: init, isFull: isFull, toggleFull: toggleFull };
+    /* zoom: bigger book, the stage scrolls; the middle of the view stays put */
+    function zoom(f){
+      var cx = 0.5, cy = 0.5;
+      if (zoomF > 1){
+        cx = (stage.scrollLeft + stage.clientWidth / 2) / stage.scrollWidth;
+        cy = (stage.scrollTop + stage.clientHeight / 2) / stage.scrollHeight;
+      }
+      zoomF = f;
+      stage.classList.toggle('zoomed', f > 1);
+      if (!flip || !desktop.matches) return;
+      sizeBook();
+      flip.update();
+      updateNav();
+      if (f > 1){
+        stage.scrollLeft = cx * stage.scrollWidth - stage.clientWidth / 2;
+        stage.scrollTop = cy * stage.scrollHeight - stage.clientHeight / 2;
+      }
+      pump();
+    }
+
+    return { init: init, isFull: isFull, toggleFull: toggleFull, zoom: zoom };
+  })();
+
+  /* =================================================================
+     Zoom bar, as in Word / Excel (only with data-zoom on #preview):
+     − [slider] + 100 %; a click on the percentage goes back to 100 %.
+     Computers: the book itself grows and the area around it scrolls
+       (ctrl + wheel zooms too). Phones: the pages grow and the list
+       scrolls sideways.
+  ================================================================= */
+  var Zoom = (function(){
+    var MIN = 100, MAX = 300, STEP = 10;
+    var z = 100, outB, inB, range, pct;
+
+    function init(){
+      var ui = document.getElementById('pvZoom');
+      if (!ui) return;
+      ui.hidden = false;
+      outB = ui.querySelector('.zb-out');
+      inB = ui.querySelector('.zb-in');
+      range = ui.querySelector('.zb-range');
+      pct = ui.querySelector('.zb-pct');
+      range.min = MIN; range.max = MAX; range.step = STEP;
+      outB.addEventListener('click', function(){ set(z - STEP); });
+      inB.addEventListener('click', function(){ set(z + STEP); });
+      range.addEventListener('input', function(){ set(+range.value); });
+      pct.addEventListener('click', function(){ set(100); });
+      stage.addEventListener('wheel', function(e){
+        if (!e.ctrlKey) return;      /* ctrl + wheel, or a trackpad pinch */
+        e.preventDefault();
+        set(z + (e.deltaY < 0 ? STEP : -STEP));
+      }, { passive: false });
+      sync();
+    }
+
+    function set(v){
+      v = Math.min(MAX, Math.max(MIN, Math.round(v / STEP) * STEP));
+      if (v === z) return;
+      z = v;
+      sync();
+      Book.zoom(z / 100);
+      List.zoom(z / 100);
+    }
+
+    function sync(){
+      range.value = z;
+      range.style.setProperty('--fill', ((z - MIN) / (MAX - MIN) * 100) + '%');
+      pct.textContent = z + '%';
+      pct.title = z === 100 ? 'التكبير' : 'العودة إلى 100%';
+      outB.disabled = z <= MIN;
+      inB.disabled = z >= MAX;
+    }
+
+    return { init: init };
   })();
 })();
 
 /* =====================================================================
    Phones: fixed "order" button at the bottom of the screen, hidden while
-   the order block itself is on screen.
+   the block it points to (its href: order block, or download block on
+   free books) is on screen.
 ===================================================================== */
 (function(){
   var cta = document.getElementById('mCta');
-  var box = document.getElementById('buyBox');
+  var box = cta && document.querySelector(cta.getAttribute('href'));
   if (!cta || !box) return;
   cta.addEventListener('click', function(e){
     e.preventDefault();
