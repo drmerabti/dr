@@ -68,11 +68,6 @@
 .mb-strip-txt small{ font-size: .72rem; font-weight: 800; color: #9B6A12; }
 .mb-strip-txt strong{ font-size: .98rem; font-weight: 900; line-height: 1.35; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .mb-strip-meta{ font-size: .78rem; font-weight: 600; color: var(--ink-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.mb-strip-price{ flex-shrink: 0; display: flex; flex-direction: column; align-items: center; line-height: 1.2; }
-.mb-strip-price s{ font: 700 .8rem/1.2 var(--font-en); color: #8C99A6; text-decoration-color: #C0392B; }
-.mb-strip-price s[hidden]{ display: none; }
-.mb-strip-price b{ font-size: 1.15rem; font-weight: 900; color: var(--brand-strong); white-space: nowrap; }
-.mb-strip-price bdi, .mb-feat-price bdi{ direction: ltr; unicode-bidi: isolate; font-family: var(--font-en); }
 .mb-strip-btn{
   flex-shrink: 0;
   padding: 10px 18px; border-radius: 999px;
@@ -80,7 +75,7 @@
   font-size: .92rem; font-weight: 900; white-space: nowrap;
 }
 @media (min-width: 861px) and (max-width: 1100px){
-  .mb-strip-meta, .mb-strip-price{ display: none; }
+  .mb-strip-meta{ display: none; }
 }
 @media (min-width: 861px) and (max-height: 700px){
   .mb-strip{ padding-block: 6px; margin-bottom: 10px; }
@@ -115,10 +110,6 @@
 .mb-feat-txt{ min-width: 0; display: flex; flex-direction: column; gap: 3px; }
 .mb-feat-txt b{ font-size: .86rem; font-weight: 900; line-height: 1.4; }
 .mb-feat-txt > span{ font-size: .72rem; font-weight: 600; color: var(--ink-soft); }
-.mb-feat-price{ display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
-.mb-feat-price s{ font-size: .74rem; color: #8C99A6; text-decoration-color: #C0392B; }
-.mb-feat-price s[hidden]{ display: none; }
-.mb-feat-price em{ font-style: normal; font-size: 1.02rem; font-weight: 900; color: var(--brand-strong); }
 .pv-end-link{
   padding: 10px 24px; border-radius: 999px;
   background: var(--gold); color: var(--ink);
