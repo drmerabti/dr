@@ -1,0 +1,211 @@
+/* =====================================================================
+   English with Claudio — page of ready-to-copy instructions and prompts.
+   On top of ../word/style.css (colours, top bar, footer), but a normal
+   scrolling page instead of the book's full-screen split.
+   Phones first: one column, big copy buttons; two columns of prompts
+   from 900px.
+===================================================================== */
+body.pr-page{
+  height: auto; min-height: 100vh; min-height: 100dvh;
+  display: flex; flex-direction: column;
+  overflow: visible;
+  padding-bottom: 0;
+}
+.pr-page .bk-top{ position: sticky; top: 0; height: var(--top-h); flex-shrink: 0; }
+
+.pr-main{
+  flex: 1;
+  width: 100%; max-width: 1040px;
+  margin: 0 auto;
+  padding: 20px 20px 36px;
+  display: flex; flex-direction: column; gap: 22px;
+}
+
+mark{
+  background: var(--gold-soft); color: #8A5A0B;
+  border-radius: 4px; padding: 0 2px;
+  font-weight: 700;
+}
+
+/* ---------- top: title and how to use ---------- */
+.pr-hero{
+  display: flex; align-items: center; gap: 16px;
+  padding: 18px;
+  border-radius: 18px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-md);
+}
+.pr-hero-cover{ flex-shrink: 0; }
+.pr-hero-cover img{
+  display: block; width: 84px; height: auto;
+  border-radius: 5px 9px 9px 5px;
+  box-shadow: -4px 0 0 rgba(19,40,58,.08), var(--shadow-lg);
+}
+.pr-hero-txt{ min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.pr-hero h1{ margin: 2px 0 0; font-size: 1.45rem; font-weight: 900; line-height: 1.4; color: var(--brand-strong); }
+.pr-hero p{ margin: 0; font-size: .95rem; line-height: 1.8; color: var(--ink-soft); }
+.pr-hero p b{ color: var(--ink); }
+
+/* ---------- the three parts ---------- */
+.pr-nav{
+  position: sticky; top: var(--top-h); z-index: 4;
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px;
+  margin: -6px -20px 0; padding: 8px 20px;
+  background: rgba(242,246,249,.94);
+  backdrop-filter: blur(8px);
+}
+.pr-nav a{
+  min-width: 0;
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  height: 42px; padding: 0 8px;
+  border-radius: 999px;
+  background: var(--surface); border: 1px solid var(--line-strong);
+  color: var(--ink); text-decoration: none;
+  font-size: .9rem; font-weight: 800; white-space: nowrap;
+}
+.pr-nav a span{
+  width: 24px; height: 24px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--brand); color: #fff;
+  font: 800 .76rem/1 var(--font-en);
+}
+.pr-nav small{ font-weight: 700; color: var(--ink-soft); }
+.pr-nav a:hover{ border-color: var(--brand); }
+.pr-nav a:focus-visible{ outline: 3px solid var(--gold); outline-offset: 2px; }
+
+.pr-part{ scroll-margin-top: calc(var(--top-h) + 64px); display: flex; flex-direction: column; gap: 12px; }
+.pr-part-head{ display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.pr-part-head h2{ margin: 0; font-size: 1.22rem; font-weight: 900; color: var(--brand-strong); }
+.pr-part-tag{
+  font-size: .74rem; font-weight: 800;
+  padding: 3px 10px; border-radius: 999px;
+  background: var(--gold-soft); color: #9B6A12;
+}
+
+.pr-list{ display: flex; flex-direction: column; gap: 12px; }
+
+/* ---------- one framed text + its copy button ---------- */
+.pr-box{
+  scroll-margin-top: calc(var(--top-h) + 64px);
+  display: flex; flex-direction: column;
+  border-radius: 16px;
+  background: var(--surface);
+  border: 1.5px solid var(--line-strong);
+  border-inline-start: 5px solid var(--brand);
+  box-shadow: 0 1px 3px rgba(19,40,58,.05);
+  overflow: hidden;
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+.pr-box-big{ border-inline-start-color: var(--gold); }
+.pr-box.copied{ border-color: #179246; box-shadow: 0 0 0 3px rgba(23,146,70,.14); }
+
+.pr-box-head{
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px 10px 10px;
+  background: var(--brand-soft);
+  border-bottom: 1px solid var(--line);
+}
+.pr-box-big .pr-box-head{ background: var(--gold-soft); }
+.pr-num{
+  flex-shrink: 0;
+  min-width: 26px; height: 26px; padding: 0 4px; border-radius: 999px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--brand); color: #fff;
+  font: 800 .74rem/1 var(--font-en);
+}
+.pr-box-head h3{
+  flex: 1; min-width: 0;
+  margin: 0; font-size: 1rem; font-weight: 900; line-height: 1.4; color: var(--brand-strong);
+}
+
+.pr-copy{
+  flex-shrink: 0;
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  min-width: 92px; height: 40px; padding: 0 14px;
+  border: 0; border-radius: 12px;
+  background: var(--brand); color: #fff;
+  font: 800 .95rem/1 var(--font-ar);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition: background .15s ease, transform .1s ease;
+}
+.pr-copy svg{ width: 18px; height: 18px; flex-shrink: 0; }
+.pr-copy:hover{ background: var(--brand-strong); }
+.pr-copy:active{ transform: scale(.96); }
+.pr-copy:focus-visible{ outline: 3px solid var(--gold); outline-offset: 2px; }
+.pr-copy.done{ background: #179246; }
+.pr-copy.done svg{ display: none; }
+
+.pr-text{
+  margin: 0;
+  padding: 14px 16px 16px;
+  font-family: var(--font-ar);
+  font-size: 1.02rem; font-weight: 500; line-height: 1.95;
+  color: var(--ink);
+  white-space: pre-wrap; overflow-wrap: anywhere;
+  text-align: start;
+  user-select: text; -webkit-user-select: text;
+}
+
+/* ---------- the book, after the prompts ---------- */
+.pr-book{
+  display: flex; align-items: center; gap: 16px;
+  padding: 16px 18px;
+  border-radius: 18px;
+  background: linear-gradient(160deg, var(--brand) 0%, var(--brand-strong) 100%);
+  color: #fff;
+}
+.pr-book img{
+  width: 74px; height: auto; flex-shrink: 0;
+  border-radius: 4px 8px 8px 4px;
+  box-shadow: 0 6px 16px rgba(0,0,0,.25);
+}
+.pr-book-txt{ min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.pr-book-txt strong{ font-size: 1.12rem; font-weight: 900; }
+.pr-book-txt > span{ font-size: .86rem; font-weight: 600; opacity: .88; }
+.pr-book-btns{ display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+.pr-book-btn{
+  display: inline-flex; align-items: center; height: 40px; padding: 0 18px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.14); color: #fff;
+  font-size: .92rem; font-weight: 800; text-decoration: none;
+}
+.pr-book-btn.pr-book-dl{ background: var(--gold); color: var(--ink); }
+.pr-book-btn:hover{ filter: brightness(1.08); }
+.pr-book-btn:focus-visible{ outline: 3px solid var(--gold); outline-offset: 2px; }
+
+.pr-foot{ text-align: center; }
+
+/* ---------- computers: prompts in two columns ---------- */
+@media (min-width: 900px){
+  .pr-main{ padding: 28px 28px 44px; }
+  .pr-hero{ padding: 22px 24px; }
+  .pr-hero-cover img{ width: 100px; }
+  .pr-hero h1{ font-size: 1.7rem; }
+  .pr-grid{ display: grid; grid-template-columns: 1fr 1fr; align-items: start; gap: 14px; }
+  .pr-nav{ margin-inline: 0; padding-inline: 0; }
+}
+
+/* ---------- phones ---------- */
+@media (max-width: 860px){
+  body.pr-page{ display: flex; padding-bottom: 0; }
+  .pr-page .bk-top{ position: sticky; }
+}
+@media (max-width: 560px){
+  .pr-main{ padding: 14px 12px 28px; gap: 18px; }
+  .pr-nav{ margin-inline: -12px; padding-inline: 12px; gap: 6px; }
+  .pr-nav a{ gap: 5px; padding: 0 4px; font-size: .86rem; }
+  .pr-nav a span{ width: 22px; height: 22px; }
+  .pr-hero{ padding: 14px; gap: 12px; align-items: flex-start; }
+  .pr-hero-cover img{ width: 64px; }
+  .pr-hero h1{ font-size: 1.22rem; }
+  .pr-hero p{ font-size: .9rem; line-height: 1.75; }
+  .pr-part-head h2{ font-size: 1.08rem; }
+  .pr-box-head{ padding: 8px 10px 8px 8px; }
+  .pr-box-head h3{ font-size: .96rem; }
+  .pr-text{ padding: 12px 13px 14px; font-size: 1rem; line-height: 1.9; }
+  .pr-book{ padding: 14px; gap: 12px; }
+  .pr-book img{ width: 60px; }
+}
