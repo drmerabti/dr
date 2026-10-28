@@ -684,7 +684,7 @@ const SECTIONS_ROW1 = [
 const SECTIONS_ROW2 = [
   { key: 'lessons',   icon: ICONS.lessons,  badge: 'badge-lessons',   href: 'lessons.html' },
   { key: 'trainings', icon: ICONS.training, badge: 'badge-training',  href: 'resources.html' },
-  { key: 'services',  icon: ICONS.services, badge: 'badge-services',  href: 'services.html' },
+  { key: 'services',  icon: ICONS.services, badge: 'badge-services',  href: 'books.html' },
 ];
 const SECTIONS = [...SECTIONS_ROW1, ...SECTIONS_ROW2];
 
@@ -1125,7 +1125,7 @@ function initSearch(){
   const searchIndex = buildSearchIndex();
   const pageByKey = {
     lessons: 'lessons.html', apps: 'apps.html', tools: 'tools.html',
-    trainings: 'resources.html', services: 'services.html',
+    trainings: 'resources.html', services: 'books.html',
   };
 
   searchInput.addEventListener('input', () => {
