@@ -122,6 +122,22 @@ const ICONS = {
     <rect x="19" y="26" width="25" height="14" rx="3.6" fill="url(#gWordKey)" stroke="#1857A8" stroke-opacity=".25" stroke-width=".8"/>
     <text x="31.5" y="35.6" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="8.2" font-weight="800" fill="#1857A8">Ctrl</text>
 </svg>`,
+  /* two speech bubbles, "EN" and "ع": the English with Claudio book */
+  englishClaudioApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="gEnB" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#4A9AE8"/><stop offset="1" stop-color="#1857A8"/>
+      </linearGradient>
+      <linearGradient id="gEnO" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#F7B04A"/><stop offset="1" stop-color="#E07A12"/>
+      </linearGradient>
+    </defs>
+    <ellipse cx="24" cy="44" rx="16" ry="2.2" fill="#1E2F40" opacity=".1"/>
+    <path d="M9 5h20c2.2 0 4 1.8 4 4v13c0 2.2-1.8 4-4 4H16l-6 5v-5h-1c-2.2 0-4-1.8-4-4V9c0-2.2 1.8-4 4-4z" fill="url(#gEnB)"/>
+    <text x="15.5" y="18.6" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="9.5" font-weight="800" fill="#fff">EN</text>
+    <path d="M40 19H25c-2.2 0-4 1.8-4 4v10c0 2.2 1.8 4 4 4h10l5 4.5V37c2.2 0 4-1.8 4-4V23c0-2.2-1.8-4-4-4z" fill="url(#gEnO)" stroke="#fff" stroke-width="1.6"/>
+    <text x="32.5" y="32.6" text-anchor="middle" font-family="Tajawal, Arial, sans-serif" font-size="11" font-weight="800" fill="#fff">ع</text>
+</svg>`,
   pcSolutionsApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <linearGradient id="gPcSol" x1="0" y1="0" x2="0" y2="1">
@@ -634,6 +650,10 @@ const CONTENT = {
       desc_ar: 'كتاب مجاني: تعلّم بايثون من الصفر في 14 فصلًا و114 صفحة ملوّنة، من أول سطر برمجي إلى أول مشروع حقيقي.',
       desc_en: 'A free book: learn Python from scratch in 14 chapters and 114 colourful pages, from the first line of code to a real project.',
       url: 'books/python/', icon: ICONS.pythonApp, badge: 'مجاني', badge_en: 'Free' },
+    { id: 'book-english-claudio', title_ar: 'تعلم الإنجليزية مع Claudio', title_en: 'Learn English with Claudio',
+      desc_ar: 'كتاب مجاني: كتاب بسيط وممتع يعلّمك خطوة بخطوة كيف تحوّل كلود إلى أستاذ إنجليزية خاص بك: يشرح بالعربية، يصحّح أخطاءك، يحاورك بالصوت، ويصنع لك التمارين. مناسب للكبار والصغار ولكل من يبدأ من الصفر.',
+      desc_en: 'A free book: a simple, fun step-by-step guide to turning Claude into your own English teacher — it explains in Arabic, corrects your mistakes, talks with you by voice and makes your exercises. For adults, children and complete beginners.',
+      url: 'books/english-claudio/', icon: ICONS.englishClaudioApp, badge: 'مجاني', badge_en: 'Free' },
     { id: 'book-excel', title_ar: 'كتاب Excel', title_en: 'Excel Book',
       desc_ar: 'كتاب مصوّر في برنامج إكسل.', desc_en: 'An illustrated book on Excel.',
       icon: ICONS.excelApp, comingSoon: true, soon: true },

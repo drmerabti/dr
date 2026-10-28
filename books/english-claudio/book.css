@@ -1,0 +1,39 @@
+/* =====================================================================
+   English with Claudio — only what this book adds to the free-book page
+   (../word/style.css + ../shared/free.css): the link to the page of
+   ready-to-copy instructions and prompts (prompts.html).
+===================================================================== */
+
+/* in the free block, under the download / share buttons */
+.order-prompts{
+  min-height: 62px;
+  background: var(--gold-soft);
+  border: 1.5px solid var(--gold);
+  color: var(--ink);
+  box-shadow: none;
+}
+.order-prompts .order-ico{ width: 40px; height: 40px; border-radius: 12px; background: var(--gold); color: #fff; }
+.order-prompts .order-ico svg{ width: 22px; height: 22px; }
+.order-prompts .order-txt strong{ font-size: 1rem; }
+.order-prompts .order-txt small{ color: var(--ink-soft); opacity: 1; }
+.order-prompts:hover{ filter: none; background: #F8E7C2; }
+
+/* phones: the same link right above the pages of the book */
+.pr-strip{ display: none; }
+@media (max-width: 860px){
+  .pr-strip{
+    display: flex; align-items: center; gap: 11px;
+    margin: 12px 8px 0;
+    padding: 11px 14px;
+    border-radius: 14px;
+    background: var(--gold-soft);
+    border: 1.5px solid var(--gold);
+    color: var(--ink); text-decoration: none;
+  }
+  .pr-strip svg{ width: 24px; height: 24px; flex-shrink: 0; color: #9B6A12; }
+  .pr-strip span{ flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+  .pr-strip strong{ font-size: .98rem; font-weight: 900; line-height: 1.35; }
+  .pr-strip small{ font-size: .78rem; font-weight: 600; color: var(--ink-soft); }
+  .pr-strip .pr-strip-go{ width: 20px; height: 20px; }
+  .pr-strip:focus-visible{ outline: 3px solid var(--gold); outline-offset: 3px; }
+}
