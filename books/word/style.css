@@ -458,6 +458,55 @@ svg{ fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; s
 .bk-preview.fb-pseudo-fs{ position: fixed; inset: 0; z-index: 90; height: 100%; }
 body.fb-lock{ overflow: hidden; }
 
+/* ---------- zoom bar − / + (pages with data-zoom on #preview, see app.js) ---------- */
+.pv-zoom{
+  display: inline-flex; align-items: center; gap: 4px;
+  direction: ltr;                      /* − on the left, + on the right, as in Word */
+  height: 36px; padding: 0 4px;
+  border: 1px solid var(--line-strong); border-radius: 10px;
+  background: var(--surface);
+}
+.pv-zoom[hidden]{ display: none; }
+.zb-btn{
+  width: 28px; height: 28px; flex-shrink: 0;
+  border: 0; border-radius: 8px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: transparent; color: var(--brand);
+  cursor: pointer;
+}
+.zb-btn:hover:not(:disabled){ background: var(--brand-soft); }
+.zb-btn:disabled{ opacity: .35; cursor: default; }
+.zb-btn svg{ width: 17px; height: 17px; stroke-width: 2.8; }
+.zb-range{
+  -webkit-appearance: none; appearance: none;
+  width: 104px; height: 4px; margin: 0 2px;
+  border-radius: 2px;
+  background: linear-gradient(to right, var(--brand) var(--fill, 0%), #C9D5DE var(--fill, 0%));
+  cursor: pointer;
+}
+.zb-range::-webkit-slider-thumb{
+  -webkit-appearance: none; appearance: none;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--surface); border: 2px solid var(--brand);
+  box-shadow: 0 1px 3px rgba(19,40,58,.25);
+}
+.zb-range::-moz-range-thumb{
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--surface); border: 2px solid var(--brand);
+}
+.zb-pct{
+  min-width: 50px; padding: 5px 4px;
+  border: 0; border-radius: 7px;
+  background: transparent; color: var(--ink);
+  font: 800 .86rem/1 var(--font-en);
+  cursor: pointer;
+}
+.zb-pct:hover{ background: var(--brand-soft); }
+.zb-btn:focus-visible, .zb-pct:focus-visible, .zb-range:focus-visible{ outline: 2px solid var(--gold); outline-offset: 2px; }
+/* zoomed book: the stage scrolls around it */
+.fb-stage.zoomed{ display: block; overflow: auto; direction: ltr; padding: 16px 24px; }
+.fb-stage.zoomed .fb-book{ margin: 0 auto; }
+
 /* ---------- phones only (shown by the phone media query) ---------- */
 .pv-list, .m-cta{ display: none; }
 
@@ -524,6 +573,15 @@ body.fb-lock{ overflow: hidden; }
   .pv-list-status a{ color: var(--brand); }
   .pv-pg{ position: relative; width: 100%; background: #fff; box-shadow: 0 1px 4px rgba(19,40,58,.14); }
   .pv-pg img{ display: block; width: 100%; height: 100%; user-select: none; -webkit-user-drag: none; }
+  /* zoom bar: stays under the top bar while reading; only − / + and the percentage */
+  .bk-preview[data-zoom] .pv-bar{ position: sticky; top: var(--top-h); z-index: 4; background: rgba(242,246,249,.96); backdrop-filter: blur(8px); }
+  .bk-preview[data-zoom] .pv-tools{ display: inline-flex; }
+  .bk-preview[data-zoom] .pv-tools .fb-tool{ display: none; }
+  .pv-zoom .zb-range{ display: none; }
+  .zb-btn{ width: 32px; height: 32px; }
+  .pv-list.zoomed{ overflow-x: auto; align-items: flex-start; }
+  .pv-list.zoomed .pv-pg{ width: calc(100% * var(--z, 1)); flex-shrink: 0; }
+  .pv-list.zoomed .pv-list-end{ width: 100%; flex-shrink: 0; }
   .pv-list-end{
     border-radius: 16px;
     background: linear-gradient(160deg, var(--brand) 0%, var(--brand-strong) 100%);
@@ -545,6 +603,9 @@ body.fb-lock{ overflow: hidden; }
   .m-cta b{ color: var(--gold); font-weight: 900; }
   .m-cta svg{ width: 21px; height: 21px; }
   .m-cta.off{ transform: translateY(140%); opacity: 0; pointer-events: none; }
+}
+@media (max-width: 480px){
+  .pv-label-long{ display: none; }
 }
 @media (max-width: 400px){
   .bk-chapters ol{ grid-template-columns: 1fr; }

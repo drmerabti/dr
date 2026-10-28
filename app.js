@@ -104,6 +104,24 @@ const ICONS = {
     <path d="M25 6v7c0 1.1.9 2 2 2h7z" fill="#8FC2F5" opacity=".6"/>
     <path d="M13.5 22.5h3.2l2.1 10.4 2.4-10.4h3.6l2.4 10.4 2.1-10.4h3.2l-3.6 15h-3.6l-2.3-9.7-2.3 9.7h-3.6z" fill="#fff"/>
   </svg>`,
+  /* Word page + a "Ctrl" key: the Word shortcuts book */
+  wordShortcutsApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="gWordK" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#4A9AE8"/><stop offset="1" stop-color="#1857A8"/>
+      </linearGradient>
+      <linearGradient id="gWordKey" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#E4EDF7"/>
+      </linearGradient>
+    </defs>
+    <ellipse cx="25" cy="43.5" rx="16" ry="2.2" fill="#1E2F40" opacity=".1"/>
+    <path d="M8 4c-1.7 0-3 1.3-3 3v26c0 1.7 1.3 3 3 3h20c1.7 0 3-1.3 3-3V12l-8-8H8z" fill="url(#gWordK)"/>
+    <path d="M23 4v6c0 1.1.9 2 2 2h6z" fill="#8FC2F5" opacity=".6"/>
+    <path d="M9.6 14.5h3l1.9 9.3 2.2-9.3h3.2l2.2 9.3 1.9-9.3h3l-3.3 13.4h-3.2l-2.2-8.7-2.2 8.7h-3.2z" fill="#fff"/>
+    <rect x="19" y="27.5" width="25" height="15" rx="3.6" fill="#B9CCE2"/>
+    <rect x="19" y="26" width="25" height="14" rx="3.6" fill="url(#gWordKey)" stroke="#1857A8" stroke-opacity=".25" stroke-width=".8"/>
+    <text x="31.5" y="35.6" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="8.2" font-weight="800" fill="#1857A8">Ctrl</text>
+</svg>`,
   pcSolutionsApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <linearGradient id="gPcSol" x1="0" y1="0" x2="0" y2="1">
@@ -196,6 +214,7 @@ const ICONS = {
   summarizeApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gSum" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F0A8B8"/><stop offset="1" stop-color="#B1345A"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="7" y="10" width="18" height="26" rx="2.5" fill="#fff" stroke="#F0C4D0" stroke-width="1.3"/><rect x="10" y="15" width="12" height="1.8" fill="#DDD"/><rect x="10" y="19" width="12" height="1.8" fill="#DDD"/><rect x="10" y="23" width="8" height="1.8" fill="#DDD"/><path d="M27 20h10M27 24h10M27 28h6" stroke="#B1345A" stroke-width="2.2" stroke-linecap="round"/></svg>`,
   mailAssistApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gMail" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F0A8B8"/><stop offset="1" stop-color="#B1345A"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="6" y="12" width="36" height="24" rx="4" fill="url(#gMail)"/><path d="M6 14l18 13 18-13" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
   excelCourseApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gExCA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6FCF97"/><stop offset="1" stop-color="#1D7A46"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><path d="M6 10.5c0-2 1.7-3.6 3.8-3.6H23v29H9.8C7.7 35.9 6 34.3 6 32.3V10.5z" fill="url(#gExCA)"/><path d="M25 6v7c0 1.1.9 2 2 2h7z" fill="#A8E6BE" opacity=".6"/><path d="M14 22.5h4.2l2.3 4 2.3-4h4.2l-4.4 6.75L27.2 36H23l-2.5-4.3-2.5 4.3h-4.2l4.6-6.75z" fill="#fff"/></svg>`,
+  pythonApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gPyB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6FA3DB"/><stop offset="1" stop-color="#2F6AA8"/></linearGradient><linearGradient id="gPyY" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFE27A"/><stop offset="1" stop-color="#E9B826"/></linearGradient></defs><ellipse cx="24" cy="44" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><path d="M23.5 6c-6 0-7.5 2.6-7.5 5.2V15h8v1.2H13.2C10 16.2 8 18.6 8 22.3s2 6.1 5.2 6.1H16v-3.6c0-2.9 2.4-5.3 5.3-5.3h6.4c2.4 0 4.3-2 4.3-4.4v-3.9C32 8.5 30 6 23.5 6z" fill="url(#gPyB)"/><path d="M24.5 38c6 0 7.5-2.6 7.5-5.2V29h-8v-1.2h10.8c3.2 0 5.2-2.4 5.2-6.1s-2-6.1-5.2-6.1H32v3.6c0 2.9-2.4 5.3-5.3 5.3h-6.4c-2.4 0-4.3 2-4.3 4.4v3.9C16 35.5 18 38 24.5 38z" fill="url(#gPyY)"/><circle cx="20" cy="9.8" r="1.4" fill="#fff"/><circle cx="28" cy="34.2" r="1.4" fill="#fff"/></svg>`,
   pptApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gPPT" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F0A868"/><stop offset="1" stop-color="#C0561E"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><path d="M11 6c-1.7 0-3 1.3-3 3v30c0 1.7 1.3 3 3 3h20c1.7 0 3-1.3 3-3V15l-9-9H11z" fill="url(#gPPT)"/><path d="M25 6v7c0 1.1.9 2 2 2h7z" fill="#F5CBA0" opacity=".6"/><circle cx="19" cy="27" r="6" fill="#fff"/></svg>`,
   spssApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gSPSS" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#93B4E8"/><stop offset="1" stop-color="#2F5CA8"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="7" y="8" width="34" height="30" rx="4" fill="url(#gSPSS)"/><path d="M13 30l6-10 6 6 8-14" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
   powerbiApp: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gPBI" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F0C56B"/><stop offset="1" stop-color="#C79214"/></linearGradient></defs><ellipse cx="24" cy="42" rx="15" ry="2.2" fill="#1E2F40" opacity=".1"/><rect x="8" y="22" width="7" height="16" rx="1.5" fill="url(#gPBI)"/><rect x="20" y="12" width="7" height="26" rx="1.5" fill="url(#gPBI)"/><rect x="32" y="6" width="7" height="32" rx="1.5" fill="url(#gPBI)"/></svg>`,
@@ -607,6 +626,14 @@ const CONTENT = {
       desc_ar: 'دليل مصوّر خطوة بخطوة في 10 فصول و202 صفحة، من أول نقرة إلى أول مشروع حقيقي.',
       desc_en: 'An illustrated step-by-step guide in 10 chapters and 202 pages, from the first click to a real project.',
       url: 'books/word/', icon: ICONS.wordApp, badge: 'PDF' },
+    { id: 'book-word-shortcuts', title_ar: 'دليل اختصارات برنامج وورد', title_en: 'Microsoft Word Shortcuts Guide',
+      desc_ar: 'كتاب مجاني: أكثر من 60 اختصارًا في وورد، مصوّرة ومشروحة في 8 أبواب — اقرأه أو حمّله PDF.',
+      desc_en: 'A free book: over 60 Word shortcuts, illustrated and explained in 8 sections — read it or download the PDF.',
+      url: 'books/word-shortcuts/', icon: ICONS.wordShortcutsApp, badge: 'مجاني', badge_en: 'Free' },
+    { id: 'book-python', title_ar: 'برمجة بايثون كأن لم تعرفها من قبل', title_en: 'Python Programming as if You Never Knew It',
+      desc_ar: 'كتاب مجاني: تعلّم بايثون من الصفر في 14 فصلًا و114 صفحة ملوّنة، من أول سطر برمجي إلى أول مشروع حقيقي.',
+      desc_en: 'A free book: learn Python from scratch in 14 chapters and 114 colourful pages, from the first line of code to a real project.',
+      url: 'books/python/', icon: ICONS.pythonApp, badge: 'مجاني', badge_en: 'Free' },
     { id: 'book-excel', title_ar: 'كتاب Excel', title_en: 'Excel Book',
       desc_ar: 'كتاب مصوّر في برنامج إكسل.', desc_en: 'An illustrated book on Excel.',
       icon: ICONS.excelApp, comingSoon: true, soon: true },
