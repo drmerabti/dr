@@ -166,6 +166,11 @@ export default {
       });
     }
 
+    // ============ الرابط القديم لصفحة الكتب (services) ← /books ============
+    if (path === '/services' || path === '/services/' || path === '/services.html') {
+      return Response.redirect(url.origin + '/books' + url.search, 301);
+    }
+
     // ============ خلاف ذلك: خدمة ملفات الموقع كما هي ============
     return env.ASSETS.fetch(request);
   },

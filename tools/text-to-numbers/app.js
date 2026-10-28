@@ -185,7 +185,7 @@ const SECTIONS = [
   { key: 'apps',      icon: ICONS.apps,     badge: 'badge-apps',      href: 'apps.html' },
   { key: 'tools',     icon: ICONS.tools,    badge: 'badge-tools',     href: 'tools.html' },
   { key: 'trainings', icon: ICONS.training, badge: 'badge-training',  href: 'resources.html' },
-  { key: 'services',  icon: ICONS.services, badge: 'badge-services',  href: 'services.html' },
+  { key: 'services',  icon: ICONS.services, badge: 'badge-services',  href: 'books.html' },
   { key: 'about',     icon: ICONS.about,    badge: 'badge-about',     href: 'about.html' },
 ];
 
@@ -442,7 +442,7 @@ function initSearch(){
   const searchIndex = buildSearchIndex();
   const pageByKey = {
     lessons: 'lessons.html', apps: 'apps.html', tools: 'tools.html',
-    trainings: 'resources.html', services: 'services.html',
+    trainings: 'resources.html', services: 'books.html',
   };
 
   searchInput.addEventListener('input', () => {
