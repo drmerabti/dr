@@ -83,6 +83,7 @@ html.pm-lock, html.pm-lock body{ overflow:hidden !important; }
 .pm-note{ font-size:.8rem; color:var(--pm-soft); margin-top:6px; line-height:1.45; height:calc(1.45em * 2); overflow:hidden; }
 
 /* ---------- yellow "after download" box ---------- */
+.pm-warn[hidden]{ display: none; }
 .pm-warn{
   margin-top:16px; border:1.5px solid #F2C94C; background:#FFF8DB; border-radius:16px; padding:14px 18px;
 }

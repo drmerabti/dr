@@ -11,6 +11,19 @@
       "priceDZD": 500,
       "priceUSD": 2.5,
       "gumroadUrl": "https://drmerabti.gumroad.com/l/grades-manager"
+    },
+    {
+      "id": "excel-vba-book",
+      "serverId": "excelVbaBook",
+      "fileType": "pdf",
+      "title": "كتاب الإبداع مع Excel VBA",
+      "title_en": "Creativity with Excel VBA (book)",
+      "description": "كتاب PDF في 229 صفحة: 12 فصلًا، 62 درسًا، 6 مشاريع كاملة وتمارين محلولة. اقرأه على الموقع أو حمّله.",
+      "description_en": "A 229-page PDF book: 12 chapters, 62 lessons, 6 complete projects and solved exercises. Read it on the site or download it.",
+      "image": "/books/excel-vba/cover.webp",
+      "priceDZD": 800,
+      "priceUSD": 7.99,
+      "gumroadUrl": "https://drmerabti.gumroad.com/l/excel-vba"
     }
   ]
 }
