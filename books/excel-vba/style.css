@@ -1,9 +1,8 @@
 /* =====================================================================
    Excel VBA book page — on top of books/word/style.css (same layout).
-   Adds: Excel colours, the purchase / owner block, and the two reading
-   modes of the reader (book = flipbook, pdf = pages one under the other),
-   available on computers and phones alike (app.js puts .mode-book or
-   .mode-pdf on #preview).
+   Adds: Excel colours and the two reading modes of the preview
+   (book = flipbook, pdf = pages one under the other), on computers and
+   phones alike (app.js puts .mode-book or .mode-pdf on #preview).
 ===================================================================== */
 :root{
   --brand: #217346;            /* Excel green */
@@ -24,44 +23,8 @@
 .bk-chapters li:nth-child(3n+2) span{ background: #2E8B57; }
 .bk-chapters li:nth-child(3n) span{ background: var(--gold); color: var(--brand-strong); }
 
-/* ---------- purchase ---------- */
-.order{ border: 0; width: 100%; font-family: inherit; text-align: start; cursor: pointer; }
-.order-buy, .order-read{
-  min-height: 74px;
-  background: linear-gradient(135deg, #2E9A5E 0%, var(--brand) 55%, var(--brand-strong) 100%);
-}
-.order-buy .order-ico, .order-read .order-ico{ background: var(--gold); color: var(--brand-strong); }
-.order-save{
-  min-height: 58px;
-  background: var(--surface); color: var(--brand);
-  border: 1.5px solid var(--brand);
-  box-shadow: none;
-}
-.order-save .order-ico{ width: 40px; height: 40px; border-radius: 50%; background: var(--brand-soft); }
-.order-save .order-ico svg{ width: 22px; height: 22px; stroke-width: 2.6; }
-.order-save .order-txt strong{ font-size: 1.02rem; }
-.order-save:hover{ background: var(--brand-soft); filter: none; }
-.order[disabled]{ opacity: .6; cursor: progress; transform: none; }
-
-.own-area{ display: flex; flex-direction: column; gap: 10px; }
-.own-area[hidden], .buy-grid[hidden]{ display: none; }
-.own-ok{
-  margin: 0; display: flex; align-items: center; justify-content: center; gap: 7px;
-  padding: 8px 12px; border-radius: 12px;
-  background: var(--brand-soft); color: var(--brand-strong);
-  font-weight: 800; font-size: .92rem;
-}
-.own-ok svg{ width: 18px; height: 18px; stroke-width: 3; }
-
-.buy-perks{ list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 5px; }
-.buy-perks li{ display: flex; align-items: center; gap: 7px; font-size: .84rem; font-weight: 600; color: var(--ink-soft); }
-.buy-perks svg{ width: 16px; height: 16px; color: var(--brand); stroke-width: 3; flex-shrink: 0; }
-.buy-note[hidden]{ display: none; }
-.link-btn{
-  border: 0; padding: 0; background: none; cursor: pointer;
-  font: inherit; font-weight: 800; color: var(--brand);
-  text-decoration: underline; text-underline-offset: 3px;
-}
+/* ---------- order block (buttons and contact window come from the Word page) ---------- */
+.order-mail{ background: linear-gradient(135deg, #2E9A5E 0%, var(--brand) 55%, var(--brand-strong) 100%); }
 .price-num{ color: var(--brand-strong); }
 
 /* ---------- reading mode switch (book / pdf) ---------- */
@@ -85,7 +48,6 @@
 
 /* last page of the book */
 .fb-page-end, .pv-list-end{ background: linear-gradient(160deg, var(--brand) 0%, var(--brand-strong) 100%); }
-.pv-end-sign{ font-family: 'Brush Script MT', cursive; font-size: 1.6rem; color: var(--gold); }
 
 /* ---------- PDF mode (computers): pages one under the other, scrolled inside the reader ---------- */
 @media (min-width: 861px){
@@ -125,6 +87,4 @@
 @media (max-width: 420px){
   .md-btn span{ display: none; }
 }
-.buy-msg{ color: var(--brand-strong); background: var(--gold-soft); padding: 7px 10px; border-radius: 10px; }
 .m-cta{ background: linear-gradient(135deg, #2E9A5E 0%, var(--brand) 55%, var(--brand-strong) 100%); }
-.m-cta[hidden]{ display: none; }

@@ -5,8 +5,6 @@
 //   MPurchase.canDownload(id)  → true when bought (or admin)
 //   MPurchase.act(id)          → downloads if bought, otherwise opens the window
 //   MPurchase.onChange(fn)     → called when the bought/admin state changes
-//   MPurchase.fetchFile(id)    → { fileName, bytes } without saving (e.g. read a bought book on the page)
-// A product with "fileType": "pdf" (a book) gets a PDF download and no Excel macro warning.
 // Needs the Firebase compat SDK (app, auth, firestore, functions) + firebase-init.js
 // loaded before this file, plus shared/purchase.css.
 // Server side = Firebase Functions (us-central1), each product has a "serverId":
@@ -186,7 +184,7 @@
             <div class="pm-note pm-tx" data-pk="usdNote"></div>
           </section>
         </div>
-        <div class="pm-warn pm-tx"${p.fileType === 'pdf' ? ' hidden' : ''}>
+        <div class="pm-warn pm-tx">
           <div class="pm-warn-t" data-pk="warnT"></div>
           <ol><li data-pk="warn1"></li><li data-pk="warn2"></li></ol>
         </div>
@@ -285,16 +283,11 @@
 
   /* ----------------------------- download ---------------------------- */
   // getProductDownload → { fileName, base64 } → Blob → saved under the same name
-  const MIME = { pdf: 'application/pdf', xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' };
-  function toBytes(base64) {
+  function saveBase64(fileName, base64) {
     const bin = atob(base64);
     const bytes = new Uint8Array(bin.length);
     for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-    return bytes;
-  }
-  function saveBytes(fileName, bytes) {
-    const ext = (String(fileName).split('.').pop() || '').toLowerCase();
-    const blob = new Blob([bytes], { type: MIME[ext] || 'application/vnd.ms-excel.sheet.macroEnabled.12' });
+    const blob = new Blob([bytes], { type: 'application/vnd.ms-excel.sheet.macroEnabled.12' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url; a.download = fileName; a.style.display = 'none';
@@ -302,22 +295,14 @@
     setTimeout(() => URL.revokeObjectURL(url), 30000);
   }
 
-  const defaultName = id => serverId(id) + (S.products[id] && S.products[id].fileType === 'pdf' ? '.pdf' : '.xlsm');
-
-  // The bought file as bytes, not saved (rejects with .code, e.g. 'permission-denied' when not bought)
-  async function fetchFile(id) {
-    const res = await callable('getProductDownload')({ product: serverId(id) });
-    const d = (res && res.data) || {};
-    if (!d.base64) throw Object.assign(new Error('empty file'), { code: 'empty_file' });
-    return { fileName: d.fileName || defaultName(id), bytes: toBytes(d.base64) };
-  }
-
   async function download(id) {
     if (!auth() || !auth().currentUser) { open(id); return; }
     toast(t('preparing'));
     try {
-      const f = await fetchFile(id);
-      saveBytes(f.fileName, f.bytes);
+      const res = await callable('getProductDownload')({ product: serverId(id) });
+      const d = (res && res.data) || {};
+      if (!d.base64) throw Object.assign(new Error('empty file'), { code: 'empty_file' });
+      saveBase64(d.fileName || (serverId(id) + '.xlsm'), d.base64);
       hideToast();
     } catch (e) {
       const code = errCode(e);
@@ -433,7 +418,7 @@
     handleReturn();
   }
 
-  window.MPurchase = { canDownload, act, open, close, download, fetchFile, onChange, refresh, ready };
+  window.MPurchase = { canDownload, act, open, close, download, onChange, refresh, ready };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 })();

@@ -1,20 +1,195 @@
 /* =====================================================================
-   Excel VBA book page.
-   - Prices: read from /products.json (product "excel-vba-book"), the same
-     numbers the purchase window shows. Change them there only.
-   - Buying: shared/purchase.js (MPurchase). Buyers (and admins) see
-     "read the whole book" + "download PDF" instead of the buy button.
-   - Reader: the free preview (files/excel-vba-preview.pdf) for everyone;
-     the whole book for buyers, fetched with MPurchase.fetchFile (the full
-     PDF is never in the repo). Two reading modes on every screen:
-       book = a real book that opens right-to-left (StPageFlip),
-       pdf  = pages one under the other, as in a PDF reader.
-     Pages are drawn with pdf.js, nearest first.
+   PRICES — the only place to change the price of the book.
+   After the launch offer: set offer to false (the badge disappears) and
+   put the new price in dzd / usd.
+===================================================================== */
+var PRICES = {
+  offer: true,                      /* launch price: badge above the prices */
+  offerLabel: 'سعر الإطلاق 🔥',
+  dzd: 800,                         /* Algerian dinar (دج) */
+  usd: 7.99                         /* US dollar ($) */
+};
+
+function fillPrices(root){
+  root.querySelectorAll('[data-price]').forEach(function(el){
+    var k = el.getAttribute('data-price');
+    el.textContent = k === 'usd' ? PRICES.usd.toFixed(2) : PRICES.dzd;
+  });
+  root.querySelectorAll('.offer-badge').forEach(function(el){ el.textContent = PRICES.offerLabel; });
+  root.querySelectorAll('[data-offer]').forEach(function(el){ el.hidden = !PRICES.offer; });
+  root.querySelectorAll('.buy-prices').forEach(function(el){ el.classList.toggle('has-offer', PRICES.offer); });
+}
+fillPrices(document);
+
+/* =====================================================================
+   Order buttons (same as the Word book page). A bare mailto: does nothing
+   for visitors without a mail app, so the e-mail button always opens a
+   window with the address written out, a copy button and an "open mail"
+   link. WhatsApp opens the app straight away on phones; on computers the
+   same window shows the number with copy and a WhatsApp Web link.
+===================================================================== */
+(function(){
+  var EMAIL = 'contact@merabti.com';
+  var SUBJECT = 'طلب كتاب Excel VBA';
+  var WA_NUMBER = '213663708148';
+  var WA_SHOWN = '+213 663 70 81 48';
+  var WA_TEXT = 'السلام عليكم، أريد طلب كتاب الإبداع مع Excel VBA';
+
+  var mailBtn = document.getElementById('orderMail');
+  var waBtn = document.getElementById('orderWa');
+  var overlay = document.getElementById('ctOverlay');
+  var box = overlay.querySelector('.ct-box');
+  var copyBtn = document.getElementById('ctCopy');
+  var copyLabel = copyBtn.querySelector('span');
+  var openLink = document.getElementById('ctOpen');
+  var valueEl = document.getElementById('ctValue');
+  var copyValue = '', lastTrigger = null, copyT = 0, bodyOverflow = '';
+
+  var VIEWS = {
+    mail: {
+      title: 'اطلب الكتاب عبر البريد',
+      hint: 'أرسل رسالة إلى هذا العنوان، واكتب في الموضوع «' + SUBJECT + '»:',
+      shown: EMAIL, copy: EMAIL,
+      open: 'فتح البريد',
+      href: 'mailto:' + EMAIL + '?subject=' + encodeURIComponent(SUBJECT),
+      icon: mailBtn.querySelector('.order-ico').innerHTML
+    },
+    wa: {
+      title: 'اطلب عبر واتساب',
+      hint: 'راسلنا على هذا الرقم، أو افتح واتساب ويب برسالة جاهزة:',
+      shown: WA_SHOWN, copy: '+' + WA_NUMBER,
+      open: 'فتح واتساب ويب',
+      href: 'https://web.whatsapp.com/send?phone=' + WA_NUMBER + '&text=' + encodeURIComponent(WA_TEXT),
+      icon: waBtn.querySelector('.order-ico').innerHTML
+    }
+  };
+
+  function isPhone(){
+    return /Android|iPhone|iPod|Mobile|Opera Mini|IEMobile/i.test(navigator.userAgent) ||
+      (navigator.maxTouchPoints > 1 && window.matchMedia('(pointer: coarse)').matches);   /* iPadOS */
+  }
+
+  function track(method){
+    try { if (window.gtag) gtag('event', 'book_order_click', { book: 'excel-vba', method: method }); } catch (e) { /* ignore */ }
+  }
+
+  mailBtn.addEventListener('click', function(e){
+    e.preventDefault();
+    track('email');
+    show('mail', mailBtn);
+  });
+
+  waBtn.addEventListener('click', function(e){
+    track('whatsapp');
+    if (isPhone()) return;            /* wa.me opens the WhatsApp app */
+    e.preventDefault();
+    show('wa', waBtn);
+  });
+
+  function show(kind, trigger){
+    var v = VIEWS[kind];
+    lastTrigger = trigger;
+    box.classList.toggle('is-wa', kind === 'wa');
+    document.getElementById('ctIco').innerHTML = v.icon;
+    document.getElementById('ctTitle').textContent = v.title;
+    document.getElementById('ctHint').textContent = v.hint;
+    valueEl.textContent = v.shown;
+    copyValue = v.copy;
+    openLink.href = v.href;
+    openLink.innerHTML = v.icon + '<span>' + v.open + '</span>';
+    /* a mailto: in a new tab leaves an empty tab behind */
+    if (kind === 'mail') openLink.removeAttribute('target'); else openLink.target = '_blank';
+    resetCopy();
+    overlay.hidden = false;
+    bodyOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    copyBtn.focus();
+  }
+
+  function hide(){
+    if (overlay.hidden) return;
+    overlay.hidden = true;
+    document.body.style.overflow = bodyOverflow;
+    if (lastTrigger) lastTrigger.focus();
+  }
+
+  document.getElementById('ctClose').addEventListener('click', hide);
+  overlay.addEventListener('click', function(e){ if (e.target === overlay) hide(); });
+  document.addEventListener('keydown', function(e){
+    if (overlay.hidden) return;
+    if (e.key === 'Escape') hide();
+    if (e.key === 'Tab'){               /* keep focus inside the window */
+      var f = box.querySelectorAll('button, a[href]');
+      var first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+    }
+  });
+
+  /* ---------- copy ---------- */
+  copyBtn.addEventListener('click', function(){
+    copy(copyValue).then(function(ok){
+      if (ok){
+        copyBtn.classList.add('done');
+        copyLabel.textContent = 'تم النسخ ✓';
+      } else {
+        selectValue();
+        copyLabel.textContent = 'النص محدَّد، انسخه يدويًا';
+      }
+      clearTimeout(copyT);
+      copyT = setTimeout(resetCopy, 2500);
+    });
+  });
+  valueEl.addEventListener('click', selectValue);
+
+  function resetCopy(){
+    clearTimeout(copyT);
+    copyBtn.classList.remove('done');
+    copyLabel.textContent = 'نسخ';
+  }
+
+  function copy(text){
+    if (navigator.clipboard && window.isSecureContext){
+      return navigator.clipboard.writeText(text).then(function(){ return true; }, function(){ return legacyCopy(text); });
+    }
+    return Promise.resolve(legacyCopy(text));
+  }
+
+  /* older browsers / in-app browsers without the Clipboard API */
+  function legacyCopy(text){
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;';
+    box.appendChild(ta);
+    ta.select();
+    ta.setSelectionRange(0, text.length);
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+    box.removeChild(ta);
+    copyBtn.focus();
+    return ok;
+  }
+
+  function selectValue(){
+    var r = document.createRange();
+    r.selectNodeContents(valueEl);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(r);
+  }
+})();
+
+/* =====================================================================
+   Free preview (files/excel-vba-preview.pdf), drawn with pdf.js. Two
+   reading modes on every screen:
+     book = a real book that opens right-to-left (StPageFlip),
+     pdf  = pages one under the other, as in a PDF reader.
+   The whole book is sent as a PDF after the order; it is not on the site.
 ===================================================================== */
 (function(){
   'use strict';
 
-  var PRODUCT = 'excel-vba-book';
   var previewEl = document.getElementById('preview');
   var PREVIEW_URL = previewEl.getAttribute('data-pdf');
   var TOTAL_PAGES = +previewEl.getAttribute('data-total') || 229;
@@ -23,120 +198,14 @@
     try { if (window.gtag) gtag('event', name, Object.assign({ book: 'excel-vba' }, params || {})); } catch (e) { /* ignore */ }
   }
 
-  /* =================================================================
-     Prices (from /products.json)
-  ================================================================= */
-  function fillPrices(root, p){
-    root.querySelectorAll('[data-price]').forEach(function(el){
-      var k = el.getAttribute('data-price');
-      if (k === 'dzd') el.textContent = p.priceDZD;
-      if (k === 'usd') el.textContent = Number(p.priceUSD).toFixed(2);
-    });
-  }
-  var product = null;
-  fetch('/products.json', { cache: 'no-cache' }).then(function(r){ return r.json(); }).then(function(d){
-    product = (d.products || []).filter(function(x){ return x.id === PRODUCT; })[0] || null;
-    if (product) fillPrices(document, product);
-  }).catch(function(){ /* the prices written in the page stay */ });
-
-  /* =================================================================
-     Purchase / owner block
-  ================================================================= */
-  var buyArea = document.getElementById('buyArea');
-  var ownArea = document.getElementById('ownArea');
-  var buyBtn = document.getElementById('buyBtn');
-  var readBtn = document.getElementById('readBtn');
-  var saveBtn = document.getElementById('saveBtn');
-  var signNote = document.getElementById('signNote');
-  var signInBtn = document.getElementById('signInBtn');
-  var buyTitle = document.getElementById('buyTitle');
+  /* end page of the preview: "order the book" → the order block */
   var mCta = document.getElementById('mCta');
-  var fullBytes = null;               /* the bought book, kept for "download" without a second fetch */
-  var fullName = 'الإبداع-مع-Excel-VBA-د-سفيان-مرابطي.pdf';
-
-  function owned(){ return !!(window.MPurchase && MPurchase.canDownload(PRODUCT)); }
-  function signedIn(){ return !!(window.fbAuth && fbAuth.currentUser); }
-
-  function renderOwner(){
-    var own = owned();
-    buyArea.hidden = own;
-    ownArea.hidden = !own;
-    buyTitle.textContent = own ? 'كتابك' : 'احصل على الكتاب كاملًا';
-    signNote.hidden = own || signedIn();
-    mCta.hidden = own;
-    if (own) sideNote('');
-    if (own && !Reader.isFull()) loadFull(false);   /* a buyer opens the page: straight to the whole book */
-  }
-
   function goBuy(){
-    track('book_buy_click');
-    if (window.MPurchase) MPurchase.open(PRODUCT);
-  }
-  buyBtn.addEventListener('click', goBuy);
-
-  readBtn.addEventListener('click', function(){
-    loadFull(true);
-    previewEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  });
-
-  saveBtn.addEventListener('click', function(){
-    track('book_download');
-    if (fullBytes){ saveBytes(fullBytes, fullName); return; }
-    if (window.MPurchase) MPurchase.download(PRODUCT);
-  });
-
-  function saveBytes(bytes, name){
-    var url = URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }));
-    var a = document.createElement('a');
-    a.href = url; a.download = name; a.style.display = 'none';
-    document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(function(){ URL.revokeObjectURL(url); }, 30000);
-  }
-
-  /* a short message under the buttons (no pop-up) */
-  var noteEl = document.createElement('p');
-  noteEl.className = 'buy-note buy-msg';
-  noteEl.setAttribute('role', 'status');
-  noteEl.hidden = true;
-  signNote.parentNode.insertBefore(noteEl, signNote);
-  function sideNote(text){
-    noteEl.textContent = text;
-    noteEl.hidden = !text;
-  }
-
-  signInBtn.addEventListener('click', function(){
-    if (!window.fbAuth || !window.firebase) return;
-    fbAuth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).then(function(){
-      if (window.MPurchase) return MPurchase.refresh();
-    }).then(function(){
-      if (!owned()) sideNote('لم نجد شراءً لهذا الكتاب في هذا الحساب. يمكنك شراؤه من الزر أعلاه، أو جرّب حسابًا آخر.');
-    }).catch(function(){ /* closed by the user */ });
-  });
-
-  var loadingFull = false;
-  function loadFull(userAsked){
-    if (loadingFull || Reader.isFull() || !window.MPurchase) return;
-    loadingFull = true;
-    readBtn.disabled = true;
-    Reader.loading('جارٍ تحميل الكتاب كاملًا…');
-    MPurchase.fetchFile(PRODUCT).then(function(f){
-      fullBytes = f.bytes;
-      if (f.fileName) fullName = f.fileName;
-      track('book_read_full');
-      /* pdf.js takes over the buffer it is given: hand it a copy */
-      return Reader.load({ data: fullBytes.slice() }, true);
-    }).catch(function(e){
-      var code = String((e && e.code) || '').replace(/^functions\//, '');
-      Reader.load(PREVIEW_URL, false);
-      if (code === 'permission-denied' || code === 'unauthenticated'){
-        if (userAsked) MPurchase.open(PRODUCT);
-      } else {
-        sideNote('تعذّر تحميل الكتاب كاملًا الآن. أعد المحاولة بعد قليل، أو حمّله PDF.');
-      }
-    }).then(function(){
-      loadingFull = false;
-      readBtn.disabled = false;
-    });
+    var box = document.getElementById('buyBox');
+    box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    box.classList.remove('flash');
+    void box.offsetWidth;
+    box.classList.add('flash');
   }
 
   /* =================================================================
@@ -157,20 +226,19 @@
     var desktop = window.matchMedia('(min-width: 861px)');
     var modeBtns = previewEl.querySelectorAll('.md-btn');
 
-    var doc = null, ratio = 0.708, n = 0, total = 0, full = false, gen = 0;
+    var doc = null, ratio = 0.708, n = 0, total = 0, gen = 0;
     var drawn = {};
     var mode = 'book';
     try { mode = localStorage.getItem('merabti:excelVbaMode') || ''; } catch (e) { /* ignore */ }
     if (mode !== 'book' && mode !== 'pdf') mode = desktop.matches ? 'book' : 'pdf';
 
-    if (!window.pdfjsLib){ statusTx.textContent = 'تعذّر عرض الكتاب هنا.'; return { load: function(){}, isFull: function(){ return false; }, loading: function(){}, message: function(){} }; }
+    if (!window.pdfjsLib){ statusTx.textContent = 'تعذّر عرض الكتاب هنا.'; return { load: function(){} }; }
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-    function load(src, isFull){
+    function load(src){
       var my = ++gen;
       teardown();
-      full = isFull;
-      loading(isFull ? 'جارٍ تحميل الكتاب كاملًا…' : 'جارٍ تحميل الكتاب…');
+      loading('جارٍ تحميل الكتاب…');
       return pdfjsLib.getDocument(src).promise.then(function(pdf){
         if (my !== gen){ pdf.destroy(); return; }
         doc = pdf;
@@ -181,9 +249,7 @@
           n = doc.numPages;
           total = n + 1;                 /* + the end page */
           if (total % 2) total++;        /* + a plain back cover, so the front cover opens alone */
-          labelEl.innerHTML = full
-            ? '<span class="pv-label-long">الكتاب كاملًا: </span><b>' + n + '</b> صفحة'
-            : '<span class="pv-label-long">المعاينة المجانية: </span><b>' + n + '</b> من ' + TOTAL_PAGES + ' صفحة';
+          labelEl.innerHTML = '<span class="pv-label-long">المعاينة المجانية: </span><b>' + n + '</b> من ' + TOTAL_PAGES + ' صفحة';
           setMode(mode, true);
           Zoom.init();
         });
@@ -274,13 +340,14 @@
     }
 
     function endPage(){
-      var frag = document.getElementById(full ? 'endFullTpl' : 'endPreviewTpl').content.cloneNode(true);
+      var frag = document.getElementById('endPreviewTpl').content.cloneNode(true);
       var btn = frag.querySelector('[data-buy]');
       if (btn) btn.addEventListener('click', function(){
         if (Book.isFull()) Book.toggleFull();
+        track('book_preview_end_order');
         goBuy();
       });
-      if (product) fillPrices(frag, product);
+      fillPrices(frag);
       return frag;
     }
 
@@ -476,7 +543,7 @@
         var nums = vis.filter(function(r){ return r < n; }).map(function(r){ return r + 1; });
         counterEl.textContent = nums.length
           ? (nums.length > 1 ? nums[0] + '–' + nums[nums.length - 1] : nums[0]) + ' / ' + n
-          : (full ? 'نهاية الكتاب' : 'نهاية المعاينة');
+          : 'نهاية المعاينة';
         prevBtn.disabled = vis[0] === 0;
         nextBtn.disabled = vis[vis.length - 1] >= n;
         var shift = '';
@@ -494,7 +561,8 @@
         if (e.altKey || e.ctrlKey || e.metaKey || !flip || mode !== 'book') return;
         var t = e.target.tagName;
         if (t === 'INPUT' || t === 'TEXTAREA' || t === 'SELECT') return;
-        if (document.documentElement.classList.contains('pm-lock')) return;   /* purchase window open */
+        var ov = document.getElementById('ctOverlay');
+        if (ov && !ov.hidden) return;                                          /* order window open */
         if (e.key === 'ArrowLeft'){ e.preventDefault(); goNext(); }
         else if (e.key === 'ArrowRight'){ e.preventDefault(); goPrev(); }
         else if (e.key === 'Escape' && previewEl.classList.contains('fb-pseudo-fs')) pseudoFs(false);
@@ -697,27 +765,13 @@
       return { init: init };
     })();
 
-    return {
-      load: load,
-      isFull: function(){ return full; },
-      loading: loading,
-      message: message
-    };
+    return { load: load };
   })();
 
-  /* =================================================================
-     Start: the preview for everyone; buyers switch to the whole book
-     as soon as purchase.js knows who they are.
-  ================================================================= */
-  Reader.load(PREVIEW_URL, false);
-  if (window.MPurchase){
-    MPurchase.onChange(renderOwner);
-    MPurchase.ready.then(renderOwner);
-  }
-  if (window.fbAuth) fbAuth.onAuthStateChanged(function(){ signNote.hidden = owned() || signedIn(); });
+  Reader.load(PREVIEW_URL);
 
   /* =================================================================
-     Phones: fixed "buy" button, hidden while the purchase block is on screen
+     Phones: fixed "order" button, hidden while the order block is on screen
   ================================================================= */
   (function(){
     var box = document.getElementById('buyBox');

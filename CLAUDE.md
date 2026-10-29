@@ -46,6 +46,3 @@ the backend is **Firebase Functions** (us-central1), outside this repo.
   `permission-denied` = not bought → the purchase window opens. The file is never in the repo.
 - Back from Chargily: `?paid=<serverId>` (wait for `paid` with onSnapshot) or `?payfail=1`.
 - USD goes through the Gumroad overlay (`gumroadUrl`); Gumroad delivers the file itself.
-- A book sold as a PDF has `"fileType": "pdf"` (PDF download, no Excel "unblock / enable content" warning).
-  Its page can read the bought file without saving it: `MPurchase.fetchFile(id)` → `{ fileName, bytes }`
-  (e.g. `books/excel-vba/`: free preview PDF in the repo, the whole book only through `getProductDownload`).
