@@ -1022,13 +1022,17 @@ async function renderSectionItems(){
   items = applyUserOrder(orderKey, items);
 
   wrap.innerHTML = '';
+  // Books: the cover alone, at book proportions (no card, icon or text)
+  wrap.classList.toggle('book-grid', key === 'services');
   if (items.length === 0){
     wrap.innerHTML = `<p>${t('empty_section')}</p>`;
     return;
   }
 
   items.forEach(item => {
-    if (item.soon){
+    if (key === 'services'){
+      wrap.appendChild(bookCover(item, admin));
+    } else if (item.soon){
       // announced but no page yet: same card, faded, not clickable
       const card = document.createElement('div');
       card.className = 'item-card coming-soon-card';
@@ -1091,6 +1095,32 @@ async function renderSectionItems(){
   });
 
   enableDragReorder(wrap, orderKey, items);
+}
+
+// One book on the books page. The cover lives next to the book page
+// (books/<name>/cover.webp, cover.jpg as fallback); a book announced without
+// a page yet has no cover, so it shows a plain book outline marked "coming soon".
+// Keeps the .item-card class so drag-to-reorder still works.
+function bookCover(item, admin){
+  const title = lang === 'ar' ? item.title_ar : item.title_en;
+  const soonTxt = lang === 'ar' ? 'قريبًا' : 'Coming soon';
+  if (item.soon || !item.url){
+    const el = document.createElement('div');
+    el.className = 'item-card book-item book-soon';
+    el.innerHTML = `${item.icon ? `<span class="book-soon-ico">${item.icon}</span>` : ''}
+      <span class="book-soon-title">${title}</span><span class="coming-soon-badge">${soonTxt}</span>`;
+    return el;
+  }
+  const a = document.createElement('a');
+  a.className = 'item-card book-item';
+  a.href = item.url;
+  a.title = title;
+  if (item.external){ a.target = '_blank'; a.rel = 'noopener'; }
+  const src = item.cover || item.url + 'cover.webp';
+  a.innerHTML = `<img class="book-cover-img" src="${src}" alt="${title}" loading="lazy" decoding="async"
+      onerror="if(!this.dataset.f){this.dataset.f=1;this.src=this.src.replace(/\\.webp$/,'.jpg');}">
+    ${(item.comingSoon && admin) ? `<span class="coming-soon-badge">${soonTxt}</span>` : ''}`;
+  return a;
 }
 
 function findItem(listKey, id){
