@@ -1240,3 +1240,58 @@ html:has(body.ui-v2){ scroll-behavior: smooth; }
   .ui-v2 .item-card:hover,
   .ui-v2 .plan-card:hover{ transform: none !important; }
 }
+
+/* ============ Books page: the cover alone, at book proportions ============ */
+.item-grid.book-grid{
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 34px 30px;
+  align-items: start;
+}
+.item-grid.book-grid .book-item{
+  display: block;
+  max-width: 230px; width: 100%;
+  margin-inline: auto;
+  padding: 0;
+  border: 0; border-radius: 0;
+  background: none; box-shadow: none;
+  overflow: visible;
+  text-decoration: none; color: inherit;
+}
+.item-grid.book-grid .book-item::after{ display: none; }
+.item-grid.book-grid .book-item:hover,
+.item-grid.book-grid .book-item:active{ transform: none; box-shadow: none; border-color: transparent; }
+.book-cover-img{
+  display: block;
+  width: 100%; height: auto;
+  aspect-ratio: 17 / 24;            /* the 17×24 cm format of the books */
+  object-fit: cover;
+  border-radius: 3px 6px 6px 3px;   /* spine side a little squarer */
+  box-shadow: 0 2px 4px rgba(19,40,58,.10), 0 10px 22px rgba(19,40,58,.16);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+@media (hover: hover){
+  .book-item:hover .book-cover-img{
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(19,40,58,.12), 0 18px 34px rgba(19,40,58,.22);
+  }
+}
+.item-grid.book-grid .book-item:focus-visible{ outline: 3px solid var(--ui-brand-glow, #9cc3d6); outline-offset: 4px; }
+.book-item > .coming-soon-badge{ position: absolute; top: 8px; inset-inline-start: 8px; margin: 0; }
+
+/* announced, no cover yet: an empty book outline */
+.item-grid.book-grid .book-soon{
+  aspect-ratio: 17 / 24;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+  padding: 16px;
+  border: 1.5px dashed rgba(19,40,58,.22);
+  border-radius: 3px 6px 6px 3px;
+  cursor: default;
+  opacity: .7;
+}
+.book-soon-ico svg{ width: 52px; height: 52px; }
+.book-soon-title{ font-size: .86rem; font-weight: 700; line-height: 1.4; text-align: center; color: var(--ui-ink-soft, #5a6c7e); }
+.book-soon .coming-soon-badge{ margin: 0; }
+
+@media (max-width: 600px){
+  .item-grid.book-grid{ grid-template-columns: repeat(2, 1fr); gap: 24px 18px; }
+}

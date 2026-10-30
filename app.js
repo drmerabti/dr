@@ -642,6 +642,18 @@ const CONTENT = {
       desc_ar: 'دليل مصوّر خطوة بخطوة في 10 فصول و202 صفحة، من أول نقرة إلى أول مشروع حقيقي.',
       desc_en: 'An illustrated step-by-step guide in 10 chapters and 202 pages, from the first click to a real project.',
       url: 'books/word/', icon: ICONS.wordApp, badge: 'PDF' },
+    { id: 'book-excel-vba', title_ar: 'الإبداع مع Excel VBA — برمج أعمالك بنفسك', title_en: 'Creativity with Excel VBA — Automate Your Own Work',
+      desc_ar: 'كتاب PDF في 229 صفحة لتعلّم برمجة VBA من الصفر: 12 فصلًا، كود مشروح سطرًا بسطر و6 مشاريع كاملة. اقرأ المعاينة المجانية واطلب الكتاب.',
+      desc_en: 'A 229-page PDF book to learn VBA from scratch: 12 chapters, code explained line by line and 6 complete projects. Read the free preview and order the book.',
+      url: 'books/excel-vba/', icon: ICONS.excelApp, badge: 'جديد', badge_en: 'New' },
+    { id: 'book-excel', title_ar: 'موسوعة دوال إكسل – الجزء 1', title_en: 'Excel Functions Encyclopedia – Part 1',
+      desc_ar: 'كتاب PDF في 261 صفحة: 226 دالة من القائمة الرسمية لـ Microsoft 365، لكل دالة شرح ومثال على شكل ورقة إكسل. اقرأ الفصل الأول مجانًا واطلب الكتاب.',
+      desc_en: 'A 261-page PDF book: 226 functions from the official Microsoft 365 list, each explained with a worked example on an Excel sheet. Read the first chapter free and order the book.',
+      url: 'books/excel-functions/', icon: ICONS.excelApp, badge: 'جديد', badge_en: 'New' },
+    { id: 'book-excel-shortcuts', title_ar: 'الفأرة أكلها القط — كل اختصارات إكسل', title_en: 'The Cat Ate the Mouse — All Excel Shortcuts',
+      desc_ar: 'كتاب PDF في 124 صفحة: قرابة 150 اختصارًا في إكسل بمفاتيح مرسومة وأمثلة على شكل ورقة إكسل، تمارين وبطاقة ملخص. اقرأ أول 20 صفحة مجانًا واطلب الكتاب.',
+      desc_en: 'A 124-page PDF book: about 150 Excel keyboard shortcuts with drawn keys and worked examples on Excel sheets, exercises and a summary card. Read the first 20 pages free and order the book.',
+      url: 'books/excel-shortcuts/', icon: ICONS.excelApp, badge: 'جديد', badge_en: 'New' },
     { id: 'book-word-shortcuts', title_ar: 'دليل اختصارات برنامج وورد', title_en: 'Microsoft Word Shortcuts Guide',
       desc_ar: 'كتاب مجاني: أكثر من 60 اختصارًا في وورد، مصوّرة ومشروحة في 8 أبواب — اقرأه أو حمّله PDF.',
       desc_en: 'A free book: over 60 Word shortcuts, illustrated and explained in 8 sections — read it or download the PDF.',
@@ -654,9 +666,6 @@ const CONTENT = {
       desc_ar: 'كتاب مجاني: كتاب بسيط وممتع يعلّمك خطوة بخطوة كيف تحوّل كلود إلى أستاذ إنجليزية خاص بك: يشرح بالعربية، يصحّح أخطاءك، يحاورك بالصوت، ويصنع لك التمارين. مناسب للكبار والصغار ولكل من يبدأ من الصفر.',
       desc_en: 'A free book: a simple, fun step-by-step guide to turning Claude into your own English teacher — it explains in Arabic, corrects your mistakes, talks with you by voice and makes your exercises. For adults, children and complete beginners.',
       url: 'books/english-claudio/', icon: ICONS.englishClaudioApp, badge: 'مجاني', badge_en: 'Free' },
-    { id: 'book-excel', title_ar: 'كتاب Excel', title_en: 'Excel Book',
-      desc_ar: 'كتاب مصوّر في برنامج إكسل.', desc_en: 'An illustrated book on Excel.',
-      icon: ICONS.excelApp, comingSoon: true, soon: true },
     { id: 'book-access', title_ar: 'كتاب Access', title_en: 'Access Book',
       desc_ar: 'كتاب مصوّر في قواعد بيانات Access.', desc_en: 'An illustrated book on Access databases.',
       icon: ICONS.accessApp, comingSoon: true, soon: true },
@@ -1017,13 +1026,17 @@ async function renderSectionItems(){
   items = applyUserOrder(orderKey, items);
 
   wrap.innerHTML = '';
+  // Books: the cover alone, at book proportions (no card, icon or text)
+  wrap.classList.toggle('book-grid', key === 'services');
   if (items.length === 0){
     wrap.innerHTML = `<p>${t('empty_section')}</p>`;
     return;
   }
 
   items.forEach(item => {
-    if (item.soon){
+    if (key === 'services'){
+      wrap.appendChild(bookCover(item, admin));
+    } else if (item.soon){
       // announced but no page yet: same card, faded, not clickable
       const card = document.createElement('div');
       card.className = 'item-card coming-soon-card';
@@ -1086,6 +1099,32 @@ async function renderSectionItems(){
   });
 
   enableDragReorder(wrap, orderKey, items);
+}
+
+// One book on the books page. The cover lives next to the book page
+// (books/<name>/cover.webp, cover.jpg as fallback); a book announced without
+// a page yet has no cover, so it shows a plain book outline marked "coming soon".
+// Keeps the .item-card class so drag-to-reorder still works.
+function bookCover(item, admin){
+  const title = lang === 'ar' ? item.title_ar : item.title_en;
+  const soonTxt = lang === 'ar' ? 'قريبًا' : 'Coming soon';
+  if (item.soon || !item.url){
+    const el = document.createElement('div');
+    el.className = 'item-card book-item book-soon';
+    el.innerHTML = `${item.icon ? `<span class="book-soon-ico">${item.icon}</span>` : ''}
+      <span class="book-soon-title">${title}</span><span class="coming-soon-badge">${soonTxt}</span>`;
+    return el;
+  }
+  const a = document.createElement('a');
+  a.className = 'item-card book-item';
+  a.href = item.url;
+  a.title = title;
+  if (item.external){ a.target = '_blank'; a.rel = 'noopener'; }
+  const src = item.cover || item.url + 'cover.webp';
+  a.innerHTML = `<img class="book-cover-img" src="${src}" alt="${title}" loading="lazy" decoding="async"
+      onerror="if(!this.dataset.f){this.dataset.f=1;this.src=this.src.replace(/\\.webp$/,'.jpg');}">
+    ${(item.comingSoon && admin) ? `<span class="coming-soon-badge">${soonTxt}</span>` : ''}`;
+  return a;
 }
 
 function findItem(listKey, id){
