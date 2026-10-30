@@ -1,0 +1,90 @@
+/* =====================================================================
+   Research methodology book page — on top of books/word/style.css (same layout).
+   Adds: the cover colours and the two reading modes of the preview
+   (book = flipbook, pdf = pages one under the other), on computers and
+   phones alike (app.js puts .mode-book or .mode-pdf on #preview).
+===================================================================== */
+:root{
+  --brand: #14223F;            /* navy from the cover */
+  --brand-strong: #0B1530;
+  --brand-soft: #E8EBF2;
+  --gold: #C8961E;
+  --gold-soft: #FBF3DF;
+  --preview-bg: #E4DED2;
+  --side-bg: #FAF8F3;
+  --page-bg: #F4F1EA;
+}
+
+.bk-sub{ margin: 0; font-size: .92rem; font-weight: 800; color: var(--brand); }
+
+/* two columns, filled top to bottom */
+.bk-excel .bk-chapters ol{ grid-template-rows: repeat(var(--rows, 6), auto); }
+.bk-chapters li span{ background: var(--brand); }
+.bk-chapters li:nth-child(3n+2) span{ background: #3A4D75; }
+.bk-chapters li:nth-child(3n) span{ background: var(--gold); color: var(--brand-strong); }
+
+/* ---------- order block (buttons and contact window come from the Word page) ---------- */
+.order-mail{ background: linear-gradient(135deg, #2C4272 0%, var(--brand) 55%, var(--brand-strong) 100%); }
+.price-num{ color: var(--brand-strong); }
+
+/* ---------- reading mode switch (book / pdf) ---------- */
+.md-switch{
+  display: inline-flex; padding: 3px; gap: 3px;
+  border: 1px solid var(--line-strong); border-radius: 11px;
+  background: var(--surface);
+}
+.md-btn{
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 30px; padding: 0 11px;
+  border: 0; border-radius: 8px;
+  background: transparent; color: var(--ink-soft);
+  font-family: inherit; font-size: .84rem; font-weight: 800;
+  cursor: pointer;
+}
+.md-btn svg{ width: 17px; height: 17px; }
+.md-btn:hover{ color: var(--brand); }
+.md-btn[aria-pressed="true"]{ background: var(--brand); color: #fff; }
+.md-btn:focus-visible{ outline: 2px solid var(--gold); outline-offset: 2px; }
+
+/* last page of the book */
+.fb-page-end, .pv-list-end{ background: linear-gradient(160deg, var(--brand) 0%, var(--brand-strong) 100%); }
+
+/* ---------- PDF mode (computers): pages one under the other, scrolled inside the reader ---------- */
+@media (min-width: 861px){
+  .bk-preview.mode-pdf .fb-stage, .bk-preview.mode-pdf .fb-nav, .bk-preview.mode-pdf .fb-only{ display: none; }
+  .bk-preview.mode-pdf .pv-list{
+    display: flex; flex-direction: column; align-items: center; gap: 14px;
+    flex: 1; min-height: 0; overflow: auto;
+    padding: 18px 24px 28px;
+  }
+  .bk-preview.mode-pdf .pv-pg{
+    position: relative; flex-shrink: 0;
+    width: min(100%, calc(780px * var(--z, 1)));
+    background: #fff; box-shadow: 0 2px 10px rgba(19,40,58,.16);
+  }
+  .bk-preview.mode-pdf .pv-list.zoomed{ align-items: flex-start; }
+  .bk-preview.mode-pdf .pv-list.zoomed .pv-pg{ width: calc(780px * var(--z, 1)); max-width: none; margin: 0 auto; }
+  .bk-preview.mode-pdf .pv-pg img{ display: block; width: 100%; height: 100%; user-select: none; -webkit-user-drag: none; }
+  .bk-preview.mode-pdf .pv-list-end{ position: relative; flex-shrink: 0; width: min(100%, 780px); min-height: 260px; border-radius: 16px; }
+  .bk-preview.mode-pdf .pv-list-status{ margin: 60px 0; font-weight: 700; color: var(--ink-soft); }
+}
+
+/* ---------- phones: the switch stays visible; book mode shows the flipbook ---------- */
+@media (max-width: 860px){
+  .bk-preview .pv-tools{ display: inline-flex; }
+  .bk-preview .pv-tools .fb-tool{ display: none; }
+  .bk-preview .pv-bar{ position: sticky; top: var(--top-h); z-index: 4; background: rgba(244,241,234,.96); backdrop-filter: blur(8px); flex-wrap: wrap; }
+  .md-btn{ padding: 0 9px; }
+  .bk-preview.mode-book .pv-list{ display: none; }
+  .bk-preview.mode-book .fb-stage{
+    display: flex;
+    height: calc(100svh - var(--top-h) - 150px); min-height: 360px;
+    padding: 10px 8px 4px;
+  }
+  .bk-preview.mode-book .fb-nav{ display: flex; padding-bottom: 12px; }
+  .bk-preview.mode-book .pv-tools .fb-tool-fs{ display: inline-flex; }
+}
+@media (max-width: 420px){
+  .md-btn span{ display: none; }
+}
+.m-cta{ background: linear-gradient(135deg, #2C4272 0%, var(--brand) 55%, var(--brand-strong) 100%); }
