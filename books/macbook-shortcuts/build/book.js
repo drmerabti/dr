@@ -244,7 +244,7 @@ C12.groups = cardGroups().map(k => ({ title: 'بطاقة: ' + k.title, card: k }
 {
   const p = document.createElement('div');
   p.className = 'page cover';
-  p.innerHTML = '<img src="cover.png" alt="">';
+  p.innerHTML = '<img src="cover.jpg" alt="">';
   book.appendChild(p); pages.push(p);
 }
 

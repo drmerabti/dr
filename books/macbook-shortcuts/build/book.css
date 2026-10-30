@@ -57,7 +57,8 @@ a { color: inherit; text-decoration: none; }
     inset 0 .35mm 0 #ffffff,
     inset 0 -.7mm 0 #dadde2,
     0 .8mm 0 #aab0b8,
-    0 1.4mm 1.8mm rgba(0, 0, 0, .16);
+    0 1.15mm 0 rgba(0, 0, 0, .07),
+    0 1.5mm 0 rgba(0, 0, 0, .04);
   font-family: 'Inter', sans-serif; color: #1d1d1f; white-space: nowrap;
   margin-bottom: .8mm;
 }
@@ -130,16 +131,16 @@ a { color: inherit; text-decoration: none; }
 .psub { font: 600 3.5mm/1.6 'Cairo'; color: var(--mute); margin-top: 1mm; }
 .prule { width: 18mm; height: 1mm; background: var(--ink); border-radius: .5mm; margin: 3.5mm 0 6mm; }
 
-.books { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4mm 7mm; }
+.books { display: grid; grid-template-columns: repeat(5, 1fr); gap: 7mm 4mm; margin-top: 4mm; }
 .books a { display: flex; flex-direction: column; align-items: center; text-align: center; }
 .books img {
-  width: 25.5mm; height: 37mm; object-fit: cover; border-radius: 1mm;
+  width: 24mm; height: 36mm; object-fit: cover; border-radius: 1mm;
   box-shadow: 0 1.2mm 2.6mm rgba(0,0,0,.22), 0 0 0 .2mm rgba(0,0,0,.08);
 }
-.books span { font: 700 2.7mm/1.45 'Cairo'; margin-top: 2.2mm; color: var(--ink); height: 8mm; overflow: hidden; }
+.books span { font: 700 2.5mm/1.45 'Cairo'; margin-top: 2.2mm; color: var(--ink); height: 11mm; overflow: hidden; }
 .cta {
   display: flex; align-items: center; justify-content: center; gap: 2.5mm;
-  margin: 5mm auto 0; width: 86mm; height: 11mm; border-radius: 6mm; background: var(--ink); color: #fff;
+  margin: 12mm auto 0; width: 86mm; height: 11mm; border-radius: 6mm; background: var(--ink); color: #fff;
   font: 800 4.2mm/1 'Cairo';
 }
 .cta small { font: 500 2.8mm/1 'Inter'; color: #c7c7cc; direction: ltr; }
@@ -240,7 +241,7 @@ a { color: inherit; text-decoration: none; }
 .card .row { min-height: 8.4mm; padding: .5mm 0 .2mm; }
 .card .row .keys { flex-basis: 64mm; }
 .card .key { height: 6.6mm; min-width: 6.6mm; padding: 0 1.6mm; border-radius: 1.5mm; margin-bottom: .6mm;
-  box-shadow: inset 0 .3mm 0 #fff, inset 0 -.5mm 0 #dadde2, 0 .6mm 0 #aab0b8, 0 1mm 1.2mm rgba(0,0,0,.14); }
+  box-shadow: inset 0 .3mm 0 #fff, inset 0 -.5mm 0 #dadde2, 0 .6mm 0 #aab0b8, 0 .9mm 0 rgba(0,0,0,.06); }
 .card .key .sym { font-size: 2.9mm; }
 .card .key.char .sym { font-size: 3.1mm; }
 .card .key .nm { font-size: 1.45mm; margin-top: .45mm; }
