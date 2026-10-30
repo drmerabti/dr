@@ -1,8 +1,8 @@
-// node render.js <out.pdf> [png-dir]
+// node render.js <out.pdf> [png-dir] [page-range, e.g. 1-20]
 const { chromium } = require('playwright');
 const path = require('path');
 (async () => {
-  const out = process.argv[2] || 'book.pdf', pngDir = process.argv[3];
+  const out = process.argv[2] || 'book.pdf', pngDir = process.argv[3], range = process.argv[4];
   const browser = await chromium.launch();
   const page = await browser.newPage({ viewport: { width: 700, height: 1000 } });
   page.on('console', m => console.log('[page]', m.text()));
@@ -11,11 +11,11 @@ const path = require('path');
   await page.evaluate(() => document.fonts.ready);
   await page.waitForSelector('body[data-ready]');
   console.log('pages:', await page.$$eval('.page', p => p.length));
-  if (pngDir) {
+  if (pngDir && pngDir !== '-') {
     const els = await page.$$('.page');
     for (let i = 0; i < els.length; i++) await els[i].screenshot({ path: `${pngDir}/p${String(i + 1).padStart(3, '0')}.png` });
   }
   await page.emulateMedia({ media: 'print' });
-  await page.pdf({ path: out, preferCSSPageSize: true, printBackground: true, tagged: true, outline: true });
+  await page.pdf({ path: out, preferCSSPageSize: true, printBackground: true, tagged: true, outline: true, pageRanges: range || '' });
   await browser.close();
 })();

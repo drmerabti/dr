@@ -20,6 +20,7 @@ const OTHER_BOOKS = [
   { cover: 'covers/python.jpg',          title: 'برمجة بايثون كأن لم تعرفها من قبل' },
   { cover: 'covers/computer.jpg',        title: 'كل ما يعرفه المحترفون عن الحاسوب' },
   { cover: 'covers/english-claudio.jpg', title: 'تعلم الإنجليزية مع Claudio' },
+  { cover: 'covers/shortcuts-wiki.jpg',  title: 'موسوعة الاختصارات — Wiki Shortcuts' },
 ];
 const BOOKS_URL = 'https://merabti.com/books.html';
 
