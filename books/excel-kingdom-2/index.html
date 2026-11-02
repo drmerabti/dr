@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<!-- "/books/excel-kingdom-2" without the final slash would break every relative path (cover, css, js, pdf) -->
+<script>if (!/\/$|\.html$/.test(location.pathname)) location.replace(location.pathname + '/' + location.search + location.hash);</script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6PKBD7XR0M"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-6PKBD7XR0M');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>مملكة الخلايا — إكسل كأن لم تعرفه من قبل (الجزء الثاني) | د. سفيان مرابطي</title>
+<meta name="description" content="الجزء الثاني من «مملكة الخلايا»: إكسل للمحترفين في 11 فصلًا: XLOOKUP والدوال الحديثة، تدقيق الصيغ، أدوات البيانات، الجداول المحورية، المخططات، Power Query، الحماية والمشاركة، الإعدادات، والماكرو، مع مشروعين تطبيقيين. تأليف د. سفيان مرابطي — قريبًا.">
+<meta property="og:type" content="book">
+<meta property="og:title" content="مملكة الخلايا — إكسل كأن لم تعرفه من قبل (الجزء الثاني)">
+<meta property="og:description" content="الجزء الثاني من «مملكة الخلايا»: إكسل للمحترفين في 11 فصلًا: XLOOKUP والدوال الحديثة، تدقيق الصيغ، أدوات البيانات، الجداول المحورية، المخططات، Power Query، الحماية والمشاركة، الإعدادات، والماكرو، مع مشروعين تطبيقيين.">
+<meta property="og:image" content="https://merabti.com/books/excel-kingdom-2/cover.jpg">
+<meta property="og:url" content="https://merabti.com/books/excel-kingdom-2/">
+<link rel="icon" href="../../favicon-32x32.png">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Inter:wght@500;700;800&display=swap" rel="stylesheet">
+<!-- same layout as the Word book page; style.css adds the Excel colours and the two reading modes -->
+<link rel="stylesheet" href="../word/style.css?v=20261028c">
+<link rel="stylesheet" href="style.css?v=20261030a">
+<script src="/analytics.js"></script>
+<link rel="canonical" href="https://merabti.com/books/excel-kingdom-2/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Book",
+  "name": "مملكة الخلايا — إكسل كأن لم تعرفه من قبل (الجزء الثاني)",
+  "author": { "@type": "Person", "name": "د. سفيان مرابطي" },
+  "inLanguage": "ar",
+  "bookFormat": "https://schema.org/EBook",
+  "offers": [
+    { "@type": "Offer", "price": "800", "priceCurrency": "DZD" },
+    { "@type": "Offer", "price": "7", "priceCurrency": "USD" }
+  ],
+  "image": "https://merabti.com/books/excel-kingdom-2/cover.jpg",
+  "url": "https://merabti.com/books/excel-kingdom-2/"
+}
+</script>
+</head>
+<body class="bk-excel">
+
+<header class="bk-top">
+  <a class="bk-brand" href="../../index.html">
+    <img src="../../apple-touch-icon.png" alt="">
+    <span>د. سفيان مرابطي</span>
+  </a>
+  <div class="tb-actions">
+    <a class="bk-back" href="../../books.html">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H10a2 2 0 0 1 2 2v14a2 2 0 0 0-2-2H4z"/><path d="M20 5.5A1.5 1.5 0 0 0 18.5 4H14a2 2 0 0 0-2 2v14a2 2 0 0 1 2-2h6z"/></svg>
+      <span>كل الكتب</span>
+    </a>
+  </div>
+</header>
+
+<main class="bk-main">
+
+  <!-- اليمين: غلاف صغير، ثم السعر وأزرار الطلب، ثم التفاصيل -->
+  <aside class="bk-side" id="bookSide">
+
+    <section class="bk-head">
+      <img class="bk-cover" id="bkCover" src="cover.webp" width="480" height="720" onerror="if(!this.dataset.f){this.dataset.f=1;this.src='cover.jpg';}else{this.classList.add('missing');}" alt="غلاف كتاب مملكة الخلايا — إكسل كأن لم تعرفه من قبل (الجزء الثاني)">
+      <div class="bk-head-txt">
+        <span class="bk-kicker">كتاب PDF · قريبًا</span>
+        <h1 class="bk-title">مملكة الخلايا</h1>
+        <p class="bk-sub">إكسل كأن لم تعرفه من قبل — الجزء الثاني</p>
+        <p class="bk-author">تأليف: <strong>د. سفيان مرابطي</strong></p>
+      </div>
+    </section>
+
+    <section class="bk-buy" id="buyBox" aria-labelledby="buyTitle">
+      <h2 id="buyTitle">قريبًا</h2>
+
+      <div class="buy-grid">
+        <!-- the numbers come from PRICES at the top of app.js (the only place to change the price) -->
+        <div class="buy-prices" aria-label="السعر">
+          <span class="offer-badge" data-offer></span>
+          <div class="price">
+            <span class="price-line"><span class="price-num"><bdi dir="ltr" data-price="dzd"></bdi> <i>دج</i></span></span>
+            <small>بالدينار الجزائري</small>
+          </div>
+          <span class="price-or">أو</span>
+          <div class="price price-usd">
+            <span class="price-line"><span class="price-num" dir="ltr"><bdi data-price="usd"></bdi> <i>$</i></span></span>
+            <small>بالدولار</small>
+          </div>
+        </div>
+
+        </div>
+      <div class="soon-box"><span class="soon-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><strong>الكتاب قيد الإعداد</strong><small>سيصدر قريبًا بهذا السعر. تابع الموقع وصفحاتي لتعرف موعد صدوره.</small></span></div>
+    </section>
+
+    <section class="bk-details" aria-labelledby="chTitle">
+      <ul class="bk-facts"><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg><b>11</b> فصلًا</li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h5"/></svg><b>Power Query</b></li><li><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 9h18"/></svg><b>الجداول المحورية</b></li><li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.5"/></svg><b>تدريب</b> في كل فصل</li></ul>
+      <div class="bk-chapters">
+        <h2 id="chTitle">فصول الكتاب</h2>
+        <ol style="--rows:6">
+          <li><span>1</span>دوال البحث والدوال الحديثة</li>
+          <li><span>2</span>تدقيق الصيغ والأسماء</li>
+          <li><span>3</span>أدوات البيانات</li>
+          <li><span>4</span>الجداول المحورية</li>
+          <li><span>5</span>المخططات البيانية</li>
+          <li><span>6</span>Power Query</li>
+          <li><span>7</span>الصور والأشكال والكائنات</li>
+          <li><span>8</span>المراجعة والحماية والمشاركة</li>
+          <li><span>9</span>إعدادات إكسل</li>
+          <li><span>10</span>مدخل إلى الماكرو</li>
+          <li><span>11</span>مشروعان: متابعة مخزون ولوحة تحكم</li>
+        </ol>
+      </div>
+    </section>
+
+  </aside>
+
+  <!-- اليسار: المعاينة المجانية، على شكل كتاب أو PDF -->
+  <section class="bk-preview bk-showcase" aria-label="غلاف الكتاب">
+    <div class="sc-wrap">
+      <div class="sc-cover"><img src="cover-big.jpg" alt="غلاف كتاب مملكة الخلايا — إكسل كأن لم تعرفه من قبل (الجزء الثاني)"><span class="sc-ribbon">قريبًا</span></div>
+      <p class="sc-note">«مملكة الخلايا» في جزأين: <a href="../excel-kingdom-1/">الجزء الأول: الأساسيات</a> و<a href="../excel-kingdom-2/">الجزء الثاني: للمحترفين</a>.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="bk-foot">
+  <p class="footer-links">
+    <a href="../../about.html">من نحن</a>
+    <a href="../../contact.html">اتصل بنا</a>
+    <a href="../../refund-policy.html">سياسة الاسترجاع</a>
+    <a href="../../terms-of-service.html">الشروط والأحكام</a>
+    <a href="../../privacy-policy.html">سياسة الخصوصية</a>
+  </p>
+</footer>
+
+<script src="app.js?v=20261102a"></script>
+<script src="../../site-nav.js"></script>
+</body>
+</html>
