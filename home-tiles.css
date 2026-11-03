@@ -1,5 +1,6 @@
 /* =====================================================================
-   Home page — the six sections as big icons (no card, no background).
+   Home page — the six sections as big icons (no card, no background;
+   wide 480x330 transparent WebP in images/home/).
    Markup comes from sectionCard() in app.js:
      a.home-tile > span.home-tile-art (img + span.home-tile-shine) + span.home-tile-name
    Reactions (tilt toward the mouse / the finger, press, pop) come from
@@ -23,7 +24,7 @@
 }
 .home-tile-art{
   position: relative; display: block;
-  width: min(100%, 184px); aspect-ratio: 1;
+  width: min(100%, 280px); aspect-ratio: 480 / 330;
   transform: perspective(720px) translate3d(0, var(--ht-lift), 0)
              rotateX(var(--ht-rx)) rotateY(var(--ht-ry)) scale(var(--ht-s));
   transition: transform .5s cubic-bezier(.2,.8,.25,1.25), filter .35s ease;
@@ -62,7 +63,7 @@
   55% { transform: perspective(720px) scale(1.09); }
   100%{ transform: perspective(720px) scale(1); }
 }
-.home-tile:focus-visible .home-tile-art{ outline: 3px solid var(--ui-brand-glow, rgba(29,92,120,.3)); outline-offset: 6px; border-radius: 26%; }
+.home-tile:focus-visible .home-tile-art{ outline: 3px solid var(--ui-brand-glow, rgba(29,92,120,.3)); outline-offset: 6px; border-radius: 12% / 17%; }
 
 /* coming soon: faded, does not move */
 .home-tile-soon{ cursor: default; opacity: .6; filter: grayscale(.35); }
@@ -83,14 +84,15 @@
 .ht-intro .section-grid-row2 .home-tile:nth-child(3){ animation-delay: .35s; }
 @keyframes htIn{ from{ opacity: 0; transform: translateY(18px) scale(.86); } to{ opacity: 1; transform: none; } }
 
-/* phones: 3 per row, as big as the row allows */
+/* phones: the icons are wide, so 2 per row (3 rows) to keep them big and readable.
+   .home-grid wraps both rows; the two row containers step aside (display: contents). */
 @media (max-width: 760px){
-  .ui-v2 #sectionGrid,
-  .ui-v2 .section-grid-row2{ gap: 18px 10px; }
-  .ui-v2 .section-grid-row2{ margin-top: 18px; }
+  .ui-v2 .home-grid{ display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px 14px; }
+  .ui-v2 .home-grid > #sectionGrid,
+  .ui-v2 .home-grid > .section-grid-row2{ display: contents; }
   .home-tile{ gap: 8px; padding: 2px 0; }
-  .home-tile-art{ width: min(100%, 112px); }
-  .home-tile-name{ font-size: .95rem; }
+  .home-tile-art{ width: 100%; }
+  .home-tile-name{ font-size: 1rem; }
 }
 
 /* less motion asked: no tilt, no pop, no intro — only the light and a soft fade */
