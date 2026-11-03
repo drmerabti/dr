@@ -1,0 +1,7 @@
+.git
+.github
+backup-design
+sora2nas
+wrangler.toml
+*.md
+books/macbook-shortcuts/build
