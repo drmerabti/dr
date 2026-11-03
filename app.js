@@ -756,15 +756,16 @@ const CONTENT = {
 };
 
 /* ============ أيقونات SVG (ستايل شبه ثلاثي الأبعاد: ظلال + انعكاسات ضوء) ============ */
+// img: the big home icon (images/home/, transparent WebP) — see home-tiles.css / home-tiles.js
 const SECTIONS_ROW1 = [
-  { key: 'tools',      icon: ICONS.tools,     badge: 'badge-tools',     href: 'tools.html' },
-  { key: 'apps',       icon: ICONS.apps,      badge: 'badge-apps',      href: 'apps.html' },
-  { key: 'favorites',  icon: ICONS.favorites, badge: 'badge-favorites', href: 'favorites.html' },
+  { key: 'tools',      icon: ICONS.tools,     badge: 'badge-tools',     href: 'tools.html',     img: 'images/home/tools.webp' },
+  { key: 'apps',       icon: ICONS.apps,      badge: 'badge-apps',      href: 'apps.html',      img: 'images/home/apps.webp' },
+  { key: 'favorites',  icon: ICONS.favorites, badge: 'badge-favorites', href: 'favorites.html', img: 'images/home/favorites.webp' },
 ];
 const SECTIONS_ROW2 = [
-  { key: 'lessons',   icon: ICONS.lessons,  badge: 'badge-lessons',   href: 'lessons.html' },
-  { key: 'trainings', icon: ICONS.training, badge: 'badge-training',  href: 'resources.html' },
-  { key: 'services',  icon: ICONS.services, badge: 'badge-services',  href: 'books.html' },
+  { key: 'lessons',   icon: ICONS.lessons,  badge: 'badge-lessons',   href: 'lessons.html',   img: 'images/home/lessons.webp' },
+  { key: 'trainings', icon: ICONS.training, badge: 'badge-training',  href: 'resources.html', img: 'images/home/trainings.webp' },
+  { key: 'services',  icon: ICONS.services, badge: 'badge-services',  href: 'books.html',     img: 'images/home/books.webp' },
 ];
 const SECTIONS = [...SECTIONS_ROW1, ...SECTIONS_ROW2];
 
@@ -867,24 +868,25 @@ function renderHomeGrid(){
   SECTIONS_ROW2.forEach(s => (grid2 || grid).appendChild(sectionCard(s)));
 }
 
-// A "coming soon" section shows its badge; for visitors it is a plain,
-// faded card that does not open, admins still get the link.
+// Home tile: the big icon (no card, no background) + the section name under it.
+// Pointer / touch reactions live in home-tiles.js, the look in home-tiles.css.
+// A "coming soon" section shows its badge; for visitors it is a faded tile
+// that does not open, admins still get the link.
 function sectionCard(s){
   const locked = s.comingSoon && !homeAdmin;
   const card = document.createElement(locked ? 'div' : 'a');
-  card.className = 'section-card' + (locked ? ' coming-soon-card' : '');
-  if (!locked){
-    card.href = s.href;
-    card.style.textDecoration = 'none';
-    card.style.color = 'inherit';
-  }
-  card.style.display = 'block';
+  card.className = 'home-tile' + (locked ? ' home-tile-soon' : '');
+  if (!locked) card.href = s.href;
+  const name = t('section_' + s.key);
   card.innerHTML = `
-      <span class="icon-badge ${s.badge}">${s.icon}</span>
-      <h3>${t('section_' + s.key)}</h3>
-      <p>${t('section_' + s.key + '_desc')}</p>
-      ${s.comingSoon ? `<span class="coming-soon-badge" style="position:absolute; top:8px; inset-inline-start:8px; margin:0; font-size:.62rem; padding:2px 8px;">${lang === 'ar' ? 'قريبًا' : 'Coming soon'}</span>` : ''}
+      <span class="home-tile-art" style="--ht-img:url('${s.img}')">
+        <img src="${s.img}" alt="" width="400" height="400" decoding="async" draggable="false">
+        <span class="home-tile-shine" aria-hidden="true"></span>
+      </span>
+      <span class="home-tile-name">${name}</span>
+      ${s.comingSoon ? `<span class="home-tile-badge">${lang === 'ar' ? 'قريبًا' : 'Coming soon'}</span>` : ''}
     `;
+  card.title = t('section_' + s.key + '_desc');
   return card;
 }
 
