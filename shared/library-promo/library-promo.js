@@ -6,15 +6,17 @@
 //
 // A page uses it by:
 //   1) <link rel="stylesheet" href="<root>/shared/library-promo/library-promo.css">
-//   2) one empty element where the row goes (right under the top bar):
-//        <div class="lib-promo-row" data-lib-promo></div>
+//   2) one empty element where the card goes, either
+//        <div class="lib-promo-row" data-lib-promo></div>      own row under the top bar
+//      or, inside the top bar itself:
+//        <div class="lib-promo-bar" data-lib-promo="bar"></div>
 //   3) <script src="<root>/shared/library-promo/library-promo.js" defer></script>
 //
 // Language: follows <html lang="..."> (watched, so the page's own language
 // button switches the text live). Anything not "en" shows Arabic.
 // Optional attribute on the slot: data-href="..." to override the link.
 //
-// Height: the row's height is published as the CSS variable --lib-promo-h
+// Height (own-row mode only): the row's height is published as the CSS variable --lib-promo-h
 // on <html>, so a full-height page layout can subtract it
 // (e.g. height: calc(100dvh - var(--tb-h) - var(--lib-promo-h, 0px))).
 // =====================================================================
@@ -71,10 +73,14 @@
   function init() {
     var slots = Array.prototype.slice.call(document.querySelectorAll('[data-lib-promo]'));
     if (!slots.length) return;
-    slots.forEach(function (s) { s.classList.add('lib-promo-row'); });
+    var rows = [];
+    slots.forEach(function (s) {
+      if (s.getAttribute('data-lib-promo') === 'bar') s.classList.add('lib-promo-bar');
+      else { s.classList.add('lib-promo-row'); rows.push(s); }
+    });
     var cards = slots.map(build);
     setText(cards);
-    publishHeight(slots[0]);
+    if (rows.length) publishHeight(rows[0]);
     try {
       new MutationObserver(function () { setText(cards); })
         .observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] });

@@ -1,6 +1,7 @@
 /* =====================================================================
    Library promo card — one golden card "تصفح المكتبة / Browse the Library"
-   in its own row, right under the page's top bar. Links to books.html.
+   either in its own row under the page's top bar (data-lib-promo) or inside
+   the top bar itself (data-lib-promo="bar"). Links to books.html.
    Self-contained: see library-promo.js for how a page uses it.
 ===================================================================== */
 /* row height before the script measures it (the script then sets the exact value) */
@@ -50,4 +51,23 @@ html[lang="en"] .lib-promo{ font-family:'Inter','Cairo',sans-serif; font-weight:
   .lib-promo{ width:100%; min-height:48px; font-size:1rem; }
 }
 
-@media print{ .lib-promo-row{ display:none !important; } }
+/* ---------- inside a coloured top bar (data-lib-promo="bar") ----------
+   The slot is a centred flex box; the card keeps its text width (never cut)
+   and the page decides where the slot sits (and gives it a full row on phones). */
+.lib-promo-bar{ display:flex; justify-content:center; align-items:center; min-width:0; max-width:100%; box-sizing:border-box; }
+.lib-promo-bar .lib-promo{
+  flex:none; width:auto; max-width:100%; min-height:38px; padding:6px 22px;
+  border-radius:10px; font-size:.98rem; border-color:#FFE9A3;
+  box-shadow:0 2px 8px rgba(0,0,0,.25);
+}
+.lib-promo-bar .lib-promo:hover{ box-shadow:0 4px 14px rgba(0,0,0,.3); }
+.lib-promo-bar .lib-promo.lp-blink{ animation-name:lp-blink-bar; }
+@keyframes lp-blink-bar{
+  0%, 100%{ filter:brightness(1);    box-shadow:0 2px 8px rgba(0,0,0,.25); }
+  50%     { filter:brightness(1.15); box-shadow:0 0 0 4px rgba(255,214,64,.45), 0 0 22px rgba(255,214,64,.75); }
+}
+@media (max-width: 640px){
+  .lib-promo-bar .lib-promo{ width:100%; min-height:44px; font-size:1rem; }
+}
+
+@media print{ .lib-promo-row, .lib-promo-bar{ display:none !important; } }
