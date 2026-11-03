@@ -758,14 +758,14 @@ const CONTENT = {
 /* ============ أيقونات SVG (ستايل شبه ثلاثي الأبعاد: ظلال + انعكاسات ضوء) ============ */
 // img: the big home icon (images/home/, transparent WebP) — see home-tiles.css / home-tiles.js
 const SECTIONS_ROW1 = [
-  { key: 'tools',      icon: ICONS.tools,     badge: 'badge-tools',     href: 'tools.html',     img: 'images/home/tools.webp?v=2' },
-  { key: 'apps',       icon: ICONS.apps,      badge: 'badge-apps',      href: 'apps.html',      img: 'images/home/apps.webp?v=2' },
-  { key: 'favorites',  icon: ICONS.favorites, badge: 'badge-favorites', href: 'favorites.html', img: 'images/home/favorites.webp?v=2' },
+  { key: 'tools',      icon: ICONS.tools,     badge: 'badge-tools',     href: 'tools.html',     img: 'images/home/tools.webp?v=3' },
+  { key: 'apps',       icon: ICONS.apps,      badge: 'badge-apps',      href: 'apps.html',      img: 'images/home/apps.webp?v=3' },
+  { key: 'favorites',  icon: ICONS.favorites, badge: 'badge-favorites', href: 'favorites.html', img: 'images/home/favorites.webp?v=3' },
 ];
 const SECTIONS_ROW2 = [
-  { key: 'lessons',   icon: ICONS.lessons,  badge: 'badge-lessons',   href: 'lessons.html',   img: 'images/home/lessons.webp?v=2' },
-  { key: 'trainings', icon: ICONS.training, badge: 'badge-training',  href: 'resources.html', img: 'images/home/trainings.webp?v=2' },
-  { key: 'services',  icon: ICONS.services, badge: 'badge-services',  href: 'books.html',     img: 'images/home/books.webp?v=2' },
+  { key: 'lessons',   icon: ICONS.lessons,  badge: 'badge-lessons',   href: 'lessons.html',   img: 'images/home/lessons.webp?v=3' },
+  { key: 'trainings', icon: ICONS.training, badge: 'badge-training',  href: 'resources.html', img: 'images/home/trainings.webp?v=3' },
+  { key: 'services',  icon: ICONS.services, badge: 'badge-services',  href: 'books.html',     img: 'images/home/books.webp?v=3' },
 ];
 const SECTIONS = [...SECTIONS_ROW1, ...SECTIONS_ROW2];
 
@@ -880,7 +880,7 @@ function sectionCard(s){
   const name = t('section_' + s.key);
   card.innerHTML = `
       <span class="home-tile-art" style="--ht-img:url('${s.img}')">
-        <img src="${s.img}" alt="" width="480" height="330" decoding="async" draggable="false">
+        <img src="${s.img}" alt="" width="192" height="192" decoding="async" draggable="false">
         <span class="home-tile-shine" aria-hidden="true"></span>
       </span>
       <span class="home-tile-name">${name}</span>
