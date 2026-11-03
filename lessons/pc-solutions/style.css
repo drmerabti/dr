@@ -45,7 +45,8 @@ svg{ fill:none; stroke:currentColor; stroke-width:1.9; stroke-linecap:round; str
 }
 .tb-icon:hover{ background:rgba(255,255,255,.24); transform:translateY(-1px); }
 .tb-title{ font-family:var(--head); font-weight:800; font-size:1.05rem; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; flex:0 1 auto; padding:0 4px; text-shadow:0 1px 2px rgba(0,0,0,.15); }
-.tb-fill{ flex:1; min-width:0; }
+.tb-fill{ flex:1; min-width:max-content; display:flex; justify-content:center; padding:0 6px; }   /* يحمل بطاقة «تصفح المكتبة» في الوسط */
+.tb-fill .lib-promo-bar{ width:100%; }
 .tb-progress{
   width:84px; height:38px; flex:none; display:flex; align-items:center; justify-content:center; gap:6px;
   border:1px solid rgba(255,255,255,.35); background:rgba(255,255,255,.16); color:#fff; border-radius:10px;
@@ -61,7 +62,7 @@ svg{ fill:none; stroke:currentColor; stroke-width:1.9; stroke-linecap:round; str
 /* ---------- الهيكل: 100% عرضًا وارتفاعًا ---------- */
 .app{
   display:grid; grid-template-columns:var(--side-w) minmax(0,1fr);
-  height:calc(100vh - var(--tb-h)); height:calc(100dvh - var(--tb-h)); width:100%;
+  height:calc(100vh - var(--tb-h) - var(--lib-promo-h, 0px)); height:calc(100dvh - var(--tb-h) - var(--lib-promo-h, 0px)); width:100%;
   transition:grid-template-columns .25s ease;
 }
 .app.collapsed{ grid-template-columns:0 minmax(0,1fr); }
@@ -141,7 +142,7 @@ svg{ fill:none; stroke:currentColor; stroke-width:1.9; stroke-linecap:round; str
 .watch-btn.on svg{ opacity:1; }
 
 /* ---------- الفيديو 16:9 ---------- */
-.video-wrap{ display:flex; flex-direction:column; align-items:flex-end; gap:8px; width:min(100%, calc((100dvh - var(--tb-h) - 150px) * 16 / 9)); min-width:min(100%, 560px); margin:0 auto; }
+.video-wrap{ display:flex; flex-direction:column; align-items:flex-end; gap:8px; width:min(100%, calc((100dvh - var(--tb-h) - var(--lib-promo-h, 0px) - 150px) * 16 / 9)); min-width:min(100%, 560px); margin:0 auto; }
 .video{ position:relative; width:100%; aspect-ratio:16 / 9; background:#0B1526; border-radius:16px; overflow:hidden; box-shadow:0 10px 30px rgba(21,36,49,.18); }
 .video iframe{ position:absolute; inset:0; width:100%; height:100%; border:0; }
 .video:fullscreen{ border-radius:0; aspect-ratio:auto; }
@@ -327,11 +328,16 @@ body.code-max{ overflow:hidden; }
   :root{ --tb-h:56px; }
   .tb{ padding:0 10px; gap:6px; }
   .tb-title{ display:none; }
+  /* بطاقة المكتبة: سطر ثانٍ داخل الشريط الأزرق؛ سطر الأيقونات (56px) يبقى كما هو تمامًا */
+  :root{ --tb-h:110px; }
+  .tb{ padding-bottom:54px; }
+  .tb > .tb-fill{ position:static; min-width:0; padding:0; }
+  .tb-fill .lib-promo-bar{ position:absolute; left:10px; right:10px; top:56px; height:44px; width:auto; z-index:1; }
   .tb-progress{ width:70px; }
   .app, .app.collapsed{ grid-template-columns:minmax(0,1fr); }
   .app.collapsed .side{ visibility:visible; }
   .side{
-    position:fixed; top:var(--tb-h); left:0; right:0; z-index:25; max-height:70vh; max-height:70dvh;
+    position:fixed; top:calc(var(--tb-h) + var(--lib-promo-h, 0px)); left:0; right:0; z-index:25; max-height:70vh; max-height:70dvh;
     border:0; border-bottom:1px solid var(--line); box-shadow:0 18px 40px rgba(21,36,49,.18);
     display:none; padding:10px 10px 14px;
   }
