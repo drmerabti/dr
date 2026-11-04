@@ -3,8 +3,10 @@
    Server side (worker.js): /api/paypal/config, /api/paypal/create-order,
    /api/paypal/capture-order, /api/download/:token. The price always comes
    from the server catalog; this file never sends a price.
-   The block (#ppBox) stays hidden if PayPal is not available, so the
-   e-mail / WhatsApp ordering keeps working as before.
+   The block (#ppBox) sits in the "ادفع بالدولار" window (#usdModal, opened
+   by buy.js). The SDK is loaded with the page; the buttons are drawn the
+   first time the window opens. If PayPal is not available the window says
+   so and points to the dinar order.
 ===================================================================== */
 (function(){
   var box = document.getElementById('ppBox');
@@ -12,7 +14,10 @@
   var BOOK = box.getAttribute('data-book');
   var STORE = 'pp-order-' + BOOK;
   var msgEl = document.getElementById('ppMsg');
-  var toPp = document.getElementById('toPp');
+  var modal = document.getElementById('usdModal');
+  var usdSub = document.getElementById('payUsdSub');
+  var btnsEl = document.getElementById('ppButtons');
+  var sdkReady = false, sdkFailed = false, wantRender = false, rendered = false;
 
   function track(name, extra){
     try { if (window.gtag) gtag('event', name, Object.assign({ book: 'word', method: 'paypal' }, extra || {})); } catch (e) { /* ignore */ }
@@ -23,14 +28,15 @@
     msgEl.classList.toggle('err', !!isErr);
   }
 
-  function show(){
-    box.hidden = false;
-    if (toPp) toPp.hidden = false;
+  /* PayPal off or unreachable: say so in the window (the dinar order still works) */
+  function unavailable(){
+    sdkFailed = true;
+    btnsEl.innerHTML = '';
+    msg('الدفع بالدولار غير متاح حاليًا. يمكنك الطلب بالدينار، أو مراسلتنا على contact@merabti.com', true);
   }
 
   /* ---------- after payment: order number + download button ---------- */
   function showDone(d){
-    box.querySelector('.pp-info').hidden = true;
     document.getElementById('ppPay').hidden = true;
     document.getElementById('ppDone').hidden = false;
     document.getElementById('ppOrder').textContent = d.orderId;
@@ -41,8 +47,7 @@
         '، ويمكن التحميل حتى ' + (d.maxDownloads || 5) + ' مرات. احتفظ برقم الطلب.';
       document.getElementById('ppNote').textContent = txt;
     }
-    if (toPp) toPp.textContent = 'تم الدفع ✓ — حمّل الكتاب من هنا';
-    show();
+    if (usdSub) usdSub.textContent = 'تم الدفع ✓ — حمّل الكتاب من هنا';
   }
 
   function remember(d){
@@ -68,20 +73,17 @@
     });
   }
 
-  /* link in the order box → the PayPal block */
-  if (toPp) toPp.addEventListener('click', function(e){
-    e.preventDefault();
-    box.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    box.classList.remove('flash');
-    void box.offsetWidth;
-    box.classList.add('flash');
-    track('book_order_click');
-  });
-
   var saved = remembered();
   if (saved){ showDone(saved); return; }
 
-  /* ---------- PayPal buttons ---------- */
+  /* ---------- PayPal buttons (drawn once, when the window is first opened) ---------- */
+  function maybeRender(){
+    if (rendered || !sdkReady || !wantRender) return;
+    rendered = true;
+    btnsEl.innerHTML = '';
+    render();
+  }
+
   function render(){
     paypal.Buttons({
       style: { layout: 'vertical', color: 'gold', shape: 'pill', label: 'pay', height: 42 },
@@ -119,7 +121,7 @@
         msg('تعذّر إتمام الدفع عبر PayPal، حاول مرة أخرى أو اطلب الكتاب عبر البريد أو واتساب.', true);
         try { console.warn('PayPal', err); } catch (e) { /* ignore */ }
       }
-    }).render('#ppButtons').catch(function(){ box.hidden = true; if (toPp) toPp.hidden = true; });
+    }).render('#ppButtons').catch(unavailable);
   }
 
   function loadSdk(cfg){
@@ -128,8 +130,10 @@
       '&currency=' + encodeURIComponent(cfg.currency || 'USD') +
       '&intent=capture&components=buttons&disable-funding=paylater,venmo';
     s.async = true;
-    s.onload = function(){ if (window.paypal && paypal.Buttons) render(); };
-    s.onerror = function(){ box.hidden = true; if (toPp) toPp.hidden = true; };
+    s.onload = function(){
+      if (window.paypal && paypal.Buttons){ sdkReady = true; maybeRender(); } else unavailable();
+    };
+    s.onerror = unavailable;
     document.head.appendChild(s);
   }
 
@@ -137,15 +141,20 @@
     fetch('/api/paypal/config?bookId=' + encodeURIComponent(BOOK))
       .then(function(r){ return r.ok ? r.json() : null; })
       .then(function(cfg){
-        if (!cfg || !cfg.clientId) return;          /* PayPal off: page stays as before */
+        if (!cfg || !cfg.clientId){ unavailable(); return; }   /* PayPal off */
         document.getElementById('ppPrice').textContent = cfg.price;
-        show();
         loadSdk(cfg);
       })
-      .catch(function(){ /* static preview without the worker: keep the block hidden */ });
+      .catch(unavailable);   /* e.g. a static preview without the worker */
   }
 
-  /* after the page (and the preview's first pages) had their turn */
+  if (modal) modal.addEventListener('pm:open', function(){
+    wantRender = true;
+    if (!sdkFailed) maybeRender();
+  });
+
+  /* SDK fetched after the page (and the preview's first pages) had their turn,
+     so the window opens with the buttons ready */
   if (document.readyState === 'complete') start();
   else window.addEventListener('load', start);
 })();
