@@ -25,7 +25,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Inter:wght@500;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261018a">
+<link rel="stylesheet" href="style.css?v=20261104a">
 <script src="/analytics.js"></script>
 <link rel="canonical" href="https://merabti.com/books/word/">
 <script type="application/ld+json">
@@ -120,6 +120,8 @@
       </div>
 
       <p class="buy-note">سيصلك رد خلال 24 ساعة بطريقة الدفع، ثم يُرسل لك الكتاب.</p>
+      <!-- shown by paypal.js when PayPal is available: jumps to the PayPal block under the preview -->
+      <a class="buy-pp" id="toPp" href="#ppBox" hidden>أو ادفع الآن عبر PayPal / بطاقة بنكية وحمّل الكتاب فورًا</a>
     </section>
 
     <section class="bk-details" aria-labelledby="chTitle">
@@ -189,6 +191,36 @@
       </button>
     </div>
 
+    <!-- PayPal: pay 6 USD and download straight away (paypal.js + /api/paypal/* in worker.js).
+         Hidden until /api/paypal/config answers; the price shown comes from the server catalog. -->
+    <div class="pp-box" id="ppBox" data-book="word-book" hidden>
+      <div class="pp-info">
+        <span class="pp-ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M4 17v2.5A1.5 1.5 0 0 0 5.5 21h13a1.5 1.5 0 0 0 1.5-1.5V17"/></svg>
+        </span>
+        <span class="pp-txt">
+          <strong>ادفع الآن وحمّل الكتاب فورًا</strong>
+          <small>عبر PayPal أو بطاقة بنكية — <b dir="ltr"><bdi id="ppPrice"></bdi> $</b></small>
+        </span>
+      </div>
+      <div class="pp-pay" id="ppPay">
+        <div class="pp-buttons" id="ppButtons"></div>
+        <p class="pp-msg" id="ppMsg" role="status" aria-live="polite"></p>
+      </div>
+      <div class="pp-done" id="ppDone" hidden>
+        <p class="pp-ok">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16 9.8"/></svg>
+          <span>تم الدفع بنجاح، شكرًا لك!</span>
+        </p>
+        <p class="pp-order">رقم الطلب: <b dir="ltr" id="ppOrder"></b></p>
+        <a class="pp-dl" id="ppDl" href="#">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M4 17v2.5A1.5 1.5 0 0 0 5.5 21h13a1.5 1.5 0 0 0 1.5-1.5V17"/></svg>
+          <span>تحميل الكتاب (PDF)</span>
+        </a>
+        <small class="pp-note" id="ppNote">الرابط صالح 7 أيام، ويمكن التحميل حتى 5 مرات. احتفظ برقم الطلب.</small>
+      </div>
+    </div>
+
     <!-- آخر صفحة: داخل الكتاب على الحاسوب، وبعد آخر صفحة على الهاتف (ينسخها app.js) -->
     <template id="fbEndTpl">
       <div class="pv-end">
@@ -243,6 +275,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="../../shared/vendor/page-flip/page-flip.browser.js"></script>
 <script src="app.js?v=20261028c"></script>
+<script src="paypal.js?v=20261104a"></script>
 <script src="../../site-nav.js"></script>
 </body>
 </html>

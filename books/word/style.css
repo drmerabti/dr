@@ -614,3 +614,76 @@ body.fb-lock{ overflow: hidden; }
   .price-num{ font-size: 1.75rem; }
   .ct-value{ font-size: 1.14rem; }
 }
+
+/* =====================================================================
+   PayPal block under the preview (Word book only: books/word/paypal.js).
+   Desktop: one row under the arrows — text on the right, buttons on the left.
+   Phone: under the list of pages, text above the buttons.
+===================================================================== */
+.pp-box{
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; gap: 14px 22px; flex-wrap: wrap;
+  margin: 0 18px 14px;
+  padding: 12px 16px;
+  border-radius: 16px;
+  background: var(--surface);
+  border: 1.5px solid var(--gold);
+  box-shadow: var(--shadow-md);
+}
+.pp-box[hidden], .pp-box [hidden], .buy-pp[hidden]{ display: none; }
+.pp-box.flash{ animation: buyFlash 1.2s ease; }
+.pp-info{ display: flex; align-items: center; gap: 11px; min-width: 0; }
+.pp-ico{
+  width: 42px; height: 42px; border-radius: 12px; flex-shrink: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--gold-soft); color: #9B6A12;
+}
+.pp-ico svg{ width: 24px; height: 24px; }
+.pp-txt{ display: flex; flex-direction: column; gap: 2px; }
+.pp-txt strong{ font-size: 1.04rem; font-weight: 900; color: var(--brand-strong); line-height: 1.35; }
+.pp-txt small{ font-size: .84rem; font-weight: 700; color: var(--ink-soft); }
+.pp-txt b{ font-family: var(--font-en); font-weight: 800; color: var(--ink); }
+.pp-pay{ width: 300px; max-width: 100%; }
+.pp-buttons{ min-height: 40px; }
+.pp-msg{ margin: 4px 0 0; font-size: .84rem; font-weight: 700; color: var(--ink-soft); text-align: center; line-height: 1.6; }
+.pp-msg:empty{ display: none; }
+.pp-msg.err{ color: #C0392B; }
+.pp-box.busy .pp-buttons{ opacity: .45; pointer-events: none; }
+
+.pp-done{ display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; }
+.pp-ok{ margin: 0; display: inline-flex; align-items: center; gap: 7px; font-size: 1.06rem; font-weight: 900; color: #178244; }
+.pp-ok svg{ width: 24px; height: 24px; }
+.pp-order{ margin: 0; font-size: .92rem; font-weight: 700; color: var(--ink-soft); }
+.pp-order b{ font-family: var(--font-en); color: var(--ink); user-select: all; }
+.pp-dl{
+  display: inline-flex; align-items: center; gap: 9px;
+  padding: 11px 24px; border-radius: 999px;
+  background: var(--brand); color: #fff; text-decoration: none;
+  font-size: 1rem; font-weight: 900;
+  box-shadow: var(--shadow-md);
+  transition: transform .15s ease, filter .15s ease;
+}
+.pp-dl:hover{ transform: translateY(-1px); filter: brightness(1.08); }
+.pp-dl:focus-visible, .buy-pp:focus-visible{ outline: 3px solid var(--gold); outline-offset: 2px; }
+.pp-dl svg{ width: 20px; height: 20px; }
+.pp-note{ font-size: .78rem; font-weight: 600; color: var(--ink-soft); line-height: 1.6; }
+
+/* link in the order box to the PayPal block */
+.buy-pp{
+  display: block; padding: 9px 12px; border-radius: 12px;
+  background: var(--gold-soft); color: #7A520C; text-decoration: none; text-align: center;
+  font-size: .86rem; font-weight: 800; line-height: 1.5;
+}
+.buy-pp:hover{ filter: brightness(.97); }
+
+/* reading full screen: only the book */
+.bk-preview:fullscreen .pp-box, .bk-preview:-webkit-full-screen .pp-box, .bk-preview.fb-pseudo-fs .pp-box{ display: none; }
+
+@media (min-width: 861px) and (max-height: 820px){
+  .pp-box{ margin-bottom: 10px; padding-block: 9px; }
+  .fb-nav{ padding-bottom: 8px; }
+}
+@media (max-width: 860px){
+  .pp-box{ margin: 4px 10px 20px; padding: 16px 14px; flex-direction: column; scroll-margin-top: calc(var(--top-h) + 12px); }
+  .pp-pay{ width: 100%; max-width: 360px; }
+}

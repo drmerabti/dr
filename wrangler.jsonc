@@ -1,0 +1,34 @@
+// Cloudflare Worker config (replaces the old wrangler.toml — same name, main, assets and D1).
+// PAYPAL_SECRET is a runtime secret set in the Cloudflare dashboard: never put it here.
+{
+  "name": "dr",
+  "main": "worker.js",
+  "compatibility_date": "2025-01-01",
+
+  "assets": {
+    "directory": "./",
+    "binding": "ASSETS"
+  },
+
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "surveysdb",
+      "database_id": "dfe47a68-cef0-4841-946b-aa8112011441"
+    }
+  ],
+
+  // Paid book PDFs (e.g. Thmoud-Book.pdf), streamed by /api/download/:token
+  "r2_buckets": [
+    {
+      "binding": "BOOKS",
+      "bucket_name": "merabtibooks"
+    }
+  ],
+
+  "vars": {
+    "PAYPAL_CLIENT_ID": "AcxXXMrvBjdK7bwJy6MPOwJd3lAML6pYlbe9uobo7tsSC8kyDpTX-7uNhY0un-XFPMshLNnZQQT6KVBp",
+    // "sandbox" → api-m.sandbox.paypal.com ; "live" → api-m.paypal.com (change the client ID and secret too)
+    "PAYPAL_ENV": "sandbox"
+  }
+}

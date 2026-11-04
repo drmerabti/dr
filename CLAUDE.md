@@ -46,3 +46,14 @@ the backend is **Firebase Functions** (us-central1), outside this repo.
   `permission-denied` = not bought → the purchase window opens. The file is never in the repo.
 - Back from Chargily: `?paid=<serverId>` (wait for `paid` with onSnapshot) or `?payfail=1`.
 - USD goes through the Gumroad overlay (`gumroadUrl`); Gumroad delivers the file itself.
+
+## PayPal book sales (Cloudflare Worker, separate from products.json)
+
+The Word book (`books/word/`) is sold for USD through PayPal, fully on Cloudflare:
+
+- `worker.js` → `BOOK_CATALOG` is the only place for price + R2 file name (`word-book` = 6.00 USD,
+  `Thmoud-Book.pdf`). Routes: `GET /api/paypal/config?bookId=`, `POST /api/paypal/create-order {bookId}`,
+  `POST /api/paypal/capture-order {orderId}`, `GET /api/download/:token` (7 days, 5 downloads).
+- `wrangler.jsonc`: vars `PAYPAL_CLIENT_ID`, `PAYPAL_ENV` (`sandbox` | `live`), R2 binding `BOOKS` → `merabtibooks`.
+  `PAYPAL_SECRET` is a dashboard secret — never in the repo.
+- D1 table `paypal_orders` (created on first use). Page side: `books/word/paypal.js` + `#ppBox` under the preview.
