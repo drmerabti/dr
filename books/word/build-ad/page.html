@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>كتب أخرى تنتظرك</title>
+<style>
+@font-face { font-family: Cairo; font-weight: 600; src: url(../../macbook-shortcuts/build/fonts/Cairo-600.ttf); }
+@font-face { font-family: Cairo; font-weight: 700; src: url(../../macbook-shortcuts/build/fonts/Cairo-700.ttf); }
+@font-face { font-family: Cairo; font-weight: 800; src: url(../../macbook-shortcuts/build/fonts/Cairo-800.ttf); }
+@font-face { font-family: Tajawal; font-weight: 400; src: url(fonts/Tajawal-Regular.ttf); }
+@font-face { font-family: Inter; font-weight: 600; src: url(../../macbook-shortcuts/build/fonts/Inter-600.ttf); }
+@font-face { font-family: Kaushan; src: url(fonts/KaushanScript-Regular.ttf); }
+
+/* same size as the Word book: 170 x 240 mm */
+@page { size: 481.89pt 680.315pt; margin: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 481.89pt; height: 680.315pt; background: #fff; }
+.page { position: relative; width: 481.89pt; height: 680.315pt; overflow: hidden; text-align: center; color: #0f2d5c; }
+
+.pill { position: absolute; top: 60pt; left: 50%; transform: translateX(-50%);
+  height: 24pt; padding: 0 14.4pt; border-radius: 12pt; background: #0f2d5c; color: #f5b800;
+  font: 700 10.5pt/24pt Cairo; white-space: nowrap; }
+h1 { position: absolute; top: 84pt; left: 0; right: 0; font: 800 24pt/51pt Cairo; color: #0f2d5c; }
+.sub { position: absolute; top: 129.2pt; left: 50%; transform: translateX(-50%); width: 340pt;
+  font: 400 10.5pt/18.7pt Tajawal; color: #444; }
+
+.grid { position: absolute; top: 182pt; left: 0; right: 0; margin: 0 auto; width: 340pt;
+  display: grid; grid-template-columns: repeat(4, 76pt); column-gap: 12pt; row-gap: 12.4pt; direction: rtl; }
+.grid a { display: block; width: 76pt; height: 107.6pt; border-radius: 4.5pt; overflow: hidden;
+  box-shadow: 0 0 0 .75pt rgba(0,0,0,.08), 0 3pt 9pt rgba(15,45,92,.28); }
+.grid img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+.cta { position: absolute; top: 548pt; left: 50%; transform: translateX(-50%); width: 164.2pt; height: 58.5pt;
+  border-radius: 10pt; background: #0f2d5c; text-decoration: none; }
+.cta b { position: absolute; top: 7pt; left: 0; right: 0; font: 800 13pt/24pt Cairo; color: #fff; }
+.cta small { position: absolute; top: 35.5pt; left: 0; right: 0; font: 600 9.5pt/11pt Inter; color: #f5b800; direction: ltr; }
+
+.logo { position: absolute; left: 49pt; top: 640pt; width: 92pt; height: 23pt; }
+.logo svg { position: absolute; left: 0; top: 0; width: 92pt; height: 23pt; overflow: visible; }
+.logo span { position: absolute; left: 7.1pt; top: 1.2pt; font: 12.5pt/18pt Kaushan; color: #0f2d5c; direction: ltr; white-space: nowrap; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="pill">مكتبة د. سفيان مرابطي</div>
+  <h1>كتب أخرى تنتظرك</h1>
+  <p class="sub">كتب عربية مبسطة في البرامج والبرمجة والتقنية، بعضها مجاني بالكامل. اضغط على أي غلاف لتصل إليها.</p>
+
+  <div class="grid">
+    <a href="https://merabti.com/books/excel-vba/"><img src="../../excel-vba/cover.jpg" alt=""></a>
+    <a href="https://merabti.com/books/excel-functions/"><img src="../../excel-functions/cover.jpg" alt=""></a>
+    <a href="https://merabti.com/books/excel-shortcuts/"><img src="../../excel-shortcuts/cover.jpg" alt=""></a>
+    <a href="https://merabti.com/books/word-shortcuts/"><img src="../../word-shortcuts/cover.jpg" alt=""></a>
+    <a href="https://merabti.com/books/python/"><img src="../../python/cover.jpg" alt=""></a>
+    <a href="https://merabti.com/books/english-claudio/"><img src="../../english-claudio/cover.jpg" alt=""></a>
+    <a href="https://merabti.com/books/computer/"><img src="../../computer/cover.jpg" alt=""></a>
+    <a href="https://merabti.com/books/research/"><img src="../../research/cover.jpg" alt=""></a>
+    <a href="https://merabti.com/books/shortcuts-wiki/"><img src="../../shortcuts-wiki/cover.jpg" alt=""></a>
+    <a href="https://merabti.com/books/macbook-shortcuts/"><img src="../../macbook-shortcuts/cover.jpg" alt=""></a>
+    <a href="https://merabti.com/books/excel-kingdom-1/"><img src="../../excel-kingdom-1/cover.jpg" alt=""></a>
+    <a href="https://merabti.com/books/excel-kingdom-2/"><img src="../../excel-kingdom-2/cover.jpg" alt=""></a>
+  </div>
+
+  <a class="cta" href="https://merabti.com/books.html"><b>اكتشف كل الكتب</b><small>merabti.com/books.html</small></a>
+
+  <!-- footer logo: same shape as the ad page in the other books (page coords - 49,640) -->
+  <div class="logo">
+    <svg viewBox="49 640 92 23" xmlns="http://www.w3.org/2000/svg">
+      <path fill="#f8dd8d" d="M51.12 657.12 C55.81 653.38 71.44 652.12 88.62 652.44 C107.38 652.75 126.12 651.81 138.62 653.69 C140.58 654.31 139.41 655.88 137.06 656.19 C124.56 657.44 115.19 657.12 102.69 658.06 C91.75 659.00 74.56 659.62 62.06 660.25 C55.03 660.62 49.17 659.62 51.12 657.12 Z"/>
+      <path fill="#fbeab7" d="M58.94 659.94 C74.56 658.38 94.88 658.06 118.31 658.06 C126.12 658.06 130.81 658.69 129.25 659.31 C118.31 660.56 87.06 661.19 65.19 661.50 C60.50 661.50 57.38 660.88 58.94 659.94 Z"/>
+    </svg>
+    <span>Dr Merabti</span>
+  </div>
+</div>
+</body>
+</html>
