@@ -16,10 +16,25 @@ LOGO_TEXT = 'Dr Merabti'
 
 
 def logo_rects(page):
-    """'Dr Merabti' hits in the bottom-left corner of the page."""
+    """The whole 'Dr Merabti' logo in the bottom-left corner: the text and the shape drawn behind it.
+    Uses the text span's own box (search_for gives wrong boxes on some pages of this book)."""
     r = page.rect
     corner = pymupdf.Rect(0, r.height * 0.85, r.width * 0.5, r.height)
-    return [h for h in page.search_for(LOGO_TEXT) if h.intersects(corner)]
+    spans = [pymupdf.Rect(s['bbox'])
+             for b in page.get_text('dict', clip=corner)['blocks'] if b['type'] == 0
+             for l in b['lines'] for s in l['spans'] if s['text'].strip() == LOGO_TEXT]
+    out = []
+    for box in spans:
+        if not box.intersects(corner):
+            continue
+        near = box + (-20, -12, 20, 12)
+        logo = pymupdf.Rect(box)
+        for dr in page.get_drawings():
+            d = dr['rect']
+            if d.intersects(near) and d.width < 160 and d.height < 40:
+                logo |= d
+        out.append(logo)
+    return out
 
 
 def add_invisible_link(page, rect, uri):
