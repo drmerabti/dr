@@ -756,15 +756,16 @@ const CONTENT = {
 };
 
 /* ============ أيقونات SVG (ستايل شبه ثلاثي الأبعاد: ظلال + انعكاسات ضوء) ============ */
+// img = the big home icon (images/sections/), glow = its hover / tap halo colour
 const SECTIONS_ROW1 = [
-  { key: 'tools',      icon: ICONS.tools,     badge: 'badge-tools',     href: 'tools.html' },
-  { key: 'apps',       icon: ICONS.apps,      badge: 'badge-apps',      href: 'apps.html' },
-  { key: 'favorites',  icon: ICONS.favorites, badge: 'badge-favorites', href: 'favorites.html' },
+  { key: 'tools',      icon: ICONS.tools,     badge: 'badge-tools',     href: 'tools.html',     img: 'images/sections/tools.webp',     glow: '#3D7BC0' },
+  { key: 'apps',       icon: ICONS.apps,      badge: 'badge-apps',      href: 'apps.html',      img: 'images/sections/apps.webp',      glow: '#3D7BC0' },
+  { key: 'favorites',  icon: ICONS.favorites, badge: 'badge-favorites', href: 'favorites.html', img: 'images/sections/favorites.webp', glow: '#3D7BC0' },
 ];
 const SECTIONS_ROW2 = [
-  { key: 'lessons',   icon: ICONS.lessons,  badge: 'badge-lessons',   href: 'lessons.html' },
-  { key: 'trainings', icon: ICONS.training, badge: 'badge-training',  href: 'resources.html' },
-  { key: 'services',  icon: ICONS.services, badge: 'badge-services',  href: 'books.html' },
+  { key: 'lessons',   icon: ICONS.lessons,  badge: 'badge-lessons',   href: 'lessons.html',   img: 'images/sections/lessons.webp',  glow: '#3D7BC0' },
+  { key: 'trainings', icon: ICONS.training, badge: 'badge-training',  href: 'resources.html', img: 'images/sections/training.webp', glow: '#3D7BC0' },
+  { key: 'services',  icon: ICONS.services, badge: 'badge-services',  href: 'books.html',     img: 'images/sections/books.webp',    glow: '#3D7BC0' },
 ];
 const SECTIONS = [...SECTIONS_ROW1, ...SECTIONS_ROW2];
 
@@ -872,20 +873,45 @@ function renderHomeGrid(){
 function sectionCard(s){
   const locked = s.comingSoon && !homeAdmin;
   const card = document.createElement(locked ? 'div' : 'a');
-  card.className = 'section-card' + (locked ? ' coming-soon-card' : '');
+  card.className = 'section-card' + (s.img ? ' icon-card' : '') + (locked ? ' coming-soon-card' : '');
   if (!locked){
     card.href = s.href;
     card.style.textDecoration = 'none';
     card.style.color = 'inherit';
   }
   card.style.display = 'block';
+  if (s.glow) card.style.setProperty('--glow', s.glow);
+  const visual = s.img
+    ? `<span class="section-icon"><img src="${s.img}" alt="" width="400" height="400" decoding="async"></span>`
+    : `<span class="icon-badge ${s.badge}">${s.icon}</span>`;
   card.innerHTML = `
-      <span class="icon-badge ${s.badge}">${s.icon}</span>
+      ${visual}
       <h3>${t('section_' + s.key)}</h3>
       <p>${t('section_' + s.key + '_desc')}</p>
       ${s.comingSoon ? `<span class="coming-soon-badge" style="position:absolute; top:8px; inset-inline-start:8px; margin:0; font-size:.62rem; padding:2px 8px;">${lang === 'ar' ? 'قريبًا' : 'Coming soon'}</span>` : ''}
     `;
+  if (s.img && !locked) addTapEffect(card);
   return card;
+}
+
+// Touch screens: the icon pops and glows on tap, and the page opens once the
+// pop has played (a short delay) so the effect is actually seen.
+function addTapEffect(card){
+  let touched = false;
+  card.addEventListener('touchstart', () => {
+    touched = true;
+    card.classList.remove('tapped');
+    void card.offsetWidth; // restart the animation
+    card.classList.add('tapped');
+  }, { passive: true });
+  card.addEventListener('animationend', () => card.classList.remove('tapped'));
+  card.addEventListener('click', e => {
+    if (!touched || e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    touched = false;
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    e.preventDefault();
+    setTimeout(() => { window.location.href = card.href; }, 260);
+  });
 }
 
 /* =====================================================================
