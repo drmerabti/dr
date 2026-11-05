@@ -38,8 +38,8 @@
   },
 
   "vars": {
-    "PAYPAL_CLIENT_ID": "BAATyREQg1INYrgYafRfbNS5KbtuhZayUy77VKA4Rk_9lwmLFlE2Z4t0gHItT34ZfsSQTD6UesdYTsvjek",
-    // "sandbox" → api-m.sandbox.paypal.com ; "live" → api-m.paypal.com (change the client ID and secret too)
-    "PAYPAL_ENV": "sandbox"
+    "PAYPAL_CLIENT_ID": "BAAWhfxqQPS33tDpMolG8gomP-zzq2G-a0al_C_9fF4gjXOpKNbfFrTyWxvaf_8t12tL7Nvfyqh1X0vK4Y",
+    // LIVE: real payments (api-m.paypal.com). "sandbox" → api-m.sandbox.paypal.com (sandbox client ID + secret)
+    "PAYPAL_ENV": "live"
   }
 }
