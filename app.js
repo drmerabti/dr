@@ -759,13 +759,13 @@ const CONTENT = {
 // img = the big home icon (images/sections/), glow = its hover / tap halo colour
 const SECTIONS_ROW1 = [
   { key: 'tools',      icon: ICONS.tools,     badge: 'badge-tools',     href: 'tools.html',     img: 'images/sections/tools.webp',     glow: '#3D7BC0' },
-  { key: 'apps',       icon: ICONS.apps,      badge: 'badge-apps',      href: 'apps.html',      img: 'images/sections/apps.webp',      glow: '#E0245E' },
-  { key: 'favorites',  icon: ICONS.favorites, badge: 'badge-favorites', href: 'favorites.html', img: 'images/sections/favorites.webp', glow: '#F2B705' },
+  { key: 'apps',       icon: ICONS.apps,      badge: 'badge-apps',      href: 'apps.html',      img: 'images/sections/apps.webp',      glow: '#3D7BC0' },
+  { key: 'favorites',  icon: ICONS.favorites, badge: 'badge-favorites', href: 'favorites.html', img: 'images/sections/favorites.webp', glow: '#3D7BC0' },
 ];
 const SECTIONS_ROW2 = [
-  { key: 'lessons',   icon: ICONS.lessons,  badge: 'badge-lessons',   href: 'lessons.html',   img: 'images/sections/lessons.webp',  glow: '#7B3FD0' },
-  { key: 'trainings', icon: ICONS.training, badge: 'badge-training',  href: 'resources.html', img: 'images/sections/training.webp', glow: '#2FA82F' },
-  { key: 'services',  icon: ICONS.services, badge: 'badge-services',  href: 'books.html',     img: 'images/sections/books.webp',    glow: '#1F6FB0' },
+  { key: 'lessons',   icon: ICONS.lessons,  badge: 'badge-lessons',   href: 'lessons.html',   img: 'images/sections/lessons.webp',  glow: '#3D7BC0' },
+  { key: 'trainings', icon: ICONS.training, badge: 'badge-training',  href: 'resources.html', img: 'images/sections/training.webp', glow: '#3D7BC0' },
+  { key: 'services',  icon: ICONS.services, badge: 'badge-services',  href: 'books.html',     img: 'images/sections/books.webp',    glow: '#3D7BC0' },
 ];
 const SECTIONS = [...SECTIONS_ROW1, ...SECTIONS_ROW2];
 
