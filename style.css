@@ -1295,3 +1295,94 @@ html:has(body.ui-v2){ scroll-behavior: smooth; }
 @media (max-width: 600px){
   .item-grid.book-grid{ grid-template-columns: repeat(2, 1fr); gap: 24px 18px; }
 }
+
+/* ============ Home: big section icons, no card frame ============ */
+.ui-v2 .section-card.icon-card,
+.ui-v2 #sectionGrid .section-card.icon-card,
+.ui-v2 .section-grid-row2 .section-card.icon-card{
+  background: none;
+  border: 0;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 4px 4px 10px;
+  overflow: visible;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+}
+.ui-v2 .section-card.icon-card::after{ display: none; }
+
+.ui-v2 .icon-card .section-icon{
+  position: relative;
+  display: block;
+  width: min(210px, 100%);
+  aspect-ratio: 1;
+  margin: 0 auto 12px;
+  transform-origin: 50% 85%;
+  transition: transform .42s cubic-bezier(.2,.9,.25,1.35), filter .42s ease;
+  filter: drop-shadow(0 10px 12px rgba(19,40,58,.16));
+}
+/* soft colour halo behind the icon */
+.ui-v2 .icon-card .section-icon::before{
+  content: "";
+  position: absolute; inset: 8%;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--glow, #1D5C78) 45%, transparent) 0%, transparent 68%);
+  opacity: 0;
+  transform: scale(.55);
+  transition: opacity .42s ease, transform .42s cubic-bezier(.2,.9,.25,1.35);
+  z-index: -1;
+}
+.ui-v2 .icon-card .section-icon img{
+  display: block; width: 100%; height: 100%;
+  object-fit: contain;
+  user-select: none; -webkit-user-drag: none; pointer-events: none;
+}
+.ui-v2 .section-card.icon-card h3{
+  font-size: 1.22rem;
+  transition: color .3s ease, transform .3s ease;
+}
+
+/* Mouse: the icon jumps, tilts and glows */
+@media (hover: hover){
+  .ui-v2 .section-card.icon-card:hover{ transform: none; box-shadow: none; border-color: transparent; }
+  .ui-v2 .section-card.icon-card:hover .section-icon{
+    transform: translateY(-12px) scale(1.1) rotate(-3deg);
+    filter: drop-shadow(0 22px 20px color-mix(in srgb, var(--glow, #1D5C78) 38%, transparent));
+  }
+  .ui-v2 .section-card.icon-card:hover .section-icon::before{ opacity: 1; transform: scale(1.18); }
+  .ui-v2 .section-card.icon-card:hover h3{ color: var(--glow, var(--ui-brand)); transform: translateY(-3px); }
+  .ui-v2 .icon-card.coming-soon-card:hover .section-icon{ transform: none; filter: drop-shadow(0 10px 12px rgba(19,40,58,.16)); }
+  .ui-v2 .icon-card.coming-soon-card:hover .section-icon::before{ opacity: 0; }
+  .ui-v2 .icon-card.coming-soon-card:hover h3{ color: inherit; transform: none; }
+}
+/* Keyboard focus gets the same lift */
+.ui-v2 .section-card.icon-card:focus-visible .section-icon{
+  transform: translateY(-8px) scale(1.06);
+  filter: drop-shadow(0 18px 18px color-mix(in srgb, var(--glow, #1D5C78) 38%, transparent));
+}
+.ui-v2 .section-card.icon-card:focus-visible h3{ color: var(--glow, var(--ui-brand)); }
+
+/* Touch: press squeezes the icon, the tap then makes it pop with a halo */
+.ui-v2 .section-card.icon-card:active{ transform: none; }
+.ui-v2 .section-card.icon-card:active .section-icon{ transform: scale(.9); transition-duration: .12s; }
+.ui-v2 .section-card.icon-card.tapped .section-icon{ animation: iconTapPop .5s cubic-bezier(.2,.9,.25,1.35); }
+.ui-v2 .section-card.icon-card.tapped .section-icon::before{ animation: iconTapGlow .5s ease-out; }
+.ui-v2 .section-card.icon-card.tapped h3{ color: var(--glow, var(--ui-brand)); }
+@keyframes iconTapPop{
+  0%  { transform: scale(.88); }
+  45% { transform: translateY(-10px) scale(1.14) rotate(-3deg); }
+  100%{ transform: none; }
+}
+@keyframes iconTapGlow{
+  0%  { opacity: 0; transform: scale(.5); }
+  40% { opacity: 1; transform: scale(1.25); }
+  100%{ opacity: 0; transform: scale(1.45); }
+}
+
+@media (max-width: 760px){
+  .ui-v2 #sectionGrid .section-card.icon-card,
+  .ui-v2 .section-grid-row2 .section-card.icon-card{ padding: 2px 0 6px; }
+  .ui-v2 .icon-card .section-icon{ margin-bottom: 6px; }
+  .ui-v2 #sectionGrid .section-card.icon-card h3,
+  .ui-v2 .section-grid-row2 .section-card.icon-card h3{ font-size: .92rem; }
+}
