@@ -28,6 +28,15 @@
 
   // Workers Logs: every console.log (e.g. "[paypal] capture-order FAILED {...}") is kept and searchable in
   // Cloudflare → Workers & Pages → dr → Observability. head_sampling_rate 1 = keep 100 % of requests.
+  // E-mail alerts for failed payments / downloads (Cloudflare Email Routing; sender alerts@merabti.com).
+  // The destination address must stay verified in Email Routing.
+  "send_email": [
+    {
+      "name": "ALERT_EMAIL",
+      "destination_address": "merabti.soufiane1@gmail.com"
+    }
+  ],
+
   "observability": {
     "enabled": true,
     "head_sampling_rate": 1,
