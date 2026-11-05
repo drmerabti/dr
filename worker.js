@@ -200,7 +200,14 @@ async function handlePaypal(request, env, path) {
     const book = BOOK_CATALOG[bookId];
     if (!book) return json({ error: 'UNKNOWN_BOOK' }, 404);
     if (!env.PAYPAL_CLIENT_ID) return json({ error: 'PAYPAL_NOT_CONFIGURED' }, 503);
-    return json({ clientId: env.PAYPAL_CLIENT_ID, env: env.PAYPAL_ENV || 'sandbox', price: book.price, currency: book.currency });
+    // never take a payment for a file that is not in R2: no file → no PayPal buttons
+    const file = env.BOOKS ? await env.BOOKS.head(book.file) : null;
+    if (!file) {
+      logPaypal('config FILE MISSING', { bookId, file: book.file, bucketBound: !!env.BOOKS });
+      return json({ error: 'FILE_MISSING', file: book.file }, 503);
+    }
+    return json({ clientId: env.PAYPAL_CLIENT_ID, env: env.PAYPAL_ENV || 'sandbox', price: book.price, currency: book.currency,
+      file: book.file, fileFound: true, fileSize: file.size });
   }
 
   if (path.startsWith('/api/paypal/') && (!env.PAYPAL_CLIENT_ID || !env.PAYPAL_SECRET)) {
