@@ -57,5 +57,8 @@ The Word book (`books/word/`) is sold for USD through PayPal, fully on Cloudflar
 - `wrangler.jsonc`: vars `PAYPAL_CLIENT_ID`, `PAYPAL_ENV` (`sandbox` | `live`), R2 binding `BOOKS` → `merabtibooks`.
   `PAYPAL_SECRET` is a dashboard secret — never in the repo.
 - D1 table `paypal_orders` (created on first use). Page side: `books/word/paypal.js` + `#ppBox` in the "ادفع بالدولار" window.
-- Every PayPal call is logged as one `[paypal] <step> {json}` line (status, PayPal-Debug-Id, full body); Workers Logs
-  are on (`observability` in `wrangler.jsonc`) → Cloudflare → Workers & Pages → dr → Observability.
+- `paypal_orders.env` = `live` | `sandbox` (rows without it are older, from before 2026-11-05).
+- Every PayPal call is logged as one `[paypal] <step> {json}` line: order ID, status, PayPal-Debug-Id and, on failure,
+  PayPal's error fields only — never the payer (name, e-mail, address) or the full response. Workers Logs are on
+  (`observability` in `wrangler.jsonc`) → Cloudflare → Workers & Pages → dr → Observability.
+- `books/word/build-ad/` (PDF ad-page build tool) is not published (`.assetsignore`, `.vercelignore`).

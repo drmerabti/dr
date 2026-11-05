@@ -86,18 +86,47 @@ async function paypalAccessToken(env) {
   if (!res.ok) {
     // e.g. 401 invalid_client = wrong PAYPAL_SECRET / client ID, or sandbox vs live mismatch
     const text = await res.text().catch(() => '');
-    logPaypal('oauth-token', { method: 'POST', path: '/v1/oauth2/token', status: res.status,
-      debugId: res.headers.get('paypal-debug-id'), body: text });
+    let err = {};
+    try { err = JSON.parse(text); } catch (e) {}
+    logPaypal('oauth-token FAILED', { status: res.status, debugId: res.headers.get('paypal-debug-id'),
+      error: err.error || null, description: err.error_description || null });
     throw new Error('PayPal auth failed: ' + res.status);
   }
   return (await res.json()).access_token;
 }
 
-/* One JSON line per PayPal call: step, HTTP status, PayPal-Debug-Id and the full
-   response body (PayPal's name / message / details[].issue / description).
+/* One JSON line per PayPal call: step, order ID, status and, on failure, PayPal's error
+   fields only. Never the payer (name, e-mail, address) nor the full response.
    Read them in Cloudflare: Workers & Pages → dr → Observability (search "[paypal]"). */
 function logPaypal(step, info) {
   console.log('[paypal] ' + step + ' ' + JSON.stringify(Object.assign({ step }, info)));
+}
+
+/* PayPal error body → its error fields (name, message, issue, description, debug_id) */
+function paypalError(data) {
+  data = data || {};
+  return {
+    name: data.name || data.error || null,
+    message: data.message || data.error_description || null,
+    debug_id: data.debug_id || null,
+    details: (data.details || []).map(d => ({ issue: d.issue || null, description: d.description || null, field: d.field || null })),
+  };
+}
+
+/* order → what is needed to follow a payment, nothing about the buyer */
+function orderSummary(order) {
+  order = order || {};
+  const unit = (order.purchase_units || [])[0] || {};
+  const capture = ((unit.payments || {}).captures || [])[0] || {};
+  return {
+    orderId: order.id || null,
+    orderStatus: order.status || null,
+    bookId: unit.reference_id || null,
+    captureId: capture.id || null,
+    captureStatus: capture.status || null,
+    captureReason: (capture.status_details && capture.status_details.reason) || null,
+    amount: capture.amount ? capture.amount.value + ' ' + capture.amount.currency_code : null,
+  };
 }
 
 async function paypalCall(env, method, apiPath, body, extraHeaders) {
@@ -114,6 +143,8 @@ async function paypalCall(env, method, apiPath, body, extraHeaders) {
   return { ok: res.ok, status: res.status, data, debugId, method, path: apiPath };
 }
 
+let paypalEnvColumnChecked = false;
+
 async function ensurePaypalTables(db) {
   await db.prepare(`CREATE TABLE IF NOT EXISTS paypal_orders (
     order_id TEXT PRIMARY KEY,
@@ -125,8 +156,14 @@ async function ensurePaypalTables(db) {
     created_at TEXT NOT NULL,
     token TEXT NOT NULL UNIQUE,
     expires_at TEXT NOT NULL,
-    downloads INTEGER NOT NULL DEFAULT 0
+    downloads INTEGER NOT NULL DEFAULT 0,
+    env TEXT
   )`).run();
+  // tables made before the "env" column (sandbox / live) existed: add it once per isolate
+  if (!paypalEnvColumnChecked) {
+    paypalEnvColumnChecked = true;
+    try { await db.prepare(`ALTER TABLE paypal_orders ADD COLUMN env TEXT`).run(); } catch (e) { /* already there */ }
+  }
 }
 
 function orderReply(row) {
@@ -188,7 +225,8 @@ async function handlePaypal(request, env, path) {
     });
     logPaypal(r.ok && r.data.id ? 'create-order ok' : 'create-order FAILED', {
       env: env.PAYPAL_ENV, bookId, method: r.method, path: r.path, status: r.status, debugId: r.debugId,
-      body: r.ok && r.data.id ? { id: r.data.id, status: r.data.status } : r.data,
+      orderId: r.data.id || null, orderStatus: r.data.status || null,
+      error: r.ok && r.data.id ? null : paypalError(r.data),
     });
     if (!r.ok || !r.data.id) {
       return json({ error: 'CREATE_FAILED', message: 'تعذّر إنشاء الطلب، حاول مرة أخرى.',
@@ -211,15 +249,16 @@ async function handlePaypal(request, env, path) {
     let r = await paypalCall(env, 'POST', '/v2/checkout/orders/' + orderId + '/capture', null,
       { 'PayPal-Request-Id': 'capture-' + orderId });
     const issue = r.data && r.data.details && r.data.details[0] && r.data.details[0].issue;
-    // full response, success or not (on failure: name, message, details[].issue, debug_id)
+    // order ID + status; on failure PayPal's error fields (name, message, details[].issue, debug_id)
     logPaypal(r.ok ? 'capture-order ok' : 'capture-order FAILED', {
-      env: env.PAYPAL_ENV, orderId, method: r.method, path: r.path, status: r.status, debugId: r.debugId,
-      issue: issue || null, body: r.data,
+      env: env.PAYPAL_ENV, orderId, status: r.status, debugId: r.debugId,
+      issue: issue || null, order: r.ok ? orderSummary(r.data) : null, error: r.ok ? null : paypalError(r.data),
     });
     if (!r.ok && issue === 'ORDER_ALREADY_CAPTURED') {
       r = await paypalCall(env, 'GET', '/v2/checkout/orders/' + orderId);
       logPaypal('get-order (already captured)', {
-        env: env.PAYPAL_ENV, orderId, method: r.method, path: r.path, status: r.status, debugId: r.debugId, body: r.data,
+        env: env.PAYPAL_ENV, orderId, status: r.status, debugId: r.debugId,
+        order: r.ok ? orderSummary(r.data) : null, error: r.ok ? null : paypalError(r.data),
       });
     } else if (!r.ok) {
       if (issue === 'INSTRUMENT_DECLINED') {
@@ -237,7 +276,7 @@ async function handlePaypal(request, env, path) {
     const amount = capture.amount || {};
 
     if (order.status !== 'COMPLETED' || capture.status !== 'COMPLETED') {
-      logPaypal('capture-order NOT COMPLETED', { env: env.PAYPAL_ENV, orderId, orderStatus: order.status, captureStatus: capture.status, body: order });
+      logPaypal('capture-order NOT COMPLETED', { env: env.PAYPAL_ENV, orderId, order: orderSummary(order) });
       return json({
         error: 'NOT_COMPLETED',
         message: capture.status === 'PENDING'
@@ -254,10 +293,10 @@ async function handlePaypal(request, env, path) {
     const expires = new Date(now.getTime() + DOWNLOAD_DAYS * 24 * 3600 * 1000);
     const email = (order.payer && order.payer.email_address) || '';
     await env.DB.prepare(
-      `INSERT OR IGNORE INTO paypal_orders (order_id, book_id, buyer_email, amount, currency, capture_id, created_at, token, expires_at, downloads)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0)`
+      `INSERT OR IGNORE INTO paypal_orders (order_id, book_id, buyer_email, amount, currency, capture_id, created_at, token, expires_at, downloads, env)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?)`
     ).bind(orderId, bookId, email, amount.value, amount.currency_code, capture.id || '',
-      now.toISOString(), randomToken(), expires.toISOString()).run();
+      now.toISOString(), randomToken(), expires.toISOString(), env.PAYPAL_ENV === 'live' ? 'live' : 'sandbox').run();
     const row = await env.DB.prepare(`SELECT * FROM paypal_orders WHERE order_id = ?`).bind(orderId).first();
     return orderReply(row);
   }
