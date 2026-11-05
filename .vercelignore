@@ -5,3 +5,5 @@ sora2nas
 wrangler.toml
 *.md
 books/macbook-shortcuts/build
+wrangler.jsonc
+books/word/build-ad

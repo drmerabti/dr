@@ -37,10 +37,337 @@ async function ensureTables(db) {
   try { await db.prepare(`ALTER TABLE surveys ADD COLUMN thanks_message TEXT`).run(); } catch (e) {}
 }
 
+/* =====================================================================
+   بيع الكتب عبر PayPal (الدولار) + التحميل من R2
+   - السعر يأتي من BOOK_CATALOG هنا فقط، ولا يُقبل أي سعر من المتصفح.
+   - PAYPAL_CLIENT_ID و PAYPAL_ENV في wrangler.jsonc، و PAYPAL_SECRET سرّ في لوحة Cloudflare.
+   - الطلبات المدفوعة تُحفظ في D1 (paypal_orders) مع رمز تحميل عشوائي:
+     صالح 7 أيام، و5 تحميلات كحد أقصى.
+===================================================================== */
+const BOOK_CATALOG = {
+  'word-book': {
+    title: 'حتى لو كنت من قوم ثمود ستفهم برنامج وورد',
+    price: '6.00',
+    currency: 'USD',
+    file: 'Thamoud-Book.pdf',   // object at the root of the R2 bucket merabtibooks
+  },
+};
+const CONTACT_EMAIL = 'contact@merabti.com';
+const DOWNLOAD_DAYS = 7;
+const MAX_DOWNLOADS = 5;
+
+function paypalApi(env) {
+  return env.PAYPAL_ENV === 'live' ? 'https://api-m.paypal.com' : 'https://api-m.sandbox.paypal.com';
+}
+
+function toCents(v) {
+  return Math.round(parseFloat(v) * 100);
+}
+
+function randomToken() {
+  const b = new Uint8Array(32);
+  crypto.getRandomValues(b);
+  return Array.from(b, x => x.toString(16).padStart(2, '0')).join('');
+}
+
+async function readJson(request) {
+  try { return await request.json(); } catch (e) { return {}; }
+}
+
+async function paypalAccessToken(env) {
+  const res = await fetch(paypalApi(env) + '/v1/oauth2/token', {
+    method: 'POST',
+    headers: {
+      Authorization: 'Basic ' + btoa(env.PAYPAL_CLIENT_ID + ':' + env.PAYPAL_SECRET),
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: 'grant_type=client_credentials',
+  });
+  if (!res.ok) {
+    // e.g. 401 invalid_client = wrong PAYPAL_SECRET / client ID, or sandbox vs live mismatch
+    const text = await res.text().catch(() => '');
+    let err = {};
+    try { err = JSON.parse(text); } catch (e) {}
+    logPaypal('oauth-token FAILED', { status: res.status, debugId: res.headers.get('paypal-debug-id'),
+      error: err.error || null, description: err.error_description || null });
+    throw new Error('PayPal auth failed: ' + res.status);
+  }
+  return (await res.json()).access_token;
+}
+
+/* One JSON line per PayPal call: step, order ID, status and, on failure, PayPal's error
+   fields only. Never the payer (name, e-mail, address) nor the full response.
+   Read them in Cloudflare: Workers & Pages → dr → Observability (search "[paypal]"). */
+function logPaypal(step, info) {
+  console.log('[paypal] ' + step + ' ' + JSON.stringify(Object.assign({ step }, info)));
+}
+
+/* PayPal error body → its error fields (name, message, issue, description, debug_id) */
+function paypalError(data) {
+  data = data || {};
+  return {
+    name: data.name || data.error || null,
+    message: data.message || data.error_description || null,
+    debug_id: data.debug_id || null,
+    details: (data.details || []).map(d => ({ issue: d.issue || null, description: d.description || null, field: d.field || null })),
+  };
+}
+
+/* order → what is needed to follow a payment, nothing about the buyer */
+function orderSummary(order) {
+  order = order || {};
+  const unit = (order.purchase_units || [])[0] || {};
+  const capture = ((unit.payments || {}).captures || [])[0] || {};
+  return {
+    orderId: order.id || null,
+    orderStatus: order.status || null,
+    bookId: unit.reference_id || null,
+    captureId: capture.id || null,
+    captureStatus: capture.status || null,
+    captureReason: (capture.status_details && capture.status_details.reason) || null,
+    amount: capture.amount ? capture.amount.value + ' ' + capture.amount.currency_code : null,
+  };
+}
+
+async function paypalCall(env, method, apiPath, body, extraHeaders) {
+  const token = await paypalAccessToken(env);
+  const res = await fetch(paypalApi(env) + apiPath, {
+    method,
+    headers: Object.assign({ Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' }, extraHeaders || {}),
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  const text = await res.text().catch(() => '');
+  let data = {};
+  try { data = text ? JSON.parse(text) : {}; } catch (e) { data = { raw: text }; }
+  const debugId = res.headers.get('paypal-debug-id');
+  return { ok: res.ok, status: res.status, data, debugId, method, path: apiPath };
+}
+
+let paypalEnvColumnChecked = false;
+
+async function ensurePaypalTables(db) {
+  await db.prepare(`CREATE TABLE IF NOT EXISTS paypal_orders (
+    order_id TEXT PRIMARY KEY,
+    book_id TEXT NOT NULL,
+    buyer_email TEXT,
+    amount TEXT NOT NULL,
+    currency TEXT NOT NULL,
+    capture_id TEXT,
+    created_at TEXT NOT NULL,
+    token TEXT NOT NULL UNIQUE,
+    expires_at TEXT NOT NULL,
+    downloads INTEGER NOT NULL DEFAULT 0,
+    env TEXT
+  )`).run();
+  // tables made before the "env" column (sandbox / live) existed: add it once per isolate
+  if (!paypalEnvColumnChecked) {
+    paypalEnvColumnChecked = true;
+    try { await db.prepare(`ALTER TABLE paypal_orders ADD COLUMN env TEXT`).run(); } catch (e) { /* already there */ }
+  }
+}
+
+function orderReply(row) {
+  return json({
+    ok: true,
+    orderId: row.order_id,
+    bookId: row.book_id,
+    downloadUrl: '/api/download/' + row.token,
+    expiresAt: row.expires_at,
+    maxDownloads: MAX_DOWNLOADS,
+    downloadsLeft: Math.max(0, MAX_DOWNLOADS - row.downloads),
+  });
+}
+
+/* صفحة عربية بسيطة لأخطاء رابط التحميل (يفتحه المشتري في المتصفح) */
+function downloadError(status, title, text) {
+  const html = `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex">
+<title>${title}</title></head>
+<body style="margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#F2F6F9;font-family:Tahoma,Arial,sans-serif;color:#13283A">
+<div style="max-width:440px;margin:16px;padding:28px 24px;background:#fff;border-radius:18px;box-shadow:0 10px 28px rgba(19,40,58,.1);text-align:center;line-height:1.8">
+<h1 style="font-size:1.25rem;margin:0 0 8px">${title}</h1><p style="margin:0 0 16px;color:#5A6C7E">${text}</p>
+<a href="mailto:${CONTACT_EMAIL}" dir="ltr" style="color:#1D5C78;font-weight:700;white-space:nowrap;unicode-bidi:isolate">${CONTACT_EMAIL}</a></div></body></html>`;
+  return new Response(html, {
+    status,
+    headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex' },
+  });
+}
+
+async function handlePaypal(request, env, path) {
+  // ============ إعدادات الواجهة: client ID العام والسعر من الكتالوج ============
+  if (path === '/api/paypal/config' && request.method === 'GET') {
+    const bookId = new URL(request.url).searchParams.get('bookId') || '';
+    const book = BOOK_CATALOG[bookId];
+    if (!book) return json({ error: 'UNKNOWN_BOOK' }, 404);
+    if (!env.PAYPAL_CLIENT_ID) return json({ error: 'PAYPAL_NOT_CONFIGURED' }, 503);
+    // never take a payment for a file that is not in R2: no file → no PayPal buttons
+    const file = env.BOOKS ? await env.BOOKS.head(book.file) : null;
+    if (!file) {
+      logPaypal('config FILE MISSING', { bookId, file: book.file, bucketBound: !!env.BOOKS });
+      return json({ error: 'FILE_MISSING', file: book.file }, 503);
+    }
+    return json({ clientId: env.PAYPAL_CLIENT_ID, env: env.PAYPAL_ENV || 'sandbox', price: book.price, currency: book.currency,
+      file: book.file, fileFound: true, fileSize: file.size });
+  }
+
+  if (path.startsWith('/api/paypal/') && (!env.PAYPAL_CLIENT_ID || !env.PAYPAL_SECRET)) {
+    return json({ error: 'PAYPAL_NOT_CONFIGURED', message: 'الدفع عبر PayPal غير مُفعّل حاليًا.' }, 503);
+  }
+
+  // ============ إنشاء طلب PayPal (السعر من الكتالوج فقط) ============
+  if (path === '/api/paypal/create-order' && request.method === 'POST') {
+    const body = await readJson(request);
+    const bookId = String(body.bookId || '');
+    const book = BOOK_CATALOG[bookId];
+    if (!book) return json({ error: 'UNKNOWN_BOOK', message: 'الكتاب غير موجود.' }, 400);
+    const r = await paypalCall(env, 'POST', '/v2/checkout/orders', {
+      intent: 'CAPTURE',
+      purchase_units: [{
+        reference_id: bookId,
+        custom_id: bookId,
+        description: book.title.slice(0, 120),
+        amount: { currency_code: book.currency, value: book.price },
+      }],
+      application_context: { shipping_preference: 'NO_SHIPPING', user_action: 'PAY_NOW', brand_name: 'merabti.com' },
+    });
+    logPaypal(r.ok && r.data.id ? 'create-order ok' : 'create-order FAILED', {
+      env: env.PAYPAL_ENV, bookId, method: r.method, path: r.path, status: r.status, debugId: r.debugId,
+      orderId: r.data.id || null, orderStatus: r.data.status || null,
+      error: r.ok && r.data.id ? null : paypalError(r.data),
+    });
+    if (!r.ok || !r.data.id) {
+      return json({ error: 'CREATE_FAILED', message: 'تعذّر إنشاء الطلب، حاول مرة أخرى.',
+        paypalStatus: r.status, issue: (r.data.details && r.data.details[0] && r.data.details[0].issue) || r.data.name || null,
+        debugId: r.debugId || null }, 502);
+    }
+    return json({ id: r.data.id });
+  }
+
+  // ============ تأكيد الدفع (capture) + الحفظ في D1 + رمز التحميل ============
+  if (path === '/api/paypal/capture-order' && request.method === 'POST') {
+    const body = await readJson(request);
+    const orderId = String(body.orderId || '');
+    if (!/^[A-Z0-9]{8,32}$/.test(orderId)) return json({ error: 'BAD_ORDER', message: 'رقم الطلب غير صالح.' }, 400);
+
+    await ensurePaypalTables(env.DB);
+    const saved = await env.DB.prepare(`SELECT * FROM paypal_orders WHERE order_id = ?`).bind(orderId).first();
+    if (saved) return orderReply(saved);   // طلب مؤكَّد من قبل (إعادة محاولة أو نقرة مزدوجة)
+
+    let r = await paypalCall(env, 'POST', '/v2/checkout/orders/' + orderId + '/capture', null,
+      { 'PayPal-Request-Id': 'capture-' + orderId });
+    const issue = r.data && r.data.details && r.data.details[0] && r.data.details[0].issue;
+    // order ID + status; on failure PayPal's error fields (name, message, details[].issue, debug_id)
+    logPaypal(r.ok ? 'capture-order ok' : 'capture-order FAILED', {
+      env: env.PAYPAL_ENV, orderId, status: r.status, debugId: r.debugId,
+      issue: issue || null, order: r.ok ? orderSummary(r.data) : null, error: r.ok ? null : paypalError(r.data),
+    });
+    if (!r.ok && issue === 'ORDER_ALREADY_CAPTURED') {
+      r = await paypalCall(env, 'GET', '/v2/checkout/orders/' + orderId);
+      logPaypal('get-order (already captured)', {
+        env: env.PAYPAL_ENV, orderId, status: r.status, debugId: r.debugId,
+        order: r.ok ? orderSummary(r.data) : null, error: r.ok ? null : paypalError(r.data),
+      });
+    } else if (!r.ok) {
+      if (issue === 'INSTRUMENT_DECLINED') {
+        return json({ error: 'INSTRUMENT_DECLINED', message: 'رُفضت وسيلة الدفع، اختر وسيلة أخرى.' }, 402);
+      }
+      return json({ error: 'CAPTURE_FAILED', message: 'لم يكتمل الدفع، لم يُخصم أي مبلغ. حاول مرة أخرى.',
+        paypalStatus: r.status, issue: issue || null, debugId: r.debugId || null }, 502);
+    }
+
+    const order = r.data || {};
+    const unit = (order.purchase_units || [])[0] || {};
+    const capture = ((unit.payments || {}).captures || [])[0] || {};
+    const bookId = unit.reference_id || unit.custom_id || capture.custom_id || '';
+    const book = BOOK_CATALOG[bookId];
+    const amount = capture.amount || {};
+
+    if (order.status !== 'COMPLETED' || capture.status !== 'COMPLETED') {
+      logPaypal('capture-order NOT COMPLETED', { env: env.PAYPAL_ENV, orderId, order: orderSummary(order) });
+      return json({
+        error: 'NOT_COMPLETED',
+        message: capture.status === 'PENDING'
+          ? 'الدفع قيد المراجعة لدى PayPal. سيصلك الكتاب بعد اكتماله، راسلنا برقم الطلب: ' + orderId
+          : 'لم يكتمل الدفع. حاول مرة أخرى.',
+      }, 402);
+    }
+    if (!book || amount.currency_code !== book.currency || toCents(amount.value) !== toCents(book.price)) {
+      logPaypal('capture-order AMOUNT MISMATCH', { env: env.PAYPAL_ENV, orderId, bookId, amount, expected: book ? book.price + ' ' + book.currency : null });
+      return json({ error: 'AMOUNT_MISMATCH', message: 'المبلغ المدفوع لا يطابق سعر الكتاب. راسلنا برقم الطلب: ' + orderId }, 400);
+    }
+
+    const now = new Date();
+    const expires = new Date(now.getTime() + DOWNLOAD_DAYS * 24 * 3600 * 1000);
+    const email = (order.payer && order.payer.email_address) || '';
+    await env.DB.prepare(
+      `INSERT OR IGNORE INTO paypal_orders (order_id, book_id, buyer_email, amount, currency, capture_id, created_at, token, expires_at, downloads, env)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?)`
+    ).bind(orderId, bookId, email, amount.value, amount.currency_code, capture.id || '',
+      now.toISOString(), randomToken(), expires.toISOString(), env.PAYPAL_ENV === 'live' ? 'live' : 'sandbox').run();
+    const row = await env.DB.prepare(`SELECT * FROM paypal_orders WHERE order_id = ?`).bind(orderId).first();
+    return orderReply(row);
+  }
+
+  // ============ تحميل الكتاب من R2 برمز التحميل ============
+  const dl = path.match(/^\/api\/download\/([a-f0-9]{64})$/);
+  if (dl && (request.method === 'GET' || request.method === 'HEAD')) {
+    await ensurePaypalTables(env.DB);
+    const row = await env.DB.prepare(`SELECT * FROM paypal_orders WHERE token = ?`).bind(dl[1]).first();
+    if (!row) return downloadError(404, 'رابط التحميل غير صحيح', 'تأكّد من الرابط، أو راسلنا برقم الطلب.');
+    const nowIso = new Date().toISOString();
+    if (row.expires_at <= nowIso) {
+      return downloadError(410, 'انتهت صلاحية الرابط', 'رابط التحميل صالح ' + DOWNLOAD_DAYS + ' أيام فقط. راسلنا برقم الطلب ' + row.order_id + ' لنرسل لك رابطًا جديدًا.');
+    }
+    if (row.downloads >= MAX_DOWNLOADS) {
+      return downloadError(410, 'استُنفد عدد التحميلات', 'يمكن تحميل الكتاب ' + MAX_DOWNLOADS + ' مرات فقط. راسلنا برقم الطلب ' + row.order_id + '.');
+    }
+    const book = BOOK_CATALOG[row.book_id];
+    const headers = {
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': `attachment; filename="${book.file}"`,
+      'Cache-Control': 'private, no-store',
+      'X-Robots-Tag': 'noindex',
+    };
+    if (request.method === 'HEAD') {   // لا يُحتسب تحميلًا
+      const head = await env.BOOKS.head(book.file);
+      if (!head) return downloadError(500, 'الملف غير متاح مؤقتًا', 'حدث خطأ من جهتنا، راسلنا برقم الطلب ' + row.order_id + '.');
+      return new Response(null, { headers: Object.assign({ 'Content-Length': String(head.size) }, headers) });
+    }
+    const obj = await env.BOOKS.get(book.file);
+    if (!obj) {
+      console.log('R2 object missing', book.file);
+      return downloadError(500, 'الملف غير متاح مؤقتًا', 'حدث خطأ من جهتنا، راسلنا برقم الطلب ' + row.order_id + '.');
+    }
+    // العدّ ذرّي: لا يتجاوز الحد حتى مع طلبات متزامنة
+    const upd = await env.DB.prepare(
+      `UPDATE paypal_orders SET downloads = downloads + 1 WHERE token = ? AND downloads < ? AND expires_at > ?`
+    ).bind(dl[1], MAX_DOWNLOADS, nowIso).run();
+    if (!upd.meta || upd.meta.changes !== 1) {
+      try { await obj.body.cancel(); } catch (e) {}
+      return downloadError(410, 'استُنفد عدد التحميلات', 'راسلنا برقم الطلب ' + row.order_id + '.');
+    }
+    return new Response(obj.body, { headers: Object.assign({ 'Content-Length': String(obj.size) }, headers) });
+  }
+
+  return null;
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     const path = url.pathname;
+
+    // ============ PayPal + تحميل الكتب ============
+    if (path.startsWith('/api/paypal/') || path.startsWith('/api/download/')) {
+      try {
+        const res = await handlePaypal(request, env, path);
+        if (res) return res;
+      } catch (e) {
+        console.log('[paypal] route error ' + path + ' ' + (e && e.stack || e));
+        return json({ error: 'SERVER_ERROR', message: 'حدث خطأ في الخادم، حاول مرة أخرى.' }, 500);
+      }
+      return json({ error: 'NOT_FOUND' }, 404);
+    }
 
     // ============ إنشاء استبيان ============
     if (path === '/api/surveys' && request.method === 'POST') {

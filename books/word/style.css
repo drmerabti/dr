@@ -614,3 +614,117 @@ body.fb-lock{ overflow: hidden; }
   .price-num{ font-size: 1.75rem; }
   .ct-value{ font-size: 1.14rem; }
 }
+
+/* =====================================================================
+   Word book purchase (books/word/buy.js + paypal.js): two buttons in the
+   order box — USD (PayPal / card logos) and DZD — each opening a window.
+   Only the Word page uses these classes; the other book pages keep
+   their e-mail / WhatsApp buttons.
+===================================================================== */
+.order-usd, .order-dzd{
+  width: 100%; border: 0; cursor: pointer;
+  font-family: inherit; text-align: start;
+  justify-content: space-between;
+}
+.order-usd{
+  min-height: 84px;
+  background: var(--surface); color: var(--ink);
+  border: 2px solid #003087;
+}
+.order-usd .order-txt strong{ color: #003087; }
+.order-usd .order-txt small{ color: var(--ink-soft); opacity: 1; }
+.order-usd:hover{ box-shadow: 0 0 0 3px rgba(0,48,135,.12), var(--shadow-lg); }
+.order-dzd{
+  min-height: 72px;
+  background: linear-gradient(135deg, #2A7899 0%, var(--brand) 55%, var(--brand-strong) 100%);
+}
+.order-usd:focus-visible, .order-dzd:focus-visible{ outline: 3px solid var(--gold); outline-offset: 3px; }
+.pay-logos{ display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin: 2px 0 1px; direction: ltr; justify-content: flex-end; }
+.pay-logos .logo-pp{ height: 22px; width: auto; }
+.pay-logos .logo-card{ height: 20px; width: auto; border-radius: 3px; }
+.order-price{
+  flex-shrink: 0;
+  font: 900 1.55rem/1 var(--font-en);
+  white-space: nowrap;
+}
+.order-usd .order-price{ color: #003087; }
+.order-dzd .order-price{ color: var(--gold); }
+.order-dzd .order-price{ font-family: var(--font-en); }
+.order-price bdi{ direction: ltr; unicode-bidi: isolate; }
+
+/* ---------- the two windows ---------- */
+.pm-overlay{
+  position: fixed; inset: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px;
+  background: rgba(12,28,40,.62);
+  animation: ctFade .18s ease;
+}
+.pm-overlay[hidden]{ display: none; }
+.pm-box{
+  position: relative;
+  width: 100%; max-width: 440px;
+  max-height: calc(100vh - 32px); max-height: calc(100dvh - 32px);
+  overflow-y: auto; overscroll-behavior: contain;
+  padding: 26px 22px 20px;
+  border-radius: 22px;
+  background: var(--surface);
+  box-shadow: 0 24px 60px rgba(12,28,40,.32);
+  text-align: center;
+  animation: ctPop .2s cubic-bezier(.2,.7,.2,1);
+}
+.pm-close{ z-index: 1; }
+.pm-close:focus-visible{ outline: 3px solid var(--gold); outline-offset: 2px; }
+.pm-box h3{ margin: 0 0 4px; font-size: 1.25rem; font-weight: 900; color: var(--brand-strong); }
+.pm-sub{ margin: 0 0 16px; font-size: .9rem; font-weight: 600; color: var(--ink-soft); line-height: 1.7; }
+.pm-sub b{ color: var(--ink); font-family: var(--font-en); font-weight: 900; }
+.pm-logos{ display: flex; align-items: center; justify-content: center; gap: 8px; margin: 4px 0 10px; direction: ltr; }
+.pm-logos .logo-pp{ height: 28px; width: auto; }
+.pm-logos .logo-card{ height: 24px; width: auto; border-radius: 3px; }
+.pm-choices{ display: flex; flex-direction: column; gap: 10px; text-align: start; }
+.pm-choices .order-mail{ min-height: 70px; }
+.pm-choices .order-txt small{ direction: ltr; text-align: right; }
+.pm-safe{
+  margin: 14px 0 0;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  font-size: .78rem; font-weight: 700; color: var(--ink-soft);
+}
+.pm-safe svg{ width: 15px; height: 15px; flex-shrink: 0; }
+
+/* PayPal buttons + success, inside the USD window */
+.pp-buttons{ min-height: 96px; }
+.pp-wait{
+  margin: 0; min-height: 96px;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  font-size: .88rem; font-weight: 700; color: var(--ink-soft);
+}
+.pp-wait .fb-spin{ width: 24px; height: 24px; border-width: 3px; }
+.pp-msg{ margin: 6px 0 0; font-size: .86rem; font-weight: 700; color: var(--ink-soft); line-height: 1.7; }
+.pp-msg:empty{ display: none; }
+.pp-msg.err{ color: #C0392B; }
+.pp-box [hidden]{ display: none; }
+.pp-box.busy .pp-buttons{ opacity: .45; pointer-events: none; }
+.pp-done{ display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 6px 0 2px; }
+.pp-ok{ margin: 0; display: inline-flex; align-items: center; gap: 8px; font-size: 1.15rem; font-weight: 900; color: #178244; }
+.pp-ok svg{ width: 26px; height: 26px; }
+.pp-order{ margin: 0; font-size: .95rem; font-weight: 700; color: var(--ink-soft); }
+.pp-order b{ font-family: var(--font-en); color: var(--ink); user-select: all; -webkit-user-select: all; }
+.pp-dl{
+  display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+  width: 100%; min-height: 52px; padding: 0 24px; border-radius: 14px;
+  background: #178244; color: #fff; text-decoration: none;
+  font-size: 1.05rem; font-weight: 900;
+  box-shadow: var(--shadow-md);
+  transition: filter .15s ease;
+}
+.pp-dl:hover{ filter: brightness(1.08); }
+.pp-dl:focus-visible{ outline: 3px solid var(--gold); outline-offset: 2px; }
+.pp-dl svg{ width: 20px; height: 20px; }
+.pp-note{ font-size: .8rem; font-weight: 600; color: var(--ink-soft); line-height: 1.6; }
+
+@media (max-width: 400px){
+  .order-price{ font-size: 1.3rem; }
+  .pay-logos .logo-pp{ height: 19px; }
+  .pay-logos .logo-card{ height: 17px; }
+  .pm-box{ padding: 24px 16px 18px; }
+}
