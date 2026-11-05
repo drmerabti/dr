@@ -1,5 +1,7 @@
 /* =====================================================================
    PayPal for the Word book: pay in USD, then download straight away.
+   Shared by every paid book page (books/<folder>/ loads ../word/paypal.js):
+   the book is data-book on #ppBox, an id of BOOK_CATALOG in worker.js.
    Server side (worker.js): /api/paypal/config, /api/paypal/create-order,
    /api/paypal/capture-order, /api/download/:token. The price always comes
    from the server catalog; this file never sends a price.
@@ -24,8 +26,11 @@
   var btnsEl = document.getElementById('ppButtons');
   var sdkReady = false, sdkFailed = false, wantRender = false, rendered = false;
 
+  /* analytics label = the page's folder (books/<folder>/), as each page's app.js uses */
+  var LABEL = (location.pathname.match(/\/books\/([^\/]+)/) || [])[1] || BOOK;
+
   function track(name, extra){
-    try { if (window.gtag) gtag('event', name, Object.assign({ book: 'word', method: 'paypal' }, extra || {})); } catch (e) { /* ignore */ }
+    try { if (window.gtag) gtag('event', name, Object.assign({ book: LABEL, method: 'paypal' }, extra || {})); } catch (e) { /* ignore */ }
   }
 
   function msg(text, isErr){
@@ -147,7 +152,10 @@
       .then(function(r){ return r.ok ? r.json() : null; })
       .then(function(cfg){
         if (!cfg || !cfg.clientId){ unavailable(); return; }   /* PayPal off */
-        document.getElementById('ppPrice').textContent = cfg.price;
+        /* the dollar price shown anywhere on the page = the server catalog's (6.00 → 6, 7.99 → 7.99) */
+        var shown = (+cfg.price % 1) ? (+cfg.price).toFixed(2) : String(+cfg.price);
+        document.querySelectorAll('[data-price="usd"], [data-price="usd.now"]').forEach(function(el){ el.textContent = shown; });
+        document.getElementById('ppPrice').textContent = shown;
         loadSdk(cfg);
       })
       .catch(unavailable);   /* e.g. a static preview without the worker */

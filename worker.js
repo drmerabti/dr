@@ -51,6 +51,43 @@ const BOOK_CATALOG = {
     currency: 'USD',
     file: 'Thamoud-Book.pdf',   // object at the root of the R2 bucket merabtibooks
   },
+  // id = the book page's folder (books/<id>/), data-book on its #ppBox
+  'excel-vba': {
+    title: 'الإبداع مع Excel VBA',
+    price: '7.99',
+    currency: 'USD',
+    file: 'Ibdaa-VBA.pdf',
+  },
+  'research': {
+    title: 'من الفكرة إلى النشر',
+    price: '7.99',
+    currency: 'USD',
+    file: 'IdeaToPub.pdf',
+  },
+  'excel-kingdom-1': {
+    title: 'مملكة الخلايا — الجزء الأول',
+    price: '6.99',
+    currency: 'USD',
+    file: 'Mamlaka-Excel.pdf',
+  },
+  'excel-shortcuts': {
+    title: 'الفأرة أكلها القط',
+    price: '4.99',
+    currency: 'USD',
+    file: 'Mouse-Excel.pdf',
+  },
+  'shortcuts-wiki': {
+    title: 'موسوعة الاختصارات',
+    price: '4.99',
+    currency: 'USD',
+    file: 'Wiki-Shortcuts.pdf',
+  },
+  'macbook-shortcuts': {
+    title: 'كل اختصارات ماكبوك في مكان واحد',
+    price: '7.99',
+    currency: 'USD',
+    file: 'mac-shortcuts.pdf',
+  },
 };
 const CONTACT_EMAIL = 'contact@merabti.com';
 

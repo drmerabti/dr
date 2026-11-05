@@ -49,14 +49,34 @@ the backend is **Firebase Functions** (us-central1), outside this repo.
 
 ## PayPal book sales (Cloudflare Worker, separate from products.json)
 
-The Word book (`books/word/`) is sold for USD through PayPal, fully on Cloudflare:
+Paid books are sold for USD through PayPal. The pages are on GitHub Pages (merabti.com); the API runs on the
+Cloudflare Worker `dr` (https://dr.merabti.workers.dev), called with its full URL (CORS: merabti.com,
+www.merabti.com, claude-test-dr.merabti.workers.dev).
 
-- `worker.js` → `BOOK_CATALOG` is the only place for price + R2 file name (`word-book` = 6.00 USD,
-  `Thamoud-Book.pdf`). Routes: `GET /api/paypal/config?bookId=`, `POST /api/paypal/create-order {bookId}`,
-  `POST /api/paypal/capture-order {orderId}`, `GET /api/download/:token` (7 days, 5 downloads).
+- `worker.js` → `BOOK_CATALOG` is the only place for USD price + R2 file (root of bucket `merabtibooks`).
+  Id = the page folder (`data-book` on `#ppBox`), except the Word book:
+
+  | id | page | file | USD |
+  |---|---|---|---|
+  | `word-book` | `books/word/` | `Thamoud-Book.pdf` | 6.00 |
+  | `excel-vba` | `books/excel-vba/` | `Ibdaa-VBA.pdf` | 7.99 |
+  | `research` | `books/research/` | `IdeaToPub.pdf` | 7.99 |
+  | `excel-kingdom-1` | `books/excel-kingdom-1/` | `Mamlaka-Excel.pdf` | 6.99 |
+  | `excel-shortcuts` | `books/excel-shortcuts/` | `Mouse-Excel.pdf` | 4.99 |
+  | `shortcuts-wiki` | `books/shortcuts-wiki/` | `Wiki-Shortcuts.pdf` | 4.99 |
+  | `macbook-shortcuts` | `books/macbook-shortcuts/` | `mac-shortcuts.pdf` | 7.99 |
+
+  Routes: `GET /api/paypal/config?bookId=` (no PayPal buttons if the file is not in R2),
+  `POST /api/paypal/create-order {bookId}`, `POST /api/paypal/capture-order {orderId}`,
+  `GET /api/download/:token` (7 days, 5 downloads).
+- Page side (shared, in `books/word/`): `buy.js` (the two buttons «ادفع بالدولار» / «ادفع بالدينار» and their
+  windows), `paypal.js` (PayPal buttons; sets every `[data-price="usd"]` / `usd.now` from the server price),
+  `img/` (official PayPal / Visa / Mastercard logos), styles in `style.css`. Other pages load them as `../word/…`.
+  Dinar = e-mail / WhatsApp (`#orderMail` / `#orderWa` in each page's own `app.js`; `data-wa-text` = BaridiMob message).
+  A new paid book: catalog entry + copy the buy box and the two windows from `books/excel-vba/index.html`.
 - `wrangler.jsonc`: vars `PAYPAL_CLIENT_ID`, `PAYPAL_ENV` (`sandbox` | `live`), R2 binding `BOOKS` → `merabtibooks`.
   `PAYPAL_SECRET` is a dashboard secret — never in the repo.
-- D1 table `paypal_orders` (created on first use). Page side: `books/word/paypal.js` + `#ppBox` in the "ادفع بالدولار" window.
+- D1 table `paypal_orders` (created on first use).
 - `paypal_orders.env` = `live` | `sandbox` (rows without it are older, from before 2026-11-05).
 - Every PayPal call is logged as one `[paypal] <step> {json}` line: order ID, status, PayPal-Debug-Id and, on failure,
   PayPal's error fields only — never the payer (name, e-mail, address) or the full response. Workers Logs are on

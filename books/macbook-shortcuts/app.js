@@ -59,7 +59,8 @@ fillPrices(document);
       hint: 'راسلنا على هذا الرقم، أو افتح واتساب ويب برسالة جاهزة:',
       shown: WA_SHOWN, copy: '+' + WA_NUMBER,
       open: 'فتح واتساب ويب',
-      href: 'https://web.whatsapp.com/send?phone=' + WA_NUMBER + '&text=' + encodeURIComponent(WA_TEXT),
+      /* the button may carry its own ready message (data-wa-text): the BaridiMob request */
+      href: 'https://web.whatsapp.com/send?phone=' + WA_NUMBER + '&text=' + encodeURIComponent(waBtn.getAttribute('data-wa-text') || WA_TEXT),
       icon: waBtn.querySelector('.order-ico').innerHTML
     }
   };

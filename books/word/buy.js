@@ -1,5 +1,6 @@
 /* =====================================================================
-   Word book — the two purchase buttons and their windows.
+   Paid book pages — the two purchase buttons and their windows
+   (books/word/ and every page that loads ../word/buy.js).
    "ادفع بالدولار" (#payUsd)  → #usdModal: PayPal buttons (paypal.js).
    "ادفع بالدينار" (#payDzd)  → #dzdModal: order by e-mail / WhatsApp
      (#orderMail / #orderWa, still handled by app.js).
@@ -11,7 +12,8 @@
   var current = null, lastTrigger = null, bodyOverflow = '';
 
   function track(method){
-    try { if (window.gtag) gtag('event', 'book_order_click', { book: 'word', method: method }); } catch (e) { /* ignore */ }
+    var label = (location.pathname.match(/\/books\/([^\/]+)/) || [])[1] || 'word';
+    try { if (window.gtag) gtag('event', 'book_order_click', { book: label, method: method }); } catch (e) { /* ignore */ }
   }
 
   function open(modal, trigger){
