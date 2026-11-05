@@ -18,7 +18,7 @@
     }
   ],
 
-  // Paid book PDFs (e.g. Thmoud-Book.pdf), streamed by /api/download/:token
+  // Paid book PDFs (e.g. Thamoud-Book.pdf), streamed by /api/download/:token
   "r2_buckets": [
     {
       "binding": "BOOKS",

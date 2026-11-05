@@ -49,9 +49,10 @@ const BOOK_CATALOG = {
     title: 'حتى لو كنت من قوم ثمود ستفهم برنامج وورد',
     price: '6.00',
     currency: 'USD',
-    file: 'Thmoud-Book.pdf',
+    file: 'Thamoud-Book.pdf',   // object at the root of the R2 bucket merabtibooks
   },
 };
+const CONTACT_EMAIL = 'contact@merabti.com';
 const DOWNLOAD_DAYS = 7;
 const MAX_DOWNLOADS = 5;
 
@@ -148,7 +149,7 @@ function downloadError(status, title, text) {
 <body style="margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#F2F6F9;font-family:Tahoma,Arial,sans-serif;color:#13283A">
 <div style="max-width:440px;margin:16px;padding:28px 24px;background:#fff;border-radius:18px;box-shadow:0 10px 28px rgba(19,40,58,.1);text-align:center;line-height:1.8">
 <h1 style="font-size:1.25rem;margin:0 0 8px">${title}</h1><p style="margin:0 0 16px;color:#5A6C7E">${text}</p>
-<a href="mailto:contact@merabti.com" style="color:#1D5C78;font-weight:700">contact@merabti.com</a></div></body></html>`;
+<a href="mailto:${CONTACT_EMAIL}" dir="ltr" style="color:#1D5C78;font-weight:700;white-space:nowrap;unicode-bidi:isolate">${CONTACT_EMAIL}</a></div></body></html>`;
   return new Response(html, {
     status,
     headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex' },
