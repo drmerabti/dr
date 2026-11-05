@@ -12,6 +12,11 @@
   var box = document.getElementById('ppBox');
   if (!box) return;
   var BOOK = box.getAttribute('data-book');
+  /* merabti.com is on GitHub Pages: the API is on the Worker (data-api on #ppBox).
+     On the Worker itself (*.workers.dev, e.g. the claude-test preview) or locally: same origin. */
+  var SAME = /\.workers\.dev$/.test(location.hostname) || /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+  var API = SAME ? '' : (box.getAttribute('data-api') || 'https://dr.merabti.workers.dev').replace(/\/$/, '');
+  function abs(u){ return /^\//.test(u || '') ? API + u : u; }   /* "/api/download/…" → on the Worker */
   var STORE = 'pp-order-' + BOOK;
   var msgEl = document.getElementById('ppMsg');
   var modal = document.getElementById('usdModal');
@@ -40,7 +45,7 @@
     document.getElementById('ppPay').hidden = true;
     document.getElementById('ppDone').hidden = false;
     document.getElementById('ppOrder').textContent = d.orderId;
-    document.getElementById('ppDl').href = d.downloadUrl;
+    document.getElementById('ppDl').href = abs(d.downloadUrl);
     if (d.expiresAt){
       var until = new Date(d.expiresAt);
       var txt = 'الرابط صالح حتى ' + until.toLocaleDateString('ar-DZ', { day: 'numeric', month: 'long', year: 'numeric' }) +
@@ -91,7 +96,7 @@
       createOrder: function(){
         msg('');
         track('begin_checkout');
-        return post('/api/paypal/create-order', { bookId: BOOK }).then(function(d){
+        return post(API + '/api/paypal/create-order', { bookId: BOOK }).then(function(d){
           if (!d.id) throw new Error(d.message || 'create-order failed');
           return d.id;
         });
@@ -100,7 +105,7 @@
       onApprove: function(data, actions){
         box.classList.add('busy');
         msg('جارٍ تأكيد الدفع… لا تغلق الصفحة.');
-        return post('/api/paypal/capture-order', { orderId: data.orderID }).then(function(d){
+        return post(API + '/api/paypal/capture-order', { orderId: data.orderID }).then(function(d){
           box.classList.remove('busy');
           if (d.error === 'INSTRUMENT_DECLINED'){ msg(d.message, true); return actions.restart(); }
           if (!d.ok){ msg(d.message || 'لم يكتمل الدفع. حاول مرة أخرى.', true); return; }
@@ -138,7 +143,7 @@
   }
 
   function start(){
-    fetch('/api/paypal/config?bookId=' + encodeURIComponent(BOOK))
+    fetch(API + '/api/paypal/config?bookId=' + encodeURIComponent(BOOK))
       .then(function(r){ return r.ok ? r.json() : null; })
       .then(function(cfg){
         if (!cfg || !cfg.clientId){ unavailable(); return; }   /* PayPal off */

@@ -53,6 +53,33 @@ const BOOK_CATALOG = {
   },
 };
 const CONTACT_EMAIL = 'contact@merabti.com';
+
+/* merabti.com is served by GitHub Pages; its book pages call this Worker
+   (https://dr.merabti.workers.dev) from the browser. CORS: only these origins. */
+const CORS_ORIGINS = ['https://merabti.com', 'https://www.merabti.com', 'https://claude-test-dr.merabti.workers.dev'];
+
+function corsHeaders(request) {
+  const origin = request.headers.get('Origin');
+  const h = { Vary: 'Origin' };
+  if (origin && CORS_ORIGINS.includes(origin)) h['Access-Control-Allow-Origin'] = origin;
+  return h;
+}
+
+function withCors(request, res) {
+  const h = new Headers(res.headers);
+  for (const [k, v] of Object.entries(corsHeaders(request))) h.set(k, v);
+  return new Response(res.body, { status: res.status, statusText: res.statusText, headers: h });
+}
+
+function corsPreflight(request) {
+  const h = corsHeaders(request);
+  if (!h['Access-Control-Allow-Origin']) return new Response(null, { status: 403, headers: h });
+  return new Response(null, { status: 204, headers: Object.assign(h, {
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Max-Age': '86400',
+  }) });
+}
 const DOWNLOAD_DAYS = 7;
 const MAX_DOWNLOADS = 5;
 
@@ -166,12 +193,13 @@ async function ensurePaypalTables(db) {
   }
 }
 
-function orderReply(row) {
+function orderReply(row, origin) {
   return json({
     ok: true,
     orderId: row.order_id,
     bookId: row.book_id,
-    downloadUrl: '/api/download/' + row.token,
+    // full URL on the Worker: the page itself may be on GitHub Pages (merabti.com)
+    downloadUrl: origin + '/api/download/' + row.token,
     expiresAt: row.expires_at,
     maxDownloads: MAX_DOWNLOADS,
     downloadsLeft: Math.max(0, MAX_DOWNLOADS - row.downloads),
@@ -251,7 +279,7 @@ async function handlePaypal(request, env, path) {
 
     await ensurePaypalTables(env.DB);
     const saved = await env.DB.prepare(`SELECT * FROM paypal_orders WHERE order_id = ?`).bind(orderId).first();
-    if (saved) return orderReply(saved);   // طلب مؤكَّد من قبل (إعادة محاولة أو نقرة مزدوجة)
+    if (saved) return orderReply(saved, new URL(request.url).origin);   // طلب مؤكَّد من قبل (إعادة محاولة أو نقرة مزدوجة)
 
     let r = await paypalCall(env, 'POST', '/v2/checkout/orders/' + orderId + '/capture', null,
       { 'PayPal-Request-Id': 'capture-' + orderId });
@@ -305,7 +333,7 @@ async function handlePaypal(request, env, path) {
     ).bind(orderId, bookId, email, amount.value, amount.currency_code, capture.id || '',
       now.toISOString(), randomToken(), expires.toISOString(), env.PAYPAL_ENV === 'live' ? 'live' : 'sandbox').run();
     const row = await env.DB.prepare(`SELECT * FROM paypal_orders WHERE order_id = ?`).bind(orderId).first();
-    return orderReply(row);
+    return orderReply(row, new URL(request.url).origin);
   }
 
   // ============ تحميل الكتاب من R2 برمز التحميل ============
@@ -359,14 +387,15 @@ export default {
 
     // ============ PayPal + تحميل الكتب ============
     if (path.startsWith('/api/paypal/') || path.startsWith('/api/download/')) {
+      if (request.method === 'OPTIONS') return corsPreflight(request);
+      let res;
       try {
-        const res = await handlePaypal(request, env, path);
-        if (res) return res;
+        res = await handlePaypal(request, env, path);
       } catch (e) {
         console.log('[paypal] route error ' + path + ' ' + (e && e.stack || e));
-        return json({ error: 'SERVER_ERROR', message: 'حدث خطأ في الخادم، حاول مرة أخرى.' }, 500);
+        res = json({ error: 'SERVER_ERROR', message: 'حدث خطأ في الخادم، حاول مرة أخرى.' }, 500);
       }
-      return json({ error: 'NOT_FOUND' }, 404);
+      return withCors(request, res || json({ error: 'NOT_FOUND' }, 404));
     }
 
     // ============ إنشاء استبيان ============
