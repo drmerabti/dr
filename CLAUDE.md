@@ -56,4 +56,6 @@ The Word book (`books/word/`) is sold for USD through PayPal, fully on Cloudflar
   `POST /api/paypal/capture-order {orderId}`, `GET /api/download/:token` (7 days, 5 downloads).
 - `wrangler.jsonc`: vars `PAYPAL_CLIENT_ID`, `PAYPAL_ENV` (`sandbox` | `live`), R2 binding `BOOKS` → `merabtibooks`.
   `PAYPAL_SECRET` is a dashboard secret — never in the repo.
-- D1 table `paypal_orders` (created on first use). Page side: `books/word/paypal.js` + `#ppBox` under the preview.
+- D1 table `paypal_orders` (created on first use). Page side: `books/word/paypal.js` + `#ppBox` in the "ادفع بالدولار" window.
+- Every PayPal call is logged as one `[paypal] <step> {json}` line (status, PayPal-Debug-Id, full body); Workers Logs
+  are on (`observability` in `wrangler.jsonc`) → Cloudflare → Workers & Pages → dr → Observability.

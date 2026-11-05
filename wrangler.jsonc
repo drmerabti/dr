@@ -26,6 +26,17 @@
     }
   ],
 
+  // Workers Logs: every console.log (e.g. "[paypal] capture-order FAILED {...}") is kept and searchable in
+  // Cloudflare → Workers & Pages → dr → Observability. head_sampling_rate 1 = keep 100 % of requests.
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1,
+    "logs": {
+      "enabled": true,
+      "invocation_logs": true
+    }
+  },
+
   "vars": {
     "PAYPAL_CLIENT_ID": "AcxXXMrvBjdK7bwJy6MPOwJd3lAML6pYlbe9uobo7tsSC8kyDpTX-7uNhY0un-XFPMshLNnZQQT6KVBp",
     // "sandbox" → api-m.sandbox.paypal.com ; "live" → api-m.paypal.com (change the client ID and secret too)

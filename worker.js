@@ -82,8 +82,21 @@ async function paypalAccessToken(env) {
     },
     body: 'grant_type=client_credentials',
   });
-  if (!res.ok) throw new Error('PayPal auth failed: ' + res.status);
+  if (!res.ok) {
+    // e.g. 401 invalid_client = wrong PAYPAL_SECRET / client ID, or sandbox vs live mismatch
+    const text = await res.text().catch(() => '');
+    logPaypal('oauth-token', { method: 'POST', path: '/v1/oauth2/token', status: res.status,
+      debugId: res.headers.get('paypal-debug-id'), body: text });
+    throw new Error('PayPal auth failed: ' + res.status);
+  }
   return (await res.json()).access_token;
+}
+
+/* One JSON line per PayPal call: step, HTTP status, PayPal-Debug-Id and the full
+   response body (PayPal's name / message / details[].issue / description).
+   Read them in Cloudflare: Workers & Pages → dr → Observability (search "[paypal]"). */
+function logPaypal(step, info) {
+  console.log('[paypal] ' + step + ' ' + JSON.stringify(Object.assign({ step }, info)));
 }
 
 async function paypalCall(env, method, apiPath, body, extraHeaders) {
@@ -93,9 +106,11 @@ async function paypalCall(env, method, apiPath, body, extraHeaders) {
     headers: Object.assign({ Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' }, extraHeaders || {}),
     body: body ? JSON.stringify(body) : undefined,
   });
+  const text = await res.text().catch(() => '');
   let data = {};
-  try { data = await res.json(); } catch (e) {}
-  return { ok: res.ok, status: res.status, data };
+  try { data = text ? JSON.parse(text) : {}; } catch (e) { data = { raw: text }; }
+  const debugId = res.headers.get('paypal-debug-id');
+  return { ok: res.ok, status: res.status, data, debugId, method, path: apiPath };
 }
 
 async function ensurePaypalTables(db) {
@@ -170,9 +185,14 @@ async function handlePaypal(request, env, path) {
       }],
       application_context: { shipping_preference: 'NO_SHIPPING', user_action: 'PAY_NOW', brand_name: 'merabti.com' },
     });
+    logPaypal(r.ok && r.data.id ? 'create-order ok' : 'create-order FAILED', {
+      env: env.PAYPAL_ENV, bookId, method: r.method, path: r.path, status: r.status, debugId: r.debugId,
+      body: r.ok && r.data.id ? { id: r.data.id, status: r.data.status } : r.data,
+    });
     if (!r.ok || !r.data.id) {
-      console.log('create-order failed', r.status, JSON.stringify(r.data));
-      return json({ error: 'CREATE_FAILED', message: 'تعذّر إنشاء الطلب، حاول مرة أخرى.' }, 502);
+      return json({ error: 'CREATE_FAILED', message: 'تعذّر إنشاء الطلب، حاول مرة أخرى.',
+        paypalStatus: r.status, issue: (r.data.details && r.data.details[0] && r.data.details[0].issue) || r.data.name || null,
+        debugId: r.debugId || null }, 502);
     }
     return json({ id: r.data.id });
   }
@@ -190,14 +210,22 @@ async function handlePaypal(request, env, path) {
     let r = await paypalCall(env, 'POST', '/v2/checkout/orders/' + orderId + '/capture', null,
       { 'PayPal-Request-Id': 'capture-' + orderId });
     const issue = r.data && r.data.details && r.data.details[0] && r.data.details[0].issue;
+    // full response, success or not (on failure: name, message, details[].issue, debug_id)
+    logPaypal(r.ok ? 'capture-order ok' : 'capture-order FAILED', {
+      env: env.PAYPAL_ENV, orderId, method: r.method, path: r.path, status: r.status, debugId: r.debugId,
+      issue: issue || null, body: r.data,
+    });
     if (!r.ok && issue === 'ORDER_ALREADY_CAPTURED') {
       r = await paypalCall(env, 'GET', '/v2/checkout/orders/' + orderId);
+      logPaypal('get-order (already captured)', {
+        env: env.PAYPAL_ENV, orderId, method: r.method, path: r.path, status: r.status, debugId: r.debugId, body: r.data,
+      });
     } else if (!r.ok) {
-      console.log('capture failed', r.status, JSON.stringify(r.data));
       if (issue === 'INSTRUMENT_DECLINED') {
         return json({ error: 'INSTRUMENT_DECLINED', message: 'رُفضت وسيلة الدفع، اختر وسيلة أخرى.' }, 402);
       }
-      return json({ error: 'CAPTURE_FAILED', message: 'لم يكتمل الدفع، لم يُخصم أي مبلغ. حاول مرة أخرى.' }, 502);
+      return json({ error: 'CAPTURE_FAILED', message: 'لم يكتمل الدفع، لم يُخصم أي مبلغ. حاول مرة أخرى.',
+        paypalStatus: r.status, issue: issue || null, debugId: r.debugId || null }, 502);
     }
 
     const order = r.data || {};
@@ -208,7 +236,7 @@ async function handlePaypal(request, env, path) {
     const amount = capture.amount || {};
 
     if (order.status !== 'COMPLETED' || capture.status !== 'COMPLETED') {
-      console.log('capture not completed', orderId, order.status, capture.status);
+      logPaypal('capture-order NOT COMPLETED', { env: env.PAYPAL_ENV, orderId, orderStatus: order.status, captureStatus: capture.status, body: order });
       return json({
         error: 'NOT_COMPLETED',
         message: capture.status === 'PENDING'
@@ -217,7 +245,7 @@ async function handlePaypal(request, env, path) {
       }, 402);
     }
     if (!book || amount.currency_code !== book.currency || toCents(amount.value) !== toCents(book.price)) {
-      console.log('amount mismatch', orderId, bookId, JSON.stringify(amount));
+      logPaypal('capture-order AMOUNT MISMATCH', { env: env.PAYPAL_ENV, orderId, bookId, amount, expected: book ? book.price + ' ' + book.currency : null });
       return json({ error: 'AMOUNT_MISMATCH', message: 'المبلغ المدفوع لا يطابق سعر الكتاب. راسلنا برقم الطلب: ' + orderId }, 400);
     }
 
@@ -288,7 +316,7 @@ export default {
         const res = await handlePaypal(request, env, path);
         if (res) return res;
       } catch (e) {
-        console.log('paypal route error', e && e.stack || e);
+        console.log('[paypal] route error ' + path + ' ' + (e && e.stack || e));
         return json({ error: 'SERVER_ERROR', message: 'حدث خطأ في الخادم، حاول مرة أخرى.' }, 500);
       }
       return json({ error: 'NOT_FOUND' }, 404);
