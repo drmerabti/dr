@@ -38,7 +38,7 @@
   },
 
   "vars": {
-    "PAYPAL_CLIENT_ID": "AcxXXMrvBjdK7bwJy6MPOwJd3lAML6pYlbe9uobo7tsSC8kyDpTX-7uNhY0un-XFPMshLNnZQQT6KVBp",
+    "PAYPAL_CLIENT_ID": "BAATyREQg1INYrgYafRfbNS5KbtuhZayUy77VKA4Rk_9lwmLFlE2Z4t0gHItT34ZfsSQTD6UesdYTsvjek",
     // "sandbox" → api-m.sandbox.paypal.com ; "live" → api-m.paypal.com (change the client ID and secret too)
     "PAYPAL_ENV": "sandbox"
   }
