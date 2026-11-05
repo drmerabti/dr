@@ -81,4 +81,7 @@ www.merabti.com, claude-test-dr.merabti.workers.dev).
 - Every PayPal call is logged as one `[paypal] <step> {json}` line: order ID, status, PayPal-Debug-Id and, on failure,
   PayPal's error fields only — never the payer (name, e-mail, address) or the full response. Workers Logs are on
   (`observability` in `wrangler.jsonc`) → Cloudflare → Workers & Pages → dr → Observability.
+- E-mail alert on a failed create-order / capture-order / download (send_email binding `ALERT_EMAIL` →
+  merabti.soufiane1@gmail.com, sender alerts@merabti.com, Cloudflare Email Routing). One e-mail per key in D1
+  `paypal_alerts`: `order:<id>` / `download:<id>`; with no order ID, book + error + hour. Sent with `waitUntil`.
 - `books/word/build-ad/` (PDF ad-page build tool) is not published (`.assetsignore`, `.vercelignore`).
