@@ -104,3 +104,6 @@
   background:var(--gold); color:#3a2a00; font-weight:900; font-size:1rem; box-shadow:0 4px 10px rgba(0,0,0,.2); }
 .sc-note{ margin:0; text-align:center; font-size:.92rem; color:var(--ink-soft, #444); line-height:1.8; }
 .sc-note a{ color:var(--brand); font-weight:800; }
+/* the 100-exercises cover shown whole, as designed: no rounded corners, no ribbon */
+.sc-cover-full{ border-radius: 0; overflow: visible; width: min(440px, 84vw); }
+.sc-cover-full img{ border-radius: 0; }
