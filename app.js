@@ -638,6 +638,14 @@ const CONTENT = {
   resources: [],
   // الكتب: soon = بطاقة «قريبًا» ظاهرة للجميع لكنها غير قابلة للضغط
   services: [
+    { id: 'book-bac-math-summary', title_ar: 'الملخص الشامل لبكالوريا الرياضيات', title_en: 'The Complete Bac Maths Summary',
+      desc_ar: 'كتاب مجاني في 39 صفحة: كل قوانين بكالوريا الرياضيات في 10 أبواب و34 درسًا، من قواعد الحساب إلى الاحتمالات والحسابيات، مع نصائح للنجاح — اقرأه أو حمّله PDF.',
+      desc_en: 'A free 39-page book: every Bac maths rule in 10 chapters and 34 lessons, from algebra rules to probability and number theory, with tips for success — read it or download the PDF.',
+      url: 'books/bac-math-summary/', icon: ICONS.services, badge: 'مجاني', badge_en: 'Free' },
+    { id: 'book-bac-math-100', title_ar: 'بكالوريا — 100 تمرين نحو العشرين', title_en: 'Bac Maths — 100 Exercises Towards 20/20',
+      desc_ar: 'كتاب PDF: 100 تمرين مختار بعناية وفق نمط البكالوريا، يشمل جميع محاور البرنامج، مع حلول مفصّلة وواضحة. ادفع واحصل على الكتاب فورًا.',
+      desc_en: 'A PDF book: 100 carefully chosen exercises in the Bac exam style, covering the whole programme, with detailed, clear solutions. Pay and get the book straight away.',
+      url: 'books/bac-math-100/', icon: ICONS.services, badge: 'جديد', badge_en: 'New' },
     { id: 'book-word', title_ar: 'حتى لو كنت من قوم ثمود ستفهم برنامج وورد', title_en: 'Even a Thamud Could Understand Word',
       desc_ar: 'دليل مصوّر خطوة بخطوة في 10 فصول و202 صفحة، من أول نقرة إلى أول مشروع حقيقي.',
       desc_en: 'An illustrated step-by-step guide in 10 chapters and 202 pages, from the first click to a real project.',

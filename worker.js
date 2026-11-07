@@ -54,6 +54,12 @@ const BOOK_CATALOG = {
     file: 'Thamoud-Book.pdf',   // object at the root of the R2 bucket merabtibooks
   },
   // id = the book page's folder (books/<id>/), data-book on its #ppBox
+  'bac-math-100': {
+    title: 'بكالوريا — 100 تمرين نحو العشرين',
+    price: '6.99',
+    currency: 'USD',
+    file: 'Bac-Math-100.pdf',
+  },
   'excel-vba': {
     title: 'الإبداع مع Excel VBA',
     price: '7.99',
