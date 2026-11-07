@@ -1,0 +1,106 @@
+/* =====================================================================
+   Bac maths "100 exercises" book page — on top of books/word/style.css (same layout).
+   Adds: the cover colours and the two reading modes of the preview
+   (book = flipbook, pdf = pages one under the other).
+===================================================================== */
+:root{
+  --brand: #1F3F7A;            /* navy from the cover */
+  --brand-strong: #13285A;
+  --brand-soft: #E6ECF7;
+  --gold: #E3A21A;
+  --gold-soft: #FFF4D9;
+  --preview-bg: #DFE5F0;
+  --side-bg: #F6F8FC;
+  --page-bg: #EEF2F8;
+}
+
+.bk-sub{ margin: 0; font-size: .92rem; font-weight: 800; color: var(--brand); }
+
+/* two columns, filled top to bottom */
+.bk-math .bk-chapters ol{ grid-template-rows: repeat(var(--rows, 6), auto); }
+.bk-chapters li span{ background: var(--brand); }
+.bk-chapters li:nth-child(3n+2) span{ background: #3A4D75; }
+.bk-chapters li:nth-child(3n) span{ background: var(--gold); color: var(--brand-strong); }
+
+/* ---------- order block (buttons and contact window come from the Word page) ---------- */
+.order-mail{ background: linear-gradient(135deg, #3A62A8 0%, var(--brand) 55%, var(--brand-strong) 100%); }
+.price-num{ color: var(--brand-strong); }
+
+/* ---------- reading mode switch (book / pdf) ---------- */
+.md-switch{
+  display: inline-flex; padding: 3px; gap: 3px;
+  border: 1px solid var(--line-strong); border-radius: 11px;
+  background: var(--surface);
+}
+.md-btn{
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 30px; padding: 0 11px;
+  border: 0; border-radius: 8px;
+  background: transparent; color: var(--ink-soft);
+  font-family: inherit; font-size: .84rem; font-weight: 800;
+  cursor: pointer;
+}
+.md-btn svg{ width: 17px; height: 17px; }
+.md-btn:hover{ color: var(--brand); }
+.md-btn[aria-pressed="true"]{ background: var(--brand); color: #fff; }
+.md-btn:focus-visible{ outline: 2px solid var(--gold); outline-offset: 2px; }
+
+/* last page of the book */
+.fb-page-end, .pv-list-end{ background: linear-gradient(160deg, var(--brand) 0%, var(--brand-strong) 100%); }
+
+/* ---------- PDF mode (computers): pages one under the other, scrolled inside the reader ---------- */
+@media (min-width: 861px){
+  .bk-preview.mode-pdf .fb-stage, .bk-preview.mode-pdf .fb-nav, .bk-preview.mode-pdf .fb-only{ display: none; }
+  .bk-preview.mode-pdf .pv-list{
+    display: flex; flex-direction: column; align-items: center; gap: 14px;
+    flex: 1; min-height: 0; overflow: auto;
+    padding: 18px 24px 28px;
+  }
+  .bk-preview.mode-pdf .pv-pg{
+    position: relative; flex-shrink: 0;
+    width: min(100%, calc(780px * var(--z, 1)));
+    background: #fff; box-shadow: 0 2px 10px rgba(19,40,58,.16);
+  }
+  .bk-preview.mode-pdf .pv-list.zoomed{ align-items: flex-start; }
+  .bk-preview.mode-pdf .pv-list.zoomed .pv-pg{ width: calc(780px * var(--z, 1)); max-width: none; margin: 0 auto; }
+  .bk-preview.mode-pdf .pv-pg img{ display: block; width: 100%; height: 100%; user-select: none; -webkit-user-drag: none; }
+  .bk-preview.mode-pdf .pv-list-end{ position: relative; flex-shrink: 0; width: min(100%, 780px); min-height: 260px; border-radius: 16px; }
+  .bk-preview.mode-pdf .pv-list-status{ margin: 60px 0; font-weight: 700; color: var(--ink-soft); }
+}
+
+/* ---------- phones: the switch stays visible; book mode shows the flipbook ---------- */
+@media (max-width: 860px){
+  .bk-preview .pv-tools{ display: inline-flex; }
+  .bk-preview .pv-tools .fb-tool{ display: none; }
+  .bk-preview .pv-bar{ position: sticky; top: var(--top-h); z-index: 4; background: rgba(238,242,248,.96); backdrop-filter: blur(8px); flex-wrap: wrap; }
+  .md-btn{ padding: 0 9px; }
+  .bk-preview.mode-book .pv-list{ display: none; }
+  .bk-preview.mode-book .fb-stage{
+    display: flex;
+    height: calc(100svh - var(--top-h) - 150px); min-height: 360px;
+    padding: 10px 8px 4px;
+  }
+  .bk-preview.mode-book .fb-nav{ display: flex; padding-bottom: 12px; }
+  .bk-preview.mode-book .pv-tools .fb-tool-fs{ display: inline-flex; }
+}
+@media (max-width: 420px){
+  .md-btn span{ display: none; }
+}
+.m-cta{ background: linear-gradient(135deg, #3A62A8 0%, var(--brand) 55%, var(--brand-strong) 100%); }
+
+/* ---------- coming soon: cover only ---------- */
+.soon-box{ display:flex; align-items:center; gap:12px; margin-top:14px; padding:14px 16px; border-radius:14px;
+  background:#FFF6DC; border:1px solid #F0C95A; color:#5a3d00; }
+.soon-box .soon-ico{ flex:0 0 42px; height:42px; border-radius:50%; background:var(--gold); display:flex; align-items:center; justify-content:center; }
+.soon-box .soon-ico svg{ width:24px; height:24px; fill:none; stroke:#fff; stroke-width:2.2; stroke-linecap:round; }
+.soon-box strong{ display:block; font-size:1rem; font-weight:800; }
+.soon-box small{ display:block; font-size:.86rem; line-height:1.6; }
+.bk-showcase{ display:flex; align-items:center; justify-content:center; padding:28px 16px; }
+.sc-wrap{ display:flex; flex-direction:column; align-items:center; gap:18px; max-width:520px; }
+.sc-cover{ position:relative; width:min(420px, 80vw); border-radius:10px; overflow:hidden; box-shadow:0 18px 40px rgba(15,74,42,.28); }
+.sc-cover img{ display:block; width:100%; height:auto; }
+.sc-ribbon{ position:absolute; top:22px; left:-46px; transform:rotate(-45deg); width:180px; text-align:center; padding:6px 0;
+  background:var(--gold); color:#3a2a00; font-weight:900; font-size:1rem; box-shadow:0 4px 10px rgba(0,0,0,.2); }
+.sc-note{ margin:0; text-align:center; font-size:.92rem; color:var(--ink-soft, #444); line-height:1.8; }
+.sc-note a{ color:var(--brand); font-weight:800; }
+.bk-chapters h2 small{ font-size: .78rem; font-weight: 700; color: var(--ink-soft); }

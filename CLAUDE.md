@@ -59,6 +59,7 @@ www.merabti.com, claude-test-dr.merabti.workers.dev).
   | id | page | file | USD |
   |---|---|---|---|
   | `word-book` | `books/word/` | `Thamoud-Book.pdf` | 6.00 |
+  | `bac-math-100` | `books/bac-math-100/` | `Bac-Math-100.pdf` | 6.99 |
   | `excel-vba` | `books/excel-vba/` | `Ibdaa-VBA.pdf` | 7.99 |
   | `research` | `books/research/` | `IdeaToPub.pdf` | 7.99 |
   | `excel-kingdom-1` | `books/excel-kingdom-1/` | `Mamlaka-Excel.pdf` | 6.99 |
@@ -74,6 +75,7 @@ www.merabti.com, claude-test-dr.merabti.workers.dev).
   `img/` (official PayPal / Visa / Mastercard logos), styles in `style.css`. Other pages load them as `../word/…`.
   Dinar = e-mail / WhatsApp (`#orderMail` / `#orderWa` in each page's own `app.js`; `data-wa-text` = BaridiMob message).
   A new paid book: catalog entry + copy the buy box and the two windows from `books/excel-vba/index.html`.
+  A paid book with no preview yet: cover only (showcase), like `books/excel-kingdom-2/`.
 - `wrangler.jsonc`: vars `PAYPAL_CLIENT_ID`, `PAYPAL_ENV` (`sandbox` | `live`), R2 binding `BOOKS` → `merabtibooks`.
   `PAYPAL_SECRET` is a dashboard secret — never in the repo.
 - D1 table `paypal_orders` (created on first use).
