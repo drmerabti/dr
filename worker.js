@@ -78,6 +78,12 @@ const BOOK_CATALOG = {
     currency: 'USD',
     file: 'Mamlaka-Excel.pdf',
   },
+  'excel-kingdom-2': {
+    title: 'مملكة الخلايا — الجزء الثاني',
+    price: '6.99',
+    currency: 'USD',
+    file: 'Mamlaka-Excel-2.pdf',
+  },
   'excel-shortcuts': {
     title: 'الفأرة أكلها القط',
     price: '4.99',
