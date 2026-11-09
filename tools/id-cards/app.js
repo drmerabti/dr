@@ -1,6 +1,6 @@
 /* =========================================================
    مولّد بطاقات الأعمال — Merabti Academy
-   20 designs (10 marked NEW), live preview, 3D flip, PNG, PDF, A4 print
+   30 designs (20 marked NEW), live preview, 3D flip, PNG, PDF, A4 print
    ========================================================= */
 (function () {
 'use strict';
@@ -281,8 +281,10 @@ const TEMPLATES = [
     },
     back: c => {
       const cx = c.X(292);
-      return `<div class="B">` + deco(`<rect x="${cx - 19}" y="34" width="38" height="152" rx="6" fill="#FFFFFF" fill-opacity=".1"/>
-        <rect x="${cx - 76}" y="91" width="152" height="38" rx="6" fill="#FFFFFF" fill-opacity=".1"/>`) +
+      return `<div class="B">` + deco(`<circle cx="${cx}" cy="110" r="42" fill="#FFFFFF" fill-opacity=".07"/>
+        <circle cx="${cx}" cy="110" r="64" fill="none" stroke="#FFFFFF" stroke-opacity=".13" stroke-width=".8"/>
+        <circle cx="${cx}" cy="110" r="86" fill="none" stroke="#FFFFFF" stroke-opacity=".09" stroke-width=".8"/>
+        <circle cx="${cx}" cy="110" r="108" fill="none" stroke="#FFFFFF" stroke-opacity=".05" stroke-width=".8"/>`) +
         `<div class="mid">${mono(c)}${fit('co', c.d.company)}${fit('tg', c.d.tagline)}${c.d.phone ? `<div class="ph"><span class="ltrx">${esc(c.d.phone)}</span></div>` : ''}</div>${qrBox(c)}</div>`;
     }
   },
@@ -639,6 +641,290 @@ const NEW_TEMPLATES = [
 ];
 NEW_TEMPLATES.forEach(t => { t.isNew = true; TEMPLATES.push(t); });
 
+/* ---------------------------------------------------------
+   NEW designs — batch 3 (10): silk waves, data flow, pulse, arabesque,
+   contour lines, zen sun, line bloom, code editor, halftone, gold leaf
+--------------------------------------------------------- */
+function rng(seed) { let s = seed >>> 0; return () => (s = (Math.imul(s, 1664525) + 1013904223) >>> 0) / 4294967296; }
+const stopsOf = st => st.map(([o, col, op = 1]) => `<stop offset="${o}" stop-color="${col}" stop-opacity="${op}"/>`).join('');
+const linG = (id, st, x1, y1, x2, y2) => `<linearGradient id="${id}" gradientUnits="userSpaceOnUse" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}">${stopsOf(st)}</linearGradient>`;
+const radG = (id, st) => `<radialGradient id="${id}">${stopsOf(st)}</radialGradient>`;
+const bez = (a, b, c2, d, u) => { const v = 1 - u; return v * v * v * a + 3 * v * v * u * b + 3 * v * u * u * c2 + u * u * u * d; };
+
+/* A · silk waves */
+function silkTop(c) {
+  const g = uid('sk');
+  return deco(`<defs>${linG(g, [[0, c.accL], [1, c.acc]], 0, 0, 340, 0)}</defs>` + mirror(c,
+    `<path d="M0 0H340V62C280 80 220 44 150 62S40 82 0 64Z" fill="${c.accL}" fill-opacity=".5"/>
+     <path d="M0 0H340V47C270 65 200 31 130 49S30 63 0 49Z" fill="url(#${g})" fill-opacity=".75"/>
+     <path d="M0 0H340V30C262 46 190 16 120 32S30 42 0 32Z" fill="${c.accD}" fill-opacity=".92"/>
+     <path d="M0 49C30 63 80 67 130 49S270 65 340 47" fill="none" stroke="#FFFFFF" stroke-opacity=".8" stroke-width=".8"/>
+     <path d="M0 64C40 82 100 80 150 62S280 80 340 62" fill="none" stroke="${c.acc}" stroke-opacity=".55" stroke-width=".5"/>`));
+}
+function silkBack(c) {
+  const g = uid('sk');
+  return deco(`<defs>${linG(g, [[0, '#FFFFFF', 0], [.5, '#FFFFFF', .55], [1, '#FFFFFF', 0]], 0, 0, 340, 0)}</defs>` + mirror(c,
+    `<path d="M0 158C70 128 140 188 220 158S320 128 340 138V220H0Z" fill="#FFFFFF" fill-opacity=".07"/>
+     <path d="M0 180C80 155 160 210 240 180S320 165 340 172V220H0Z" fill="#FFFFFF" fill-opacity=".09"/>
+     <path d="M0 158C70 128 140 188 220 158S320 128 340 138" fill="none" stroke="url(#${g})" stroke-width="1"/>
+     <path d="M0 180C80 155 160 210 240 180S320 165 340 172" fill="none" stroke="url(#${g})" stroke-width=".6"/>
+     <path d="M0 40C80 70 150 10 230 40S320 60 340 50V0H0Z" fill="#FFFFFF" fill-opacity=".07"/>
+     <path d="M0 40C80 70 150 10 230 40S320 60 340 50" fill="none" stroke="url(#${g})" stroke-width=".8"/>`));
+}
+/* B · data flow: a twisted ribbon of fine lines */
+function flowLines(c, back) {
+  const g = uid('fl'), N = 26; let s = '', dots = '';
+  const P = t => back
+    ? [[-10, 70 + 32 * t], [90, 36 + 118 * t], [250, 172 - 116 * t], [350, 88 + 44 * t]]
+    : [[168 + 104 * t, 238], [214 + 24 * t, 214 - 150 * t], [262 - 26 * t, 30 + 130 * t], [352, 6 + 118 * t]];
+  for (let i = 0; i < N; i++) {
+    const t = i / (N - 1), p = P(t), op = (.1 + .6 * Math.sin(Math.PI * t)).toFixed(2);
+    s += `<path d="M${p[0][0].toFixed(1)} ${p[0][1].toFixed(1)}C${p[1][0].toFixed(1)} ${p[1][1].toFixed(1)} ${p[2][0].toFixed(1)} ${p[2][1].toFixed(1)} ${p[3][0].toFixed(1)} ${p[3][1].toFixed(1)}" stroke-opacity="${op}"/>`;
+  }
+  [[6, .38], [13, .72], [19, .52], [9, .9]].forEach(([i, u]) => {
+    const p = P(i / (N - 1)), x = bez(p[0][0], p[1][0], p[2][0], p[3][0], u), y = bez(p[0][1], p[1][1], p[2][1], p[3][1], u);
+    dots += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="5" fill="${c.acc}" fill-opacity=".16"/><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="1.7" fill="#FFFFFF"/>`;
+  });
+  return deco(`<defs>${linG(g, [[0, c.acc], [.55, '#A78BFA'], [1, c.acc]], 0, 0, 340, 0)}</defs>` +
+    mirror(c, `<g fill="none" stroke="url(#${g})" stroke-width=".7">${s}</g>${dots}`));
+}
+/* C · pulse: heartbeat line, no medical cross */
+const ecgD = (y, x0, x1, at) => `M${x0} ${y}H${at}L${at + 7} ${y}L${at + 13} ${y - 14}L${at + 20} ${y + 14}L${at + 28} ${y - 26}L${at + 36} ${y + 8}L${at + 41} ${y}H${x1}`;
+/* D · arabesque: 8-point star lattice */
+function starTile(id, col, op) {
+  const s = 28, h = 14, r = 8.5, q = r * Math.SQRT1_2;
+  return `<pattern id="${id}" width="${s}" height="${s}" patternUnits="userSpaceOnUse"><g fill="none" stroke="${col}" stroke-opacity="${op}" stroke-width=".6">
+    <polygon points="${h - q},${h - q} ${h + q},${h - q} ${h + q},${h + q} ${h - q},${h + q}"/>
+    <polygon points="${h},${h - r} ${h + r},${h} ${h},${h + r} ${h - r},${h}"/><circle cx="${h}" cy="${h}" r="2.2"/>
+    <path d="M0 0L${h - q} ${h - q}M${s} 0L${h + q} ${h - q}M${s} ${s}L${h + q} ${h + q}M0 ${s}L${h - q} ${h + q}"/></g></pattern>`;
+}
+function star8SVG(c, s, col) {
+  const h = s / 2, r = h - 1.5, q = r * Math.SQRT1_2, r2 = r - 4, q2 = r2 * Math.SQRT1_2;
+  const two = (rr, qq) => `<polygon points="${h - qq},${h - qq} ${h + qq},${h - qq} ${h + qq},${h + qq} ${h - qq},${h + qq}"/><polygon points="${h},${h - rr} ${h + rr},${h} ${h},${h + rr} ${h - rr},${h}"/>`;
+  return `<svg class="st8" width="${s}" height="${s}" viewBox="0 0 ${s} ${s}"><g fill="${c.acc}" stroke="${col}" stroke-width="1">${two(r, q)}</g>
+    <g fill="none" stroke="${col}" stroke-width=".5" stroke-opacity=".7">${two(r2, q2)}</g></svg>`;
+}
+/* E · contour lines */
+function contours(cx, cy, n, step, col, op, seed) {
+  let s = '';
+  for (let k = 1; k <= n; k++) {
+    const r0 = k * step, pts = [];
+    for (let a = 0; a < 120; a++) {
+      const th = a / 120 * Math.PI * 2;
+      const r = r0 * (1 + .13 * Math.sin(3 * th + seed + k * .22) + .06 * Math.cos(5 * th - seed * 1.3 + k * .37));
+      pts.push(`${(cx + r * Math.cos(th)).toFixed(1)} ${(cy + r * Math.sin(th) * .8).toFixed(1)}`);
+    }
+    s += `<path d="M${pts.join('L')}Z"${k % 5 === 0 ? ` stroke-width="1.1" stroke-opacity="${Math.min(1, op * 1.9).toFixed(2)}"` : ''}/>`;
+  }
+  return `<g fill="none" stroke="${col}" stroke-opacity="${op}" stroke-width=".55" stroke-linejoin="round">${s}</g>`;
+}
+/* G · line bloom */
+function flower(x, y, k, rot, col, op, fillOp) {
+  const p1 = 'M0 0C-9 -12 -9 -30 0 -38C9 -30 9 -12 0 0Z', p2 = 'M0 0C-6 -9 -6 -22 0 -27C6 -22 6 -9 0 0Z';
+  let g = '';
+  for (let i = 0; i < 6; i++) g += `<path d="${p1}" transform="rotate(${i * 60})"/>`;
+  for (let i = 0; i < 6; i++) g += `<path d="${p2}" transform="rotate(${i * 60 + 30})"/>`;
+  return `<g transform="translate(${x} ${y}) rotate(${rot}) scale(${k})" fill="${col}" fill-opacity="${fillOp}" stroke="${col}" stroke-opacity="${op}" stroke-width="${(.8 / k).toFixed(2)}">${g}
+    <circle r="4.5" fill-opacity="${Math.min(1, fillOp * 4)}"/><circle r="8" fill="none" stroke-dasharray="1 2.2"/></g>`;
+}
+const leafL = (x, y, k, rot, col, op) => `<g transform="translate(${x} ${y}) rotate(${rot}) scale(${k})" fill="${col}" fill-opacity=".08" stroke="${col}" stroke-opacity="${op}" stroke-width="${(.8 / k).toFixed(2)}">
+  <path d="M0 0C10 -11 30 -11 40 0C30 11 10 11 0 0Z"/><path d="M2 0H36" fill="none"/></g>`;
+function bloomSet(c, col, op, fo) {
+  return `<g fill="none" stroke="${col}" stroke-opacity="${op}" stroke-width=".8"><path d="M300 172C292 196 280 214 262 236"/><path d="M252 206C246 220 238 230 226 240"/><path d="M322 108C318 126 310 142 300 160"/></g>` +
+    leafL(282, 206, .62, 130, col, op) + leafL(296, 192, .55, -150 + 180, col, op) + leafL(240, 224, .5, 150, col, op) + leafL(314, 136, .45, 200, col, op) +
+    flower(300, 172, 1.2, 8, col, op, fo) + flower(252, 206, .72, 24, col, op, fo) + flower(322, 108, .42, -10, col, op, fo);
+}
+/* I · halftone */
+function halftone(cx, cy, R, step, rmax, fill, op) {
+  let s = '', row = 0;
+  for (let y = cy - R; y <= cy + R; y += step * .866, row++) {
+    for (let x = cx - R + (row % 2 ? step / 2 : 0); x <= cx + R; x += step) {
+      const d = Math.hypot(x - cx, y - cy); if (d > R || x < -4 || x > W + 4 || y < -4 || y > H + 4) continue;
+      const r = rmax * Math.pow(1 - d / R, .9); if (r < .3) continue;
+      s += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(2)}"/>`;
+    }
+  }
+  return `<g fill="${fill}" fill-opacity="${op}">${s}</g>`;
+}
+/* J · gold leaf flakes */
+function flakes(cx, cy, R, n, seed, fill) {
+  const rnd = rng(seed); let s = '';
+  for (let i = 0; i < n; i++) {
+    const a = rnd() * Math.PI * 2, d = Math.pow(rnd(), 2) * R;
+    const x = cx + Math.cos(a) * d, y = cy + Math.sin(a) * d * .85;
+    const size = (1 - d / R) * 8 + .8 + rnd() * 2.2, k = 5 + Math.floor(rnd() * 3), pts = [];
+    for (let j = 0; j < k; j++) { const t = j / k * Math.PI * 2 + rnd() * .7, rr = size * (.5 + rnd() * .6); pts.push(`${(x + Math.cos(t) * rr).toFixed(1)},${(y + Math.sin(t) * rr).toFixed(1)}`); }
+    s += `<polygon points="${pts.join(' ')}" fill-opacity="${(.78 + rnd() * .22).toFixed(2)}"/>`;
+  }
+  for (let i = 0; i < n * .6; i++) {
+    const a = rnd() * Math.PI * 2, d = R * (.35 + rnd() * .75);
+    s += `<circle cx="${(cx + Math.cos(a) * d).toFixed(1)}" cy="${(cy + Math.sin(a) * d * .85).toFixed(1)}" r="${(.4 + rnd() * .9).toFixed(2)}" fill-opacity="${(.4 + rnd() * .5).toFixed(2)}"/>`;
+  }
+  return `<g fill="${fill}">${s}</g>`;
+}
+const goldFoil = (c, id, x1, y1, x2, y2) => linG(id, [[0, c.accD], [.3, c.accL], [.5, c.acc], [.72, c.accL], [1, c.accD]], x1, y1, x2, y2);
+const bidiVal = v => isArText(v) ? `<span class="ar" dir="rtl">${esc(v)}</span>` : esc(v);
+
+const NEW_TEMPLATES_3 = [
+  /* A · Feminine — silk waves */
+  {
+    id:'silk', cat:'shop', sample:'beauty', name:{ ar:'أمواج الحرير', fr:'Vagues de soie', en:'Silk Waves' },
+    acc:'#C47A8A', swatches:['#C47A8A','#B08968','#8E7CC3','#5E9C94','#C98A5A'],
+    fonts:{ ar:['El Messiri','Tajawal'], la:['Cormorant Garamond','Poppins'] },
+    ic: c => c.accD,
+    front: c => silkTop(c) + `<div class="seal">${mono(c)}</div>
+      <div class="P">${fit('nm', c.d.name)}${fit('ttl caps', c.d.title)}<div class="rl"><span></span><i></i></div>${fit('co2', c.d.company)}</div>
+      ${contacts(c, { max:4, keys:['phone','social','email','address','web','phone2'] })}`,
+    back: c => `<div class="B">` + silkBack(c) + `<div class="mid">${mono(c)}${fit('co', c.d.company)}${fit('tg', c.d.tagline)}${fitL('soc', c.d.social)}</div>
+      ${c.d.web ? `<div class="wb"><span class="ltrx">${esc(c.d.web)}</span></div>` : ''}${qrBox(c)}</div>`
+  },
+  /* B · Tech — data flow */
+  {
+    id:'flow', cat:'eng', name:{ ar:'موجة البيانات', fr:'Flux de données', en:'Data Flow' },
+    acc:'#38BDF8', swatches:['#38BDF8','#34D399','#F472B6','#FBBF24','#818CF8'],
+    fonts:{ ar:['Cairo','IBM Plex Sans Arabic'], la:['Space Grotesk','Inter'] },
+    ic: c => c.acc,
+    front: c => flowLines(c, false) + `<div class="P"><div class="top"><div class="gm">${mono(c)}</div>${fit('co caps', c.d.company)}</div>
+      ${fit('nm', c.d.name)}${fit('ttl', c.d.title)}<div class="sig"><i></i><i></i><i></i></div>${contacts(c, { max:4 })}</div>`,
+    back: c => `<div class="B">` + flowLines(c, true) + `<div class="hub">${mono(c)}</div>
+      <div class="mid">${fit('co', c.d.company)}${fit('tg', c.d.tagline)}</div>${webSoc(c)}${qrBox(c)}</div>`
+  },
+  /* C · Medical clean — pulse */
+  {
+    id:'pulse', cat:'med', name:{ ar:'نبض', fr:'Pulsation', en:'Pulse Care' },
+    acc:'#0EA5A4', swatches:['#0EA5A4','#2563EB','#7C3AED','#DB2777','#059669'],
+    fonts:{ ar:['Almarai','IBM Plex Sans Arabic'], la:['Poppins','Inter'] },
+    ic: c => c.acc,
+    front: c => {
+      const r = uid('pr'), g = uid('pg');
+      return deco(`<defs>${radG(r, [[0, c.acc, .2], [1, c.acc, 0]])}${linG(g, [[0, c.acc, 0], [.45, c.acc, .9], [1, c.acc, .25]], 0, 0, 340, 0)}</defs>` + mirror(c,
+        `<circle cx="306" cy="22" r="96" fill="url(#${r})"/><circle cx="306" cy="22" r="58" fill="none" stroke="${c.acc}" stroke-opacity=".16" stroke-width=".7"/>
+         <circle cx="306" cy="22" r="80" fill="none" stroke="${c.acc}" stroke-opacity=".1" stroke-width=".7"/>
+         <path d="${ecgD(100, 0, 340, 214)}" fill="none" stroke="url(#${g})" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round"/>
+         <circle cx="242" cy="74" r="2.6" fill="${c.acc}"/><circle cx="242" cy="74" r="6" fill="${c.acc}" fill-opacity=".18"/>`)) +
+        `<div class="top">${mono(c)}<div class="who">${fit('nm', c.d.name)}${fit('ttl', c.d.title)}${fit('co2', c.d.company)}</div></div>
+        ${contacts(c, { max:6, keys:['phone','email','phone2','web','social','address'] })}`;
+    },
+    back: c => `<div class="B">` + deco(mirror(c, `<g fill="none" stroke="#FFFFFF"><circle cx="20" cy="210" r="46" stroke-opacity=".14"/><circle cx="20" cy="210" r="72" stroke-opacity=".1"/><circle cx="20" cy="210" r="98" stroke-opacity=".07"/></g>
+        <path d="${ecgD(196, 0, 256, 120)}" fill="none" stroke="#FFFFFF" stroke-opacity=".4" stroke-width="1.1" stroke-linejoin="round"/>`)) +
+      `<div class="mid">${mono(c)}${fit('co', c.d.company)}${fit('tg', c.d.tagline)}
+      ${(c.d.phone || c.d.phone2) ? `<div class="ph"><span class="ltrx">${esc([c.d.phone, c.d.phone2].filter(Boolean).join('  ·  '))}</span></div>` : ''}</div>${qrBox(c)}</div>`
+  },
+  /* D · Luxury — arabesque star lattice */
+  {
+    id:'arabesque', cat:'law', name:{ ar:'أرابيسك', fr:'Arabesque', en:'Arabesque' },
+    acc:'#123C3A', swatches:['#123C3A','#14213D','#4A1525','#2B1F3A','#1C1C1C'],
+    fonts:{ ar:['Amiri','Almarai'], la:['Marcellus','Poppins'] },
+    ic: c => c.acc,
+    front: c => {
+      const p = uid('ar');
+      return deco(`<defs>${starTile(p, '#CBA35C', .85)}</defs>` + mirror(c, `<rect width="98" height="220" fill="${c.acc}"/><rect width="98" height="220" fill="url(#${p})" opacity=".6"/>
+          <path d="M98.5 0V220M102.5 0V220" stroke="#CBA35C" stroke-width=".7"/>`)) +
+        `<div class="medal">${star8SVG(c, 66, '#CBA35C')}${mono(c)}</div>
+        <div class="P">${fit('co2 caps', c.d.company)}${fit('nm', c.d.name)}${fit('ttl', c.d.title)}
+        <div class="rl"><span></span><svg width="9" height="9" viewBox="0 0 9 9"><g fill="#CBA35C"><rect x="1.8" y="1.8" width="5.4" height="5.4"/><rect x="1.8" y="1.8" width="5.4" height="5.4" transform="rotate(45 4.5 4.5)"/></g></svg><span></span></div>
+        ${contacts(c, { max:4 })}</div>`;
+    },
+    back: c => {
+      const p = uid('ar');
+      return `<div class="B">` + deco(`<defs>${starTile(p, '#CBA35C', .9)}</defs><rect width="340" height="220" fill="url(#${p})" opacity=".16"/>
+          <rect x="10" y="10" width="320" height="200" fill="none" stroke="#CBA35C" stroke-width=".8"/><rect x="14" y="14" width="312" height="192" fill="none" stroke="#CBA35C" stroke-opacity=".5" stroke-width=".4"/>`) +
+        `<div class="mid"><div class="medal">${star8SVG(c, 84, '#CBA35C')}${mono(c)}</div>${fit('co', c.d.company)}${fit('tg', c.d.tagline)}</div>
+        ${c.d.web ? `<div class="wb"><span class="ltrx">${esc(c.d.web)}</span></div>` : ''}${qrBox(c)}</div>`;
+    }
+  },
+  /* E · Corporate — contour lines */
+  {
+    id:'contour', cat:'corp', name:{ ar:'خطوط كنتورية', fr:'Courbes de niveau', en:'Contour Lines' },
+    acc:'#2B4C7E', swatches:['#2B4C7E','#0F766E','#9A3412','#334155','#6D28D9'],
+    fonts:{ ar:['Cairo','Cairo'], la:['Montserrat','Inter'] },
+    ic: () => '#FFFFFF',
+    front: c => deco(mirror(c, contours(318, 18, 15, 12.5, c.acc, .2, 1.3))) +
+      `<div class="P"><div class="top">${mono(c)}${fit('co caps', c.d.company)}</div>
+      <div class="who">${fit('nm', c.d.name)}${fit('ttl', c.d.title)}<i class="bar"></i></div>${contacts(c, { max:4 })}</div>${qrBox(c)}`,
+    back: c => `<div class="B">` + deco(mirror(c, contours(40, 200, 19, 13, '#FFFFFF', .17, 4.1))) +
+      `<div class="top">${mono(c)}${c.d.web ? `<span class="wb ltrx">${esc(c.d.web)}</span>` : ''}</div>
+      <div class="bt">${fit('co', c.d.company)}${fit('tg', c.d.tagline)}${fitL('soc', c.d.social)}</div></div>`
+  },
+  /* F · Minimal — zen sun */
+  {
+    id:'zen', cat:'free', name:{ ar:'شمس هادئة', fr:'Soleil zen', en:'Zen Sun' },
+    acc:'#C0704D', swatches:['#C0704D','#6B7F5E','#3E4A61','#B8954A','#2B2B2B'],
+    fonts:{ ar:['Almarai','Almarai'], la:['Cormorant Garamond','Inter'] },
+    ic: c => c.acc,
+    front: c => deco(mirror(c, `<circle cx="282" cy="76" r="30" fill="${c.acc}"/><rect x="240" y="104.6" width="90" height="12" fill="#F4EFE7"/>
+        <circle cx="292" cy="84" r="30" fill="none" stroke="#2B2B2B" stroke-opacity=".55" stroke-width=".5"/>
+        <path d="M214 104.4H332" stroke="#2B2B2B" stroke-width=".6"/><path d="M234 110.4H312" stroke="#2B2B2B" stroke-opacity=".35" stroke-width=".5"/>`)) +
+      `<div class="sun">${mono(c)}</div>
+      <div class="P">${fit('co caps', c.d.company)}<div class="who">${fit('nm', c.d.name)}${fit('ttl', c.d.title)}</div>${contacts(c, { max:4 })}</div>${qrBox(c)}`,
+    back: c => `<div class="B"><div class="mid"><div class="sun">${mono(c)}</div><div class="hz"></div>${fit('co caps', c.d.company)}${fit('tg', c.d.tagline)}</div>${webSoc(c)}</div>`
+  },
+  /* G · Feminine elegant — line bloom */
+  {
+    id:'bloom', cat:'shop', sample:'beauty', name:{ ar:'زهرة خطية', fr:'Fleur au trait', en:'Line Bloom' },
+    acc:'#B76E79', swatches:['#B76E79','#A0826D','#8A6FA8','#5E8C7E','#C08A3E'],
+    fonts:{ ar:['El Messiri','Almarai'], la:['Playfair Display','Poppins'] },
+    ic: c => c.accD,
+    front: c => deco(mirror(c, bloomSet(c, c.acc, .75, .07))) +
+      `<div class="P"><div class="top">${mono(c)}</div>${fit('nm', c.d.name)}${fit('ttl caps', c.d.title)}<div class="rl"><span></span><i></i></div>${fit('co2', c.d.company)}
+      ${contacts(c, { max:4, keys:['phone','social','email','address','web','phone2'] })}</div>`,
+    back: c => `<div class="B">` + deco(mirror(c, bloomSet(c, '#FFFFFF', .38, .05) + `<g transform="translate(340 220) rotate(180)">${bloomSet(c, '#FFFFFF', .3, .04)}</g>`)) +
+      `<div class="mid">${mono(c)}${fit('co', c.d.company)}${fit('tg', c.d.tagline)}${webSoc(c)}</div>${qrBox(c)}</div>`
+  },
+  /* H · Tech / developer — code editor */
+  {
+    id:'code', cat:'free', name:{ ar:'محرر الكود', fr:'Éditeur de code', en:'Code Editor' },
+    acc:'#7AA2F7', swatches:['#7AA2F7','#9ECE6A','#F7768E','#E0AF68','#BB9AF7'],
+    fonts:{ ar:['IBM Plex Sans Arabic','IBM Plex Sans Arabic'], la:['Space Grotesk','Inter'] },
+    ic: c => c.acc,
+    front: c => {
+      const keys = ['phone','email','web','address','social','phone2'].filter(k => c.d[k]).slice(0, 5);
+      const lines = [`<span class="kw">const</span> <span class="vr">card</span> <span class="pn">= {</span>`,
+        ...keys.map(k => `<span class="ind"></span><span class="ky">${k}</span><span class="pn">:</span> <span class="s">"${bidiVal(c.d[k])}"</span><span class="pn">,</span>`),
+        `<span class="pn">};</span>`];
+      return `<div class="win"><i></i><i></i><i></i><span>card.js</span></div>
+        <div class="hd">${fit('nm', c.d.name)}<div class="fit ttl"><span class="cm">//</span> ${esc(c.d.title)}</div></div>${mono(c)}
+        <div class="code" dir="ltr">${lines.map((l, i) => `<div class="cl"><b>${i + 1}</b><span>${l}</span></div>`).join('')}</div>${qrBox(c)}`;
+    },
+    back: c => `<div class="B"><div class="win"><i></i><i></i><i></i><span>index.html</span></div>
+      <div class="mid">${mono(c)}<div class="fit co" dir="ltr"><span class="tgx">&lt;</span>${bidiVal(c.d.company)}<span class="tgx"> /&gt;</span></div>
+      ${c.d.tagline ? `<div class="fit tg" dir="ltr"><span class="cm">/*</span> ${bidiVal(c.d.tagline)} <span class="cm">*/</span><i class="cur"></i></div>` : ''}</div>${webSoc(c)}</div>`
+  },
+  /* I · Modern — halftone */
+  {
+    id:'halftone', cat:'edu', name:{ ar:'نقاط متدرجة', fr:'Trame de points', en:'Halftone' },
+    acc:'#4F46E5', swatches:['#4F46E5','#0EA5E9','#E11D48','#16A34A','#EA580C'],
+    fonts:{ ar:['Cairo','Tajawal'], la:['Poppins','Poppins'] },
+    ic: () => '#FFFFFF',
+    front: c => {
+      const g = uid('ht');
+      return deco(`<defs>${linG(g, [[0, c.acc], [1, c.accL]], 340, 0, 170, 150)}</defs>` + mirror(c, halftone(340, 0, 172, 8.6, 3.7, `url(#${g})`, 1))) +
+        `<div class="P"><div class="top">${mono(c)}${fit('co caps', c.d.company)}</div><div class="who">${fit('nm', c.d.name)}${fit('ttl', c.d.title)}</div>
+        ${contacts(c, { max:4 })}</div>${qrBox(c)}`;
+    },
+    back: c => `<div class="B">` + deco(mirror(c, halftone(340, 220, 196, 8.6, 3.8, '#FFFFFF', .22))) +
+      `<div class="top">${mono(c)}</div><div class="bt">${fit('co', c.d.company)}${fit('tg', c.d.tagline)}<i class="bar"></i>${webSoc(c)}</div></div>`
+  },
+  /* J · Luxury — gold leaf */
+  {
+    id:'goldleaf', cat:'corp', name:{ ar:'ورق الذهب', fr:'Feuille d’or', en:'Gold Leaf' },
+    acc:'#C8A050', swatches:['#C8A050','#C9CDD3','#D4A08A','#9CC5A1','#E7C873'],
+    fonts:{ ar:['El Messiri','Almarai'], la:['Cormorant Garamond','Inter'] },
+    ic: c => c.acc,
+    front: c => {
+      const g = uid('gl');
+      return deco(`<defs>${goldFoil(c, g, 200, 0, 340, 130)}</defs>` + mirror(c, flakes(330, 10, 120, 95, 7, `url(#${g})`))) +
+        `<div class="P">${fit('nm', c.d.name)}${fit('ttl caps', c.d.title)}<div class="foil"></div>${fit('co2', c.d.company)}${contacts(c, { max:4 })}</div>${qrBox(c)}`;
+    },
+    back: c => {
+      const g = uid('gl');
+      return `<div class="B">` + deco(`<defs>${goldFoil(c, g, 0, 100, 150, 220)}</defs>` + mirror(c, flakes(10, 214, 125, 95, 23, `url(#${g})`))) +
+        `<div class="mid"><div class="ring">${mono(c)}</div>${fit('co caps', c.d.company)}${fit('tg', c.d.tagline)}<div class="foil"></div></div>${webSoc(c)}</div>`;
+    }
+  }
+];
+NEW_TEMPLATES_3.forEach(t => { t.isNew = true; t.batch = 3; TEMPLATES.push(t); });
+
 const TPL_BY = Object.fromEntries(TEMPLATES.map(t => [t.id, t]));
 const CATS = ['all', 'new', 'corp', 'med', 'eng', 'law', 'edu', 'shop', 'free'];
 const CAT_COLOR = { all:'#2F5770', new:'#B8860B', corp:'#2563EB', med:'#16A34A', eng:'#0891B2', law:'#9F1239', edu:'#EA580C', shop:'#DB2777', free:'#7C3AED' };
@@ -855,7 +1141,7 @@ function thumbState(id) {
 }
 function renderGallery() {
   $('#gCats').innerHTML = CATS.map(k => `<button type="button" class="chip${k === activeCat ? ' on' : ''}" data-cat="${k}" style="--cc:${CAT_COLOR[k]}">${T('cat_' + k)}</button>`).join('');
-  const ordered = [...TEMPLATES.filter(t => t.isNew), ...TEMPLATES.filter(t => !t.isNew)];
+  const ordered = [...TEMPLATES.filter(t => t.isNew).sort((a, b) => (b.batch || 2) - (a.batch || 2)), ...TEMPLATES.filter(t => !t.isNew)];
   const list = ordered.filter(t => activeCat === 'all' || (activeCat === 'new' ? t.isNew : t.cat === activeCat));
   $('#gCount').textContent = T('count').replace('{n}', TEMPLATES.length);
   $('#gGrid').innerHTML = list.map(t => `<button type="button" class="g-card${t.id === st.tpl ? ' on' : ''}" data-tpl="${t.id}">
