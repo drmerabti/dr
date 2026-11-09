@@ -781,17 +781,41 @@ function placeCard(slot, html, s) {
    Stage
 --------------------------------------------------------- */
 let stageScale = 1;
+function bothScale(bw, bh) {
+  const row = Math.min((bw - 40 - 24) / 2 / W, (bh - 40 - 26) / H);
+  const col = Math.min((bw - 40) / W, (bh - 40 - 52 - 14) / 2 / H);
+  return { s: Math.max(0.3, Math.min(2.3, Math.max(row, col))), col: col > row };
+}
 function computeScale() {
   const body = $('#stageBody');
   const bw = body.clientWidth, bh = body.clientHeight;
   if (!bw || !bh) return 1;
   if (view === 'both') {
-    const row = Math.min((bw - 40 - 24) / 2 / W, (bh - 40 - 26) / H);
-    const col = Math.min((bw - 40) / W, (bh - 40 - 52 - 14) / 2 / H);
-    $('#bothView').classList.toggle('col', col > row);
-    return Math.max(0.3, Math.min(2.3, Math.max(row, col)));
+    const r = bothScale(bw, bh);
+    $('#bothView').classList.toggle('col', r.col);
+    return r.s;
   }
   return Math.max(0.3, Math.min(2.6, (bw - 80) / W, (bh - 110) / H));
+}
+
+/* Designs pane width (desktop): it only takes the stage's EMPTY width, so the
+   card preview keeps exactly the size it had with the original 250px pane.
+   Wide enough -> two designs per row; otherwise the original single column. */
+const GAL_MIN = 250, GAL_TWO = 340, GAL_MAX = 480;
+function layoutPanes() {
+  const ws = $('#workspace'), gp = $('#paneGallery'), body = $('#stageBody');
+  if (isMobile()) { ws.style.removeProperty('--gal-w'); gp.classList.remove('two'); return; }
+  const bh = body.clientHeight, bwBase = body.clientWidth + gp.offsetWidth - GAL_MIN;
+  if (!bh || bwBase <= 0) return;
+  const target = bothScale(bwBase, bh).s;
+  let lo = 0, hi = bwBase;                         // smallest stage width that keeps the same card size
+  while (hi - lo > 1) { const m = (lo + hi) / 2; if (bothScale(m, bh).s >= target - 1e-9) hi = m; else lo = m; }
+  const need = Math.max(Math.ceil(hi), Math.ceil(W * target + 80)) + 12;   // + room so 3D is never smaller
+  let g = Math.min(GAL_MAX, GAL_MIN + Math.max(0, Math.floor(bwBase - need)));
+  const two = g >= GAL_TWO;
+  if (!two) g = GAL_MIN;
+  ws.style.setProperty('--gal-w', g + 'px');
+  gp.classList.toggle('two', two);
 }
 function renderStage() {
   stageScale = computeScale();
@@ -1370,13 +1394,14 @@ function setPane(p) {
 $('#mtabs').addEventListener('click', e => { const b = e.target.closest('[data-pane]'); if (b) setPane(b.dataset.pane); });
 
 let rzTimer = null;
-window.addEventListener('resize', () => { clearTimeout(rzTimer); rzTimer = setTimeout(() => { renderStage(); $$('#gGrid .g-thumb').forEach(scaleThumb); }, 120); });
+window.addEventListener('resize', () => { clearTimeout(rzTimer); rzTimer = setTimeout(() => { layoutPanes(); renderStage(); $$('#gGrid .g-thumb').forEach(scaleThumb); }, 120); });
 
 /* ---------------------------------------------------------
    Init
 --------------------------------------------------------- */
 applyUiLang();
 buildForm();
+layoutPanes();
 renderGallery();
 setView('both');
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { renderStage(); fillThumbs(); });
