@@ -519,3 +519,302 @@ html[dir="ltr"]{ --dir: ltr; }
 .t-crea .B .co{ font-size:9px; margin-top:6px; opacity:.85; }
 .t-crea .B .web{ font-size:8.4px; margin-top:2px; opacity:.85; }
 .t-crea .B .qr{ position:absolute; bottom:18px; inset-inline-end:20px; width:44px; height:44px; }
+
+/* ---------- Gallery: NEW badge ---------- */
+.g-card{ position:relative; }
+.g-new{
+  position:absolute; top:-6px; inset-inline-end:14px; z-index:2; font-style:normal;
+  font: 800 .58rem/1 'Inter', sans-serif; letter-spacing:.08em; padding:3px 7px; border-radius:999px;
+  background: linear-gradient(135deg, #F7DA8B, #C9962B); color:#3A2A05; box-shadow: 0 2px 6px rgba(0,0,0,.28);
+}
+
+/* =========================================================
+   NEW DESIGNS (10) — shared helpers
+   letter-spacing only on Latin: spaced Arabic loses its joins
+   ========================================================= */
+.bc .caps{ text-transform:uppercase; letter-spacing:.16em; }
+.bc[lang="ar"] .caps{ text-transform:none; letter-spacing:0; }
+
+/* ---------- N1. Art Deco gold (luxury) ---------- */
+.t-deco{ --ink-c:#F3EBD8; background: linear-gradient(150deg, #1B1B20 0%, #0B0B0D 78%); }
+.t-deco .vl{ position:absolute; top:30px; bottom:30px; inset-inline-end:94px; width:3.6px; border-left:.6px solid var(--acc); border-right:.6px solid var(--acc); opacity:.55; }
+.t-deco .P{ position:absolute; top:0; bottom:0; inset-inline-start:0; inset-inline-end:104px; padding:28px 0 26px; padding-inline-start:30px; display:flex; flex-direction:column; }
+.t-deco .co2{ font-size:6.8px; color: var(--acc); font-weight:600; }
+.t-deco .nm{ font-size:24px; font-weight:600; line-height:1.1; margin-top:5px; color:#F7F0DE; }
+.t-deco[lang="ar"] .nm{ font-size:19px; line-height:1.35; margin-top:3px; }
+.t-deco .ttl{ font-size:6.8px; color:#CFC6B2; margin-top:4px; font-weight:500; }
+.t-deco[lang="ar"] .ttl{ font-size:8.6px; }
+.t-deco .foil{ position:relative; margin-top:10px; height:1px; width:58px; background: linear-gradient(90deg, var(--acc-d), var(--acc-l), var(--acc)); }
+.t-deco .foil i{ position:absolute; inset-inline-end:-3px; top:-2.5px; width:6px; height:6px; background: var(--acc); transform: rotate(45deg); }
+.t-deco .cts{ margin-top:auto; gap:5px; }
+.t-deco .ct{ color: rgba(243,235,216,.86); font-size:8px; gap:9px; }
+.t-deco .ct i{ width:11px; height:11px; border:.6px solid var(--acc); border-radius:1px; transform: rotate(45deg); }
+.t-deco .ct i svg{ transform: rotate(-45deg); width:6.6px; height:6.6px; }
+.t-deco .side{ position:absolute; top:26px; bottom:26px; inset-inline-end:24px; width:58px; display:flex; flex-direction:column; align-items:center; justify-content:space-between; }
+.t-deco .oct{ position:relative; width:50px; height:50px; display:grid; place-items:center; flex:none; }
+.t-deco .oct-svg{ position:absolute; left:0; top:0; }
+.t-deco .oct .mono{ position:relative; width:34px; height:34px; color: var(--acc); font-size:21px; font-weight:600; }
+.t-deco .mono.img{ border-radius:50%; background:#fff; padding:4px; }
+.t-deco .qr{ width:50px; height:50px; border:1.4px solid var(--acc); padding:2.5px; border-radius:0; }
+.t-deco .B{ position:absolute; inset:0; }
+.t-deco .B .mid{ position:absolute; inset:0; padding: 47px 48px 0; display:flex; flex-direction:column; align-items:center; text-align:center; }
+.t-deco .B .oct{ width:62px; height:62px; }
+.t-deco .B .oct .mono{ width:42px; height:42px; font-size:26px; }
+.t-deco .B .co{ font-family: var(--fd), serif; font-size:17px; font-weight:600; margin-top:12px; width:100%; color:#F7F0DE; }
+.t-deco[lang="ar"] .B .co{ font-size:16px; margin-top:9px; }
+.t-deco .B .tg{ font-size:7.8px; color: var(--acc); margin-top:4px; width:100%; }
+.t-deco .B .foil{ width:44px; margin:9px auto 0; }
+.t-deco .B .foil i{ inset-inline-end:auto; left:50%; margin-left:-3px; }
+.t-deco .ws{ position:absolute; bottom:23px; left:34px; right:34px; display:flex; justify-content:center; align-items:center; gap:8px; font-size:7.2px; color: rgba(243,235,216,.7); white-space:nowrap; overflow:hidden; }
+.t-deco .ws i{ width:3.5px; height:3.5px; flex:none; background: var(--acc); transform: rotate(45deg); }
+
+/* ---------- N2. Swiss minimal (minimalist) ---------- */
+.t-swiss{ --ink-c:#111111; background:#FFFFFF; }
+.t-swiss .dot{ position:absolute; top:22px; inset-inline-end:24px; width:15px; height:15px; border-radius:50%; background: var(--acc); }
+.t-swiss .P{ position:absolute; inset:0; padding:22px 24px 20px; display:flex; flex-direction:column; }
+.t-swiss .top{ display:flex; align-items:center; gap:8px; padding-inline-end:30px; }
+.t-swiss .mono{ width:18px; height:18px; background:#111111; color:#FFFFFF; font-size:10px; font-weight:800; flex:none; }
+.t-swiss .mono.img{ background:none; }
+.t-swiss .top .co{ font-size:6.8px; font-weight:700; flex:1; min-width:0; }
+.t-swiss .who{ margin-top:16px; }
+.t-swiss .nm{ font-size:25px; font-weight:800; line-height:1.08; }
+.t-swiss[lang="ar"] .nm{ font-size:22px; line-height:1.3; }
+.t-swiss .ttl{ font-size:9px; color:#6B6B6B; margin-top:4px; font-weight:500; }
+.t-swiss .ln{ margin-top:auto; height:1.4px; background:#111111; }
+.t-swiss .bot{ display:flex; align-items:flex-end; justify-content:space-between; gap:12px; padding-top:9px; }
+.t-swiss .lab{ flex:1; min-width:0; display:flex; flex-direction:column; gap:3.6px; }
+.t-swiss .lr{ display:flex; align-items:baseline; gap:8px; font-size:8px; line-height:1.25; min-width:0; }
+.t-swiss .lr b{ width:28px; flex:none; color: var(--acc); font-weight:700; font-size:6.6px; text-transform:uppercase; letter-spacing:.06em; }
+.t-swiss[lang="ar"] .lr b{ letter-spacing:0; font-size:7px; }
+.t-swiss .lr span{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; }
+.t-swiss .qr{ width:46px; height:46px; padding:0; border-radius:0; flex:none; }
+.t-swiss .B{ position:absolute; inset:0; background: var(--acc); color:#FFFFFF; padding:22px 24px 20px; display:flex; flex-direction:column; }
+.t-swiss .B .top{ justify-content:space-between; padding:0; }
+.t-swiss .B .mono{ width:26px; height:26px; background:#FFFFFF; color: var(--acc); font-size:14px; }
+.t-swiss .B .mono.img{ padding:2px; background:#FFFFFF; }
+.t-swiss .B .wb{ font-size:7.6px; font-weight:600; }
+.t-swiss .B .bt{ margin-top:auto; }
+.t-swiss .B .ln{ width:30px; height:2px; background:#FFFFFF; margin-bottom:10px; }
+.t-swiss .B .co{ font-family: var(--fd), sans-serif; font-size:24px; font-weight:800; line-height:1.15; }
+.t-swiss .B .tg{ font-size:8.6px; margin-top:3px; opacity:.88; }
+.t-swiss .B .soc{ font-size:8px; margin-top:8px; font-weight:700; }
+
+/* ---------- N3. Executive navy (corporate) ---------- */
+.t-exec{ --ink-c:#1A2233; background:#FFFFFF; }
+.t-exec .top{ position:absolute; top:0; left:0; right:0; height:124px; padding:26px 28px 0; display:flex; align-items:flex-start; justify-content:space-between; gap:14px; }
+.t-exec .who{ flex:1; min-width:0; }
+.t-exec .nm{ font-size:20px; font-weight:700; color: var(--acc); }
+.t-exec .ttl{ font-size:7px; color:#A07A36; margin-top:5px; font-weight:600; }
+.t-exec[lang="ar"] .ttl{ font-size:8.8px; }
+.t-exec .co2{ font-size:8.4px; color:#6B7280; margin-top:9px; padding-top:7px; border-top:.6px solid #E1E4EA; }
+.t-exec .mono{ width:44px; height:44px; border-radius:8px; background: var(--acc); color:#D9B873; font-size:20px; flex:none; }
+.t-exec .mono.img{ background:#FFFFFF; box-shadow: 0 0 0 .8px #E1E4EA; padding:3px; }
+.t-exec .band{ position:absolute; left:0; right:0; bottom:0; height:96px; background: linear-gradient(135deg, var(--acc) 0%, var(--acc-d) 100%); padding:20px 28px 0; }
+.t-exec .gl, .t-exec .B::after{ position:absolute; top:0; left:0; right:0; height:2.4px; background: linear-gradient(90deg, #A07A36, #F1DBA2 40%, #C9A45C 70%, #A07A36); }
+.t-exec .cts{ display:grid; grid-template-columns: 1.1fr 1fr; gap:6px 14px; }
+.t-exec .ct{ color: rgba(255,255,255,.92); font-size:8px; }
+.t-exec .ct i{ background: rgba(217,184,115,.16); }
+.t-exec .B{ position:absolute; inset:0; background: linear-gradient(150deg, var(--acc) 0%, var(--acc-d) 100%); color:#FFFFFF; }
+.t-exec .B::after{ content:''; top:auto; bottom:0; }
+.t-exec .B .mid{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:0 56px 14px; }
+.t-exec .B .ring{ width:64px; height:64px; border-radius:50%; border:.9px solid #D9B873; display:grid; place-items:center; }
+.t-exec .B .mono{ width:54px; height:54px; border-radius:50%; background:#FFFFFF; color: var(--acc); font-size:23px; box-shadow:none; }
+.t-exec .B .co{ font-family: var(--fd), sans-serif; font-size:14px; font-weight:700; margin-top:12px; width:100%; }
+.t-exec[lang="ar"] .B .co{ font-size:16px; }
+.t-exec .B .tg{ font-size:8px; color:#D9B873; margin-top:4px; width:100%; }
+.t-exec .B .wb{ position:absolute; bottom:20px; inset-inline-start:22px; font-size:7.6px; color: rgba(255,255,255,.75); }
+.t-exec .B .qr{ position:absolute; bottom:16px; inset-inline-end:18px; width:40px; height:40px; }
+
+/* ---------- N4. Emerald arch (elegant) ---------- */
+.t-arch{ --ink-c:#2A2A24; background: linear-gradient(160deg, #FAF6EC 0%, #F1EADB 100%); }
+.t-arch .arch{ position:absolute; top:18px; bottom:18px; inset-inline-start:22px; width:92px; border-radius:46px 46px 3px 3px; background: linear-gradient(170deg, var(--acc) 0%, var(--acc-d) 100%); display:flex; flex-direction:column; align-items:center; padding-top:48px; }
+.t-arch .arch .in{ position:absolute; inset:5px; border:.8px solid #C9A86A; border-radius:41px 41px 1px 1px; }
+.t-arch .mono{ position:relative; width:44px; height:44px; border-radius:50%; border:.8px solid #C9A86A; color:#E3C98F; font-size:21px; }
+.t-arch .mono.img{ background:#FFFFFF; padding:5px; }
+.t-arch .arch .st{ position:relative; margin-top:auto; margin-bottom:24px; width:6px; height:6px; background:#C9A86A; transform: rotate(45deg); }
+.t-arch .P{ position:absolute; top:0; bottom:0; inset-inline-start:132px; inset-inline-end:22px; padding:26px 0 22px; display:flex; flex-direction:column; }
+.t-arch .co2{ font-size:6.8px; color:#9C7E43; font-weight:600; }
+.t-arch .nm{ font-size:22px; font-weight:400; color: var(--acc); margin-top:6px; line-height:1.15; }
+.t-arch[lang="ar"] .nm{ font-size:20px; font-weight:700; line-height:1.3; }
+.t-arch .ttl{ font-size:8.6px; color:#6E6A60; margin-top:3px; font-weight:500; }
+.t-arch .rule{ width:34px; height:1px; background:#C9A86A; margin-top:10px; }
+.t-arch .cts{ margin-top:auto; }
+.t-arch .ct i{ border:.7px solid #C9A86A; }
+.t-arch .B{ position:absolute; inset:0; background: linear-gradient(160deg, var(--acc) 0%, var(--acc-d) 100%); color:#F6F0E2; }
+.t-arch .B .arch{ inset-inline-start:104px; width:132px; border-radius:66px 66px 0 0; background:none; border:1px solid #C9A86A; padding:0; }
+.t-arch .B .arch .in{ border-width:.5px; border-radius:61px 61px 0 0; opacity:.7; }
+.t-arch .B .mid{ position:absolute; top:18px; bottom:18px; inset-inline-start:104px; width:132px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:26px 14px 6px; }
+.t-arch .B .mono{ width:46px; height:46px; font-size:22px; }
+.t-arch .B .co{ font-family: var(--fd), serif; font-size:15px; margin-top:10px; width:100%; line-height:1.25; }
+.t-arch .B .tg{ font-size:7.2px; color:#D8BE84; margin-top:4px; width:100%; }
+.t-arch .B .side{ position:absolute; bottom:20px; inset-inline-start:16px; width:82px; display:flex; flex-direction:column; gap:3px; }
+.t-arch .B .wb{ font-size:6.8px; color: rgba(246,240,226,.8); }
+.t-arch .B .qr{ position:absolute; bottom:18px; inset-inline-end:20px; width:42px; height:42px; background:#F6F0E2; }
+
+/* ---------- N5. Aurora glass (premium) ---------- */
+.t-aurora{ --ink-c:#FFFFFF; background:#0B0D18; }
+.t-aurora .P{ position:absolute; inset:0; padding:22px 20px 16px; display:flex; flex-direction:column; }
+.t-aurora .top{ display:flex; align-items:flex-start; gap:12px; }
+.t-aurora .who{ flex:1; min-width:0; }
+.t-aurora .nm{ font-size:21px; font-weight:700; }
+.t-aurora .ttl{ font-size:9px; color: var(--acc-l); margin-top:3px; font-weight:500; }
+.t-aurora .co2{ font-size:7.8px; color: rgba(255,255,255,.55); margin-top:3px; }
+.t-aurora .gm{ width:42px; height:42px; border-radius:12px; background: rgba(255,255,255,.1); border:.7px solid rgba(255,255,255,.28); display:grid; place-items:center; flex:none; overflow:hidden; }
+.t-aurora .gm .mono{ width:100%; height:100%; font-size:19px; color:#FFFFFF; }
+.t-aurora .gm .mono.img{ background:#FFFFFF; padding:4px; }
+.t-aurora .glass{ margin-top:auto; display:flex; align-items:center; gap:10px; padding:9px; padding-inline-start:12px; border-radius:12px; background: rgba(255,255,255,.09); border:.7px solid rgba(255,255,255,.22); }
+.t-aurora .cts{ flex:1; min-width:0; display:grid; grid-template-columns: 1fr 1fr; gap:6px 10px; }
+.t-aurora .ct{ color: rgba(255,255,255,.9); font-size:7.8px; }
+.t-aurora .ct i{ background: rgba(255,255,255,.14); }
+.t-aurora .qr{ width:44px; height:44px; flex:none; border-radius:6px; }
+.t-aurora .B{ position:absolute; inset:0; color:#FFFFFF; }
+.t-aurora .B .mid{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:0 46px; }
+.t-aurora .B .gm{ width:62px; height:62px; border-radius:18px; }
+.t-aurora .B .gm .mono{ font-size:28px; }
+.t-aurora .B .co{ font-family: var(--fd), sans-serif; font-size:18px; font-weight:700; margin-top:12px; width:100%; }
+.t-aurora .B .tg{ font-size:8.4px; color: rgba(255,255,255,.72); margin-top:4px; width:100%; }
+.t-aurora .B .pill{ margin-top:12px; padding:4px 12px; border-radius:999px; background: rgba(255,255,255,.1); border:.7px solid rgba(255,255,255,.25); font-size:7.8px; font-weight:600; white-space:nowrap; }
+.t-aurora .B .soc{ font-size:7.6px; color: var(--acc-l); margin-top:5px; font-weight:600; }
+
+/* ---------- N6. Marble & gold (elegant / luxury) ---------- */
+.t-marble{ --ink-c:#2B2722; background: linear-gradient(135deg, #FFFFFF 0%, #F2EFEA 100%); }
+.t-marble .seal{ position:absolute; top:28px; inset-inline-end:28px; width:72px; height:72px; border-radius:50%; padding:3.5px; background: linear-gradient(135deg, var(--acc-l) 0%, var(--acc) 45%, var(--acc-d) 100%); }
+.t-marble .seal .mono{ width:100%; height:100%; border-radius:50%; background:#FBFAF7; color: var(--acc-d); font-size:30px; font-weight:600; }
+.t-marble .seal .mono.img{ padding:10px; }
+.t-marble .P{ position:absolute; top:0; bottom:0; inset-inline-start:0; inset-inline-end:110px; padding:28px 0 22px; padding-inline-start:28px; display:flex; flex-direction:column; }
+.t-marble .nm{ font-size:21px; font-weight:600; }
+.t-marble[lang="ar"] .nm{ font-size:22px; font-weight:700; line-height:1.4; }
+.t-marble .ttl{ font-size:7px; color: var(--acc-d); margin-top:5px; font-weight:600; }
+.t-marble[lang="ar"] .ttl{ font-size:9px; margin-top:1px; }
+.t-marble .rl{ display:flex; align-items:center; gap:5px; margin-top:9px; }
+.t-marble .rl span{ width:40px; height:.8px; background: var(--acc); }
+.t-marble .rl i{ width:4.5px; height:4.5px; background: var(--acc); transform: rotate(45deg); }
+.t-marble .co2{ font-size:8.4px; color:#6F675C; margin-top:8px; font-weight:600; }
+.t-marble .cts{ margin-top:auto; }
+.t-marble .ct i{ background: linear-gradient(135deg, var(--acc-l), var(--acc)); }
+.t-marble .B{ position:absolute; inset:0; background: linear-gradient(135deg, #2A2825 0%, #151413 100%); color:#EEE8DD; }
+.t-marble .B .mid{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:0 56px 6px; }
+.t-marble .B .mono{ width:50px; height:50px; border-radius:50%; border:1px solid var(--acc); color: var(--acc); font-size:22px; }
+.t-marble .B .mono.img{ background:#FFFFFF; padding:5px; }
+.t-marble .B .co{ font-family: var(--fd), serif; font-size:16px; font-weight:600; margin-top:11px; width:100%; color: var(--acc-l); }
+.t-marble .B .tg{ font-size:8px; color: rgba(238,232,221,.75); margin-top:4px; width:100%; }
+.t-marble .B .rl{ justify-content:center; }
+.t-marble .B .rl span{ width:24px; }
+.t-marble .B .soc{ font-size:7.8px; color: var(--acc); margin-top:8px; font-weight:600; }
+.t-marble .B .wb{ position:absolute; bottom:20px; inset-inline-start:22px; font-size:7.4px; color: rgba(238,232,221,.6); }
+.t-marble .B .qr{ position:absolute; bottom:16px; inset-inline-end:18px; width:40px; height:40px; }
+
+/* ---------- N7. Editorial (magazine) ---------- */
+.t-edit{ --ink-c:#1A1A1A; background:#F4F0E8; }
+.t-edit .P{ position:absolute; inset:0; padding:20px 24px 18px; display:flex; flex-direction:column; }
+.t-edit .mast{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; }
+.t-edit .mast .co{ font-size:7px; font-weight:700; flex:0 1 auto; max-width:58%; }
+.t-edit .mast .tgm{ font-size:6.8px; color:#6E675D; font-style:italic; flex:1; min-width:0; text-align:end; }
+.t-edit .dbl{ margin-top:5px; height:4px; border-top:1.4px solid #1A1A1A; border-bottom:.5px solid #1A1A1A; }
+.t-edit .nmw{ margin-top:12px; }
+.t-edit .nm{ font-size:23px; line-height:1.08; font-weight:600; }
+.t-edit .n2{ color: var(--acc); font-style:italic; font-weight:400; }
+.t-edit[lang="ar"] .nm{ font-size:21px; line-height:1.3; font-weight:700; }
+.t-edit[lang="ar"] .mast .tgm, .t-edit[lang="ar"] .nm.n2, .t-edit[lang="ar"] .B .qt{ font-style:normal; }
+.t-edit .ttl{ font-size:6.8px; color:#555555; margin-top:6px; font-weight:600; }
+.t-edit[lang="ar"] .ttl{ font-size:8.6px; margin-top:2px; }
+.t-edit .cols{ margin-top:auto; border-top:.7px solid #1A1A1A; padding-top:7px; display:flex; }
+.t-edit .col{ flex:1 1 0; min-width:0; padding-inline:8px; border-inline-start:.5px solid rgba(26,26,26,.35); }
+.t-edit .col:first-child{ padding-inline-start:0; border-inline-start:0; }
+.t-edit .col:last-child{ padding-inline-end:0; }
+.t-edit .col:nth-child(2){ flex-grow:1.4; }
+.t-edit .col b{ display:block; font-size:5.8px; color: var(--acc); font-weight:700; text-transform:uppercase; letter-spacing:.12em; margin-bottom:2px; }
+.t-edit[lang="ar"] .col b{ letter-spacing:0; font-size:7px; }
+.t-edit .col .v{ font-size:7.2px; line-height:1.42; }
+.t-edit .B{ position:absolute; inset:0; background:#161514; color:#F4F0E8; padding:22px 26px; }
+.t-edit .B .q{ display:inline-block; font-family:'Playfair Display', serif; font-size:56px; line-height:.8; height:28px; color: var(--acc); }
+.t-edit .B .qt{ font-family: var(--fd), serif; font-style:italic; font-size:16px; line-height:1.35; width:230px; max-height:44px; overflow:hidden; margin-top:6px; }
+.t-edit .B .rl{ width:28px; height:1px; background: var(--acc); margin-top:12px; }
+.t-edit .B .co{ font-size:7px; font-weight:700; margin-top:9px; width:220px; color: rgba(244,240,232,.85); }
+.t-edit .B .nmb{ font-size:7.6px; margin-top:3px; width:220px; color: rgba(244,240,232,.55); }
+.t-edit .B .mono{ position:absolute; top:22px; inset-inline-end:24px; width:34px; height:34px; border-radius:50%; border:.7px solid rgba(244,240,232,.5); font-size:15px; }
+.t-edit .B .mono.img{ background:#FFFFFF; padding:3px; }
+.t-edit .B .qr{ position:absolute; bottom:18px; inset-inline-end:22px; width:44px; height:44px; }
+
+/* ---------- N8. Circuit carbon (premium tech) ---------- */
+.t-circuit{ --ink-c:#EAF2F6; background: linear-gradient(150deg, #161A20 0%, #0D1014 100%); }
+.t-circuit .bar{ position:absolute; top:26px; inset-inline-start:0; width:3px; height:44px; background: var(--acc); }
+.t-circuit .P{ position:absolute; top:0; bottom:0; inset-inline-start:0; inset-inline-end:90px; padding:22px 0 20px; padding-inline-start:24px; display:flex; flex-direction:column; }
+.t-circuit .top{ display:flex; align-items:center; gap:8px; }
+.t-circuit .cpu{ position:relative; width:28px; height:28px; flex:none; display:grid; place-items:center; }
+.t-circuit .cpu-svg{ position:absolute; left:0; top:0; }
+.t-circuit .cpu .mono{ position:relative; width:16px; height:16px; font-size:9.5px; color: var(--acc); font-weight:700; }
+.t-circuit .cpu .mono.img{ background:#FFFFFF; border-radius:2px; padding:1px; }
+.t-circuit .top .co{ font-size:6.8px; color: var(--acc); font-weight:700; flex:1; min-width:0; }
+.t-circuit .nm{ font-size:20px; font-weight:700; margin-top:14px; color:#FFFFFF; }
+.t-circuit .ttl{ font-size:8.6px; color: rgba(234,242,246,.68); margin-top:3px; font-weight:500; }
+.t-circuit .cts{ margin-top:auto; }
+.t-circuit .ct{ color: rgba(234,242,246,.88); font-size:8px; }
+.t-circuit .ct i{ border-radius:3px; border:.7px solid var(--acc); background: var(--acc-t); }
+.t-circuit .qrw{ position:absolute; bottom:18px; inset-inline-end:20px; width:56px; height:56px; padding:5px; }
+.t-circuit .qrw .qr{ width:46px; height:46px; border-radius:2px; }
+.t-circuit .qrw i{ position:absolute; width:9px; height:9px; border:0 solid var(--acc); }
+.t-circuit .qrw .k1{ top:0; left:0; border-top-width:1.4px; border-left-width:1.4px; }
+.t-circuit .qrw .k2{ top:0; right:0; border-top-width:1.4px; border-right-width:1.4px; }
+.t-circuit .qrw .k3{ bottom:0; left:0; border-bottom-width:1.4px; border-left-width:1.4px; }
+.t-circuit .qrw .k4{ bottom:0; right:0; border-bottom-width:1.4px; border-right-width:1.4px; }
+.t-circuit .B{ position:absolute; inset:0; }
+.t-circuit .B .cpu{ position:absolute; left:136px; top:52px; width:68px; height:68px; }
+.t-circuit .B .cpu .mono{ width:36px; height:36px; font-size:20px; }
+.t-circuit .B .cpu .mono.img{ padding:3px; }
+.t-circuit .B .mid{ position:absolute; top:132px; left:30px; right:30px; text-align:center; }
+.t-circuit .B .co{ font-family: var(--fd), sans-serif; font-size:14px; font-weight:700; color:#FFFFFF; }
+.t-circuit[lang="ar"] .B .co{ font-size:15px; }
+.t-circuit .B .tg{ font-size:7.8px; color: var(--acc); margin-top:4px; }
+.t-circuit .ws{ position:absolute; bottom:18px; left:30px; right:30px; display:flex; justify-content:center; align-items:center; gap:8px; font-size:7.2px; color: rgba(234,242,246,.6); white-space:nowrap; overflow:hidden; }
+.t-circuit .ws i{ width:3px; height:3px; flex:none; border-radius:50%; background: var(--acc); }
+
+/* ---------- N9. Sage botanical (elegant medical) ---------- */
+.t-sage{ --ink-c:#2D3A33; background:#FFFFFF; }
+.t-sage .pill{ position:absolute; top:18px; bottom:18px; inset-inline-start:20px; width:72px; border-radius:36px; background: linear-gradient(180deg, var(--acc-l) 0%, var(--acc-t) 100%); display:flex; flex-direction:column; align-items:center; padding-top:12px; overflow:hidden; }
+.t-sage .pill .mono{ width:48px; height:48px; border-radius:50%; background:#FFFFFF; color: var(--acc); font-size:22px; font-weight:700; }
+.t-sage .pill .mono.img{ padding:6px; }
+.t-sage .spr{ margin-top:auto; margin-bottom:8px; }
+.t-sage .P{ position:absolute; top:0; bottom:0; inset-inline-start:110px; inset-inline-end:22px; padding:24px 0 20px; display:flex; flex-direction:column; }
+.t-sage .nm{ font-size:22px; font-weight:700; color: var(--acc-d); line-height:1.15; }
+.t-sage[lang="ar"] .nm{ font-size:19px; line-height:1.35; }
+.t-sage .ttl{ font-size:8.6px; color: var(--acc); margin-top:2px; font-weight:600; }
+.t-sage .co2{ font-size:7.8px; color:#7A857E; margin-top:3px; }
+.t-sage .rule{ width:28px; height:1px; background: var(--acc); opacity:.5; margin-top:9px; }
+.t-sage .cts{ margin-top:auto; }
+.t-sage .ct i{ background: var(--acc-t); }
+.t-sage .B{ position:absolute; inset:0; background: linear-gradient(155deg, var(--acc) 0%, var(--acc-d) 100%); color:#FFFFFF; }
+.t-sage .B .mid{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:0 56px; }
+.t-sage .B .mono{ width:50px; height:50px; border-radius:50%; background:#FFFFFF; color: var(--acc); font-size:22px; }
+.t-sage .B .mono.img{ padding:6px; }
+.t-sage .B .co{ font-family: var(--fd), serif; font-size:17px; font-weight:700; margin-top:10px; width:100%; }
+.t-sage .B .tg{ font-size:8.2px; opacity:.85; margin-top:3px; width:100%; }
+.t-sage .B .ph{ margin-top:10px; font-size:9px; font-weight:600; background: rgba(255,255,255,.16); padding:4px 12px; border-radius:999px; white-space:nowrap; }
+.t-sage .B .soc{ font-size:7.6px; margin-top:5px; opacity:.85; }
+.t-sage .B .qr{ position:absolute; bottom:16px; inset-inline-start:16px; width:40px; height:40px; }
+
+/* ---------- N10. Royal ribbon (luxury) ---------- */
+.t-ribbon{ --ink-c:#3A2A26; background: linear-gradient(160deg, #FCFAF5 0%, #F4EEE2 100%); }
+.t-ribbon .rb{ position:absolute; top:26px; inset-inline-end:40px; width:48px; display:grid; place-items:center; }
+.t-ribbon .mono{ width:30px; height:30px; border-radius:50%; border:.8px solid #C6A15B; color:#E2C88E; font-size:15px; }
+.t-ribbon .mono.img{ background:#FFFFFF; padding:3px; }
+.t-ribbon .P{ position:absolute; top:0; inset-inline-start:0; inset-inline-end:104px; padding-top:30px; padding-inline-start:30px; }
+.t-ribbon .co2{ font-size:6.8px; color:#9A7A3E; font-weight:600; }
+.t-ribbon .nm{ font-size:21px; font-weight:700; color: var(--acc); margin-top:5px; }
+.t-ribbon[lang="ar"] .nm{ font-size:22px; line-height:1.4; margin-top:2px; }
+.t-ribbon .ttl{ font-size:8.6px; color:#5E4E46; margin-top:3px; font-weight:500; }
+.t-ribbon .orn{ display:flex; align-items:center; gap:5px; margin-top:9px; }
+.t-ribbon .orn span{ width:26px; height:.7px; background:#C6A15B; }
+.t-ribbon .orn i{ width:4.5px; height:4.5px; background:#C6A15B; transform: rotate(45deg); }
+.t-ribbon > .cts{ position:absolute; bottom:26px; inset-inline-start:28px; inset-inline-end:28px; display:grid; grid-template-columns: minmax(0,.85fr) minmax(0,1.15fr); gap:7px 12px; }
+.t-ribbon .ct i{ border:.7px solid #C6A15B; }
+.t-ribbon .B{ position:absolute; inset:0; background: linear-gradient(155deg, var(--acc) 0%, var(--acc-d) 100%); color:#F7F0E3; }
+.t-ribbon .B .mid{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:0 62px 10px; }
+.t-ribbon .B .mono{ width:52px; height:52px; border-width:1px; font-size:23px; }
+.t-ribbon .B .co{ font-family: var(--fd), serif; font-size:17px; font-weight:700; margin-top:10px; width:100%; }
+.t-ribbon .B .tg{ font-size:8px; color:#E2C88E; margin-top:3px; width:100%; }
+.t-ribbon .B .orn{ justify-content:center; margin-top:8px; }
+.t-ribbon .B .addr{ font-size:7.4px; opacity:.75; margin-top:7px; width:100%; }
+.t-ribbon .ws{ position:absolute; bottom:26px; inset-inline-start:30px; max-width:150px; display:flex; flex-direction:column; gap:2px; font-size:7px; color: rgba(247,240,227,.72); white-space:nowrap; overflow:hidden; }
+.t-ribbon .ws i{ display:none; }
+.t-ribbon .B .qr{ position:absolute; bottom:24px; inset-inline-end:28px; width:38px; height:38px; background:#F7F0E3; }

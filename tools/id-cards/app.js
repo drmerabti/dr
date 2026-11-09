@@ -1,6 +1,6 @@
 /* =========================================================
    مولّد بطاقات الأعمال — Merabti Academy
-   Phase 1: 10 designs, live preview, 3D flip, PNG, PDF, A4 print
+   20 designs (10 marked NEW), live preview, 3D flip, PNG, PDF, A4 print
    ========================================================= */
 (function () {
 'use strict';
@@ -22,8 +22,8 @@ const UI = {
     pdf_card:'بطاقة واحدة', pdf_card_d:'85 × 55 مم، بوجهيها', pdf_sheet:'لوحة A4', pdf_sheet_d:'10 بطاقات مع علامات القص',
     view_both:'الوجهان', view_3d:'ثلاثي الأبعاد', flip:'اقلب', front:'الوجه الأمامي', back:'الوجه الخلفي',
     hint3d:'حرّك الفأرة فوق البطاقة، واضغط «اقلب» أو على البطاقة لرؤية الوجه الآخر',
-    designs:'التصاميم', count:'{n} تصاميم', tab_design:'التصميم', tab_info:'المعلومات', tab_preview:'المعاينة',
-    cat_all:'الكل', cat_corp:'شركات', cat_med:'أطباء', cat_eng:'مهندسون', cat_law:'محامون', cat_edu:'تعليم', cat_shop:'محلات', cat_free:'مستقلون',
+    designs:'التصاميم', count:'{n} تصميمًا', tab_design:'التصميم', tab_info:'المعلومات', tab_preview:'المعاينة',
+    cat_all:'الكل', cat_new:'جديد', cat_corp:'شركات', cat_med:'أطباء', cat_eng:'مهندسون', cat_law:'محامون', cat_edu:'تعليم', cat_shop:'محلات', cat_free:'مستقلون',
     sec_lang:'لغة البطاقة', sec_id:'معلوماتك', sec_contact:'التواصل', sec_logo:'الشعار', sec_look:'المظهر',
     f_name:'الاسم الكامل', f_title:'الوظيفة أو الصفة', f_company:'المؤسسة أو النشاط', f_tagline:'وصف قصير', f_phone:'الهاتف', f_phone2:'هاتف ثانٍ',
     f_email:'البريد الإلكتروني', f_web:'الموقع الإلكتروني', f_address:'العنوان', f_social:'حساب التواصل الاجتماعي',
@@ -50,7 +50,7 @@ const UI = {
     view_both:'Recto verso', view_3d:'Vue 3D', flip:'Retourner', front:'Recto', back:'Verso',
     hint3d:'Survolez la carte avec la souris, puis cliquez sur « Retourner » ou sur la carte pour voir l’autre face',
     designs:'Modèles', count:'{n} modèles', tab_design:'Modèle', tab_info:'Infos', tab_preview:'Aperçu',
-    cat_all:'Tous', cat_corp:'Entreprises', cat_med:'Médecins', cat_eng:'Ingénieurs', cat_law:'Avocats', cat_edu:'Éducation', cat_shop:'Commerces', cat_free:'Indépendants',
+    cat_all:'Tous', cat_new:'Nouveaux', cat_corp:'Entreprises', cat_med:'Médecins', cat_eng:'Ingénieurs', cat_law:'Avocats', cat_edu:'Éducation', cat_shop:'Commerces', cat_free:'Indépendants',
     sec_lang:'Langue de la carte', sec_id:'Vos informations', sec_contact:'Coordonnées', sec_logo:'Logo', sec_look:'Apparence',
     f_name:'Nom complet', f_title:'Fonction', f_company:'Entreprise ou activité', f_tagline:'Courte description', f_phone:'Téléphone', f_phone2:'Second téléphone',
     f_email:'E-mail', f_web:'Site web', f_address:'Adresse', f_social:'Réseau social',
@@ -77,7 +77,7 @@ const UI = {
     view_both:'Both sides', view_3d:'3D view', flip:'Flip', front:'Front', back:'Back',
     hint3d:'Move your mouse over the card, then press Flip or tap the card to see the other side',
     designs:'Designs', count:'{n} designs', tab_design:'Design', tab_info:'Details', tab_preview:'Preview',
-    cat_all:'All', cat_corp:'Business', cat_med:'Doctors', cat_eng:'Engineers', cat_law:'Lawyers', cat_edu:'Education', cat_shop:'Shops', cat_free:'Freelancers',
+    cat_all:'All', cat_new:'New', cat_corp:'Business', cat_med:'Doctors', cat_eng:'Engineers', cat_law:'Lawyers', cat_edu:'Education', cat_shop:'Shops', cat_free:'Freelancers',
     sec_lang:'Card language', sec_id:'Your details', sec_contact:'Contact', sec_logo:'Logo', sec_look:'Look',
     f_name:'Full name', f_title:'Job title', f_company:'Company or trade', f_tagline:'Short description', f_phone:'Phone', f_phone2:'Second phone',
     f_email:'Email', f_web:'Website', f_address:'Address', f_social:'Social handle',
@@ -392,9 +392,256 @@ const TEMPLATES = [
     }
   }
 ];
+/* ---------------------------------------------------------
+   NEW designs (10) — Luxury · Minimalist · Corporate · Premium · Elegant
+   Free for now (marked NEW in the gallery). SVG ids are unique per card so
+   thumbnails, both faces and exports never share a gradient / pattern.
+--------------------------------------------------------- */
+let SVG_UID = 0;
+const uid = p => `${p}${++SVG_UID}`;
+const mirror = (c, inner) => c.rtl ? `<g transform="translate(${W} 0) scale(-1 1)">${inner}</g>` : inner;
+const CT_LAB = {
+  ar: { phone:'هاتف', phone2:'هاتف', email:'بريد', web:'موقع', address:'عنوان', social:'تواصل' },
+  fr: { phone:'Tél', phone2:'Tél', email:'Mail', web:'Web', address:'Adr.', social:'Social' },
+  en: { phone:'Tel', phone2:'Tel', email:'Mail', web:'Web', address:'Addr', social:'Social' }
+};
+function labRows(c, keys, max) {
+  const L = CT_LAB[c.lang] || CT_LAB.en;
+  return keys.filter(k => c.d[k]).slice(0, max).map(k =>
+    `<div class="lr"><b>${L[k]}</b><span${LTR_KEYS[k] ? ' class="ltrx"' : ''}>${esc(c.d[k])}</span></div>`).join('');
+}
+function splitName(name) {
+  const w = String(name || '').trim().split(/\s+/).filter(Boolean);
+  if (w.length < 2) return [w.join(' '), ''];
+  return [w.slice(0, -1).join(' '), w[w.length - 1]];
+}
+const GOLD = '#C9A86A';
+function octSVG(c, s) {
+  const r = s / 2 - 1, r2 = r - 3.2, P = rr => Array.from({ length: 8 }, (_, i) => {
+    const a = (Math.PI / 8) + i * Math.PI / 4;
+    return `${(s / 2 + rr * Math.cos(a)).toFixed(2)},${(s / 2 + rr * Math.sin(a)).toFixed(2)}`;
+  }).join(' ');
+  return `<svg class="oct-svg" width="${s}" height="${s}" viewBox="0 0 ${s} ${s}"><polygon points="${P(r)}" fill="none" stroke="${c.acc}" stroke-width=".9"/>
+    <polygon points="${P(r2)}" fill="none" stroke="${c.acc}" stroke-width=".45" stroke-opacity=".6"/></svg>`;
+}
+function decoFrame(c) {
+  const id = uid('dg');
+  const ch = (i, k) => { const a = i, b = W - i, t = i, u = H - i; return `${a + k},${t} ${b - k},${t} ${b},${t + k} ${b},${u - k} ${b - k},${u} ${a + k},${u} ${a},${u - k} ${a},${t + k}`; };
+  return deco(`<defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${c.accD}"/><stop offset=".35" stop-color="${c.accL}"/><stop offset=".6" stop-color="${c.acc}"/><stop offset="1" stop-color="${c.accD}"/></linearGradient></defs>
+    <polygon points="${ch(10, 9)}" fill="none" stroke="url(#${id})" stroke-width=".9"/>
+    <polygon points="${ch(14, 7)}" fill="none" stroke="${c.acc}" stroke-opacity=".4" stroke-width=".45"/>
+    <polygon points="170,6.5 173.5,10 170,13.5 166.5,10" fill="${c.acc}"/><polygon points="170,206.5 173.5,210 170,213.5 166.5,210" fill="${c.acc}"/>`);
+}
+function sunburst(c) {
+  let g = '';
+  for (let i = 0; i < 48; i++) {
+    const a = i * Math.PI / 24, r1 = i % 2 ? 50 : 42, r2 = 260;
+    g += `<path d="M${(170 + r1 * Math.cos(a)).toFixed(1)} ${(78 + r1 * Math.sin(a)).toFixed(1)}L${(170 + r2 * Math.cos(a)).toFixed(1)} ${(78 + r2 * Math.sin(a)).toFixed(1)}"/>`;
+  }
+  return `<g stroke="${c.acc}" stroke-opacity=".13" stroke-width=".55" fill="none">${g}</g>`;
+}
+function blobs(c, v) {
+  const a = uid('ab'), b = uid('ab'), d = uid('ab');
+  const rg = (id, col, o) => `<radialGradient id="${id}"><stop offset="0" stop-color="${col}" stop-opacity="${o}"/><stop offset=".55" stop-color="${col}" stop-opacity="${o * .35}"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></radialGradient>`;
+  const pos = v ? [[60, 30, 170], [300, 210, 160], [330, 20, 90]] : [[300, 10, 180], [20, 230, 150], [190, 260, 110]];
+  return deco(`<defs>${rg(a, c.acc, .9)}${rg(b, '#16C7D6', .55)}${rg(d, '#FF5FA2', .45)}</defs>` + mirror(c,
+    `<circle cx="${pos[0][0]}" cy="${pos[0][1]}" r="${pos[0][2]}" fill="url(#${a})"/>
+     <circle cx="${pos[1][0]}" cy="${pos[1][1]}" r="${pos[1][2]}" fill="url(#${b})"/>
+     <circle cx="${pos[2][0]}" cy="${pos[2][1]}" r="${pos[2][2]}" fill="url(#${d})"/>`));
+}
+function veins(c, dark) {
+  const g = dark ? '#FFFFFF' : '#B9B2A6', go = dark ? '.08' : '.38';
+  const grey = [
+    ['M-10 40 C 60 30, 90 70, 150 60 S 260 20, 350 50', .8], ['M-10 150 C 40 140, 80 172, 140 160 S 230 118, 350 140', .6],
+    ['M80 -10 C 95 40, 70 90, 110 130 S 120 200, 150 230', .5], ['M232 -10 C 220 50, 262 80, 250 130 S 282 200, 300 230', .7],
+    ['M-10 95 C 50 102, 70 80, 122 92', .4], ['M200 230 C 212 190, 262 180, 350 192', .5], ['M150 60 C 170 90, 160 120, 190 140', .35]
+  ].map(([d, w]) => `<path d="${d}" stroke="${g}" stroke-opacity="${go}" stroke-width="${w}"/>`).join('');
+  const gold = [['M-10 184 C 60 170, 110 202, 170 186 S 280 160, 350 176', .8], ['M252 -10 C 264 30, 240 62, 270 98', .55], ['M30 -10 C 40 20, 22 40, 44 64', .4]]
+    .map(([d, w]) => `<path d="${d}" stroke="${c.acc}" stroke-opacity="${dark ? .55 : .6}" stroke-width="${w}"/>`).join('');
+  return deco(`<g fill="none" stroke-linecap="round">${mirror(c, grey + gold)}</g>`);
+}
+function carbon() {
+  const id = uid('cb');
+  return `<defs><pattern id="${id}" width="6" height="6" patternUnits="userSpaceOnUse"><rect width="3" height="3" fill="#FFFFFF" fill-opacity=".03"/><rect x="3" y="3" width="3" height="3" fill="#FFFFFF" fill-opacity=".03"/></pattern></defs><rect width="${W}" height="${H}" fill="url(#${id})"/>`;
+}
+const pad = (x, y, c) => `<circle cx="${x}" cy="${y}" r="2.4" fill="#111418" stroke="${c.acc}" stroke-width="1"/>`;
+function chipSVG(c, s) {
+  const m = s * 0.2, e = s - m; let pins = '';
+  [0.35, 0.5, 0.65].forEach(f => {
+    const p = (s * f).toFixed(1);
+    pins += `<path d="M${p} 0V${m}M${p} ${e}V${s}M0 ${p}H${m}M${e} ${p}H${s}"/>`;
+  });
+  return `<svg class="cpu-svg" width="${s}" height="${s}" viewBox="0 0 ${s} ${s}"><g stroke="${c.acc}" stroke-width="1" fill="none">${pins}
+    <rect x="${m}" y="${m}" width="${s - 2 * m}" height="${s - 2 * m}" rx="${s * 0.06}" fill="#15191E"/></g></svg>`;
+}
+function sprig(color, op) {
+  const leaf = (x, y, a, k = 1) => `<path d="M0 0 C3 -5 10 -6 14 -1 C10 3 3 3 0 0Z" transform="translate(${x} ${y}) rotate(${a}) scale(${k})"/>`;
+  return `<g fill="${color}" fill-opacity="${op}" stroke="none">${leaf(20, 64, -150)}${leaf(20.5, 60, -32)}${leaf(20.2, 48, -155, .95)}${leaf(20.8, 44, -28, .95)}
+    ${leaf(20.6, 32, -158, .85)}${leaf(21.2, 28, -25, .85)}${leaf(21.2, 17, -160, .7)}${leaf(21.8, 13, -22, .7)}${leaf(21.8, 8, -88, .6)}</g>
+    <path d="M20 79 C 20 60, 19 38, 22 6" stroke="${color}" stroke-opacity="${Math.min(1, op + .2)}" stroke-width="1" fill="none" stroke-linecap="round"/>`;
+}
+const corners = (col, i = 10, l = 18) => `<g stroke="${col}" stroke-width=".9" fill="none">
+  <path d="M${i} ${i + l}V${i}H${i + l}M${W - i - l} ${i}H${W - i}V${i + l}M${W - i} ${H - i - l}V${H - i}H${W - i - l}M${i + l} ${H - i}H${i}V${H - i - l}"/>
+  <path d="M${i + 4} ${i + l - 6}V${i + 4}H${i + l - 6}M${W - i - l + 6} ${i + 4}H${W - i - 4}V${i + l - 6}M${W - i - 4} ${H - i - l + 6}V${H - i - 4}H${W - i - l + 6}M${i + l - 6} ${H - i - 4}H${i + 4}V${H - i - l + 6}" stroke-opacity=".55" stroke-width=".5"/></g>`;
+const webSoc = (c, cls = 'ws') => {
+  const v = [c.d.web, c.d.social].filter(Boolean);
+  return v.length ? `<div class="${cls}">${v.map(x => `<span class="ltrx">${esc(x)}</span>`).join('<i></i>')}</div>` : '';
+};
+
+const NEW_TEMPLATES = [
+  /* 1 · Luxury — Art Deco gold on black */
+  {
+    id:'deco', cat:'corp', name:{ ar:'آرت ديكو ذهبي', fr:'Art déco doré', en:'Art Deco Gold' },
+    acc:'#D4AF37', swatches:['#D4AF37','#C9CED6','#E0A98C','#8FC9A9','#B9A6E8'],
+    fonts:{ ar:['Reem Kufi','IBM Plex Sans Arabic'], la:['Cormorant Garamond','Montserrat'] },
+    ic: c => c.acc,
+    front: c => decoFrame(c) + `<div class="vl"></div>
+      <div class="P"><div class="who">${fit('co2 caps', c.d.company)}${fit('nm', c.d.name)}${fit('ttl caps', c.d.title)}<div class="foil"><i></i></div></div>
+      ${contacts(c, { max:4 })}</div>
+      <div class="side"><div class="oct">${octSVG(c, 50)}${mono(c)}</div>${qrBox(c)}</div>`,
+    back: c => `<div class="B">` + deco(sunburst(c)) + decoFrame(c) +
+      `<div class="mid"><div class="oct">${octSVG(c, 62)}${mono(c)}</div>${fit('co caps', c.d.company)}${fit('tg', c.d.tagline)}<div class="foil"><i></i></div></div>
+      ${webSoc(c)}</div>`
+  },
+  /* 2 · Minimalist — Swiss grid */
+  {
+    id:'swiss', cat:'free', name:{ ar:'سويسري بسيط', fr:'Suisse minimal', en:'Swiss Minimal' },
+    acc:'#E63B2E', swatches:['#E63B2E','#111111','#1F4FD6','#0E9F6E','#F2A900'],
+    fonts:{ ar:['IBM Plex Sans Arabic','IBM Plex Sans Arabic'], la:['Inter','Inter'] },
+    ic: c => c.acc,
+    front: c => `<div class="dot"></div><div class="P">
+      <div class="top">${mono(c)}${fit('co caps', c.d.company)}</div>
+      <div class="who">${fit('nm', c.d.name)}${fit('ttl', c.d.title)}</div>
+      <div class="ln"></div>
+      <div class="bot"><div class="lab">${labRows(c, ['phone','email','web','address','phone2','social'], 4)}</div>${qrBox(c)}</div></div>`,
+    back: c => `<div class="B"><div class="top">${mono(c)}${c.d.web ? `<span class="wb ltrx">${esc(c.d.web)}</span>` : ''}</div>
+      <div class="bt"><div class="ln"></div>${fit('co', c.d.company)}${fit('tg', c.d.tagline)}${fitL('soc', c.d.social)}</div></div>`
+  },
+  /* 3 · Corporate — Executive navy & gold band */
+  {
+    id:'exec', cat:'corp', name:{ ar:'تنفيذي كحلي', fr:'Exécutif marine', en:'Executive Navy' },
+    acc:'#14284B', swatches:['#14284B','#1D3B2F','#4A1E2C','#2B2D33','#0E4A5C'],
+    fonts:{ ar:['Cairo','IBM Plex Sans Arabic'], la:['Montserrat','Montserrat'] },
+    ic: () => '#D9B873',
+    front: c => `<div class="top"><div class="who">${fit('nm', c.d.name)}${fit('ttl caps', c.d.title)}${fit('co2', c.d.company)}</div>${mono(c)}</div>
+      <div class="band"><div class="gl"></div>${contacts(c, { max:6, keys:['phone','email','phone2','web','address','social'] })}</div>`,
+    back: c => {
+      let s = ''; for (let x = -220; x < W + 220; x += 9) s += `<path d="M${x} 0L${x + 220} ${H}"/>`;
+      return `<div class="B">` + deco(`<g stroke="#FFFFFF" stroke-opacity=".05" stroke-width=".6" fill="none">${s}</g>`) +
+        `<div class="mid"><div class="ring">${mono(c)}</div>${fit('co caps', c.d.company)}${fit('tg', c.d.tagline)}</div>
+        ${c.d.web ? `<div class="wb"><span class="ltrx">${esc(c.d.web)}</span></div>` : ''}${qrBox(c)}</div>`;
+    }
+  },
+  /* 4 · Elegant — Emerald arch on ivory */
+  {
+    id:'arch', cat:'shop', sample:'shop', name:{ ar:'قوس زمردي', fr:'Arche émeraude', en:'Emerald Arch' },
+    acc:'#0F4D3A', swatches:['#0F4D3A','#1B2A4A','#5A1F2E','#3D2B56','#1F1F1F'],
+    fonts:{ ar:['El Messiri','Almarai'], la:['Marcellus','Montserrat'] },
+    ic: c => c.acc,
+    front: c => `<div class="arch"><div class="in"></div>${mono(c)}<i class="st"></i></div>
+      <div class="P">${fit('co2 caps', c.d.company)}${fit('nm', c.d.name)}${fit('ttl', c.d.title)}<div class="rule"></div>
+      ${contacts(c, { max:4, keys:['phone','address','email','web','social','phone2'] })}</div>`,
+    back: c => `<div class="B"><div class="arch"><div class="in"></div></div>
+      <div class="mid">${mono(c)}${fit('co', c.d.company)}${fit('tg', c.d.tagline)}</div>
+      <div class="side">${fitL('wb', c.d.web)}${fitL('wb', c.d.social)}</div>${qrBox(c)}</div>`
+  },
+  /* 5 · Premium — Aurora glass */
+  {
+    id:'aurora', cat:'free', name:{ ar:'شفق زجاجي', fr:'Aurore verre', en:'Aurora Glass' },
+    acc:'#7B5CFF', swatches:['#7B5CFF','#00B3A4','#FF5C8A','#2F7BFF','#FF8A3D'],
+    fonts:{ ar:['Cairo','Tajawal'], la:['Space Grotesk','Inter'] },
+    ic: () => '#FFFFFF',
+    front: c => blobs(c, 0) + `<div class="P">
+      <div class="top"><div class="who">${fit('nm', c.d.name)}${fit('ttl', c.d.title)}${fit('co2', c.d.company)}</div><div class="gm">${mono(c)}</div></div>
+      <div class="glass">${contacts(c, { max:4, keys:['phone','email','web','address','social','phone2'] })}${qrBox(c)}</div></div>`,
+    back: c => `<div class="B">` + blobs(c, 1) + `<div class="mid"><div class="gm">${mono(c)}</div>${fit('co', c.d.company)}${fit('tg', c.d.tagline)}
+      ${c.d.web ? `<div class="pill"><span class="ltrx">${esc(c.d.web)}</span></div>` : ''}${fitL('soc', c.d.social)}</div></div>`
+  },
+  /* 6 · Elegant / Luxury — Marble & gold */
+  {
+    id:'marble', cat:'shop', sample:'beauty', name:{ ar:'رخام وذهب', fr:'Marbre et or', en:'Marble & Gold' },
+    acc:'#B8934A', swatches:['#B8934A','#9EA3A8','#B76E79','#5E7C6E','#3A3A3A'],
+    fonts:{ ar:['Amiri','Almarai'], la:['Playfair Display','Montserrat'] },
+    ic: () => '#FFFFFF',
+    front: c => veins(c, false) + `<div class="seal">${mono(c)}</div>
+      <div class="P">${fit('nm', c.d.name)}${fit('ttl caps', c.d.title)}<div class="rl"><span></span><i></i></div>${fit('co2', c.d.company)}
+      ${contacts(c, { max:4, keys:['phone','social','email','address','web','phone2'] })}</div>`,
+    back: c => `<div class="B">` + veins(c, true) + `<div class="mid">${mono(c)}${fit('co caps', c.d.company)}${fit('tg', c.d.tagline)}<div class="rl"><span></span><i></i><span></span></div>
+      ${fitL('soc', c.d.social)}</div>${c.d.web ? `<div class="wb"><span class="ltrx">${esc(c.d.web)}</span></div>` : ''}${qrBox(c)}</div>`
+  },
+  /* 7 · Editorial — magazine masthead */
+  {
+    id:'edit', cat:'edu', name:{ ar:'تحريري', fr:'Éditorial', en:'Editorial' },
+    acc:'#B23A48', swatches:['#B23A48','#1A1A1A','#2E5E8C','#3F6B4E','#9C6B30'],
+    fonts:{ ar:['Amiri','IBM Plex Sans Arabic'], la:['Playfair Display','Inter'] },
+    ic: c => c.acc,
+    front: c => {
+      const [n1, n2] = splitName(c.d.name);
+      const LB = { ar:['الهاتف','على الإنترنت','العنوان'], fr:['Téléphone','En ligne','Adresse'], en:['Phone','Online','Address'] }[c.lang] || ['Phone','Online','Address'];
+      const col = (lab, keys) => {
+        const v = keys.filter(k => c.d[k]); if (!v.length) return '';
+        return `<div class="col"><b>${lab}</b>${v.map(k => LTR_KEYS[k] ? fitL('v', c.d[k]) : fit('v', c.d[k])).join('')}</div>`;
+      };
+      return `<div class="P"><div class="mast">${fit('co caps', c.d.company)}${c.d.tagline ? fit('tgm', c.d.tagline) : ''}</div><div class="dbl"></div>
+        <div class="nmw">${fit('nm n1', n1)}${fit('nm n2', n2)}</div>${fit('ttl caps', c.d.title)}
+        <div class="cols">${col(LB[0], ['phone','phone2'])}${col(LB[1], ['email','web'])}${col(LB[2], ['address','social'])}</div></div>`;
+    },
+    back: c => `<div class="B"><div class="q mir">“</div><div class="qt">${esc(c.d.tagline || c.d.company)}</div><div class="rl"></div>
+      ${fit('co caps', c.d.company)}${fit('nmb', c.d.name)}${mono(c)}${qrBox(c)}</div>`
+  },
+  /* 8 · Premium tech — Circuit carbon */
+  {
+    id:'circuit', cat:'eng', name:{ ar:'دارة كربونية', fr:'Circuit carbone', en:'Circuit Carbon' },
+    acc:'#22D3EE', swatches:['#22D3EE','#A3E635','#F59E0B','#F472B6','#60A5FA'],
+    fonts:{ ar:['Reem Kufi','Cairo'], la:['Space Grotesk','Space Grotesk'] },
+    ic: c => c.acc,
+    front: c => deco(carbon() + mirror(c, `<g stroke="${c.acc}" stroke-opacity=".55" stroke-width="1" fill="none" stroke-linejoin="round">
+        <path d="M340 30H306L292 44H262"/><path d="M340 54H316L302 68H282L270 80H246"/><path d="M340 98H300L288 110H268"/><path d="M340 122H324L314 132"/></g>
+        ${pad(262, 44, c)}${pad(246, 80, c)}${pad(268, 110, c)}${pad(314, 132, c)}`)) +
+      `<div class="bar"></div><div class="P"><div class="top"><div class="cpu">${chipSVG(c, 28)}${mono(c)}</div>${fit('co caps', c.d.company)}</div>
+      ${fit('nm', c.d.name)}${fit('ttl', c.d.title)}${contacts(c, { max:4 })}</div>
+      ${c.qr ? `<div class="qrw"><i class="k1"></i><i class="k2"></i><i class="k3"></i><i class="k4"></i>${qrBox(c)}</div>` : ''}`,
+    back: c => {
+      const L = `<path d="M136 70H100L86 56H22"/><path d="M136 86H62"/><path d="M136 102H104L90 116H36"/><path d="M156 52V32L146 22H122"/>`;
+      const R = `<g transform="translate(${W} 0) scale(-1 1)">${L}</g>`;
+      const pads = [[22, 56], [62, 86], [36, 116], [122, 22]].map(([x, y]) => pad(x, y, c) + pad(W - x, y, c)).join('');
+      return `<div class="B">` + deco(carbon() + `<g stroke="${c.acc}" stroke-opacity=".5" stroke-width="1" fill="none" stroke-linejoin="round">${L}${R}</g>${pads}`) +
+        `<div class="cpu">${chipSVG(c, 68)}${mono(c)}</div><div class="mid">${fit('co caps', c.d.company)}${fit('tg', c.d.tagline)}</div>${webSoc(c)}</div>`;
+    }
+  },
+  /* 9 · Elegant medical — Sage botanical */
+  {
+    id:'sage', cat:'med', name:{ ar:'مريمية هادئة', fr:'Sauge', en:'Sage Clinic' },
+    acc:'#5E7D6A', swatches:['#5E7D6A','#4F7CA8','#8A6FA8','#C07A6A','#3E8E8A'],
+    fonts:{ ar:['El Messiri','IBM Plex Sans Arabic'], la:['Cormorant Garamond','Poppins'] },
+    ic: c => c.acc,
+    front: c => `<div class="pill">${mono(c)}<svg class="spr" width="40" height="80" viewBox="0 0 40 80">${sprig(c.accD, .6)}</svg></div>
+      <div class="P">${fit('nm', c.d.name)}${fit('ttl', c.d.title)}${fit('co2', c.d.company)}<div class="rule"></div>
+      ${contacts(c, { max:4, keys:['phone','email','address','web','phone2','social'] })}</div>`,
+    back: c => `<div class="B">` + deco(mirror(c, `<g transform="translate(250 64) scale(1.9)">${sprig('#FFFFFF', .14)}</g>`)) +
+      `<div class="mid">${mono(c)}${fit('co', c.d.company)}${fit('tg', c.d.tagline)}
+      ${(c.d.phone || c.d.phone2) ? `<div class="ph"><span class="ltrx">${esc([c.d.phone, c.d.phone2].filter(Boolean).join('  ·  '))}</span></div>` : ''}${fitL('soc', c.d.social)}</div>${qrBox(c)}</div>`
+  },
+  /* 10 · Luxury — Royal ribbon */
+  {
+    id:'ribbon', cat:'law', name:{ ar:'وشاح ملكي', fr:'Ruban royal', en:'Royal Ribbon' },
+    acc:'#6E1423', swatches:['#6E1423','#13294B','#1E3D2F','#3A2E5C','#222222'],
+    fonts:{ ar:['Amiri','Tajawal'], la:['Playfair Display','Poppins'] },
+    ic: c => c.acc,
+    front: c => deco(corners(GOLD) + mirror(c, `<polygon points="252,0 300,0 300,98 276,84 252,98" fill="${c.acc}"/>
+        <path d="M256.5 0V90.5L276 79.3L295.5 90.5V0" stroke="${GOLD}" stroke-width=".6" fill="none"/>`)) +
+      `<div class="rb">${mono(c)}</div>
+      <div class="P">${fit('co2 caps', c.d.company)}${fit('nm', c.d.name)}${fit('ttl', c.d.title)}<div class="orn"><span></span><i></i><span></span></div></div>
+      ${contacts(c, { max:4, keys:['phone','email','web','address','phone2','social'] })}`,
+    back: c => `<div class="B">` + deco(corners(GOLD)) + `<div class="mid">${mono(c)}${fit('co', c.d.company)}${fit('tg', c.d.tagline)}
+      <div class="orn"><span></span><i></i><span></span></div>${fit('addr', c.d.address)}</div>${webSoc(c)}${qrBox(c)}</div>`
+  }
+];
+NEW_TEMPLATES.forEach(t => { t.isNew = true; TEMPLATES.push(t); });
+
 const TPL_BY = Object.fromEntries(TEMPLATES.map(t => [t.id, t]));
-const CATS = ['all', 'corp', 'med', 'eng', 'law', 'edu', 'shop', 'free'];
-const CAT_COLOR = { all:'#2F5770', corp:'#2563EB', med:'#16A34A', eng:'#0891B2', law:'#9F1239', edu:'#EA580C', shop:'#DB2777', free:'#7C3AED' };
+const CATS = ['all', 'new', 'corp', 'med', 'eng', 'law', 'edu', 'shop', 'free'];
+const CAT_COLOR = { all:'#2F5770', new:'#B8860B', corp:'#2563EB', med:'#16A34A', eng:'#0891B2', law:'#9F1239', edu:'#EA580C', shop:'#DB2777', free:'#7C3AED' };
 
 let GRID = '';
 function gridSVG() {
@@ -562,7 +809,7 @@ function renderStage() {
     applyFlip();
   }
   const tpl = TPL_BY[st.tpl];
-  $('#tplNow').textContent = `${tpl.name[uiLang] || tpl.name.ar} · ${T('cat_' + tpl.cat)}`;
+  $('#tplNow').textContent = `${tpl.name[uiLang] || tpl.name.ar} · ${T('cat_' + tpl.cat)}${tpl.isNew ? ' · NEW' : ''}`;
 }
 function applyFlip(rx = 0, ry = 0) {
   $('#flip').style.transform = `rotateX(${rx}deg) rotateY(${(flipped ? 180 : 0) + ry}deg)`;
@@ -584,10 +831,11 @@ function thumbState(id) {
 }
 function renderGallery() {
   $('#gCats').innerHTML = CATS.map(k => `<button type="button" class="chip${k === activeCat ? ' on' : ''}" data-cat="${k}" style="--cc:${CAT_COLOR[k]}">${T('cat_' + k)}</button>`).join('');
-  const list = TEMPLATES.filter(t => activeCat === 'all' || t.cat === activeCat);
+  const ordered = [...TEMPLATES.filter(t => t.isNew), ...TEMPLATES.filter(t => !t.isNew)];
+  const list = ordered.filter(t => activeCat === 'all' || (activeCat === 'new' ? t.isNew : t.cat === activeCat));
   $('#gCount').textContent = T('count').replace('{n}', TEMPLATES.length);
   $('#gGrid').innerHTML = list.map(t => `<button type="button" class="g-card${t.id === st.tpl ? ' on' : ''}" data-tpl="${t.id}">
-      <div class="g-thumb"></div><div class="g-meta"><b>${esc(t.name[uiLang] || t.name.ar)}</b><span style="--cc:${CAT_COLOR[t.cat]}">${T('cat_' + t.cat)}</span></div></button>`).join('');
+      ${t.isNew ? '<i class="g-new">NEW</i>' : ''}<div class="g-thumb"></div><div class="g-meta"><b>${esc(t.name[uiLang] || t.name.ar)}</b><span style="--cc:${CAT_COLOR[t.cat]}">${T('cat_' + t.cat)}</span></div></button>`).join('');
   fillThumbs();
 }
 function fillThumbs() {
