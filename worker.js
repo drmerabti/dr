@@ -577,13 +577,16 @@ const CARD_OFFERS = {
 const CARD_CURRENCY = 'USD';
 const FIREBASE_PROJECT = 'word-shortcuts';
 
-function cardsMode(env) {
+/* "live" is honoured ONLY on the production Worker address: a preview version (e.g.
+   claude-test-dr.merabti.workers.dev) or a local run stays "off" even with CARD_SALES = "live". */
+const CARDS_LIVE_HOSTS = ['dr.merabti.workers.dev'];
+function cardsMode(env, request) {
   const m = String(env.CARD_SALES || 'off').toLowerCase();
-  return m === 'live' || m === 'sandbox' ? m : 'off';
+  if (m === 'live') return request && CARDS_LIVE_HOSTS.includes(new URL(request.url).hostname) ? 'live' : 'off';
+  return m === 'sandbox' ? 'sandbox' : 'off';
 }
 
-function cardsPaypal(env) {
-  const mode = cardsMode(env);
+function cardsPaypal(env, mode) {
   if (mode === 'live') return { mode, api: 'https://api-m.paypal.com', id: env.PAYPAL_CLIENT_ID, secret: env.PAYPAL_SECRET };
   if (mode === 'sandbox') return { mode, api: env.CARDS_PAYPAL_API || 'https://api-m.sandbox.paypal.com',
     id: env.PAYPAL_SANDBOX_CLIENT_ID, secret: env.PAYPAL_SANDBOX_SECRET };
@@ -619,8 +622,8 @@ function logCards(step, info) {
 
 /* ---------- Firebase ID token (RS256), checked with Google's public keys ---------- */
 let cardsJwks = { keys: null, until: 0 };
-async function cardsKeys(env) {
-  if (cardsMode(env) === 'sandbox' && env.CARDS_TEST_JWKS) return JSON.parse(env.CARDS_TEST_JWKS).keys || [];
+async function cardsKeys(env, mode) {
+  if (mode === 'sandbox' && env.CARDS_TEST_JWKS) return JSON.parse(env.CARDS_TEST_JWKS).keys || [];
   if (cardsJwks.keys && Date.now() < cardsJwks.until) return cardsJwks.keys;
   const r = await fetch('https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com');
   if (!r.ok) throw new Error('Google keys unavailable: ' + r.status);
@@ -636,7 +639,7 @@ function b64urlBytes(s) {
   for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
   return out;
 }
-async function cardsUser(request, env) {
+async function cardsUser(request, env, mode) {
   const m = (request.headers.get('Authorization') || '').match(/^Bearer\s+([A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+)$/);
   if (!m) return null;
   const [h, p, s] = m[1].split('.');
@@ -646,7 +649,7 @@ async function cardsUser(request, env) {
     claims = JSON.parse(new TextDecoder().decode(b64urlBytes(p)));
   } catch (e) { return null; }
   if (header.alg !== 'RS256' || !header.kid) return null;
-  const jwk = (await cardsKeys(env)).find(k => k.kid === header.kid);
+  const jwk = (await cardsKeys(env, mode)).find(k => k.kid === header.kid);
   if (!jwk) return null;
   const key = await crypto.subtle.importKey('jwk', { kty: jwk.kty, n: jwk.n, e: jwk.e, alg: 'RS256', ext: true },
     { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' }, false, ['verify']);
@@ -694,10 +697,10 @@ function cardsPreflight(request) {
 }
 
 async function handleCards(request, env, path, ctx) {
-  const mode = cardsMode(env);
+  const mode = cardsMode(env, request);
 
   if (path === '/api/cards/config' && request.method === 'GET') {
-    const pp = cardsPaypal(env);
+    const pp = cardsPaypal(env, mode);
     const ready = mode !== 'off' && !!(pp.id && pp.secret);
     return json({
       sales: ready ? mode : 'off', clientId: ready ? pp.id : null, currency: CARD_CURRENCY, premium: CARD_PREMIUM,
@@ -707,10 +710,10 @@ async function handleCards(request, env, path, ctx) {
 
   // sales off: nothing is read from or written to D1, no PayPal call
   if (mode === 'off') return json({ error: 'SALES_OFF', message: 'شراء القوالب غير مفعّل حاليًا.' }, 503);
-  const pp = cardsPaypal(env);
+  const pp = cardsPaypal(env, mode);
   if (!pp.id || !pp.secret) return json({ error: 'PAYPAL_NOT_CONFIGURED', message: 'الدفع غير مُفعّل حاليًا.' }, 503);
 
-  const user = await cardsUser(request, env);
+  const user = await cardsUser(request, env, mode);
   if (!user) return json({ error: 'AUTH_REQUIRED', message: 'سجّل الدخول أولًا.' }, 401);
   await ensureCardTables(env.DB);
 

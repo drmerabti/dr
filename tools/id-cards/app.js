@@ -42,7 +42,7 @@ const UI = {
     login_site:'تسجيل الدخول من الموقع', cancel:'إلغاء', loading:'جارٍ التحميل…', mine_empty:'لا توجد بطاقات محفوظة بعد',
     new_b:'بطاقة جديدة', open_b:'فتح', dup_b:'نسخ', del_b:'حذف', confirm_del:'حذف هذه البطاقة نهائيًا؟', current:'الحالية',
     untitled:'بدون اسم', copy_suffix:' (نسخة)',
-    cat_pro:'Premium', pro_owned:'تم الشراء', pro_wm:'معاينة', pro_close:'إغلاق', pro_chip:'Premium — المعاينة والتعديل مجانًا', pro_buy:'شراء',
+    cat_pro:'Premium', pro_owned:'تم الشراء', lk_hint:'اسحب البطاقة لتدويرها، أو اضغط عليها لرؤية الوجه الآخر', lk_lock:'قالب Premium — اضغط للشراء', pro_resumed:'تم تأكيد شرائك السابق ✓', pro_close:'إغلاق', pro_chip:'Premium — المعاينة والتعديل مجانًا', pro_buy:'شراء',
     pro_title:'قوالب Premium', pro_sub:'ادفع مرة واحدة واستعمل القوالب بلا حدود، بدون أي اشتراك.',
     pro_o1:'قالب واحد', pro_o1d:'تختار أي قالب Premium', pro_o5:'5 قوالب', pro_o5d:'تختار 5 قوالب مختلفة',
     pro_oall:'جميع القوالب ({n})', pro_oalld:'كل قوالب Premium الحالية', pro_best:'أفضل قيمة', pro_save:'وفّر {p}%', pro_once:'دفعة واحدة',
@@ -83,7 +83,7 @@ const UI = {
     login_site:'Se connecter depuis le site', cancel:'Annuler', loading:'Chargement…', mine_empty:'Aucune carte enregistrée',
     new_b:'Nouvelle carte', open_b:'Ouvrir', dup_b:'Dupliquer', del_b:'Supprimer', confirm_del:'Supprimer définitivement cette carte ?', current:'Actuelle',
     untitled:'Sans nom', copy_suffix:' (copie)',
-    cat_pro:'Premium', pro_owned:'Acheté', pro_wm:'Aperçu', pro_close:'Fermer', pro_chip:'Premium — aperçu et modification gratuits', pro_buy:'Acheter',
+    cat_pro:'Premium', pro_owned:'Acheté', lk_hint:'Faites glisser la carte pour la tourner, ou touchez-la pour voir l’autre face', lk_lock:'Modèle Premium — touchez pour acheter', pro_resumed:'Votre achat précédent est confirmé ✓', pro_close:'Fermer', pro_chip:'Premium — aperçu et modification gratuits', pro_buy:'Acheter',
     pro_title:'Modèles Premium', pro_sub:'Payez une seule fois, utilisez sans limite. Aucun abonnement.',
     pro_o1:'1 modèle', pro_o1d:'Le modèle Premium de votre choix', pro_o5:'5 modèles', pro_o5d:'5 modèles différents au choix',
     pro_oall:'Tous les modèles ({n})', pro_oalld:'Tous les modèles Premium actuels', pro_best:'Meilleure offre', pro_save:'−{p} %', pro_once:'paiement unique',
@@ -124,7 +124,7 @@ const UI = {
     login_site:'Sign in from the site', cancel:'Cancel', loading:'Loading…', mine_empty:'No saved cards yet',
     new_b:'New card', open_b:'Open', dup_b:'Duplicate', del_b:'Delete', confirm_del:'Delete this card permanently?', current:'Current',
     untitled:'Untitled', copy_suffix:' (copy)',
-    cat_pro:'Premium', pro_owned:'Purchased', pro_wm:'Preview', pro_close:'Close', pro_chip:'Premium — free to preview and edit', pro_buy:'Buy',
+    cat_pro:'Premium', pro_owned:'Purchased', lk_hint:'Drag the card to turn it, or tap it to see the other side', lk_lock:'Premium template — tap to buy', pro_resumed:'Your earlier purchase is confirmed ✓', pro_close:'Close', pro_chip:'Premium — free to preview and edit', pro_buy:'Buy',
     pro_title:'Premium templates', pro_sub:'Pay once, use without limits. No subscription.',
     pro_o1:'1 template', pro_o1d:'Any Premium template you like', pro_o5:'5 templates', pro_o5d:'5 different templates of your choice',
     pro_oall:'All templates ({n})', pro_oalld:'Every current Premium template', pro_best:'Best value', pro_save:'Save {p}%', pro_once:'one-time',
@@ -1154,10 +1154,23 @@ function layoutPanes() {
   ws.style.setProperty('--gal-w', g + 'px');
   gp.classList.toggle('two', two);
 }
+let lkWasLocked = null;
 function renderStage() {
-  stageScale = computeScale();
+  const locked = proLocked();
+  if (lkWasLocked === true && !locked && view !== 'both') {   // just bought: back to the normal flat preview
+    view = 'both'; $$('#viewSeg button').forEach(b => b.classList.toggle('on', b.dataset.view === 'both'));
+  }
+  lkWasLocked = locked;
+  $('#bothView').classList.toggle('hidden', locked || view !== 'both');
+  $('#tiltView').classList.toggle('hidden', locked || view !== '3d');
+  $('#lockView').classList.toggle('hidden', !locked);
+  $('#viewSeg').classList.toggle('off', locked);
+  $('#btnFlip').classList.toggle('off', !locked && view !== '3d');
   const front = buildCard(st, 'front'), back = buildCard(st, 'back');
-  if (view === 'both') {
+  if (locked) {
+    stageScale = lkScale();
+    lkPlace(front, back, stageScale);
+  } else if ((stageScale = computeScale()) && view === 'both') {
     placeCard($('#slotFront'), front, stageScale);
     placeCard($('#slotBack'), back, stageScale);
   } else {
@@ -1179,10 +1192,7 @@ function applyFlip(rx = 0, ry = 0) {
 function setView(v) {
   view = v;
   $$('#viewSeg button').forEach(b => b.classList.toggle('on', b.dataset.view === v));
-  $('#bothView').classList.toggle('hidden', v !== 'both');
-  $('#tiltView').classList.toggle('hidden', v !== '3d');
-  $('#btnFlip').classList.toggle('off', v !== '3d');
-  renderStage();
+  renderStage();   // shows the right view (a locked Premium design always gets the 3D preview)
 }
 
 /* ---------------------------------------------------------
@@ -1711,29 +1721,9 @@ function proApply() {
     b.classList.toggle('own', own);
     b.textContent = own ? '✓ ' + T('pro_owned') : 'PREMIUM';
   });
-  proWatermark();
+  if (lkWasLocked !== null && proLocked() !== lkWasLocked) requestAnimationFrame(renderStage);   // bought / signed in or out
   const chip = $('#proChip');
   if (chip) chip.classList.toggle('hidden', !(isPremium(st.tpl) && !proOwns(st.tpl)));
-}
-
-let PRO_WM = { lang: '', url: '' };
-function proWatermark() {
-  const show = isPremium(st.tpl) && !proOwns(st.tpl);
-  ['#slotFront', '#slotBack', '#faceFront', '#faceBack'].forEach(sel => {
-    const slot = $(sel); if (!slot) return;
-    const old = slot.querySelector('.pro-wm'); if (old) old.remove();
-    if (!show || !slot.firstElementChild) return;
-    if (PRO_WM.lang !== uiLang) {
-      const w = esc(T('pro_wm'));
-      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="170" height="104"><g transform="rotate(-24 85 52)" font-family="Tajawal, Inter, sans-serif" font-size="13" font-weight="700" text-anchor="middle">` +
-        `<text x="85" y="57" fill="#FFFFFF" fill-opacity=".34" stroke="#0B1220" stroke-opacity=".16" stroke-width=".6">${w}</text></g></svg>`;
-      PRO_WM = { lang: uiLang, url: 'url("data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg) + '")' };
-    }
-    const wm = document.createElement('div');
-    wm.className = 'pro-wm'; wm.setAttribute('aria-hidden', 'true');
-    wm.style.backgroundImage = PRO_WM.url;
-    slot.appendChild(wm);
-  });
 }
 
 /* every export / print of a premium template asks the server first */
@@ -1923,10 +1913,12 @@ function proPaypalButtons() {
     },
     onApprove: async (data, actions) => {
       PRO.busy = true; $('#proBox').classList.add('busy'); proMsg(T('pro_paying'));
-      const d = await proFetch('/api/cards/capture-order', { method: 'POST', body: { orderId: data.orderID } }).catch(() => ({}));
+      proPending(data.orderID);
+      const d = await proCapture(data.orderID);
       PRO.busy = false; $('#proBox').classList.remove('busy');
-      if (d.error === 'INSTRUMENT_DECLINED') { proMsg(d.message, true); return actions.restart(); }
+      if (d.error === 'INSTRUMENT_DECLINED') { proPending(''); proMsg(d.message, true); return actions.restart(); }
       if (!d.ok) { proMsg(d.message || T('pro_err'), true); return; }
+      proPending('');
       PRO.owned = new Set(d.owned || []);
       proTrack('purchase', { transaction_id: d.orderId, offer: PRO.offer, value: parseFloat(proOffers()[PRO.offer].price), currency: 'USD' });
       proSuccess(d.unlocked || [], d.orderId);
@@ -1935,6 +1927,26 @@ function proPaypalButtons() {
     onError: () => proMsg(T('pro_err'), true)
   });
   PRO.btns.render(host).catch(() => { host.innerHTML = `<div class="pro-off err">${T('pro_err')}</div>`; });
+}
+
+/* the PayPal order waiting for confirmation (kept only to re-ask the server; never a proof) */
+const PRO_PENDING = 'merabti_bizcard_pending_order';
+function proPending(id) { try { id ? localStorage.setItem(PRO_PENDING, id) : localStorage.removeItem(PRO_PENDING); } catch (e) { /* ignore */ } }
+async function proCapture(orderId) {
+  let d = {};
+  for (let i = 0; i < 3; i++) {
+    d = await proFetch('/api/cards/capture-order', { method: 'POST', body: { orderId } }).catch(() => ({}));
+    if (d._status && d._status < 500) break;       // answered (ok or a final refusal): no retry
+    await wait(1200 * (i + 1));
+  }
+  return d;
+}
+async function proResume() {
+  let id = ''; try { id = localStorage.getItem(PRO_PENDING) || ''; } catch (e) { /* ignore */ }
+  if (!id || !proSalesOn() || !fbUser()) return;
+  const d = await proCapture(id);
+  if (d.ok) { proPending(''); PRO.owned = new Set(d.owned || []); proApply(); fillThumbs(); toast(T('pro_resumed')); }
+  else if (d._status && d._status < 500 && d.error !== 'AUTH_REQUIRED' && d.error !== 'NOT_COMPLETED') proPending('');
 }
 
 function proSuccess(unlocked, orderId) {
@@ -1977,11 +1989,120 @@ async function initPro() {
   await proLoadConfig();
   if (hasFb()) firebase.auth().onAuthStateChanged(async () => {
     await proRefresh();
+    proResume();
     const m = $('#proModal');
     if (m && !m.classList.contains('hidden') && !PRO.busy && !$('.pro-done', m)) proRender();
   });
   proApply();
 }
+
+/* ---------------------------------------------------------
+   Locked Premium preview (not bought yet): a tilted 3D card with a light
+   thickness, soft light and a floor shadow. Drag (mouse or touch) turns it,
+   a tap or «اقلب» shows the other face, and it eases back to a resting angle.
+   The angles are clamped: never face-on (rotateY stays ≥ LK_GAP° away from
+   0°/180° and rotateX stays tilted). Nothing is drawn on the design itself;
+   the lock sits in the corner of the frame. Plain CSS 3D, no library.
+--------------------------------------------------------- */
+const LK_REST = 24, LK_GAP = 14, LK_RX = [11, 28], LK_RX_REST = 15;
+const LK = { ry: -LK_REST, rx: LK_RX_REST, tRy: -LK_REST, tRx: LK_RX_REST, drag: null, hov: null, raf: 0, s: 1, tpl: '' };
+const LK_REDUCED = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+const lkClampX = x => Math.max(LK_RX[0], Math.min(LK_RX[1], x));
+function lkAway(theta) {
+  const base = Math.round(theta / 180) * 180, off = theta - base;
+  return Math.abs(off) >= LK_GAP ? theta : base + (off < 0 ? -LK_GAP : LK_GAP);
+}
+const proLocked = () => isPremium(st.tpl) && !proOwns(st.tpl);
+function lkScale() {
+  const b = $('#stageBody'), bw = b.clientWidth, bh = b.clientHeight;
+  return bw && bh ? bothScale(bw, bh).s : 1;      // same size as the flat preview
+}
+function lkPlace(front, back, s) {
+  if (LK.tpl !== st.tpl) {                        // a new design starts on its front
+    LK.tpl = st.tpl; LK.tRy = LK.ry = -LK_REST; LK.tRx = LK.rx = LK_RX_REST;
+  }
+  LK.s = s;
+  const card = $('#lkCard'), w = W * s, h = H * s;
+  card.style.width = w + 'px'; card.style.height = h + 'px';
+  card.style.setProperty('--s', s);
+  LK.t = Math.max(2.5, 2.4 * s); LK.per = Math.round(Math.max(900, w * 2.3));
+  $('#lkFrame').style.setProperty('--w', w + 'px');
+  $('#lkFrame').style.setProperty('--h', h + 'px');
+  placeCard($('#lkFront'), front, s);
+  placeCard($('#lkBack'), back, s);
+  lkStart();
+}
+function lkStart() { if (!LK.raf) LK.raf = requestAnimationFrame(lkTick); }
+function lkTick(now) {
+  LK.raf = 0;
+  const v = $('#lockView');
+  if (!v || v.classList.contains('hidden') || document.hidden) return;
+  const idle = !LK.drag && !LK.hov && !LK_REDUCED;
+  const tRy = LK.tRy + (idle ? Math.sin(now / 1700) * 5 : 0) + (LK.hov ? LK.hov.x * 14 : 0);
+  const tRx = lkClampX(LK.tRx + (idle ? Math.sin(now / 2300) * 2.5 : 0) - (LK.hov ? LK.hov.y * 10 : 0));
+  const k = LK.drag ? .3 : .085;
+  LK.ry += (tRy - LK.ry) * k; LK.rx += (tRx - LK.rx) * k;
+  const ry = lkAway(LK.ry), rx = lkClampX(LK.rx), rad = ry * Math.PI / 180;
+  // one face at a time, each with its own 3D transform (no preserve-3d: it blurs the text);
+  // the back is the card turned by 180°, so it shows at (ry - 180°)
+  const showFront = Math.cos(rad) >= 0;
+  const fa = (((showFront ? ry : ry - 180) + 180) % 360 + 360) % 360 - 180, far = fa * Math.PI / 180;
+  const vis = $(showFront ? '#lkCard .lk-f' : '#lkCard .lk-b'), hid = $(showFront ? '#lkCard .lk-b' : '#lkCard .lk-f');
+  hid.style.visibility = 'hidden'; vis.style.visibility = 'visible';
+  vis.style.transform = `perspective(${LK.per}px) rotateX(${rx.toFixed(2)}deg) rotateY(${fa.toFixed(2)}deg)`;
+  const dx = -Math.sin(far) * LK.t, dy = Math.sin(rx * Math.PI / 180) * LK.t * 1.4, s = LK.s;   // the card's edge (light thickness)
+  vis.style.boxShadow = `${dx.toFixed(2)}px ${dy.toFixed(2)}px 0 0 #D6D0C6, ${(dx / 2).toFixed(2)}px ${(dy / 2).toFixed(2)}px 0 0 #EFEBE4, ` +
+    `0 ${(26 * s).toFixed(1)}px ${(44 * s).toFixed(1)}px -${(18 * s).toFixed(1)}px rgba(16,26,38,.45)`;
+  vis.style.setProperty('--gp', (50 - Math.sin(far) * 90).toFixed(1) + '%');
+  vis.style.setProperty('--gy', (50 - (rx - LK_RX_REST) * 3).toFixed(1) + '%');
+  $('#lkFloor').style.transform = `translateX(${(-Math.sin(rad) * LK.s * 22).toFixed(1)}px) scaleX(${(.7 + .3 * Math.abs(Math.cos(rad))).toFixed(3)})`;
+  LK.raf = requestAnimationFrame(lkTick);
+}
+function lkSnap() {
+  const base = Math.round(LK.tRy / 180) * 180, off = LK.tRy - base;
+  LK.tRy = base + (off < 0 ? -LK_REST : LK_REST); LK.tRx = LK_RX_REST; lkStart();
+}
+function lkFlip() {
+  const base = Math.round(LK.tRy / 180) * 180, off = LK.tRy - base;
+  LK.tRy = base + 180 + (off < 0 ? -LK_REST : LK_REST); LK.tRx = LK_RX_REST; lkStart();
+}
+(function lkBind() {
+  const sc = $('#lkScene');
+  sc.addEventListener('pointerdown', e => {
+    if (e.button > 0) return;
+    try { sc.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ }
+    LK.drag = { x: e.clientX, y: e.clientY, ry: LK.tRy, rx: LK.tRx, moved: false }; LK.hov = null;
+    sc.classList.add('drag'); lkStart();
+  });
+  sc.addEventListener('pointermove', e => {
+    if (LK.drag) {
+      const dx = e.clientX - LK.drag.x, dy = e.clientY - LK.drag.y;
+      if (Math.abs(dx) + Math.abs(dy) > 6) LK.drag.moved = true;
+      LK.tRy = LK.drag.ry + dx * .5;
+      LK.tRx = lkClampX(LK.drag.rx - dy * .25);
+      return;
+    }
+    if (e.pointerType === 'mouse') {
+      const r = sc.getBoundingClientRect();
+      LK.hov = { x: (e.clientX - r.left) / r.width - .5, y: (e.clientY - r.top) / r.height - .5 }; lkStart();
+    }
+  });
+  const end = () => {
+    if (!LK.drag) return;
+    const tap = !LK.drag.moved;
+    LK.drag = null; sc.classList.remove('drag');
+    tap ? lkFlip() : lkSnap();
+  };
+  sc.addEventListener('pointerup', end);
+  sc.addEventListener('pointercancel', end);
+  sc.addEventListener('pointerleave', () => { if (!LK.drag) LK.hov = null; });
+  sc.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); lkFlip(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') { e.preventDefault(); LK.tRy += e.key === 'ArrowLeft' ? -30 : 30; clearTimeout(LK.kt); LK.kt = setTimeout(lkSnap, 700); lkStart(); }
+  });
+  $('#lkLock').addEventListener('click', () => proOpen(st.tpl));
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) lkStart(); });
+})();
 
 /* ---------------------------------------------------------
    Toast
@@ -2042,7 +2163,7 @@ $('#btnFullscreen').addEventListener('click', () => {
 });
 $('#viewSeg').addEventListener('click', e => { const b = e.target.closest('[data-view]'); if (b && b.dataset.view !== view) setView(b.dataset.view); });
 function doFlip() { flipped = !flipped; const fl = $('#flip'); fl.classList.remove('live'); applyFlip(); }
-$('#btnFlip').addEventListener('click', doFlip);
+$('#btnFlip').addEventListener('click', () => (proLocked() ? lkFlip() : doFlip()));
 $('#flip').addEventListener('click', doFlip);
 $('#tiltScene').addEventListener('mousemove', e => {
   const fl = $('#flip'), r = fl.getBoundingClientRect();

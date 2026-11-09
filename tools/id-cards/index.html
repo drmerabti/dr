@@ -112,6 +112,20 @@
         </div>
         <p class="hint" data-i18n="hint3d">حرّك الفأرة فوق البطاقة، واضغط «اقلب» لرؤية الوجه الآخر</p>
       </div>
+      <!-- Premium not bought yet: tilted 3D preview only (see lkPlace in app.js) -->
+      <div class="lock-view hidden" id="lockView">
+        <div class="lk-frame" id="lkFrame">
+          <button type="button" class="lk-lock" id="lkLock" data-tip="lk_lock" aria-label="Premium"><svg viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2.4"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg></button>
+          <div class="lk-scene" id="lkScene" tabindex="0" role="img" aria-label="Premium">
+            <div class="lk-card" id="lkCard">
+              <div class="lk-face lk-f"><div class="card-slot" id="lkFront"></div><i class="lk-gloss"></i></div>
+              <div class="lk-face lk-b"><div class="card-slot" id="lkBack"></div><i class="lk-gloss"></i></div>
+            </div>
+          </div>
+          <i class="lk-floor" id="lkFloor"></i>
+        </div>
+        <p class="hint" data-i18n="lk_hint">اسحب البطاقة لتدويرها، أو اضغط عليها لرؤية الوجه الآخر</p>
+      </div>
     </div>
   </main>
 
