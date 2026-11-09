@@ -1,6 +1,6 @@
 /* =========================================================
    مولّد بطاقات الأعمال — Merabti Academy
-   Phase 1: 10 designs, live preview, 3D flip, PNG, PDF, A4 print
+   30 designs (20 marked NEW), live preview, 3D flip, PNG, PDF, A4 print
    ========================================================= */
 (function () {
 'use strict';
@@ -22,8 +22,8 @@ const UI = {
     pdf_card:'بطاقة واحدة', pdf_card_d:'85 × 55 مم، بوجهيها', pdf_sheet:'لوحة A4', pdf_sheet_d:'10 بطاقات مع علامات القص',
     view_both:'الوجهان', view_3d:'ثلاثي الأبعاد', flip:'اقلب', front:'الوجه الأمامي', back:'الوجه الخلفي',
     hint3d:'حرّك الفأرة فوق البطاقة، واضغط «اقلب» أو على البطاقة لرؤية الوجه الآخر',
-    designs:'التصاميم', count:'{n} تصاميم', tab_design:'التصميم', tab_info:'المعلومات', tab_preview:'المعاينة',
-    cat_all:'الكل', cat_corp:'شركات', cat_med:'أطباء', cat_eng:'مهندسون', cat_law:'محامون', cat_edu:'تعليم', cat_shop:'محلات', cat_free:'مستقلون',
+    designs:'التصاميم', count:'{n} تصميمًا', tab_design:'التصميم', tab_info:'المعلومات', tab_preview:'المعاينة',
+    cat_all:'الكل', cat_new:'جديد', cat_corp:'شركات', cat_med:'أطباء', cat_eng:'مهندسون', cat_law:'محامون', cat_edu:'تعليم', cat_shop:'محلات', cat_free:'مستقلون',
     sec_lang:'لغة البطاقة', sec_id:'معلوماتك', sec_contact:'التواصل', sec_logo:'الشعار', sec_look:'المظهر',
     f_name:'الاسم الكامل', f_title:'الوظيفة أو الصفة', f_company:'المؤسسة أو النشاط', f_tagline:'وصف قصير', f_phone:'الهاتف', f_phone2:'هاتف ثانٍ',
     f_email:'البريد الإلكتروني', f_web:'الموقع الإلكتروني', f_address:'العنوان', f_social:'حساب التواصل الاجتماعي',
@@ -41,7 +41,21 @@ const UI = {
     login_title:'سجّل دخولك لحفظ بطاقاتك', login_text:'احفظ بطاقاتك في حسابك وعد إليها من أي جهاز.', login_google:'الدخول بحساب Google',
     login_site:'تسجيل الدخول من الموقع', cancel:'إلغاء', loading:'جارٍ التحميل…', mine_empty:'لا توجد بطاقات محفوظة بعد',
     new_b:'بطاقة جديدة', open_b:'فتح', dup_b:'نسخ', del_b:'حذف', confirm_del:'حذف هذه البطاقة نهائيًا؟', current:'الحالية',
-    untitled:'بدون اسم', copy_suffix:' (نسخة)'
+    untitled:'بدون اسم', copy_suffix:' (نسخة)',
+    cat_pro:'Premium', pro_owned:'تم الشراء', lk_hint:'اسحب البطاقة لتدويرها، أو اضغط عليها لرؤية الوجه الآخر', lk_lock:'قالب Premium — اضغط للشراء', pro_resumed:'تم تأكيد شرائك السابق ✓', pro_close:'إغلاق', pro_chip:'Premium — المعاينة والتعديل مجانًا', pro_buy:'شراء',
+    pro_title:'قوالب Premium', pro_sub:'ادفع مرة واحدة واستعمل القوالب بلا حدود، بدون أي اشتراك.',
+    pro_o1:'قالب واحد', pro_o1d:'تختار أي قالب Premium', pro_o5:'5 قوالب', pro_o5d:'تختار 5 قوالب مختلفة',
+    pro_oall:'جميع القوالب ({n})', pro_oalld:'كل قوالب Premium الحالية', pro_best:'أفضل قيمة', pro_save:'وفّر {p}%', pro_once:'دفعة واحدة',
+    pro_pick1:'اختر القالب', pro_pick5:'اختر 5 قوالب', pro_pickall:'تشمل الباقة القوالب التالية',
+    pro_sel:'اختيارك:', pro_total:'المجموع', pro_need1:'اختر قالبًا', pro_need5:'اختر {n} قوالب أخرى',
+    pro_future:'القوالب التي تُضاف مستقبلًا غير مشمولة تلقائيًا في هذه الباقة.',
+    pro_login:'سجّل الدخول بحساب Google للمتابعة', pro_login_note:'تُحفظ مشترياتك في حسابك، وتستعيدها على أي جهاز بمجرد تسجيل الدخول.',
+    pro_secure:'دفع آمن عبر PayPal', pro_restore:'استعادة مشترياتي', pro_signed:'الحساب:',
+    pro_demo:'وضع تجريبي (معاينة): لا يتم أي دفع حقيقي ولا يُحفظ أي شراء.', pro_demo_btn:'محاكاة الدفع',
+    pro_off:'شراء القوالب سيتوفر قريبًا. يمكنك معاينتها وتعديلها مجانًا الآن.',
+    pro_done:'تم الشراء بنجاح', pro_done_t:'أصبحت القوالب التالية لك، ويمكنك تصديرها بلا حدود:', pro_order:'رقم الطلب', pro_start:'ابدأ التصميم',
+    pro_all_owned:'لقد اشتريت جميع قوالب Premium ✓', pro_paying:'جارٍ تأكيد الدفع… لا تغلق النافذة.', pro_err:'تعذّر إتمام العملية، حاول مرة أخرى.',
+    pro_restored:'تمت استعادة مشترياتك ({n})', pro_restored0:'لا توجد مشتريات في هذا الحساب', pro_check_err:'تعذّر التحقق من الشراء، تحقق من الاتصال وحاول مجددًا'
   },
   fr: {
     tool_name:'Cartes de visite', back_tools:'Retour aux outils', fullscreen:'Plein écran', mine:'Mes cartes', save:'Enregistrer dans mon compte',
@@ -50,7 +64,7 @@ const UI = {
     view_both:'Recto verso', view_3d:'Vue 3D', flip:'Retourner', front:'Recto', back:'Verso',
     hint3d:'Survolez la carte avec la souris, puis cliquez sur « Retourner » ou sur la carte pour voir l’autre face',
     designs:'Modèles', count:'{n} modèles', tab_design:'Modèle', tab_info:'Infos', tab_preview:'Aperçu',
-    cat_all:'Tous', cat_corp:'Entreprises', cat_med:'Médecins', cat_eng:'Ingénieurs', cat_law:'Avocats', cat_edu:'Éducation', cat_shop:'Commerces', cat_free:'Indépendants',
+    cat_all:'Tous', cat_new:'Nouveaux', cat_corp:'Entreprises', cat_med:'Médecins', cat_eng:'Ingénieurs', cat_law:'Avocats', cat_edu:'Éducation', cat_shop:'Commerces', cat_free:'Indépendants',
     sec_lang:'Langue de la carte', sec_id:'Vos informations', sec_contact:'Coordonnées', sec_logo:'Logo', sec_look:'Apparence',
     f_name:'Nom complet', f_title:'Fonction', f_company:'Entreprise ou activité', f_tagline:'Courte description', f_phone:'Téléphone', f_phone2:'Second téléphone',
     f_email:'E-mail', f_web:'Site web', f_address:'Adresse', f_social:'Réseau social',
@@ -68,7 +82,21 @@ const UI = {
     login_title:'Connectez-vous pour enregistrer vos cartes', login_text:'Retrouvez vos cartes depuis n’importe quel appareil.', login_google:'Continuer avec Google',
     login_site:'Se connecter depuis le site', cancel:'Annuler', loading:'Chargement…', mine_empty:'Aucune carte enregistrée',
     new_b:'Nouvelle carte', open_b:'Ouvrir', dup_b:'Dupliquer', del_b:'Supprimer', confirm_del:'Supprimer définitivement cette carte ?', current:'Actuelle',
-    untitled:'Sans nom', copy_suffix:' (copie)'
+    untitled:'Sans nom', copy_suffix:' (copie)',
+    cat_pro:'Premium', pro_owned:'Acheté', lk_hint:'Faites glisser la carte pour la tourner, ou touchez-la pour voir l’autre face', lk_lock:'Modèle Premium — touchez pour acheter', pro_resumed:'Votre achat précédent est confirmé ✓', pro_close:'Fermer', pro_chip:'Premium — aperçu et modification gratuits', pro_buy:'Acheter',
+    pro_title:'Modèles Premium', pro_sub:'Payez une seule fois, utilisez sans limite. Aucun abonnement.',
+    pro_o1:'1 modèle', pro_o1d:'Le modèle Premium de votre choix', pro_o5:'5 modèles', pro_o5d:'5 modèles différents au choix',
+    pro_oall:'Tous les modèles ({n})', pro_oalld:'Tous les modèles Premium actuels', pro_best:'Meilleure offre', pro_save:'−{p} %', pro_once:'paiement unique',
+    pro_pick1:'Choisissez le modèle', pro_pick5:'Choisissez 5 modèles', pro_pickall:'Le pack comprend ces modèles',
+    pro_sel:'Votre choix :', pro_total:'Total', pro_need1:'Choisissez un modèle', pro_need5:'Encore {n} modèles à choisir',
+    pro_future:'Les modèles ajoutés plus tard ne sont pas inclus automatiquement dans ce pack.',
+    pro_login:'Connectez-vous avec Google pour continuer', pro_login_note:'Vos achats sont liés à votre compte et récupérables sur tout appareil.',
+    pro_secure:'Paiement sécurisé PayPal', pro_restore:'Restaurer mes achats', pro_signed:'Compte :',
+    pro_demo:'Mode démo (aperçu) : aucun paiement réel, aucun achat enregistré.', pro_demo_btn:'Simuler le paiement',
+    pro_off:'L’achat des modèles arrive bientôt. Aperçu et modification gratuits dès maintenant.',
+    pro_done:'Achat réussi', pro_done_t:'Ces modèles sont à vous, exportables sans limite :', pro_order:'N° de commande', pro_start:'Commencer',
+    pro_all_owned:'Vous possédez tous les modèles Premium ✓', pro_paying:'Confirmation du paiement… ne fermez pas la fenêtre.', pro_err:'Opération impossible, réessayez.',
+    pro_restored:'Achats restaurés ({n})', pro_restored0:'Aucun achat sur ce compte', pro_check_err:'Vérification de l’achat impossible, réessayez'
   },
   en: {
     tool_name:'Business Card Maker', back_tools:'Back to tools', fullscreen:'Full screen', mine:'My cards', save:'Save to my account',
@@ -77,7 +105,7 @@ const UI = {
     view_both:'Both sides', view_3d:'3D view', flip:'Flip', front:'Front', back:'Back',
     hint3d:'Move your mouse over the card, then press Flip or tap the card to see the other side',
     designs:'Designs', count:'{n} designs', tab_design:'Design', tab_info:'Details', tab_preview:'Preview',
-    cat_all:'All', cat_corp:'Business', cat_med:'Doctors', cat_eng:'Engineers', cat_law:'Lawyers', cat_edu:'Education', cat_shop:'Shops', cat_free:'Freelancers',
+    cat_all:'All', cat_new:'New', cat_corp:'Business', cat_med:'Doctors', cat_eng:'Engineers', cat_law:'Lawyers', cat_edu:'Education', cat_shop:'Shops', cat_free:'Freelancers',
     sec_lang:'Card language', sec_id:'Your details', sec_contact:'Contact', sec_logo:'Logo', sec_look:'Look',
     f_name:'Full name', f_title:'Job title', f_company:'Company or trade', f_tagline:'Short description', f_phone:'Phone', f_phone2:'Second phone',
     f_email:'Email', f_web:'Website', f_address:'Address', f_social:'Social handle',
@@ -95,7 +123,21 @@ const UI = {
     login_title:'Sign in to save your cards', login_text:'Keep your cards in your account and open them on any device.', login_google:'Continue with Google',
     login_site:'Sign in from the site', cancel:'Cancel', loading:'Loading…', mine_empty:'No saved cards yet',
     new_b:'New card', open_b:'Open', dup_b:'Duplicate', del_b:'Delete', confirm_del:'Delete this card permanently?', current:'Current',
-    untitled:'Untitled', copy_suffix:' (copy)'
+    untitled:'Untitled', copy_suffix:' (copy)',
+    cat_pro:'Premium', pro_owned:'Purchased', lk_hint:'Drag the card to turn it, or tap it to see the other side', lk_lock:'Premium template — tap to buy', pro_resumed:'Your earlier purchase is confirmed ✓', pro_close:'Close', pro_chip:'Premium — free to preview and edit', pro_buy:'Buy',
+    pro_title:'Premium templates', pro_sub:'Pay once, use without limits. No subscription.',
+    pro_o1:'1 template', pro_o1d:'Any Premium template you like', pro_o5:'5 templates', pro_o5d:'5 different templates of your choice',
+    pro_oall:'All templates ({n})', pro_oalld:'Every current Premium template', pro_best:'Best value', pro_save:'Save {p}%', pro_once:'one-time',
+    pro_pick1:'Choose the template', pro_pick5:'Choose 5 templates', pro_pickall:'The bundle includes these templates',
+    pro_sel:'Your choice:', pro_total:'Total', pro_need1:'Choose a template', pro_need5:'Choose {n} more',
+    pro_future:'Templates added in the future are not automatically included in this bundle.',
+    pro_login:'Sign in with Google to continue', pro_login_note:'Purchases are saved to your account and restored on any device when you sign in.',
+    pro_secure:'Secure payment with PayPal', pro_restore:'Restore purchases', pro_signed:'Account:',
+    pro_demo:'Demo mode (preview): no real payment, nothing is saved.', pro_demo_btn:'Simulate payment',
+    pro_off:'Template purchases are coming soon. Preview and edit them for free now.',
+    pro_done:'Purchase complete', pro_done_t:'These templates are yours, export them without limits:', pro_order:'Order number', pro_start:'Start designing',
+    pro_all_owned:'You own every Premium template ✓', pro_paying:'Confirming payment… don’t close the window.', pro_err:'Something went wrong, please try again.',
+    pro_restored:'Purchases restored ({n})', pro_restored0:'No purchases on this account', pro_check_err:'Couldn’t verify the purchase, check your connection and try again'
   }
 };
 let uiLang = localStorage.getItem(UI_KEY) || localStorage.getItem('site_lang') || 'ar';
@@ -281,8 +323,10 @@ const TEMPLATES = [
     },
     back: c => {
       const cx = c.X(292);
-      return `<div class="B">` + deco(`<rect x="${cx - 19}" y="34" width="38" height="152" rx="6" fill="#FFFFFF" fill-opacity=".1"/>
-        <rect x="${cx - 76}" y="91" width="152" height="38" rx="6" fill="#FFFFFF" fill-opacity=".1"/>`) +
+      return `<div class="B">` + deco(`<circle cx="${cx}" cy="110" r="42" fill="#FFFFFF" fill-opacity=".07"/>
+        <circle cx="${cx}" cy="110" r="64" fill="none" stroke="#FFFFFF" stroke-opacity=".13" stroke-width=".8"/>
+        <circle cx="${cx}" cy="110" r="86" fill="none" stroke="#FFFFFF" stroke-opacity=".09" stroke-width=".8"/>
+        <circle cx="${cx}" cy="110" r="108" fill="none" stroke="#FFFFFF" stroke-opacity=".05" stroke-width=".8"/>`) +
         `<div class="mid">${mono(c)}${fit('co', c.d.company)}${fit('tg', c.d.tagline)}${c.d.phone ? `<div class="ph"><span class="ltrx">${esc(c.d.phone)}</span></div>` : ''}</div>${qrBox(c)}</div>`;
     }
   },
@@ -392,9 +436,549 @@ const TEMPLATES = [
     }
   }
 ];
+/* ---------------------------------------------------------
+   NEW designs (10) — Luxury · Minimalist · Corporate · Premium · Elegant
+   Free for now (marked NEW in the gallery). SVG ids are unique per card so
+   thumbnails, both faces and exports never share a gradient / pattern.
+--------------------------------------------------------- */
+let SVG_UID = 0;
+const uid = p => `${p}${++SVG_UID}`;
+const mirror = (c, inner) => c.rtl ? `<g transform="translate(${W} 0) scale(-1 1)">${inner}</g>` : inner;
+const CT_LAB = {
+  ar: { phone:'هاتف', phone2:'هاتف', email:'بريد', web:'موقع', address:'عنوان', social:'تواصل' },
+  fr: { phone:'Tél', phone2:'Tél', email:'Mail', web:'Web', address:'Adr.', social:'Social' },
+  en: { phone:'Tel', phone2:'Tel', email:'Mail', web:'Web', address:'Addr', social:'Social' }
+};
+function labRows(c, keys, max) {
+  const L = CT_LAB[c.lang] || CT_LAB.en;
+  return keys.filter(k => c.d[k]).slice(0, max).map(k =>
+    `<div class="lr"><b>${L[k]}</b><span${LTR_KEYS[k] ? ' class="ltrx"' : ''}>${esc(c.d[k])}</span></div>`).join('');
+}
+function splitName(name) {
+  const w = String(name || '').trim().split(/\s+/).filter(Boolean);
+  if (w.length < 2) return [w.join(' '), ''];
+  return [w.slice(0, -1).join(' '), w[w.length - 1]];
+}
+const GOLD = '#C9A86A';
+function octSVG(c, s) {
+  const r = s / 2 - 1, r2 = r - 3.2, P = rr => Array.from({ length: 8 }, (_, i) => {
+    const a = (Math.PI / 8) + i * Math.PI / 4;
+    return `${(s / 2 + rr * Math.cos(a)).toFixed(2)},${(s / 2 + rr * Math.sin(a)).toFixed(2)}`;
+  }).join(' ');
+  return `<svg class="oct-svg" width="${s}" height="${s}" viewBox="0 0 ${s} ${s}"><polygon points="${P(r)}" fill="none" stroke="${c.acc}" stroke-width=".9"/>
+    <polygon points="${P(r2)}" fill="none" stroke="${c.acc}" stroke-width=".45" stroke-opacity=".6"/></svg>`;
+}
+function decoFrame(c) {
+  const id = uid('dg');
+  const ch = (i, k) => { const a = i, b = W - i, t = i, u = H - i; return `${a + k},${t} ${b - k},${t} ${b},${t + k} ${b},${u - k} ${b - k},${u} ${a + k},${u} ${a},${u - k} ${a},${t + k}`; };
+  return deco(`<defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${c.accD}"/><stop offset=".35" stop-color="${c.accL}"/><stop offset=".6" stop-color="${c.acc}"/><stop offset="1" stop-color="${c.accD}"/></linearGradient></defs>
+    <polygon points="${ch(10, 9)}" fill="none" stroke="url(#${id})" stroke-width=".9"/>
+    <polygon points="${ch(14, 7)}" fill="none" stroke="${c.acc}" stroke-opacity=".4" stroke-width=".45"/>
+    <polygon points="170,6.5 173.5,10 170,13.5 166.5,10" fill="${c.acc}"/><polygon points="170,206.5 173.5,210 170,213.5 166.5,210" fill="${c.acc}"/>`);
+}
+function sunburst(c) {
+  let g = '';
+  for (let i = 0; i < 48; i++) {
+    const a = i * Math.PI / 24, r1 = i % 2 ? 50 : 42, r2 = 260;
+    g += `<path d="M${(170 + r1 * Math.cos(a)).toFixed(1)} ${(78 + r1 * Math.sin(a)).toFixed(1)}L${(170 + r2 * Math.cos(a)).toFixed(1)} ${(78 + r2 * Math.sin(a)).toFixed(1)}"/>`;
+  }
+  return `<g stroke="${c.acc}" stroke-opacity=".13" stroke-width=".55" fill="none">${g}</g>`;
+}
+function blobs(c, v) {
+  const a = uid('ab'), b = uid('ab'), d = uid('ab');
+  const rg = (id, col, o) => `<radialGradient id="${id}"><stop offset="0" stop-color="${col}" stop-opacity="${o}"/><stop offset=".55" stop-color="${col}" stop-opacity="${o * .35}"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></radialGradient>`;
+  const pos = v ? [[60, 30, 170], [300, 210, 160], [330, 20, 90]] : [[300, 10, 180], [20, 230, 150], [190, 260, 110]];
+  return deco(`<defs>${rg(a, c.acc, .9)}${rg(b, '#16C7D6', .55)}${rg(d, '#FF5FA2', .45)}</defs>` + mirror(c,
+    `<circle cx="${pos[0][0]}" cy="${pos[0][1]}" r="${pos[0][2]}" fill="url(#${a})"/>
+     <circle cx="${pos[1][0]}" cy="${pos[1][1]}" r="${pos[1][2]}" fill="url(#${b})"/>
+     <circle cx="${pos[2][0]}" cy="${pos[2][1]}" r="${pos[2][2]}" fill="url(#${d})"/>`));
+}
+function veins(c, dark) {
+  const g = dark ? '#FFFFFF' : '#B9B2A6', go = dark ? '.08' : '.38';
+  const grey = [
+    ['M-10 40 C 60 30, 90 70, 150 60 S 260 20, 350 50', .8], ['M-10 150 C 40 140, 80 172, 140 160 S 230 118, 350 140', .6],
+    ['M80 -10 C 95 40, 70 90, 110 130 S 120 200, 150 230', .5], ['M232 -10 C 220 50, 262 80, 250 130 S 282 200, 300 230', .7],
+    ['M-10 95 C 50 102, 70 80, 122 92', .4], ['M200 230 C 212 190, 262 180, 350 192', .5], ['M150 60 C 170 90, 160 120, 190 140', .35]
+  ].map(([d, w]) => `<path d="${d}" stroke="${g}" stroke-opacity="${go}" stroke-width="${w}"/>`).join('');
+  const gold = [['M-10 184 C 60 170, 110 202, 170 186 S 280 160, 350 176', .8], ['M252 -10 C 264 30, 240 62, 270 98', .55], ['M30 -10 C 40 20, 22 40, 44 64', .4]]
+    .map(([d, w]) => `<path d="${d}" stroke="${c.acc}" stroke-opacity="${dark ? .55 : .6}" stroke-width="${w}"/>`).join('');
+  return deco(`<g fill="none" stroke-linecap="round">${mirror(c, grey + gold)}</g>`);
+}
+function carbon() {
+  const id = uid('cb');
+  return `<defs><pattern id="${id}" width="6" height="6" patternUnits="userSpaceOnUse"><rect width="3" height="3" fill="#FFFFFF" fill-opacity=".03"/><rect x="3" y="3" width="3" height="3" fill="#FFFFFF" fill-opacity=".03"/></pattern></defs><rect width="${W}" height="${H}" fill="url(#${id})"/>`;
+}
+const pad = (x, y, c) => `<circle cx="${x}" cy="${y}" r="2.4" fill="#111418" stroke="${c.acc}" stroke-width="1"/>`;
+function chipSVG(c, s) {
+  const m = s * 0.2, e = s - m; let pins = '';
+  [0.35, 0.5, 0.65].forEach(f => {
+    const p = (s * f).toFixed(1);
+    pins += `<path d="M${p} 0V${m}M${p} ${e}V${s}M0 ${p}H${m}M${e} ${p}H${s}"/>`;
+  });
+  return `<svg class="cpu-svg" width="${s}" height="${s}" viewBox="0 0 ${s} ${s}"><g stroke="${c.acc}" stroke-width="1" fill="none">${pins}
+    <rect x="${m}" y="${m}" width="${s - 2 * m}" height="${s - 2 * m}" rx="${s * 0.06}" fill="#15191E"/></g></svg>`;
+}
+function sprig(color, op) {
+  const leaf = (x, y, a, k = 1) => `<path d="M0 0 C3 -5 10 -6 14 -1 C10 3 3 3 0 0Z" transform="translate(${x} ${y}) rotate(${a}) scale(${k})"/>`;
+  return `<g fill="${color}" fill-opacity="${op}" stroke="none">${leaf(20, 64, -150)}${leaf(20.5, 60, -32)}${leaf(20.2, 48, -155, .95)}${leaf(20.8, 44, -28, .95)}
+    ${leaf(20.6, 32, -158, .85)}${leaf(21.2, 28, -25, .85)}${leaf(21.2, 17, -160, .7)}${leaf(21.8, 13, -22, .7)}${leaf(21.8, 8, -88, .6)}</g>
+    <path d="M20 79 C 20 60, 19 38, 22 6" stroke="${color}" stroke-opacity="${Math.min(1, op + .2)}" stroke-width="1" fill="none" stroke-linecap="round"/>`;
+}
+const corners = (col, i = 10, l = 18) => `<g stroke="${col}" stroke-width=".9" fill="none">
+  <path d="M${i} ${i + l}V${i}H${i + l}M${W - i - l} ${i}H${W - i}V${i + l}M${W - i} ${H - i - l}V${H - i}H${W - i - l}M${i + l} ${H - i}H${i}V${H - i - l}"/>
+  <path d="M${i + 4} ${i + l - 6}V${i + 4}H${i + l - 6}M${W - i - l + 6} ${i + 4}H${W - i - 4}V${i + l - 6}M${W - i - 4} ${H - i - l + 6}V${H - i - 4}H${W - i - l + 6}M${i + l - 6} ${H - i - 4}H${i + 4}V${H - i - l + 6}" stroke-opacity=".55" stroke-width=".5"/></g>`;
+const webSoc = (c, cls = 'ws') => {
+  const v = [c.d.web, c.d.social].filter(Boolean);
+  return v.length ? `<div class="${cls}">${v.map(x => `<span class="ltrx">${esc(x)}</span>`).join('<i></i>')}</div>` : '';
+};
+
+const NEW_TEMPLATES = [
+  /* 1 · Luxury — Art Deco gold on black */
+  {
+    id:'deco', cat:'corp', name:{ ar:'آرت ديكو ذهبي', fr:'Art déco doré', en:'Art Deco Gold' },
+    acc:'#D4AF37', swatches:['#D4AF37','#C9CED6','#E0A98C','#8FC9A9','#B9A6E8'],
+    fonts:{ ar:['Reem Kufi','IBM Plex Sans Arabic'], la:['Cormorant Garamond','Montserrat'] },
+    ic: c => c.acc,
+    front: c => decoFrame(c) + `<div class="vl"></div>
+      <div class="P"><div class="who">${fit('co2 caps', c.d.company)}${fit('nm', c.d.name)}${fit('ttl caps', c.d.title)}<div class="foil"><i></i></div></div>
+      ${contacts(c, { max:4 })}</div>
+      <div class="side"><div class="oct">${octSVG(c, 50)}${mono(c)}</div>${qrBox(c)}</div>`,
+    back: c => `<div class="B">` + deco(sunburst(c)) + decoFrame(c) +
+      `<div class="mid"><div class="oct">${octSVG(c, 62)}${mono(c)}</div>${fit('co caps', c.d.company)}${fit('tg', c.d.tagline)}<div class="foil"><i></i></div></div>
+      ${webSoc(c)}</div>`
+  },
+  /* 2 · Minimalist — Swiss grid */
+  {
+    id:'swiss', cat:'free', name:{ ar:'سويسري بسيط', fr:'Suisse minimal', en:'Swiss Minimal' },
+    acc:'#E63B2E', swatches:['#E63B2E','#111111','#1F4FD6','#0E9F6E','#F2A900'],
+    fonts:{ ar:['IBM Plex Sans Arabic','IBM Plex Sans Arabic'], la:['Inter','Inter'] },
+    ic: c => c.acc,
+    front: c => `<div class="dot"></div><div class="P">
+      <div class="top">${mono(c)}${fit('co caps', c.d.company)}</div>
+      <div class="who">${fit('nm', c.d.name)}${fit('ttl', c.d.title)}</div>
+      <div class="ln"></div>
+      <div class="bot"><div class="lab">${labRows(c, ['phone','email','web','address','phone2','social'], 4)}</div>${qrBox(c)}</div></div>`,
+    back: c => `<div class="B"><div class="top">${mono(c)}${c.d.web ? `<span class="wb ltrx">${esc(c.d.web)}</span>` : ''}</div>
+      <div class="bt"><div class="ln"></div>${fit('co', c.d.company)}${fit('tg', c.d.tagline)}${fitL('soc', c.d.social)}</div></div>`
+  },
+  /* 3 · Corporate — Executive navy & gold band */
+  {
+    id:'exec', cat:'corp', name:{ ar:'تنفيذي كحلي', fr:'Exécutif marine', en:'Executive Navy' },
+    acc:'#14284B', swatches:['#14284B','#1D3B2F','#4A1E2C','#2B2D33','#0E4A5C'],
+    fonts:{ ar:['Cairo','IBM Plex Sans Arabic'], la:['Montserrat','Montserrat'] },
+    ic: () => '#D9B873',
+    front: c => `<div class="top"><div class="who">${fit('nm', c.d.name)}${fit('ttl caps', c.d.title)}${fit('co2', c.d.company)}</div>${mono(c)}</div>
+      <div class="band"><div class="gl"></div>${contacts(c, { max:6, keys:['phone','email','phone2','web','address','social'] })}</div>`,
+    back: c => {
+      let s = ''; for (let x = -220; x < W + 220; x += 9) s += `<path d="M${x} 0L${x + 220} ${H}"/>`;
+      return `<div class="B">` + deco(`<g stroke="#FFFFFF" stroke-opacity=".05" stroke-width=".6" fill="none">${s}</g>`) +
+        `<div class="mid"><div class="ring">${mono(c)}</div>${fit('co caps', c.d.company)}${fit('tg', c.d.tagline)}</div>
+        ${c.d.web ? `<div class="wb"><span class="ltrx">${esc(c.d.web)}</span></div>` : ''}${qrBox(c)}</div>`;
+    }
+  },
+  /* 4 · Elegant — Emerald arch on ivory */
+  {
+    id:'arch', cat:'shop', sample:'shop', name:{ ar:'قوس زمردي', fr:'Arche émeraude', en:'Emerald Arch' },
+    acc:'#0F4D3A', swatches:['#0F4D3A','#1B2A4A','#5A1F2E','#3D2B56','#1F1F1F'],
+    fonts:{ ar:['El Messiri','Almarai'], la:['Marcellus','Montserrat'] },
+    ic: c => c.acc,
+    front: c => `<div class="arch"><div class="in"></div>${mono(c)}<i class="st"></i></div>
+      <div class="P">${fit('co2 caps', c.d.company)}${fit('nm', c.d.name)}${fit('ttl', c.d.title)}<div class="rule"></div>
+      ${contacts(c, { max:4, keys:['phone','address','email','web','social','phone2'] })}</div>`,
+    back: c => `<div class="B"><div class="arch"><div class="in"></div></div>
+      <div class="mid">${mono(c)}${fit('co', c.d.company)}${fit('tg', c.d.tagline)}</div>
+      <div class="side">${fitL('wb', c.d.web)}${fitL('wb', c.d.social)}</div>${qrBox(c)}</div>`
+  },
+  /* 5 · Premium — Aurora glass */
+  {
+    id:'aurora', cat:'free', name:{ ar:'شفق زجاجي', fr:'Aurore verre', en:'Aurora Glass' },
+    acc:'#7B5CFF', swatches:['#7B5CFF','#00B3A4','#FF5C8A','#2F7BFF','#FF8A3D'],
+    fonts:{ ar:['Cairo','Tajawal'], la:['Space Grotesk','Inter'] },
+    ic: () => '#FFFFFF',
+    front: c => blobs(c, 0) + `<div class="P">
+      <div class="top"><div class="who">${fit('nm', c.d.name)}${fit('ttl', c.d.title)}${fit('co2', c.d.company)}</div><div class="gm">${mono(c)}</div></div>
+      <div class="glass">${contacts(c, { max:4, keys:['phone','email','web','address','social','phone2'] })}${qrBox(c)}</div></div>`,
+    back: c => `<div class="B">` + blobs(c, 1) + `<div class="mid"><div class="gm">${mono(c)}</div>${fit('co', c.d.company)}${fit('tg', c.d.tagline)}
+      ${c.d.web ? `<div class="pill"><span class="ltrx">${esc(c.d.web)}</span></div>` : ''}${fitL('soc', c.d.social)}</div></div>`
+  },
+  /* 6 · Elegant / Luxury — Marble & gold */
+  {
+    id:'marble', cat:'shop', sample:'beauty', name:{ ar:'رخام وذهب', fr:'Marbre et or', en:'Marble & Gold' },
+    acc:'#B8934A', swatches:['#B8934A','#9EA3A8','#B76E79','#5E7C6E','#3A3A3A'],
+    fonts:{ ar:['Amiri','Almarai'], la:['Playfair Display','Montserrat'] },
+    ic: () => '#FFFFFF',
+    front: c => veins(c, false) + `<div class="seal">${mono(c)}</div>
+      <div class="P">${fit('nm', c.d.name)}${fit('ttl caps', c.d.title)}<div class="rl"><span></span><i></i></div>${fit('co2', c.d.company)}
+      ${contacts(c, { max:4, keys:['phone','social','email','address','web','phone2'] })}</div>`,
+    back: c => `<div class="B">` + veins(c, true) + `<div class="mid">${mono(c)}${fit('co caps', c.d.company)}${fit('tg', c.d.tagline)}<div class="rl"><span></span><i></i><span></span></div>
+      ${fitL('soc', c.d.social)}</div>${c.d.web ? `<div class="wb"><span class="ltrx">${esc(c.d.web)}</span></div>` : ''}${qrBox(c)}</div>`
+  },
+  /* 7 · Editorial — magazine masthead */
+  {
+    id:'edit', cat:'edu', name:{ ar:'تحريري', fr:'Éditorial', en:'Editorial' },
+    acc:'#B23A48', swatches:['#B23A48','#1A1A1A','#2E5E8C','#3F6B4E','#9C6B30'],
+    fonts:{ ar:['Amiri','IBM Plex Sans Arabic'], la:['Playfair Display','Inter'] },
+    ic: c => c.acc,
+    front: c => {
+      const [n1, n2] = splitName(c.d.name);
+      const LB = { ar:['الهاتف','على الإنترنت','العنوان'], fr:['Téléphone','En ligne','Adresse'], en:['Phone','Online','Address'] }[c.lang] || ['Phone','Online','Address'];
+      const col = (lab, keys) => {
+        const v = keys.filter(k => c.d[k]); if (!v.length) return '';
+        return `<div class="col"><b>${lab}</b>${v.map(k => LTR_KEYS[k] ? fitL('v', c.d[k]) : fit('v', c.d[k])).join('')}</div>`;
+      };
+      return `<div class="P"><div class="mast">${fit('co caps', c.d.company)}${c.d.tagline ? fit('tgm', c.d.tagline) : ''}</div><div class="dbl"></div>
+        <div class="nmw">${fit('nm n1', n1)}${fit('nm n2', n2)}</div>${fit('ttl caps', c.d.title)}
+        <div class="cols">${col(LB[0], ['phone','phone2'])}${col(LB[1], ['email','web'])}${col(LB[2], ['address','social'])}</div></div>`;
+    },
+    back: c => `<div class="B"><div class="q mir">“</div><div class="qt">${esc(c.d.tagline || c.d.company)}</div><div class="rl"></div>
+      ${fit('co caps', c.d.company)}${fit('nmb', c.d.name)}${mono(c)}${qrBox(c)}</div>`
+  },
+  /* 8 · Premium tech — Circuit carbon */
+  {
+    id:'circuit', cat:'eng', name:{ ar:'دارة كربونية', fr:'Circuit carbone', en:'Circuit Carbon' },
+    acc:'#22D3EE', swatches:['#22D3EE','#A3E635','#F59E0B','#F472B6','#60A5FA'],
+    fonts:{ ar:['Reem Kufi','Cairo'], la:['Space Grotesk','Space Grotesk'] },
+    ic: c => c.acc,
+    front: c => deco(carbon() + mirror(c, `<g stroke="${c.acc}" stroke-opacity=".55" stroke-width="1" fill="none" stroke-linejoin="round">
+        <path d="M340 30H306L292 44H262"/><path d="M340 54H316L302 68H282L270 80H246"/><path d="M340 98H300L288 110H268"/><path d="M340 122H324L314 132"/></g>
+        ${pad(262, 44, c)}${pad(246, 80, c)}${pad(268, 110, c)}${pad(314, 132, c)}`)) +
+      `<div class="bar"></div><div class="P"><div class="top"><div class="cpu">${chipSVG(c, 28)}${mono(c)}</div>${fit('co caps', c.d.company)}</div>
+      ${fit('nm', c.d.name)}${fit('ttl', c.d.title)}${contacts(c, { max:4 })}</div>
+      ${c.qr ? `<div class="qrw"><i class="k1"></i><i class="k2"></i><i class="k3"></i><i class="k4"></i>${qrBox(c)}</div>` : ''}`,
+    back: c => {
+      const L = `<path d="M136 70H100L86 56H22"/><path d="M136 86H62"/><path d="M136 102H104L90 116H36"/><path d="M156 52V32L146 22H122"/>`;
+      const R = `<g transform="translate(${W} 0) scale(-1 1)">${L}</g>`;
+      const pads = [[22, 56], [62, 86], [36, 116], [122, 22]].map(([x, y]) => pad(x, y, c) + pad(W - x, y, c)).join('');
+      return `<div class="B">` + deco(carbon() + `<g stroke="${c.acc}" stroke-opacity=".5" stroke-width="1" fill="none" stroke-linejoin="round">${L}${R}</g>${pads}`) +
+        `<div class="cpu">${chipSVG(c, 68)}${mono(c)}</div><div class="mid">${fit('co caps', c.d.company)}${fit('tg', c.d.tagline)}</div>${webSoc(c)}</div>`;
+    }
+  },
+  /* 9 · Elegant medical — Sage botanical */
+  {
+    id:'sage', cat:'med', name:{ ar:'مريمية هادئة', fr:'Sauge', en:'Sage Clinic' },
+    acc:'#5E7D6A', swatches:['#5E7D6A','#4F7CA8','#8A6FA8','#C07A6A','#3E8E8A'],
+    fonts:{ ar:['El Messiri','IBM Plex Sans Arabic'], la:['Cormorant Garamond','Poppins'] },
+    ic: c => c.acc,
+    front: c => `<div class="pill">${mono(c)}<svg class="spr" width="40" height="80" viewBox="0 0 40 80">${sprig(c.accD, .6)}</svg></div>
+      <div class="P">${fit('nm', c.d.name)}${fit('ttl', c.d.title)}${fit('co2', c.d.company)}<div class="rule"></div>
+      ${contacts(c, { max:4, keys:['phone','email','address','web','phone2','social'] })}</div>`,
+    back: c => `<div class="B">` + deco(mirror(c, `<g transform="translate(250 64) scale(1.9)">${sprig('#FFFFFF', .14)}</g>`)) +
+      `<div class="mid">${mono(c)}${fit('co', c.d.company)}${fit('tg', c.d.tagline)}
+      ${(c.d.phone || c.d.phone2) ? `<div class="ph"><span class="ltrx">${esc([c.d.phone, c.d.phone2].filter(Boolean).join('  ·  '))}</span></div>` : ''}${fitL('soc', c.d.social)}</div>${qrBox(c)}</div>`
+  },
+  /* 10 · Luxury — Royal ribbon */
+  {
+    id:'ribbon', cat:'law', name:{ ar:'وشاح ملكي', fr:'Ruban royal', en:'Royal Ribbon' },
+    acc:'#6E1423', swatches:['#6E1423','#13294B','#1E3D2F','#3A2E5C','#222222'],
+    fonts:{ ar:['Amiri','Tajawal'], la:['Playfair Display','Poppins'] },
+    ic: c => c.acc,
+    front: c => deco(corners(GOLD) + mirror(c, `<polygon points="252,0 300,0 300,98 276,84 252,98" fill="${c.acc}"/>
+        <path d="M256.5 0V90.5L276 79.3L295.5 90.5V0" stroke="${GOLD}" stroke-width=".6" fill="none"/>`)) +
+      `<div class="rb">${mono(c)}</div>
+      <div class="P">${fit('co2 caps', c.d.company)}${fit('nm', c.d.name)}${fit('ttl', c.d.title)}<div class="orn"><span></span><i></i><span></span></div></div>
+      ${contacts(c, { max:4, keys:['phone','email','web','address','phone2','social'] })}`,
+    back: c => `<div class="B">` + deco(corners(GOLD)) + `<div class="mid">${mono(c)}${fit('co', c.d.company)}${fit('tg', c.d.tagline)}
+      <div class="orn"><span></span><i></i><span></span></div>${fit('addr', c.d.address)}</div>${webSoc(c)}${qrBox(c)}</div>`
+  }
+];
+NEW_TEMPLATES.forEach(t => { t.isNew = true; TEMPLATES.push(t); });
+
+/* ---------------------------------------------------------
+   NEW designs — batch 3 (10): silk waves, data flow, pulse, arabesque,
+   contour lines, zen sun, line bloom, code editor, halftone, gold leaf
+--------------------------------------------------------- */
+function rng(seed) { let s = seed >>> 0; return () => (s = (Math.imul(s, 1664525) + 1013904223) >>> 0) / 4294967296; }
+const stopsOf = st => st.map(([o, col, op = 1]) => `<stop offset="${o}" stop-color="${col}" stop-opacity="${op}"/>`).join('');
+const linG = (id, st, x1, y1, x2, y2) => `<linearGradient id="${id}" gradientUnits="userSpaceOnUse" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}">${stopsOf(st)}</linearGradient>`;
+const radG = (id, st) => `<radialGradient id="${id}">${stopsOf(st)}</radialGradient>`;
+const bez = (a, b, c2, d, u) => { const v = 1 - u; return v * v * v * a + 3 * v * v * u * b + 3 * v * u * u * c2 + u * u * u * d; };
+
+/* A · silk waves */
+function silkTop(c) {
+  const g = uid('sk');
+  return deco(`<defs>${linG(g, [[0, c.accL], [1, c.acc]], 0, 0, 340, 0)}</defs>` + mirror(c,
+    `<path d="M0 0H340V62C280 80 220 44 150 62S40 82 0 64Z" fill="${c.accL}" fill-opacity=".5"/>
+     <path d="M0 0H340V47C270 65 200 31 130 49S30 63 0 49Z" fill="url(#${g})" fill-opacity=".75"/>
+     <path d="M0 0H340V30C262 46 190 16 120 32S30 42 0 32Z" fill="${c.accD}" fill-opacity=".92"/>
+     <path d="M0 49C30 63 80 67 130 49S270 65 340 47" fill="none" stroke="#FFFFFF" stroke-opacity=".8" stroke-width=".8"/>
+     <path d="M0 64C40 82 100 80 150 62S280 80 340 62" fill="none" stroke="${c.acc}" stroke-opacity=".55" stroke-width=".5"/>`));
+}
+function silkBack(c) {
+  const g = uid('sk');
+  return deco(`<defs>${linG(g, [[0, '#FFFFFF', 0], [.5, '#FFFFFF', .55], [1, '#FFFFFF', 0]], 0, 0, 340, 0)}</defs>` + mirror(c,
+    `<path d="M0 158C70 128 140 188 220 158S320 128 340 138V220H0Z" fill="#FFFFFF" fill-opacity=".07"/>
+     <path d="M0 180C80 155 160 210 240 180S320 165 340 172V220H0Z" fill="#FFFFFF" fill-opacity=".09"/>
+     <path d="M0 158C70 128 140 188 220 158S320 128 340 138" fill="none" stroke="url(#${g})" stroke-width="1"/>
+     <path d="M0 180C80 155 160 210 240 180S320 165 340 172" fill="none" stroke="url(#${g})" stroke-width=".6"/>
+     <path d="M0 40C80 70 150 10 230 40S320 60 340 50V0H0Z" fill="#FFFFFF" fill-opacity=".07"/>
+     <path d="M0 40C80 70 150 10 230 40S320 60 340 50" fill="none" stroke="url(#${g})" stroke-width=".8"/>`));
+}
+/* B · data flow: a twisted ribbon of fine lines */
+function flowLines(c, back) {
+  const g = uid('fl'), N = 26; let s = '', dots = '';
+  const P = t => back
+    ? [[-10, 70 + 32 * t], [90, 36 + 118 * t], [250, 172 - 116 * t], [350, 88 + 44 * t]]
+    : [[168 + 104 * t, 238], [214 + 24 * t, 214 - 150 * t], [262 - 26 * t, 30 + 130 * t], [352, 6 + 118 * t]];
+  for (let i = 0; i < N; i++) {
+    const t = i / (N - 1), p = P(t), op = (.1 + .6 * Math.sin(Math.PI * t)).toFixed(2);
+    s += `<path d="M${p[0][0].toFixed(1)} ${p[0][1].toFixed(1)}C${p[1][0].toFixed(1)} ${p[1][1].toFixed(1)} ${p[2][0].toFixed(1)} ${p[2][1].toFixed(1)} ${p[3][0].toFixed(1)} ${p[3][1].toFixed(1)}" stroke-opacity="${op}"/>`;
+  }
+  [[6, .38], [13, .72], [19, .52], [9, .9]].forEach(([i, u]) => {
+    const p = P(i / (N - 1)), x = bez(p[0][0], p[1][0], p[2][0], p[3][0], u), y = bez(p[0][1], p[1][1], p[2][1], p[3][1], u);
+    dots += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="5" fill="${c.acc}" fill-opacity=".16"/><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="1.7" fill="#FFFFFF"/>`;
+  });
+  return deco(`<defs>${linG(g, [[0, c.acc], [.55, '#A78BFA'], [1, c.acc]], 0, 0, 340, 0)}</defs>` +
+    mirror(c, `<g fill="none" stroke="url(#${g})" stroke-width=".7">${s}</g>${dots}`));
+}
+/* C · pulse: heartbeat line, no medical cross */
+const ecgD = (y, x0, x1, at) => `M${x0} ${y}H${at}L${at + 7} ${y}L${at + 13} ${y - 14}L${at + 20} ${y + 14}L${at + 28} ${y - 26}L${at + 36} ${y + 8}L${at + 41} ${y}H${x1}`;
+/* D · arabesque: 8-point star lattice */
+function starTile(id, col, op) {
+  const s = 28, h = 14, r = 8.5, q = r * Math.SQRT1_2;
+  return `<pattern id="${id}" width="${s}" height="${s}" patternUnits="userSpaceOnUse"><g fill="none" stroke="${col}" stroke-opacity="${op}" stroke-width=".6">
+    <polygon points="${h - q},${h - q} ${h + q},${h - q} ${h + q},${h + q} ${h - q},${h + q}"/>
+    <polygon points="${h},${h - r} ${h + r},${h} ${h},${h + r} ${h - r},${h}"/><circle cx="${h}" cy="${h}" r="2.2"/>
+    <path d="M0 0L${h - q} ${h - q}M${s} 0L${h + q} ${h - q}M${s} ${s}L${h + q} ${h + q}M0 ${s}L${h - q} ${h + q}"/></g></pattern>`;
+}
+function star8SVG(c, s, col) {
+  const h = s / 2, r = h - 1.5, q = r * Math.SQRT1_2, r2 = r - 4, q2 = r2 * Math.SQRT1_2;
+  const two = (rr, qq) => `<polygon points="${h - qq},${h - qq} ${h + qq},${h - qq} ${h + qq},${h + qq} ${h - qq},${h + qq}"/><polygon points="${h},${h - rr} ${h + rr},${h} ${h},${h + rr} ${h - rr},${h}"/>`;
+  return `<svg class="st8" width="${s}" height="${s}" viewBox="0 0 ${s} ${s}"><g fill="${c.acc}" stroke="${col}" stroke-width="1">${two(r, q)}</g>
+    <g fill="none" stroke="${col}" stroke-width=".5" stroke-opacity=".7">${two(r2, q2)}</g></svg>`;
+}
+/* E · contour lines */
+function contours(cx, cy, n, step, col, op, seed) {
+  let s = '';
+  for (let k = 1; k <= n; k++) {
+    const r0 = k * step, pts = [];
+    for (let a = 0; a < 120; a++) {
+      const th = a / 120 * Math.PI * 2;
+      const r = r0 * (1 + .13 * Math.sin(3 * th + seed + k * .22) + .06 * Math.cos(5 * th - seed * 1.3 + k * .37));
+      pts.push(`${(cx + r * Math.cos(th)).toFixed(1)} ${(cy + r * Math.sin(th) * .8).toFixed(1)}`);
+    }
+    s += `<path d="M${pts.join('L')}Z"${k % 5 === 0 ? ` stroke-width="1.1" stroke-opacity="${Math.min(1, op * 1.9).toFixed(2)}"` : ''}/>`;
+  }
+  return `<g fill="none" stroke="${col}" stroke-opacity="${op}" stroke-width=".55" stroke-linejoin="round">${s}</g>`;
+}
+/* G · line bloom */
+function flower(x, y, k, rot, col, op, fillOp) {
+  const p1 = 'M0 0C-9 -12 -9 -30 0 -38C9 -30 9 -12 0 0Z', p2 = 'M0 0C-6 -9 -6 -22 0 -27C6 -22 6 -9 0 0Z';
+  let g = '';
+  for (let i = 0; i < 6; i++) g += `<path d="${p1}" transform="rotate(${i * 60})"/>`;
+  for (let i = 0; i < 6; i++) g += `<path d="${p2}" transform="rotate(${i * 60 + 30})"/>`;
+  return `<g transform="translate(${x} ${y}) rotate(${rot}) scale(${k})" fill="${col}" fill-opacity="${fillOp}" stroke="${col}" stroke-opacity="${op}" stroke-width="${(.8 / k).toFixed(2)}">${g}
+    <circle r="4.5" fill-opacity="${Math.min(1, fillOp * 4)}"/><circle r="8" fill="none" stroke-dasharray="1 2.2"/></g>`;
+}
+const leafL = (x, y, k, rot, col, op) => `<g transform="translate(${x} ${y}) rotate(${rot}) scale(${k})" fill="${col}" fill-opacity=".08" stroke="${col}" stroke-opacity="${op}" stroke-width="${(.8 / k).toFixed(2)}">
+  <path d="M0 0C10 -11 30 -11 40 0C30 11 10 11 0 0Z"/><path d="M2 0H36" fill="none"/></g>`;
+function bloomSet(c, col, op, fo) {
+  return `<g fill="none" stroke="${col}" stroke-opacity="${op}" stroke-width=".8"><path d="M300 172C292 196 280 214 262 236"/><path d="M252 206C246 220 238 230 226 240"/><path d="M322 108C318 126 310 142 300 160"/></g>` +
+    leafL(282, 206, .62, 130, col, op) + leafL(296, 192, .55, -150 + 180, col, op) + leafL(240, 224, .5, 150, col, op) + leafL(314, 136, .45, 200, col, op) +
+    flower(300, 172, 1.2, 8, col, op, fo) + flower(252, 206, .72, 24, col, op, fo) + flower(322, 108, .42, -10, col, op, fo);
+}
+/* I · halftone */
+function halftone(cx, cy, R, step, rmax, fill, op) {
+  let s = '', row = 0;
+  for (let y = cy - R; y <= cy + R; y += step * .866, row++) {
+    for (let x = cx - R + (row % 2 ? step / 2 : 0); x <= cx + R; x += step) {
+      const d = Math.hypot(x - cx, y - cy); if (d > R || x < -4 || x > W + 4 || y < -4 || y > H + 4) continue;
+      const r = rmax * Math.pow(1 - d / R, .9); if (r < .3) continue;
+      s += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(2)}"/>`;
+    }
+  }
+  return `<g fill="${fill}" fill-opacity="${op}">${s}</g>`;
+}
+/* J · gold leaf flakes */
+function flakes(cx, cy, R, n, seed, fill) {
+  const rnd = rng(seed); let s = '';
+  for (let i = 0; i < n; i++) {
+    const a = rnd() * Math.PI * 2, d = Math.pow(rnd(), 2) * R;
+    const x = cx + Math.cos(a) * d, y = cy + Math.sin(a) * d * .85;
+    const size = (1 - d / R) * 8 + .8 + rnd() * 2.2, k = 5 + Math.floor(rnd() * 3), pts = [];
+    for (let j = 0; j < k; j++) { const t = j / k * Math.PI * 2 + rnd() * .7, rr = size * (.5 + rnd() * .6); pts.push(`${(x + Math.cos(t) * rr).toFixed(1)},${(y + Math.sin(t) * rr).toFixed(1)}`); }
+    s += `<polygon points="${pts.join(' ')}" fill-opacity="${(.78 + rnd() * .22).toFixed(2)}"/>`;
+  }
+  for (let i = 0; i < n * .6; i++) {
+    const a = rnd() * Math.PI * 2, d = R * (.35 + rnd() * .75);
+    s += `<circle cx="${(cx + Math.cos(a) * d).toFixed(1)}" cy="${(cy + Math.sin(a) * d * .85).toFixed(1)}" r="${(.4 + rnd() * .9).toFixed(2)}" fill-opacity="${(.4 + rnd() * .5).toFixed(2)}"/>`;
+  }
+  return `<g fill="${fill}">${s}</g>`;
+}
+const goldFoil = (c, id, x1, y1, x2, y2) => linG(id, [[0, c.accD], [.3, c.accL], [.5, c.acc], [.72, c.accL], [1, c.accD]], x1, y1, x2, y2);
+const bidiVal = v => isArText(v) ? `<span class="ar" dir="rtl">${esc(v)}</span>` : esc(v);
+
+const NEW_TEMPLATES_3 = [
+  /* A · Feminine — silk waves */
+  {
+    id:'silk', cat:'shop', sample:'beauty', name:{ ar:'أمواج الحرير', fr:'Vagues de soie', en:'Silk Waves' },
+    acc:'#C47A8A', swatches:['#C47A8A','#B08968','#8E7CC3','#5E9C94','#C98A5A'],
+    fonts:{ ar:['El Messiri','Tajawal'], la:['Cormorant Garamond','Poppins'] },
+    ic: c => c.accD,
+    front: c => silkTop(c) + `<div class="seal">${mono(c)}</div>
+      <div class="P">${fit('nm', c.d.name)}${fit('ttl caps', c.d.title)}<div class="rl"><span></span><i></i></div>${fit('co2', c.d.company)}</div>
+      ${contacts(c, { max:4, keys:['phone','social','email','address','web','phone2'] })}`,
+    back: c => `<div class="B">` + silkBack(c) + `<div class="mid">${mono(c)}${fit('co', c.d.company)}${fit('tg', c.d.tagline)}${fitL('soc', c.d.social)}</div>
+      ${c.d.web ? `<div class="wb"><span class="ltrx">${esc(c.d.web)}</span></div>` : ''}${qrBox(c)}</div>`
+  },
+  /* B · Tech — data flow */
+  {
+    id:'flow', cat:'eng', name:{ ar:'موجة البيانات', fr:'Flux de données', en:'Data Flow' },
+    acc:'#38BDF8', swatches:['#38BDF8','#34D399','#F472B6','#FBBF24','#818CF8'],
+    fonts:{ ar:['Cairo','IBM Plex Sans Arabic'], la:['Space Grotesk','Inter'] },
+    ic: c => c.acc,
+    front: c => flowLines(c, false) + `<div class="P"><div class="top"><div class="gm">${mono(c)}</div>${fit('co caps', c.d.company)}</div>
+      ${fit('nm', c.d.name)}${fit('ttl', c.d.title)}<div class="sig"><i></i><i></i><i></i></div>${contacts(c, { max:4 })}</div>`,
+    back: c => `<div class="B">` + flowLines(c, true) + `<div class="hub">${mono(c)}</div>
+      <div class="mid">${fit('co', c.d.company)}${fit('tg', c.d.tagline)}</div>${webSoc(c)}${qrBox(c)}</div>`
+  },
+  /* C · Medical clean — pulse */
+  {
+    id:'pulse', cat:'med', name:{ ar:'نبض', fr:'Pulsation', en:'Pulse Care' },
+    acc:'#0EA5A4', swatches:['#0EA5A4','#2563EB','#7C3AED','#DB2777','#059669'],
+    fonts:{ ar:['Almarai','IBM Plex Sans Arabic'], la:['Poppins','Inter'] },
+    ic: c => c.acc,
+    front: c => {
+      const r = uid('pr'), g = uid('pg');
+      return deco(`<defs>${radG(r, [[0, c.acc, .2], [1, c.acc, 0]])}${linG(g, [[0, c.acc, 0], [.45, c.acc, .9], [1, c.acc, .25]], 0, 0, 340, 0)}</defs>` + mirror(c,
+        `<circle cx="306" cy="22" r="96" fill="url(#${r})"/><circle cx="306" cy="22" r="58" fill="none" stroke="${c.acc}" stroke-opacity=".16" stroke-width=".7"/>
+         <circle cx="306" cy="22" r="80" fill="none" stroke="${c.acc}" stroke-opacity=".1" stroke-width=".7"/>
+         <path d="${ecgD(100, 0, 340, 214)}" fill="none" stroke="url(#${g})" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round"/>
+         <circle cx="242" cy="74" r="2.6" fill="${c.acc}"/><circle cx="242" cy="74" r="6" fill="${c.acc}" fill-opacity=".18"/>`)) +
+        `<div class="top">${mono(c)}<div class="who">${fit('nm', c.d.name)}${fit('ttl', c.d.title)}${fit('co2', c.d.company)}</div></div>
+        ${contacts(c, { max:6, keys:['phone','email','phone2','web','social','address'] })}`;
+    },
+    back: c => `<div class="B">` + deco(mirror(c, `<g fill="none" stroke="#FFFFFF"><circle cx="20" cy="210" r="46" stroke-opacity=".14"/><circle cx="20" cy="210" r="72" stroke-opacity=".1"/><circle cx="20" cy="210" r="98" stroke-opacity=".07"/></g>
+        <path d="${ecgD(196, 0, 256, 120)}" fill="none" stroke="#FFFFFF" stroke-opacity=".4" stroke-width="1.1" stroke-linejoin="round"/>`)) +
+      `<div class="mid">${mono(c)}${fit('co', c.d.company)}${fit('tg', c.d.tagline)}
+      ${(c.d.phone || c.d.phone2) ? `<div class="ph"><span class="ltrx">${esc([c.d.phone, c.d.phone2].filter(Boolean).join('  ·  '))}</span></div>` : ''}</div>${qrBox(c)}</div>`
+  },
+  /* D · Luxury — arabesque star lattice */
+  {
+    id:'arabesque', cat:'law', name:{ ar:'أرابيسك', fr:'Arabesque', en:'Arabesque' },
+    acc:'#123C3A', swatches:['#123C3A','#14213D','#4A1525','#2B1F3A','#1C1C1C'],
+    fonts:{ ar:['Amiri','Almarai'], la:['Marcellus','Poppins'] },
+    ic: c => c.acc,
+    front: c => {
+      const p = uid('ar');
+      return deco(`<defs>${starTile(p, '#CBA35C', .85)}</defs>` + mirror(c, `<rect width="98" height="220" fill="${c.acc}"/><rect width="98" height="220" fill="url(#${p})" opacity=".6"/>
+          <path d="M98.5 0V220M102.5 0V220" stroke="#CBA35C" stroke-width=".7"/>`)) +
+        `<div class="medal">${star8SVG(c, 66, '#CBA35C')}${mono(c)}</div>
+        <div class="P">${fit('co2 caps', c.d.company)}${fit('nm', c.d.name)}${fit('ttl', c.d.title)}
+        <div class="rl"><span></span><svg width="9" height="9" viewBox="0 0 9 9"><g fill="#CBA35C"><rect x="1.8" y="1.8" width="5.4" height="5.4"/><rect x="1.8" y="1.8" width="5.4" height="5.4" transform="rotate(45 4.5 4.5)"/></g></svg><span></span></div>
+        ${contacts(c, { max:4 })}</div>`;
+    },
+    back: c => {
+      const p = uid('ar');
+      return `<div class="B">` + deco(`<defs>${starTile(p, '#CBA35C', .9)}</defs><rect width="340" height="220" fill="url(#${p})" opacity=".16"/>
+          <rect x="10" y="10" width="320" height="200" fill="none" stroke="#CBA35C" stroke-width=".8"/><rect x="14" y="14" width="312" height="192" fill="none" stroke="#CBA35C" stroke-opacity=".5" stroke-width=".4"/>`) +
+        `<div class="mid"><div class="medal">${star8SVG(c, 84, '#CBA35C')}${mono(c)}</div>${fit('co', c.d.company)}${fit('tg', c.d.tagline)}</div>
+        ${c.d.web ? `<div class="wb"><span class="ltrx">${esc(c.d.web)}</span></div>` : ''}${qrBox(c)}</div>`;
+    }
+  },
+  /* E · Corporate — contour lines */
+  {
+    id:'contour', cat:'corp', name:{ ar:'خطوط كنتورية', fr:'Courbes de niveau', en:'Contour Lines' },
+    acc:'#2B4C7E', swatches:['#2B4C7E','#0F766E','#9A3412','#334155','#6D28D9'],
+    fonts:{ ar:['Cairo','Cairo'], la:['Montserrat','Inter'] },
+    ic: () => '#FFFFFF',
+    front: c => deco(mirror(c, contours(318, 18, 15, 12.5, c.acc, .2, 1.3))) +
+      `<div class="P"><div class="top">${mono(c)}${fit('co caps', c.d.company)}</div>
+      <div class="who">${fit('nm', c.d.name)}${fit('ttl', c.d.title)}<i class="bar"></i></div>${contacts(c, { max:4 })}</div>${qrBox(c)}`,
+    back: c => `<div class="B">` + deco(mirror(c, contours(40, 200, 19, 13, '#FFFFFF', .17, 4.1))) +
+      `<div class="top">${mono(c)}${c.d.web ? `<span class="wb ltrx">${esc(c.d.web)}</span>` : ''}</div>
+      <div class="bt">${fit('co', c.d.company)}${fit('tg', c.d.tagline)}${fitL('soc', c.d.social)}</div></div>`
+  },
+  /* F · Minimal — zen sun */
+  {
+    id:'zen', cat:'free', name:{ ar:'شمس هادئة', fr:'Soleil zen', en:'Zen Sun' },
+    acc:'#C0704D', swatches:['#C0704D','#6B7F5E','#3E4A61','#B8954A','#2B2B2B'],
+    fonts:{ ar:['Almarai','Almarai'], la:['Cormorant Garamond','Inter'] },
+    ic: c => c.acc,
+    front: c => deco(mirror(c, `<circle cx="282" cy="76" r="30" fill="${c.acc}"/><rect x="240" y="104.6" width="90" height="12" fill="#F4EFE7"/>
+        <circle cx="292" cy="84" r="30" fill="none" stroke="#2B2B2B" stroke-opacity=".55" stroke-width=".5"/>
+        <path d="M214 104.4H332" stroke="#2B2B2B" stroke-width=".6"/><path d="M234 110.4H312" stroke="#2B2B2B" stroke-opacity=".35" stroke-width=".5"/>`)) +
+      `<div class="sun">${mono(c)}</div>
+      <div class="P">${fit('co caps', c.d.company)}<div class="who">${fit('nm', c.d.name)}${fit('ttl', c.d.title)}</div>${contacts(c, { max:4 })}</div>${qrBox(c)}`,
+    back: c => `<div class="B"><div class="mid"><div class="sun">${mono(c)}</div><div class="hz"></div>${fit('co caps', c.d.company)}${fit('tg', c.d.tagline)}</div>${webSoc(c)}</div>`
+  },
+  /* G · Feminine elegant — line bloom */
+  {
+    id:'bloom', cat:'shop', sample:'beauty', name:{ ar:'زهرة خطية', fr:'Fleur au trait', en:'Line Bloom' },
+    acc:'#B76E79', swatches:['#B76E79','#A0826D','#8A6FA8','#5E8C7E','#C08A3E'],
+    fonts:{ ar:['El Messiri','Almarai'], la:['Playfair Display','Poppins'] },
+    ic: c => c.accD,
+    front: c => deco(mirror(c, bloomSet(c, c.acc, .75, .07))) +
+      `<div class="P"><div class="top">${mono(c)}</div>${fit('nm', c.d.name)}${fit('ttl caps', c.d.title)}<div class="rl"><span></span><i></i></div>${fit('co2', c.d.company)}
+      ${contacts(c, { max:4, keys:['phone','social','email','address','web','phone2'] })}</div>`,
+    back: c => `<div class="B">` + deco(mirror(c, bloomSet(c, '#FFFFFF', .38, .05) + `<g transform="translate(340 220) rotate(180)">${bloomSet(c, '#FFFFFF', .3, .04)}</g>`)) +
+      `<div class="mid">${mono(c)}${fit('co', c.d.company)}${fit('tg', c.d.tagline)}${webSoc(c)}</div>${qrBox(c)}</div>`
+  },
+  /* H · Tech / developer — code editor */
+  {
+    id:'code', cat:'free', name:{ ar:'محرر الكود', fr:'Éditeur de code', en:'Code Editor' },
+    acc:'#7AA2F7', swatches:['#7AA2F7','#9ECE6A','#F7768E','#E0AF68','#BB9AF7'],
+    fonts:{ ar:['IBM Plex Sans Arabic','IBM Plex Sans Arabic'], la:['Space Grotesk','Inter'] },
+    ic: c => c.acc,
+    front: c => {
+      const keys = ['phone','email','web','address','social','phone2'].filter(k => c.d[k]).slice(0, 5);
+      const lines = [`<span class="kw">const</span> <span class="vr">card</span> <span class="pn">= {</span>`,
+        ...keys.map(k => `<span class="ind"></span><span class="ky">${k}</span><span class="pn">:</span> <span class="s">"${bidiVal(c.d[k])}"</span><span class="pn">,</span>`),
+        `<span class="pn">};</span>`];
+      return `<div class="win"><i></i><i></i><i></i><span>card.js</span></div>
+        <div class="hd">${fit('nm', c.d.name)}<div class="fit ttl"><span class="cm">//</span> ${esc(c.d.title)}</div></div>${mono(c)}
+        <div class="code" dir="ltr">${lines.map((l, i) => `<div class="cl"><b>${i + 1}</b><span>${l}</span></div>`).join('')}</div>${qrBox(c)}`;
+    },
+    back: c => `<div class="B"><div class="win"><i></i><i></i><i></i><span>index.html</span></div>
+      <div class="mid">${mono(c)}<div class="fit co" dir="ltr"><span class="tgx">&lt;</span>${bidiVal(c.d.company)}<span class="tgx"> /&gt;</span></div>
+      ${c.d.tagline ? `<div class="fit tg" dir="ltr"><span class="cm">/*</span> ${bidiVal(c.d.tagline)} <span class="cm">*/</span><i class="cur"></i></div>` : ''}</div>${webSoc(c)}</div>`
+  },
+  /* I · Modern — halftone */
+  {
+    id:'halftone', cat:'edu', name:{ ar:'نقاط متدرجة', fr:'Trame de points', en:'Halftone' },
+    acc:'#4F46E5', swatches:['#4F46E5','#0EA5E9','#E11D48','#16A34A','#EA580C'],
+    fonts:{ ar:['Cairo','Tajawal'], la:['Poppins','Poppins'] },
+    ic: () => '#FFFFFF',
+    front: c => {
+      const g = uid('ht');
+      return deco(`<defs>${linG(g, [[0, c.acc], [1, c.accL]], 340, 0, 170, 150)}</defs>` + mirror(c, halftone(340, 0, 172, 8.6, 3.7, `url(#${g})`, 1))) +
+        `<div class="P"><div class="top">${mono(c)}${fit('co caps', c.d.company)}</div><div class="who">${fit('nm', c.d.name)}${fit('ttl', c.d.title)}</div>
+        ${contacts(c, { max:4 })}</div>${qrBox(c)}`;
+    },
+    back: c => `<div class="B">` + deco(mirror(c, halftone(340, 220, 196, 8.6, 3.8, '#FFFFFF', .22))) +
+      `<div class="top">${mono(c)}</div><div class="bt">${fit('co', c.d.company)}${fit('tg', c.d.tagline)}<i class="bar"></i>${webSoc(c)}</div></div>`
+  },
+  /* J · Luxury — gold leaf */
+  {
+    id:'goldleaf', cat:'corp', name:{ ar:'ورق الذهب', fr:'Feuille d’or', en:'Gold Leaf' },
+    acc:'#C8A050', swatches:['#C8A050','#C9CDD3','#D4A08A','#9CC5A1','#E7C873'],
+    fonts:{ ar:['El Messiri','Almarai'], la:['Cormorant Garamond','Inter'] },
+    ic: c => c.acc,
+    front: c => {
+      const g = uid('gl');
+      return deco(`<defs>${goldFoil(c, g, 200, 0, 340, 130)}</defs>` + mirror(c, flakes(330, 10, 120, 95, 7, `url(#${g})`))) +
+        `<div class="P">${fit('nm', c.d.name)}${fit('ttl caps', c.d.title)}<div class="foil"></div>${fit('co2', c.d.company)}${contacts(c, { max:4 })}</div>${qrBox(c)}`;
+    },
+    back: c => {
+      const g = uid('gl');
+      return `<div class="B">` + deco(`<defs>${goldFoil(c, g, 0, 100, 150, 220)}</defs>` + mirror(c, flakes(10, 214, 125, 95, 23, `url(#${g})`))) +
+        `<div class="mid"><div class="ring">${mono(c)}</div>${fit('co caps', c.d.company)}${fit('tg', c.d.tagline)}<div class="foil"></div></div>${webSoc(c)}</div>`;
+    }
+  }
+];
+NEW_TEMPLATES_3.forEach(t => { t.isNew = true; t.batch = 3; TEMPLATES.push(t); });
+
 const TPL_BY = Object.fromEntries(TEMPLATES.map(t => [t.id, t]));
-const CATS = ['all', 'corp', 'med', 'eng', 'law', 'edu', 'shop', 'free'];
-const CAT_COLOR = { all:'#2F5770', corp:'#2563EB', med:'#16A34A', eng:'#0891B2', law:'#9F1239', edu:'#EA580C', shop:'#DB2777', free:'#7C3AED' };
+/* Premium (paid) templates by internal id — must match CARD_PREMIUM in worker.js (the server decides) */
+const PREMIUM_IDS = ['circuit', 'sage', 'code', 'bloom', 'goldleaf', 'halftone', 'flow', 'pulse', 'contour'];
+TEMPLATES.forEach(t => { t.premium = PREMIUM_IDS.includes(t.id); });
+const isPremium = id => !!(TPL_BY[id] && TPL_BY[id].premium);
+/* Gallery order (fixed, chosen by hand): the first 3 are free, then one premium after every 2–3 free
+   designs, neighbours of different colours, styles and categories. Filters keep this order. */
+const GALLERY_ORDER = ['marble', 'aurora', 'arabesque', 'circuit', 'silk', 'exec', 'sage', 'deco', 'zen', 'code',
+  'med', 'ribbon', 'swiss', 'bloom', 'bp', 'edit', 'goldleaf', 'beauty', 'geo', 'halftone',
+  'noir', 'cafe', 'arch', 'flow', 'mini', 'edu', 'pulse', 'law', 'contour', 'crea'];
+const CATS = ['all', 'new', 'pro', 'corp', 'med', 'eng', 'law', 'edu', 'shop', 'free'];
+const CAT_COLOR = { all:'#2F5770', new:'#B8860B', pro:'#9A7414', corp:'#2563EB', med:'#16A34A', eng:'#0891B2', law:'#9F1239', edu:'#EA580C', shop:'#DB2777', free:'#7C3AED' };
 
 let GRID = '';
 function gridSVG() {
@@ -534,22 +1118,59 @@ function placeCard(slot, html, s) {
    Stage
 --------------------------------------------------------- */
 let stageScale = 1;
+function bothScale(bw, bh) {
+  const row = Math.min((bw - 40 - 24) / 2 / W, (bh - 40 - 26) / H);
+  const col = Math.min((bw - 40) / W, (bh - 40 - 52 - 14) / 2 / H);
+  return { s: Math.max(0.3, Math.min(2.3, Math.max(row, col))), col: col > row };
+}
 function computeScale() {
   const body = $('#stageBody');
   const bw = body.clientWidth, bh = body.clientHeight;
   if (!bw || !bh) return 1;
   if (view === 'both') {
-    const row = Math.min((bw - 40 - 24) / 2 / W, (bh - 40 - 26) / H);
-    const col = Math.min((bw - 40) / W, (bh - 40 - 52 - 14) / 2 / H);
-    $('#bothView').classList.toggle('col', col > row);
-    return Math.max(0.3, Math.min(2.3, Math.max(row, col)));
+    const r = bothScale(bw, bh);
+    $('#bothView').classList.toggle('col', r.col);
+    return r.s;
   }
   return Math.max(0.3, Math.min(2.6, (bw - 80) / W, (bh - 110) / H));
 }
+
+/* Designs pane width (desktop): it only takes the stage's EMPTY width, so the
+   card preview keeps exactly the size it had with the original 250px pane.
+   Wide enough -> two designs per row; otherwise the original single column. */
+const GAL_MIN = 250, GAL_TWO = 340, GAL_MAX = 480;
+function layoutPanes() {
+  const ws = $('#workspace'), gp = $('#paneGallery'), body = $('#stageBody');
+  if (isMobile()) { ws.style.removeProperty('--gal-w'); gp.classList.remove('two'); return; }
+  const bh = body.clientHeight, bwBase = body.clientWidth + gp.offsetWidth - GAL_MIN;
+  if (!bh || bwBase <= 0) return;
+  const target = bothScale(bwBase, bh).s;
+  let lo = 0, hi = bwBase;                         // smallest stage width that keeps the same card size
+  while (hi - lo > 1) { const m = (lo + hi) / 2; if (bothScale(m, bh).s >= target - 1e-9) hi = m; else lo = m; }
+  const need = Math.max(Math.ceil(hi), Math.ceil(W * target + 80)) + 12;   // + room so 3D is never smaller
+  let g = Math.min(GAL_MAX, GAL_MIN + Math.max(0, Math.floor(bwBase - need)));
+  const two = g >= GAL_TWO;
+  if (!two) g = GAL_MIN;
+  ws.style.setProperty('--gal-w', g + 'px');
+  gp.classList.toggle('two', two);
+}
+let lkWasLocked = null;
 function renderStage() {
-  stageScale = computeScale();
+  const locked = proLocked();
+  if (lkWasLocked === true && !locked && view !== 'both') {   // just bought: back to the normal flat preview
+    view = 'both'; $$('#viewSeg button').forEach(b => b.classList.toggle('on', b.dataset.view === 'both'));
+  }
+  lkWasLocked = locked;
+  $('#bothView').classList.toggle('hidden', locked || view !== 'both');
+  $('#tiltView').classList.toggle('hidden', locked || view !== '3d');
+  $('#lockView').classList.toggle('hidden', !locked);
+  $('#viewSeg').classList.toggle('off', locked);
+  $('#btnFlip').classList.toggle('off', !locked && view !== '3d');
   const front = buildCard(st, 'front'), back = buildCard(st, 'back');
-  if (view === 'both') {
+  if (locked) {
+    stageScale = lkScale();
+    lkPlace(front, back, stageScale);
+  } else if ((stageScale = computeScale()) && view === 'both') {
     placeCard($('#slotFront'), front, stageScale);
     placeCard($('#slotBack'), back, stageScale);
   } else {
@@ -562,7 +1183,8 @@ function renderStage() {
     applyFlip();
   }
   const tpl = TPL_BY[st.tpl];
-  $('#tplNow').textContent = `${tpl.name[uiLang] || tpl.name.ar} · ${T('cat_' + tpl.cat)}`;
+  $('#tplNow').textContent = `${tpl.name[uiLang] || tpl.name.ar} · ${T('cat_' + tpl.cat)}${tpl.premium ? ' · PREMIUM' : (tpl.isNew ? ' · NEW' : '')}`;
+  proApply();
 }
 function applyFlip(rx = 0, ry = 0) {
   $('#flip').style.transform = `rotateX(${rx}deg) rotateY(${(flipped ? 180 : 0) + ry}deg)`;
@@ -570,10 +1192,7 @@ function applyFlip(rx = 0, ry = 0) {
 function setView(v) {
   view = v;
   $$('#viewSeg button').forEach(b => b.classList.toggle('on', b.dataset.view === v));
-  $('#bothView').classList.toggle('hidden', v !== 'both');
-  $('#tiltView').classList.toggle('hidden', v !== '3d');
-  $('#btnFlip').classList.toggle('off', v !== '3d');
-  renderStage();
+  renderStage();   // shows the right view (a locked Premium design always gets the 3D preview)
 }
 
 /* ---------------------------------------------------------
@@ -584,10 +1203,12 @@ function thumbState(id) {
 }
 function renderGallery() {
   $('#gCats').innerHTML = CATS.map(k => `<button type="button" class="chip${k === activeCat ? ' on' : ''}" data-cat="${k}" style="--cc:${CAT_COLOR[k]}">${T('cat_' + k)}</button>`).join('');
-  const list = TEMPLATES.filter(t => activeCat === 'all' || t.cat === activeCat);
+  const rank = id => { const i = GALLERY_ORDER.indexOf(id); return i < 0 ? 999 : i; };
+  const ordered = TEMPLATES.slice().sort((a, b) => rank(a.id) - rank(b.id));
+  const list = ordered.filter(t => activeCat === 'all' || (activeCat === 'new' ? t.isNew : activeCat === 'pro' ? t.premium : t.cat === activeCat));
   $('#gCount').textContent = T('count').replace('{n}', TEMPLATES.length);
   $('#gGrid').innerHTML = list.map(t => `<button type="button" class="g-card${t.id === st.tpl ? ' on' : ''}" data-tpl="${t.id}">
-      <div class="g-thumb"></div><div class="g-meta"><b>${esc(t.name[uiLang] || t.name.ar)}</b><span style="--cc:${CAT_COLOR[t.cat]}">${T('cat_' + t.cat)}</span></div></button>`).join('');
+      ${t.premium ? `<i class="g-pro${proOwns(t.id) ? ' own' : ''}">${proOwns(t.id) ? '✓ ' + T('pro_owned') : 'PREMIUM'}</i>` : (t.isNew ? '<i class="g-new">NEW</i>' : '')}<div class="g-thumb"></div><div class="g-meta"><b>${esc(t.name[uiLang] || t.name.ar)}</b><span style="--cc:${CAT_COLOR[t.cat]}">${T('cat_' + t.cat)}</span></div></button>`).join('');
   fillThumbs();
 }
 function fillThumbs() {
@@ -841,6 +1462,7 @@ function download(href, name) {
 let busy = false;
 async function doPng(side) {
   if (busy) return;
+  if (!(await proExportAllowed())) return;
   if (typeof html2canvas === 'undefined') { toast(T('t_err')); return; }
   busy = true; toast(T('t_png'));
   try {
@@ -852,6 +1474,7 @@ async function doPng(side) {
 }
 async function doPdf(kind) {
   if (busy) return;
+  if (!(await proExportAllowed())) return;
   if (typeof html2canvas === 'undefined' || !window.jspdf) { toast(T('t_err')); return; }
   busy = true; toast(T('t_pdf'));
   try {
@@ -890,7 +1513,8 @@ const SHEET = (() => {
   ys.forEach(y => { marks.push([4, y, x0 - 2, y]); marks.push([xEnd + 2, y, 206, y]); });
   return { cells, marks };
 })();
-function doPrint() {
+async function doPrint() {
+  if (!(await proExportAllowed())) return;
   toast(T('t_print'));
   const root = $('#printRoot');
   const page = side => {
@@ -1039,6 +1663,448 @@ $('#mine').addEventListener('click', async e => {
 });
 
 /* ---------------------------------------------------------
+   Premium templates — badge, light «preview» watermark, export check and
+   purchase window. Rights come from the Worker (/api/cards/*, Cloudflare D1)
+   for the signed-in Google account: the browser never decides alone.
+   Modes: live / sandbox (sales on) · demo (sales off, claude-test preview or
+   localhost only: nothing paid, nothing saved) · off (sales off elsewhere).
+--------------------------------------------------------- */
+const PRO_LOCAL = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+const PRO_API = (/\.workers\.dev$/.test(location.hostname) || PRO_LOCAL) ? '' : 'https://dr.merabti.workers.dev';
+const PRO_DEMO_HOST = PRO_LOCAL || location.hostname === 'claude-test-dr.merabti.workers.dev';
+const PRO = { mode: 'loading', cfg: null, owned: new Set(), demoOwned: new Set(), offer: 'all', pick: [], focus: '',
+  sdk: null, btns: null, actions: null, busy: false };
+const PRO_OFFERS_DEFAULT = { single: { count: 1, price: '1.99' }, pack5: { count: 5, price: '4.99' }, all: { count: PREMIUM_IDS.length, price: '7.99' } };
+const proOffers = () => (PRO.cfg && PRO.cfg.offers) || PRO_OFFERS_DEFAULT;
+const proOwns = id => !isPremium(id) || PRO.owned.has(id) || (PRO.mode === 'demo' && PRO.demoOwned.has(id));
+const proSalesOn = () => PRO.mode === 'live' || PRO.mode === 'sandbox';
+
+function proTrack(name, extra) { try { if (window.gtag) gtag('event', name, Object.assign({ tool: 'bizcards', method: 'paypal' }, extra || {})); } catch (e) { /* ignore */ } }
+
+async function proFetch(path, opts = {}) {
+  const user = fbUser();
+  const headers = { 'Content-Type': 'application/json' };
+  if (user) headers.Authorization = 'Bearer ' + await user.getIdToken();
+  const r = await fetch(PRO_API + path, { method: opts.method || 'GET', headers, body: opts.body ? JSON.stringify(opts.body) : undefined, cache: 'no-store' });
+  const d = await r.json().catch(() => ({}));
+  d._status = r.status;
+  return d;
+}
+
+async function proLoadConfig() {
+  try {
+    const d = await proFetch('/api/cards/config');
+    if (d && d.offers) PRO.cfg = d;
+    if (d && Array.isArray(d.premium) && d.premium.join() !== PREMIUM_IDS.join()) console.warn('[cards] premium list differs from the server');
+    PRO.mode = d && (d.sales === 'live' || d.sales === 'sandbox') ? d.sales : (PRO_DEMO_HOST ? 'demo' : 'off');
+  } catch (e) { PRO.mode = PRO_DEMO_HOST ? 'demo' : 'off'; }
+}
+
+/* rights from the server (signed-in user only); strict = throw when the server cannot answer */
+async function proRefresh(strict) {
+  if (!proSalesOn() || !fbUser()) { PRO.owned = new Set(); proApply(); return PRO.owned; }
+  try {
+    const d = await proFetch('/api/cards/entitlements');
+    if (!Array.isArray(d.owned)) throw new Error(d.error || 'entitlements');
+    PRO.owned = new Set(d.owned);
+  } catch (e) { if (strict) throw e; }
+  proApply();
+  return PRO.owned;
+}
+
+/* gallery badges + stage watermark + "Premium" chip follow the rights */
+function proApply() {
+  $$('#gGrid .g-card').forEach(card => {
+    const id = card.dataset.tpl, b = card.querySelector('.g-pro');
+    if (!b) return;
+    const own = proOwns(id);
+    b.classList.toggle('own', own);
+    b.textContent = own ? '✓ ' + T('pro_owned') : 'PREMIUM';
+  });
+  if (lkWasLocked !== null && proLocked() !== lkWasLocked) requestAnimationFrame(renderStage);   // bought / signed in or out
+  const chip = $('#proChip');
+  if (chip) chip.classList.toggle('hidden', !(isPremium(st.tpl) && !proOwns(st.tpl)));
+}
+
+/* every export / print of a premium template asks the server first */
+async function proExportAllowed() {
+  const id = st.tpl;
+  if (!isPremium(id)) return true;
+  if (PRO.mode === 'demo') { if (PRO.demoOwned.has(id)) return true; proOpen(id); return false; }
+  if (!proSalesOn() || !fbUser()) { proOpen(id); return false; }
+  try { await proRefresh(true); }
+  catch (e) { toast(T('pro_check_err')); return false; }
+  if (PRO.owned.has(id)) return true;
+  proOpen(id);
+  return false;
+}
+
+/* ---------- purchase window ---------- */
+const PRO_ICON = '<svg viewBox="0 0 24 24"><path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5z"/></svg>';
+function proEnsureModal() {
+  if ($('#proModal')) return;
+  const m = document.createElement('div');
+  m.className = 'modal pro-modal hidden'; m.id = 'proModal';
+  m.setAttribute('role', 'dialog'); m.setAttribute('aria-modal', 'true');
+  m.innerHTML = '<div class="pro-box" id="proBox"></div>';
+  document.body.appendChild(m);
+  m.addEventListener('click', e => {
+    if (e.target === m) { proClose(); return; }
+    const b = e.target.closest('[data-pro]'); if (!b || b.disabled) return;
+    const a = b.dataset.pro;
+    if (a === 'close') proClose();
+    else if (a === 'offer') proSetOffer(b.dataset.offer);
+    else if (a === 'pick') proTogglePick(b.dataset.id);
+    else if (a === 'login') proLogin();
+    else if (a === 'restore') proRestore();
+    else if (a === 'demo') proDemoPay();
+    else if (a === 'start') { const id = b.dataset.id; proClose(); if (id && id !== st.tpl) selectTemplate(id); }
+  });
+}
+function proClose() { const m = $('#proModal'); if (m) m.classList.add('hidden'); PRO.btns = null; PRO.actions = null; }
+
+function proFree() { return PREMIUM_IDS.filter(id => !proOwns(id)); }
+function proOpen(focusId) {
+  proEnsureModal();
+  PRO.focus = focusId && isPremium(focusId) && !proOwns(focusId) ? focusId : '';
+  const free = proFree();
+  PRO.offer = PRO.focus ? (free.length > 1 ? 'all' : 'single') : (free.length >= 5 ? 'all' : (free.length ? 'single' : 'all'));
+  if (PRO.focus && free.length > 1) PRO.offer = 'all';
+  PRO.pick = PRO.focus ? [PRO.focus] : [];
+  $('#proModal').classList.remove('hidden');
+  proRender();
+  proTrack('view_promotion', { reason: focusId ? 'export' : 'browse' });
+}
+
+function proSave(o) {
+  const offers = proOffers(), single = parseFloat(offers.single.price);
+  return Math.round((1 - parseFloat(offers[o].price) / (single * offers[o].count)) * 100);
+}
+function proRender() {
+  const box = $('#proBox'); if (!box) return;
+  const offers = proOffers(), free = proFree(), all = PREMIUM_IDS;
+  if (!free.length) {
+    box.innerHTML = `<button type="button" class="pro-x" data-pro="close" aria-label="${T('pro_close')}">×</button>
+      <div class="pro-done"><div class="pro-ok">✓</div><h2>${T('pro_all_owned')}</h2>
+      <button type="button" class="pro-cta" data-pro="close">${T('pro_start')}</button></div>`;
+    return;
+  }
+  const card = (k, title, desc) => {
+    const o = offers[k], dis = (k === 'pack5' && free.length < 5);
+    const save = k === 'single' ? '' : `<span class="pro-save">${T('pro_save').replace('{p}', proSave(k))}</span>`;
+    return `<button type="button" class="pro-offer${PRO.offer === k ? ' on' : ''}${k === 'all' ? ' best' : ''}" data-pro="offer" data-offer="${k}"${dis ? ' disabled' : ''}>
+      ${k === 'all' ? `<span class="pro-ribbon">${T('pro_best')}</span>` : ''}
+      <span class="pro-radio"></span><b class="pro-otitle">${title}</b><small>${desc}</small>
+      <span class="pro-price"><span class="ltrx">$${o.price}</span></span><span class="pro-once">${T('pro_once')}</span>${save}</button>`;
+  };
+  const items = all.map(id => {
+    const t = TPL_BY[id], own = proOwns(id), on = PRO.offer === 'all' ? !own : PRO.pick.includes(id);
+    return `<button type="button" class="pro-it${on ? ' on' : ''}${own ? ' own' : ''}" data-pro="pick" data-id="${id}"${own || PRO.offer === 'all' ? ' disabled' : ''}>
+      <span class="pro-th" data-th="${id}"></span><span class="pro-nm">${esc(t.name[uiLang] || t.name.ar)}</span>
+      <i class="pro-ck">${own ? '✓ ' + T('pro_owned') : '✓'}</i></button>`;
+  }).join('');
+  const user = fbUser();
+  box.innerHTML = `<button type="button" class="pro-x" data-pro="close" aria-label="${T('pro_close')}">×</button>
+    <div class="pro-head"><span class="pro-crown">${PRO_ICON}</span><h2>${T('pro_title')}</h2><p>${T('pro_sub')}</p></div>
+    <div class="pro-offers">${card('single', T('pro_o1'), T('pro_o1d'))}${card('pack5', T('pro_o5'), T('pro_o5d'))}${card('all', T('pro_oall').replace('{n}', all.length), T('pro_oalld').replace('{n}', all.length))}</div>
+    <div class="pro-pick"><div class="pro-pick-h"><b id="proPickT"></b><span id="proPickN"></span></div><div class="pro-grid">${items}</div></div>
+    <div class="pro-sum"><div class="pro-sel" id="proSel"></div>
+      <div class="pro-tot"><span>${T('pro_total')}</span><b class="ltrx" id="proTot"></b></div></div>
+    <p class="pro-fut">${T('pro_future')}</p>
+    <div class="pro-pay" id="proPay"></div>
+    <p class="pro-msg" id="proMsg" role="status"></p>
+    <div class="pro-foot"><span><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>${T('pro_secure')}</span>
+      ${user ? `<span class="pro-who">${T('pro_signed')} <b>${esc(user.email || user.displayName || '')}</b></span>` : ''}
+      ${proSalesOn() ? `<button type="button" class="pro-link" data-pro="restore">${T('pro_restore')}</button>` : ''}</div>`;
+  requestAnimationFrame(() => $$('[data-th]', box).forEach(th => {
+    th.innerHTML = buildCard(thumbState(th.dataset.th), 'front', { noQR: true }); scaleThumb(th);
+  }));
+  proRenderPay();
+  proSummary();
+}
+
+function proValid() {
+  const need = proOffers()[PRO.offer].count;
+  return PRO.offer === 'all' ? proFree().length > 0 : PRO.pick.length === need;
+}
+function proChosen() { return PRO.offer === 'all' ? PREMIUM_IDS.slice() : PRO.pick.slice(); }
+function proSummary() {
+  const offers = proOffers(), need = offers[PRO.offer].count;
+  const t = $('#proPickT'), n = $('#proPickN'); if (!t) return;
+  t.textContent = PRO.offer === 'all' ? T('pro_pickall') : (need === 1 ? T('pro_pick1') : T('pro_pick5'));
+  n.textContent = PRO.offer === 'all' ? '' : `${PRO.pick.length}/${need}`;
+  const names = proChosen().filter(id => PRO.offer !== 'all' || !proOwns(id)).map(id => `<span>${esc(TPL_BY[id].name[uiLang] || TPL_BY[id].name.ar)}</span>`).join('');
+  $('#proSel').innerHTML = `<small>${T('pro_sel')}</small>${names || `<em>${PRO.offer === 'single' ? T('pro_need1') : T('pro_need5').replace('{n}', need - PRO.pick.length)}</em>`}`;
+  $('#proTot').textContent = '$' + offers[PRO.offer].price;
+  $$('.pro-it', $('#proBox')).forEach(b => {
+    const id = b.dataset.id, own = proOwns(id), on = PRO.offer === 'all' ? !own : PRO.pick.includes(id);
+    b.classList.toggle('on', on);
+    b.classList.toggle('dim', PRO.offer === 'pack5' && !on && !own && PRO.pick.length >= need);
+  });
+  const ok = proValid();
+  const demo = $('[data-pro="demo"]'); if (demo) demo.disabled = !ok;
+  if (PRO.actions) { try { ok ? PRO.actions.enable() : PRO.actions.disable(); } catch (e) { /* ignore */ } }
+  $('#proPay') && $('#proPay').classList.toggle('wait', !ok);
+}
+function proSetOffer(k) {
+  if (!proOffers()[k] || PRO.offer === k) return;
+  PRO.offer = k;
+  const need = proOffers()[k].count;
+  if (k !== 'all') PRO.pick = PRO.pick.filter(id => !proOwns(id)).slice(0, need);
+  if (k !== 'all' && !PRO.pick.length && PRO.focus) PRO.pick = [PRO.focus];
+  $$('.pro-offer', $('#proBox')).forEach(b => b.classList.toggle('on', b.dataset.offer === k));
+  $$('.pro-it', $('#proBox')).forEach(b => { b.disabled = k === 'all' || proOwns(b.dataset.id); });
+  proSummary();
+}
+function proTogglePick(id) {
+  if (PRO.offer === 'all' || proOwns(id)) return;
+  const need = proOffers()[PRO.offer].count;
+  if (need === 1) PRO.pick = [id];
+  else if (PRO.pick.includes(id)) PRO.pick = PRO.pick.filter(x => x !== id);
+  else if (PRO.pick.length < need) PRO.pick.push(id);
+  proSummary();
+}
+function proMsg(text, err) { const el = $('#proMsg'); if (el) { el.textContent = text || ''; el.classList.toggle('err', !!err); } }
+
+function proRenderPay() {
+  const pay = $('#proPay'); if (!pay) return;
+  PRO.btns = null; PRO.actions = null;
+  if (PRO.mode === 'demo') {
+    pay.innerHTML = `<div class="pro-demo">${T('pro_demo')}</div>
+      <button type="button" class="pro-pp" data-pro="demo"><span>PayPal</span><small>${T('pro_demo_btn')}</small></button>`;
+    return;
+  }
+  if (!proSalesOn()) { pay.innerHTML = `<div class="pro-off">${T('pro_off')}</div>`; return; }
+  if (!fbUser()) {
+    pay.innerHTML = `<button type="button" class="pro-login" data-pro="login"><svg viewBox="0 0 48 48" style="stroke:none"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>${T('pro_login')}</button>
+      <p class="pro-note">${T('pro_login_note')}</p>`;
+    return;
+  }
+  pay.innerHTML = '<div class="pro-ppbox" id="proPP"><div class="pro-spin"></div></div>';
+  proLoadSdk().then(() => proPaypalButtons()).catch(() => { pay.innerHTML = `<div class="pro-off err">${T('pro_err')}</div>`; });
+}
+
+function proLoadSdk() {
+  if (window.paypal && window.paypal.Buttons) return Promise.resolve();
+  if (PRO.sdk) return PRO.sdk;
+  PRO.sdk = new Promise((ok, no) => {
+    const s = document.createElement('script');
+    s.src = 'https://www.paypal.com/sdk/js?client-id=' + encodeURIComponent(PRO.cfg.clientId) + '&currency=USD&intent=capture&components=buttons';
+    s.onload = () => (window.paypal && window.paypal.Buttons ? ok() : no());
+    s.onerror = () => { PRO.sdk = null; no(); };
+    document.head.appendChild(s);
+  });
+  return PRO.sdk;
+}
+
+function proPaypalButtons() {
+  const host = $('#proPP'); if (!host) return;
+  host.innerHTML = '';
+  PRO.btns = window.paypal.Buttons({
+    style: { layout: 'vertical', color: 'gold', shape: 'pill', label: 'pay', height: 44 },
+    onInit: (data, actions) => { PRO.actions = actions; proValid() ? actions.enable() : actions.disable(); },
+    onClick: () => { if (!proValid()) proMsg(PRO.offer === 'single' ? T('pro_need1') : T('pro_need5').replace('{n}', proOffers()[PRO.offer].count - PRO.pick.length), true); },
+    createOrder: async () => {
+      proMsg('');
+      const d = await proFetch('/api/cards/create-order', { method: 'POST', body: { offer: PRO.offer, templates: proChosen() } });
+      if (!d.id) { proMsg(d.message || T('pro_err'), true); if (d.error === 'ALREADY_OWNED') proRefresh().then(proRender); throw new Error(d.error || 'create'); }
+      proTrack('begin_checkout', { offer: PRO.offer, value: parseFloat(proOffers()[PRO.offer].price), currency: 'USD' });
+      return d.id;
+    },
+    onApprove: async (data, actions) => {
+      PRO.busy = true; $('#proBox').classList.add('busy'); proMsg(T('pro_paying'));
+      proPending(data.orderID);
+      const d = await proCapture(data.orderID);
+      PRO.busy = false; $('#proBox').classList.remove('busy');
+      if (d.error === 'INSTRUMENT_DECLINED') { proPending(''); proMsg(d.message, true); return actions.restart(); }
+      if (!d.ok) { proMsg(d.message || T('pro_err'), true); return; }
+      proPending('');
+      PRO.owned = new Set(d.owned || []);
+      proTrack('purchase', { transaction_id: d.orderId, offer: PRO.offer, value: parseFloat(proOffers()[PRO.offer].price), currency: 'USD' });
+      proSuccess(d.unlocked || [], d.orderId);
+    },
+    onCancel: () => proMsg(''),
+    onError: () => proMsg(T('pro_err'), true)
+  });
+  PRO.btns.render(host).catch(() => { host.innerHTML = `<div class="pro-off err">${T('pro_err')}</div>`; });
+}
+
+/* the PayPal order waiting for confirmation (kept only to re-ask the server; never a proof) */
+const PRO_PENDING = 'merabti_bizcard_pending_order';
+function proPending(id) { try { id ? localStorage.setItem(PRO_PENDING, id) : localStorage.removeItem(PRO_PENDING); } catch (e) { /* ignore */ } }
+async function proCapture(orderId) {
+  let d = {};
+  for (let i = 0; i < 3; i++) {
+    d = await proFetch('/api/cards/capture-order', { method: 'POST', body: { orderId } }).catch(() => ({}));
+    if (d._status && d._status < 500) break;       // answered (ok or a final refusal): no retry
+    await wait(1200 * (i + 1));
+  }
+  return d;
+}
+async function proResume() {
+  let id = ''; try { id = localStorage.getItem(PRO_PENDING) || ''; } catch (e) { /* ignore */ }
+  if (!id || !proSalesOn() || !fbUser()) return;
+  const d = await proCapture(id);
+  if (d.ok) { proPending(''); PRO.owned = new Set(d.owned || []); proApply(); fillThumbs(); toast(T('pro_resumed')); }
+  else if (d._status && d._status < 500 && d.error !== 'AUTH_REQUIRED' && d.error !== 'NOT_COMPLETED') proPending('');
+}
+
+function proSuccess(unlocked, orderId) {
+  proApply(); fillThumbs(); proApply();
+  const box = $('#proBox'); if (!box) return;
+  const first = unlocked.find(id => TPL_BY[id]) || '';
+  box.innerHTML = `<button type="button" class="pro-x" data-pro="close" aria-label="${T('pro_close')}">×</button>
+    <div class="pro-done"><div class="pro-ok">✓</div><h2>${T('pro_done')}</h2><p>${T('pro_done_t')}</p>
+    <div class="pro-sel">${unlocked.filter(id => TPL_BY[id]).map(id => `<span>${esc(TPL_BY[id].name[uiLang] || TPL_BY[id].name.ar)}</span>`).join('')}</div>
+    ${orderId ? `<p class="pro-order">${T('pro_order')}: <b class="ltrx">${esc(orderId)}</b></p>` : ''}
+    <button type="button" class="pro-cta" data-pro="start" data-id="${first === st.tpl ? '' : first}">${T('pro_start')}</button></div>`;
+}
+
+async function proDemoPay() {
+  if (!proValid() || PRO.busy) return;
+  PRO.busy = true; $('#proBox').classList.add('busy'); proMsg(T('pro_paying'));
+  await wait(900);
+  const got = proChosen().filter(id => !proOwns(id));
+  got.forEach(id => PRO.demoOwned.add(id));
+  PRO.busy = false; $('#proBox').classList.remove('busy');
+  proSuccess(got, 'DEMO-' + Date.now().toString(36).toUpperCase());
+}
+
+async function proLogin() {
+  if (!hasFb()) { proMsg(T('t_cloud_err'), true); return; }
+  try { await firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider()); }
+  catch (e) { console.error(e); proMsg(T('t_cloud_err'), true); }
+}
+
+async function proRestore() {
+  if (!fbUser()) { await proLogin(); if (!fbUser()) return; }
+  try {
+    const owned = await proRefresh(true);
+    toast(owned.size ? T('pro_restored').replace('{n}', owned.size) : T('pro_restored0'));
+    proRender();
+  } catch (e) { proMsg(T('pro_check_err'), true); }
+}
+
+async function initPro() {
+  await proLoadConfig();
+  if (hasFb()) firebase.auth().onAuthStateChanged(async () => {
+    await proRefresh();
+    proResume();
+    const m = $('#proModal');
+    if (m && !m.classList.contains('hidden') && !PRO.busy && !$('.pro-done', m)) proRender();
+  });
+  proApply();
+}
+
+/* ---------------------------------------------------------
+   Locked Premium preview (not bought yet): a tilted 3D card with a light
+   thickness, soft light and a floor shadow. Drag (mouse or touch) turns it,
+   a tap or «اقلب» shows the other face, and it eases back to a resting angle.
+   The angles are clamped: never face-on (rotateY stays ≥ LK_GAP° away from
+   0°/180° and rotateX stays tilted). Nothing is drawn on the design itself;
+   the lock sits in the corner of the frame. Plain CSS 3D, no library.
+--------------------------------------------------------- */
+const LK_REST = 24, LK_GAP = 14, LK_RX = [11, 28], LK_RX_REST = 15;
+const LK = { ry: -LK_REST, rx: LK_RX_REST, tRy: -LK_REST, tRx: LK_RX_REST, drag: null, hov: null, raf: 0, s: 1, tpl: '' };
+const LK_REDUCED = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+const lkClampX = x => Math.max(LK_RX[0], Math.min(LK_RX[1], x));
+function lkAway(theta) {
+  const base = Math.round(theta / 180) * 180, off = theta - base;
+  return Math.abs(off) >= LK_GAP ? theta : base + (off < 0 ? -LK_GAP : LK_GAP);
+}
+const proLocked = () => isPremium(st.tpl) && !proOwns(st.tpl);
+function lkScale() {
+  const b = $('#stageBody'), bw = b.clientWidth, bh = b.clientHeight;
+  return bw && bh ? bothScale(bw, bh).s : 1;      // same size as the flat preview
+}
+function lkPlace(front, back, s) {
+  if (LK.tpl !== st.tpl) {                        // a new design starts on its front
+    LK.tpl = st.tpl; LK.tRy = LK.ry = -LK_REST; LK.tRx = LK.rx = LK_RX_REST;
+  }
+  LK.s = s;
+  const card = $('#lkCard'), w = W * s, h = H * s;
+  card.style.width = w + 'px'; card.style.height = h + 'px';
+  card.style.setProperty('--s', s);
+  LK.t = Math.max(2.5, 2.4 * s); LK.per = Math.round(Math.max(900, w * 2.3));
+  $('#lkFrame').style.setProperty('--w', w + 'px');
+  $('#lkFrame').style.setProperty('--h', h + 'px');
+  placeCard($('#lkFront'), front, s);
+  placeCard($('#lkBack'), back, s);
+  lkStart();
+}
+function lkStart() { if (!LK.raf) LK.raf = requestAnimationFrame(lkTick); }
+function lkTick(now) {
+  LK.raf = 0;
+  const v = $('#lockView');
+  if (!v || v.classList.contains('hidden') || document.hidden) return;
+  const idle = !LK.drag && !LK.hov && !LK_REDUCED;
+  const tRy = LK.tRy + (idle ? Math.sin(now / 1700) * 5 : 0) + (LK.hov ? LK.hov.x * 14 : 0);
+  const tRx = lkClampX(LK.tRx + (idle ? Math.sin(now / 2300) * 2.5 : 0) - (LK.hov ? LK.hov.y * 10 : 0));
+  const k = LK.drag ? .3 : .085;
+  LK.ry += (tRy - LK.ry) * k; LK.rx += (tRx - LK.rx) * k;
+  const ry = lkAway(LK.ry), rx = lkClampX(LK.rx), rad = ry * Math.PI / 180;
+  // one face at a time, each with its own 3D transform (no preserve-3d: it blurs the text);
+  // the back is the card turned by 180°, so it shows at (ry - 180°)
+  const showFront = Math.cos(rad) >= 0;
+  const fa = (((showFront ? ry : ry - 180) + 180) % 360 + 360) % 360 - 180, far = fa * Math.PI / 180;
+  const vis = $(showFront ? '#lkCard .lk-f' : '#lkCard .lk-b'), hid = $(showFront ? '#lkCard .lk-b' : '#lkCard .lk-f');
+  hid.style.visibility = 'hidden'; vis.style.visibility = 'visible';
+  vis.style.transform = `perspective(${LK.per}px) rotateX(${rx.toFixed(2)}deg) rotateY(${fa.toFixed(2)}deg)`;
+  const dx = -Math.sin(far) * LK.t, dy = Math.sin(rx * Math.PI / 180) * LK.t * 1.4, s = LK.s;   // the card's edge (light thickness)
+  vis.style.boxShadow = `${dx.toFixed(2)}px ${dy.toFixed(2)}px 0 0 #D6D0C6, ${(dx / 2).toFixed(2)}px ${(dy / 2).toFixed(2)}px 0 0 #EFEBE4, ` +
+    `0 ${(26 * s).toFixed(1)}px ${(44 * s).toFixed(1)}px -${(18 * s).toFixed(1)}px rgba(16,26,38,.45)`;
+  vis.style.setProperty('--gp', (50 - Math.sin(far) * 90).toFixed(1) + '%');
+  vis.style.setProperty('--gy', (50 - (rx - LK_RX_REST) * 3).toFixed(1) + '%');
+  $('#lkFloor').style.transform = `translateX(${(-Math.sin(rad) * LK.s * 22).toFixed(1)}px) scaleX(${(.7 + .3 * Math.abs(Math.cos(rad))).toFixed(3)})`;
+  LK.raf = requestAnimationFrame(lkTick);
+}
+function lkSnap() {
+  const base = Math.round(LK.tRy / 180) * 180, off = LK.tRy - base;
+  LK.tRy = base + (off < 0 ? -LK_REST : LK_REST); LK.tRx = LK_RX_REST; lkStart();
+}
+function lkFlip() {
+  const base = Math.round(LK.tRy / 180) * 180, off = LK.tRy - base;
+  LK.tRy = base + 180 + (off < 0 ? -LK_REST : LK_REST); LK.tRx = LK_RX_REST; lkStart();
+}
+(function lkBind() {
+  const sc = $('#lkScene');
+  sc.addEventListener('pointerdown', e => {
+    if (e.button > 0) return;
+    try { sc.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ }
+    LK.drag = { x: e.clientX, y: e.clientY, ry: LK.tRy, rx: LK.tRx, moved: false }; LK.hov = null;
+    sc.classList.add('drag'); lkStart();
+  });
+  sc.addEventListener('pointermove', e => {
+    if (LK.drag) {
+      const dx = e.clientX - LK.drag.x, dy = e.clientY - LK.drag.y;
+      if (Math.abs(dx) + Math.abs(dy) > 6) LK.drag.moved = true;
+      LK.tRy = LK.drag.ry + dx * .5;
+      LK.tRx = lkClampX(LK.drag.rx - dy * .25);
+      return;
+    }
+    if (e.pointerType === 'mouse') {
+      const r = sc.getBoundingClientRect();
+      LK.hov = { x: (e.clientX - r.left) / r.width - .5, y: (e.clientY - r.top) / r.height - .5 }; lkStart();
+    }
+  });
+  const end = () => {
+    if (!LK.drag) return;
+    const tap = !LK.drag.moved;
+    LK.drag = null; sc.classList.remove('drag');
+    tap ? lkFlip() : lkSnap();
+  };
+  sc.addEventListener('pointerup', end);
+  sc.addEventListener('pointercancel', end);
+  sc.addEventListener('pointerleave', () => { if (!LK.drag) LK.hov = null; });
+  sc.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); lkFlip(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') { e.preventDefault(); LK.tRy += e.key === 'ArrowLeft' ? -30 : 30; clearTimeout(LK.kt); LK.kt = setTimeout(lkSnap, 700); lkStart(); }
+  });
+  $('#lkLock').addEventListener('click', () => proOpen(st.tpl));
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) lkStart(); });
+})();
+
+/* ---------------------------------------------------------
    Toast
 --------------------------------------------------------- */
 let toastTimer = null;
@@ -1087,7 +2153,7 @@ document.addEventListener('click', e => {
   if (!e.target.closest('.lang-wrap')) $('#langMenu').classList.add('hidden');
   if (!e.target.closest('.menu-wrap')) closeDrops();
 });
-document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeMine(); closeLogin(); closeDrops(); } });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeMine(); closeLogin(); closeDrops(); proClose(); } });
 
 $('#btnSave').addEventListener('click', saveToAccount);
 $('#btnPrint').addEventListener('click', doPrint);
@@ -1097,7 +2163,7 @@ $('#btnFullscreen').addEventListener('click', () => {
 });
 $('#viewSeg').addEventListener('click', e => { const b = e.target.closest('[data-view]'); if (b && b.dataset.view !== view) setView(b.dataset.view); });
 function doFlip() { flipped = !flipped; const fl = $('#flip'); fl.classList.remove('live'); applyFlip(); }
-$('#btnFlip').addEventListener('click', doFlip);
+$('#btnFlip').addEventListener('click', () => (proLocked() ? lkFlip() : doFlip()));
 $('#flip').addEventListener('click', doFlip);
 $('#tiltScene').addEventListener('mousemove', e => {
   const fl = $('#flip'), r = fl.getBoundingClientRect();
@@ -1122,15 +2188,19 @@ function setPane(p) {
 $('#mtabs').addEventListener('click', e => { const b = e.target.closest('[data-pane]'); if (b) setPane(b.dataset.pane); });
 
 let rzTimer = null;
-window.addEventListener('resize', () => { clearTimeout(rzTimer); rzTimer = setTimeout(() => { renderStage(); $$('#gGrid .g-thumb').forEach(scaleThumb); }, 120); });
+window.addEventListener('resize', () => { clearTimeout(rzTimer); rzTimer = setTimeout(() => { layoutPanes(); renderStage(); $$('#gGrid .g-thumb').forEach(scaleThumb); }, 120); });
 
 /* ---------------------------------------------------------
    Init
 --------------------------------------------------------- */
 applyUiLang();
 buildForm();
+layoutPanes();
 renderGallery();
 setView('both');
+$('#proChip').addEventListener('click', () => proOpen(st.tpl));
+$('#btnPremium').addEventListener('click', () => proOpen());
+initPro();
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { renderStage(); fillThumbs(); });
 
 })();

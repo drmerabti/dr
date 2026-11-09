@@ -49,6 +49,11 @@
   "vars": {
     "PAYPAL_CLIENT_ID": "BAAWhfxqQPS33tDpMolG8gomP-zzq2G-a0al_C_9fF4gjXOpKNbfFrTyWxvaf_8t12tL7Nvfyqh1X0vK4Y",
     // LIVE: real payments (api-m.paypal.com). "sandbox" → api-m.sandbox.paypal.com (sandbox client ID + secret)
-    "PAYPAL_ENV": "live"
+    "PAYPAL_ENV": "live",
+    // Business-card Premium templates (/api/cards/*): "live" approved by the owner (2026-11-09).
+    // "live" is honoured ONLY on dr.merabti.workers.dev (CARDS_LIVE_HOSTS in worker.js): preview versions
+    // such as claude-test-dr.merabti.workers.dev stay "off" (no payment, nothing written).
+    // "off" = nothing sold. "sandbox" needs PAYPAL_SANDBOX_CLIENT_ID + secret PAYPAL_SANDBOX_SECRET.
+    "CARD_SALES": "live"
   }
 }

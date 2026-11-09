@@ -12,12 +12,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>تصميم بطاقة أعمال Business Card أونلاين — أكاديمية مرابطي</title>
-<meta name="description" content="صمّم بطاقة أعمال احترافية بوجهين من تصاميم جاهزة مع معاينة ثلاثية الأبعاد، وحمّلها صورة عالية الدقة أو لوحة A4 من 10 بطاقات بعلامات القص للطباعة.">
+<meta name="description" content="صمّم بطاقة أعمال احترافية بوجهين من 30 تصميمًا جاهزًا مع معاينة ثلاثية الأبعاد، وحمّلها صورة عالية الدقة أو لوحة A4 من 10 بطاقات بعلامات القص للطباعة.">
 <script src="/analytics.js"></script>
 <link rel="icon" type="image/x-icon" href="../../favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="../../apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Cairo:wght@400;600;700;800&family=Almarai:wght@400;700;800&family=El+Messiri:wght@400;600;700&family=Amiri:wght@400;700&family=Inter:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Cairo:wght@400;600;700;800&family=Almarai:wght@400;700;800&family=El+Messiri:wght@400;600;700&family=Amiri:wght@400;700&family=Inter:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700&family=Playfair+Display:wght@400;600;700&family=Cormorant+Garamond:wght@500;600;700&family=Montserrat:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;700&family=Marcellus&family=Reem+Kufi:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="../../shared/form-clarity.css">
 <link rel="canonical" href="https://merabti.com/tools/id-cards/">
@@ -86,6 +86,7 @@
         <button type="button" data-view="3d" data-i18n="view_3d">ثلاثي الأبعاد</button>
       </div>
       <span class="tpl-now" id="tplNow"></span>
+      <button type="button" class="pro-chip hidden" id="proChip"><svg viewBox="0 0 24 24"><path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5z"/></svg><span data-i18n="pro_chip">Premium — المعاينة والتعديل مجانًا</span><b data-i18n="pro_buy">شراء</b></button>
       <button type="button" class="flip-btn" id="btnFlip">
         <svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 14-5l2 2M20 12a8 8 0 0 1-14 5l-2-2M20 4v5h-5M4 20v-5h5"/></svg>
         <span data-i18n="flip">اقلب</span>
@@ -111,6 +112,20 @@
         </div>
         <p class="hint" data-i18n="hint3d">حرّك الفأرة فوق البطاقة، واضغط «اقلب» لرؤية الوجه الآخر</p>
       </div>
+      <!-- Premium not bought yet: tilted 3D preview only (see lkPlace in app.js) -->
+      <div class="lock-view hidden" id="lockView">
+        <div class="lk-frame" id="lkFrame">
+          <button type="button" class="lk-lock" id="lkLock" data-tip="lk_lock" aria-label="Premium"><svg viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2.4"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg></button>
+          <div class="lk-scene" id="lkScene" tabindex="0" role="img" aria-label="Premium">
+            <div class="lk-card" id="lkCard">
+              <div class="lk-face lk-f"><div class="card-slot" id="lkFront"></div><i class="lk-gloss"></i></div>
+              <div class="lk-face lk-b"><div class="card-slot" id="lkBack"></div><i class="lk-gloss"></i></div>
+            </div>
+          </div>
+          <i class="lk-floor" id="lkFloor"></i>
+        </div>
+        <p class="hint" data-i18n="lk_hint">اسحب البطاقة لتدويرها، أو اضغط عليها لرؤية الوجه الآخر</p>
+      </div>
     </div>
   </main>
 
@@ -118,6 +133,7 @@
   <aside class="pane gallery-pane" id="paneGallery">
     <div class="gp-head">
       <h2 data-i18n="designs">التصاميم</h2>
+      <button type="button" class="gp-pro" id="btnPremium"><svg viewBox="0 0 24 24"><path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5z"/></svg>Premium</button>
       <span class="gp-count" id="gCount"></span>
     </div>
     <div class="chips" id="gCats"></div>
