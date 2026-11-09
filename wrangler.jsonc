@@ -49,6 +49,10 @@
   "vars": {
     "PAYPAL_CLIENT_ID": "BAAWhfxqQPS33tDpMolG8gomP-zzq2G-a0al_C_9fF4gjXOpKNbfFrTyWxvaf_8t12tL7Nvfyqh1X0vK4Y",
     // LIVE: real payments (api-m.paypal.com). "sandbox" → api-m.sandbox.paypal.com (sandbox client ID + secret)
-    "PAYPAL_ENV": "live"
+    "PAYPAL_ENV": "live",
+    // Business-card Premium templates (/api/cards/*): "off" = nothing sold, nothing written.
+    // Keep "off" here (production AND the claude-test preview) until the owner approves going live.
+    // "sandbox" needs PAYPAL_SANDBOX_CLIENT_ID + secret PAYPAL_SANDBOX_SECRET; "live" uses the PayPal app above.
+    "CARD_SALES": "off"
   }
 }

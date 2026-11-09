@@ -41,7 +41,21 @@ const UI = {
     login_title:'سجّل دخولك لحفظ بطاقاتك', login_text:'احفظ بطاقاتك في حسابك وعد إليها من أي جهاز.', login_google:'الدخول بحساب Google',
     login_site:'تسجيل الدخول من الموقع', cancel:'إلغاء', loading:'جارٍ التحميل…', mine_empty:'لا توجد بطاقات محفوظة بعد',
     new_b:'بطاقة جديدة', open_b:'فتح', dup_b:'نسخ', del_b:'حذف', confirm_del:'حذف هذه البطاقة نهائيًا؟', current:'الحالية',
-    untitled:'بدون اسم', copy_suffix:' (نسخة)'
+    untitled:'بدون اسم', copy_suffix:' (نسخة)',
+    cat_pro:'Premium', pro_owned:'تم الشراء', pro_wm:'معاينة', pro_close:'إغلاق', pro_chip:'Premium — المعاينة والتعديل مجانًا', pro_buy:'شراء',
+    pro_title:'قوالب Premium', pro_sub:'ادفع مرة واحدة واستعمل القوالب بلا حدود، بدون أي اشتراك.',
+    pro_o1:'قالب واحد', pro_o1d:'تختار أي قالب Premium', pro_o5:'5 قوالب', pro_o5d:'تختار 5 قوالب مختلفة',
+    pro_oall:'جميع القوالب ({n})', pro_oalld:'كل قوالب Premium الحالية', pro_best:'أفضل قيمة', pro_save:'وفّر {p}%', pro_once:'دفعة واحدة',
+    pro_pick1:'اختر القالب', pro_pick5:'اختر 5 قوالب', pro_pickall:'تشمل الباقة القوالب التالية',
+    pro_sel:'اختيارك:', pro_total:'المجموع', pro_need1:'اختر قالبًا', pro_need5:'اختر {n} قوالب أخرى',
+    pro_future:'القوالب التي تُضاف مستقبلًا غير مشمولة تلقائيًا في هذه الباقة.',
+    pro_login:'سجّل الدخول بحساب Google للمتابعة', pro_login_note:'تُحفظ مشترياتك في حسابك، وتستعيدها على أي جهاز بمجرد تسجيل الدخول.',
+    pro_secure:'دفع آمن عبر PayPal', pro_restore:'استعادة مشترياتي', pro_signed:'الحساب:',
+    pro_demo:'وضع تجريبي (معاينة): لا يتم أي دفع حقيقي ولا يُحفظ أي شراء.', pro_demo_btn:'محاكاة الدفع',
+    pro_off:'شراء القوالب سيتوفر قريبًا. يمكنك معاينتها وتعديلها مجانًا الآن.',
+    pro_done:'تم الشراء بنجاح', pro_done_t:'أصبحت القوالب التالية لك، ويمكنك تصديرها بلا حدود:', pro_order:'رقم الطلب', pro_start:'ابدأ التصميم',
+    pro_all_owned:'لقد اشتريت جميع قوالب Premium ✓', pro_paying:'جارٍ تأكيد الدفع… لا تغلق النافذة.', pro_err:'تعذّر إتمام العملية، حاول مرة أخرى.',
+    pro_restored:'تمت استعادة مشترياتك ({n})', pro_restored0:'لا توجد مشتريات في هذا الحساب', pro_check_err:'تعذّر التحقق من الشراء، تحقق من الاتصال وحاول مجددًا'
   },
   fr: {
     tool_name:'Cartes de visite', back_tools:'Retour aux outils', fullscreen:'Plein écran', mine:'Mes cartes', save:'Enregistrer dans mon compte',
@@ -68,7 +82,21 @@ const UI = {
     login_title:'Connectez-vous pour enregistrer vos cartes', login_text:'Retrouvez vos cartes depuis n’importe quel appareil.', login_google:'Continuer avec Google',
     login_site:'Se connecter depuis le site', cancel:'Annuler', loading:'Chargement…', mine_empty:'Aucune carte enregistrée',
     new_b:'Nouvelle carte', open_b:'Ouvrir', dup_b:'Dupliquer', del_b:'Supprimer', confirm_del:'Supprimer définitivement cette carte ?', current:'Actuelle',
-    untitled:'Sans nom', copy_suffix:' (copie)'
+    untitled:'Sans nom', copy_suffix:' (copie)',
+    cat_pro:'Premium', pro_owned:'Acheté', pro_wm:'Aperçu', pro_close:'Fermer', pro_chip:'Premium — aperçu et modification gratuits', pro_buy:'Acheter',
+    pro_title:'Modèles Premium', pro_sub:'Payez une seule fois, utilisez sans limite. Aucun abonnement.',
+    pro_o1:'1 modèle', pro_o1d:'Le modèle Premium de votre choix', pro_o5:'5 modèles', pro_o5d:'5 modèles différents au choix',
+    pro_oall:'Tous les modèles ({n})', pro_oalld:'Tous les modèles Premium actuels', pro_best:'Meilleure offre', pro_save:'−{p} %', pro_once:'paiement unique',
+    pro_pick1:'Choisissez le modèle', pro_pick5:'Choisissez 5 modèles', pro_pickall:'Le pack comprend ces modèles',
+    pro_sel:'Votre choix :', pro_total:'Total', pro_need1:'Choisissez un modèle', pro_need5:'Encore {n} modèles à choisir',
+    pro_future:'Les modèles ajoutés plus tard ne sont pas inclus automatiquement dans ce pack.',
+    pro_login:'Connectez-vous avec Google pour continuer', pro_login_note:'Vos achats sont liés à votre compte et récupérables sur tout appareil.',
+    pro_secure:'Paiement sécurisé PayPal', pro_restore:'Restaurer mes achats', pro_signed:'Compte :',
+    pro_demo:'Mode démo (aperçu) : aucun paiement réel, aucun achat enregistré.', pro_demo_btn:'Simuler le paiement',
+    pro_off:'L’achat des modèles arrive bientôt. Aperçu et modification gratuits dès maintenant.',
+    pro_done:'Achat réussi', pro_done_t:'Ces modèles sont à vous, exportables sans limite :', pro_order:'N° de commande', pro_start:'Commencer',
+    pro_all_owned:'Vous possédez tous les modèles Premium ✓', pro_paying:'Confirmation du paiement… ne fermez pas la fenêtre.', pro_err:'Opération impossible, réessayez.',
+    pro_restored:'Achats restaurés ({n})', pro_restored0:'Aucun achat sur ce compte', pro_check_err:'Vérification de l’achat impossible, réessayez'
   },
   en: {
     tool_name:'Business Card Maker', back_tools:'Back to tools', fullscreen:'Full screen', mine:'My cards', save:'Save to my account',
@@ -95,7 +123,21 @@ const UI = {
     login_title:'Sign in to save your cards', login_text:'Keep your cards in your account and open them on any device.', login_google:'Continue with Google',
     login_site:'Sign in from the site', cancel:'Cancel', loading:'Loading…', mine_empty:'No saved cards yet',
     new_b:'New card', open_b:'Open', dup_b:'Duplicate', del_b:'Delete', confirm_del:'Delete this card permanently?', current:'Current',
-    untitled:'Untitled', copy_suffix:' (copy)'
+    untitled:'Untitled', copy_suffix:' (copy)',
+    cat_pro:'Premium', pro_owned:'Purchased', pro_wm:'Preview', pro_close:'Close', pro_chip:'Premium — free to preview and edit', pro_buy:'Buy',
+    pro_title:'Premium templates', pro_sub:'Pay once, use without limits. No subscription.',
+    pro_o1:'1 template', pro_o1d:'Any Premium template you like', pro_o5:'5 templates', pro_o5d:'5 different templates of your choice',
+    pro_oall:'All templates ({n})', pro_oalld:'Every current Premium template', pro_best:'Best value', pro_save:'Save {p}%', pro_once:'one-time',
+    pro_pick1:'Choose the template', pro_pick5:'Choose 5 templates', pro_pickall:'The bundle includes these templates',
+    pro_sel:'Your choice:', pro_total:'Total', pro_need1:'Choose a template', pro_need5:'Choose {n} more',
+    pro_future:'Templates added in the future are not automatically included in this bundle.',
+    pro_login:'Sign in with Google to continue', pro_login_note:'Purchases are saved to your account and restored on any device when you sign in.',
+    pro_secure:'Secure payment with PayPal', pro_restore:'Restore purchases', pro_signed:'Account:',
+    pro_demo:'Demo mode (preview): no real payment, nothing is saved.', pro_demo_btn:'Simulate payment',
+    pro_off:'Template purchases are coming soon. Preview and edit them for free now.',
+    pro_done:'Purchase complete', pro_done_t:'These templates are yours, export them without limits:', pro_order:'Order number', pro_start:'Start designing',
+    pro_all_owned:'You own every Premium template ✓', pro_paying:'Confirming payment… don’t close the window.', pro_err:'Something went wrong, please try again.',
+    pro_restored:'Purchases restored ({n})', pro_restored0:'No purchases on this account', pro_check_err:'Couldn’t verify the purchase, check your connection and try again'
   }
 };
 let uiLang = localStorage.getItem(UI_KEY) || localStorage.getItem('site_lang') || 'ar';
@@ -926,8 +968,17 @@ const NEW_TEMPLATES_3 = [
 NEW_TEMPLATES_3.forEach(t => { t.isNew = true; t.batch = 3; TEMPLATES.push(t); });
 
 const TPL_BY = Object.fromEntries(TEMPLATES.map(t => [t.id, t]));
-const CATS = ['all', 'new', 'corp', 'med', 'eng', 'law', 'edu', 'shop', 'free'];
-const CAT_COLOR = { all:'#2F5770', new:'#B8860B', corp:'#2563EB', med:'#16A34A', eng:'#0891B2', law:'#9F1239', edu:'#EA580C', shop:'#DB2777', free:'#7C3AED' };
+/* Premium (paid) templates by internal id — must match CARD_PREMIUM in worker.js (the server decides) */
+const PREMIUM_IDS = ['circuit', 'sage', 'code', 'bloom', 'goldleaf', 'halftone', 'flow', 'pulse', 'contour'];
+TEMPLATES.forEach(t => { t.premium = PREMIUM_IDS.includes(t.id); });
+const isPremium = id => !!(TPL_BY[id] && TPL_BY[id].premium);
+/* Gallery order (fixed, chosen by hand): the first 3 are free, then one premium after every 2–3 free
+   designs, neighbours of different colours, styles and categories. Filters keep this order. */
+const GALLERY_ORDER = ['marble', 'aurora', 'arabesque', 'circuit', 'silk', 'exec', 'sage', 'deco', 'zen', 'code',
+  'med', 'ribbon', 'swiss', 'bloom', 'bp', 'edit', 'goldleaf', 'beauty', 'geo', 'halftone',
+  'noir', 'cafe', 'arch', 'flow', 'mini', 'edu', 'pulse', 'law', 'contour', 'crea'];
+const CATS = ['all', 'new', 'pro', 'corp', 'med', 'eng', 'law', 'edu', 'shop', 'free'];
+const CAT_COLOR = { all:'#2F5770', new:'#B8860B', pro:'#9A7414', corp:'#2563EB', med:'#16A34A', eng:'#0891B2', law:'#9F1239', edu:'#EA580C', shop:'#DB2777', free:'#7C3AED' };
 
 let GRID = '';
 function gridSVG() {
@@ -1119,7 +1170,8 @@ function renderStage() {
     applyFlip();
   }
   const tpl = TPL_BY[st.tpl];
-  $('#tplNow').textContent = `${tpl.name[uiLang] || tpl.name.ar} · ${T('cat_' + tpl.cat)}${tpl.isNew ? ' · NEW' : ''}`;
+  $('#tplNow').textContent = `${tpl.name[uiLang] || tpl.name.ar} · ${T('cat_' + tpl.cat)}${tpl.premium ? ' · PREMIUM' : (tpl.isNew ? ' · NEW' : '')}`;
+  proApply();
 }
 function applyFlip(rx = 0, ry = 0) {
   $('#flip').style.transform = `rotateX(${rx}deg) rotateY(${(flipped ? 180 : 0) + ry}deg)`;
@@ -1141,11 +1193,12 @@ function thumbState(id) {
 }
 function renderGallery() {
   $('#gCats').innerHTML = CATS.map(k => `<button type="button" class="chip${k === activeCat ? ' on' : ''}" data-cat="${k}" style="--cc:${CAT_COLOR[k]}">${T('cat_' + k)}</button>`).join('');
-  const ordered = [...TEMPLATES.filter(t => t.isNew).sort((a, b) => (b.batch || 2) - (a.batch || 2)), ...TEMPLATES.filter(t => !t.isNew)];
-  const list = ordered.filter(t => activeCat === 'all' || (activeCat === 'new' ? t.isNew : t.cat === activeCat));
+  const rank = id => { const i = GALLERY_ORDER.indexOf(id); return i < 0 ? 999 : i; };
+  const ordered = TEMPLATES.slice().sort((a, b) => rank(a.id) - rank(b.id));
+  const list = ordered.filter(t => activeCat === 'all' || (activeCat === 'new' ? t.isNew : activeCat === 'pro' ? t.premium : t.cat === activeCat));
   $('#gCount').textContent = T('count').replace('{n}', TEMPLATES.length);
   $('#gGrid').innerHTML = list.map(t => `<button type="button" class="g-card${t.id === st.tpl ? ' on' : ''}" data-tpl="${t.id}">
-      ${t.isNew ? '<i class="g-new">NEW</i>' : ''}<div class="g-thumb"></div><div class="g-meta"><b>${esc(t.name[uiLang] || t.name.ar)}</b><span style="--cc:${CAT_COLOR[t.cat]}">${T('cat_' + t.cat)}</span></div></button>`).join('');
+      ${t.premium ? `<i class="g-pro${proOwns(t.id) ? ' own' : ''}">${proOwns(t.id) ? '✓ ' + T('pro_owned') : 'PREMIUM'}</i>` : (t.isNew ? '<i class="g-new">NEW</i>' : '')}<div class="g-thumb"></div><div class="g-meta"><b>${esc(t.name[uiLang] || t.name.ar)}</b><span style="--cc:${CAT_COLOR[t.cat]}">${T('cat_' + t.cat)}</span></div></button>`).join('');
   fillThumbs();
 }
 function fillThumbs() {
@@ -1399,6 +1452,7 @@ function download(href, name) {
 let busy = false;
 async function doPng(side) {
   if (busy) return;
+  if (!(await proExportAllowed())) return;
   if (typeof html2canvas === 'undefined') { toast(T('t_err')); return; }
   busy = true; toast(T('t_png'));
   try {
@@ -1410,6 +1464,7 @@ async function doPng(side) {
 }
 async function doPdf(kind) {
   if (busy) return;
+  if (!(await proExportAllowed())) return;
   if (typeof html2canvas === 'undefined' || !window.jspdf) { toast(T('t_err')); return; }
   busy = true; toast(T('t_pdf'));
   try {
@@ -1448,7 +1503,8 @@ const SHEET = (() => {
   ys.forEach(y => { marks.push([4, y, x0 - 2, y]); marks.push([xEnd + 2, y, 206, y]); });
   return { cells, marks };
 })();
-function doPrint() {
+async function doPrint() {
+  if (!(await proExportAllowed())) return;
   toast(T('t_print'));
   const root = $('#printRoot');
   const page = side => {
@@ -1597,6 +1653,337 @@ $('#mine').addEventListener('click', async e => {
 });
 
 /* ---------------------------------------------------------
+   Premium templates — badge, light «preview» watermark, export check and
+   purchase window. Rights come from the Worker (/api/cards/*, Cloudflare D1)
+   for the signed-in Google account: the browser never decides alone.
+   Modes: live / sandbox (sales on) · demo (sales off, claude-test preview or
+   localhost only: nothing paid, nothing saved) · off (sales off elsewhere).
+--------------------------------------------------------- */
+const PRO_LOCAL = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+const PRO_API = (/\.workers\.dev$/.test(location.hostname) || PRO_LOCAL) ? '' : 'https://dr.merabti.workers.dev';
+const PRO_DEMO_HOST = PRO_LOCAL || location.hostname === 'claude-test-dr.merabti.workers.dev';
+const PRO = { mode: 'loading', cfg: null, owned: new Set(), demoOwned: new Set(), offer: 'all', pick: [], focus: '',
+  sdk: null, btns: null, actions: null, busy: false };
+const PRO_OFFERS_DEFAULT = { single: { count: 1, price: '1.99' }, pack5: { count: 5, price: '4.99' }, all: { count: PREMIUM_IDS.length, price: '7.99' } };
+const proOffers = () => (PRO.cfg && PRO.cfg.offers) || PRO_OFFERS_DEFAULT;
+const proOwns = id => !isPremium(id) || PRO.owned.has(id) || (PRO.mode === 'demo' && PRO.demoOwned.has(id));
+const proSalesOn = () => PRO.mode === 'live' || PRO.mode === 'sandbox';
+
+function proTrack(name, extra) { try { if (window.gtag) gtag('event', name, Object.assign({ tool: 'bizcards', method: 'paypal' }, extra || {})); } catch (e) { /* ignore */ } }
+
+async function proFetch(path, opts = {}) {
+  const user = fbUser();
+  const headers = { 'Content-Type': 'application/json' };
+  if (user) headers.Authorization = 'Bearer ' + await user.getIdToken();
+  const r = await fetch(PRO_API + path, { method: opts.method || 'GET', headers, body: opts.body ? JSON.stringify(opts.body) : undefined, cache: 'no-store' });
+  const d = await r.json().catch(() => ({}));
+  d._status = r.status;
+  return d;
+}
+
+async function proLoadConfig() {
+  try {
+    const d = await proFetch('/api/cards/config');
+    if (d && d.offers) PRO.cfg = d;
+    if (d && Array.isArray(d.premium) && d.premium.join() !== PREMIUM_IDS.join()) console.warn('[cards] premium list differs from the server');
+    PRO.mode = d && (d.sales === 'live' || d.sales === 'sandbox') ? d.sales : (PRO_DEMO_HOST ? 'demo' : 'off');
+  } catch (e) { PRO.mode = PRO_DEMO_HOST ? 'demo' : 'off'; }
+}
+
+/* rights from the server (signed-in user only); strict = throw when the server cannot answer */
+async function proRefresh(strict) {
+  if (!proSalesOn() || !fbUser()) { PRO.owned = new Set(); proApply(); return PRO.owned; }
+  try {
+    const d = await proFetch('/api/cards/entitlements');
+    if (!Array.isArray(d.owned)) throw new Error(d.error || 'entitlements');
+    PRO.owned = new Set(d.owned);
+  } catch (e) { if (strict) throw e; }
+  proApply();
+  return PRO.owned;
+}
+
+/* gallery badges + stage watermark + "Premium" chip follow the rights */
+function proApply() {
+  $$('#gGrid .g-card').forEach(card => {
+    const id = card.dataset.tpl, b = card.querySelector('.g-pro');
+    if (!b) return;
+    const own = proOwns(id);
+    b.classList.toggle('own', own);
+    b.textContent = own ? '✓ ' + T('pro_owned') : 'PREMIUM';
+  });
+  proWatermark();
+  const chip = $('#proChip');
+  if (chip) chip.classList.toggle('hidden', !(isPremium(st.tpl) && !proOwns(st.tpl)));
+}
+
+let PRO_WM = { lang: '', url: '' };
+function proWatermark() {
+  const show = isPremium(st.tpl) && !proOwns(st.tpl);
+  ['#slotFront', '#slotBack', '#faceFront', '#faceBack'].forEach(sel => {
+    const slot = $(sel); if (!slot) return;
+    const old = slot.querySelector('.pro-wm'); if (old) old.remove();
+    if (!show || !slot.firstElementChild) return;
+    if (PRO_WM.lang !== uiLang) {
+      const w = esc(T('pro_wm'));
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="170" height="104"><g transform="rotate(-24 85 52)" font-family="Tajawal, Inter, sans-serif" font-size="13" font-weight="700" text-anchor="middle">` +
+        `<text x="85" y="57" fill="#FFFFFF" fill-opacity=".34" stroke="#0B1220" stroke-opacity=".16" stroke-width=".6">${w}</text></g></svg>`;
+      PRO_WM = { lang: uiLang, url: 'url("data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg) + '")' };
+    }
+    const wm = document.createElement('div');
+    wm.className = 'pro-wm'; wm.setAttribute('aria-hidden', 'true');
+    wm.style.backgroundImage = PRO_WM.url;
+    slot.appendChild(wm);
+  });
+}
+
+/* every export / print of a premium template asks the server first */
+async function proExportAllowed() {
+  const id = st.tpl;
+  if (!isPremium(id)) return true;
+  if (PRO.mode === 'demo') { if (PRO.demoOwned.has(id)) return true; proOpen(id); return false; }
+  if (!proSalesOn() || !fbUser()) { proOpen(id); return false; }
+  try { await proRefresh(true); }
+  catch (e) { toast(T('pro_check_err')); return false; }
+  if (PRO.owned.has(id)) return true;
+  proOpen(id);
+  return false;
+}
+
+/* ---------- purchase window ---------- */
+const PRO_ICON = '<svg viewBox="0 0 24 24"><path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5z"/></svg>';
+function proEnsureModal() {
+  if ($('#proModal')) return;
+  const m = document.createElement('div');
+  m.className = 'modal pro-modal hidden'; m.id = 'proModal';
+  m.setAttribute('role', 'dialog'); m.setAttribute('aria-modal', 'true');
+  m.innerHTML = '<div class="pro-box" id="proBox"></div>';
+  document.body.appendChild(m);
+  m.addEventListener('click', e => {
+    if (e.target === m) { proClose(); return; }
+    const b = e.target.closest('[data-pro]'); if (!b || b.disabled) return;
+    const a = b.dataset.pro;
+    if (a === 'close') proClose();
+    else if (a === 'offer') proSetOffer(b.dataset.offer);
+    else if (a === 'pick') proTogglePick(b.dataset.id);
+    else if (a === 'login') proLogin();
+    else if (a === 'restore') proRestore();
+    else if (a === 'demo') proDemoPay();
+    else if (a === 'start') { const id = b.dataset.id; proClose(); if (id && id !== st.tpl) selectTemplate(id); }
+  });
+}
+function proClose() { const m = $('#proModal'); if (m) m.classList.add('hidden'); PRO.btns = null; PRO.actions = null; }
+
+function proFree() { return PREMIUM_IDS.filter(id => !proOwns(id)); }
+function proOpen(focusId) {
+  proEnsureModal();
+  PRO.focus = focusId && isPremium(focusId) && !proOwns(focusId) ? focusId : '';
+  const free = proFree();
+  PRO.offer = PRO.focus ? (free.length > 1 ? 'all' : 'single') : (free.length >= 5 ? 'all' : (free.length ? 'single' : 'all'));
+  if (PRO.focus && free.length > 1) PRO.offer = 'all';
+  PRO.pick = PRO.focus ? [PRO.focus] : [];
+  $('#proModal').classList.remove('hidden');
+  proRender();
+  proTrack('view_promotion', { reason: focusId ? 'export' : 'browse' });
+}
+
+function proSave(o) {
+  const offers = proOffers(), single = parseFloat(offers.single.price);
+  return Math.round((1 - parseFloat(offers[o].price) / (single * offers[o].count)) * 100);
+}
+function proRender() {
+  const box = $('#proBox'); if (!box) return;
+  const offers = proOffers(), free = proFree(), all = PREMIUM_IDS;
+  if (!free.length) {
+    box.innerHTML = `<button type="button" class="pro-x" data-pro="close" aria-label="${T('pro_close')}">×</button>
+      <div class="pro-done"><div class="pro-ok">✓</div><h2>${T('pro_all_owned')}</h2>
+      <button type="button" class="pro-cta" data-pro="close">${T('pro_start')}</button></div>`;
+    return;
+  }
+  const card = (k, title, desc) => {
+    const o = offers[k], dis = (k === 'pack5' && free.length < 5);
+    const save = k === 'single' ? '' : `<span class="pro-save">${T('pro_save').replace('{p}', proSave(k))}</span>`;
+    return `<button type="button" class="pro-offer${PRO.offer === k ? ' on' : ''}${k === 'all' ? ' best' : ''}" data-pro="offer" data-offer="${k}"${dis ? ' disabled' : ''}>
+      ${k === 'all' ? `<span class="pro-ribbon">${T('pro_best')}</span>` : ''}
+      <span class="pro-radio"></span><b class="pro-otitle">${title}</b><small>${desc}</small>
+      <span class="pro-price"><span class="ltrx">$${o.price}</span></span><span class="pro-once">${T('pro_once')}</span>${save}</button>`;
+  };
+  const items = all.map(id => {
+    const t = TPL_BY[id], own = proOwns(id), on = PRO.offer === 'all' ? !own : PRO.pick.includes(id);
+    return `<button type="button" class="pro-it${on ? ' on' : ''}${own ? ' own' : ''}" data-pro="pick" data-id="${id}"${own || PRO.offer === 'all' ? ' disabled' : ''}>
+      <span class="pro-th" data-th="${id}"></span><span class="pro-nm">${esc(t.name[uiLang] || t.name.ar)}</span>
+      <i class="pro-ck">${own ? '✓ ' + T('pro_owned') : '✓'}</i></button>`;
+  }).join('');
+  const user = fbUser();
+  box.innerHTML = `<button type="button" class="pro-x" data-pro="close" aria-label="${T('pro_close')}">×</button>
+    <div class="pro-head"><span class="pro-crown">${PRO_ICON}</span><h2>${T('pro_title')}</h2><p>${T('pro_sub')}</p></div>
+    <div class="pro-offers">${card('single', T('pro_o1'), T('pro_o1d'))}${card('pack5', T('pro_o5'), T('pro_o5d'))}${card('all', T('pro_oall').replace('{n}', all.length), T('pro_oalld').replace('{n}', all.length))}</div>
+    <div class="pro-pick"><div class="pro-pick-h"><b id="proPickT"></b><span id="proPickN"></span></div><div class="pro-grid">${items}</div></div>
+    <div class="pro-sum"><div class="pro-sel" id="proSel"></div>
+      <div class="pro-tot"><span>${T('pro_total')}</span><b class="ltrx" id="proTot"></b></div></div>
+    <p class="pro-fut">${T('pro_future')}</p>
+    <div class="pro-pay" id="proPay"></div>
+    <p class="pro-msg" id="proMsg" role="status"></p>
+    <div class="pro-foot"><span><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>${T('pro_secure')}</span>
+      ${user ? `<span class="pro-who">${T('pro_signed')} <b>${esc(user.email || user.displayName || '')}</b></span>` : ''}
+      ${proSalesOn() ? `<button type="button" class="pro-link" data-pro="restore">${T('pro_restore')}</button>` : ''}</div>`;
+  requestAnimationFrame(() => $$('[data-th]', box).forEach(th => {
+    th.innerHTML = buildCard(thumbState(th.dataset.th), 'front', { noQR: true }); scaleThumb(th);
+  }));
+  proRenderPay();
+  proSummary();
+}
+
+function proValid() {
+  const need = proOffers()[PRO.offer].count;
+  return PRO.offer === 'all' ? proFree().length > 0 : PRO.pick.length === need;
+}
+function proChosen() { return PRO.offer === 'all' ? PREMIUM_IDS.slice() : PRO.pick.slice(); }
+function proSummary() {
+  const offers = proOffers(), need = offers[PRO.offer].count;
+  const t = $('#proPickT'), n = $('#proPickN'); if (!t) return;
+  t.textContent = PRO.offer === 'all' ? T('pro_pickall') : (need === 1 ? T('pro_pick1') : T('pro_pick5'));
+  n.textContent = PRO.offer === 'all' ? '' : `${PRO.pick.length}/${need}`;
+  const names = proChosen().filter(id => PRO.offer !== 'all' || !proOwns(id)).map(id => `<span>${esc(TPL_BY[id].name[uiLang] || TPL_BY[id].name.ar)}</span>`).join('');
+  $('#proSel').innerHTML = `<small>${T('pro_sel')}</small>${names || `<em>${PRO.offer === 'single' ? T('pro_need1') : T('pro_need5').replace('{n}', need - PRO.pick.length)}</em>`}`;
+  $('#proTot').textContent = '$' + offers[PRO.offer].price;
+  $$('.pro-it', $('#proBox')).forEach(b => {
+    const id = b.dataset.id, own = proOwns(id), on = PRO.offer === 'all' ? !own : PRO.pick.includes(id);
+    b.classList.toggle('on', on);
+    b.classList.toggle('dim', PRO.offer === 'pack5' && !on && !own && PRO.pick.length >= need);
+  });
+  const ok = proValid();
+  const demo = $('[data-pro="demo"]'); if (demo) demo.disabled = !ok;
+  if (PRO.actions) { try { ok ? PRO.actions.enable() : PRO.actions.disable(); } catch (e) { /* ignore */ } }
+  $('#proPay') && $('#proPay').classList.toggle('wait', !ok);
+}
+function proSetOffer(k) {
+  if (!proOffers()[k] || PRO.offer === k) return;
+  PRO.offer = k;
+  const need = proOffers()[k].count;
+  if (k !== 'all') PRO.pick = PRO.pick.filter(id => !proOwns(id)).slice(0, need);
+  if (k !== 'all' && !PRO.pick.length && PRO.focus) PRO.pick = [PRO.focus];
+  $$('.pro-offer', $('#proBox')).forEach(b => b.classList.toggle('on', b.dataset.offer === k));
+  $$('.pro-it', $('#proBox')).forEach(b => { b.disabled = k === 'all' || proOwns(b.dataset.id); });
+  proSummary();
+}
+function proTogglePick(id) {
+  if (PRO.offer === 'all' || proOwns(id)) return;
+  const need = proOffers()[PRO.offer].count;
+  if (need === 1) PRO.pick = [id];
+  else if (PRO.pick.includes(id)) PRO.pick = PRO.pick.filter(x => x !== id);
+  else if (PRO.pick.length < need) PRO.pick.push(id);
+  proSummary();
+}
+function proMsg(text, err) { const el = $('#proMsg'); if (el) { el.textContent = text || ''; el.classList.toggle('err', !!err); } }
+
+function proRenderPay() {
+  const pay = $('#proPay'); if (!pay) return;
+  PRO.btns = null; PRO.actions = null;
+  if (PRO.mode === 'demo') {
+    pay.innerHTML = `<div class="pro-demo">${T('pro_demo')}</div>
+      <button type="button" class="pro-pp" data-pro="demo"><span>PayPal</span><small>${T('pro_demo_btn')}</small></button>`;
+    return;
+  }
+  if (!proSalesOn()) { pay.innerHTML = `<div class="pro-off">${T('pro_off')}</div>`; return; }
+  if (!fbUser()) {
+    pay.innerHTML = `<button type="button" class="pro-login" data-pro="login"><svg viewBox="0 0 48 48" style="stroke:none"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>${T('pro_login')}</button>
+      <p class="pro-note">${T('pro_login_note')}</p>`;
+    return;
+  }
+  pay.innerHTML = '<div class="pro-ppbox" id="proPP"><div class="pro-spin"></div></div>';
+  proLoadSdk().then(() => proPaypalButtons()).catch(() => { pay.innerHTML = `<div class="pro-off err">${T('pro_err')}</div>`; });
+}
+
+function proLoadSdk() {
+  if (window.paypal && window.paypal.Buttons) return Promise.resolve();
+  if (PRO.sdk) return PRO.sdk;
+  PRO.sdk = new Promise((ok, no) => {
+    const s = document.createElement('script');
+    s.src = 'https://www.paypal.com/sdk/js?client-id=' + encodeURIComponent(PRO.cfg.clientId) + '&currency=USD&intent=capture&components=buttons';
+    s.onload = () => (window.paypal && window.paypal.Buttons ? ok() : no());
+    s.onerror = () => { PRO.sdk = null; no(); };
+    document.head.appendChild(s);
+  });
+  return PRO.sdk;
+}
+
+function proPaypalButtons() {
+  const host = $('#proPP'); if (!host) return;
+  host.innerHTML = '';
+  PRO.btns = window.paypal.Buttons({
+    style: { layout: 'vertical', color: 'gold', shape: 'pill', label: 'pay', height: 44 },
+    onInit: (data, actions) => { PRO.actions = actions; proValid() ? actions.enable() : actions.disable(); },
+    onClick: () => { if (!proValid()) proMsg(PRO.offer === 'single' ? T('pro_need1') : T('pro_need5').replace('{n}', proOffers()[PRO.offer].count - PRO.pick.length), true); },
+    createOrder: async () => {
+      proMsg('');
+      const d = await proFetch('/api/cards/create-order', { method: 'POST', body: { offer: PRO.offer, templates: proChosen() } });
+      if (!d.id) { proMsg(d.message || T('pro_err'), true); if (d.error === 'ALREADY_OWNED') proRefresh().then(proRender); throw new Error(d.error || 'create'); }
+      proTrack('begin_checkout', { offer: PRO.offer, value: parseFloat(proOffers()[PRO.offer].price), currency: 'USD' });
+      return d.id;
+    },
+    onApprove: async (data, actions) => {
+      PRO.busy = true; $('#proBox').classList.add('busy'); proMsg(T('pro_paying'));
+      const d = await proFetch('/api/cards/capture-order', { method: 'POST', body: { orderId: data.orderID } }).catch(() => ({}));
+      PRO.busy = false; $('#proBox').classList.remove('busy');
+      if (d.error === 'INSTRUMENT_DECLINED') { proMsg(d.message, true); return actions.restart(); }
+      if (!d.ok) { proMsg(d.message || T('pro_err'), true); return; }
+      PRO.owned = new Set(d.owned || []);
+      proTrack('purchase', { transaction_id: d.orderId, offer: PRO.offer, value: parseFloat(proOffers()[PRO.offer].price), currency: 'USD' });
+      proSuccess(d.unlocked || [], d.orderId);
+    },
+    onCancel: () => proMsg(''),
+    onError: () => proMsg(T('pro_err'), true)
+  });
+  PRO.btns.render(host).catch(() => { host.innerHTML = `<div class="pro-off err">${T('pro_err')}</div>`; });
+}
+
+function proSuccess(unlocked, orderId) {
+  proApply(); fillThumbs(); proApply();
+  const box = $('#proBox'); if (!box) return;
+  const first = unlocked.find(id => TPL_BY[id]) || '';
+  box.innerHTML = `<button type="button" class="pro-x" data-pro="close" aria-label="${T('pro_close')}">×</button>
+    <div class="pro-done"><div class="pro-ok">✓</div><h2>${T('pro_done')}</h2><p>${T('pro_done_t')}</p>
+    <div class="pro-sel">${unlocked.filter(id => TPL_BY[id]).map(id => `<span>${esc(TPL_BY[id].name[uiLang] || TPL_BY[id].name.ar)}</span>`).join('')}</div>
+    ${orderId ? `<p class="pro-order">${T('pro_order')}: <b class="ltrx">${esc(orderId)}</b></p>` : ''}
+    <button type="button" class="pro-cta" data-pro="start" data-id="${first === st.tpl ? '' : first}">${T('pro_start')}</button></div>`;
+}
+
+async function proDemoPay() {
+  if (!proValid() || PRO.busy) return;
+  PRO.busy = true; $('#proBox').classList.add('busy'); proMsg(T('pro_paying'));
+  await wait(900);
+  const got = proChosen().filter(id => !proOwns(id));
+  got.forEach(id => PRO.demoOwned.add(id));
+  PRO.busy = false; $('#proBox').classList.remove('busy');
+  proSuccess(got, 'DEMO-' + Date.now().toString(36).toUpperCase());
+}
+
+async function proLogin() {
+  if (!hasFb()) { proMsg(T('t_cloud_err'), true); return; }
+  try { await firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider()); }
+  catch (e) { console.error(e); proMsg(T('t_cloud_err'), true); }
+}
+
+async function proRestore() {
+  if (!fbUser()) { await proLogin(); if (!fbUser()) return; }
+  try {
+    const owned = await proRefresh(true);
+    toast(owned.size ? T('pro_restored').replace('{n}', owned.size) : T('pro_restored0'));
+    proRender();
+  } catch (e) { proMsg(T('pro_check_err'), true); }
+}
+
+async function initPro() {
+  await proLoadConfig();
+  if (hasFb()) firebase.auth().onAuthStateChanged(async () => {
+    await proRefresh();
+    const m = $('#proModal');
+    if (m && !m.classList.contains('hidden') && !PRO.busy && !$('.pro-done', m)) proRender();
+  });
+  proApply();
+}
+
+/* ---------------------------------------------------------
    Toast
 --------------------------------------------------------- */
 let toastTimer = null;
@@ -1645,7 +2032,7 @@ document.addEventListener('click', e => {
   if (!e.target.closest('.lang-wrap')) $('#langMenu').classList.add('hidden');
   if (!e.target.closest('.menu-wrap')) closeDrops();
 });
-document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeMine(); closeLogin(); closeDrops(); } });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeMine(); closeLogin(); closeDrops(); proClose(); } });
 
 $('#btnSave').addEventListener('click', saveToAccount);
 $('#btnPrint').addEventListener('click', doPrint);
@@ -1690,6 +2077,9 @@ buildForm();
 layoutPanes();
 renderGallery();
 setView('both');
+$('#proChip').addEventListener('click', () => proOpen(st.tpl));
+$('#btnPremium').addEventListener('click', () => proOpen());
+initPro();
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { renderStage(); fillThumbs(); });
 
 })();

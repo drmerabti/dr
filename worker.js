@@ -551,10 +551,296 @@ async function handlePaypal(request, env, path, ctx) {
   return null;
 }
 
+/* =====================================================================
+   Business-card Premium templates: one-time PayPal payment, rights kept in D1.
+   Independent from the book sales above (none of their functions or tables
+   is changed). Routes: /api/cards/*
+     GET  /api/cards/config         offers, prices, premium ids, sales mode (public)
+     GET  /api/cards/entitlements   templates owned by the signed-in user
+     POST /api/cards/create-order   { offer, templates[] } → { id }   (PayPal order made here)
+     POST /api/cards/capture-order  { orderId } → { ok, owned[], unlocked[] }
+   Every route except config needs "Authorization: Bearer <Firebase ID token>"
+   (the site's existing Google sign-in); the Worker checks the token itself.
+
+   CARD_SALES (wrangler var): "off" (default: nothing is sold, nothing is written),
+   "sandbox" (PAYPAL_SANDBOX_CLIENT_ID + secret PAYPAL_SANDBOX_SECRET) or
+   "live" (the site's PayPal app: PAYPAL_CLIENT_ID + PAYPAL_SECRET).
+   Test-only overrides, honoured ONLY when CARD_SALES = "sandbox":
+     CARDS_PAYPAL_API (e.g. a local PayPal mock), CARDS_TEST_JWKS (keys of a test signer).
+===================================================================== */
+const CARD_PREMIUM = ['circuit', 'sage', 'code', 'bloom', 'goldleaf', 'halftone', 'flow', 'pulse', 'contour'];
+const CARD_OFFERS = {
+  single: { count: 1, price: '1.99', title: 'Business card template (1)' },
+  pack5:  { count: 5, price: '4.99', title: 'Business card templates (5)' },
+  all:    { count: CARD_PREMIUM.length, price: '7.99', title: 'All premium business card templates' },
+};
+const CARD_CURRENCY = 'USD';
+const FIREBASE_PROJECT = 'word-shortcuts';
+
+function cardsMode(env) {
+  const m = String(env.CARD_SALES || 'off').toLowerCase();
+  return m === 'live' || m === 'sandbox' ? m : 'off';
+}
+
+function cardsPaypal(env) {
+  const mode = cardsMode(env);
+  if (mode === 'live') return { mode, api: 'https://api-m.paypal.com', id: env.PAYPAL_CLIENT_ID, secret: env.PAYPAL_SECRET };
+  if (mode === 'sandbox') return { mode, api: env.CARDS_PAYPAL_API || 'https://api-m.sandbox.paypal.com',
+    id: env.PAYPAL_SANDBOX_CLIENT_ID, secret: env.PAYPAL_SANDBOX_SECRET };
+  return { mode };
+}
+
+async function cardsPaypalCall(pp, method, apiPath, body, extraHeaders) {
+  const t = await fetch(pp.api + '/v1/oauth2/token', {
+    method: 'POST',
+    headers: { Authorization: 'Basic ' + btoa(pp.id + ':' + pp.secret), 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: 'grant_type=client_credentials',
+  });
+  if (!t.ok) {
+    logCards('oauth-token FAILED', { mode: pp.mode, status: t.status, debugId: t.headers.get('paypal-debug-id') });
+    throw new Error('PayPal auth failed: ' + t.status);
+  }
+  const token = (await t.json()).access_token;
+  const res = await fetch(pp.api + apiPath, {
+    method,
+    headers: Object.assign({ Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' }, extraHeaders || {}),
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  const text = await res.text().catch(() => '');
+  let data = {};
+  try { data = text ? JSON.parse(text) : {}; } catch (e) { data = { raw: text }; }
+  return { ok: res.ok, status: res.status, data, debugId: res.headers.get('paypal-debug-id') };
+}
+
+/* one JSON line per step, never the payer's details */
+function logCards(step, info) {
+  console.log('[cards] ' + step + ' ' + JSON.stringify(Object.assign({ step }, info)));
+}
+
+/* ---------- Firebase ID token (RS256), checked with Google's public keys ---------- */
+let cardsJwks = { keys: null, until: 0 };
+async function cardsKeys(env) {
+  if (cardsMode(env) === 'sandbox' && env.CARDS_TEST_JWKS) return JSON.parse(env.CARDS_TEST_JWKS).keys || [];
+  if (cardsJwks.keys && Date.now() < cardsJwks.until) return cardsJwks.keys;
+  const r = await fetch('https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com');
+  if (!r.ok) throw new Error('Google keys unavailable: ' + r.status);
+  const j = await r.json();
+  const m = (r.headers.get('cache-control') || '').match(/max-age=(\d+)/);
+  cardsJwks = { keys: j.keys || [], until: Date.now() + Math.min(m ? +m[1] : 3600, 21600) * 1000 };
+  return cardsJwks.keys;
+}
+function b64urlBytes(s) {
+  s = s.replace(/-/g, '+').replace(/_/g, '/');
+  while (s.length % 4) s += '=';
+  const bin = atob(s), out = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+  return out;
+}
+async function cardsUser(request, env) {
+  const m = (request.headers.get('Authorization') || '').match(/^Bearer\s+([A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+)$/);
+  if (!m) return null;
+  const [h, p, s] = m[1].split('.');
+  let header, claims;
+  try {
+    header = JSON.parse(new TextDecoder().decode(b64urlBytes(h)));
+    claims = JSON.parse(new TextDecoder().decode(b64urlBytes(p)));
+  } catch (e) { return null; }
+  if (header.alg !== 'RS256' || !header.kid) return null;
+  const jwk = (await cardsKeys(env)).find(k => k.kid === header.kid);
+  if (!jwk) return null;
+  const key = await crypto.subtle.importKey('jwk', { kty: jwk.kty, n: jwk.n, e: jwk.e, alg: 'RS256', ext: true },
+    { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' }, false, ['verify']);
+  const valid = await crypto.subtle.verify('RSASSA-PKCS1-v1_5', key, b64urlBytes(s), new TextEncoder().encode(h + '.' + p));
+  if (!valid) return null;
+  const now = Math.floor(Date.now() / 1000);
+  if (claims.aud !== FIREBASE_PROJECT || claims.iss !== 'https://securetoken.google.com/' + FIREBASE_PROJECT) return null;
+  if (typeof claims.sub !== 'string' || !claims.sub || claims.sub.length > 128) return null;
+  if (!(claims.exp > now) || !(claims.iat <= now + 300)) return null;
+  return { uid: claims.sub };
+}
+
+/* ---------- D1 ---------- */
+async function ensureCardTables(db) {
+  await db.batch([
+    db.prepare(`CREATE TABLE IF NOT EXISTS card_orders (
+      order_id TEXT PRIMARY KEY, ref TEXT NOT NULL UNIQUE, uid TEXT NOT NULL, offer TEXT NOT NULL,
+      templates TEXT NOT NULL, amount TEXT NOT NULL, currency TEXT NOT NULL, status TEXT NOT NULL,
+      capture_id TEXT UNIQUE, env TEXT NOT NULL, created_at TEXT NOT NULL, completed_at TEXT)`),
+    db.prepare(`CREATE TABLE IF NOT EXISTS card_entitlements (
+      uid TEXT NOT NULL, template_id TEXT NOT NULL, env TEXT NOT NULL, order_id TEXT NOT NULL, created_at TEXT NOT NULL,
+      PRIMARY KEY (uid, template_id, env))`),
+  ]);
+}
+async function cardsOwned(db, uid, mode) {
+  const { results } = await db.prepare(`SELECT template_id FROM card_entitlements WHERE uid = ? AND env = ?`).bind(uid, mode).all();
+  return results.map(r => r.template_id).filter(id => CARD_PREMIUM.includes(id));
+}
+
+/* rights rows, only for an order that is COMPLETED and belongs to this user */
+function cardsGrant(db, uid, mode, orderId, picked, nowIso) {
+  return picked.map(id => db.prepare(`INSERT OR IGNORE INTO card_entitlements (uid, template_id, env, order_id, created_at)
+    SELECT ?, ?, ?, ?, ? WHERE EXISTS (SELECT 1 FROM card_orders WHERE order_id = ? AND uid = ? AND env = ? AND status = 'COMPLETED')`)
+    .bind(uid, id, mode, orderId, nowIso, orderId, uid, mode));
+}
+
+function cardsPreflight(request) {
+  const h = corsHeaders(request);
+  if (!h['Access-Control-Allow-Origin']) return new Response(null, { status: 403, headers: h });
+  return new Response(null, { status: 204, headers: Object.assign(h, {
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Access-Control-Max-Age': '86400',
+  }) });
+}
+
+async function handleCards(request, env, path, ctx) {
+  const mode = cardsMode(env);
+
+  if (path === '/api/cards/config' && request.method === 'GET') {
+    const pp = cardsPaypal(env);
+    const ready = mode !== 'off' && !!(pp.id && pp.secret);
+    return json({
+      sales: ready ? mode : 'off', clientId: ready ? pp.id : null, currency: CARD_CURRENCY, premium: CARD_PREMIUM,
+      offers: Object.fromEntries(Object.entries(CARD_OFFERS).map(([k, o]) => [k, { count: o.count, price: o.price }])),
+    });
+  }
+
+  // sales off: nothing is read from or written to D1, no PayPal call
+  if (mode === 'off') return json({ error: 'SALES_OFF', message: 'شراء القوالب غير مفعّل حاليًا.' }, 503);
+  const pp = cardsPaypal(env);
+  if (!pp.id || !pp.secret) return json({ error: 'PAYPAL_NOT_CONFIGURED', message: 'الدفع غير مُفعّل حاليًا.' }, 503);
+
+  const user = await cardsUser(request, env);
+  if (!user) return json({ error: 'AUTH_REQUIRED', message: 'سجّل الدخول أولًا.' }, 401);
+  await ensureCardTables(env.DB);
+
+  if (path === '/api/cards/entitlements' && request.method === 'GET') {
+    return json({ owned: await cardsOwned(env.DB, user.uid, mode) });
+  }
+
+  // ============ create the PayPal order (price from CARD_OFFERS only) ============
+  if (path === '/api/cards/create-order' && request.method === 'POST') {
+    const body = await readJson(request);
+    const offerId = String(body.offer || '');
+    const offer = CARD_OFFERS[offerId];
+    if (!offer) return json({ error: 'UNKNOWN_OFFER', message: 'العرض غير موجود.' }, 400);
+    let picked = offerId === 'all' ? CARD_PREMIUM.slice()
+      : (Array.isArray(body.templates) ? body.templates.map(String) : []);
+    picked = Array.from(new Set(picked));
+    if (picked.length !== offer.count || !picked.every(id => CARD_PREMIUM.includes(id))) {
+      return json({ error: 'BAD_SELECTION', message: offer.count === 1 ? 'اختر قالبًا واحدًا من قوالب Premium.' : 'اختر ' + offer.count + ' قوالب Premium مختلفة.' }, 400);
+    }
+    const owned = await cardsOwned(env.DB, user.uid, mode);
+    const already = picked.filter(id => owned.includes(id));
+    if (offerId === 'all' ? already.length === picked.length : already.length) {
+      return json({ error: 'ALREADY_OWNED', owned: already, message: 'بعض القوالب المختارة مشتراة من قبل.' }, 409);
+    }
+    const ref = crypto.randomUUID();
+    const r = await cardsPaypalCall(pp, 'POST', '/v2/checkout/orders', {
+      intent: 'CAPTURE',
+      purchase_units: [{
+        reference_id: 'cards-' + offerId, custom_id: ref, description: offer.title,
+        amount: { currency_code: CARD_CURRENCY, value: offer.price },
+      }],
+      application_context: { shipping_preference: 'NO_SHIPPING', user_action: 'PAY_NOW', brand_name: 'merabti.com' },
+    }, { 'PayPal-Request-Id': 'cards-create-' + ref });
+    logCards(r.ok && r.data.id ? 'create-order ok' : 'create-order FAILED', { mode, offer: offerId, status: r.status,
+      debugId: r.debugId, orderId: r.data.id || null, error: r.ok ? null : paypalError(r.data) });
+    if (!r.ok || !/^[A-Z0-9]{8,32}$/.test(String(r.data.id || ''))) {
+      return json({ error: 'CREATE_FAILED', message: 'تعذّر إنشاء الطلب، حاول مرة أخرى.' }, 502);
+    }
+    await env.DB.prepare(`INSERT INTO card_orders (order_id, ref, uid, offer, templates, amount, currency, status, env, created_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, 'CREATED', ?, ?)`)
+      .bind(r.data.id, ref, user.uid, offerId, JSON.stringify(picked), offer.price, CARD_CURRENCY, mode, new Date().toISOString()).run();
+    return json({ id: r.data.id });
+  }
+
+  // ============ capture + checks + rights in D1 (once per order) ============
+  if (path === '/api/cards/capture-order' && request.method === 'POST') {
+    const body = await readJson(request);
+    const orderId = String(body.orderId || '');
+    if (!/^[A-Z0-9]{8,32}$/.test(orderId)) return json({ error: 'BAD_ORDER', message: 'رقم الطلب غير صالح.' }, 400);
+    const row = await env.DB.prepare(`SELECT * FROM card_orders WHERE order_id = ? AND env = ?`).bind(orderId, mode).first();
+    if (!row) return json({ error: 'UNKNOWN_ORDER', message: 'الطلب غير موجود.' }, 404);
+    if (row.uid !== user.uid) {
+      logCards('capture-order WRONG USER', { mode, orderId });
+      return json({ error: 'NOT_YOUR_ORDER', message: 'هذا الطلب لا يخص حسابك.' }, 403);
+    }
+    const picked = JSON.parse(row.templates);
+    if (row.status === 'COMPLETED') {   // already done (retry, double click): same answer; rights re-checked idempotently
+      await env.DB.batch(cardsGrant(env.DB, user.uid, mode, orderId, picked, row.completed_at || new Date().toISOString()));
+      return json({ ok: true, orderId, unlocked: picked, owned: await cardsOwned(env.DB, user.uid, mode) });
+    }
+
+    let r = await cardsPaypalCall(pp, 'POST', '/v2/checkout/orders/' + orderId + '/capture', null, { 'PayPal-Request-Id': 'cards-capture-' + orderId });
+    const issue = r.data && r.data.details && r.data.details[0] && r.data.details[0].issue;
+    logCards(r.ok ? 'capture-order ok' : 'capture-order FAILED', { mode, orderId, status: r.status, debugId: r.debugId,
+      issue: issue || null, order: r.ok ? orderSummary(r.data) : null });
+    if (!r.ok && issue === 'ORDER_ALREADY_CAPTURED') r = await cardsPaypalCall(pp, 'GET', '/v2/checkout/orders/' + orderId);
+    else if (!r.ok) {
+      if (issue === 'INSTRUMENT_DECLINED') return json({ error: 'INSTRUMENT_DECLINED', message: 'رُفضت وسيلة الدفع، اختر وسيلة أخرى.' }, 402);
+      return json({ error: 'CAPTURE_FAILED', message: 'لم يكتمل الدفع، لم يُخصم أي مبلغ. حاول مرة أخرى.' }, 502);
+    }
+
+    const order = r.data || {};
+    const unit = (order.purchase_units || [])[0] || {};
+    const capture = ((unit.payments || {}).captures || [])[0] || {};
+    const amount = capture.amount || {};
+    const offer = CARD_OFFERS[row.offer];
+    if (order.id !== orderId || order.status !== 'COMPLETED' || capture.status !== 'COMPLETED' || !capture.id) {
+      logCards('capture-order NOT COMPLETED', { mode, orderId, order: orderSummary(order) });
+      return json({ error: 'NOT_COMPLETED', message: capture.status === 'PENDING'
+        ? 'الدفع قيد المراجعة لدى PayPal. ستُفتح القوالب بعد اكتماله، رقم الطلب: ' + orderId : 'لم يكتمل الدفع. حاول مرة أخرى.' }, 402);
+    }
+    const refOk = unit.custom_id === row.ref || capture.custom_id === row.ref;
+    if (!offer || !refOk || amount.currency_code !== CARD_CURRENCY || amount.currency_code !== row.currency ||
+        toCents(amount.value) !== toCents(offer.price) || toCents(amount.value) !== toCents(row.amount)) {
+      logCards('capture-order MISMATCH', { mode, orderId, refOk, amount, expected: row.amount + ' ' + row.currency });
+      await env.DB.prepare(`UPDATE card_orders SET status = 'MISMATCH' WHERE order_id = ? AND status = 'CREATED'`).bind(orderId).run();
+      alertLater(ctx, env, 'order:' + orderId, { what: 'قوالب البطاقات: المبلغ المدفوع ' + (amount.value || '?') + ' ' + (amount.currency_code || '') +
+        ' لا يطابق العرض ' + row.offer, orderId, bookId: 'cards-' + row.offer, issue: 'AMOUNT_MISMATCH', debugId: r.debugId, status: r.status });
+      return json({ error: 'AMOUNT_MISMATCH', message: 'المبلغ المدفوع لا يطابق سعر العرض. راسلنا برقم الطلب: ' + orderId }, 400);
+    }
+
+    // one capture → one set of rights, in ONE transaction (D1 batch): the order is marked COMPLETED once,
+    // capture_id is UNIQUE (the same PayPal payment can never serve two orders), rights are idempotent.
+    const nowIso = new Date().toISOString();
+    try {
+      const res = await env.DB.batch([
+        env.DB.prepare(`UPDATE card_orders SET status = 'COMPLETED', capture_id = ?, completed_at = ?
+          WHERE order_id = ? AND status <> 'COMPLETED'`).bind(capture.id, nowIso, orderId),
+        ...cardsGrant(env.DB, user.uid, mode, orderId, picked, nowIso),
+      ]);
+      if (res[0].meta && res[0].meta.changes === 1) logCards('rights saved', { mode, orderId, offer: row.offer, count: picked.length });
+    } catch (e) {
+      logCards('capture-order DUPLICATE CAPTURE ID', { mode, orderId, captureId: capture.id, error: String(e && e.message || e) });
+      return json({ error: 'DUPLICATE', message: 'عملية الدفع هذه مسجّلة من قبل.' }, 409);
+    }
+    return json({ ok: true, orderId, unlocked: picked, owned: await cardsOwned(env.DB, user.uid, mode) });
+  }
+
+  return null;
+}
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     const path = url.pathname;
+
+    // ============ Business-card Premium templates (independent from the books) ============
+    if (path.startsWith('/api/cards/')) {
+      if (request.method === 'OPTIONS') return cardsPreflight(request);
+      let res;
+      try {
+        res = await handleCards(request, env, path, ctx);
+      } catch (e) {
+        console.log('[cards] route error ' + path + ' ' + (e && e.stack || e));
+        res = json({ error: 'SERVER_ERROR', message: 'حدث خطأ في الخادم، حاول مرة أخرى.' }, 500);
+      }
+      const out = withCors(request, res || json({ error: 'NOT_FOUND' }, 404));
+      out.headers.set('Cache-Control', 'no-store');
+      return out;
+    }
 
     // ============ PayPal + تحميل الكتب ============
     if (path.startsWith('/api/paypal/') || path.startsWith('/api/download/')) {
