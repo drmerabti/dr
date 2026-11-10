@@ -1,0 +1,15 @@
+/* The site logo, one look on every page.
+   logo-mark.png (site root) is the logo circle exactly as the home page shows it,
+   with transparent corners. Use it as  <img class="site-logo" src="…/logo-mark.png" alt="…">
+   inside any square box; never stretch, crop, pad or frame it. */
+img.site-logo{
+  display: block;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+  border-radius: 50%;
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+  filter: none;
+}

@@ -644,19 +644,11 @@ html:has(body.ui-v2){ scroll-behavior: smooth; }
   border-radius: 50%;
   overflow: hidden;
 }
-/* The real logo image, shown as-is: no background, padding, frame or filter.
-   apple-touch-icon.png is a 180px square whose logo circle is only ~136px
-   wide (center 87.4,85 / r 68); the square's corners around it are an extra
-   rim that isn't part of the logo. The image is enlarged so the 42px frame's
-   circle lands exactly on the logo's own circle. */
+/* The real logo image, shown as-is: logo-mark.png is already the logo circle
+   (see shared/site-logo.css), so it simply fills its round box. */
 .ui-v2 .brand-logo img{
-  position: absolute;
-  width: calc(var(--ui-ctl-h) * 1.3235);
-  height: calc(var(--ui-ctl-h) * 1.3235);
-  max-width: none;
-  left: calc(var(--ui-ctl-h) * -0.1427);
-  top: calc(var(--ui-ctl-h) * -0.125);
-  border-radius: 0;
+  width: 100%; height: 100%;
+  border-radius: 50%;
   object-fit: contain;
   background: none; padding: 0; border: 0; box-shadow: none; filter: none;
 }
@@ -670,8 +662,7 @@ html:has(body.ui-v2){ scroll-behavior: smooth; }
   content: "";
   width: var(--ui-ctl-h); height: var(--ui-ctl-h); flex-shrink: 0;
   border-radius: 50%;
-  background: url('apple-touch-icon.png') center/cover no-repeat;
-  box-shadow: var(--ui-shadow-sm);
+  background: url('logo-mark.png') center/contain no-repeat;
 }
 .ui-v2 .topbar-actions{ gap: 8px; flex-shrink: 0; }
 
@@ -936,7 +927,7 @@ html:has(body.ui-v2){ scroll-behavior: smooth; }
   box-shadow: inset 0 0 0 1px rgba(255,255,255,.6);
   transition: transform var(--ui-med) var(--ui-ease);
 }
-.ui-v2 .icon-badge svg{ width: 64px; height: 64px; }
+.ui-v2 .icon-badge svg{ width: 72px; height: 72px; }
 /* Per-section tints (existing badge tokens, softened) */
 .ui-v2 .badge-tools{     background: linear-gradient(160deg, #F3F6F8 0%, var(--badge-tools-bg) 100%); }
 .ui-v2 .badge-apps{      background: linear-gradient(160deg, #FCF3F7 0%, var(--badge-apps-bg) 100%); }
@@ -1204,7 +1195,7 @@ html:has(body.ui-v2){ scroll-behavior: smooth; }
   .ui-v2 #sectionGrid .section-card,
   .ui-v2 .section-grid-row2 .section-card{ border-radius: 18px; padding: 10px 6px; }
   .ui-v2 .icon-badge{ width: 68px; height: 68px; border-radius: 20px; margin-bottom: 10px; }
-  .ui-v2 .icon-badge svg{ width: 48px; height: 48px; }
+  .ui-v2 .icon-badge svg{ width: 56px; height: 56px; }
   .ui-v2 #sectionGrid .icon-badge,
   .ui-v2 .section-grid-row2 .icon-badge{ width: 52px; height: 52px; border-radius: 16px; margin-bottom: 8px; }
   .ui-v2 #sectionGrid .icon-badge svg,
@@ -1288,7 +1279,7 @@ html:has(body.ui-v2){ scroll-behavior: smooth; }
   cursor: default;
   opacity: .7;
 }
-.book-soon-ico svg{ width: 52px; height: 52px; }
+.book-soon-ico svg{ width: 58px; height: 58px; }
 .book-soon-title{ font-size: .86rem; font-weight: 700; line-height: 1.4; text-align: center; color: var(--ui-ink-soft, #5a6c7e); }
 .book-soon .coming-soon-badge{ margin: 0; }
 
@@ -1332,10 +1323,10 @@ html:has(body.ui-v2){ scroll-behavior: smooth; }
   transition: opacity .42s ease, transform .42s cubic-bezier(.2,.9,.25,1.35);
   z-index: -1;
 }
-.ui-v2 .icon-card .section-icon img{
+.ui-v2 .icon-card .section-icon svg{
   display: block; width: 100%; height: 100%;
-  object-fit: contain;
-  user-select: none; -webkit-user-drag: none; pointer-events: none;
+  overflow: visible;
+  user-select: none; pointer-events: none;
 }
 .ui-v2 .section-card.icon-card h3{
   font-size: 1.22rem;

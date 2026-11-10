@@ -88,3 +88,34 @@ www.merabti.com, claude-test-dr.merabti.workers.dev).
   merabti.soufiane1@gmail.com, sender alerts@merabti.com, Cloudflare Email Routing). One e-mail per key in D1
   `paypal_alerts`: `order:<id>` / `download:<id>`; with no order ID, book + error + hour. Sent with `waitUntil`.
 - `books/word/build-ad/` (PDF ad-page build tool) is not published (`.assetsignore`, `.vercelignore`).
+
+## Icons (ICONS in app.js)
+
+One semi-flat set, based on the reference tools icon (`ICONS.tools` is that icon, its fills on the shared gradients).
+A new icon must match:
+`<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#07547f" stroke-width="1.6"
+stroke-linecap="round" stroke-linejoin="round">…</g></svg>` — defaults on the inner `<g>` so page CSS cannot repaint it.
+Fills are light vertical gradients written as `fill="url(#miX) <flat colour>"` (the flat colour shows if the
+gradient is missing). `ICON_DEFS` in app.js (one hidden `<svg id="mi-defs">` added to every page that loads app.js)
+holds them: `miD` dark `#064b79`, `miM` mid `#2389b8`, `miH` highlight `#75c6ed`, `miL` light `#b8ddf5`,
+`miP` pale `#e2f2fc`; accents only to tell icons apart: `miG` green `#2f9e6e` (Excel, success), `miA` amber
+`#f0b23e` (stars, coins, Power BI), `miC` coral `#e2694f` (PowerPoint, PDF, live), `miV` violet `#7b5fc4` (Access).
+White details `#f5fbff`. No shadows, no PNG inside SVG, art inside 4–60 of the grid. Each item gets an icon that says
+what it does (no sharing between unrelated tools). The home sections show the same `ICONS` large (`big: true`).
+Copies outside app.js carry their own `<defs>`: `tools/text-to-numbers/app.js` (section icons) and the top bar
+of `lessons/pc-solutions/index.html`.
+
+## Logo
+
+`logo-mark.png` (site root) is the only logo image for pages: the logo circle exactly as the home page shows it,
+transparent outside the circle (made from `apple-touch-icon.png`, which keeps its job as the iOS / favicon icon —
+it is a square with an extra rim and an off-centre circle, so it must not be shown as the logo).
+Markup: `<img class="site-logo" src="…/logo-mark.png" alt="…">` in a square box, and the page links
+`shared/site-logo.css` (after its own CSS). That file keeps the logo round, unstretched and without padding,
+border, frame ring, shadow or filter, whatever the page's own logo rules say. CSS backgrounds use
+`url(logo-mark.png) center/contain`.
+
+## Home order
+
+`SECTIONS_ROW1` = tools, books (`services`), lessons; `SECTIONS_ROW2` = apps, favorites, training.
+The DOM order is the order (RTL: first card on the right; phones keep the same order).
