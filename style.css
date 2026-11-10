@@ -1332,10 +1332,10 @@ html:has(body.ui-v2){ scroll-behavior: smooth; }
   transition: opacity .42s ease, transform .42s cubic-bezier(.2,.9,.25,1.35);
   z-index: -1;
 }
-.ui-v2 .icon-card .section-icon img{
+.ui-v2 .icon-card .section-icon svg{
   display: block; width: 100%; height: 100%;
-  object-fit: contain;
-  user-select: none; -webkit-user-drag: none; pointer-events: none;
+  overflow: visible;
+  user-select: none; pointer-events: none;
 }
 .ui-v2 .section-card.icon-card h3{
   font-size: 1.22rem;

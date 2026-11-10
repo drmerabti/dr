@@ -88,3 +88,14 @@ www.merabti.com, claude-test-dr.merabti.workers.dev).
   merabti.soufiane1@gmail.com, sender alerts@merabti.com, Cloudflare Email Routing). One e-mail per key in D1
   `paypal_alerts`: `order:<id>` / `download:<id>`; with no order ID, book + error + hour. Sent with `waitUntil`.
 - `books/word/build-ad/` (PDF ad-page build tool) is not published (`.assetsignore`, `.vercelignore`).
+
+## Icons (ICONS in app.js)
+
+One flat set, based on the reference tools icon (`ICONS.tools` is that icon as given). A new icon must match:
+`<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#07547f" stroke-width="1.6"
+stroke-linecap="round" stroke-linejoin="round">…</g></svg>` — defaults on the inner `<g>` so page CSS cannot repaint it.
+Fills: dark `#064b79`, mid `#2389b8`, highlight `#75c6ed`, light `#b8ddf5`, pale `#e2f2fc`, white `#f5fbff`.
+Accents only to tell icons apart: green `#2f9e6e` (Excel, success), amber `#f0b23e` (stars, coins, Power BI),
+coral `#e2694f` (PowerPoint, PDF, live), violet `#7b5fc4` (Access). No gradients, no shadows, no PNG inside SVG,
+art inside 4–60 of the grid. The home sections show the same `ICONS` large (`big: true` in `SECTIONS_ROW1/2`).
+Copies: `tools/text-to-numbers/app.js` (section icons) and the top bar of `lessons/pc-solutions/index.html`.
