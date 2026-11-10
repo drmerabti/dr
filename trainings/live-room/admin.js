@@ -759,7 +759,7 @@
     if (btn) { btn.disabled = true; btn.textContent = '… جاري التحضير'; }
     var host = $('reportHost'), pages = [];
     var avg = rec.ranking.length ? Math.round(rec.ranking.reduce(function (s, r) { return s + r.pct; }, 0) / rec.ranking.length) : 0;
-    var head = '<div class="rp-head"><img src="../../apple-touch-icon.png" alt=""><div><h1>تقرير جلسة التدريب المباشر</h1><p>أكاديمية مرابطي — د. سفيان مرابطي</p></div></div>' +
+    var head = '<div class="rp-head"><img class="site-logo" src="../../logo-mark.png" alt=""><div><h1>تقرير جلسة التدريب المباشر</h1><p>أكاديمية مرابطي — د. سفيان مرابطي</p></div></div>' +
       '<div class="rp-kpis"><div><b>' + esc(fmtDate(rec.createdAt)) + '</b><span>التاريخ</span></div><div><b dir="ltr">' + esc(fmtCode(rec.code)) + '</b><span>رمز الغرفة</span></div>' +
       '<div><b>' + rec.participants + '</b><span>عدد المشاركين</span></div><div><b>' + rec.questions.length + '</b><span>الأسئلة المطروحة</span></div><div><b>' + avg + '%</b><span>متوسط الإجابات الصحيحة</span></div></div>';
     var TN = function (ty) { return window.LR_TYPES[ty] ? window.LR_TYPES[ty].name : ty; };

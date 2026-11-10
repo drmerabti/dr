@@ -101,7 +101,7 @@ var LR_HALL = (function () {
     root.className = 'lrh' + (opts.admin ? ' lrh-admin verdicts' : '');
     root.innerHTML = SVG.replace(/\{N\}/g, N) +
       '<div class="lrh-board">' +
-      '<img class="lrh-logo" src="' + esc(opts.logo || '../../apple-touch-icon.png') + '" alt="">' +
+      '<img class="lrh-logo site-logo" src="' + esc(opts.logo || '../../logo-mark.png') + '" alt="">' +
       '<div class="lrh-img"></div><div class="lrh-q"></div><div class="lrh-sub"></div><div class="lrh-opts"></div><div class="lrh-timer"></div></div>' +
       '<div class="lrh-screen lrh-scrL"></div><div class="lrh-screen lrh-scrR"></div>' +
       '<div class="lrh-hud"><span class="lrh-chip lrh-codechip hidden"></span><span class="lrh-chip lrh-simchip hidden">🧪 محاكاة</span>' +

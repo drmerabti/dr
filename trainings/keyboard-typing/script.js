@@ -756,7 +756,7 @@
       var img = new Image();
       img.onload = function () { x.save(); x.beginPath(); x.arc(W / 2, 140, 58, 0, Math.PI * 2); x.clip(); x.drawImage(img, W / 2 - 58, 82, 116, 116); x.restore(); res(c.toDataURL('image/png')); };
       img.onerror = function () { res(c.toDataURL('image/png')); };
-      img.src = '../../apple-touch-icon.png';
+      img.src = '../../logo-mark.png';
     });
   }
   function makeCert() {
