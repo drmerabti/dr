@@ -2476,7 +2476,7 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
     SHOP.btns = null;
     if (SHOP.mode === 'demo') {
       pay.innerHTML = `<div class="shop-note">${escapeHtml(t('shop_demo'))}</div>
-        <button type="button" class="shop-pp" data-shop="demo"><span>PayPal</span><small>${escapeHtml(t('shop_demo_btn'))} · ${shopPrice()}</small></button>`;
+        <button type="button" class="shop-pp" data-shop="demo"><span>PayPal</span><small>${escapeHtml(t('shop_demo_btn'))} · <bdi dir="ltr">${shopPrice()}</bdi></small></button>`;
       return;
     }
     if (!salesOn()) { pay.innerHTML = `<div class="shop-note off">${escapeHtml(t('shop_off'))}</div>`; return; }
