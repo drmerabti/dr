@@ -141,11 +141,23 @@
       gallery: 'معرض القوالب', search: 'ابحث عن قالب...', no_results: 'لا توجد قوالب مطابقة',
       cats: { all: 'الكل', premium: 'Premium', professional: 'احترافي', modern: 'عصري', minimal: 'بسيط', creative: 'إبداعي', academic: 'أكاديمي', ats: 'ATS' },
       cv_word: 'السيرة الذاتية', premium_tag: 'Premium',
-      prem_text: 'هذا القالب من القوالب المدفوعة. التعديل والمعاينة مجانيان، ويُطلب الدفع عند تحميل ملف PDF أو الطباعة.',
-      prem_pay: 'متابعة إلى الدفع', prem_free: 'اختيار قالب مجاني', prem_note: 'Premium · الدفع عند التحميل',
-      prem_login: 'سجّل دخولك للمتابعة إلى الدفع', prem_checking: 'جارِ التحقق من الدفع...',
-      prem_unavailable: 'الدفع غير متاح حاليًا. حاول بعد قليل أو اختر قالبًا مجانيًا.',
-      prem_late: 'تم الدفع لكن تأكيده تأخّر. انتظر دقيقة ثم اضغط التحميل مرة أخرى، ولن يُطلب منك الدفع ثانية.',
+      shop_note: 'Premium · {p}', shop_owned: 'مملوك', shop_title: 'قالب «{n}»', shop_close: 'إغلاق',
+      shop_sub: 'اشترِه مرة واحدة واستعمله دائمًا. التعديل والمعاينة مجانيان؛ الشراء يفتح تحميل سيرتك وطباعتها بهذا القالب.',
+      shop_once: 'دفعة واحدة · شراء دائم', shop_b1: 'تحميل PDF وطباعة دون حدود بهذا القالب',
+      shop_b2: 'لكل سيرك الذاتية، الحالية والقادمة', shop_b3: 'محفوظ في حسابك على Google',
+      shop_account: 'الحساب', shop_secure: 'دفع آمن عبر PayPal', shop_restore: 'استرجاع مشترياتي',
+      shop_free: 'اختيار قالب مجاني', shop_paying: 'جارِ تأكيد الدفع…', shop_done: 'تم شراء القالب',
+      shop_done_t: 'أصبح القالب ملكًا لحسابك: حمّل سيرتك أو اطبعها به متى شئت، دون دفع جديد.',
+      shop_order: 'رقم الطلب', shop_now_pdf: 'تحميل PDF الآن', shop_now_print: 'الطباعة الآن',
+      shop_err: 'تعذّر الاتصال بخدمة الدفع. حاول مرة أخرى.',
+      shop_off: 'شراء قوالب Premium غير متاح حاليًا. يمكنك متابعة التعديل والمعاينة، أو اختيار قالب مجاني.',
+      shop_demo: 'وضع تجريبي (رابط المعاينة): لا يُدفع أي مبلغ ولا يُحفظ أي شراء.', shop_demo_btn: 'محاكاة الدفع',
+      shop_sandbox: 'وضع الاختبار (PayPal Sandbox): لا يُخصم أي مبلغ حقيقي.',
+      shop_check_err: 'تعذّر التحقق من مشترياتك. تحقق من الاتصال ثم أعد المحاولة.',
+      shop_resumed: 'تم تأكيد شرائك السابق ✓', shop_restored: 'القوالب المشتراة على هذا الحساب: {n}',
+      shop_restored0: 'لا توجد قوالب مشتراة على هذا الحساب.',
+      gate_title: 'سجّل الدخول بحساب Google', gate_text: 'التحميل والطباعة يتطلبان تسجيل الدخول بحساب Google، حتى مع القوالب المجانية. التعديل والمعاينة متاحان دون تسجيل.',
+      gate_other: 'أنت مسجّل بالبريد الإلكتروني؛ التحميل والطباعة يتطلبان حساب Google.', gate_err: 'تعذّر تسجيل الدخول عبر Google. حاول مرة أخرى.',
       ct_labels: { phone: 'الهاتف', email: 'البريد الإلكتروني', address: 'العنوان', linkedin: 'لينكدإن', website: 'الموقع', passport: 'جواز السفر' },
       sec_style: 'التنسيق والقالب', sec_personal: 'المعلومات الشخصية والصورة',
       f_template: 'القالب', f_color: 'اللون الرئيسي', f_font: 'الخط', font_auto: 'خط القالب', f_fontsize: 'حجم الخط',
@@ -169,11 +181,23 @@
       gallery: 'Template gallery', search: 'Search templates...', no_results: 'No matching templates',
       cats: { all: 'All', premium: 'Premium', professional: 'Professional', modern: 'Modern', minimal: 'Minimal', creative: 'Creative', academic: 'Academic', ats: 'ATS' },
       cv_word: 'Curriculum Vitae', premium_tag: 'Premium',
-      prem_text: 'This is a paid template. Editing and previewing are free; payment is requested when you download the PDF or print.',
-      prem_pay: 'Continue to payment', prem_free: 'Choose a free template', prem_note: 'Premium · paid at download',
-      prem_login: 'Sign in to continue to payment', prem_checking: 'Checking your payment...',
-      prem_unavailable: 'Payment is not available right now. Try again shortly or choose a free template.',
-      prem_late: 'Your payment went through but its confirmation is late. Wait a minute and press download again; you will not be asked to pay twice.',
+      shop_note: 'Premium · {p}', shop_owned: 'Owned', shop_title: '“{n}” template', shop_close: 'Close',
+      shop_sub: 'Buy it once, keep it for good. Editing and previewing are free; the purchase unlocks downloading and printing with this template.',
+      shop_once: 'One payment · yours for good', shop_b1: 'Unlimited PDF downloads and printing with this template',
+      shop_b2: 'For all your CVs, now and later', shop_b3: 'Kept in your Google account',
+      shop_account: 'Account', shop_secure: 'Secure payment with PayPal', shop_restore: 'Restore my purchases',
+      shop_free: 'Choose a free template', shop_paying: 'Confirming your payment…', shop_done: 'Template purchased',
+      shop_done_t: 'The template now belongs to your account: download or print your CV with it whenever you like, with no new payment.',
+      shop_order: 'Order number', shop_now_pdf: 'Download the PDF now', shop_now_print: 'Print now',
+      shop_err: 'Could not reach the payment service. Please try again.',
+      shop_off: 'Premium templates are not on sale right now. You can keep editing and previewing, or choose a free template.',
+      shop_demo: 'Demo mode (preview link): nothing is paid and nothing is saved.', shop_demo_btn: 'Simulate the payment',
+      shop_sandbox: 'Test mode (PayPal Sandbox): no real money is taken.',
+      shop_check_err: 'Could not check your purchases. Check your connection and try again.',
+      shop_resumed: 'Your earlier purchase is confirmed ✓', shop_restored: 'Templates bought on this account: {n}',
+      shop_restored0: 'No templates bought on this account.',
+      gate_title: 'Sign in with Google', gate_text: 'Downloading and printing need a Google sign-in, free templates included. Editing and previewing need no account.',
+      gate_other: 'You are signed in with e-mail; downloading and printing need a Google account.', gate_err: 'Google sign-in failed. Please try again.',
       ct_labels: { phone: 'Phone', email: 'Email', address: 'Address', linkedin: 'LinkedIn', website: 'Website', passport: 'Passport' },
       sec_style: 'Layout & template', sec_personal: 'Personal info & photo',
       f_template: 'Template', f_color: 'Main colour', f_font: 'Font', font_auto: 'Template font', f_fontsize: 'Text size',
@@ -197,11 +221,23 @@
       gallery: 'Galerie de modèles', search: 'Rechercher un modèle...', no_results: 'Aucun modèle correspondant',
       cats: { all: 'Tous', premium: 'Premium', professional: 'Professionnel', modern: 'Moderne', minimal: 'Épuré', creative: 'Créatif', academic: 'Académique', ats: 'ATS' },
       cv_word: 'Curriculum Vitæ', premium_tag: 'Premium',
-      prem_text: 'Ce modèle est payant. La modification et l’aperçu sont gratuits ; le paiement est demandé au téléchargement du PDF ou à l’impression.',
-      prem_pay: 'Continuer vers le paiement', prem_free: 'Choisir un modèle gratuit', prem_note: 'Premium · payant au téléchargement',
-      prem_login: 'Connectez-vous pour continuer vers le paiement', prem_checking: 'Vérification du paiement...',
-      prem_unavailable: 'Le paiement est indisponible pour le moment. Réessayez plus tard ou choisissez un modèle gratuit.',
-      prem_late: 'Paiement reçu mais sa confirmation tarde. Patientez une minute puis relancez le téléchargement ; vous ne paierez pas deux fois.',
+      shop_note: 'Premium · {p}', shop_owned: 'Acquis', shop_title: 'Modèle « {n} »', shop_close: 'Fermer',
+      shop_sub: 'Achetez-le une fois, gardez-le pour toujours. La modification et l’aperçu sont gratuits ; l’achat débloque le téléchargement et l’impression avec ce modèle.',
+      shop_once: 'Paiement unique · achat définitif', shop_b1: 'Téléchargements PDF et impressions illimités avec ce modèle',
+      shop_b2: 'Pour tous vos CV, actuels et futurs', shop_b3: 'Enregistré dans votre compte Google',
+      shop_account: 'Compte', shop_secure: 'Paiement sécurisé avec PayPal', shop_restore: 'Restaurer mes achats',
+      shop_free: 'Choisir un modèle gratuit', shop_paying: 'Confirmation du paiement…', shop_done: 'Modèle acheté',
+      shop_done_t: 'Le modèle appartient désormais à votre compte : téléchargez ou imprimez votre CV avec lui quand vous voulez, sans nouveau paiement.',
+      shop_order: 'Numéro de commande', shop_now_pdf: 'Télécharger le PDF', shop_now_print: 'Imprimer',
+      shop_err: 'Impossible de joindre le service de paiement. Réessayez.',
+      shop_off: 'Les modèles Premium ne sont pas en vente pour le moment. Vous pouvez continuer à modifier et prévisualiser, ou choisir un modèle gratuit.',
+      shop_demo: 'Mode démo (lien d’aperçu) : aucun paiement, aucun achat enregistré.', shop_demo_btn: 'Simuler le paiement',
+      shop_sandbox: 'Mode test (PayPal Sandbox) : aucun débit réel.',
+      shop_check_err: 'Impossible de vérifier vos achats. Vérifiez la connexion et réessayez.',
+      shop_resumed: 'Votre achat précédent est confirmé ✓', shop_restored: 'Modèles achetés sur ce compte : {n}',
+      shop_restored0: 'Aucun modèle acheté sur ce compte.',
+      gate_title: 'Connectez-vous avec Google', gate_text: 'Le téléchargement et l’impression demandent une connexion Google, modèles gratuits compris. La modification et l’aperçu ne demandent aucun compte.',
+      gate_other: 'Vous êtes connecté par e-mail ; le téléchargement et l’impression demandent un compte Google.', gate_err: 'La connexion Google a échoué. Réessayez.',
       ct_labels: { phone: 'Téléphone', email: 'E-mail', address: 'Adresse', linkedin: 'LinkedIn', website: 'Site web', passport: 'Passeport' },
       sec_style: 'Mise en forme & modèle', sec_personal: 'Informations personnelles & photo',
       f_template: 'Modèle', f_color: 'Couleur principale', f_font: 'Police', font_auto: 'Police du modèle', f_fontsize: 'Taille du texte',
@@ -1260,7 +1296,7 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
     previewPages = renderPages(activeCv, tplOf(activeCv), els.pages);
     previewFs = previewPages.fit.fs;
     syncFsUi();
-    updatePremiumUi();
+    shopApply();
     const n = previewPages.length;
     els.pageCount.textContent = n > 1 ? `${t('pages_n')}: ${n}` : '';
     applyZoom();
@@ -1362,7 +1398,7 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
     if (!strip || !activeCv) return;
     const src = thumbSource();
     const cur = tplOf(activeCv);
-    strip.innerHTML = TPL_IDS.map((id) => `<button type="button" class="tpl-chip${id === cur ? ' on' : ''}${tplIsPremium(id) ? ' prem' : ''}" data-tpl="${id}"><span class="t-thumb"></span><span>${escapeHtml(t('templateNames')[id])}</span>${tplIsPremium(id) ? `<i class="t-prem">${CROWN}</i>` : ''}</button>`).join('');
+    strip.innerHTML = TPL_IDS.map((id) => `<button type="button" class="tpl-chip${id === cur ? ' on' : ''}${tplIsPremium(id) ? ' prem' : ''}" data-tpl="${id}"><span class="t-thumb"></span><span>${escapeHtml(t('templateNames')[id])}</span>${tplIsPremium(id) ? `<i class="t-prem${owns(id) ? ' own' : ''}">${owns(id) ? CHECK : CROWN}</i>` : ''}</button>`).join('');
     qsa('.tpl-chip', strip).forEach((b) => {
       const box = b.querySelector('.t-thumb');
       thumbInto(box, cvForTemplate(src, b.dataset.tpl), b.dataset.tpl, box.clientWidth || 78);
@@ -1383,7 +1419,7 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
       (!q || [id, I18N.ar.templateNames[id], I18N.en.templateNames[id], I18N.fr.templateNames[id], t('cats')[TPL[id].cat], tplIsPremium(id) ? 'premium بريميوم مدفوع' : ''].join(' ').toLowerCase().includes(q)));
     const cur = tplOf(activeCv);
     if (!ids.length) { els.gGrid.innerHTML = `<div class="g-empty">${escapeHtml(t('no_results'))}</div>`; return; }
-    els.gGrid.innerHTML = ids.map((id) => `<button type="button" class="g-card${id === cur ? ' on' : ''}${tplIsPremium(id) ? ' prem' : ''}" data-tpl="${id}"><div class="g-thumb"></div>${tplIsPremium(id) ? premBadge() : ''}<div class="g-meta"><b>${escapeHtml(t('templateNames')[id])}</b><span>${escapeHtml(t('cats')[TPL[id].cat])}</span></div></button>`).join('');
+    els.gGrid.innerHTML = ids.map((id) => `<button type="button" class="g-card${id === cur ? ' on' : ''}${tplIsPremium(id) ? ' prem' : ''}" data-tpl="${id}"><div class="g-thumb"></div>${tplIsPremium(id) ? premBadge(id) : ''}<div class="g-meta"><b>${escapeHtml(t('templateNames')[id])}</b><span>${escapeHtml(t('cats')[TPL[id].cat])}</span></div></button>`).join('');
     fillGalleryThumbs();
   }
   // (Re)draws the thumbnails inside the cards that are already there — the cards themselves are not replaced.
@@ -1402,7 +1438,12 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
     requestAnimationFrame(step);
   }
   const CROWN = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 10H5z"/></svg>';
-  function premBadge() { return `<span class="g-prem">${CROWN}<b>${escapeHtml(t('premium_tag'))}</b></span>`; }
+  const CHECK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>';
+  // Premium badge: price while the template is not owned, "Owned" once bought (or for an admin)
+  function premBadge(id) {
+    const own = owns(id);
+    return `<span class="g-prem${own ? ' own' : ''}">${own ? CHECK : CROWN}<b>${escapeHtml(own ? t('shop_owned') : t('premium_tag') + ' · ' + shopPrice())}</b></span>`;
+  }
   $('btnGallery').addEventListener('click', openGallery);
   $('gClose').addEventListener('click', closeGallery);
   els.gallery.addEventListener('click', (e) => {
@@ -1837,7 +1878,8 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
   document.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return;
     if (!els.confirmOverlay.classList.contains('hidden')) closeConfirm(false);
-    else if (!$('premiumOverlay').classList.contains('hidden')) closePremium();
+    else if (!$('shop').classList.contains('hidden')) closeShop();
+    else if (!$('gGate').classList.contains('hidden')) closeGate();
     else if (!els.gallery.classList.contains('hidden')) closeGallery();
     else if (!els.mine.classList.contains('hidden')) closeMine();
     else if (!els.login.classList.contains('hidden')) closeLogin();
@@ -1879,6 +1921,7 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
     }
     if (!els.mine.classList.contains('hidden')) renderMine();
     if (!els.gallery.classList.contains('hidden')) buildGallery();
+    if (!$('shop').classList.contains('hidden') && !SHOP.busy) shopRender();
   }
   els.langToggle.addEventListener('click', (e) => { e.stopPropagation(); els.langMenu.classList.toggle('hidden'); });
   qsa('.lang-btn').forEach((btn) => btn.addEventListener('click', () => { lang = btn.dataset.lang; els.langMenu.classList.add('hidden'); applyLanguage(); }));
@@ -1991,7 +2034,8 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
     currentUser = { uid: fbUser.uid, name: fbUser.displayName || fbUser.email, email: fbUser.email, picture: fbUser.photoURL || null };
     await Promise.all([loadCvList(), loadAdminFlag()]);
     updateUserChip();
-    updatePremiumUi();
+    shopApply();
+    SHOP.ready.then(() => shopRefresh()).then(() => shopResume());
     if (!els.mine.classList.contains('hidden')) renderMine();
   }
   function updateUserChip() {
@@ -2261,41 +2305,75 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
     });
   }
 
-  /* ================= Paid exports (Paddle, one payment per export) =================
-     PAY_ALL_DOWNLOADS  every PDF download is paid — the first plan, kept off while the Paddle account waits for
-                        approval, so the free templates still download for free.
-     PREMIUM_PAYWALL    a CV that uses a Premium template is paid when it is exported (PDF or print).
-     Editing and previewing are always free. An admin (users/{uid}.isAdmin, as in shared/purchase.js) never pays.
-     A payment opens the exports for 10 minutes (checkForRecentPaidDownload): time to fix a detail and export again. */
-  const PAY_ALL_DOWNLOADS = false;
-  const PREMIUM_PAYWALL = true;
-  const PADDLE_CLIENT_TOKEN = 'live_11f89f5307b65bb7f8a4c484e40';
-  const PADDLE_CV_PRICE_ID = 'pri_01m35kb514t1p7fve8fze6ct5e';
-  let paddleReady = false;
+  /* ================= Exports & Premium templates (PayPal · Worker /api/cv/* · Cloudflare D1) =================
+     - Editing and previewing need no account.
+     - Every export (PDF button, print button, "PDF" in My CVs) goes through requestExport(kind) and needs a
+       GOOGLE sign-in, free templates included.
+     - A Premium template is bought once (price from the server: $2.99) and kept for good by the Google account.
+       The rights come from the Worker (D1, payment checked there); the browser never decides alone, except for
+       admins (users/{uid}.isAdmin, the rule of shared/purchase.js), who export every template.
+     - Modes from GET /api/cv/config: live / sandbox (sales on) · demo (sales off, claude-test preview or
+       localhost: nothing paid, nothing saved) · off (sales off elsewhere: Premium exports wait for the sales). */
+  const SHOP_LOCAL = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+  const SHOP_API = (/\.workers\.dev$/.test(location.hostname) || SHOP_LOCAL) ? '' : 'https://dr.merabti.workers.dev';
+  const SHOP_DEMO_HOST = SHOP_LOCAL || location.hostname === 'claude-test-dr.merabti.workers.dev';
+  const SHOP_PENDING = 'cvbuilder:pendingOrder';
+  const SHOP = { mode: 'loading', cfg: null, owned: new Set(), demoOwned: new Set(), sdk: null, btns: null, busy: false, tpl: '', kind: 'pdf', ready: null };
   let isAdmin = false;
-  let pendingExport = null; // 'pdf' | 'print' — what to run once the payment is confirmed
 
-  function initPaddle() {
-    if (!window.Paddle) return;
-    window.Paddle.Initialize({
-      token: PADDLE_CLIENT_TOKEN,
-      eventCallback: function (event) {
-        if (event.name === 'checkout.completed') onPaddleCheckoutCompleted();
-        else if (event.name === 'checkout.error') { pendingExport = null; toast(t('prem_unavailable'), 5000); }
-      },
-    });
-    paddleReady = true;
+  const shopPrice = () => '$' + ((SHOP.cfg && SHOP.cfg.price) || '2.99');
+  const salesOn = () => SHOP.mode === 'live' || SHOP.mode === 'sandbox';
+  const owns = (id) => !tplIsPremium(id) || isAdmin || SHOP.owned.has(id) || (SHOP.mode === 'demo' && SHOP.demoOwned.has(id));
+  function googleUser() {
+    const u = window.fbAuth && window.fbAuth.currentUser;
+    return u && (u.providerData || []).some((p) => p && p.providerId === 'google.com') ? u : null;
   }
-  // Paddle.js loads async (see index.html); poll briefly until it's available.
-  (function waitForPaddle() {
-    if (window.Paddle) { initPaddle(); return; }
-    let tries = 0;
-    const iv = setInterval(() => {
-      tries++;
-      if (window.Paddle) { clearInterval(iv); initPaddle(); }
-      else if (tries > 40) { clearInterval(iv); } // ~10s, give up quietly — the payment then answers "not available"
-    }, 250);
-  })();
+  function shopTrack(name, extra) { try { if (window.gtag) gtag('event', name, Object.assign({ tool: 'cvbuilder', method: 'paypal' }, extra || {})); } catch (e) { /* ignore */ } }
+
+  async function shopFetch(path, opts) {
+    opts = opts || {};
+    const headers = { 'Content-Type': 'application/json' };
+    const u = googleUser();
+    if (u) headers.Authorization = 'Bearer ' + await u.getIdToken();
+    const r = await fetch(SHOP_API + path, { method: opts.method || 'GET', headers, body: opts.body ? JSON.stringify(opts.body) : undefined, cache: 'no-store' });
+    const d = await r.json().catch(() => ({}));
+    d._status = r.status;
+    return d;
+  }
+  async function shopLoadConfig() {
+    try {
+      const d = await shopFetch('/api/cv/config');
+      if (d && d.price) SHOP.cfg = d;
+      if (d && Array.isArray(d.premium) && d.premium.join() !== TPL_IDS.filter(tplIsPremium).join()) console.warn('[cv] premium list differs from the server');
+      SHOP.mode = d && (d.sales === 'live' || d.sales === 'sandbox') ? d.sales : (SHOP_DEMO_HOST ? 'demo' : 'off');
+    } catch (e) { SHOP.mode = SHOP_DEMO_HOST ? 'demo' : 'off'; }
+    if (activeCv) shopApply();
+  }
+  SHOP.ready = shopLoadConfig();   // starts at once; exports wait for it
+
+  /* rights from the server (Google account only); strict = throw when the server cannot answer */
+  async function shopRefresh(strict) {
+    if (!salesOn() || !googleUser()) { SHOP.owned = new Set(); shopApply(); return SHOP.owned; }
+    try {
+      const d = await shopFetch('/api/cv/entitlements');
+      if (!Array.isArray(d.owned)) throw new Error(d.error || 'entitlements');
+      SHOP.owned = new Set(d.owned);
+    } catch (e) { if (strict) throw e; }
+    shopApply();
+    return SHOP.owned;
+  }
+
+  /* toolbar cue, gallery and strip badges follow the rights */
+  function shopApply() {
+    if (!activeCv) return;
+    const locked = !owns(tplOf(activeCv));
+    els.downloadPdfBtn.classList.toggle('prem', locked);
+    const note = $('premNote');
+    note.classList.toggle('hidden', !locked);
+    note.innerHTML = locked ? `${CROWN}<span>${escapeHtml(t('shop_note').replace('{p}', shopPrice()))}</span>` : '';
+    qsa('.g-card[data-tpl]', els.gGrid).forEach((c) => { const b = c.querySelector('.g-prem'); if (b) b.outerHTML = premBadge(c.dataset.tpl); });
+    qsa('.tpl-chip[data-tpl] .t-prem').forEach((b) => { const own = owns(b.parentElement.dataset.tpl); b.classList.toggle('own', own); b.innerHTML = own ? CHECK : CROWN; });
+  }
 
   async function loadAdminFlag() {
     isAdmin = false;
@@ -2305,101 +2383,219 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
       isAdmin = !!(u.exists && u.data().isAdmin === true);
     } catch (e) { isAdmin = false; }
   }
-  const premiumLocked = () => PREMIUM_PAYWALL && !!activeCv && tplIsPremium(tplOf(activeCv)) && !isAdmin;
+
+  /* Every export passes here: Google sign-in first, then the right to a Premium template. */
   const runExport = (kind) => (kind === 'print' ? doPrint() : exportPdf());
-  // Every export (PDF button, print button, "PDF" in My CVs) passes here.
-  function requestExport(kind) {
-    if (!activeCv) return;
-    if (premiumLocked()) { openPremium(kind); return; }
-    if (PAY_ALL_DOWNLOADS && kind === 'pdf' && !isAdmin) { payThenExport(kind); return; }
+  let exportChecking = false;
+  async function requestExport(kind) {
+    if (!activeCv || exportChecking) return;
+    if (!hasFb()) { toast(t('t_no_fb')); return; }
+    if (!googleUser()) { openGate(kind); return; }
+    const id = tplOf(activeCv);
+    if (!owns(id)) {
+      exportChecking = true;
+      try {
+        await SHOP.ready;
+        if (salesOn()) await shopRefresh(true);
+      } catch (e) { exportChecking = false; toast(t('shop_check_err'), 5000); return; }
+      exportChecking = false;
+      if (!owns(id)) { openShop(id, kind); return; }
+    }
     runExport(kind);
   }
-  // Cue on the toolbar while the open CV uses a Premium template that would be paid at export.
-  function updatePremiumUi() {
-    const on = premiumLocked();
-    els.downloadPdfBtn.classList.toggle('prem', on);
-    const note = $('premNote');
-    note.classList.toggle('hidden', !on);
-    note.innerHTML = on ? `${CROWN}<span>${escapeHtml(t('prem_note'))}</span>` : '';
-  }
 
-  /* Premium dialog: says what is paid and when, then goes to the payment or to the gallery */
-  let premiumKind = 'pdf';
-  function openPremium(kind) {
-    premiumKind = kind;
-    $('premTitle').textContent = `${t('templateNames')[tplOf(activeCv)]} · ${t('premium_tag')}`;
-    $('premText').textContent = t('prem_text');
-    $('premiumOverlay').classList.remove('hidden');
+  /* ---- Google sign-in asked before an export ---- */
+  let gateKind = 'pdf';
+  function openGate(kind) {
+    gateKind = kind;
+    $('gateOther').classList.toggle('hidden', !(window.fbAuth && window.fbAuth.currentUser));
+    $('gateErr').classList.add('hidden');
+    $('gGate').classList.remove('hidden');
   }
-  function closePremium() { $('premiumOverlay').classList.add('hidden'); }
-  $('premPay').addEventListener('click', () => { closePremium(); payThenExport(premiumKind); });
-  $('premFree').addEventListener('click', () => { closePremium(); gCat = 'all'; openGallery(); });
-  $('premCancel').addEventListener('click', closePremium);
-  $('premiumOverlay').addEventListener('click', (e) => { if (e.target === $('premiumOverlay')) closePremium(); });
-
-  async function payThenExport(kind) {
-    if (!activeCvId) return;
-    if (!hasFb()) { toast(t('prem_unavailable'), 5000); return; }
-    if (!currentUser) { toast(t('prem_login')); openLogin(() => payThenExport(kind)); return; }
-    if (isAdmin) { runExport(kind); return; }                                 // the sign-in may just have shown an admin
-    if (await checkForRecentPaidDownload(1)) { runExport(kind); return; }     // paid a few minutes ago: no second payment
-    if (!paddleReady || !window.Paddle) { toast(t('prem_unavailable'), 5000); return; }
-    pendingExport = kind;
+  function closeGate() { $('gGate').classList.add('hidden'); }
+  function gateError(msg) { const el = $('gateErr'); el.textContent = msg; el.classList.remove('hidden'); }
+  $('gateGoogle').addEventListener('click', async () => {
+    if (!hasFb()) { gateError(t('t_no_fb')); return; }
     try {
-      // The overlay checkout stays on this same page — no redirect, so the open CV is still there afterwards.
-      window.Paddle.Checkout.open({
-        items: [{ priceId: PADDLE_CV_PRICE_ID, quantity: 1 }],
-        customData: { user_id: currentUser.uid },
-      });
+      await window.fbAuth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
+      await onSignedIn(window.fbAuth.currentUser);
     } catch (e) {
-      pendingExport = null;
-      toast(t('prem_unavailable'), 5000);
+      if (e && (e.code === 'auth/popup-closed-by-user' || e.code === 'auth/cancelled-popup-request')) return;
+      gateError(t('gate_err'));
+      return;
     }
+    if (!googleUser()) { gateError(t('gate_err')); return; }
+    closeGate();
+    requestExport(gateKind);
+  });
+  $('gateCancel').addEventListener('click', closeGate);
+  $('gGate').addEventListener('click', (e) => { if (e.target === $('gGate')) closeGate(); });
+
+  /* ---- purchase window: one Premium template, one permanent purchase ---- */
+  const LOCK = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+  function openShop(id, kind) {
+    SHOP.tpl = id; SHOP.kind = kind || 'pdf';
+    $('shop').classList.remove('hidden');
+    shopRender();
+    shopTrack('view_promotion', { template: id });
+  }
+  function closeShop() { if (SHOP.busy) return; $('shop').classList.add('hidden'); SHOP.btns = null; }
+  function shopBusy(on) { SHOP.busy = on; const box = $('shopBox'); if (box) box.classList.toggle('busy', on); }
+  function shopMsg(text, err) { const el = $('shopMsg'); if (el) { el.textContent = text || ''; el.classList.toggle('err', !!err); } }
+
+  function shopRender() {
+    const box = $('shopBox'), id = SHOP.tpl, u = googleUser();
+    if (!box || !id) return;
+    if (owns(id)) { shopSuccess(id, ''); return; }
+    box.innerHTML = `<button type="button" class="shop-x" data-shop="close" aria-label="${attr(t('shop_close'))}">${IC.x}</button>
+      <div class="shop-main">
+        <div class="shop-thumb" id="shopThumb"></div>
+        <div class="shop-info">
+          <span class="shop-tag">${CROWN}<b>Premium</b></span>
+          <h3>${escapeHtml(t('shop_title').replace('{n}', t('templateNames')[id]))}</h3>
+          <p class="shop-sub">${escapeHtml(t('shop_sub'))}</p>
+          <div class="shop-price"><b dir="ltr">${shopPrice()}</b><span>${escapeHtml(t('shop_once'))}</span></div>
+          <ul class="shop-list"><li>${CHECK}<span>${escapeHtml(t('shop_b1'))}</span></li><li>${CHECK}<span>${escapeHtml(t('shop_b2'))}</span></li><li>${CHECK}<span>${escapeHtml(t('shop_b3'))}</span></li></ul>
+        </div>
+      </div>
+      <div class="shop-pay" id="shopPay"></div>
+      <p class="shop-msg" id="shopMsg" role="status"></p>
+      <div class="shop-foot">
+        <span>${LOCK}${escapeHtml(t('shop_secure'))}</span>
+        ${u ? `<span class="shop-who">${escapeHtml(t('shop_account'))}: <b dir="ltr">${escapeHtml(u.email || u.displayName || '')}</b></span>` : ''}
+        <span class="shop-links">${salesOn() ? `<button type="button" class="link-btn" data-shop="restore">${escapeHtml(t('shop_restore'))}</button>` : ''}
+          <button type="button" class="link-btn" data-shop="free">${escapeHtml(t('shop_free'))}</button></span>
+      </div>`;
+    requestAnimationFrame(() => { const th = $('shopThumb'); if (th && activeCv) thumbInto(th, cvForTemplate(activeCv, id), id, th.clientWidth || 150); });
+    shopRenderPay();
   }
 
-  async function onPaddleCheckoutCompleted() {
-    if (!activeCvId) return;
-    const kind = pendingExport || 'pdf';
-    pendingExport = null;
-    const original = els.downloadPdfText.textContent;
-    els.downloadPdfText.textContent = '…';
-    els.downloadPdfBtn.disabled = true;
-    toast(t('prem_checking'), 9000);
-    const paid = await checkForRecentPaidDownload();
-    els.downloadPdfBtn.disabled = false;
-    els.downloadPdfText.textContent = original;
-    if (paid) await runExport(kind);
-    else toast(t('prem_late'), 9000);
+  function shopRenderPay() {
+    const pay = $('shopPay');
+    if (!pay) return;
+    SHOP.btns = null;
+    if (SHOP.mode === 'demo') {
+      pay.innerHTML = `<div class="shop-note">${escapeHtml(t('shop_demo'))}</div>
+        <button type="button" class="shop-pp" data-shop="demo"><span>PayPal</span><small>${escapeHtml(t('shop_demo_btn'))} · ${shopPrice()}</small></button>`;
+      return;
+    }
+    if (!salesOn()) { pay.innerHTML = `<div class="shop-note off">${escapeHtml(t('shop_off'))}</div>`; return; }
+    pay.innerHTML = (SHOP.mode === 'sandbox' ? `<div class="shop-note">${escapeHtml(t('shop_sandbox'))}</div>` : '') +
+      '<div class="shop-ppbox" id="shopPP"><div class="shop-spin"></div></div>';
+    shopLoadSdk().then(shopButtons).catch(() => { const h = $('shopPP'); if (h) h.innerHTML = `<div class="shop-note off">${escapeHtml(t('shop_err'))}</div>`; });
   }
-
-  // true when this account has a purchase recorded (by the payment webhook) in the last 10 minutes
-  async function checkForRecentPaidDownload(attempts) {
-    if (!currentUser || !window.fbDb) return false;
-    const tries = attempts || 6;
-    try {
-      // Payment confirmation (webhook) can lag a few seconds behind the checkout —
-      // poll briefly rather than giving up on the first empty check.
-      for (let attempt = 0; attempt < tries; attempt++) {
-        const snap = await window.fbDb
-          .collection('users').doc(currentUser.uid)
-          .collection('cvPurchases')
-          .orderBy('createdAt', 'desc')
-          .limit(1)
-          .get();
-        if (!snap.empty) {
-          const purchase = snap.docs[0].data();
-          const purchasedAt = purchase.createdAt && purchase.createdAt.toMillis ? purchase.createdAt.toMillis() : 0;
-          // Only treat it as "just paid" if the purchase happened in the last 10 minutes —
-          // avoids re-triggering a free download from an old purchase record.
-          if (Date.now() - purchasedAt < 10 * 60 * 1000) return true;
+  function shopLoadSdk() {
+    if (window.paypal && window.paypal.Buttons) return Promise.resolve();
+    if (SHOP.sdk) return SHOP.sdk;
+    SHOP.sdk = new Promise((ok, no) => {
+      const sc = document.createElement('script');
+      sc.src = 'https://www.paypal.com/sdk/js?client-id=' + encodeURIComponent(SHOP.cfg.clientId) + '&currency=USD&intent=capture&components=buttons';
+      sc.onload = () => (window.paypal && window.paypal.Buttons ? ok() : no());
+      sc.onerror = () => { SHOP.sdk = null; sc.remove(); no(); };
+      document.head.appendChild(sc);
+    });
+    return SHOP.sdk;
+  }
+  function shopButtons() {
+    const host = $('shopPP');
+    if (!host) return;
+    host.innerHTML = '';
+    const id = SHOP.tpl;
+    SHOP.btns = window.paypal.Buttons({
+      style: { layout: 'vertical', color: 'gold', shape: 'pill', label: 'pay', height: 44 },
+      createOrder: async () => {
+        shopMsg('');
+        const d = await shopFetch('/api/cv/create-order', { method: 'POST', body: { template: id } });
+        if (!d.id) {
+          shopMsg(d.message || t('shop_err'), true);
+          if (d.error === 'ALREADY_OWNED') shopRefresh().then(() => { if (owns(id)) shopSuccess(id, ''); });
+          throw new Error(d.error || 'create');
         }
-        if (attempt < tries - 1) await new Promise((r) => setTimeout(r, 1500));
-      }
-    } catch (e) {
-      console.error('checkForRecentPaidDownload failed:', e);
-    }
-    return false;
+        shopTrack('begin_checkout', { template: id, value: parseFloat(SHOP.cfg.price), currency: 'USD' });
+        return d.id;
+      },
+      onApprove: async (data, actions) => {
+        shopBusy(true); shopMsg(t('shop_paying'));
+        shopPending(data.orderID);
+        const d = await shopCapture(data.orderID);
+        shopBusy(false);
+        if (d.error === 'INSTRUMENT_DECLINED') { shopPending(''); shopMsg(d.message, true); return actions.restart(); }
+        if (!d.ok) { shopMsg(d.message || t('shop_err'), true); return; }
+        shopPending('');
+        SHOP.owned = new Set(d.owned || []);
+        shopTrack('purchase', { transaction_id: d.orderId, template: id, value: parseFloat(SHOP.cfg.price), currency: 'USD' });
+        shopSuccess(d.template || id, d.orderId);
+      },
+      onCancel: () => shopMsg(''),
+      onError: () => shopMsg(t('shop_err'), true),
+    });
+    SHOP.btns.render(host).catch(() => { host.innerHTML = `<div class="shop-note off">${escapeHtml(t('shop_err'))}</div>`; });
   }
+
+  /* the PayPal order paid but not confirmed yet (closed tab, lost connection): asked again later, never a proof */
+  function shopPending(orderId) {
+    try {
+      const u = googleUser();
+      if (orderId && u) localStorage.setItem(SHOP_PENDING, JSON.stringify({ id: orderId, uid: u.uid }));
+      else localStorage.removeItem(SHOP_PENDING);
+    } catch (e) { /* ignore */ }
+  }
+  async function shopCapture(orderId) {
+    let d = {};
+    for (let i = 0; i < 3; i++) {
+      d = await shopFetch('/api/cv/capture-order', { method: 'POST', body: { orderId } }).catch(() => ({}));
+      if (d._status && d._status < 500) break;       // answered (ok or a final refusal): no retry
+      await new Promise((r) => setTimeout(r, 1200 * (i + 1)));
+    }
+    return d;
+  }
+  async function shopResume() {
+    let p = null;
+    try { p = JSON.parse(localStorage.getItem(SHOP_PENDING) || 'null'); } catch (e) { p = null; }
+    const u = googleUser();
+    if (!p || !p.id || !u || p.uid !== u.uid || !salesOn()) return;
+    const d = await shopCapture(p.id);
+    if (d.ok) { shopPending(''); SHOP.owned = new Set(d.owned || []); shopApply(); toast(t('shop_resumed'), 4000); }
+    else if (d._status && d._status < 500 && d.error !== 'AUTH_REQUIRED' && d.error !== 'NOT_COMPLETED') shopPending('');
+  }
+
+  function shopSuccess(id, orderId) {
+    shopApply();
+    if (openSec === 'style') renderTplStrip();
+    const box = $('shopBox');
+    if (!box) return;
+    box.innerHTML = `<button type="button" class="shop-x" data-shop="close" aria-label="${attr(t('shop_close'))}">${IC.x}</button>
+      <div class="shop-done"><div class="shop-ok">${CHECK}</div><h3>${escapeHtml(t('shop_done'))} · ${escapeHtml(t('templateNames')[id])}</h3>
+        <p>${escapeHtml(t('shop_done_t'))}</p>
+        ${orderId ? `<p class="shop-order">${escapeHtml(t('shop_order'))}: <b dir="ltr">${escapeHtml(orderId)}</b></p>` : ''}
+        <button type="button" class="soft-btn primary shop-cta" data-shop="export">${escapeHtml(SHOP.kind === 'print' ? t('shop_now_print') : t('shop_now_pdf'))}</button></div>`;
+  }
+  async function shopDemoPay() {
+    if (SHOP.busy) return;
+    shopBusy(true); shopMsg(t('shop_paying'));
+    await new Promise((r) => setTimeout(r, 900));
+    SHOP.demoOwned.add(SHOP.tpl);
+    shopBusy(false);
+    shopSuccess(SHOP.tpl, 'DEMO-' + Date.now().toString(36).toUpperCase());
+  }
+  async function shopRestore() {
+    try {
+      const owned = await shopRefresh(true);
+      toast(owned.size ? t('shop_restored').replace('{n}', owned.size) : t('shop_restored0'), 4000);
+      if (owns(SHOP.tpl)) shopSuccess(SHOP.tpl, '');
+    } catch (e) { shopMsg(t('shop_check_err'), true); }
+  }
+  $('shop').addEventListener('click', (e) => {
+    if (e.target === $('shop')) { closeShop(); return; }
+    const b = e.target.closest('[data-shop]');
+    if (!b || b.disabled || SHOP.busy) return;
+    const a = b.dataset.shop;
+    if (a === 'close') closeShop();
+    else if (a === 'free') { closeShop(); gCat = 'all'; openGallery(); }
+    else if (a === 'demo') shopDemoPay();
+    else if (a === 'restore') shopRestore();
+    else if (a === 'export') { closeShop(); requestExport(SHOP.kind); }
+  });
 
   async function exportPdf() {
     if (!activeCv) return;
@@ -2437,8 +2633,7 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
     els.downloadPdfBtn.disabled = false;
     els.downloadPdfText.textContent = original;
   }
-  // Free templates download without payment while PAY_ALL_DOWNLOADS is false (Paddle account pending approval);
-  // Premium templates follow PREMIUM_PAYWALL. Both switches are at the top of "Paid exports".
+  // Every export asks for a Google sign-in, and for the purchase of a Premium template ("Exports & Premium templates").
   els.downloadPdfBtn.addEventListener('click', () => requestExport('pdf'));
 
   /* ================= Init ================= */
@@ -2460,8 +2655,9 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
         currentUser = null;
         cvList = [];
         isAdmin = false;
+        SHOP.owned = new Set();
         updateUserChip();
-        updatePremiumUi();
+        shopApply();
         if (!els.mine.classList.contains('hidden')) renderMine();
       }
     });

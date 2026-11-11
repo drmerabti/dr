@@ -120,12 +120,25 @@ border, frame ring, shadow or filter, whatever the page's own logo rules say. CS
 - A template = one entry in `TPL` (app.js) + one page skeleton in `PAGES` + its CSS: `style.css` for the 14 free
   templates, `premium.css` for the Premium ones (maison, obsidian, atlas, vitrine, folio, apex, mosaic, orbit,
   ribbon, aurora). Premium = `premium: true` in `TPL` (`tplIsPremium(id)`).
-- Paid exports ("Paid exports" block in app.js): every export goes through `requestExport('pdf' | 'print')`.
-  Two switches: `PREMIUM_PAYWALL` (true: a CV on a Premium template is paid when exported, PDF or print) and
-  `PAY_ALL_DOWNLOADS` (false while the Paddle account waits for approval: free templates download for free).
-  Payment = Paddle overlay (one payment per export, price `PADDLE_CV_PRICE_ID`), confirmed by the webhook that writes
-  `users/{uid}/cvPurchases`; a purchase younger than 10 minutes opens the exports again without paying.
-  Admins (`users/{uid}.isAdmin`, same rule as shared/purchase.js) never pay. Editing and previewing are always free.
+- Exports & Premium templates ("Exports & Premium templates" block in app.js): editing and previewing need no
+  account; every export goes through `requestExport('pdf' | 'print')` and needs a **Google** sign-in (free templates
+  included; an e-mail/password account is asked to continue with Google). A Premium template is sold on its own,
+  **$2.99, one permanent purchase per template, no packs**, through PayPal; rights come from the Worker
+  (`/api/cv/*`, D1), never from the browser. Admins (`users/{uid}.isAdmin`, same rule as shared/purchase.js) export
+  every template. Modes from `/api/cv/config`: live / sandbox · demo (sales off on the claude-test preview or
+  localhost: nothing paid, nothing saved) · off (elsewhere). A paid but unconfirmed order is kept in
+  localStorage `cvbuilder:pendingOrder` (with the uid) and re-captured on the next sign-in. No Paddle anywhere.
+- Worker `/api/cv/*` (worker.js, "CV builder Premium templates"): `GET config` → `{ sales, clientId, currency, price,
+  premium[] }`, `GET entitlements` → `{ owned[] }`, `POST create-order {template}` → `{ id }`,
+  `POST capture-order {orderId}` → `{ ok, orderId, template, owned[] }`. Every route but config needs
+  `Authorization: Bearer <Firebase ID token>` with `firebase.sign_in_provider = google.com` (token checked in the
+  Worker with Google's keys). Price and catalogue only in the Worker (`CV_PRICE`, `CV_PREMIUM`). Capture checks
+  order owner, status, amount, currency and custom_id; one capture = one right (D1 batch, UNIQUE capture_id).
+  D1 tables `cv_orders`, `cv_entitlements` (created on first use, rows tagged `env` = live | sandbox).
+  `CV_SALES` in wrangler.jsonc: **"off" until the owner approves real payments**; "live" is honoured only on
+  dr.merabti.workers.dev (`CV_LIVE_HOSTS`), so previews never take real payments; "sandbox" needs
+  `PAYPAL_SANDBOX_CLIENT_ID` + secret `PAYPAL_SANDBOX_SECRET`. Test-only overrides (sandbox only):
+  `CV_PAYPAL_API`, `CV_TEST_JWKS`.
 - Page fill (auto-fit) is done by `renderPages`: it sets `--fs` (type), `--sp` (vertical spacing) and `--lh` (leading)
   on the page (and per column), then shares the air that is left as `--gx` (before a section) / `--ea` (after an entry).
   So template CSS writes font sizes as `calc(var(--fs) * Npx)` and vertical margins / paddings as

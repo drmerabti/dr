@@ -620,17 +620,21 @@ function logCards(step, info) {
   console.log('[cards] ' + step + ' ' + JSON.stringify(Object.assign({ step }, info)));
 }
 
-/* ---------- Firebase ID token (RS256), checked with Google's public keys ---------- */
-let cardsJwks = { keys: null, until: 0 };
-async function cardsKeys(env, mode) {
-  if (mode === 'sandbox' && env.CARDS_TEST_JWKS) return JSON.parse(env.CARDS_TEST_JWKS).keys || [];
-  if (cardsJwks.keys && Date.now() < cardsJwks.until) return cardsJwks.keys;
+/* ---------- Firebase ID token (RS256), checked with Google's public keys ----------
+   Shared by the business cards (/api/cards/*) and the CV builder (/api/cv/*). */
+let googleJwks = { keys: null, until: 0 };
+async function googleKeys() {
+  if (googleJwks.keys && Date.now() < googleJwks.until) return googleJwks.keys;
   const r = await fetch('https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com');
   if (!r.ok) throw new Error('Google keys unavailable: ' + r.status);
   const j = await r.json();
   const m = (r.headers.get('cache-control') || '').match(/max-age=(\d+)/);
-  cardsJwks = { keys: j.keys || [], until: Date.now() + Math.min(m ? +m[1] : 3600, 21600) * 1000 };
-  return cardsJwks.keys;
+  googleJwks = { keys: j.keys || [], until: Date.now() + Math.min(m ? +m[1] : 3600, 21600) * 1000 };
+  return googleJwks.keys;
+}
+async function cardsKeys(env, mode) {
+  if (mode === 'sandbox' && env.CARDS_TEST_JWKS) return JSON.parse(env.CARDS_TEST_JWKS).keys || [];
+  return googleKeys();
 }
 function b64urlBytes(s) {
   s = s.replace(/-/g, '+').replace(/_/g, '/');
@@ -639,7 +643,8 @@ function b64urlBytes(s) {
   for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
   return out;
 }
-async function cardsUser(request, env, mode) {
+/* the verified claims of the request's Firebase ID token, or null (keysFn = where the public keys come from) */
+async function firebaseClaims(request, keysFn) {
   const m = (request.headers.get('Authorization') || '').match(/^Bearer\s+([A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+)$/);
   if (!m) return null;
   const [h, p, s] = m[1].split('.');
@@ -649,7 +654,7 @@ async function cardsUser(request, env, mode) {
     claims = JSON.parse(new TextDecoder().decode(b64urlBytes(p)));
   } catch (e) { return null; }
   if (header.alg !== 'RS256' || !header.kid) return null;
-  const jwk = (await cardsKeys(env, mode)).find(k => k.kid === header.kid);
+  const jwk = (await keysFn()).find(k => k.kid === header.kid);
   if (!jwk) return null;
   const key = await crypto.subtle.importKey('jwk', { kty: jwk.kty, n: jwk.n, e: jwk.e, alg: 'RS256', ext: true },
     { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' }, false, ['verify']);
@@ -659,7 +664,11 @@ async function cardsUser(request, env, mode) {
   if (claims.aud !== FIREBASE_PROJECT || claims.iss !== 'https://securetoken.google.com/' + FIREBASE_PROJECT) return null;
   if (typeof claims.sub !== 'string' || !claims.sub || claims.sub.length > 128) return null;
   if (!(claims.exp > now) || !(claims.iat <= now + 300)) return null;
-  return { uid: claims.sub };
+  return claims;
+}
+async function cardsUser(request, env, mode) {
+  const claims = await firebaseClaims(request, () => cardsKeys(env, mode));
+  return claims ? { uid: claims.sub } : null;
 }
 
 /* ---------- D1 ---------- */
@@ -825,10 +834,212 @@ async function handleCards(request, env, path, ctx) {
   return null;
 }
 
+/* =====================================================================
+   CV builder Premium templates (tools/cv-builder) — independent from the books and the cards.
+   One template = one permanent purchase at CV_PRICE (no packs). Free templates are not sold.
+     GET  /api/cv/config         → { sales, clientId, currency, price, premium[] }
+     GET  /api/cv/entitlements   → { owned[] }
+     POST /api/cv/create-order   { template } → { id }                (PayPal order made here)
+     POST /api/cv/capture-order  { orderId }  → { ok, orderId, template, owned[] }
+   Every route except config needs "Authorization: Bearer <Firebase ID token>" of a GOOGLE sign-in
+   (claim firebase.sign_in_provider = "google.com"); the Worker checks the token itself.
+
+   CV_SALES (wrangler var): "off" (default: nothing is sold, nothing is written),
+   "sandbox" (PAYPAL_SANDBOX_CLIENT_ID + secret PAYPAL_SANDBOX_SECRET) or
+   "live" (the site's PayPal app) — "live" is honoured ONLY on CV_LIVE_HOSTS (the production Worker):
+   a preview version such as claude-test-dr.merabti.workers.dev stays "off".
+   Test-only overrides, honoured ONLY when CV_SALES = "sandbox":
+     CV_PAYPAL_API (a local PayPal mock), CV_TEST_JWKS (keys of a test signer).
+===================================================================== */
+const CV_PREMIUM = ['maison', 'obsidian', 'atlas', 'vitrine', 'folio', 'apex', 'mosaic', 'orbit', 'ribbon', 'aurora'];
+const CV_PRICE = '2.99';
+const CV_CURRENCY = 'USD';
+const CV_LIVE_HOSTS = ['dr.merabti.workers.dev'];
+
+function cvMode(env, request) {
+  const m = String(env.CV_SALES || 'off').toLowerCase();
+  if (m === 'live') return request && CV_LIVE_HOSTS.includes(new URL(request.url).hostname) ? 'live' : 'off';
+  return m === 'sandbox' ? 'sandbox' : 'off';
+}
+function cvPaypal(env, mode) {
+  if (mode === 'live') return { mode, api: 'https://api-m.paypal.com', id: env.PAYPAL_CLIENT_ID, secret: env.PAYPAL_SECRET };
+  if (mode === 'sandbox') return { mode, api: env.CV_PAYPAL_API || 'https://api-m.sandbox.paypal.com',
+    id: env.PAYPAL_SANDBOX_CLIENT_ID, secret: env.PAYPAL_SANDBOX_SECRET };
+  return { mode };
+}
+async function cvKeys(env, mode) {
+  if (mode === 'sandbox' && env.CV_TEST_JWKS) return JSON.parse(env.CV_TEST_JWKS).keys || [];
+  return googleKeys();
+}
+async function cvUser(request, env, mode) {
+  const claims = await firebaseClaims(request, () => cvKeys(env, mode));
+  if (!claims) return null;
+  return { uid: claims.sub, google: !!(claims.firebase && claims.firebase.sign_in_provider === 'google.com') };
+}
+
+/* one JSON line per step, never the payer's details */
+function logCv(step, info) {
+  console.log('[cv] ' + step + ' ' + JSON.stringify(Object.assign({ step }, info)));
+}
+
+async function ensureCvTables(db) {
+  await db.batch([
+    db.prepare(`CREATE TABLE IF NOT EXISTS cv_orders (
+      order_id TEXT PRIMARY KEY, ref TEXT NOT NULL UNIQUE, uid TEXT NOT NULL, template_id TEXT NOT NULL,
+      amount TEXT NOT NULL, currency TEXT NOT NULL, status TEXT NOT NULL,
+      capture_id TEXT UNIQUE, env TEXT NOT NULL, created_at TEXT NOT NULL, completed_at TEXT)`),
+    db.prepare(`CREATE TABLE IF NOT EXISTS cv_entitlements (
+      uid TEXT NOT NULL, template_id TEXT NOT NULL, env TEXT NOT NULL, order_id TEXT NOT NULL, created_at TEXT NOT NULL,
+      PRIMARY KEY (uid, template_id, env))`),
+  ]);
+}
+async function cvOwned(db, uid, mode) {
+  const { results } = await db.prepare(`SELECT template_id FROM cv_entitlements WHERE uid = ? AND env = ?`).bind(uid, mode).all();
+  return results.map(r => r.template_id).filter(id => CV_PREMIUM.includes(id));
+}
+/* the right to a template, only for an order that is COMPLETED and belongs to this user */
+function cvGrant(db, uid, mode, orderId, templateId, nowIso) {
+  return db.prepare(`INSERT OR IGNORE INTO cv_entitlements (uid, template_id, env, order_id, created_at)
+    SELECT ?, ?, ?, ?, ? WHERE EXISTS (SELECT 1 FROM cv_orders WHERE order_id = ? AND uid = ? AND env = ? AND status = 'COMPLETED')`)
+    .bind(uid, templateId, mode, orderId, nowIso, orderId, uid, mode);
+}
+
+async function handleCv(request, env, path, ctx) {
+  const mode = cvMode(env, request);
+
+  if (path === '/api/cv/config' && request.method === 'GET') {
+    const pp = cvPaypal(env, mode);
+    const ready = mode !== 'off' && !!(pp.id && pp.secret);
+    return json({ sales: ready ? mode : 'off', clientId: ready ? pp.id : null, currency: CV_CURRENCY, price: CV_PRICE, premium: CV_PREMIUM });
+  }
+
+  // sales off: nothing is read from or written to D1, no PayPal call
+  if (mode === 'off') return json({ error: 'SALES_OFF', message: 'شراء القوالب غير مفعّل حاليًا.' }, 503);
+  const pp = cvPaypal(env, mode);
+  if (!pp.id || !pp.secret) return json({ error: 'PAYPAL_NOT_CONFIGURED', message: 'الدفع غير مُفعّل حاليًا.' }, 503);
+
+  const user = await cvUser(request, env, mode);
+  if (!user) return json({ error: 'AUTH_REQUIRED', message: 'سجّل الدخول بحساب Google أولًا.' }, 401);
+  if (!user.google) return json({ error: 'GOOGLE_REQUIRED', message: 'الشراء يتطلب تسجيل الدخول بحساب Google.' }, 403);
+  await ensureCvTables(env.DB);
+
+  if (path === '/api/cv/entitlements' && request.method === 'GET') {
+    return json({ owned: await cvOwned(env.DB, user.uid, mode) });
+  }
+
+  // ============ create the PayPal order (price from CV_PRICE only) ============
+  if (path === '/api/cv/create-order' && request.method === 'POST') {
+    const body = await readJson(request);
+    const templateId = String(body.template || '');
+    if (!CV_PREMIUM.includes(templateId)) return json({ error: 'UNKNOWN_TEMPLATE', message: 'هذا القالب ليس من قوالب Premium.' }, 400);
+    if ((await cvOwned(env.DB, user.uid, mode)).includes(templateId)) {
+      return json({ error: 'ALREADY_OWNED', owned: [templateId], message: 'اشتريت هذا القالب من قبل.' }, 409);
+    }
+    const ref = crypto.randomUUID();
+    const r = await cardsPaypalCall(pp, 'POST', '/v2/checkout/orders', {
+      intent: 'CAPTURE',
+      purchase_units: [{
+        reference_id: 'cv-' + templateId, custom_id: ref, description: 'CV template: ' + templateId + ' (permanent licence)',
+        amount: { currency_code: CV_CURRENCY, value: CV_PRICE },
+      }],
+      application_context: { shipping_preference: 'NO_SHIPPING', user_action: 'PAY_NOW', brand_name: 'merabti.com' },
+    }, { 'PayPal-Request-Id': 'cv-create-' + ref });
+    logCv(r.ok && r.data.id ? 'create-order ok' : 'create-order FAILED', { mode, template: templateId, status: r.status,
+      debugId: r.debugId, orderId: r.data.id || null, error: r.ok ? null : paypalError(r.data) });
+    if (!r.ok || !/^[A-Z0-9]{8,32}$/.test(String(r.data.id || ''))) {
+      return json({ error: 'CREATE_FAILED', message: 'تعذّر إنشاء الطلب، حاول مرة أخرى.' }, 502);
+    }
+    await env.DB.prepare(`INSERT INTO cv_orders (order_id, ref, uid, template_id, amount, currency, status, env, created_at)
+      VALUES (?, ?, ?, ?, ?, ?, 'CREATED', ?, ?)`)
+      .bind(r.data.id, ref, user.uid, templateId, CV_PRICE, CV_CURRENCY, mode, new Date().toISOString()).run();
+    return json({ id: r.data.id });
+  }
+
+  // ============ capture + checks + right in D1 (once per order) ============
+  if (path === '/api/cv/capture-order' && request.method === 'POST') {
+    const body = await readJson(request);
+    const orderId = String(body.orderId || '');
+    if (!/^[A-Z0-9]{8,32}$/.test(orderId)) return json({ error: 'BAD_ORDER', message: 'رقم الطلب غير صالح.' }, 400);
+    const row = await env.DB.prepare(`SELECT * FROM cv_orders WHERE order_id = ? AND env = ?`).bind(orderId, mode).first();
+    if (!row) return json({ error: 'UNKNOWN_ORDER', message: 'الطلب غير موجود.' }, 404);
+    if (row.uid !== user.uid) {
+      logCv('capture-order WRONG USER', { mode, orderId });
+      return json({ error: 'NOT_YOUR_ORDER', message: 'هذا الطلب لا يخص حسابك.' }, 403);
+    }
+    if (row.status === 'COMPLETED') {   // already done (retry, double click): same answer; the right is re-checked idempotently
+      await cvGrant(env.DB, user.uid, mode, orderId, row.template_id, row.completed_at || new Date().toISOString()).run();
+      return json({ ok: true, orderId, template: row.template_id, owned: await cvOwned(env.DB, user.uid, mode) });
+    }
+    if (row.status !== 'CREATED') return json({ error: 'ORDER_CLOSED', message: 'هذا الطلب مغلق. راسلنا برقم الطلب: ' + orderId }, 409);
+
+    let r = await cardsPaypalCall(pp, 'POST', '/v2/checkout/orders/' + orderId + '/capture', null, { 'PayPal-Request-Id': 'cv-capture-' + orderId });
+    const issue = r.data && r.data.details && r.data.details[0] && r.data.details[0].issue;
+    logCv(r.ok ? 'capture-order ok' : 'capture-order FAILED', { mode, orderId, status: r.status, debugId: r.debugId,
+      issue: issue || null, order: r.ok ? orderSummary(r.data) : null });
+    if (!r.ok && issue === 'ORDER_ALREADY_CAPTURED') r = await cardsPaypalCall(pp, 'GET', '/v2/checkout/orders/' + orderId);
+    else if (!r.ok) {
+      if (issue === 'INSTRUMENT_DECLINED') return json({ error: 'INSTRUMENT_DECLINED', message: 'رُفضت وسيلة الدفع، اختر وسيلة أخرى.' }, 402);
+      return json({ error: 'CAPTURE_FAILED', message: 'لم يكتمل الدفع، لم يُخصم أي مبلغ. حاول مرة أخرى.' }, 502);
+    }
+
+    const order = r.data || {};
+    const unit = (order.purchase_units || [])[0] || {};
+    const capture = ((unit.payments || {}).captures || [])[0] || {};
+    const amount = capture.amount || {};
+    if (order.id !== orderId || order.status !== 'COMPLETED' || capture.status !== 'COMPLETED' || !capture.id) {
+      logCv('capture-order NOT COMPLETED', { mode, orderId, order: orderSummary(order) });
+      return json({ error: 'NOT_COMPLETED', message: capture.status === 'PENDING'
+        ? 'الدفع قيد المراجعة لدى PayPal. سيُفتح القالب بعد اكتماله، رقم الطلب: ' + orderId : 'لم يكتمل الدفع. حاول مرة أخرى.' }, 402);
+    }
+    const refOk = unit.custom_id === row.ref || capture.custom_id === row.ref;
+    if (!refOk || amount.currency_code !== CV_CURRENCY || amount.currency_code !== row.currency ||
+        toCents(amount.value) !== toCents(CV_PRICE) || toCents(amount.value) !== toCents(row.amount)) {
+      logCv('capture-order MISMATCH', { mode, orderId, refOk, amount, expected: row.amount + ' ' + row.currency });
+      await env.DB.prepare(`UPDATE cv_orders SET status = 'MISMATCH' WHERE order_id = ? AND status = 'CREATED'`).bind(orderId).run();
+      alertLater(ctx, env, 'order:' + orderId, { what: 'قوالب السيرة الذاتية: المبلغ المدفوع ' + (amount.value || '?') + ' ' + (amount.currency_code || '') +
+        ' لا يطابق سعر القالب ' + row.template_id, orderId, bookId: 'cv-' + row.template_id, issue: 'AMOUNT_MISMATCH', debugId: r.debugId, status: r.status });
+      return json({ error: 'AMOUNT_MISMATCH', message: 'المبلغ المدفوع لا يطابق سعر القالب. راسلنا برقم الطلب: ' + orderId }, 400);
+    }
+
+    // one capture → one right, in ONE transaction (D1 batch): the order is marked COMPLETED once,
+    // capture_id is UNIQUE (the same PayPal payment can never serve two orders), the right is idempotent.
+    const nowIso = new Date().toISOString();
+    try {
+      const res = await env.DB.batch([
+        env.DB.prepare(`UPDATE cv_orders SET status = 'COMPLETED', capture_id = ?, completed_at = ?
+          WHERE order_id = ? AND status <> 'COMPLETED'`).bind(capture.id, nowIso, orderId),
+        cvGrant(env.DB, user.uid, mode, orderId, row.template_id, nowIso),
+      ]);
+      if (res[0].meta && res[0].meta.changes === 1) logCv('right saved', { mode, orderId, template: row.template_id });
+    } catch (e) {
+      logCv('capture-order DUPLICATE CAPTURE ID', { mode, orderId, captureId: capture.id, error: String(e && e.message || e) });
+      return json({ error: 'DUPLICATE', message: 'عملية الدفع هذه مسجّلة من قبل.' }, 409);
+    }
+    return json({ ok: true, orderId, template: row.template_id, owned: await cvOwned(env.DB, user.uid, mode) });
+  }
+
+  return null;
+}
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     const path = url.pathname;
+
+    // ============ CV builder Premium templates (independent from the books and the cards) ============
+    if (path.startsWith('/api/cv/')) {
+      if (request.method === 'OPTIONS') return cardsPreflight(request);
+      let res;
+      try {
+        res = await handleCv(request, env, path, ctx);
+      } catch (e) {
+        console.log('[cv] route error ' + path + ' ' + (e && e.stack || e));
+        res = json({ error: 'SERVER_ERROR', message: 'حدث خطأ في الخادم، حاول مرة أخرى.' }, 500);
+      }
+      const out = withCors(request, res || json({ error: 'NOT_FOUND' }, 404));
+      out.headers.set('Cache-Control', 'no-store');
+      return out;
+    }
 
     // ============ Business-card Premium templates (independent from the books) ============
     if (path.startsWith('/api/cards/')) {
