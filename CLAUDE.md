@@ -135,7 +135,7 @@ border, frame ring, shadow or filter, whatever the page's own logo rules say. CS
   Worker with Google's keys). Price and catalogue only in the Worker (`CV_PRICE`, `CV_PREMIUM`). Capture checks
   order owner, status, amount, currency and custom_id; one capture = one right (D1 batch, UNIQUE capture_id).
   D1 tables `cv_orders`, `cv_entitlements` (created on first use, rows tagged `env` = live | sandbox).
-  `CV_SALES` in wrangler.jsonc: **"off" until the owner approves real payments**; "live" is honoured only on
+  `CV_SALES` in wrangler.jsonc: **"live"** (approved by the owner 2026-11-11); "live" is honoured only on
   dr.merabti.workers.dev (`CV_LIVE_HOSTS`), so previews never take real payments; "sandbox" needs
   `PAYPAL_SANDBOX_CLIENT_ID` + secret `PAYPAL_SANDBOX_SECRET`. Test-only overrides (sandbox only):
   `CV_PAYPAL_API`, `CV_TEST_JWKS`.

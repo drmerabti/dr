@@ -55,9 +55,9 @@
     // such as claude-test-dr.merabti.workers.dev stay "off" (no payment, nothing written).
     // "off" = nothing sold. "sandbox" needs PAYPAL_SANDBOX_CLIENT_ID + secret PAYPAL_SANDBOX_SECRET.
     "CARD_SALES": "live",
-    // CV builder Premium templates (/api/cv/*, $2.99 each, permanent). "off" until the owner approves
-    // real payments: nothing is sold, nothing is written. "live" would be honoured only on dr.merabti.workers.dev
-    // (CV_LIVE_HOSTS in worker.js); previews stay "off". "sandbox" needs PAYPAL_SANDBOX_CLIENT_ID + secret.
-    "CV_SALES": "off"
+    // CV builder Premium templates (/api/cv/*, $2.99 each, permanent): "live" approved by the owner (2026-11-11).
+    // "live" is honoured ONLY on dr.merabti.workers.dev (CV_LIVE_HOSTS in worker.js); previews stay "off" (demo).
+    // "off" = nothing sold. "sandbox" needs PAYPAL_SANDBOX_CLIENT_ID + secret PAYPAL_SANDBOX_SECRET.
+    "CV_SALES": "live"
   }
 }
