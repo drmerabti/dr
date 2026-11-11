@@ -389,19 +389,20 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
     ats:       { cat: 'ats', color: '#1F2937', ar: 'Tajawal', lat: 'Inter', optPhoto: true },
   };
   /* Premium templates (paid tier): `premium: true` is the flag a payment gate can test (see tplIsPremium).
-     Each one has its own page skeleton (PAGES), artwork and stylesheet (premium.css). */
-  const MAIN_HEAVY = ['skills', 'languages', 'interests', 'certifications'];
+     Each one has its own page skeleton (PAGES), artwork and stylesheet (premium.css).
+     `side` = skills / languages / interests / certifications go to the second column (or `sideTypes`),
+     `cards` = every section is a tile, `skillRows` = one skill per row (the list may continue on the next page). */
   Object.assign(TPL, {
-    maison:   { cat: 'professional', premium: true, color: '#9A3B2E', ar: 'IBM Plex Sans Arabic', lat: 'Lato', side: true, sideTypes: MAIN_HEAVY, skillRows: true },
-    obsidian: { cat: 'professional', premium: true, color: '#C9A45C', ar: 'Tajawal', lat: 'Lato', side: true, sideTypes: MAIN_HEAVY },
+    maison:   { cat: 'professional', premium: true, color: '#9A3B2E', ar: 'IBM Plex Sans Arabic', lat: 'Lato', side: true, skillRows: true },
+    obsidian: { cat: 'professional', premium: true, color: '#C9A45C', ar: 'Tajawal', lat: 'Lato', side: true },
     atlas:    { cat: 'minimal', premium: true, color: '#E4002B', ar: 'IBM Plex Sans Arabic', lat: 'Inter' },
-    vitrine:  { cat: 'professional', premium: true, color: '#1F4B43', ar: 'Almarai', lat: 'Lato', side: true, sideTypes: MAIN_HEAVY },
-    folio:    { cat: 'modern', premium: true, color: '#E2572B', ar: 'Cairo', lat: 'Inter', side: true, sideTypes: MAIN_HEAVY },
-    apex:     { cat: 'modern', premium: true, color: '#1B3A8C', ar: 'Alexandria', lat: 'Montserrat', side: true, sideTypes: MAIN_HEAVY },
-    mosaic:   { cat: 'creative', premium: true, color: '#3B2F63', ar: 'Readex Pro', lat: 'Readex Pro', side: true, sideTypes: MAIN_HEAVY, cards: true },
-    orbit:    { cat: 'creative', premium: true, color: '#0E4D64', ar: 'Tajawal', lat: 'Poppins', side: true, sideTypes: MAIN_HEAVY },
-    ribbon:   { cat: 'professional', premium: true, color: '#7A1F3D', ar: 'Almarai', lat: 'Lato', side: true, sideTypes: MAIN_HEAVY },
-    aurora:   { cat: 'modern', premium: true, color: '#6D3BD6', ar: 'IBM Plex Sans Arabic', lat: 'Inter', side: true, sideTypes: MAIN_HEAVY },
+    vitrine:  { cat: 'professional', premium: true, color: '#1F4B43', ar: 'Almarai', lat: 'Lato', side: true },
+    folio:    { cat: 'modern', premium: true, color: '#E2572B', ar: 'Cairo', lat: 'Inter', side: true },
+    apex:     { cat: 'modern', premium: true, color: '#1B3A8C', ar: 'Alexandria', lat: 'Montserrat', side: true },
+    mosaic:   { cat: 'creative', premium: true, color: '#3B2F63', ar: 'Readex Pro', lat: 'Readex Pro', side: true, cards: true },
+    orbit:    { cat: 'creative', premium: true, color: '#0E4D64', ar: 'Tajawal', lat: 'Poppins', side: true },
+    ribbon:   { cat: 'professional', premium: true, color: '#7A1F3D', ar: 'Almarai', lat: 'Lato', side: true },
+    aurora:   { cat: 'modern', premium: true, color: '#6D3BD6', ar: 'IBM Plex Sans Arabic', lat: 'Inter', side: true },
   });
   const tplIsPremium = (id) => !!(TPL[id] && TPL[id].premium);
   const TPL_IDS = Object.keys(TPL);
@@ -459,7 +460,7 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
   function darkOn(hex, max) { let c = hex, i = 0; while (lum(c) > max && i++ < 14) c = mix(c, '#000000', 0.12); return c; }
   const PREMIUM_VARS = {
     maison: (ac) => ({ '--ac-t': darkOn(ac, 0.2) }),
-    obsidian: (ac) => { const g = lightOn(ac, 0.34); return { '--g': g, '--g2': mix(g, '#0F1114', 0.62), '--g3': mix(g, '#0F1114', 0.86) }; },
+    obsidian: (ac) => { const g = lightOn(ac, 0.34); return { '--g': g, '--g2': mix(g, '#0F1114', 0.62) }; },
     atlas: (ac) => ({ '--ac-t': darkOn(ac, 0.26) }),
     vitrine: (ac, pal) => ({ '--ac-t': darkOn(ac, 0.22), '--on2': mix(pal.on, ac, 0.28), '--ln': mix(pal.on, ac, 0.72) }),
     folio: (ac, pal) => ({ '--ac-t': darkOn(ac, 0.26), '--on-sp': pal.on }),

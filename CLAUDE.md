@@ -115,6 +115,24 @@ Markup: `<img class="site-logo" src="…/logo-mark.png" alt="…">` in a square 
 border, frame ring, shadow or filter, whatever the page's own logo rules say. CSS backgrounds use
 `url(logo-mark.png) center/contain`.
 
+## CV builder (tools/cv-builder)
+
+- A template = one entry in `TPL` (app.js) + one page skeleton in `PAGES` + its CSS: `style.css` for the 14 free
+  templates, `premium.css` for the Premium ones (maison, obsidian, atlas, vitrine, folio, apex, mosaic, orbit,
+  ribbon, aurora). Premium = `premium: true` in `TPL`; `tplIsPremium(id)` is the test a payment gate should use.
+  No payment is wired to the templates yet: PDF export is free for every template (TEMPORARY note at the end of app.js).
+- Page fill (auto-fit) is done by `renderPages`: it sets `--fs` (type), `--sp` (vertical spacing) and `--lh` (leading)
+  on the page (and per column), then shares the air that is left as `--gx` (before a section) / `--ea` (after an entry).
+  So template CSS writes font sizes as `calc(var(--fs) * Npx)` and vertical margins / paddings as
+  `calc(var(--sp) * Npx)`; a fixed px value there = a template that does not fill its page.
+  A header must grow with its content (min-height, never a fixed height with text in it).
+- Text size control: untouched = automatic (the control shows the size in use); A− / A+ store `fontScale` +
+  `fsManual`, then only the spacing adapts; the reset button gives the size back to the auto-fit.
+- PDF = html2canvas: colours inside SVG are literal hex (computed in JS: `palette`, `PREMIUM_VARS`, `ico`), no
+  `clip-path`, `filter`, `writing-mode` or `background-clip:text`; Arabic is never letter-spaced or upper-cased.
+- Class names set by the layout engine on blocks: `first` (section start), `es` (entry start), `nl` (not the last
+  piece of its section), `top` / `end` (first / last block of a column on a page) — do not reuse them for anything else.
+
 ## Home order
 
 `SECTIONS_ROW1` = tools, books (`services`), lessons; `SECTIONS_ROW2` = apps, favorites, training.
