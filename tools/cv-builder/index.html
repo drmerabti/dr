@@ -96,6 +96,7 @@
         <button type="button" id="zoomFit" data-tip="fit"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
       </div>
       <span class="page-count" id="pageCount"></span>
+      <span class="prem-note hidden" id="premNote"></span>
     </div>
     <div class="flat-view" id="flatView">
       <div class="pages-holder" id="pagesHolder"><div class="pages" id="cvPages"></div></div>
@@ -175,6 +176,20 @@
       <button type="button" class="soft-btn" id="confirmCancel" data-i18n="cancel">إلغاء</button>
       <button type="button" class="soft-btn danger solid" id="confirmOk" data-i18n="confirm_yes">تأكيد</button>
     </div>
+  </div>
+</div>
+
+<!-- Premium template: paid when the CV is exported -->
+<div class="gallery hidden" id="premiumOverlay" role="dialog" aria-modal="true">
+  <div class="login-box">
+    <div class="login-ico prem"><svg viewBox="0 0 24 24"><path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 10H5z"/></svg></div>
+    <h3 id="premTitle"></h3>
+    <p id="premText"></p>
+    <div class="dlg-actions prem-actions">
+      <button type="button" class="soft-btn primary" id="premPay" data-i18n="prem_pay">متابعة إلى الدفع</button>
+      <button type="button" class="soft-btn" id="premFree" data-i18n="prem_free">اختيار قالب مجاني</button>
+    </div>
+    <button type="button" class="login-cancel" id="premCancel" data-i18n="cancel">إلغاء</button>
   </div>
 </div>
 

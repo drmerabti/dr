@@ -259,7 +259,7 @@ html[dir="rtl"] .acc-next svg{ transform: scaleX(-1); }
   background-image: radial-gradient(rgba(30,47,64,.13) 1px, transparent 1px);
   background-size: 18px 18px;
 }
-.stage-bar{ position:absolute; top:14px; left:50%; transform:translateX(-50%); z-index:10; display:flex; align-items:center; gap:10px; direction:ltr; }
+.stage-bar{ position:absolute; top:14px; left:50%; transform:translateX(-50%); z-index:10; display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:10px; direction:ltr; width:max-content; max-width: calc(100% - 20px); }
 .stage-bar > *{ background:#fff; border:1px solid var(--line); border-radius:14px; box-shadow: 0 6px 18px rgba(21,36,49,.08); }
 .zoom{ display:flex; align-items:center; padding:4px; gap:2px; }
 .zoom button{ border:0; background:none; height:34px; min-width:34px; border-radius:10px; display:flex; align-items:center; justify-content:center; cursor:pointer; padding:0 8px; position:relative; }
@@ -314,6 +314,15 @@ html[dir="rtl"] .acc-next svg{ transform: scaleX(-1); }
 .tpl-chip{ position:relative; }
 .t-prem{ position:absolute; top:3px; inset-inline-end:3px; width:17px; height:17px; border-radius:50%; background:#2B2416; display:grid; place-items:center; box-shadow: 0 1px 4px rgba(0,0,0,.25); }
 .t-prem svg{ width:10px; height:10px; fill:#F4D58A; stroke:none; }
+/* Premium template open: cue on the toolbar, dialog before the payment */
+.icon-btn.pdf.prem{ background: linear-gradient(135deg, #2B2416, #4A3A17); border-color:#2B2416; color:#F4D58A; }
+.icon-btn.pdf.prem:hover{ background: linear-gradient(135deg, #3A311E, #5B4820); }
+.prem-note{ display:inline-flex; align-items:center; gap:6px; padding:9px 14px; font-size:.8rem; font-weight:800; color:#8A6A1F; background:#FFF9EA !important; border-color:#D9BE7C !important; font-family: var(--ui-font); white-space:nowrap; }
+.prem-note svg{ width:14px; height:14px; fill:#C9A45C; stroke:none; }
+.login-ico.prem{ background: linear-gradient(135deg, #2B2416, #4A3A17); }
+.login-ico.prem svg{ fill:#F4D58A; stroke:none; }
+.prem-actions{ flex-wrap:wrap; }
+.prem-actions .soft-btn{ min-width:150px; }
 .g-empty{ grid-column:1/-1; text-align:center; color: var(--ink-soft); padding:60px 0; font-weight:600; }
 
 .tpl-strip{ display:grid; grid-template-columns: repeat(auto-fill, minmax(78px, 1fr)); gap:10px; }
@@ -374,6 +383,7 @@ html[dir="rtl"] .auth-input[dir="ltr"]{ text-align:right; }
 @media (max-width: 860px){
   :root{ --panel-w: 100%; }
   .tool-name{ display:none; }
+  .prem-note{ display:none; } /* no room over the page on a phone: the gold PDF button is the cue there */
   .topbar{ padding:0 10px; gap:8px; }
   .topbar-actions{ gap:5px; }
   .icon-btn, .lang-toggle{ width:36px; height:36px; }

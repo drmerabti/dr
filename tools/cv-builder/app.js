@@ -141,6 +141,11 @@
       gallery: 'معرض القوالب', search: 'ابحث عن قالب...', no_results: 'لا توجد قوالب مطابقة',
       cats: { all: 'الكل', premium: 'Premium', professional: 'احترافي', modern: 'عصري', minimal: 'بسيط', creative: 'إبداعي', academic: 'أكاديمي', ats: 'ATS' },
       cv_word: 'السيرة الذاتية', premium_tag: 'Premium',
+      prem_text: 'هذا القالب من القوالب المدفوعة. التعديل والمعاينة مجانيان، ويُطلب الدفع عند تحميل ملف PDF أو الطباعة.',
+      prem_pay: 'متابعة إلى الدفع', prem_free: 'اختيار قالب مجاني', prem_note: 'Premium · الدفع عند التحميل',
+      prem_login: 'سجّل دخولك للمتابعة إلى الدفع', prem_checking: 'جارِ التحقق من الدفع...',
+      prem_unavailable: 'الدفع غير متاح حاليًا. حاول بعد قليل أو اختر قالبًا مجانيًا.',
+      prem_late: 'تم الدفع لكن تأكيده تأخّر. انتظر دقيقة ثم اضغط التحميل مرة أخرى، ولن يُطلب منك الدفع ثانية.',
       ct_labels: { phone: 'الهاتف', email: 'البريد الإلكتروني', address: 'العنوان', linkedin: 'لينكدإن', website: 'الموقع', passport: 'جواز السفر' },
       sec_style: 'التنسيق والقالب', sec_personal: 'المعلومات الشخصية والصورة',
       f_template: 'القالب', f_color: 'اللون الرئيسي', f_font: 'الخط', font_auto: 'خط القالب', f_fontsize: 'حجم الخط',
@@ -164,6 +169,11 @@
       gallery: 'Template gallery', search: 'Search templates...', no_results: 'No matching templates',
       cats: { all: 'All', premium: 'Premium', professional: 'Professional', modern: 'Modern', minimal: 'Minimal', creative: 'Creative', academic: 'Academic', ats: 'ATS' },
       cv_word: 'Curriculum Vitae', premium_tag: 'Premium',
+      prem_text: 'This is a paid template. Editing and previewing are free; payment is requested when you download the PDF or print.',
+      prem_pay: 'Continue to payment', prem_free: 'Choose a free template', prem_note: 'Premium · paid at download',
+      prem_login: 'Sign in to continue to payment', prem_checking: 'Checking your payment...',
+      prem_unavailable: 'Payment is not available right now. Try again shortly or choose a free template.',
+      prem_late: 'Your payment went through but its confirmation is late. Wait a minute and press download again; you will not be asked to pay twice.',
       ct_labels: { phone: 'Phone', email: 'Email', address: 'Address', linkedin: 'LinkedIn', website: 'Website', passport: 'Passport' },
       sec_style: 'Layout & template', sec_personal: 'Personal info & photo',
       f_template: 'Template', f_color: 'Main colour', f_font: 'Font', font_auto: 'Template font', f_fontsize: 'Text size',
@@ -187,6 +197,11 @@
       gallery: 'Galerie de modèles', search: 'Rechercher un modèle...', no_results: 'Aucun modèle correspondant',
       cats: { all: 'Tous', premium: 'Premium', professional: 'Professionnel', modern: 'Moderne', minimal: 'Épuré', creative: 'Créatif', academic: 'Académique', ats: 'ATS' },
       cv_word: 'Curriculum Vitæ', premium_tag: 'Premium',
+      prem_text: 'Ce modèle est payant. La modification et l’aperçu sont gratuits ; le paiement est demandé au téléchargement du PDF ou à l’impression.',
+      prem_pay: 'Continuer vers le paiement', prem_free: 'Choisir un modèle gratuit', prem_note: 'Premium · payant au téléchargement',
+      prem_login: 'Connectez-vous pour continuer vers le paiement', prem_checking: 'Vérification du paiement...',
+      prem_unavailable: 'Le paiement est indisponible pour le moment. Réessayez plus tard ou choisissez un modèle gratuit.',
+      prem_late: 'Paiement reçu mais sa confirmation tarde. Patientez une minute puis relancez le téléchargement ; vous ne paierez pas deux fois.',
       ct_labels: { phone: 'Téléphone', email: 'E-mail', address: 'Adresse', linkedin: 'LinkedIn', website: 'Site web', passport: 'Passeport' },
       sec_style: 'Mise en forme & modèle', sec_personal: 'Informations personnelles & photo',
       f_template: 'Modèle', f_color: 'Couleur principale', f_font: 'Police', font_auto: 'Police du modèle', f_fontsize: 'Taille du texte',
@@ -1245,6 +1260,7 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
     previewPages = renderPages(activeCv, tplOf(activeCv), els.pages);
     previewFs = previewPages.fit.fs;
     syncFsUi();
+    updatePremiumUi();
     const n = previewPages.length;
     els.pageCount.textContent = n > 1 ? `${t('pages_n')}: ${n}` : '';
     applyZoom();
@@ -1802,11 +1818,11 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
   });
 
   /* ================= Dialog helpers ================= */
-  function toast(msg) {
+  function toast(msg, ms) {
     els.toast.textContent = msg;
     els.toast.classList.add('show');
     clearTimeout(toast._t);
-    toast._t = setTimeout(() => els.toast.classList.remove('show'), 2400);
+    toast._t = setTimeout(() => els.toast.classList.remove('show'), ms || 2400);
   }
   let confirmResolve = null;
   function askConfirm(msg) {
@@ -1821,6 +1837,7 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
   document.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return;
     if (!els.confirmOverlay.classList.contains('hidden')) closeConfirm(false);
+    else if (!$('premiumOverlay').classList.contains('hidden')) closePremium();
     else if (!els.gallery.classList.contains('hidden')) closeGallery();
     else if (!els.mine.classList.contains('hidden')) closeMine();
     else if (!els.login.classList.contains('hidden')) closeLogin();
@@ -1972,8 +1989,9 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
     if (!fbUser) return;
     if (currentUser && currentUser.uid === fbUser.uid && cvList.length) return;
     currentUser = { uid: fbUser.uid, name: fbUser.displayName || fbUser.email, email: fbUser.email, picture: fbUser.photoURL || null };
-    await loadCvList();
+    await Promise.all([loadCvList(), loadAdminFlag()]);
     updateUserChip();
+    updatePremiumUi();
     if (!els.mine.classList.contains('hidden')) renderMine();
   }
   function updateUserChip() {
@@ -2211,12 +2229,13 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
     });
     return pages;
   }
-  $('btnPrint').addEventListener('click', () => {
+  function doPrint() {
     if (!activeCv) return;
     toast(t('t_print'));
     const fonts = document.fonts ? document.fonts.ready : Promise.resolve();
     fonts.then(() => { buildPrintCopy(); setTimeout(() => window.print(), 250); });
-  });
+  }
+  $('btnPrint').addEventListener('click', () => requestExport('print'));
   window.addEventListener('afterprint', () => { els.printRoot.innerHTML = ''; });
 
   /* ================= Toolbar ================= */
@@ -2242,19 +2261,27 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
     });
   }
 
-  /* ================= PDF Export (paid per download via Paddle) ================= */
+  /* ================= Paid exports (Paddle, one payment per export) =================
+     PAY_ALL_DOWNLOADS  every PDF download is paid — the first plan, kept off while the Paddle account waits for
+                        approval, so the free templates still download for free.
+     PREMIUM_PAYWALL    a CV that uses a Premium template is paid when it is exported (PDF or print).
+     Editing and previewing are always free. An admin (users/{uid}.isAdmin, as in shared/purchase.js) never pays.
+     A payment opens the exports for 10 minutes (checkForRecentPaidDownload): time to fix a detail and export again. */
+  const PAY_ALL_DOWNLOADS = false;
+  const PREMIUM_PAYWALL = true;
   const PADDLE_CLIENT_TOKEN = 'live_11f89f5307b65bb7f8a4c484e40';
   const PADDLE_CV_PRICE_ID = 'pri_01m35kb514t1p7fve8fze6ct5e';
   let paddleReady = false;
+  let isAdmin = false;
+  let pendingExport = null; // 'pdf' | 'print' — what to run once the payment is confirmed
 
   function initPaddle() {
     if (!window.Paddle) return;
     window.Paddle.Initialize({
       token: PADDLE_CLIENT_TOKEN,
       eventCallback: function (event) {
-        if (event.name === 'checkout.completed') {
-          onPaddleCheckoutCompleted();
-        }
+        if (event.name === 'checkout.completed') onPaddleCheckoutCompleted();
+        else if (event.name === 'checkout.error') { pendingExport = null; toast(t('prem_unavailable'), 5000); }
       },
     });
     paddleReady = true;
@@ -2266,49 +2293,93 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
     const iv = setInterval(() => {
       tries++;
       if (window.Paddle) { clearInterval(iv); initPaddle(); }
-      else if (tries > 40) { clearInterval(iv); } // ~10s, give up quietly — button still works, checkout just won't open
+      else if (tries > 40) { clearInterval(iv); } // ~10s, give up quietly — the payment then answers "not available"
     }, 250);
   })();
 
-  function startPaidDownload() {
-    if (!currentUser) {
-      alert('سجّل دخولك أولاً لتتمكن من تحميل السيرة الذاتية.');
-      return;
-    }
+  async function loadAdminFlag() {
+    isAdmin = false;
+    if (!currentUser || !window.fbDb) return;
+    try {
+      const u = await window.fbDb.collection('users').doc(currentUser.uid).get();
+      isAdmin = !!(u.exists && u.data().isAdmin === true);
+    } catch (e) { isAdmin = false; }
+  }
+  const premiumLocked = () => PREMIUM_PAYWALL && !!activeCv && tplIsPremium(tplOf(activeCv)) && !isAdmin;
+  const runExport = (kind) => (kind === 'print' ? doPrint() : exportPdf());
+  // Every export (PDF button, print button, "PDF" in My CVs) passes here.
+  function requestExport(kind) {
+    if (!activeCv) return;
+    if (premiumLocked()) { openPremium(kind); return; }
+    if (PAY_ALL_DOWNLOADS && kind === 'pdf' && !isAdmin) { payThenExport(kind); return; }
+    runExport(kind);
+  }
+  // Cue on the toolbar while the open CV uses a Premium template that would be paid at export.
+  function updatePremiumUi() {
+    const on = premiumLocked();
+    els.downloadPdfBtn.classList.toggle('prem', on);
+    const note = $('premNote');
+    note.classList.toggle('hidden', !on);
+    note.innerHTML = on ? `${CROWN}<span>${escapeHtml(t('prem_note'))}</span>` : '';
+  }
+
+  /* Premium dialog: says what is paid and when, then goes to the payment or to the gallery */
+  let premiumKind = 'pdf';
+  function openPremium(kind) {
+    premiumKind = kind;
+    $('premTitle').textContent = `${t('templateNames')[tplOf(activeCv)]} · ${t('premium_tag')}`;
+    $('premText').textContent = t('prem_text');
+    $('premiumOverlay').classList.remove('hidden');
+  }
+  function closePremium() { $('premiumOverlay').classList.add('hidden'); }
+  $('premPay').addEventListener('click', () => { closePremium(); payThenExport(premiumKind); });
+  $('premFree').addEventListener('click', () => { closePremium(); gCat = 'all'; openGallery(); });
+  $('premCancel').addEventListener('click', closePremium);
+  $('premiumOverlay').addEventListener('click', (e) => { if (e.target === $('premiumOverlay')) closePremium(); });
+
+  async function payThenExport(kind) {
     if (!activeCvId) return;
-    if (!paddleReady || !window.Paddle) {
-      alert('نظام الدفع لم يجهز بعد، أعد المحاولة بعد لحظات.');
-      return;
+    if (!hasFb()) { toast(t('prem_unavailable'), 5000); return; }
+    if (!currentUser) { toast(t('prem_login')); openLogin(() => payThenExport(kind)); return; }
+    if (isAdmin) { runExport(kind); return; }                                 // the sign-in may just have shown an admin
+    if (await checkForRecentPaidDownload(1)) { runExport(kind); return; }     // paid a few minutes ago: no second payment
+    if (!paddleReady || !window.Paddle) { toast(t('prem_unavailable'), 5000); return; }
+    pendingExport = kind;
+    try {
+      // The overlay checkout stays on this same page — no redirect, so the open CV is still there afterwards.
+      window.Paddle.Checkout.open({
+        items: [{ priceId: PADDLE_CV_PRICE_ID, quantity: 1 }],
+        customData: { user_id: currentUser.uid },
+      });
+    } catch (e) {
+      pendingExport = null;
+      toast(t('prem_unavailable'), 5000);
     }
-    // The overlay checkout stays on this same page — no redirect, so no need to
-    // persist which CV to reopen the way a full-page redirect would've required.
-    window.Paddle.Checkout.open({
-      items: [{ priceId: PADDLE_CV_PRICE_ID, quantity: 1 }],
-      customData: { user_id: currentUser.uid },
-    });
   }
 
   async function onPaddleCheckoutCompleted() {
     if (!activeCvId) return;
+    const kind = pendingExport || 'pdf';
+    pendingExport = null;
     const original = els.downloadPdfText.textContent;
-    els.downloadPdfText.textContent = 'جارٍ التحقق من الدفع...';
+    els.downloadPdfText.textContent = '…';
     els.downloadPdfBtn.disabled = true;
+    toast(t('prem_checking'), 9000);
     const paid = await checkForRecentPaidDownload();
     els.downloadPdfBtn.disabled = false;
     els.downloadPdfText.textContent = original;
-    if (paid) {
-      await exportPdf();
-    } else {
-      alert('تم تأكيد الدفع، لكن التحقق تأخّر — انتظر دقيقة واضغط تحميل مرة أخرى.');
-    }
+    if (paid) await runExport(kind);
+    else toast(t('prem_late'), 9000);
   }
 
-  async function checkForRecentPaidDownload() {
+  // true when this account has a purchase recorded (by the payment webhook) in the last 10 minutes
+  async function checkForRecentPaidDownload(attempts) {
     if (!currentUser || !window.fbDb) return false;
+    const tries = attempts || 6;
     try {
       // Payment confirmation (webhook) can lag a few seconds behind the checkout —
       // poll briefly rather than giving up on the first empty check.
-      for (let attempt = 0; attempt < 6; attempt++) {
+      for (let attempt = 0; attempt < tries; attempt++) {
         const snap = await window.fbDb
           .collection('users').doc(currentUser.uid)
           .collection('cvPurchases')
@@ -2322,7 +2393,7 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
           // avoids re-triggering a free download from an old purchase record.
           if (Date.now() - purchasedAt < 10 * 60 * 1000) return true;
         }
-        await new Promise((r) => setTimeout(r, 1500));
+        if (attempt < tries - 1) await new Promise((r) => setTimeout(r, 1500));
       }
     } catch (e) {
       console.error('checkForRecentPaidDownload failed:', e);
@@ -2366,10 +2437,9 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
     els.downloadPdfBtn.disabled = false;
     els.downloadPdfText.textContent = original;
   }
-  // TEMPORARY: payment is bypassed while the Paddle account is still pending
-  // approval, so downloads stay free for everyone. To re-enable payment,
-  // change this back to: els.downloadPdfBtn.addEventListener('click', startPaidDownload);
-  els.downloadPdfBtn.addEventListener('click', exportPdf);
+  // Free templates download without payment while PAY_ALL_DOWNLOADS is false (Paddle account pending approval);
+  // Premium templates follow PREMIUM_PAYWALL. Both switches are at the top of "Paid exports".
+  els.downloadPdfBtn.addEventListener('click', () => requestExport('pdf'));
 
   /* ================= Init ================= */
   applyLanguage();
@@ -2389,7 +2459,9 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
       } else {
         currentUser = null;
         cvList = [];
+        isAdmin = false;
         updateUserChip();
+        updatePremiumUi();
         if (!els.mine.classList.contains('hidden')) renderMine();
       }
     });

@@ -119,8 +119,13 @@ border, frame ring, shadow or filter, whatever the page's own logo rules say. CS
 
 - A template = one entry in `TPL` (app.js) + one page skeleton in `PAGES` + its CSS: `style.css` for the 14 free
   templates, `premium.css` for the Premium ones (maison, obsidian, atlas, vitrine, folio, apex, mosaic, orbit,
-  ribbon, aurora). Premium = `premium: true` in `TPL`; `tplIsPremium(id)` is the test a payment gate should use.
-  No payment is wired to the templates yet: PDF export is free for every template (TEMPORARY note at the end of app.js).
+  ribbon, aurora). Premium = `premium: true` in `TPL` (`tplIsPremium(id)`).
+- Paid exports ("Paid exports" block in app.js): every export goes through `requestExport('pdf' | 'print')`.
+  Two switches: `PREMIUM_PAYWALL` (true: a CV on a Premium template is paid when exported, PDF or print) and
+  `PAY_ALL_DOWNLOADS` (false while the Paddle account waits for approval: free templates download for free).
+  Payment = Paddle overlay (one payment per export, price `PADDLE_CV_PRICE_ID`), confirmed by the webhook that writes
+  `users/{uid}/cvPurchases`; a purchase younger than 10 minutes opens the exports again without paying.
+  Admins (`users/{uid}.isAdmin`, same rule as shared/purchase.js) never pay. Editing and previewing are always free.
 - Page fill (auto-fit) is done by `renderPages`: it sets `--fs` (type), `--sp` (vertical spacing) and `--lh` (leading)
   on the page (and per column), then shares the air that is left as `--gx` (before a section) / `--ea` (after an entry).
   So template CSS writes font sizes as `calc(var(--fs) * Npx)` and vertical margins / paddings as
