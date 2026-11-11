@@ -20,6 +20,11 @@
 .pm .runhead{ flex:none; display:flex; align-items:baseline; justify-content:space-between; gap:16px; }
 .pm .ph.no-ph{ line-height:1; }
 .pm .ct bdi{ min-width:0; overflow-wrap:anywhere; }
+/* a long title keeps its line: the date then drops under it instead of squeezing the title */
+.pm .en-top{ flex-wrap:wrap; column-gap:12px; row-gap:3px; }
+.pm .en-t{ min-width:0; }
+/* a long one-word heading in a narrow column breaks rather than being cut */
+.pm .side .sh-t{ min-width:0; overflow-wrap:anywhere; }
 
 /* =========================================================
    1. MAISON — editorial: cream paper, masthead, arch portrait
@@ -87,13 +92,13 @@
 /* =========================================================
    2. OBSIDIAN — full dark, gold lines, art-deco
    ========================================================= */
-.tpl-obsidian{ --cvh: 'Cinzel', 'Reem Kufi', serif; --bg:#0F1114; --iv:#ECE6D8; --mu:#A49D8E; background: var(--bg); color: var(--iv); padding: 56px 62px 40px; }
+.tpl-obsidian{ --cvh: 'Cinzel', 'El Messiri', serif; --bg:#0F1114; --iv:#ECE6D8; --mu:#A49D8E; background: var(--bg); color: var(--iv); padding: 56px 62px 40px; }
 .tpl-obsidian .head, .tpl-obsidian .pg-body, .tpl-obsidian .pg-foot{ position:relative; z-index:1; }
 .tpl-obsidian .head{ display:flex; flex-direction:column; align-items:center; text-align:center; }
 .tpl-obsidian .headc{ height:14px; }
 .tpl-obsidian .ph{ width:154px; height:154px; border-radius:50%; border:2px solid var(--g); box-shadow: 0 0 0 7px var(--bg), 0 0 0 8px var(--g2); background-color:#1A1D22; color: var(--g); font-family: var(--cvh); font-size:44px; font-weight:500; letter-spacing:2px; }
 .tpl-obsidian .nm{ font-family: var(--cvh); font-size: calc(var(--fs) * 38px); font-weight:600; letter-spacing:7px; text-transform:uppercase; color: var(--iv); margin-top: calc(var(--sp) * 22px); line-height:1.2; }
-.tpl-obsidian[dir="rtl"] .nm{ font-size: calc(var(--fs) * 42px); line-height:1.35; }
+.tpl-obsidian[dir="rtl"] .nm{ font-size: calc(var(--fs) * 42px); font-weight:700; line-height:1.35; }
 .tpl-obsidian .rlw{ display:flex; align-items:center; justify-content:center; gap:14px; margin-top: calc(var(--sp) * 8px); }
 .tpl-obsidian .rlw i{ width:7px; height:7px; background: var(--g); transform: rotate(45deg); flex:none; }
 .tpl-obsidian .rl{ font-size: calc(var(--fs) * 14px); font-weight:400; letter-spacing:3.5px; text-transform:uppercase; color: var(--g); }
@@ -105,7 +110,7 @@
 .tpl-obsidian .main{ flex:1; min-width:0; padding-inline-end:30px; }
 .tpl-obsidian .side{ width:34%; padding-inline-start:30px; border-inline-start:1px solid var(--g2); }
 .tpl-obsidian .sh{ font-family: var(--cvh); font-size: calc(var(--fs) * 14px); font-weight:600; letter-spacing:3.5px; text-transform:uppercase; color: var(--g); gap:12px; margin-bottom: calc(var(--sp) * 13px); }
-.tpl-obsidian[dir="rtl"] .sh{ font-size: calc(var(--fs) * 18px); }
+.tpl-obsidian[dir="rtl"] .sh{ font-size: calc(var(--fs) * 18.5px); font-weight:700; }
 .tpl-obsidian .sh::before{ content:""; width:7px; height:7px; background: var(--g); transform: rotate(45deg); flex:none; }
 .tpl-obsidian .sh::after{ content:""; flex:1; height:1px; background: var(--g2); }
 .tpl-obsidian .en-t{ color: var(--iv); font-size: calc(var(--fs) * 15px); }
@@ -256,6 +261,8 @@
 .tpl-folio .side.is-empty{ border-color:transparent; }
 .tpl-folio .sh{ font-family: var(--cvh); font-size: calc(var(--fs) * 17px); font-weight:600; letter-spacing:3px; text-transform:uppercase; gap:11px; margin-bottom: calc(var(--sp) * 12px); color: var(--ink); }
 .tpl-folio[dir="rtl"] .sh{ font-size: calc(var(--fs) * 18px); font-weight:800; }
+.tpl-folio .side .sh{ font-size: calc(var(--fs) * 14.5px); letter-spacing:1.6px; gap:9px; }
+.tpl-folio[dir="rtl"] .side .sh{ font-size: calc(var(--fs) * 17px); }
 .tpl-folio .sh::before{ content:""; width:11px; height:11px; background: var(--ac); flex:none; }
 .tpl-folio .sh::after{ content:""; flex:1; height:2px; background: var(--ink); }
 .tpl-folio .en-t{ font-size: calc(var(--fs) * 15px); }
@@ -279,17 +286,18 @@
    ========================================================= */
 .tpl-apex{ --cvh: 'Montserrat', 'Alexandria', sans-serif; background:#fff; color:#1A2233; }
 .tpl-apex .deco{ z-index:0; }
-.tpl-apex .head{ position:relative; z-index:1; height:304px; padding: 44px 56px 0; color: var(--on-ac); }
+.tpl-apex .head{ position:relative; z-index:1; min-height:304px; padding: 44px 56px 84px; background: var(--ac); color: var(--on-ac); }
+.tpl-apex .head .who, .tpl-apex .head .ph{ z-index:1; }
 .tpl-apex .headc{ height:62px; }
-.tpl-apex .who{ max-width:470px; }
+.tpl-apex .who{ position:relative; max-width:470px; }
 .tpl-apex .nm{ font-family: var(--cvh); font-size: calc(var(--fs) * 43px); font-weight:800; color: var(--on-ac); line-height:1.14; }
 .tpl-apex[dir="rtl"] .nm{ font-weight:700; }
 .tpl-apex .rl{ font-size: calc(var(--fs) * 14px); font-weight:500; letter-spacing:2.5px; text-transform:uppercase; color: var(--on2); margin-top: calc(var(--sp) * 8px); }
 .tpl-apex[dir="rtl"] .rl{ font-size: calc(var(--fs) * 17px); }
 .tpl-apex .ctrow{ display:flex; flex-wrap:wrap; gap:7px 20px; margin-top: calc(var(--sp) * 15px); }
 .tpl-apex .ctrow .ct{ gap:8px; color: var(--on-ac); font-size: calc(var(--fs) * 12px); }
-.tpl-apex .ph{ position:absolute; inset-inline-end:58px; top:116px; width:188px; height:188px; border-radius:50%; border:7px solid #fff; background-color: var(--ac-d); color:#fff; font-family: var(--cvh); font-size:54px; font-weight:800; }
-.tpl-apex .pg-body{ position:relative; z-index:1; padding: 34px 56px 0; gap:34px; }
+.tpl-apex .ph{ position:absolute; inset-inline-end:58px; bottom:-2px; width:188px; height:188px; border-radius:50%; border:7px solid #fff; background-color: var(--ac-d); color:#fff; font-family: var(--cvh); font-size:54px; font-weight:800; }
+.tpl-apex .pg-body{ position:relative; z-index:1; padding: 30px 56px 0; gap:34px; }
 .tpl-apex.cont .pg-body{ padding-top:14px; }
 .tpl-apex .main{ flex:1; min-width:0; }
 .tpl-apex .side{ width:31%; }
@@ -343,6 +351,8 @@
 .tpl-mosaic .blk.first, .tpl-mosaic .blk.top{ border-start-start-radius:20px; border-start-end-radius:20px; padding-top: calc(var(--sp) * 16px + var(--gx, 0px) / 2); }
 .tpl-mosaic .blk:not(.nl), .tpl-mosaic .blk.end{ border-end-start-radius:20px; border-end-end-radius:20px; padding-bottom: calc(var(--sp) * 15px + var(--gx, 0px) / 2); }
 .tpl-mosaic .blk:not(.nl){ margin-bottom:12px; }
+/* the pieces of one tile overlap by a pixel: no hairline between them at any zoom or in the PDF */
+.tpl-mosaic .blk:not(.first):not(.top), .tpl-orbit .side .blk:not(.first):not(.top), .tpl-aurora .side .blk:not(.first):not(.top){ margin-top:-1px; padding-top:1px; }
 .tpl-mosaic .blk:not(.nl) .en, .tpl-mosaic .blk .gp:last-child{ margin-bottom:0; }
 .tpl-mosaic .blk.es .en{ border-top:1.5px solid var(--paper); padding-top: calc(var(--sp) * 13px + var(--ex, 0px)); }
 .tpl-mosaic .en{ margin-bottom: calc(var(--sp) * 13px); }
@@ -461,8 +471,8 @@
    10. AURORA — gradient sky, white sheet, soft cards
    ========================================================= */
 .tpl-aurora{ --cvh: 'Inter', 'IBM Plex Sans Arabic', sans-serif; background:#F5F4FA; color:#1D1B2C; padding: 0 26px; }
-.tpl-aurora .glow{ position:absolute; top:0; left:0; width:100%; height:330px; overflow:hidden; background: linear-gradient(115deg, var(--g3), var(--g1) 50%, var(--g2)); }
-.tpl-aurora.cont .glow{ height:96px; }
+.tpl-aurora .glow{ position:relative; flex:none; overflow:hidden; margin: 0 -26px -96px; padding: 0 26px 96px; background: linear-gradient(115deg, var(--g3), var(--g1) 50%, var(--g2)); }
+.tpl-aurora.cont .glow{ margin-bottom:-50px; padding-bottom:50px; }
 .tpl-aurora .head{ position:relative; z-index:2; min-height:226px; padding: 46px 22px 0; color:#fff; }
 .tpl-aurora .headc{ height:46px; }
 .tpl-aurora .who{ padding-inline-end:210px; }

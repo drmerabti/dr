@@ -462,12 +462,12 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
     obsidian: (ac) => { const g = lightOn(ac, 0.34); return { '--g': g, '--g2': mix(g, '#0F1114', 0.62), '--g3': mix(g, '#0F1114', 0.86) }; },
     atlas: (ac) => ({ '--ac-t': darkOn(ac, 0.26) }),
     vitrine: (ac, pal) => ({ '--ac-t': darkOn(ac, 0.22), '--on2': mix(pal.on, ac, 0.28), '--ln': mix(pal.on, ac, 0.72) }),
-    folio: (ac) => ({ '--ac-t': darkOn(ac, 0.26), '--on-sp': lum(ac) > 0.45 ? '#15171C' : '#ffffff' }),
+    folio: (ac, pal) => ({ '--ac-t': darkOn(ac, 0.26), '--on-sp': pal.on }),
     apex: (ac, pal) => ({ '--ac-t': darkOn(ac, 0.22), '--on2': mix(pal.on, ac, 0.22) }),
     mosaic: (ac, pal) => { const deep = darkOn(ac, 0.14); return { '--deep': deep, '--ac-t': darkOn(ac, 0.22), '--paper': mix('#F1EEE8', ac, 0.05), '--tint': mix('#ffffff', ac, 0.1), '--deep2': mix(deep, '#ffffff', 0.14), '--deep-t': mix(deep, '#ffffff', 0.78) }; },
     orbit: (ac) => ({ '--ac-t': darkOn(ac, 0.22), '--pop': '#F2B544' }),
     ribbon: (ac, pal) => ({ '--ac-t': darkOn(ac, 0.22), '--on2': mix(pal.on, ac, 0.25) }),
-    aurora: (ac) => { const g2 = hueShift(ac, 48), g3 = hueShift(ac, -42); return { '--g1': ac, '--g2': g2, '--g3': g3, '--ac-t': darkOn(ac, 0.2), '--tint': mix('#ffffff', ac, 0.07), '--tint2': mix('#ffffff', ac, 0.16) }; },
+    aurora: (ac) => { const g1 = darkOn(ac, 0.3), g2 = darkOn(hueShift(ac, 48), 0.3), g3 = darkOn(hueShift(ac, -42), 0.3); return { '--g1': g1, '--g2': g2, '--g3': g3, '--ac-t': darkOn(ac, 0.2), '--tint': mix('#ffffff', ac, 0.07), '--tint2': mix('#ffffff', ac, 0.16) }; },
   };
   Object.keys(PREMIUM_VARS).forEach((id) => { TPL[id].vars = PREMIUM_VARS[id]; });
   // colour of the heading icon (literal, for the PDF); no entry = no icon
@@ -531,6 +531,7 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
     const dir = I18N[lang].dir;
     const ac = def.fixed ? def.color : (cv.sidebarColor || def.color);
     const pal = palette(ac);
+    if (def.premium) pal.on = lum(ac) > 0.34 ? '#1B2430' : '#ffffff'; // text on the accent: dark as soon as the colour is light
     const p = cv.personal || {};
     return {
       cv, id, def, dir, rtl: dir === 'rtl', p, pal,
@@ -667,18 +668,20 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
   function decoApex(ctx, first) {
     const W = 794, { pal } = ctx;
     let s = '';
-    if (first) {
-      s += poly(ctx, W, [[0, 0], [794, 0], [794, 236], [0, 322]], pal.l);
-      s += poly(ctx, W, [[0, 0], [794, 0], [794, 218], [0, 304]], pal.ac);
-      s += poly(ctx, W, [[0, 0], [330, 0], [0, 124]], pal.d, 0.45);
-      s += poly(ctx, W, [[794, 0], [794, 118], [640, 0]], '#ffffff', 0.08);
-    } else {
+    if (!first) {
       s += poly(ctx, W, [[0, 0], [794, 0], [794, 30], [0, 62]], pal.l);
       s += poly(ctx, W, [[0, 0], [794, 0], [794, 20], [0, 52]], pal.ac);
     }
     s += poly(ctx, W, [[794, 1123], [794, 1037], [500, 1123]], pal.l);
     s += poly(ctx, W, [[794, 1123], [794, 1055], [562, 1123]], pal.ac);
     return svgWrap(W, 1123, s, 'left:0;top:0;');
+  }
+  // inside the header (which carries the colour): facets at the top, the slanted cut at the bottom
+  function apexHead(ctx) {
+    const W = 794, { pal } = ctx;
+    const top = poly(ctx, W, [[0, 0], [330, 0], [0, 124]], pal.d, 0.45) + poly(ctx, W, [[794, 0], [794, 118], [640, 0]], '#ffffff', 0.08);
+    const cut = poly(ctx, W, [[0, 86], [794, 0], [794, 106], [0, 106]], '#ffffff') + poly(ctx, W, [[0, 86], [794, 0], [794, 18], [0, 104]], pal.l);
+    return svgWrap(W, 130, top, 'left:0;top:0;') + svgWrap(W, 106, cut, 'left:0;bottom:-1px;');
   }
   function decoOrbit(ctx, first) {
     const W = 794, x = (v) => (ctx.rtl ? W - v : v), { pal } = ctx, pop = ctx.vars['--pop'];
@@ -830,7 +833,7 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
     },
     apex(ctx, first) {
       return `<div class="cv-page m pm tpl-apex">${decoApex(ctx, first)}
-        ${first ? `<div class="head" data-sec="personal"><div class="who">${nameHtml(ctx)}${roleHtml(ctx)}${ctx.contacts.length ? `<div class="ctrow">${contactsHtml(ctx, ctx.pal.on, 13)}</div>` : ''}</div>${photoHtml(ctx)}</div>` : '<div class="headc"></div>'}
+        ${first ? `<div class="head" data-sec="personal">${apexHead(ctx)}<div class="who">${nameHtml(ctx)}${roleHtml(ctx)}${ctx.contacts.length ? `<div class="ctrow">${contactsHtml(ctx, ctx.pal.on, 13)}</div>` : ''}</div>${photoHtml(ctx)}</div>` : '<div class="headc"></div>'}
         <div class="pg-body"><div class="pg-col main">${flow('main')}</div><div class="pg-col side">${flow('side')}</div></div>
         <div class="pg-foot"><span>${ctx.name}</span><b data-pn></b></div>
       </div>`;
@@ -858,8 +861,8 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
       </div>`;
     },
     aurora(ctx, first) {
-      return `<div class="cv-page m pm tpl-aurora"><div class="glow">${decoAurora(ctx, first)}</div>
-        ${first ? `<div class="head" data-sec="personal"><div class="who">${nameHtml(ctx)}${roleHtml(ctx)}${ctx.contacts.length ? `<div class="chips">${contactsHtml(ctx, '#ffffff', 13)}</div>` : ''}</div>${photoHtml(ctx)}</div>` : '<div class="headc"></div>'}
+      return `<div class="cv-page m pm tpl-aurora"><div class="glow">${decoAurora(ctx, first)}
+        ${first ? `<div class="head" data-sec="personal"><div class="who">${nameHtml(ctx)}${roleHtml(ctx)}${ctx.contacts.length ? `<div class="chips">${contactsHtml(ctx, '#ffffff', 13)}</div>` : ''}</div>${photoHtml(ctx)}</div>` : '<div class="headc"></div>'}</div>
         <div class="sheet"><div class="pg-body"><div class="pg-col main">${flow('main')}</div><div class="pg-col side">${flow('side')}</div></div></div>
         <div class="pg-foot"><span>${ctx.name}</span><b data-pn></b></div>
       </div>`;
@@ -1157,6 +1160,7 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
   }
 
   const fitCache = new Map();
+  const fitHint = {};
   function fitKey(ctx, thumb) {
     const cv = ctx.cv, p = Object.assign({}, ctx.p, { photo: ctx.p.photo ? 1 : 0 });
     return [thumb ? 'T' : 'P', ctx.id, lang, cv.fontFamily || '', ctx.fs, ctx.autoFs ? 'a' : 'm', JSON.stringify(p), JSON.stringify(cv.sections || [])].join('|');
@@ -1179,6 +1183,16 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
       if (hit.fu) applyFlowFit(pages[0], ctx, hit.u, hit.fu);
       if (pages.length === hit.n && !pages.dropped === !hit.dropped && (hit.n > 1 || pages.dropped || pageFits(pages[0], pageScale(pages[0]), tol))) { u = hit.u; fu = hit.fu; }
       else pages = null;
+    }
+    // While typing in a CV of several pages, the level of the previous render is usually still the right one:
+    // three layouts confirm it (no page can be saved, one step more would not fit) instead of a full search.
+    const hint = thumb ? null : fitHint[id];
+    if (!pages && hint && hint.n > 1) {
+      const fitsN = (pgs) => pgs.length <= hint.n && !pgs.forced;
+      if (lay(-1).length >= hint.n && (hint.u >= 1 || !fitsN(lay(Math.min(1, hint.u + 1 / 16))))) {
+        const pgs = lay(hint.u);
+        if (pgs.length === hint.n && !pgs.forced) { pages = pgs; u = hint.u; fitCache.set(key, { u, fu: null, n: pgs.length, dropped: false }); }
+      }
     }
     if (!pages) {
       pages = lay(0);
@@ -1204,6 +1218,7 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
       if (fitCache.size > 300) fitCache.clear();
       fitCache.set(key, { u, fu, n: pages.length, dropped: pages.dropped });
     }
+    if (!thumb) fitHint[id] = { u, n: pages.length };
     if (pages.length > 1 && !pages.dropped) {
       const k = pageScale(pages[0]);
       pages.forEach((pg) => qsa('.flow', pg).forEach((f) => { if (f.lastElementChild) growFlow(pg, f, ctx, u, k, 1); }));
@@ -1352,10 +1367,17 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
     const cur = tplOf(activeCv);
     if (!ids.length) { els.gGrid.innerHTML = `<div class="g-empty">${escapeHtml(t('no_results'))}</div>`; return; }
     els.gGrid.innerHTML = ids.map((id) => `<button type="button" class="g-card${id === cur ? ' on' : ''}${tplIsPremium(id) ? ' prem' : ''}" data-tpl="${id}"><div class="g-thumb"></div>${tplIsPremium(id) ? premBadge() : ''}<div class="g-meta"><b>${escapeHtml(t('templateNames')[id])}</b><span>${escapeHtml(t('cats')[TPL[id].cat])}</span></div></button>`).join('');
+    fillGalleryThumbs();
+  }
+  // (Re)draws the thumbnails inside the cards that are already there — the cards themselves are not replaced.
+  let thumbRun = 0;
+  function fillGalleryThumbs() {
     const src = thumbSource();
-    const cards = qsa('.g-card', els.gGrid);
+    const cards = qsa('.g-card[data-tpl]', els.gGrid);
+    const run = ++thumbRun;
     let i = 0;
     const step = () => { // render progressively so the dialog opens instantly
+      if (run !== thumbRun) return;
       const end = Math.min(cards.length, i + 3);
       for (; i < end; i++) { const box = cards[i].querySelector('.g-thumb'); thumbInto(box, cvForTemplate(src, cards[i].dataset.tpl), cards[i].dataset.tpl, box.clientWidth || 200); }
       if (i < cards.length && !els.gallery.classList.contains('hidden')) requestAnimationFrame(step);
@@ -2214,7 +2236,7 @@ const SAMPLE_PHOTO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAo
         fitCache.clear();
         if (!activeCv) return;
         renderPreview();
-        if (!els.gallery.classList.contains('hidden')) renderGalleryGrid();
+        if (!els.gallery.classList.contains('hidden')) fillGalleryThumbs();
       }, 120);
     });
   }
