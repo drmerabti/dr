@@ -464,7 +464,7 @@ const CONTENT = {
       desc_ar: 'ملخص مجاني في 32 صفحة لكل دروس الرياضيات للسنة الرابعة متوسط في 6 أبواب: الأعداد والجذور، الحساب الحرفي والمعادلات، الدوال، الإحصاء والاحتمالات، الهندسة المستوية وهندسة الفضاء — تعاريف وطرق وأمثلة محلولة ونصائح للنجاح في الشهادة. اقرأه أو حمّله PDF.',
       desc_en: 'A free 32-page summary of all 4th-year middle-school maths for the BEM exam in 6 parts: numbers and roots, algebra and equations, functions, statistics and probability, plane and solid geometry — definitions, methods, worked examples and exam tips. Read it or download the PDF.',
       url: 'books/bem-math/', icon: ICONS.numbersApp, badge: 'مجاني', badge_en: 'Free' },
-    // English books: bookLang 'en' → shown under the "Eng" filter of books.html (books.html?books=eng)
+    // English books: bookLang 'en' → shown on merabti.com/Eng-books (the "Eng" filter of the books page)
     { id: 'book-eng-cells-kingdom', bookLang: 'en', title_ar: 'Cells Kingdom — مملكة الخلايا بالإنجليزية', title_en: 'Cells Kingdom — Excel as You’ve Never Known It Before',
       desc_ar: 'النسخة الإنجليزية الكاملة من «مملكة الخلايا» في جزء واحد: كتاب PDF في 350 صفحة، 23 فصلًا من الأساسيات إلى الجداول المحورية وPower Query والماكرو. اقرأ أول 20 صفحة مجانًا واطلب الكتاب.',
       desc_en: 'The complete English edition of Cells Kingdom in one volume: a 350-page PDF book, 23 chapters from the basics to PivotTables, Power Query and macros. Read the first 20 pages free and order the book.',
@@ -847,12 +847,15 @@ function courseUrlFor(item){
   return 'courses/player.html?course=' + encodeURIComponent(item.id.replace(/^course-/, ''));
 }
 
-/* Books page: AR / Eng filter. Each button is a real link (books.html?books=ar,
-   books.html?books=eng), so the English list can be shared and opened directly. */
+/* Books page: AR / Eng filter. Each button is a real page: merabti.com/AR-books (AR-books.html)
+   and merabti.com/Eng-books (Eng-books.html), copies of books.html that say which list they show
+   (data-book-lang on <body>). books.html shows the Arabic list; books.html?books=eng (old links) the English one. */
 let activeBookLang = 'ar';
 try {
   const q = new URLSearchParams(location.search).get('books');
-  if (q && /^(en|eng)$/i.test(q)) activeBookLang = 'en';
+  if (document.body && document.body.dataset.bookLang === 'en') activeBookLang = 'en';
+  else if (/\/eng-books(\.html)?\/?$/i.test(location.pathname)) activeBookLang = 'en';
+  else if (q && /^(en|eng)$/i.test(q)) activeBookLang = 'en';
 } catch (e) { /* ignore */ }
 
 function renderBookLangFilter(){
@@ -860,8 +863,8 @@ function renderBookLangFilter(){
   if (!bar) return;
   bar.classList.remove('hidden');
   const opts = [
-    { k: 'ar', label: 'AR', title: lang === 'ar' ? 'كتب عربية' : 'Arabic books', href: 'books.html?books=ar' },
-    { k: 'en', label: 'Eng', title: lang === 'ar' ? 'كتب إنجليزية' : 'English books', href: 'books.html?books=eng' },
+    { k: 'ar', label: 'AR', title: lang === 'ar' ? 'كتب عربية' : 'Arabic books', href: 'AR-books' },
+    { k: 'en', label: 'Eng', title: lang === 'ar' ? 'كتب إنجليزية' : 'English books', href: 'Eng-books' },
   ];
   bar.innerHTML = opts.map(o => `<a class="family-btn ${o.k === activeBookLang ? 'active' : ''}" href="${o.href}" data-book-lang="${o.k}" title="${o.title}" lang="en">${o.label}</a>`).join('');
   bar.querySelectorAll('[data-book-lang]').forEach(btn => {

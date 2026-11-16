@@ -81,7 +81,9 @@ www.merabti.com, claude-test-dr.merabti.workers.dev).
   A new paid book: catalog entry + copy the buy box and the two windows from `books/excel-vba/index.html`.
   A paid book with no preview yet: cover only (showcase), as `books/excel-kingdom-2/` was before its release.
 - English books (`books/eng-…`, `<html lang="en">`, left to right): listed with `bookLang: 'en'` in `app.js` and shown
-  under the "Eng" filter of `books.html` (`books.html?books=eng`; "AR" = `books.html?books=ar`). Shared files in
+  under the "Eng" filter of the books page. The filter buttons are real pages: `merabti.com/Eng-books`
+  (`Eng-books.html`) and `merabti.com/AR-books` (`AR-books.html`), copies of `books.html` with `data-book-lang`
+  on `<body>` (keep the three in step); `books.html` shows AR, `books.html?books=eng` still opens Eng. Shared files in
   `books/word/`: `book-en.js` (prices from `window.BOOK_EN` in the page, order windows, left-to-right flipbook)
   and `book-en.css`; `paypal.js` switches its messages to English on these pages.
 - `wrangler.jsonc`: vars `PAYPAL_CLIENT_ID`, `PAYPAL_ENV` (`sandbox` | `live`), R2 binding `BOOKS` → `merabtibooks`.
