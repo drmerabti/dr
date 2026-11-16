@@ -358,37 +358,57 @@
      No native scrolling: one number (pos, in items) drives the transforms of the 10 cards, so the strip
      follows the pointer 1:1 and only transform / opacity change (cheap for the browser). */
   const N = DESIGNS.length;
-  let pos = current, anim = 0, step = 76;
+  let pos = current, step = 76;
+  let target = null;                         // where pos is gliding to (null while the finger / mouse holds it)
+  // pointer over the strip (mouse hover, or a finger on the phone): hx = x from the strip centre, hy = 0..1
+  const hover = { on: false, x: 0, y: 0.5, amt: 0, sx: 0, sy: 0.5 };
+  let loop = 0;
   const clampPos = (p) => Math.max(-0.45, Math.min(N - 1 + 0.45, p));
   function measure() { step = Math.max(58, Math.min(80, strip.clientWidth / 5.4)); }
   function paint() {
+    const h = hover.amt;
     for (let i = 0; i < N; i++) {
       const off = i - pos, a = Math.abs(off), sg = Math.sign(off);
       const x = sg * (Math.min(a, 1) * step * 0.95 + Math.max(0, a - 1) * step * 0.72);
-      const scale = a <= 1 ? 1 - 0.2 * a : Math.max(0.58, 0.8 - 0.11 * (a - 1));
-      const op = a <= 1 ? 1 : Math.max(0, 1 - 0.38 * (a - 1));
+      let scale = a <= 1 ? 1 - 0.2 * a : Math.max(0.58, 0.8 - 0.11 * (a - 1));
+      let op = a <= 1 ? 1 : Math.max(0, 1 - 0.38 * (a - 1));
+      // magnify the card under the pointer / finger (and a little its neighbours), lift it and tilt it towards the pointer
+      const d = (hover.sx - x) / step;                                  // pointer → card, in cards
+      const boost = h * Math.max(0, 1 - Math.abs(d) / 1.15);
+      const lift = boost * boost;
+      scale *= 1 + 0.22 * lift;
+      if (op > 0) op = Math.min(1, op + 0.5 * boost);
+      const ry = Math.max(-1, Math.min(1, d * 1.6)) * 16 * lift;        // turn towards the pointer
+      const rx = (0.5 - hover.sy) * 18 * lift;
       const it = items[i];
-      it.style.transform = `translate3d(${x.toFixed(1)}px,0,0) scale(${scale.toFixed(3)})`;
+      it.style.transform = `translate3d(${x.toFixed(1)}px,${(-9 * lift).toFixed(1)}px,0) perspective(420px) rotateX(${rx.toFixed(1)}deg) rotateY(${ry.toFixed(1)}deg) scale(${scale.toFixed(3)})`;
       it.style.opacity = op.toFixed(2);
-      it.style.zIndex = String(100 - Math.round(a * 10));
+      it.style.zIndex = String(200 - Math.round(a * 10) + Math.round(lift * 50));
       it.style.visibility = op <= 0.01 ? 'hidden' : '';
       it.classList.toggle('is-center', a < 0.5);
+      it.classList.toggle('is-hot', lift > 0.35);
     }
     const n = Math.max(0, Math.min(N - 1, Math.round(pos)));
     if (n !== current) select(n);
   }
-  function animateTo(target) {
-    target = Math.max(0, Math.min(N - 1, target));
-    cancelAnimationFrame(anim);
-    const tick = () => {
+  // one animation loop for everything that moves (glide to a design, hover in / out, pointer smoothing); stops when still
+  function kick() { if (!loop) loop = requestAnimationFrame(frame); }
+  function frame() {
+    loop = 0;
+    let busy = false;
+    if (target != null) {
       const d = target - pos;
-      if (Math.abs(d) < 0.002) { pos = target; paint(); return; }
-      pos += d * 0.22;
-      paint();
-      anim = requestAnimationFrame(tick);
-    };
-    anim = requestAnimationFrame(tick);
+      if (Math.abs(d) < 0.002) { pos = target; target = null; } else { pos += d * 0.22; busy = true; }
+    }
+    const ta = hover.on ? 1 : 0;
+    if (Math.abs(ta - hover.amt) > 0.004) { hover.amt += (ta - hover.amt) * 0.2; busy = true; } else hover.amt = ta;
+    if (Math.abs(hover.x - hover.sx) > 0.3 || Math.abs(hover.y - hover.sy) > 0.003) {
+      hover.sx += (hover.x - hover.sx) * 0.35; hover.sy += (hover.y - hover.sy) * 0.35; busy = true;
+    }
+    paint();
+    if (busy) kick();
   }
+  function animateTo(t) { target = Math.max(0, Math.min(N - 1, t)); kick(); }
   function select(i) {
     if (i === current) return;
     current = i;
@@ -399,19 +419,30 @@
     clearTimeout(select.ga);
     select.ga = setTimeout(() => { try { if (window.gtag) gtag('event', 'select_content', { content_type: 'qr_design', item_id: DESIGNS[current].id }); } catch (e) { /* ignore */ } }, 1500);
   }
+  function hoverAt(e) {
+    const r = strip.getBoundingClientRect();
+    hover.x = e.clientX - (r.left + r.width / 2);
+    hover.y = Math.max(0, Math.min(1, (e.clientY - r.top) / r.height));
+    if (!hover.on) { hover.sx = hover.x; hover.sy = hover.y; }
+    hover.on = true;
+    kick();
+  }
+  function hoverOff() { hover.on = false; kick(); }
 
   let drag = null;
   strip.addEventListener('pointerdown', (e) => {
     if (e.button !== 0) return;
-    cancelAnimationFrame(anim);
+    target = null;
+    hoverAt(e);                               // a finger on the phone "hovers" too: the touched card grows at once
     drag = { id: e.pointerId, x0: e.clientX, y0: e.clientY, p0: pos, moved: false, lx: e.clientX, lt: e.timeStamp, v: 0, item: e.target.closest('.qd-item') };
   });
   strip.addEventListener('pointermove', (e) => {
+    if (e.pointerType === 'mouse' || drag) hoverAt(e);
     if (!drag || e.pointerId !== drag.id) return;
     const dx = e.clientX - drag.x0;
     if (!drag.moved) {
       if (Math.abs(dx) < 4) return;
-      if (e.pointerType !== 'mouse' && Math.abs(e.clientY - drag.y0) > Math.abs(dx)) { drag = null; return; }   // the page is being scrolled
+      if (e.pointerType !== 'mouse' && Math.abs(e.clientY - drag.y0) > Math.abs(dx)) { drag = null; hoverOff(); return; }   // the page is being scrolled
       drag.moved = true;
       strip.classList.add('dragging');
       try { strip.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ }
@@ -420,14 +451,15 @@
     drag.v = 0.7 * drag.v + 0.3 * ((e.clientX - drag.lx) / dt);    // px / ms
     drag.lx = e.clientX; drag.lt = e.timeStamp;
     pos = clampPos(drag.p0 - dx / step);
-    paint();
+    kick();
   });
   function endDrag(e) {
     if (!drag || (e && e.pointerId !== drag.id)) return;
     const dd = drag;
     drag = null;
     strip.classList.remove('dragging');
-    if (!dd.moved) {                       // a tap: centre the item that was tapped
+    if (e && e.pointerType !== 'mouse') setTimeout(hoverOff, 180);    // the finger left: the card settles back
+    if (!dd.moved) {                       // a tap / click: centre the card that was touched
       if (dd.item) animateTo(+dd.item.dataset.i);
       return;
     }
@@ -435,17 +467,18 @@
     animateTo(Math.round(pos + fling));
   }
   strip.addEventListener('pointerup', endDrag);
-  strip.addEventListener('pointercancel', endDrag);
+  strip.addEventListener('pointercancel', (e) => { endDrag(e); hoverOff(); });
   strip.addEventListener('lostpointercapture', (e) => { if (e.target === strip) endDrag(e); });   // not the child's implicit touch capture
+  strip.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse' && !drag) hoverOff(); });
   // trackpad / horizontal wheel
   let wheelSnap = 0;
   strip.addEventListener('wheel', (e) => {
     const dx = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : (e.shiftKey ? e.deltaY : 0);
     if (!dx) return;
     e.preventDefault();
-    cancelAnimationFrame(anim);
+    target = null;
     pos = clampPos(pos + dx / step / 1.4);
-    paint();
+    kick();
     clearTimeout(wheelSnap);
     wheelSnap = setTimeout(() => animateTo(Math.round(pos)), 120);
   }, { passive: false });
@@ -454,6 +487,39 @@
     e.preventDefault();
     animateTo(current + (e.key === 'ArrowRight' ? 1 : -1));
   });
+
+  /* ---------- big preview: tilts towards the pointer / finger, with a soft light that follows it ---------- */
+  const frameEl = $('qrFrame');
+  let tilt = null, tiltLoop = 0;
+  const tiltNow = { x: 0, y: 0, a: 0 }, tiltTo = { x: 0, y: 0, a: 0 };
+  function tiltFrame() {
+    tiltLoop = 0;
+    const st = els.qrCanvasWrap.querySelector('.qr-stage');
+    if (!st) return;
+    let busy = false;
+    for (const k of ['x', 'y', 'a']) { const d = tiltTo[k] - tiltNow[k]; if (Math.abs(d) > 0.002) { tiltNow[k] += d * 0.18; busy = true; } else tiltNow[k] = tiltTo[k]; }
+    st.style.transform = `perspective(900px) rotateX(${(-tiltNow.y * 7 * tiltNow.a).toFixed(2)}deg) rotateY(${(tiltNow.x * 9 * tiltNow.a).toFixed(2)}deg) scale(${(1 + 0.015 * tiltNow.a).toFixed(4)})`;
+    st.style.setProperty('--mx', (50 + tiltNow.x * 50).toFixed(1) + '%');
+    st.style.setProperty('--my', (50 + tiltNow.y * 50).toFixed(1) + '%');
+    st.style.setProperty('--shine', (0.55 * tiltNow.a).toFixed(3));
+    if (busy) tiltLoop = requestAnimationFrame(tiltFrame);
+  }
+  function tiltAt(e) {
+    const st = els.qrCanvasWrap.querySelector('.qr-stage');
+    if (!st) return;
+    const r = st.getBoundingClientRect();
+    tiltTo.x = Math.max(-1, Math.min(1, ((e.clientX - r.left) / r.width) * 2 - 1));
+    tiltTo.y = Math.max(-1, Math.min(1, ((e.clientY - r.top) / r.height) * 2 - 1));
+    tiltTo.a = 1;
+    if (!tiltLoop) tiltLoop = requestAnimationFrame(tiltFrame);
+  }
+  function tiltOff() { tiltTo.a = 0; tiltTo.x = 0; tiltTo.y = 0; tilt = null; if (!tiltLoop) tiltLoop = requestAnimationFrame(tiltFrame); }
+  frameEl.addEventListener('pointerdown', (e) => { if (!e.target.closest('.qd-logo-pop')) { tilt = e.pointerId; tiltAt(e); } });
+  frameEl.addEventListener('pointermove', (e) => { if (e.target.closest('.qd-logo-pop')) return; if (e.pointerType === 'mouse' || tilt === e.pointerId) tiltAt(e); });
+  frameEl.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') tiltOff(); });
+  frameEl.addEventListener('pointerup', (e) => { if (e.pointerType !== 'mouse') tiltOff(); });
+  frameEl.addEventListener('pointercancel', tiltOff);
+
   window.addEventListener('resize', () => { measure(); paint(); fitStage(); });
 
   /* ---------- centre logo (Premium): tap the middle of the code → upload an image or type a letter ---------- */

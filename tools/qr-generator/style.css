@@ -525,9 +525,10 @@ html[dir="rtl"] .big-output{ padding: 20px 28px 20px 130px; }
   -webkit-tap-highlight-color: transparent;
 }
 .qd-item img{ -webkit-user-drag: none; }
-@media (hover: hover){
-  .qd-item:not(.is-center):hover .qd-card img{ filter: drop-shadow(0 6px 10px rgba(21,36,49,.28)) brightness(1.04); }
-}
+.qd-item.is-hot .qd-card img{ filter: drop-shadow(0 10px 14px rgba(21,36,49,.32)); }
+/* room for the card that grows under the pointer */
+.qd-strip{ height: 134px; }
+.qd-item{ top: 20px; }
 .qd-card{
   position: relative;
   display: block;
@@ -867,3 +868,16 @@ body.qd-lock{ overflow: hidden; }
 .qd-logo-row input:focus{ border-color: var(--accent); }
 .qd-logo-reset{ border: 0; background: #FDECEA; color: #B03A2E; font: inherit; font-weight: 800; font-size: .82rem; padding: 0 12px; border-radius: 12px; cursor: pointer; }
 .qd-logo-reset[hidden]{ display: none; }
+
+/* big preview: soft light that follows the pointer / finger while the card tilts (JS sets --mx --my --shine) */
+.qr-stage{ transform-style: preserve-3d; will-change: transform; }
+.qr-stage::after{
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 7%;
+  pointer-events: none;
+  background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(255,255,255,.55), rgba(255,255,255,0) 55%);
+  opacity: var(--shine, 0);
+  mix-blend-mode: soft-light;
+}
