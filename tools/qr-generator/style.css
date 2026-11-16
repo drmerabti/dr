@@ -924,3 +924,9 @@ body.qd-lock{ overflow: hidden; }
 .qd-codes-note{ margin: 12px 0 6px !important; color: var(--ink-soft); line-height: 1.6; }
 .qd-who{ margin: 6px 0 0; font-size: .8rem; color: var(--ink-soft); text-align: center; }
 .qd-who .link-btn{ border: 0; background: none; padding: 0; font: inherit; font-weight: 700; color: #B03A2E; cursor: pointer; text-decoration: underline; }
+
+/* Premium preview: a transparent layer over the image, so "save image" (right-click / long press) cannot reach it */
+.qr-shield{ position: absolute; inset: 0; z-index: 1; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+.qr-frame.is-classic .qr-shield{ display: none; }
+.qd-hot{ z-index: 2; }
+.qr-preview-img, .qd-card img{ -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
