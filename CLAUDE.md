@@ -67,6 +67,9 @@ www.merabti.com, claude-test-dr.merabti.workers.dev).
   | `excel-shortcuts` | `books/excel-shortcuts/` | `Mouse-Excel.pdf` | 4.99 |
   | `shortcuts-wiki` | `books/shortcuts-wiki/` | `Wiki-Shortcuts.pdf` | 4.99 |
   | `macbook-shortcuts` | `books/macbook-shortcuts/` | `mac-shortcuts.pdf` | 7.99 |
+  | `eng-cells-kingdom` | `books/eng-cells-kingdom/` | `Eng-Cells-Kingdom.pdf` | 9.99 |
+  | `eng-vba` | `books/eng-vba/` | `Eng-VBA.pdf` | 7.99 |
+  | `eng-encyclopedia` | `books/eng-encyclopedia/` | `Eng-Encyclopedia-Excel.pdf` | 7.99 |
 
   Routes: `GET /api/paypal/config?bookId=` (no PayPal buttons if the file is not in R2),
   `POST /api/paypal/create-order {bookId}`, `POST /api/paypal/capture-order {orderId}`,
@@ -77,6 +80,10 @@ www.merabti.com, claude-test-dr.merabti.workers.dev).
   Dinar = e-mail / WhatsApp (`#orderMail` / `#orderWa` in each page's own `app.js`; `data-wa-text` = BaridiMob message).
   A new paid book: catalog entry + copy the buy box and the two windows from `books/excel-vba/index.html`.
   A paid book with no preview yet: cover only (showcase), as `books/excel-kingdom-2/` was before its release.
+- English books (`books/eng-…`, `<html lang="en">`, left to right): listed with `bookLang: 'en'` in `app.js` and shown
+  under the "Eng" filter of `books.html` (`books.html?books=eng`; "AR" = `books.html?books=ar`). Shared files in
+  `books/word/`: `book-en.js` (prices from `window.BOOK_EN` in the page, order windows, left-to-right flipbook)
+  and `book-en.css`; `paypal.js` switches its messages to English on these pages.
 - `wrangler.jsonc`: vars `PAYPAL_CLIENT_ID`, `PAYPAL_ENV` (`sandbox` | `live`), R2 binding `BOOKS` → `merabtibooks`.
   `PAYPAL_SECRET` is a dashboard secret — never in the repo.
 - D1 table `paypal_orders` (created on first use).
@@ -150,6 +157,40 @@ border, frame ring, shadow or filter, whatever the page's own logo rules say. CS
   `clip-path`, `filter`, `writing-mode` or `background-clip:text`; Arabic is never letter-spaced or upper-cased.
 - Class names set by the layout engine on blocks: `first` (section start), `es` (entry start), `nl` (not the last
   piece of its section), `top` / `end` (first / last block of a column on a page) — do not reuse them for anything else.
+
+## QR Code tool designs (tools/qr-generator)
+
+- 10 designs in `designs.js` (`DESIGNS`): `classic` (free, no branding, the old look) + 9 Premium (violet, ticket, gold,
+  emerald, ocean, rose, minimal, neon, islamic). The code is drawn by qr-code-styling (vendored, fixed version:
+  `vendor/qr-code-styling.js` v1.9.2), **error correction "H" always**; each design adds its frame in one SVG.
+  Preview, strip, PNG and SVG all come from that same SVG (`QRDesigns.render` → `toPngBlob`).
+- Scan rules (checked with jsQR + ZXing): the code sits on a light plate with a clear margin; dark modules only;
+  no big smooth gradients behind the plate (block-based decoders misread them at high resolution: dark frames are
+  flat colours); no concentric ornament near the code (it looks like a finder pattern); finder rings and centres of
+  matching shapes (`rounded`/`square`/`classy-rounded`, never a square ring with a round centre); the centre logo
+  hides whole modules (library `hideBackgroundDots`). A new design must pass the same scan test before release.
+- Frame text uses system fonts (an SVG drawn as an image cannot load web fonts). Arabic is never letter-spaced.
+- Free download of a Premium design: the site is inside the code, not on the frame — `withSite()` (designs.js, via
+  `opts.branded`) adds `URL:https://merabti.com` to the vCard, so whoever scans saves the contact with the site.
+  $1.99 per design through PayPal removes that line: clean PNG (4×, 2400 px wide) + SVG. Classic never has it. Worker `/api/qr/*` (worker.js, "QR Code tool"): `GET config`,
+  `POST create-order {design}` → `{ id }`, `POST capture-order {orderId}` → `{ ok, orderId, design, until }`.
+  No sign-in. Price and catalogue only in the Worker (`QR_PRICE`, `QR_PREMIUM`); capture checks status, amount,
+  currency and custom_id; UNIQUE capture_id; D1 table `qr_orders` (created on first use, `env` = live | sandbox).
+  A COMPLETED order answers ok again for `QR_UNLOCK_HOURS` (24) — the page keeps the order ID in localStorage
+  `qrgen:orders` and asks the server again after a reload. `QR_SALES` in wrangler.jsonc: "live" honoured only on
+  dr.merabti.workers.dev (`QR_LIVE_HOSTS`); the page runs a demo (simulated payment) on the
+  claude-test Worker preview (claude-test-dr.merabti.workers.dev) and localhost.
+- Frames carry no text at all ("Scan me" and the printed site name were removed on request): only a small ornament.
+- Classic is always the design selected when the page opens (the last choice is not restored).
+- Premium centre logo: a button over the middle of the big preview (`#logoHot`, placed from `render().hot`) opens
+  `#logoPop`: upload an image (resized to max 320 px PNG in the browser) or type 1–2 letters (drawn on the design's
+  `accent`). It applies to every Premium design (`opts.logo` of `QRDesigns.render`), downloads included; nothing is
+  sent anywhere. Without it, designs keep their own logo (violet M, rose heart, islamic star) or none.
+- The strip is `dir="ltr"` in every language (fixed order); the download row too (buttons do not move).
+  It is not a scrolling list: one number (`pos`) drives transform / opacity of 10 absolutely placed cards, pointer
+  events (mouse + touch, `touch-action: pan-y`) move it 1:1, release snaps (with a small fling). Thumbnails are small
+  PNG bitmaps (168 px) made from each design's SVG; the big preview stays SVG.
+- Form fields: `unicode-bidi: plaintext` on every field, so Latin values sit on the left and Arabic on the right.
 
 ## Home order
 
