@@ -25,6 +25,9 @@
   var usdSub = document.getElementById('payUsdSub');
   var btnsEl = document.getElementById('ppButtons');
   var sdkReady = false, sdkFailed = false, wantRender = false, rendered = false;
+  /* English book pages (<html lang="en">) get English messages */
+  var EN = /^en/i.test(document.documentElement.lang || '');
+  function T(ar, en){ return EN ? en : ar; }
 
   /* analytics label = the page's folder (books/<folder>/), as each page's app.js uses */
   var LABEL = (location.pathname.match(/\/books\/([^\/]+)/) || [])[1] || BOOK;
@@ -42,7 +45,8 @@
   function unavailable(){
     sdkFailed = true;
     btnsEl.innerHTML = '';
-    msg('الدفع بالدولار غير متاح حاليًا. يمكنك الطلب بالدينار، أو مراسلتنا على contact@merabti.com', true);
+    msg(T('الدفع بالدولار غير متاح حاليًا. يمكنك الطلب بالدينار، أو مراسلتنا على contact@merabti.com',
+          'Paying in dollars is not available right now. You can order in dinars, or write to contact@merabti.com'), true);
   }
 
   /* ---------- after payment: order number + download button ---------- */
@@ -53,11 +57,13 @@
     document.getElementById('ppDl').href = abs(d.downloadUrl);
     if (d.expiresAt){
       var until = new Date(d.expiresAt);
-      var txt = 'الرابط صالح حتى ' + until.toLocaleDateString('ar-DZ', { day: 'numeric', month: 'long', year: 'numeric' }) +
-        '، ويمكن التحميل حتى ' + (d.maxDownloads || 5) + ' مرات. احتفظ برقم الطلب.';
+      var day = until.toLocaleDateString(EN ? 'en-GB' : 'ar-DZ', { day: 'numeric', month: 'long', year: 'numeric' });
+      var txt = EN
+        ? 'The link is valid until ' + day + ', for up to ' + (d.maxDownloads || 5) + ' downloads. Keep your order number.'
+        : 'الرابط صالح حتى ' + day + '، ويمكن التحميل حتى ' + (d.maxDownloads || 5) + ' مرات. احتفظ برقم الطلب.';
       document.getElementById('ppNote').textContent = txt;
     }
-    if (usdSub) usdSub.textContent = 'تم الدفع ✓ — حمّل الكتاب من هنا';
+    if (usdSub) usdSub.textContent = T('تم الدفع ✓ — حمّل الكتاب من هنا', 'Paid ✓ — download the book here');
   }
 
   function remember(d){
@@ -109,26 +115,28 @@
 
       onApprove: function(data, actions){
         box.classList.add('busy');
-        msg('جارٍ تأكيد الدفع… لا تغلق الصفحة.');
+        msg(T('جارٍ تأكيد الدفع… لا تغلق الصفحة.', 'Confirming the payment… please don’t close the page.'));
         return post(API + '/api/paypal/capture-order', { orderId: data.orderID }).then(function(d){
           box.classList.remove('busy');
-          if (d.error === 'INSTRUMENT_DECLINED'){ msg(d.message, true); return actions.restart(); }
-          if (!d.ok){ msg(d.message || 'لم يكتمل الدفع. حاول مرة أخرى.', true); return; }
+          if (d.error === 'INSTRUMENT_DECLINED'){ msg(EN ? 'Your card was declined. Please try another card or payment method.' : d.message, true); return actions.restart(); }
+          if (!d.ok){ msg(EN ? 'The payment was not completed. Please try again.' : (d.message || 'لم يكتمل الدفع. حاول مرة أخرى.'), true); return; }
           msg('');
           remember(d);
           showDone(d);
           track('purchase', { transaction_id: d.orderId, currency: 'USD' });
         }).catch(function(){
           box.classList.remove('busy');
-          msg('انقطع الاتصال أثناء تأكيد الدفع. إذا خُصم المبلغ راسلنا برقم الطلب: ' + data.orderID, true);
+          msg(T('انقطع الاتصال أثناء تأكيد الدفع. إذا خُصم المبلغ راسلنا برقم الطلب: ',
+                'The connection was lost while confirming the payment. If you were charged, write to us with the order number: ') + data.orderID, true);
         });
       },
 
-      onCancel: function(){ msg('أُلغي الدفع، يمكنك المحاولة مرة أخرى متى شئت.'); },
+      onCancel: function(){ msg(T('أُلغي الدفع، يمكنك المحاولة مرة أخرى متى شئت.', 'Payment cancelled. You can try again whenever you like.')); },
 
       onError: function(err){
         box.classList.remove('busy');
-        msg('تعذّر إتمام الدفع عبر PayPal، حاول مرة أخرى أو اطلب الكتاب عبر البريد أو واتساب.', true);
+        msg(T('تعذّر إتمام الدفع عبر PayPal، حاول مرة أخرى أو اطلب الكتاب عبر البريد أو واتساب.',
+              'The PayPal payment could not be completed. Please try again, or order the book by e-mail or WhatsApp.'), true);
         try { console.warn('PayPal', err); } catch (e) { /* ignore */ }
       }
     }).render('#ppButtons').catch(unavailable);

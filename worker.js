@@ -102,6 +102,25 @@ const BOOK_CATALOG = {
     currency: 'USD',
     file: 'mac-shortcuts.pdf',
   },
+  // English books (books.html → "Eng" filter)
+  'eng-cells-kingdom': {
+    title: 'Cells Kingdom — Excel as You’ve Never Known It Before',
+    price: '9.99',
+    currency: 'USD',
+    file: 'Eng-Cells-Kingdom.pdf',
+  },
+  'eng-vba': {
+    title: 'Creativity with Excel VBA',
+    price: '7.99',
+    currency: 'USD',
+    file: 'Eng-VBA.pdf',
+  },
+  'eng-encyclopedia': {
+    title: 'Encyclopedia of Excel Functions',
+    price: '7.99',
+    currency: 'USD',
+    file: 'Eng-Encyclopedia-Excel.pdf',
+  },
 };
 const CONTACT_EMAIL = 'contact@merabti.com';
 

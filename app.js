@@ -464,6 +464,25 @@ const CONTENT = {
       desc_ar: 'ملخص مجاني في 32 صفحة لكل دروس الرياضيات للسنة الرابعة متوسط في 6 أبواب: الأعداد والجذور، الحساب الحرفي والمعادلات، الدوال، الإحصاء والاحتمالات، الهندسة المستوية وهندسة الفضاء — تعاريف وطرق وأمثلة محلولة ونصائح للنجاح في الشهادة. اقرأه أو حمّله PDF.',
       desc_en: 'A free 32-page summary of all 4th-year middle-school maths for the BEM exam in 6 parts: numbers and roots, algebra and equations, functions, statistics and probability, plane and solid geometry — definitions, methods, worked examples and exam tips. Read it or download the PDF.',
       url: 'books/bem-math/', icon: ICONS.numbersApp, badge: 'مجاني', badge_en: 'Free' },
+    // English books: bookLang 'en' → shown under the "Eng" filter of books.html (books.html?books=eng)
+    { id: 'book-eng-cells-kingdom', bookLang: 'en', title_ar: 'Cells Kingdom — مملكة الخلايا بالإنجليزية', title_en: 'Cells Kingdom — Excel as You’ve Never Known It Before',
+      desc_ar: 'النسخة الإنجليزية الكاملة من «مملكة الخلايا» في جزء واحد: كتاب PDF في 350 صفحة، 23 فصلًا من الأساسيات إلى الجداول المحورية وPower Query والماكرو. اقرأ أول 20 صفحة مجانًا واطلب الكتاب.',
+      desc_en: 'The complete English edition of Cells Kingdom in one volume: a 350-page PDF book, 23 chapters from the basics to PivotTables, Power Query and macros. Read the first 20 pages free and order the book.',
+      url: 'books/eng-cells-kingdom/', icon: ICONS.excelApp, badge: 'جديد', badge_en: 'New' },
+    { id: 'book-eng-vba', bookLang: 'en', title_ar: 'Creativity with Excel VBA — النسخة الإنجليزية', title_en: 'Creativity with Excel VBA — Automate Your Work Yourself',
+      desc_ar: 'النسخة الإنجليزية من كتاب VBA: كتاب PDF في 234 صفحة، 12 فصلًا، كود مشروح سطرًا بسطر و6 مشاريع كاملة. اقرأ أول 20 صفحة مجانًا واطلب الكتاب.',
+      desc_en: 'A 234-page PDF book to learn Excel VBA from scratch: 12 chapters, code explained line by line and 6 complete projects. Read the first 20 pages free and order the book.',
+      url: 'books/eng-vba/', icon: ICONS.excelApp, badge: 'جديد', badge_en: 'New' },
+    { id: 'book-eng-encyclopedia', bookLang: 'en', title_ar: 'Encyclopedia of Excel Functions — النسخة الإنجليزية', title_en: 'Encyclopedia of Excel Functions — 495 Functions',
+      desc_ar: 'موسوعة دوال إكسل بالإنجليزية: 495 دالة، لكل دالة شرح ومثال على شكل ورقة إكسل.',
+      desc_en: 'The Excel functions encyclopedia in English: 495 functions, each explained with a worked example on an Excel sheet.',
+      url: 'books/eng-encyclopedia/', icon: ICONS.excelApp, badge: 'جديد', badge_en: 'New' },
+    { id: 'book-eng-excel-shortcuts', bookLang: 'en', title_ar: 'The Mouse Got Eaten by the Cat', title_en: 'The Mouse Got Eaten by the Cat — All Excel Shortcuts',
+      desc_ar: '', desc_en: '', cover: 'images/eng-covers/excel-shortcuts.jpg', icon: ICONS.excelApp, comingSoon: true, soon: true },
+    { id: 'book-eng-macbook-shortcuts', bookLang: 'en', title_ar: 'All MacBook Shortcuts in One Place', title_en: 'All MacBook Shortcuts in One Place',
+      desc_ar: '', desc_en: '', cover: 'images/eng-covers/macbook-shortcuts.jpg', icon: ICONS.keyboardApp, comingSoon: true, soon: true },
+    { id: 'book-eng-computers', bookLang: 'en', title_ar: 'Everything Professionals Know About Computers', title_en: 'Everything Professionals Know About Computers',
+      desc_ar: '', desc_en: '', cover: 'images/eng-covers/computers.jpg', icon: ICONS.pcSolutionsApp, comingSoon: true, soon: true },
     { id: 'book-access', title_ar: 'كتاب Access', title_en: 'Access Book',
       desc_ar: 'كتاب مصوّر في قواعد بيانات Access.', desc_en: 'An illustrated book on Access databases.',
       icon: ICONS.accessApp, comingSoon: true, soon: true },
@@ -828,6 +847,33 @@ function courseUrlFor(item){
   return 'courses/player.html?course=' + encodeURIComponent(item.id.replace(/^course-/, ''));
 }
 
+/* Books page: AR / Eng filter. Each button is a real link (books.html?books=ar,
+   books.html?books=eng), so the English list can be shared and opened directly. */
+let activeBookLang = 'ar';
+try {
+  const q = new URLSearchParams(location.search).get('books');
+  if (q && /^(en|eng)$/i.test(q)) activeBookLang = 'en';
+} catch (e) { /* ignore */ }
+
+function renderBookLangFilter(){
+  const bar = document.getElementById('bookLangFilter');
+  if (!bar) return;
+  bar.classList.remove('hidden');
+  const opts = [
+    { k: 'ar', label: 'AR', title: lang === 'ar' ? 'كتب عربية' : 'Arabic books', href: 'books.html?books=ar' },
+    { k: 'en', label: 'Eng', title: lang === 'ar' ? 'كتب إنجليزية' : 'English books', href: 'books.html?books=eng' },
+  ];
+  bar.innerHTML = opts.map(o => `<a class="family-btn ${o.k === activeBookLang ? 'active' : ''}" href="${o.href}" data-book-lang="${o.k}" title="${o.title}" lang="en">${o.label}</a>`).join('');
+  bar.querySelectorAll('[data-book-lang]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      activeBookLang = btn.getAttribute('data-book-lang');
+      try { history.replaceState(null, '', btn.getAttribute('href') + location.hash); } catch (err) { /* ignore */ }
+      renderSectionItems();
+    });
+  });
+}
+
 async function renderSectionItems(){
   const wrap = document.getElementById('sectionItems');
   if (!wrap) return;
@@ -841,13 +887,18 @@ async function renderSectionItems(){
   let items = (key === 'tools' && activeFamily)
     ? allItems.filter(i => Array.isArray(i.family) ? i.family.includes(activeFamily) : i.family === activeFamily)
     : allItems;
+  if (key === 'services'){
+    renderBookLangFilter();
+    items = items.filter(i => (i.bookLang === 'en') === (activeBookLang === 'en'));
+  }
 
   // Ready items stay pinned above "coming soon" ones, in each section, without
   // otherwise disturbing the order authors set in CONTENT.
   items = [...items].sort((a, b) => (a.comingSoon ? 1 : 0) - (b.comingSoon ? 1 : 0));
 
   await loadUserOrder();
-  const orderKey = key === 'tools' && activeFamily ? `${key}:${activeFamily}` : key;
+  const orderKey = key === 'tools' && activeFamily ? `${key}:${activeFamily}`
+    : (key === 'services' && activeBookLang === 'en') ? 'services:en' : key;
   items = applyUserOrder(orderKey, items);
 
   wrap.innerHTML = '';
@@ -933,6 +984,15 @@ async function renderSectionItems(){
 function bookCover(item, admin){
   const title = lang === 'ar' ? item.title_ar : item.title_en;
   const soonTxt = lang === 'ar' ? 'قريبًا' : 'Coming soon';
+  if (item.soon && item.cover){
+    // announced, cover ready: the cover, faded, marked "coming soon", not clickable
+    const el = document.createElement('div');
+    el.className = 'item-card book-item book-soon-cover';
+    el.title = title;
+    el.innerHTML = `<img class="book-cover-img" src="${item.cover}" alt="${title}" loading="lazy" decoding="async">
+      <span class="coming-soon-badge">${soonTxt}</span>`;
+    return el;
+  }
   if (item.soon || !item.url){
     const el = document.createElement('div');
     el.className = 'item-card book-item book-soon';

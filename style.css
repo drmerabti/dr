@@ -1282,6 +1282,11 @@ html:has(body.ui-v2){ scroll-behavior: smooth; }
 .book-soon-ico svg{ width: 58px; height: 58px; }
 .book-soon-title{ font-size: .86rem; font-weight: 700; line-height: 1.4; text-align: center; color: var(--ui-ink-soft, #5a6c7e); }
 .book-soon .coming-soon-badge{ margin: 0; }
+/* announced, cover ready: the cover, faded, "coming soon" badge, not clickable */
+.item-grid.book-grid .book-soon-cover{ position: relative; cursor: default; }
+.book-soon-cover .book-cover-img{ opacity: .55; filter: grayscale(.35); }
+/* books page: AR / Eng filter (links, styled like the tools filter) */
+#bookLangFilter .family-btn{ display: inline-flex; align-items: center; text-decoration: none; font-family: 'Inter', sans-serif; font-weight: 700; min-width: 64px; justify-content: center; }
 
 @media (max-width: 600px){
   .item-grid.book-grid{ grid-template-columns: repeat(2, 1fr); gap: 24px 18px; }
