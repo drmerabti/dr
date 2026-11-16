@@ -29,25 +29,31 @@
         ['هل يجب ملء كل الخانات؟', 'لا، يكفي ملء خانة واحدة ليظهر الرمز، وكل خانة تتركها فارغة لا تُضاف إلى بطاقة الاتصال.'],
         ['هل تُرسل بياناتي إلى أي خادم؟', 'لا، يُنشأ الرمز داخل متصفحك مباشرة، ولا تُحفظ بياناتك ولا تُرسل إلى أي مكان.'],
         ['كيف أمسح الرمز بالهاتف؟', 'افتح كاميرا الهاتف ووجّهها نحو الرمز، أو استعمل تطبيقًا لقراءة QR، ثم اختر «إضافة جهة اتصال» لحفظ البيانات.'],
-        ['هل التصاميم الملوّنة مجانية؟', 'نعم، يمكنك تحميل أي تصميم مجانًا، ويُضاف رابط الموقع merabti.com إلى بيانات جهة الاتصال داخل الرمز (يظهر لمن يمسحه). لإزالته ادفع 1.99$ عبر PayPal، فتحصل على صورة PNG عالية الدقة وملف SVG بدون اسم الموقع.'],
+        ['هل التصاميم الملوّنة مجانية؟', 'التصميم الكلاسيكي مجاني بدون تسجيل. التصاميم المميزة تحتاج تسجيل الدخول، وتحميلها مجاني مع إضافة رابط الموقع merabti.com إلى بيانات الرمز. لإزالته ادفع 1.99$ عبر PayPal: يُحفظ الرمز في حسابك ضمن «أكوادي» وتحمّله بصيغتي PNG وSVG متى شئت، وأي تعديل عليه يصنع رمزًا جديدًا بدفع جديد.'],
       ],
       guideVideo: 'شاهد شرح الأداة بالفيديو',
       designsLabel: 'التصاميم', free: 'مجاني', premium: 'Premium',
       noticeFree: 'تصميم مجاني بدون أي علامة',
       noticeRemove: 'لإزالة اسم الموقع ادفع 1.99$',
       noticeOff: 'التحميل المجاني يضيف رابط الموقع إلى بيانات الرمز',
-      noticePaid: 'تم الدفع: الملف نظيف بدون اسم الموقع',
+      noticePaid: 'رمز مدفوع ومحفوظ في حسابك: بدون رابط الموقع',
       downloadClean: 'تحميل PNG + SVG', downloadShort: 'تحميل مجاني', payAria: 'ادفع 1.99$ عبر PayPal لإزالة اسم الموقع',
-      payTitle: 'إزالة اسم الموقع', payOnce: 'دفعة واحدة لهذا التصميم',
+      payTitle: 'إزالة اسم الموقع', payOnce: 'دفعة واحدة لهذا الرمز',
       payB1: 'صورة PNG عالية الدقة (2400 بكسل)', payB2: 'ملف SVG متجه للطباعة بأي حجم', payB3: 'رمز بدون رابط الموقع: عند المسح تظهر بياناتك فقط',
       paySecure: 'الدفع عبر PayPal ويتم التحقق منه على خادمنا', payClose: 'إغلاق',
       payDemo: 'وضع تجريبي (رابط المعاينة): لا يُدفع أي مبلغ.', payDemoBtn: 'محاكاة الدفع',
       paySandbox: 'وضع الاختبار (Sandbox): استعمل حساب PayPal تجريبيًا.',
       payOff: 'الدفع غير متاح حاليًا.', payErr: 'تعذّر الاتصال بـ PayPal، حاول مرة أخرى.',
-      paying: 'جارٍ التحقق من الدفع…', payDone: 'تم الدفع بنجاح', payDoneT: 'أُزيل اسم الموقع، وبدأ تحميل الملفين. يمكنك تحميلهما مجددًا من هنا:',
-      payOrder: 'رقم الطلب', payUnlockNote: 'يبقى هذا التصميم مفتوحًا 24 ساعة على هذا الجهاز إن أردت تعديل بياناتك.',
+      paying: 'جارٍ التحقق من الدفع…', payDone: 'تم الدفع بنجاح', payDoneT: 'حُذف رابط الموقع من رمزك، وبدأ تحميل الملفين. يمكنك تحميلهما مجددًا من هنا:',
+      payOrder: 'رقم الطلب',
       payResumed: 'تم تأكيد دفعتك السابقة: التصميم بدون اسم الموقع.',
       downloading: 'جارٍ التحضير…',
+      signTitle: 'سجّل الدخول لاستعمال التصاميم المميزة', signText: 'التصميم الكلاسيكي مجاني بدون تسجيل. التصاميم المميزة تحتاج حسابًا، وفيه تُحفظ الرموز التي تدفع ثمنها لتحمّلها متى شئت.',
+      signGoogle: 'المتابعة بحساب Google', signErr: 'تعذّر تسجيل الدخول، حاول مرة أخرى.',
+      offerTitle: 'احذف رابط موقعنا من رمزك', offerText: 'التحميل المجاني يضيف رابط merabti.com إلى بيانات الرمز، فيراه كل من يمسحه. ادفع 1.99$ عبر PayPal ليحمل الرمز بياناتك وحدها.',
+      offerFree: 'تحميل مجاني مع رابط الموقع', payB4: 'يُحفظ في حسابك: حمّله متى شئت',
+      paySavedNote: 'حُفظ هذا الرمز في حسابك ضمن «أكوادي». أي تعديل على البيانات أو التصميم أو الشعار يصنع رمزًا جديدًا يتطلب دفعًا جديدًا.',
+      myCodes: 'أكوادي', myCodesTitle: 'أكوادي المدفوعة', myCodesEmpty: 'لا توجد رموز مدفوعة بعد.', myOpen: 'فتح', account: 'الحساب', signOut: 'تسجيل الخروج',
       logoHot: 'شعارك في وسط الرمز', logoTitle: 'شعار في وسط الرمز', logoUpload: 'رفع صورة', logoOr: 'أو اكتب حرفًا', logoLetterPh: 'حرف أو حرفان', logoReset: 'إزالة', logoClose: 'تم',
     },
     en: {
@@ -72,25 +78,31 @@
         ['Do I have to fill in every field?', 'No. One field is enough for the code to appear, and any field you leave empty is simply left out of the contact card.'],
         ['Is my data sent to a server?', 'No. The code is created right in your browser; your details are not stored or sent anywhere.'],
         ['How do I scan the code with my phone?', 'Point your phone camera at the code, or use a QR reader app, then choose “Add contact” to save the details.'],
-        ['Are the coloured designs free?', 'Yes. Every design can be downloaded for free, with the site link merabti.com added to the contact inside the code (whoever scans it sees it). To remove it, pay $1.99 with PayPal and get a high-resolution PNG and an SVG file without the site name.'],
+        ['Are the coloured designs free?', 'The Classic design is free with no account. Premium designs need a sign-in; they download free with the merabti.com link added to the code. To remove it, pay $1.99 with PayPal: the code is saved in your account under “My codes”, as PNG and SVG, to download any time. Any change to it makes a new code with a new payment.'],
       ],
       guideVideo: 'Watch the video tutorial',
       designsLabel: 'Designs', free: 'Free', premium: 'Premium',
       noticeFree: 'Free design, no branding',
       noticeRemove: 'Remove the site name for $1.99',
       noticeOff: 'The free download adds the site link to the code data',
-      noticePaid: 'Paid: clean file without the site name',
+      noticePaid: 'Paid code, saved in your account: no site link',
       downloadClean: 'Download PNG + SVG', downloadShort: 'Free download', payAria: 'Pay $1.99 with PayPal to remove the site name',
-      payTitle: 'Remove the site name', payOnce: 'One payment for this design',
+      payTitle: 'Remove the site name', payOnce: 'One payment for this code',
       payB1: 'High-resolution PNG (2400 px)', payB2: 'Vector SVG, prints at any size', payB3: 'No site link in the code: a scan shows only your details',
       paySecure: 'Paid with PayPal, verified on our server', payClose: 'Close',
       payDemo: 'Demo mode (preview link): nothing is paid.', payDemoBtn: 'Simulate the payment',
       paySandbox: 'Test mode (Sandbox): use a PayPal test account.',
       payOff: 'Payment is not available right now.', payErr: 'Could not reach PayPal, please try again.',
-      paying: 'Verifying the payment…', payDone: 'Payment complete', payDoneT: 'The site name is removed and both files are downloading. You can download them again here:',
-      payOrder: 'Order ID', payUnlockNote: 'This design stays unlocked for 24 hours on this device if you need to edit your details.',
+      paying: 'Verifying the payment…', payDone: 'Payment complete', payDoneT: 'The site link is removed from your code and both files are downloading. You can download them again here:',
+      payOrder: 'Order ID',
       payResumed: 'Your earlier payment is confirmed: the design is now without the site name.',
       downloading: 'Preparing…',
+      signTitle: 'Sign in to use the Premium designs', signText: 'The Classic design is free without an account. Premium designs need one: the codes you pay for are saved there, to download any time.',
+      signGoogle: 'Continue with Google', signErr: 'Sign-in failed, please try again.',
+      offerTitle: 'Remove our site link from your code', offerText: 'The free download adds the merabti.com link to the code, so everyone who scans it sees it. Pay $1.99 with PayPal and the code carries only your details.',
+      offerFree: 'Free download with the site link', payB4: 'Saved in your account: download it any time',
+      paySavedNote: 'This code is saved in your account under “My codes”. Any change to the details, the design or the logo makes a new code, which needs a new payment.',
+      myCodes: 'My codes', myCodesTitle: 'My paid codes', myCodesEmpty: 'No paid codes yet.', myOpen: 'Open', account: 'Account', signOut: 'Sign out',
       logoHot: 'Your logo in the centre', logoTitle: 'Logo in the centre', logoUpload: 'Upload image', logoOr: 'or type a letter', logoLetterPh: '1 or 2 letters', logoReset: 'Remove', logoClose: 'Done',
     },
     fr: {
@@ -115,25 +127,31 @@
         ['Dois-je remplir tous les champs ?', "Non. Un seul champ suffit pour faire apparaître le code, et tout champ laissé vide n'est pas ajouté à la carte de contact."],
         ['Mes données sont-elles envoyées à un serveur ?', "Non. Le code est créé directement dans votre navigateur ; vos informations ne sont ni enregistrées ni envoyées nulle part."],
         ['Comment scanner le code avec mon téléphone ?', "Pointez l'appareil photo de votre téléphone vers le code, ou utilisez une application de lecture QR, puis choisissez « Ajouter un contact »."],
-        ['Les designs en couleur sont-ils gratuits ?', 'Oui. Chaque design se télécharge gratuitement, avec le lien du site merabti.com ajouté au contact dans le code (visible par qui le scanne). Pour le retirer, payez 1,99 $ avec PayPal et recevez un PNG haute résolution et un fichier SVG sans le nom du site.'],
+        ['Les designs en couleur sont-ils gratuits ?', 'Le design Classique est gratuit sans compte. Les designs Premium demandent une connexion ; ils se téléchargent gratuitement avec le lien merabti.com ajouté au code. Pour le retirer, payez 1,99 $ avec PayPal : le code est gardé dans votre compte, dans « Mes codes », en PNG et SVG, à télécharger à tout moment. Toute modification crée un nouveau code, à payer de nouveau.'],
       ],
       guideVideo: "Regarder la vidéo explicative",
       designsLabel: 'Designs', free: 'Gratuit', premium: 'Premium',
       noticeFree: 'Design gratuit, sans marque',
       noticeRemove: 'Retirez le nom du site pour 1,99 $',
       noticeOff: 'Le téléchargement gratuit ajoute le lien du site aux données du code',
-      noticePaid: 'Payé : fichier propre, sans le nom du site',
+      noticePaid: 'Code payé, gardé dans votre compte : sans lien du site',
       downloadClean: 'Télécharger PNG + SVG', downloadShort: 'Télécharger', payAria: 'Payer 1,99 $ avec PayPal pour retirer le nom du site',
-      payTitle: 'Retirer le nom du site', payOnce: 'Un seul paiement pour ce design',
+      payTitle: 'Retirer le nom du site', payOnce: 'Un seul paiement pour ce code',
       payB1: 'PNG haute résolution (2400 px)', payB2: 'SVG vectoriel, imprimable à toute taille', payB3: 'Sans lien du site dans le code : le scan montre seulement vos infos',
       paySecure: 'Paiement PayPal, vérifié sur notre serveur', payClose: 'Fermer',
       payDemo: "Mode démo (lien d'aperçu) : aucun paiement.", payDemoBtn: 'Simuler le paiement',
       paySandbox: 'Mode test (Sandbox) : utilisez un compte PayPal de test.',
       payOff: "Le paiement n'est pas disponible pour le moment.", payErr: 'Impossible de joindre PayPal, réessayez.',
-      paying: 'Vérification du paiement…', payDone: 'Paiement réussi', payDoneT: 'Le nom du site est retiré et les deux fichiers se téléchargent. Vous pouvez les retélécharger ici :',
-      payOrder: 'N° de commande', payUnlockNote: 'Ce design reste débloqué 24 heures sur cet appareil si vous devez modifier vos informations.',
+      paying: 'Vérification du paiement…', payDone: 'Paiement réussi', payDoneT: 'Le lien du site est retiré de votre code et les deux fichiers se téléchargent. Vous pouvez les retélécharger ici :',
+      payOrder: 'N° de commande',
       payResumed: 'Votre paiement précédent est confirmé : le design est sans le nom du site.',
       downloading: 'Préparation…',
+      signTitle: 'Connectez-vous pour utiliser les designs Premium', signText: 'Le design Classique est gratuit sans compte. Les designs Premium en demandent un : les codes payés y sont gardés, à télécharger à tout moment.',
+      signGoogle: 'Continuer avec Google', signErr: 'Connexion impossible, réessayez.',
+      offerTitle: 'Retirez le lien de notre site de votre code', offerText: 'Le téléchargement gratuit ajoute le lien merabti.com au code : chaque personne qui le scanne le voit. Payez 1,99 $ avec PayPal et le code ne porte que vos informations.',
+      offerFree: 'Téléchargement gratuit avec le lien du site', payB4: 'Gardé dans votre compte : téléchargeable à tout moment',
+      paySavedNote: 'Ce code est gardé dans votre compte, dans « Mes codes ». Toute modification des informations, du design ou du logo crée un nouveau code, à payer de nouveau.',
+      myCodes: 'Mes codes', myCodesTitle: 'Mes codes payés', myCodesEmpty: 'Aucun code payé pour le moment.', myOpen: 'Ouvrir', account: 'Compte', signOut: 'Se déconnecter',
       logoHot: 'Votre logo au centre', logoTitle: 'Logo au centre', logoUpload: 'Importer une image', logoOr: 'ou tapez une lettre', logoLetterPh: '1 ou 2 lettres', logoReset: 'Retirer', logoClose: 'OK',
     },
   };
@@ -237,13 +255,18 @@
     set(k, v) { try { if (v == null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) { /* ignore */ } },
   };
   let current = 0;
-  const unlocked = new Set();          // designs paid in this session (checked by the server)
+  let codes = [];                      // the account's paid codes (from the server: GET /api/qr/codes)
+  const ownedByKey = new Map();        // exact code (design + vCard + logo) → paid code
   const rendered = {};                 // id → { key, svg, w, h, hot, url, thumbKey }
   let renderToken = 0;
   let ownLogo = null;                  // Premium centre logo of the visitor: { type: 'text', text } | { type: 'image', src }
 
   const isPremium = (i) => DESIGNS[i].premium;
-  const branded = (i) => isPremium(i) && !unlocked.has(DESIGNS[i].id);
+  // one paid code = one exact content; the same content again is drawn without the site link
+  const logoSig = (l) => (!l ? '' : l.type === 'image' ? 'i' + l.src : 't' + l.text);
+  const specKey = (design, data, logo) => [design, data, logoSig(logo)].join('\u0001');
+  const ownsCurrent = (i) => !!ownedCode(i);
+  const branded = (i) => isPremium(i) && !ownsCurrent(i);
   const dataNow = () => (hasAnyData() ? buildVCard() : SAMPLE_VCARD);
   const logoKey = () => (!ownLogo ? '' : ownLogo.type === 'image' ? 'i' + ownLogo.src.length + ownLogo.src.slice(-24) : 't' + ownLogo.text);
   const keyFor = (i, data) => [data, branded(i) ? 'b' : 'c', isPremium(i) ? logoKey() : ''].join('\u0001');
@@ -577,23 +600,26 @@
   /* ---------- notice line + buttons ---------- */
   function updateUi() {
     const d = DESIGNS[current];
-    const prem = d.premium, paid = unlocked.has(d.id), on = salesOn();
+    const prem = d.premium, paid = prem && ownsCurrent(current), on = salesOn();
     $('qdName').innerHTML = `<b></b><span class="qd-tag ${prem ? 'is-premium' : 'is-free'}"></span>`;
     $('qdName').firstChild.textContent = d.name[lang];
     $('qdName').lastChild.textContent = prem ? (paid ? '✓ ' + t('premium') : t('premium')) : t('free');
     const notice = $('qdNotice');
     notice.textContent = !prem ? t('noticeFree') : paid ? t('noticePaid') : on ? t('noticeRemove') : t('noticeOff');
-    notice.classList.toggle('is-paid', prem && paid);
+    notice.classList.toggle('is-paid', paid);
     notice.classList.toggle('is-offer', prem && !paid && on);
     const showPay = prem && !paid && on;
     // next to the PayPal button the label is short, so that both buttons stay on one row
-    els.downloadBtnText.textContent = prem && paid ? t('downloadClean') : showPay ? t('downloadShort') : t('download');
+    els.downloadBtnText.textContent = paid ? t('downloadClean') : showPay ? t('downloadShort') : t('download');
     els.payBtn.hidden = false;
     els.payBtn.classList.toggle('is-off', !showPay);
     els.payBtn.disabled = !showPay;
     els.payBtn.setAttribute('aria-hidden', showPay ? 'false' : 'true');
     els.payBtn.tabIndex = showPay ? 0 : -1;
     els.payBtn.setAttribute('aria-label', t('payAria'));
+    const mc = $('myCodesBtn');
+    mc.hidden = !(user() && (PAY.mode === 'live' || PAY.mode === 'sandbox' || PAY.mode === 'demo'));
+    $('myCodesText').textContent = t('myCodes') + (codes.length ? ' (' + codes.length + ')' : '');
     strip.setAttribute('aria-label', t('designsLabel'));
     $('logoTitle').textContent = t('logoTitle');
     $('logoUploadText').textContent = t('logoUpload');
@@ -615,71 +641,90 @@
     a.remove();
     setTimeout(() => URL.revokeObjectURL(a.href), 4000);
   }
-  async function fileFor(i, clean) {
-    const d = DESIGNS[i];
-    return D.render(d.id, buildVCard(), renderOpts(i, clean));
-  }
   async function downloadFree() {
     const d = DESIGNS[current];
-    const r = await fileFor(current, false);
+    const r = await D.render(d.id, buildVCard(), renderOpts(current, false));
     saveBlob(await D.toPngBlob(r.svg, r.w, r.h, 2), d.premium ? `qr-${d.id}.png` : 'qr-code.png');
     trackEvent('qr_download', { design: d.id, clean: false });
   }
-  async function downloadClean(i, which) {
-    const d = DESIGNS[i];
-    const r = await fileFor(i, true);
-    if (!which || which === 'png') saveBlob(await D.toPngBlob(r.svg, r.w, r.h, 4), `qr-${d.id}-hd.png`);
+  /* a paid code (from the account): drawn without the site link, exactly as it was bought */
+  async function downloadCode(code, which) {
+    const r = await D.render(code.design, code.data, { branded: false, logo: code.logo || null });
+    const base = `qr-${code.design}-${String(code.id).slice(-6).toLowerCase()}`;
+    if (!which || which === 'png') saveBlob(await D.toPngBlob(r.svg, r.w, r.h, 4), base + '.png');
     if (!which || which === 'svg') {
       if (!which) await new Promise((ok) => setTimeout(ok, 700));   // two files: let the browser take the first one
-      saveBlob(new Blob(['<?xml version="1.0" encoding="UTF-8"?>\n' + r.svg], { type: 'image/svg+xml' }), `qr-${d.id}-hd.svg`);
+      saveBlob(new Blob(['<?xml version="1.0" encoding="UTF-8"?>\n' + r.svg], { type: 'image/svg+xml' }), base + '.svg');
     }
-    trackEvent('qr_download', { design: d.id, clean: true });
+    trackEvent('qr_download', { design: code.design, clean: true });
   }
   function trackEvent(name, extra) { try { if (window.gtag) gtag('event', name, Object.assign({ tool: 'qr-generator' }, extra || {})); } catch (e) { /* ignore */ } }
 
-  els.downloadBtn.addEventListener('click', async () => {
-    if (!hasAnyData()) { alert(t('alertEmpty')); return; }
+  async function busyDownload(job) {
     if (els.downloadBtn.disabled) return;
     const label = els.downloadBtnText.textContent;
     els.downloadBtn.disabled = true;
     els.downloadBtnText.textContent = t('downloading');
-    try {
-      if (isPremium(current) && unlocked.has(DESIGNS[current].id)) await downloadClean(current);
-      else await downloadFree();
-    } catch (e) { console.warn('[qr] download', e); }
+    try { await job(); } catch (e) { console.warn('[qr] download', e); }
     els.downloadBtn.disabled = false;
     els.downloadBtnText.textContent = label;
+  }
+  els.downloadBtn.addEventListener('click', () => {
+    if (!hasAnyData()) { alert(t('alertEmpty')); return; }
+    if (!isPremium(current)) { busyDownload(downloadFree); return; }          // Classic: free, no account
+    requireUser(() => {                                                         // Premium: an account first
+      const c = ownedCode(current);
+      if (c) busyDownload(() => downloadCode(c));
+      else openOffer();
+    });
+  });
+  els.payBtn.addEventListener('click', () => {
+    if (!hasAnyData()) { alert(t('alertEmpty')); return; }
+    if (isPremium(current)) requireUser(openOffer);
   });
 
-  /* ================= Paid download: $1.99 through PayPal =================
-     The price and the check of the payment are on the Worker (worker.js, "/api/qr/*"): create-order makes
-     the PayPal order there, capture-order captures it and checks status, amount and currency before it
-     answers ok. Only then is the site name removed and the clean files made. No secret in this page.
-     Modes from GET /api/qr/config: live / sandbox (sales on) · demo (the claude-test Worker preview and localhost:
-     simulated payment, nothing paid) · off (the free download stays). */
+  /* ================= Premium: account + $1.99 per code through PayPal =================
+     Classic needs nothing. A Premium design needs a sign-in (the site's Firebase account, Google).
+     One payment = one code: create-order sends the exact code (design + vCard text + centre logo) to the Worker
+     (worker.js, "/api/qr/*"), which makes the PayPal order, captures it, checks status / amount / currency / owner
+     and saves the code in the account. Only a code the server returns is drawn without the site link; the
+     account's codes (GET /api/qr/codes, "My codes") can be downloaded again at any time. Any change to the details,
+     the design or the logo is a new code (new payment). No secret in this page.
+     Modes from GET /api/qr/config: live / sandbox (sales on) · demo (localhost: simulated payment, nothing saved
+     on a server) · off (the free download with the site link stays). */
   const PAY_LOCAL = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
   const PAY_API = (/\.workers\.dev$/.test(location.hostname) || PAY_LOCAL) ? '' : 'https://dr.merabti.workers.dev';
-  const PAY_DEMO_HOST = PAY_LOCAL || location.hostname === 'claude-test-dr.merabti.workers.dev';
-  const PAY_KEY = 'qrgen:orders';      // { design: { id, at } } — order IDs only, checked again by the server
-  const PAY = { mode: 'loading', cfg: null, sdk: null, busy: false, design: null };
+  const PAY_DEMO_HOST = PAY_LOCAL;
+  const PENDING_KEY = 'qrgen:pending';     // { id, uid } — a paid order not confirmed yet (asked again, never a proof)
+  const PAY = { mode: 'loading', cfg: null, sdk: null, busy: false, design: null, spec: null };
   const salesOn = () => PAY.mode === 'live' || PAY.mode === 'sandbox' || PAY.mode === 'demo';
   const price = () => '$' + ((PAY.cfg && PAY.cfg.price) || '1.99');
 
+  function user() { return window.fbAuth && window.fbAuth.currentUser ? window.fbAuth.currentUser : null; }
+  function ownedCode(i) {
+    if (!isPremium(i) || !hasAnyData()) return null;
+    return ownedByKey.get(specKey(DESIGNS[i].id, buildVCard(), ownLogo)) || null;
+  }
+  function setCodes(list) {
+    codes = (list || []).slice();
+    ownedByKey.clear();
+    for (const c of codes) ownedByKey.set(specKey(c.design, c.data, c.logo), c);
+    for (const id in rendered) delete rendered[id].key;      // free / paid look may have changed
+    renderQr();
+  }
+  function addCode(c) {
+    if (!c) return;
+    setCodes([c].concat(codes.filter((x) => x.id !== c.id)));
+  }
+
   async function payFetch(path, body) {
-    const r = await fetch(PAY_API + path, {
-      method: body ? 'POST' : 'GET', cache: 'no-store',
-      headers: body ? { 'Content-Type': 'application/json' } : undefined,
-      body: body ? JSON.stringify(body) : undefined,
-    });
+    const headers = body ? { 'Content-Type': 'application/json' } : {};
+    const u = user();
+    if (u) headers.Authorization = 'Bearer ' + await u.getIdToken();
+    const r = await fetch(PAY_API + path, { method: body ? 'POST' : 'GET', cache: 'no-store', headers, body: body ? JSON.stringify(body) : undefined });
     const d = await r.json().catch(() => ({}));
     d._status = r.status;
     return d;
-  }
-  function savedOrders() { try { return JSON.parse(store.get(PAY_KEY) || '{}') || {}; } catch (e) { return {}; } }
-  function saveOrder(design, id, pending) {
-    const all = savedOrders();
-    if (id) all[design] = { id, at: Date.now(), pending: !!pending }; else delete all[design];
-    store.set(PAY_KEY, Object.keys(all).length ? JSON.stringify(all) : null);
   }
   async function capture(orderId) {
     let d = {};
@@ -690,13 +735,27 @@
     }
     return d;
   }
-  function unlock(id) {
-    unlocked.add(id);
-    const i = DESIGNS.findIndex((d) => d.id === id);
-    if (i >= 0) { delete rendered[id]; renderQr(); }
+  function pending(orderId) {
+    const u = user();
+    try {
+      if (orderId && u) localStorage.setItem(PENDING_KEY, JSON.stringify({ id: orderId, uid: u.uid }));
+      else localStorage.removeItem(PENDING_KEY);
+    } catch (e) { /* ignore */ }
+  }
+  /* the account's codes, and an order paid but not confirmed (closed tab, lost connection) asked again */
+  async function loadCodes() {
+    if (!user() || !(PAY.mode === 'live' || PAY.mode === 'sandbox')) { if (PAY.mode !== 'demo') setCodes([]); updateUi(); return; }
+    let p = null;
+    try { p = JSON.parse(localStorage.getItem(PENDING_KEY) || 'null'); } catch (e) { p = null; }
+    if (p && p.id && p.uid === user().uid) {
+      const d = await capture(p.id);
+      if (d.ok) { pending(null); toast(t('payResumed')); }
+      else if (d._status && d._status < 500 && d.error !== 'NOT_COMPLETED' && d.error !== 'AUTH_REQUIRED') pending(null);
+    }
+    const d = await payFetch('/api/qr/codes').catch(() => ({}));
+    if (Array.isArray(d.codes)) setCodes(d.codes);
     updateUi();
   }
-
   async function loadPayConfig() {
     try {
       const d = await payFetch('/api/qr/config');
@@ -704,16 +763,7 @@
       PAY.mode = d && (d.sales === 'live' || d.sales === 'sandbox') ? d.sales : (PAY_DEMO_HOST ? 'demo' : 'off');
     } catch (e) { PAY.mode = PAY_DEMO_HOST ? 'demo' : 'off'; }
     updateUi();
-    // orders paid on this device in the last 24 h (closed tab, lost connection, page reloaded): asked again
-    if (PAY.mode === 'live' || PAY.mode === 'sandbox') {
-      const all = savedOrders();
-      for (const [design, o] of Object.entries(all)) {
-        if (!o || !o.id || Date.now() - o.at > 24 * 3600 * 1000) { saveOrder(design, null); continue; }
-        const d = await capture(o.id);
-        if (d.ok && d.design) { unlock(d.design); if (o.pending) { saveOrder(design, o.id); toast(t('payResumed')); } }
-        else if (d._status && d._status < 500 && d.error !== 'NOT_COMPLETED') saveOrder(design, null);
-      }
-    }
+    if (window.fbAuth) window.fbAuth.onAuthStateChanged(() => { if (!user()) setCodes([]); loadCodes(); });
   }
 
   function toast(text) {
@@ -725,55 +775,80 @@
     toast.t = setTimeout(() => el.classList.remove('show'), 4200);
   }
 
-  /* ---------- payment sheet ---------- */
+  /* ---------- the floating window (sign-in, offer + PayPal, success, my codes) ---------- */
   const modal = $('payModal');
   const sheet = $('paySheet');
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
   const LOCK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
   const X = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+  const GOOGLE = '<svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>';
+  const closeBtn = () => `<button type="button" class="qd-x" data-pay="close" aria-label="${esc(t('payClose'))}">${X}</button>`;
 
-  function openPay() {
-    if (!hasAnyData()) { alert(t('alertEmpty')); return; }
-    if (!isPremium(current) || !salesOn()) return;
-    PAY.design = DESIGNS[current].id;
-    modal.hidden = false;
-    document.body.classList.add('qd-lock');
-    renderSheet();
-    trackEvent('view_item', { design: PAY.design, value: 1.99, currency: 'USD' });
-  }
+  function showModal() { modal.hidden = false; document.body.classList.add('qd-lock'); }
   function closePay() {
     if (PAY.busy) return;
     modal.hidden = true;
     document.body.classList.remove('qd-lock');
     sheet.innerHTML = '';
-    els.payBtn.focus({ preventScroll: true });
   }
   function payMsg(text, err) { const el = $('payMsg'); if (el) { el.textContent = text || ''; el.classList.toggle('err', !!err); } }
   function payBusy(on) { PAY.busy = on; sheet.classList.toggle('busy', on); }
 
-  async function renderSheet() {
-    const i = DESIGNS.findIndex((d) => d.id === PAY.design);
-    const d = DESIGNS[i];
-    sheet.innerHTML = `<button type="button" class="qd-x" data-pay="close" aria-label="${esc(t('payClose'))}">${X}</button>
+  /* sign-in (Premium only) */
+  let afterSignIn = null;
+  function requireUser(next) {
+    if (user()) { next(); return; }
+    if (!window.fbAuth) { alert(t('signErr')); return; }
+    afterSignIn = next;
+    sheet.innerHTML = closeBtn() + `<div class="qd-auth">
+        <div class="qd-auth-badge"><svg viewBox="0 0 24 24"><path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5z" fill="currentColor"/></svg></div>
+        <h3>${esc(t('signTitle'))}</h3><p>${esc(t('signText'))}</p>
+        <button type="button" class="qd-google" data-pay="google">${GOOGLE}<span>${esc(t('signGoogle'))}</span></button>
+        <p class="qd-msg" id="payMsg" role="status"></p></div>`;
+    showModal();
+  }
+  async function signIn() {
+    payMsg('');
+    try {
+      await window.fbAuth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
+      const next = afterSignIn;
+      afterSignIn = null;
+      closePay();
+      await loadCodes();
+      if (next) next();
+    } catch (e) {
+      if (e && (e.code === 'auth/popup-closed-by-user' || e.code === 'auth/cancelled-popup-request')) return;
+      payMsg(t('signErr'), true);
+    }
+  }
+
+  /* the offer: pay to remove the site link from this code, or download free with it */
+  function openOffer() {
+    const i = current, d = DESIGNS[i];
+    PAY.design = d.id;
+    PAY.spec = { design: d.id, data: buildVCard(), logo: ownLogo };
+    sheet.innerHTML = closeBtn() + `
       <div class="qd-sheet-main">
         <div class="qd-sheet-thumb"><img alt="" id="payThumb"></div>
         <div class="qd-sheet-info">
-          <span class="qd-tag is-premium">${esc(t('premium'))}</span>
-          <h3>${esc(t('payTitle'))}</h3>
-          <p class="qd-sheet-sub">${esc(d.name[lang])}</p>
+          <span class="qd-tag is-premium">${esc(t('premium'))} · ${esc(d.name[lang])}</span>
+          <h3>${esc(t('offerTitle'))}</h3>
+          <p class="qd-sheet-sub">${esc(t('offerText'))}</p>
           <div class="qd-price"><b dir="ltr">${esc(price())}</b><span>${esc(t('payOnce'))}</span></div>
         </div>
       </div>
-      <ul class="qd-list"><li>${CHECK}<span>${esc(t('payB1'))}</span></li><li>${CHECK}<span>${esc(t('payB2'))}</span></li><li>${CHECK}<span>${esc(t('payB3'))}</span></li></ul>
+      <ul class="qd-list"><li>${CHECK}<span>${esc(t('payB3'))}</span></li><li>${CHECK}<span>${esc(t('payB1'))} + ${esc(t('payB2'))}</span></li><li>${CHECK}<span>${esc(t('payB4'))}</span></li></ul>
       <div class="qd-pay-area" id="payArea"></div>
       <p class="qd-msg" id="payMsg" role="status"></p>
+      <button type="button" class="qd-free" data-pay="free">${esc(t('offerFree'))}</button>
       <p class="qd-secure">${LOCK}<span>${esc(t('paySecure'))}</span></p>`;
-    // what they get: the clean design with their data
-    D.render(d.id, buildVCard(), renderOpts(i, true)).then((r) => { const im = $('payThumb'); if (im) im.src = D.svgUrl(r.svg); }).catch(() => {});
+    // what they get: this code without the site link
+    D.render(d.id, PAY.spec.data, { branded: false, logo: PAY.spec.logo }).then((r) => { const im = $('payThumb'); if (im) im.src = D.svgUrl(r.svg); }).catch(() => {});
     renderPayArea();
+    showModal();
+    trackEvent('view_item', { design: d.id, value: 1.99, currency: 'USD' });
   }
-
   function renderPayArea() {
     const area = $('payArea');
     if (!area) return;
@@ -802,29 +877,31 @@
     const host = $('payPP');
     if (!host) return;
     host.innerHTML = '';
-    const design = PAY.design;
+    const spec = PAY.spec;
     window.paypal.Buttons({
       style: { layout: 'vertical', color: 'gold', shape: 'pill', label: 'pay', height: 44 },
       createOrder: async () => {
         payMsg('');
-        const d = await payFetch('/api/qr/create-order', { design });
+        const d = await payFetch('/api/qr/create-order', spec);
+        if (d.error === 'ALREADY_OWNED' && d.code) { addCode(d.code); paidView(d.code, ''); throw new Error('owned'); }
         if (!d.id) { payMsg(d.message || t('payErr'), true); throw new Error(d.error || 'create'); }
-        trackEvent('begin_checkout', { design, value: 1.99, currency: 'USD' });
+        trackEvent('begin_checkout', { design: spec.design, value: 1.99, currency: 'USD' });
         return d.id;
       },
       onApprove: async (data, actions) => {
         payBusy(true); payMsg(t('paying'));
-        saveOrder(design, data.orderID, true);       // paid but not confirmed yet: asked again on the next visit
+        pending(data.orderID);                      // paid but not confirmed yet: asked again on the next visit
         const d = await capture(data.orderID);
         payBusy(false);
-        if (d.error === 'INSTRUMENT_DECLINED') { saveOrder(design, null); payMsg(d.message, true); return actions.restart(); }
-        if (!d.ok) { payMsg(d.message || t('payErr'), true); return; }
-        saveOrder(design, data.orderID);             // confirmed: kept 24 h so a reload keeps the design unlocked (re-checked)
-        trackEvent('purchase', { transaction_id: d.orderId, design, value: 1.99, currency: 'USD' });
-        paid(d.design || design, d.orderId);
+        if (d.error === 'INSTRUMENT_DECLINED') { pending(null); payMsg(d.message, true); return actions.restart(); }
+        if (!d.ok || !d.code) { payMsg(d.message || t('payErr'), true); return; }
+        pending(null);
+        trackEvent('purchase', { transaction_id: d.orderId, design: spec.design, value: 1.99, currency: 'USD' });
+        addCode(d.code);
+        paidView(d.code, d.orderId);
       },
       onCancel: () => payMsg(''),
-      onError: () => payMsg(t('payErr'), true),
+      onError: () => { if (!sheet.querySelector('.qd-done')) payMsg(t('payErr'), true); },
     }).render(host).catch(() => { host.innerHTML = `<div class="qd-note off">${esc(t('payErr'))}</div>`; });
   }
   async function demoPay() {
@@ -832,31 +909,91 @@
     payBusy(true); payMsg(t('paying'));
     await new Promise((ok) => setTimeout(ok, 900));
     payBusy(false);
-    paid(PAY.design, 'DEMO-' + Date.now().toString(36).toUpperCase());
+    const s = PAY.spec;
+    const code = { id: 'DEMO' + Date.now().toString(36).toUpperCase(), design: s.design, data: s.data, logo: s.logo || null, createdAt: new Date().toISOString() };
+    addCode(code);
+    paidView(code, code.id);
   }
-  function paid(design, orderId) {
-    unlock(design);
-    sheet.innerHTML = `<button type="button" class="qd-x" data-pay="close" aria-label="${esc(t('payClose'))}">${X}</button>
+  /* paid: the code is in the account; its two files download at once (drawn without the site link) */
+  function paidView(code, orderId) {
+    PAY.code = code;
+    sheet.innerHTML = closeBtn() + `
       <div class="qd-done"><div class="qd-ok">${CHECK}</div><h3>${esc(t('payDone'))}</h3>
         <p>${esc(t('payDoneT'))}</p>
         <div class="qd-done-btns"><button type="button" class="generate-btn" data-pay="png">PNG</button><button type="button" class="generate-btn alt" data-pay="svg">SVG</button></div>
         ${orderId ? `<p class="qd-order">${esc(t('payOrder'))}: <b dir="ltr">${esc(orderId)}</b></p>` : ''}
-        <p class="qd-small">${esc(t('payUnlockNote'))}</p></div>`;
-    const i = DESIGNS.findIndex((d) => d.id === design);
-    downloadClean(i).catch((e) => console.warn('[qr] download', e));
+        <p class="qd-small">${esc(t('paySavedNote'))}</p></div>`;
+    if (modal.hidden) showModal();
+    downloadCode(code).catch((e) => console.warn('[qr] download', e));
   }
+
+  /* my codes: every code paid with this account, to download again or open */
+  function vcardField(data, key) {
+    const lines = String(data).split('\n');
+    const i = lines.findIndex((l) => l.indexOf(key + ':') === 0);
+    if (i < 0) return '';
+    if (key !== 'NOTE') return lines[i].slice(key.length + 1);
+    const end = lines.lastIndexOf('END:VCARD');
+    return [lines[i].slice(5)].concat(lines.slice(i + 1, end > i ? end : undefined)).join('\n');
+  }
+  function openMyCodes() {
+    const u = user();
+    const list = codes.map((c) => {
+      const d = DESIGNS.find((x) => x.id === c.design);
+      const who = vcardField(c.data, 'FN') || vcardField(c.data, 'TEL') || vcardField(c.data, 'EMAIL') || '—';
+      const when = c.createdAt ? new Date(c.createdAt).toLocaleDateString(lang === 'ar' ? 'ar-DZ' : lang) : '';
+      return `<li class="qd-code" data-id="${esc(c.id)}"><span class="qd-code-thumb"><img alt=""></span>
+        <span class="qd-code-info"><b dir="auto">${esc(who)}</b><small>${esc(d ? d.name[lang] : c.design)}${when ? ' · ' + esc(when) : ''}</small></span>
+        <span class="qd-code-act"><button type="button" data-pay="cpng" data-id="${esc(c.id)}">PNG</button><button type="button" data-pay="csvg" data-id="${esc(c.id)}">SVG</button>
+        <button type="button" class="open" data-pay="copen" data-id="${esc(c.id)}">${esc(t('myOpen'))}</button></span></li>`;
+    }).join('');
+    sheet.innerHTML = closeBtn() + `<h3 class="qd-codes-title">${esc(t('myCodesTitle'))}</h3>
+      ${codes.length ? `<ul class="qd-codes">${list}</ul>` : `<p class="qd-codes-empty">${esc(t('myCodesEmpty'))}</p>`}
+      <p class="qd-small qd-codes-note">${esc(t('paySavedNote'))}</p>
+      <p class="qd-who">${u ? `${esc(t('account'))}: <b dir="ltr">${esc(u.email || u.displayName || '')}</b> · ` : ''}<button type="button" class="link-btn" data-pay="signout">${esc(t('signOut'))}</button></p>`;
+    showModal();
+    // thumbnails, one after the other
+    (async () => {
+      for (const c of codes) {
+        const li = sheet.querySelector(`.qd-code[data-id="${CSS.escape(c.id)}"] img`);
+        if (!li) return;
+        try { const r = await D.render(c.design, c.data, { branded: false, logo: c.logo || null }); li.src = D.svgUrl(r.svg); } catch (e) { /* ignore */ }
+      }
+    })();
+  }
+  /* open a paid code in the editor: same details, design and logo (any change makes a new code) */
+  function openCode(c) {
+    els.qName.value = vcardField(c.data, 'FN');
+    els.qPhone.value = vcardField(c.data, 'TEL');
+    els.qJob.value = vcardField(c.data, 'TITLE');
+    els.qEmail.value = vcardField(c.data, 'EMAIL');
+    els.qNote.value = vcardField(c.data, 'NOTE');
+    ownLogo = c.logo || null;
+    $('logoText').value = ownLogo && ownLogo.type === 'text' ? ownLogo.text : '';
+    closePay();
+    const i = DESIGNS.findIndex((d) => d.id === c.design);
+    if (i >= 0) animateTo(i);
+    renderQr();
+    els.qrCanvasWrap.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
   modal.addEventListener('click', (e) => {
     if (e.target === modal) { closePay(); return; }
     const b = e.target.closest('[data-pay]');
     if (!b || b.disabled || PAY.busy) return;
     const a = b.dataset.pay;
-    const i = DESIGNS.findIndex((d) => d.id === PAY.design);
+    const byId = () => codes.find((c) => c.id === b.dataset.id);
     if (a === 'close') closePay();
+    else if (a === 'google') signIn();
     else if (a === 'demo') demoPay();
-    else if (a === 'png' || a === 'svg') downloadClean(i, a).catch((err) => console.warn('[qr] download', err));
+    else if (a === 'free') { closePay(); busyDownload(downloadFree); }
+    else if ((a === 'png' || a === 'svg') && PAY.code) downloadCode(PAY.code, a).catch((err) => console.warn('[qr] download', err));
+    else if (a === 'cpng' || a === 'csvg') { const c = byId(); if (c) downloadCode(c, a.slice(1)).catch((err) => console.warn('[qr] download', err)); }
+    else if (a === 'copen') { const c = byId(); if (c) openCode(c); }
+    else if (a === 'signout') { closePay(); window.fbAuth.signOut().catch(() => {}); }
   });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !modal.hidden) closePay(); });
-  els.payBtn.addEventListener('click', openPay);
+  $('myCodesBtn').addEventListener('click', () => requireUser(openMyCodes));
 
   [els.qName, els.qPhone, els.qJob, els.qEmail, els.qNote].forEach((el) => el.addEventListener('input', renderQr));
 

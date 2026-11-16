@@ -1041,24 +1041,26 @@ async function handleCv(request, env, path, ctx) {
 }
 
 /* =====================================================================
-   QR Code tool: clean download of a Premium design ($1.99 per design, PayPal) — tools/qr-generator
-     GET  /api/qr/config         → { sales, clientId, currency, price, premium[] }
-     POST /api/qr/create-order   { design }  → { id }                       (PayPal order made here)
-     POST /api/qr/capture-order  { orderId } → { ok, orderId, design, until }
-   No sign-in (the tool has none). The page removes the site name only after capture-order answers ok:
-   the order is captured HERE and its status, amount, currency and custom_id are checked here.
-   capture-order on an order that is already COMPLETED answers ok again for QR_UNLOCK_HOURS (page reloaded,
-   lost connection, a typo fixed after paying), never later; it never captures twice.
+   QR Code tool: Premium codes without the site link ($1.99 per code, PayPal) — tools/qr-generator
+     GET  /api/qr/config         → { sales, clientId, currency, price, premium[] }            (no sign-in)
+     GET  /api/qr/codes          → { codes: [{ id, design, data, logo, createdAt }] }        (the account's paid codes)
+     POST /api/qr/create-order   { design, data, logo } → { id }                             (PayPal order made here)
+     POST /api/qr/capture-order  { orderId } → { ok, orderId, code }
+   Every route but config needs "Authorization: Bearer <Firebase ID token>" (the site's sign-in, checked here).
+   One payment = one code: the exact content (design + vCard text + centre logo) is stored with the order and,
+   once PayPal confirms the capture HERE (status, amount, currency, custom_id, owner), saved in qr_codes for that
+   account. The page can download that code without the site link at any time; any change = a new code = a new payment.
    QR_SALES (wrangler var): "off" (default) | "sandbox" (PAYPAL_SANDBOX_CLIENT_ID + secret PAYPAL_SANDBOX_SECRET)
-   | "live" (the site's PayPal app) — "live" is honoured ONLY on QR_LIVE_HOSTS (the production Worker):
-   a preview version such as claude-test-dr.merabti.workers.dev stays "off" (the page then runs a demo).
-   Test-only override, honoured ONLY when QR_SALES = "sandbox": QR_PAYPAL_API (a local PayPal mock).
+   | "live" (the site's PayPal app) — "live" is honoured ONLY on QR_LIVE_HOSTS: the production Worker and, at the
+   owner's request (2026-11-16, to test a real purchase), the claude-test preview.
+   Test-only overrides, honoured ONLY when QR_SALES = "sandbox": QR_PAYPAL_API (PayPal mock), QR_TEST_JWKS (test signer).
 ===================================================================== */
 const QR_PREMIUM = ['violet', 'ticket', 'gold', 'emerald', 'ocean', 'rose', 'minimal', 'neon', 'islamic'];
 const QR_PRICE = '1.99';
 const QR_CURRENCY = 'USD';
-const QR_UNLOCK_HOURS = 24;
-const QR_LIVE_HOSTS = ['dr.merabti.workers.dev'];
+const QR_LIVE_HOSTS = ['dr.merabti.workers.dev', 'claude-test-dr.merabti.workers.dev'];
+const QR_MAX_DATA = 3000;          // characters of vCard text
+const QR_MAX_LOGO = 400000;        // characters of the logo data URL (PNG, max 320 px in the page)
 
 function qrMode(env, request) {
   const m = String(env.QR_SALES || 'off').toLowerCase();
@@ -1071,18 +1073,52 @@ function qrPaypal(env, mode) {
     id: env.PAYPAL_SANDBOX_CLIENT_ID, secret: env.PAYPAL_SANDBOX_SECRET };
   return { mode };
 }
-/* one JSON line per step, never the payer's details */
+async function qrUser(request, env, mode) {
+  const claims = await firebaseClaims(request, async () =>
+    (mode === 'sandbox' && env.QR_TEST_JWKS ? JSON.parse(env.QR_TEST_JWKS).keys || [] : googleKeys()));
+  return claims ? { uid: claims.sub } : null;
+}
+/* one JSON line per step, never the payer's details nor the code's content */
 function logQr(step, info) {
   console.log('[qr] ' + step + ' ' + JSON.stringify(Object.assign({ step }, info)));
 }
 async function ensureQrTables(db) {
-  await db.prepare(`CREATE TABLE IF NOT EXISTS qr_orders (
-    order_id TEXT PRIMARY KEY, ref TEXT NOT NULL UNIQUE, design TEXT NOT NULL,
-    amount TEXT NOT NULL, currency TEXT NOT NULL, status TEXT NOT NULL,
-    capture_id TEXT UNIQUE, env TEXT NOT NULL, created_at TEXT NOT NULL, completed_at TEXT)`).run();
+  await db.batch([
+    db.prepare(`CREATE TABLE IF NOT EXISTS qr_code_orders (
+      order_id TEXT PRIMARY KEY, ref TEXT NOT NULL UNIQUE, uid TEXT NOT NULL, design TEXT NOT NULL, spec TEXT NOT NULL,
+      amount TEXT NOT NULL, currency TEXT NOT NULL, status TEXT NOT NULL,
+      capture_id TEXT UNIQUE, env TEXT NOT NULL, created_at TEXT NOT NULL, completed_at TEXT)`),
+    db.prepare(`CREATE TABLE IF NOT EXISTS qr_codes (
+      order_id TEXT PRIMARY KEY, uid TEXT NOT NULL, design TEXT NOT NULL, spec TEXT NOT NULL, env TEXT NOT NULL, created_at TEXT NOT NULL)`),
+    db.prepare(`CREATE INDEX IF NOT EXISTS qr_codes_uid ON qr_codes (uid, env)`),
+  ]);
 }
-function qrUntil(completedAt) {
-  return new Date(Date.parse(completedAt) + QR_UNLOCK_HOURS * 3600 * 1000).toISOString();
+/* the code bought: exact vCard text + centre logo, checked and written in one canonical form */
+function qrSpec(body) {
+  const data = String(body.data || '');
+  if (data.length < 20 || data.length > QR_MAX_DATA || !/^BEGIN:VCARD\n/.test(data) || !/\nEND:VCARD$/.test(data)) return null;
+  if (/merabti\.com/i.test(data.split('\n').filter((l) => /^URL:/.test(l)).join(''))) return null;   // the paid code is the one without the site
+  let logo = null;
+  const l = body.logo;
+  if (l && l.type === 'text') {
+    const t = String(l.text || '').trim();
+    if (!t || [...t].length > 2) return null;
+    logo = { type: 'text', text: t };
+  } else if (l && l.type === 'image') {
+    const src = String(l.src || '');
+    if (!/^data:image\/png;base64,[A-Za-z0-9+/=]+$/.test(src) || src.length > QR_MAX_LOGO) return null;
+    logo = { type: 'image', src };
+  } else if (l) return null;
+  return JSON.stringify({ data, logo });
+}
+function qrCodeOut(row) {
+  const s = JSON.parse(row.spec);
+  return { id: row.order_id, design: row.design, data: s.data, logo: s.logo || null, createdAt: row.created_at };
+}
+function qrSaveCode(db, uid, mode, orderId, nowIso) {
+  return db.prepare(`INSERT OR IGNORE INTO qr_codes (order_id, uid, design, spec, env, created_at)
+    SELECT order_id, uid, design, spec, env, ? FROM qr_code_orders WHERE order_id = ? AND uid = ? AND env = ? AND status = 'COMPLETED'`)
+    .bind(nowIso, orderId, uid, mode);
 }
 
 async function handleQr(request, env, path, ctx) {
@@ -1098,18 +1134,32 @@ async function handleQr(request, env, path, ctx) {
   if (mode === 'off') return json({ error: 'SALES_OFF', message: 'الدفع غير مفعّل حاليًا.' }, 503);
   const pp = qrPaypal(env, mode);
   if (!pp.id || !pp.secret) return json({ error: 'PAYPAL_NOT_CONFIGURED', message: 'الدفع غير مُفعّل حاليًا.' }, 503);
+  const user = await qrUser(request, env, mode);
+  if (!user) return json({ error: 'AUTH_REQUIRED', message: 'سجّل الدخول أولًا.' }, 401);
   await ensureQrTables(env.DB);
 
-  // ============ create the PayPal order (price from QR_PRICE only) ============
+  // ============ the account's paid codes ============
+  if (path === '/api/qr/codes' && request.method === 'GET') {
+    const { results } = await env.DB.prepare(`SELECT * FROM qr_codes WHERE uid = ? AND env = ? ORDER BY created_at DESC LIMIT 200`)
+      .bind(user.uid, mode).all();
+    return json({ codes: results.map(qrCodeOut) });
+  }
+
+  // ============ create the PayPal order for one exact code (price from QR_PRICE only) ============
   if (path === '/api/qr/create-order' && request.method === 'POST') {
     const body = await readJson(request);
     const design = String(body.design || '');
     if (!QR_PREMIUM.includes(design)) return json({ error: 'UNKNOWN_DESIGN', message: 'هذا التصميم ليس من التصاميم المدفوعة.' }, 400);
+    const spec = qrSpec(body);
+    if (!spec) return json({ error: 'BAD_CODE', message: 'بيانات الرمز غير صالحة.' }, 400);
+    const owned = await env.DB.prepare(`SELECT * FROM qr_codes WHERE uid = ? AND env = ? AND design = ? AND spec = ?`)
+      .bind(user.uid, mode, design, spec).first();
+    if (owned) return json({ error: 'ALREADY_OWNED', code: qrCodeOut(owned), message: 'اشتريت هذا الرمز من قبل، يمكنك تحميله من «أكوادي».' }, 409);
     const ref = crypto.randomUUID();
     const r = await cardsPaypalCall(pp, 'POST', '/v2/checkout/orders', {
       intent: 'CAPTURE',
       purchase_units: [{
-        reference_id: 'qr-' + design, custom_id: ref, description: 'QR code design: ' + design + ' (clean PNG + SVG)',
+        reference_id: 'qr-' + design, custom_id: ref, description: 'QR code (' + design + ') without the site link: PNG + SVG',
         amount: { currency_code: QR_CURRENCY, value: QR_PRICE },
       }],
       application_context: { shipping_preference: 'NO_SHIPPING', user_action: 'PAY_NOW', brand_name: 'merabti.com' },
@@ -1119,23 +1169,30 @@ async function handleQr(request, env, path, ctx) {
     if (!r.ok || !/^[A-Z0-9]{8,32}$/.test(String(r.data.id || ''))) {
       return json({ error: 'CREATE_FAILED', message: 'تعذّر إنشاء الطلب، حاول مرة أخرى.' }, 502);
     }
-    await env.DB.prepare(`INSERT INTO qr_orders (order_id, ref, design, amount, currency, status, env, created_at)
-      VALUES (?, ?, ?, ?, ?, 'CREATED', ?, ?)`)
-      .bind(r.data.id, ref, design, QR_PRICE, QR_CURRENCY, mode, new Date().toISOString()).run();
+    await env.DB.prepare(`INSERT INTO qr_code_orders (order_id, ref, uid, design, spec, amount, currency, status, env, created_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, 'CREATED', ?, ?)`)
+      .bind(r.data.id, ref, user.uid, design, spec, QR_PRICE, QR_CURRENCY, mode, new Date().toISOString()).run();
     return json({ id: r.data.id });
   }
 
-  // ============ capture + checks (once per order) ============
+  // ============ capture + checks + the code saved in the account (once per order) ============
   if (path === '/api/qr/capture-order' && request.method === 'POST') {
     const body = await readJson(request);
     const orderId = String(body.orderId || '');
     if (!/^[A-Z0-9]{8,32}$/.test(orderId)) return json({ error: 'BAD_ORDER', message: 'رقم الطلب غير صالح.' }, 400);
-    const row = await env.DB.prepare(`SELECT * FROM qr_orders WHERE order_id = ? AND env = ?`).bind(orderId, mode).first();
+    const row = await env.DB.prepare(`SELECT * FROM qr_code_orders WHERE order_id = ? AND env = ?`).bind(orderId, mode).first();
     if (!row) return json({ error: 'UNKNOWN_ORDER', message: 'الطلب غير موجود.' }, 404);
-    if (row.status === 'COMPLETED') {   // already paid (reload, retry, double click): ok again, for a limited time
-      const until = qrUntil(row.completed_at);
-      if (Date.now() > Date.parse(until)) return json({ error: 'EXPIRED', message: 'انتهت مدة هذا الطلب.' }, 410);
-      return json({ ok: true, orderId, design: row.design, until });
+    if (row.uid !== user.uid) {
+      logQr('capture-order WRONG USER', { mode, orderId });
+      return json({ error: 'NOT_YOUR_ORDER', message: 'هذا الطلب لا يخص حسابك.' }, 403);
+    }
+    const codeOf = async () => {
+      const c = await env.DB.prepare(`SELECT * FROM qr_codes WHERE order_id = ? AND uid = ?`).bind(orderId, user.uid).first();
+      return c ? qrCodeOut(c) : null;
+    };
+    if (row.status === 'COMPLETED') {   // already done (retry, double click, page reloaded): same answer
+      await qrSaveCode(env.DB, user.uid, mode, orderId, row.completed_at || new Date().toISOString()).run();
+      return json({ ok: true, orderId, code: await codeOf() });
     }
     if (row.status !== 'CREATED') return json({ error: 'ORDER_CLOSED', message: 'هذا الطلب مغلق. راسلنا برقم الطلب: ' + orderId }, 409);
 
@@ -1147,6 +1204,8 @@ async function handleQr(request, env, path, ctx) {
     else if (!r.ok) {
       if (issue === 'INSTRUMENT_DECLINED') return json({ error: 'INSTRUMENT_DECLINED', message: 'رُفضت وسيلة الدفع، اختر وسيلة أخرى.' }, 402);
       if (issue === 'ORDER_NOT_APPROVED') return json({ error: 'NOT_COMPLETED', message: 'لم يكتمل الدفع.' }, 402);
+      alertLater(ctx, env, 'order:' + orderId, { what: 'رموز QR: فشل تأكيد الدفع', orderId, bookId: 'qr-' + row.design,
+        issue: issue || 'CAPTURE_FAILED', debugId: r.debugId, status: r.status });
       return json({ error: 'CAPTURE_FAILED', message: 'لم يكتمل الدفع، لم يُخصم أي مبلغ. حاول مرة أخرى.' }, 502);
     }
 
@@ -1163,24 +1222,26 @@ async function handleQr(request, env, path, ctx) {
     if (!refOk || amount.currency_code !== QR_CURRENCY || amount.currency_code !== row.currency ||
         toCents(amount.value) !== toCents(QR_PRICE) || toCents(amount.value) !== toCents(row.amount)) {
       logQr('capture-order MISMATCH', { mode, orderId, refOk, amount, expected: row.amount + ' ' + row.currency });
-      await env.DB.prepare(`UPDATE qr_orders SET status = 'MISMATCH' WHERE order_id = ? AND status = 'CREATED'`).bind(orderId).run();
-      alertLater(ctx, env, 'order:' + orderId, { what: 'تصاميم QR: المبلغ المدفوع ' + (amount.value || '?') + ' ' + (amount.currency_code || '') +
-        ' لا يطابق سعر التصميم ' + row.design, orderId, bookId: 'qr-' + row.design, issue: 'AMOUNT_MISMATCH', debugId: r.debugId, status: r.status });
+      await env.DB.prepare(`UPDATE qr_code_orders SET status = 'MISMATCH' WHERE order_id = ? AND status = 'CREATED'`).bind(orderId).run();
+      alertLater(ctx, env, 'order:' + orderId, { what: 'رموز QR: المبلغ المدفوع ' + (amount.value || '?') + ' ' + (amount.currency_code || '') +
+        ' لا يطابق السعر', orderId, bookId: 'qr-' + row.design, issue: 'AMOUNT_MISMATCH', debugId: r.debugId, status: r.status });
       return json({ error: 'AMOUNT_MISMATCH', message: 'المبلغ المدفوع لا يطابق السعر. راسلنا برقم الطلب: ' + orderId }, 400);
     }
 
-    // one capture → one order: marked COMPLETED once; capture_id is UNIQUE (one PayPal payment never serves two orders)
+    // one capture → one code, in ONE transaction: order COMPLETED once (capture_id UNIQUE), code saved in the account
     const nowIso = new Date().toISOString();
     try {
-      const res = await env.DB.prepare(`UPDATE qr_orders SET status = 'COMPLETED', capture_id = ?, completed_at = ?
-        WHERE order_id = ? AND status <> 'COMPLETED'`).bind(capture.id, nowIso, orderId).run();
-      if (res.meta && res.meta.changes === 1) logQr('order completed', { mode, orderId, design: row.design });
+      const res = await env.DB.batch([
+        env.DB.prepare(`UPDATE qr_code_orders SET status = 'COMPLETED', capture_id = ?, completed_at = ?
+          WHERE order_id = ? AND status <> 'COMPLETED'`).bind(capture.id, nowIso, orderId),
+        qrSaveCode(env.DB, user.uid, mode, orderId, nowIso),
+      ]);
+      if (res[0].meta && res[0].meta.changes === 1) logQr('code saved', { mode, orderId, design: row.design });
     } catch (e) {
       logQr('capture-order DUPLICATE CAPTURE ID', { mode, orderId, captureId: capture.id, error: String(e && e.message || e) });
       return json({ error: 'DUPLICATE', message: 'عملية الدفع هذه مسجّلة من قبل.' }, 409);
     }
-    const done = await env.DB.prepare(`SELECT completed_at FROM qr_orders WHERE order_id = ?`).bind(orderId).first();
-    return json({ ok: true, orderId, design: row.design, until: qrUntil((done && done.completed_at) || nowIso) });
+    return json({ ok: true, orderId, code: await codeOf() });
   }
 
   return null;

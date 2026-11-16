@@ -59,8 +59,9 @@
     // "live" is honoured ONLY on dr.merabti.workers.dev (CV_LIVE_HOSTS in worker.js); previews stay "off" (demo).
     // "off" = nothing sold. "sandbox" needs PAYPAL_SANDBOX_CLIENT_ID + secret PAYPAL_SANDBOX_SECRET.
     "CV_SALES": "live",
-    // QR Code tool Premium designs (/api/qr/*, $1.99 per clean PNG + SVG): "live" requested by the owner (2026-11-15).
-    // "live" is honoured ONLY on dr.merabti.workers.dev (QR_LIVE_HOSTS in worker.js); previews stay "off" (demo).
+    // QR Code tool Premium codes (/api/qr/*, $1.99 per code without the site link): "live" requested by the owner (2026-11-15).
+    // "live" is honoured ONLY on QR_LIVE_HOSTS in worker.js: dr.merabti.workers.dev and, at the owner's request
+    // (2026-11-16, to test a real purchase), the claude-test preview claude-test-dr.merabti.workers.dev.
     // "off" = nothing sold (the free download with the site name stays). "sandbox" needs PAYPAL_SANDBOX_CLIENT_ID + secret PAYPAL_SANDBOX_SECRET.
     "QR_SALES": "live"
   }
