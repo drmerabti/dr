@@ -170,8 +170,8 @@ border, frame ring, shadow or filter, whatever the page's own logo rules say. CS
   currency and custom_id; UNIQUE capture_id; D1 table `qr_orders` (created on first use, `env` = live | sandbox).
   A COMPLETED order answers ok again for `QR_UNLOCK_HOURS` (24) — the page keeps the order ID in localStorage
   `qrgen:orders` and asks the server again after a reload. `QR_SALES` in wrangler.jsonc: "live" honoured only on
-  dr.merabti.workers.dev (`QR_LIVE_HOSTS`); the page runs a demo (simulated payment) on *.vercel.app, the
-  claude-test Worker and localhost.
+  dr.merabti.workers.dev (`QR_LIVE_HOSTS`); the page runs a demo (simulated payment) on the
+  claude-test Worker preview (claude-test-dr.merabti.workers.dev) and localhost.
 - The strip is `dir="ltr"` in every language (fixed order); the download row too (buttons do not move).
 
 ## Home order

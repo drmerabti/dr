@@ -480,11 +480,11 @@
      The price and the check of the payment are on the Worker (worker.js, "/api/qr/*"): create-order makes
      the PayPal order there, capture-order captures it and checks status, amount and currency before it
      answers ok. Only then is the site name removed and the clean files made. No secret in this page.
-     Modes from GET /api/qr/config: live / sandbox (sales on) · demo (preview links and localhost:
+     Modes from GET /api/qr/config: live / sandbox (sales on) · demo (the claude-test Worker preview and localhost:
      simulated payment, nothing paid) · off (the free download stays). */
   const PAY_LOCAL = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
   const PAY_API = (/\.workers\.dev$/.test(location.hostname) || PAY_LOCAL) ? '' : 'https://dr.merabti.workers.dev';
-  const PAY_DEMO_HOST = PAY_LOCAL || /\.vercel\.app$/.test(location.hostname) || location.hostname === 'claude-test-dr.merabti.workers.dev';
+  const PAY_DEMO_HOST = PAY_LOCAL || location.hostname === 'claude-test-dr.merabti.workers.dev';
   const PAY_KEY = 'qrgen:orders';      // { design: { id, at } } — order IDs only, checked again by the server
   const PAY = { mode: 'loading', cfg: null, sdk: null, busy: false, design: null };
   const salesOn = () => PAY.mode === 'live' || PAY.mode === 'sandbox' || PAY.mode === 'demo';
