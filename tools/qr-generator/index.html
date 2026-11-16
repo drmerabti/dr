@@ -58,13 +58,27 @@
     </div>
 
     <div class="qr-preview-col">
-      <div class="qr-frame">
+      <!-- 1. big preview of the selected design -->
+      <div class="qr-frame" id="qrFrame">
         <div id="qrCanvasWrap"></div>
       </div>
-      <button type="button" class="generate-btn" id="downloadBtn">
-        <svg class="gen-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M5 21h14"/></svg>
-        <span id="downloadBtnText">تحميل الصورة</span>
-      </button>
+      <!-- 2. designs strip (coverflow): real mini QR codes of the same data; fixed LTR order in every language -->
+      <div class="qd-strip" id="qdStrip" dir="ltr" role="listbox" tabindex="0" aria-label="التصاميم">
+        <div class="qd-track" id="qdTrack"></div>
+      </div>
+      <p class="qd-name" id="qdName" aria-live="polite"></p>
+      <!-- 3. one short notice line -->
+      <p class="qd-notice" id="qdNotice"></p>
+      <!-- 4. download buttons (fixed order: icons and buttons do not move with the language) -->
+      <div class="qd-actions" dir="ltr">
+        <button type="button" class="generate-btn" id="downloadBtn">
+          <svg class="gen-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M5 21h14"/></svg>
+          <span id="downloadBtnText">تحميل الصورة</span>
+        </button>
+        <button type="button" class="qd-paybtn is-off" id="payBtn" disabled aria-hidden="true" tabindex="-1">
+          <img src="../../books/word/img/paypal.svg" alt="PayPal" width="62" height="20"><span dir="ltr">$1.99</span>
+        </button>
+      </div>
     </div>
   </div>
 
@@ -79,6 +93,7 @@
       <ol class="guide-steps" id="guideSteps">
         <li>أدخل بياناتك في الخانات: الاسم واللقب، رقم الهاتف، المهنة، البريد الإلكتروني، وملاحظة إن أردت.</li>
         <li>شاهد الرمز يتحدّث فورًا في المعاينة مع كل حرف تكتبه، دون الحاجة إلى أي زر.</li>
+        <li>اختر تصميمًا من الشريط تحت المعاينة: اسحبه يمينًا أو يسارًا أو اضغط على التصميم، فيظهر فورًا بالحجم الكبير.</li>
         <li>اضغط «تحميل الصورة» لحفظ الرمز صورة PNG، ثم ضعه على بطاقة أعمالك أو سيرتك الذاتية أو أي ملصق.</li>
       </ol>
     </div>
@@ -89,6 +104,7 @@
         <details><summary>هل يجب ملء كل الخانات؟</summary><p>لا، يكفي ملء خانة واحدة ليظهر الرمز، وكل خانة تتركها فارغة لا تُضاف إلى بطاقة الاتصال.</p></details>
         <details><summary>هل تُرسل بياناتي إلى أي خادم؟</summary><p>لا، يُنشأ الرمز داخل متصفحك مباشرة، ولا تُحفظ بياناتك ولا تُرسل إلى أي مكان.</p></details>
         <details><summary>كيف أمسح الرمز بالهاتف؟</summary><p>افتح كاميرا الهاتف ووجّهها نحو الرمز، أو استعمل تطبيقًا لقراءة QR، ثم اختر «إضافة جهة اتصال» لحفظ البيانات.</p></details>
+        <details><summary>هل التصاميم الملوّنة مجانية؟</summary><p>نعم، يمكنك تحميل أي تصميم مجانًا، ويظهر اسم الموقع merabti.com ضمن إطاره. لإزالته ادفع 1.99$ عبر PayPal، فتحصل على صورة PNG عالية الدقة وملف SVG بدون اسم الموقع.</p></details>
       </div>
     </div>
 
@@ -109,7 +125,13 @@
   </p>
 </footer>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<!-- payment sheet ($1.99, PayPal): filled by app.js -->
+<div class="qd-modal" id="payModal" hidden role="dialog" aria-modal="true">
+  <div class="qd-sheet" id="paySheet"></div>
+</div>
+
+<script src="vendor/qr-code-styling.js"></script>
+<script src="designs.js"></script>
 <script src="app.js"></script>
 <script src="../../site-nav.js"></script>
 </body>

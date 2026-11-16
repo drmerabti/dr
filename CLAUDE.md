@@ -151,6 +151,29 @@ border, frame ring, shadow or filter, whatever the page's own logo rules say. CS
 - Class names set by the layout engine on blocks: `first` (section start), `es` (entry start), `nl` (not the last
   piece of its section), `top` / `end` (first / last block of a column on a page) — do not reuse them for anything else.
 
+## QR Code tool designs (tools/qr-generator)
+
+- 10 designs in `designs.js` (`DESIGNS`): `classic` (free, no branding, the old look) + 9 Premium (violet, ticket, gold,
+  emerald, ocean, rose, minimal, neon, islamic). The code is drawn by qr-code-styling (vendored, fixed version:
+  `vendor/qr-code-styling.js` v1.9.2), **error correction "H" always**; each design adds its frame in one SVG.
+  Preview, strip, PNG and SVG all come from that same SVG (`QRDesigns.render` → `toPngBlob`).
+- Scan rules (checked with jsQR + ZXing): the code sits on a light plate with a clear margin; dark modules only;
+  no big smooth gradients behind the plate (block-based decoders misread them at high resolution: dark frames are
+  flat colours); no concentric ornament near the code (it looks like a finder pattern); finder rings and centres of
+  matching shapes (`rounded`/`square`/`classy-rounded`, never a square ring with a round centre); the centre logo
+  hides whole modules (library `hideBackgroundDots`). A new design must pass the same scan test before release.
+- Frame text uses system fonts (an SVG drawn as an image cannot load web fonts). Arabic is never letter-spaced.
+- Free download of a Premium design: "merabti.com" is part of its frame. $1.99 per design through PayPal removes it:
+  clean PNG (4×, 2400 px wide) + SVG. Worker `/api/qr/*` (worker.js, "QR Code tool"): `GET config`,
+  `POST create-order {design}` → `{ id }`, `POST capture-order {orderId}` → `{ ok, orderId, design, until }`.
+  No sign-in. Price and catalogue only in the Worker (`QR_PRICE`, `QR_PREMIUM`); capture checks status, amount,
+  currency and custom_id; UNIQUE capture_id; D1 table `qr_orders` (created on first use, `env` = live | sandbox).
+  A COMPLETED order answers ok again for `QR_UNLOCK_HOURS` (24) — the page keeps the order ID in localStorage
+  `qrgen:orders` and asks the server again after a reload. `QR_SALES` in wrangler.jsonc: "live" honoured only on
+  dr.merabti.workers.dev (`QR_LIVE_HOSTS`); the page runs a demo (simulated payment) on *.vercel.app, the
+  claude-test Worker and localhost.
+- The strip is `dir="ltr"` in every language (fixed order); the download row too (buttons do not move).
+
 ## Home order
 
 `SECTIONS_ROW1` = tools, books (`services`), lessons; `SECTIONS_ROW2` = apps, favorites, training.

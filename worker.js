@@ -1021,10 +1021,171 @@ async function handleCv(request, env, path, ctx) {
   return null;
 }
 
+/* =====================================================================
+   QR Code tool: clean download of a Premium design ($1.99 per design, PayPal) — tools/qr-generator
+     GET  /api/qr/config         → { sales, clientId, currency, price, premium[] }
+     POST /api/qr/create-order   { design }  → { id }                       (PayPal order made here)
+     POST /api/qr/capture-order  { orderId } → { ok, orderId, design, until }
+   No sign-in (the tool has none). The page removes the site name only after capture-order answers ok:
+   the order is captured HERE and its status, amount, currency and custom_id are checked here.
+   capture-order on an order that is already COMPLETED answers ok again for QR_UNLOCK_HOURS (page reloaded,
+   lost connection, a typo fixed after paying), never later; it never captures twice.
+   QR_SALES (wrangler var): "off" (default) | "sandbox" (PAYPAL_SANDBOX_CLIENT_ID + secret PAYPAL_SANDBOX_SECRET)
+   | "live" (the site's PayPal app) — "live" is honoured ONLY on QR_LIVE_HOSTS (the production Worker):
+   a preview version such as claude-test-dr.merabti.workers.dev stays "off" (the page then runs a demo).
+   Test-only override, honoured ONLY when QR_SALES = "sandbox": QR_PAYPAL_API (a local PayPal mock).
+===================================================================== */
+const QR_PREMIUM = ['violet', 'ticket', 'gold', 'emerald', 'ocean', 'rose', 'minimal', 'neon', 'islamic'];
+const QR_PRICE = '1.99';
+const QR_CURRENCY = 'USD';
+const QR_UNLOCK_HOURS = 24;
+const QR_LIVE_HOSTS = ['dr.merabti.workers.dev'];
+
+function qrMode(env, request) {
+  const m = String(env.QR_SALES || 'off').toLowerCase();
+  if (m === 'live') return request && QR_LIVE_HOSTS.includes(new URL(request.url).hostname) ? 'live' : 'off';
+  return m === 'sandbox' ? 'sandbox' : 'off';
+}
+function qrPaypal(env, mode) {
+  if (mode === 'live') return { mode, api: 'https://api-m.paypal.com', id: env.PAYPAL_CLIENT_ID, secret: env.PAYPAL_SECRET };
+  if (mode === 'sandbox') return { mode, api: env.QR_PAYPAL_API || 'https://api-m.sandbox.paypal.com',
+    id: env.PAYPAL_SANDBOX_CLIENT_ID, secret: env.PAYPAL_SANDBOX_SECRET };
+  return { mode };
+}
+/* one JSON line per step, never the payer's details */
+function logQr(step, info) {
+  console.log('[qr] ' + step + ' ' + JSON.stringify(Object.assign({ step }, info)));
+}
+async function ensureQrTables(db) {
+  await db.prepare(`CREATE TABLE IF NOT EXISTS qr_orders (
+    order_id TEXT PRIMARY KEY, ref TEXT NOT NULL UNIQUE, design TEXT NOT NULL,
+    amount TEXT NOT NULL, currency TEXT NOT NULL, status TEXT NOT NULL,
+    capture_id TEXT UNIQUE, env TEXT NOT NULL, created_at TEXT NOT NULL, completed_at TEXT)`).run();
+}
+function qrUntil(completedAt) {
+  return new Date(Date.parse(completedAt) + QR_UNLOCK_HOURS * 3600 * 1000).toISOString();
+}
+
+async function handleQr(request, env, path, ctx) {
+  const mode = qrMode(env, request);
+
+  if (path === '/api/qr/config' && request.method === 'GET') {
+    const pp = qrPaypal(env, mode);
+    const ready = mode !== 'off' && !!(pp.id && pp.secret);
+    return json({ sales: ready ? mode : 'off', clientId: ready ? pp.id : null, currency: QR_CURRENCY, price: QR_PRICE, premium: QR_PREMIUM });
+  }
+
+  // sales off: nothing is read from or written to D1, no PayPal call
+  if (mode === 'off') return json({ error: 'SALES_OFF', message: 'الدفع غير مفعّل حاليًا.' }, 503);
+  const pp = qrPaypal(env, mode);
+  if (!pp.id || !pp.secret) return json({ error: 'PAYPAL_NOT_CONFIGURED', message: 'الدفع غير مُفعّل حاليًا.' }, 503);
+  await ensureQrTables(env.DB);
+
+  // ============ create the PayPal order (price from QR_PRICE only) ============
+  if (path === '/api/qr/create-order' && request.method === 'POST') {
+    const body = await readJson(request);
+    const design = String(body.design || '');
+    if (!QR_PREMIUM.includes(design)) return json({ error: 'UNKNOWN_DESIGN', message: 'هذا التصميم ليس من التصاميم المدفوعة.' }, 400);
+    const ref = crypto.randomUUID();
+    const r = await cardsPaypalCall(pp, 'POST', '/v2/checkout/orders', {
+      intent: 'CAPTURE',
+      purchase_units: [{
+        reference_id: 'qr-' + design, custom_id: ref, description: 'QR code design: ' + design + ' (clean PNG + SVG)',
+        amount: { currency_code: QR_CURRENCY, value: QR_PRICE },
+      }],
+      application_context: { shipping_preference: 'NO_SHIPPING', user_action: 'PAY_NOW', brand_name: 'merabti.com' },
+    }, { 'PayPal-Request-Id': 'qr-create-' + ref });
+    logQr(r.ok && r.data.id ? 'create-order ok' : 'create-order FAILED', { mode, design, status: r.status,
+      debugId: r.debugId, orderId: r.data.id || null, error: r.ok ? null : paypalError(r.data) });
+    if (!r.ok || !/^[A-Z0-9]{8,32}$/.test(String(r.data.id || ''))) {
+      return json({ error: 'CREATE_FAILED', message: 'تعذّر إنشاء الطلب، حاول مرة أخرى.' }, 502);
+    }
+    await env.DB.prepare(`INSERT INTO qr_orders (order_id, ref, design, amount, currency, status, env, created_at)
+      VALUES (?, ?, ?, ?, ?, 'CREATED', ?, ?)`)
+      .bind(r.data.id, ref, design, QR_PRICE, QR_CURRENCY, mode, new Date().toISOString()).run();
+    return json({ id: r.data.id });
+  }
+
+  // ============ capture + checks (once per order) ============
+  if (path === '/api/qr/capture-order' && request.method === 'POST') {
+    const body = await readJson(request);
+    const orderId = String(body.orderId || '');
+    if (!/^[A-Z0-9]{8,32}$/.test(orderId)) return json({ error: 'BAD_ORDER', message: 'رقم الطلب غير صالح.' }, 400);
+    const row = await env.DB.prepare(`SELECT * FROM qr_orders WHERE order_id = ? AND env = ?`).bind(orderId, mode).first();
+    if (!row) return json({ error: 'UNKNOWN_ORDER', message: 'الطلب غير موجود.' }, 404);
+    if (row.status === 'COMPLETED') {   // already paid (reload, retry, double click): ok again, for a limited time
+      const until = qrUntil(row.completed_at);
+      if (Date.now() > Date.parse(until)) return json({ error: 'EXPIRED', message: 'انتهت مدة هذا الطلب.' }, 410);
+      return json({ ok: true, orderId, design: row.design, until });
+    }
+    if (row.status !== 'CREATED') return json({ error: 'ORDER_CLOSED', message: 'هذا الطلب مغلق. راسلنا برقم الطلب: ' + orderId }, 409);
+
+    let r = await cardsPaypalCall(pp, 'POST', '/v2/checkout/orders/' + orderId + '/capture', null, { 'PayPal-Request-Id': 'qr-capture-' + orderId });
+    const issue = r.data && r.data.details && r.data.details[0] && r.data.details[0].issue;
+    logQr(r.ok ? 'capture-order ok' : 'capture-order FAILED', { mode, orderId, status: r.status, debugId: r.debugId,
+      issue: issue || null, order: r.ok ? orderSummary(r.data) : null });
+    if (!r.ok && issue === 'ORDER_ALREADY_CAPTURED') r = await cardsPaypalCall(pp, 'GET', '/v2/checkout/orders/' + orderId);
+    else if (!r.ok) {
+      if (issue === 'INSTRUMENT_DECLINED') return json({ error: 'INSTRUMENT_DECLINED', message: 'رُفضت وسيلة الدفع، اختر وسيلة أخرى.' }, 402);
+      if (issue === 'ORDER_NOT_APPROVED') return json({ error: 'NOT_COMPLETED', message: 'لم يكتمل الدفع.' }, 402);
+      return json({ error: 'CAPTURE_FAILED', message: 'لم يكتمل الدفع، لم يُخصم أي مبلغ. حاول مرة أخرى.' }, 502);
+    }
+
+    const order = r.data || {};
+    const unit = (order.purchase_units || [])[0] || {};
+    const capture = ((unit.payments || {}).captures || [])[0] || {};
+    const amount = capture.amount || {};
+    if (order.id !== orderId || order.status !== 'COMPLETED' || capture.status !== 'COMPLETED' || !capture.id) {
+      logQr('capture-order NOT COMPLETED', { mode, orderId, order: orderSummary(order) });
+      return json({ error: 'NOT_COMPLETED', message: capture.status === 'PENDING'
+        ? 'الدفع قيد المراجعة لدى PayPal، رقم الطلب: ' + orderId : 'لم يكتمل الدفع. حاول مرة أخرى.' }, 402);
+    }
+    const refOk = unit.custom_id === row.ref || capture.custom_id === row.ref;
+    if (!refOk || amount.currency_code !== QR_CURRENCY || amount.currency_code !== row.currency ||
+        toCents(amount.value) !== toCents(QR_PRICE) || toCents(amount.value) !== toCents(row.amount)) {
+      logQr('capture-order MISMATCH', { mode, orderId, refOk, amount, expected: row.amount + ' ' + row.currency });
+      await env.DB.prepare(`UPDATE qr_orders SET status = 'MISMATCH' WHERE order_id = ? AND status = 'CREATED'`).bind(orderId).run();
+      alertLater(ctx, env, 'order:' + orderId, { what: 'تصاميم QR: المبلغ المدفوع ' + (amount.value || '?') + ' ' + (amount.currency_code || '') +
+        ' لا يطابق سعر التصميم ' + row.design, orderId, bookId: 'qr-' + row.design, issue: 'AMOUNT_MISMATCH', debugId: r.debugId, status: r.status });
+      return json({ error: 'AMOUNT_MISMATCH', message: 'المبلغ المدفوع لا يطابق السعر. راسلنا برقم الطلب: ' + orderId }, 400);
+    }
+
+    // one capture → one order: marked COMPLETED once; capture_id is UNIQUE (one PayPal payment never serves two orders)
+    const nowIso = new Date().toISOString();
+    try {
+      const res = await env.DB.prepare(`UPDATE qr_orders SET status = 'COMPLETED', capture_id = ?, completed_at = ?
+        WHERE order_id = ? AND status <> 'COMPLETED'`).bind(capture.id, nowIso, orderId).run();
+      if (res.meta && res.meta.changes === 1) logQr('order completed', { mode, orderId, design: row.design });
+    } catch (e) {
+      logQr('capture-order DUPLICATE CAPTURE ID', { mode, orderId, captureId: capture.id, error: String(e && e.message || e) });
+      return json({ error: 'DUPLICATE', message: 'عملية الدفع هذه مسجّلة من قبل.' }, 409);
+    }
+    const done = await env.DB.prepare(`SELECT completed_at FROM qr_orders WHERE order_id = ?`).bind(orderId).first();
+    return json({ ok: true, orderId, design: row.design, until: qrUntil((done && done.completed_at) || nowIso) });
+  }
+
+  return null;
+}
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     const path = url.pathname;
+
+    // ============ QR Code tool: clean Premium designs (independent from the books, cards and CV) ============
+    if (path.startsWith('/api/qr/')) {
+      if (request.method === 'OPTIONS') return cardsPreflight(request);
+      let res;
+      try {
+        res = await handleQr(request, env, path, ctx);
+      } catch (e) {
+        console.log('[qr] route error ' + path + ' ' + (e && e.stack || e));
+        res = json({ error: 'SERVER_ERROR', message: 'حدث خطأ في الخادم، حاول مرة أخرى.' }, 500);
+      }
+      const out = withCors(request, res || json({ error: 'NOT_FOUND' }, 404));
+      out.headers.set('Cache-Control', 'no-store');
+      return out;
+    }
 
     // ============ CV builder Premium templates (independent from the books and the cards) ============
     if (path.startsWith('/api/cv/')) {
