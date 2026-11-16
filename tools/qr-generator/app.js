@@ -12,7 +12,7 @@
       pageTitle: 'مولّد QR Code',
       pageSubtitle: 'أدخل بياناتك، وشاهد رمز QR يتحدّث فورًا — يمكن مسحه وحفظه كجهة اتصال كاملة',
       namePh: 'الاسم واللقب', phonePh: 'رقم الهاتف', jobPh: 'المهنة', emailPh: 'البريد الإلكتروني', notePh: 'ملاحظة حرة (اختياري)',
-      download: 'تحميل الصورة', emptyHint: 'أدخل بياناتك ليظهر الرمز هنا',
+      download: 'تحميل الصورة',
       alertEmpty: 'الرجاء إدخال بياناتك أولًا لإنشاء الرمز.',
       guideWhatTitle: 'ما هي الأداة؟',
       guideWhat: 'مولّد QR Code يحوّل بيانات اتصالك (الاسم، الهاتف، المهنة، البريد الإلكتروني) إلى رمز QR بصيغة بطاقة اتصال vCard. عند مسح الرمز بالهاتف يقترح حفظ بياناتك مباشرة كجهة اتصال جديدة.',
@@ -21,6 +21,7 @@
         'أدخل بياناتك في الخانات: الاسم واللقب، رقم الهاتف، المهنة، البريد الإلكتروني، وملاحظة إن أردت.',
         'شاهد الرمز يتحدّث فورًا في المعاينة مع كل حرف تكتبه، دون الحاجة إلى أي زر.',
         'اختر تصميمًا من الشريط تحت المعاينة: اسحبه يمينًا أو يسارًا أو اضغط على التصميم، فيظهر فورًا بالحجم الكبير.',
+        'في التصاميم المميزة (Premium) اضغط على وسط الرمز لترفع شعارك أو تكتب حرفًا يظهر في الوسط.',
         'اضغط «تحميل الصورة» لحفظ الرمز صورة PNG، ثم ضعه على بطاقة أعمالك أو سيرتك الذاتية أو أي ملصق.',
       ],
       guideFaqTitle: 'أسئلة شائعة',
@@ -47,13 +48,14 @@
       payOrder: 'رقم الطلب', payUnlockNote: 'يبقى هذا التصميم مفتوحًا 24 ساعة على هذا الجهاز إن أردت تعديل بياناتك.',
       payResumed: 'تم تأكيد دفعتك السابقة: التصميم بدون اسم الموقع.',
       downloading: 'جارٍ التحضير…',
+      logoHot: 'شعارك في وسط الرمز', logoTitle: 'شعار في وسط الرمز', logoUpload: 'رفع صورة', logoOr: 'أو اكتب حرفًا', logoLetterPh: 'حرف أو حرفان', logoReset: 'إزالة', logoClose: 'تم',
     },
     en: {
       dir: 'ltr', pageTitleTag: 'QR Code Generator — Merabti Academy',
       pageTitle: 'QR Code Generator',
       pageSubtitle: 'Enter your details and watch the QR code update instantly — it can be scanned and saved as a full contact card',
       namePh: 'Full name', phonePh: 'Phone number', jobPh: 'Job title', emailPh: 'Email', notePh: 'Free note (optional)',
-      download: 'Download Image', emptyHint: 'Enter your details for the code to appear here',
+      download: 'Download Image',
       alertEmpty: 'Please enter your details first to generate the code.',
       guideWhatTitle: 'What is this tool?',
       guideWhat: 'The QR Code Generator turns your contact details (name, phone, job title, email) into a QR code in vCard contact format. When the code is scanned, the phone offers to save your details straight away as a new contact.',
@@ -62,6 +64,7 @@
         'Fill in your details: full name, phone number, job title, email, and a note if you like.',
         'Watch the code update instantly in the preview as you type — no button needed.',
         'Pick a design from the strip under the preview: swipe it or tap a design, and it shows up large at once.',
+        'On Premium designs, tap the middle of the code to upload your logo or type a letter to show there.',
         'Click “Download Image” to save the code as a PNG, then put it on your business card, CV or any poster.',
       ],
       guideFaqTitle: 'Frequently asked questions',
@@ -88,13 +91,14 @@
       payOrder: 'Order ID', payUnlockNote: 'This design stays unlocked for 24 hours on this device if you need to edit your details.',
       payResumed: 'Your earlier payment is confirmed: the design is now without the site name.',
       downloading: 'Preparing…',
+      logoHot: 'Your logo in the centre', logoTitle: 'Logo in the centre', logoUpload: 'Upload image', logoOr: 'or type a letter', logoLetterPh: '1 or 2 letters', logoReset: 'Remove', logoClose: 'Done',
     },
     fr: {
       dir: 'ltr', pageTitleTag: 'Générateur de QR Code — Académie Merabti',
       pageTitle: 'Générateur de QR Code',
       pageSubtitle: 'Saisissez vos informations et regardez le code QR se mettre à jour instantanément — il peut être scanné et enregistré comme contact complet',
       namePh: 'Nom complet', phonePh: 'Numéro de téléphone', jobPh: 'Profession', emailPh: 'E-mail', notePh: 'Note libre (optionnel)',
-      download: "Télécharger l'image", emptyHint: 'Saisissez vos informations pour voir le code apparaître ici',
+      download: "Télécharger l'image",
       alertEmpty: "Veuillez d'abord saisir vos informations pour générer le code.",
       guideWhatTitle: "Qu'est-ce que cet outil ?",
       guideWhat: "Le générateur de QR Code transforme vos coordonnées (nom, téléphone, profession, e-mail) en code QR au format de carte de contact vCard. Une fois le code scanné, le téléphone propose d'enregistrer directement vos informations comme nouveau contact.",
@@ -103,6 +107,7 @@
         "Saisissez vos informations : nom complet, numéro de téléphone, profession, e-mail, et une note si vous le souhaitez.",
         "Regardez le code se mettre à jour instantanément dans l'aperçu à chaque caractère, sans aucun bouton.",
         "Choisissez un design dans la bande sous l'aperçu : faites-la glisser ou touchez un design, il s'affiche aussitôt en grand.",
+        "Sur les designs Premium, touchez le centre du code pour importer votre logo ou taper une lettre à y afficher.",
         "Cliquez sur « Télécharger l'image » pour enregistrer le code en PNG, puis placez-le sur votre carte de visite, votre CV ou une affiche.",
       ],
       guideFaqTitle: 'Questions fréquentes',
@@ -129,6 +134,7 @@
       payOrder: 'N° de commande', payUnlockNote: 'Ce design reste débloqué 24 heures sur cet appareil si vous devez modifier vos informations.',
       payResumed: 'Votre paiement précédent est confirmé : le design est sans le nom du site.',
       downloading: 'Préparation…',
+      logoHot: 'Votre logo au centre', logoTitle: 'Logo au centre', logoUpload: 'Importer une image', logoOr: 'ou tapez une lettre', logoLetterPh: '1 ou 2 lettres', logoReset: 'Retirer', logoClose: 'OK',
     },
   };
 
@@ -221,24 +227,27 @@
   const SAMPLE_VCARD = 'BEGIN:VCARD\nVERSION:3.0\nFN:merabti.com\nEND:VCARD';
 
   /* ================= Designs: strip + big preview =================
-     Every item of the strip is a real QR of the user's data (designs.js). The centred item is the
-     selected design; it is shown large in the preview right away (same image, nothing redrawn). */
+     Every item of the strip is a real QR of the user's data (designs.js), shown as a small bitmap (light to
+     move). The centred item is the selected design; the big preview shows the same design as crisp SVG.
+     Classic (free) is always the design selected when the page opens. */
   const D = window.QRDesigns;
   const DESIGNS = D.list;
-  const DESIGN_KEY = 'qrgen:design';
   const store = {
     get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
     set(k, v) { try { if (v == null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) { /* ignore */ } },
   };
-  let current = Math.max(0, DESIGNS.findIndex((d) => d.id === store.get(DESIGN_KEY)));
+  let current = 0;
   const unlocked = new Set();          // designs paid in this session (checked by the server)
-  const rendered = {};                 // id → { key, svg, w, h, url }
+  const rendered = {};                 // id → { key, svg, w, h, hot, url, thumbKey }
   let renderToken = 0;
+  let ownLogo = null;                  // Premium centre logo of the visitor: { type: 'text', text } | { type: 'image', src }
 
   const isPremium = (i) => DESIGNS[i].premium;
   const branded = (i) => isPremium(i) && !unlocked.has(DESIGNS[i].id);
   const dataNow = () => (hasAnyData() ? buildVCard() : SAMPLE_VCARD);
-  const keyFor = (i, data) => [data, lang, branded(i) ? 'b' : 'c'].join('\u0001');
+  const logoKey = () => (!ownLogo ? '' : ownLogo.type === 'image' ? 'i' + ownLogo.src.length + ownLogo.src.slice(-24) : 't' + ownLogo.text);
+  const keyFor = (i, data) => [data, branded(i) ? 'b' : 'c', isPremium(i) ? logoKey() : ''].join('\u0001');
+  const renderOpts = (i, clean) => ({ branded: isPremium(i) && !clean && branded(i), logo: isPremium(i) ? ownLogo : null });
 
   const track = $('qdTrack');
   const strip = $('qdStrip');
@@ -247,6 +256,7 @@
     b.type = 'button';
     b.className = 'qd-item';
     b.setAttribute('role', 'option');
+    b.tabIndex = -1;
     b.dataset.i = i;
     b.innerHTML = `<span class="qd-card" style="aspect-ratio:${d.w} / ${d.h}"><img alt="" draggable="false">` +
       (d.premium ? '<span class="qd-crown" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5z" fill="currentColor"/></svg></span>' : '') + '</span>';
@@ -254,157 +264,249 @@
     return b;
   });
 
-  async function renderOne(i, data, token) {
+  async function renderOne(i, data, token, withThumb) {
     const d = DESIGNS[i];
     const key = keyFor(i, data);
-    if (rendered[d.id] && rendered[d.id].key === key) return rendered[d.id];
-    const r = await D.render(d.id, data, { branded: branded(i), lang });
-    if (token !== renderToken) return null;
-    const old = rendered[d.id];
-    const url = URL.createObjectURL(new Blob([r.svg], { type: 'image/svg+xml' }));
-    rendered[d.id] = { key, svg: r.svg, w: r.w, h: r.h, url };
-    items[i].querySelector('img').src = url;
-    if (old && old.url) setTimeout(() => URL.revokeObjectURL(old.url), 1000);
-    return rendered[d.id];
+    let r = rendered[d.id];
+    if (!r || r.key !== key) {
+      const out = await D.render(d.id, data, renderOpts(i));
+      if (token !== renderToken) return null;
+      const old = r;
+      r = rendered[d.id] = { key, svg: out.svg, w: out.w, h: out.h, hot: out.hot, url: URL.createObjectURL(new Blob([out.svg], { type: 'image/svg+xml' })) };
+      if (old && old.url) setTimeout(() => URL.revokeObjectURL(old.url), 1500);
+    }
+    if (withThumb && r.thumbKey !== key) {
+      // small bitmap for the strip: moving 10 bitmaps costs nothing, moving 10 big SVGs is heavy
+      const c = await D.toCanvas(r.svg, r.w, r.h, 168 / r.w);
+      if (token !== renderToken) return null;
+      const blob = await new Promise((ok) => c.toBlob(ok, 'image/png'));
+      if (token !== renderToken || !blob) return null;
+      const img = items[i].querySelector('img');
+      const old = img.dataset.url;
+      img.dataset.url = img.src = URL.createObjectURL(blob);
+      if (old) setTimeout(() => URL.revokeObjectURL(old), 1500);
+      r.thumbKey = key;
+    }
+    return r;
   }
 
+  /* ---------- big preview + the centre-logo button (Premium) ---------- */
   function showPreview() {
     const d = DESIGNS[current];
     const r = rendered[d.id];
-    const empty = !hasAnyData();
-    let img = els.qrCanvasWrap.querySelector('img.qr-preview-img');
-    if (!img) {
-      els.qrCanvasWrap.innerHTML = '<img class="qr-preview-img" alt=""><p class="qr-empty-hint"></p>';
-      img = els.qrCanvasWrap.querySelector('img');
+    let stage = els.qrCanvasWrap.querySelector('.qr-stage');
+    if (!stage) {
+      els.qrCanvasWrap.innerHTML = '<div class="qr-stage"><img class="qr-preview-img" alt="" draggable="false">' +
+        '<button type="button" class="qd-hot" id="logoHot"><span class="qd-hot-badge" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></span></button></div>';
+      stage = els.qrCanvasWrap.querySelector('.qr-stage');
+      $('logoHot').addEventListener('click', (e) => { e.stopPropagation(); toggleLogoPop(); });
     }
-    if (r) { img.src = r.url; img.style.aspectRatio = `${r.w} / ${r.h}`; }
+    const img = stage.querySelector('img');
+    if (r) { img.src = r.url; stage.dataset.w = r.w; stage.dataset.h = r.h; fitStage(); }
     img.alt = d.name[lang] + ' — QR';
-    els.qrCanvasWrap.classList.toggle('is-empty', empty);
-    els.qrCanvasWrap.querySelector('.qr-empty-hint').textContent = empty ? t('emptyHint') : '';
     $('qrFrame').classList.toggle('is-classic', !d.premium);
+    const hot = $('logoHot');
+    hot.hidden = !(d.premium && r && r.hot);
+    if (!hot.hidden) {
+      hot.style.left = (100 * r.hot.x / r.w) + '%';
+      hot.style.top = (100 * r.hot.y / r.h) + '%';
+      hot.style.width = (100 * r.hot.w / r.w) + '%';
+      hot.style.height = (100 * r.hot.h / r.h) + '%';
+      hot.setAttribute('aria-label', t('logoHot'));
+      hot.title = t('logoHot');
+    }
+    if (!d.premium) closeLogoPop();
+  }
+  function fitStage() {
+    const stage = els.qrCanvasWrap.querySelector('.qr-stage');
+    if (!stage || !stage.dataset.w) return;
+    const W = els.qrCanvasWrap.clientWidth * (DESIGNS[current].premium ? 1 : 0.92), H = els.qrCanvasWrap.clientHeight;
+    const k = Math.min(W / stage.dataset.w, H / stage.dataset.h);
+    stage.style.width = Math.round(stage.dataset.w * k) + 'px';
+    stage.style.height = Math.round(stage.dataset.h * k) + 'px';
   }
 
-  let renderTimer = null;
+  let renderTimer = null, stripTimer = null;
   function renderQr() {
     clearTimeout(renderTimer);
-    renderTimer = setTimeout(renderAll, 90);
+    renderTimer = setTimeout(renderAll, 80);
     updateUi();
   }
   async function renderAll() {
     const token = ++renderToken;
     const data = dataNow();
+    clearTimeout(stripTimer);
     try {
-      await renderOne(current, data, token);       // the selected design first: the big preview
+      await renderOne(current, data, token, true);   // the selected design first: the big preview
       if (token !== renderToken) return;
       showPreview();
-      // then the strip, nearest designs first, one per frame so typing stays smooth
+    } catch (e) { console.warn('[qr] render', e); return; }
+    // the rest of the strip once typing pauses, nearest designs first, one per frame
+    stripTimer = setTimeout(async () => {
       const order = DESIGNS.map((_, i) => i).filter((i) => i !== current).sort((a, b) => Math.abs(a - current) - Math.abs(b - current));
-      for (const i of order) {
-        await new Promise((ok) => requestAnimationFrame(ok));
-        if (token !== renderToken) return;
-        await renderOne(i, data, token);
-        if (i === current) showPreview();
-      }
-    } catch (e) { console.warn('[qr] render', e); }
+      try {
+        for (const i of order) {
+          await new Promise((ok) => requestAnimationFrame(ok));
+          if (token !== renderToken) return;
+          await renderOne(i, data, token, true);
+        }
+      } catch (e) { console.warn('[qr] render', e); }
+    }, 260);
   }
 
-  /* ---------- strip: coverflow, swipe (touch + mouse), snap, tap to centre ---------- */
-  function itemCenter(i) { const it = items[i]; return it.offsetLeft + it.offsetWidth / 2; }
-  function nearest() {
-    const c = track.scrollLeft + track.clientWidth / 2;
-    let best = 0, dist = Infinity;
-    items.forEach((it, i) => { const dd = Math.abs(itemCenter(i) - c); if (dd < dist) { dist = dd; best = i; } });
-    return best;
-  }
-  function paintCoverflow() {
-    const c = track.scrollLeft + track.clientWidth / 2;
-    const step = items[1] ? itemCenter(1) - itemCenter(0) : 80;
-    items.forEach((it, i) => {
-      const off = (itemCenter(i) - c) / step;          // signed distance in items
-      const a = Math.abs(off);
-      const scale = a <= 1 ? 1 - 0.2 * a : Math.max(0.6, 0.8 - 0.1 * (a - 1));
-      const op = a <= 1 ? 1 : Math.max(0.35, 1 - 0.35 * (a - 1));
-      const shift = -Math.sign(off) * Math.min(a, 3) * step * 0.12;   // neighbours tuck in towards the centre
-      const card = it.firstElementChild;
-      card.style.transform = `translateX(${shift.toFixed(1)}px) scale(${scale.toFixed(3)})`;
+  /* ---------- strip: coverflow that follows the finger / mouse, snaps, tap to centre ----------
+     No native scrolling: one number (pos, in items) drives the transforms of the 10 cards, so the strip
+     follows the pointer 1:1 and only transform / opacity change (cheap for the browser). */
+  const N = DESIGNS.length;
+  let pos = current, anim = 0, step = 76;
+  const clampPos = (p) => Math.max(-0.45, Math.min(N - 1 + 0.45, p));
+  function measure() { step = Math.max(58, Math.min(80, strip.clientWidth / 5.4)); }
+  function paint() {
+    for (let i = 0; i < N; i++) {
+      const off = i - pos, a = Math.abs(off), sg = Math.sign(off);
+      const x = sg * (Math.min(a, 1) * step * 0.95 + Math.max(0, a - 1) * step * 0.72);
+      const scale = a <= 1 ? 1 - 0.2 * a : Math.max(0.58, 0.8 - 0.11 * (a - 1));
+      const op = a <= 1 ? 1 : Math.max(0, 1 - 0.38 * (a - 1));
+      const it = items[i];
+      it.style.transform = `translate3d(${x.toFixed(1)}px,0,0) scale(${scale.toFixed(3)})`;
       it.style.opacity = op.toFixed(2);
       it.style.zIndex = String(100 - Math.round(a * 10));
+      it.style.visibility = op <= 0.01 ? 'hidden' : '';
       it.classList.toggle('is-center', a < 0.5);
-    });
+    }
+    const n = Math.max(0, Math.min(N - 1, Math.round(pos)));
+    if (n !== current) select(n);
   }
-  function select(i, fromScroll) {
-    if (i === current && fromScroll) return;
+  function animateTo(target) {
+    target = Math.max(0, Math.min(N - 1, target));
+    cancelAnimationFrame(anim);
+    const tick = () => {
+      const d = target - pos;
+      if (Math.abs(d) < 0.002) { pos = target; paint(); return; }
+      pos += d * 0.22;
+      paint();
+      anim = requestAnimationFrame(tick);
+    };
+    anim = requestAnimationFrame(tick);
+  }
+  function select(i) {
+    if (i === current) return;
     current = i;
-    store.set(DESIGN_KEY, DESIGNS[i].id);
     items.forEach((it, k) => it.setAttribute('aria-selected', k === i ? 'true' : 'false'));
-    if (rendered[DESIGNS[i].id] && rendered[DESIGNS[i].id].key === keyFor(i, dataNow())) showPreview();
+    const r = rendered[DESIGNS[i].id];
+    if (r && r.key === keyFor(i, dataNow())) { showPreview(); updateUi(); }
     else renderQr();
-    updateUi();
     clearTimeout(select.ga);
     select.ga = setTimeout(() => { try { if (window.gtag) gtag('event', 'select_content', { content_type: 'qr_design', item_id: DESIGNS[current].id }); } catch (e) { /* ignore */ } }, 1500);
   }
-  function centreOn(i, smooth) {
-    const left = itemCenter(i) - track.clientWidth / 2;
-    track.scrollTo({ left, behavior: smooth ? 'smooth' : 'auto' });
-  }
 
-  let rafPending = false;
-  track.addEventListener('scroll', () => {
-    if (rafPending) return;
-    rafPending = true;
-    requestAnimationFrame(() => {
-      rafPending = false;
-      paintCoverflow();
-      const n = nearest();
-      if (n !== current) select(n, true);
-    });
-  }, { passive: true });
-
-  // mouse: drag to scroll, release snaps; a click without a drag centres the item
   let drag = null;
-  track.addEventListener('pointerdown', (e) => {
-    if (e.pointerType !== 'mouse' || e.button !== 0) return;
-    drag = { x: e.clientX, left: track.scrollLeft, moved: false, id: e.pointerId };
+  strip.addEventListener('pointerdown', (e) => {
+    if (e.button !== 0) return;
+    cancelAnimationFrame(anim);
+    drag = { id: e.pointerId, x0: e.clientX, y0: e.clientY, p0: pos, moved: false, lx: e.clientX, lt: e.timeStamp, v: 0, item: e.target.closest('.qd-item') };
   });
-  window.addEventListener('pointermove', (e) => {
+  strip.addEventListener('pointermove', (e) => {
     if (!drag || e.pointerId !== drag.id) return;
-    const dx = e.clientX - drag.x;
-    if (!drag.moved && Math.abs(dx) > 4) {
+    const dx = e.clientX - drag.x0;
+    if (!drag.moved) {
+      if (Math.abs(dx) < 4) return;
+      if (e.pointerType !== 'mouse' && Math.abs(e.clientY - drag.y0) > Math.abs(dx)) { drag = null; return; }   // the page is being scrolled
       drag.moved = true;
-      track.classList.add('dragging');
-      try { track.setPointerCapture(drag.id); } catch (err) { /* ignore */ }
+      strip.classList.add('dragging');
+      try { strip.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ }
     }
-    if (drag.moved) track.scrollLeft = drag.left - dx;
+    const dt = Math.max(1, e.timeStamp - drag.lt);
+    drag.v = 0.7 * drag.v + 0.3 * ((e.clientX - drag.lx) / dt);    // px / ms
+    drag.lx = e.clientX; drag.lt = e.timeStamp;
+    pos = clampPos(drag.p0 - dx / step);
+    paint();
   });
-  function endDrag() {
-    if (!drag) return;
-    const moved = drag.moved;
+  function endDrag(e) {
+    if (!drag || (e && e.pointerId !== drag.id)) return;
+    const dd = drag;
     drag = null;
-    if (!moved) return;
-    track.classList.remove('dragging');          // snapping back on: settle on the nearest design
-    centreOn(nearest(), true);
-    endDrag.justDragged = true;
-    setTimeout(() => { endDrag.justDragged = false; }, 50);
+    strip.classList.remove('dragging');
+    if (!dd.moved) {                       // a tap: centre the item that was tapped
+      if (dd.item) animateTo(+dd.item.dataset.i);
+      return;
+    }
+    const fling = Math.max(-2.5, Math.min(2.5, -dd.v * 160 / step));   // a quick swipe goes a little further
+    animateTo(Math.round(pos + fling));
   }
-  window.addEventListener('pointerup', endDrag);
-  window.addEventListener('pointercancel', endDrag);
-  track.addEventListener('click', (e) => {
-    if (endDrag.justDragged) return;
-    const it = e.target.closest('.qd-item');
-    if (!it) return;
-    const i = +it.dataset.i;
-    centreOn(i, true);
-    select(i);
-  });
+  strip.addEventListener('pointerup', endDrag);
+  strip.addEventListener('pointercancel', endDrag);
+  strip.addEventListener('lostpointercapture', (e) => { if (e.target === strip) endDrag(e); });   // not the child's implicit touch capture
+  // trackpad / horizontal wheel
+  let wheelSnap = 0;
+  strip.addEventListener('wheel', (e) => {
+    const dx = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : (e.shiftKey ? e.deltaY : 0);
+    if (!dx) return;
+    e.preventDefault();
+    cancelAnimationFrame(anim);
+    pos = clampPos(pos + dx / step / 1.4);
+    paint();
+    clearTimeout(wheelSnap);
+    wheelSnap = setTimeout(() => animateTo(Math.round(pos)), 120);
+  }, { passive: false });
   strip.addEventListener('keydown', (e) => {
     if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
     e.preventDefault();
-    const i = Math.min(DESIGNS.length - 1, Math.max(0, current + (e.key === 'ArrowRight' ? 1 : -1)));
-    centreOn(i, true);
-    select(i);
-    items[i].focus({ preventScroll: true });
+    animateTo(current + (e.key === 'ArrowRight' ? 1 : -1));
   });
-  window.addEventListener('resize', () => { centreOn(current, false); paintCoverflow(); });
+  window.addEventListener('resize', () => { measure(); paint(); fitStage(); });
+
+  /* ---------- centre logo (Premium): tap the middle of the code → upload an image or type a letter ---------- */
+  const pop = $('logoPop');
+  function toggleLogoPop() { if (pop.hidden) openLogoPop(); else closeLogoPop(); }
+  function openLogoPop() {
+    if (!isPremium(current)) return;
+    $('logoText').value = ownLogo && ownLogo.type === 'text' ? ownLogo.text : '';
+    pop.hidden = false;
+    $('logoHot').classList.add('is-open');
+  }
+  function closeLogoPop() {
+    if (!pop || pop.hidden) return;
+    pop.hidden = true;
+    const h = $('logoHot');
+    if (h) h.classList.remove('is-open');
+  }
+  function setLogo(l) {
+    ownLogo = l;
+    $('logoReset').hidden = !ownLogo;
+    renderQr();
+  }
+  $('logoText').addEventListener('input', (e) => {
+    const v = [...e.target.value.trim()].slice(0, 2).join('');
+    setLogo(v ? { type: 'text', text: v } : null);
+  });
+  $('logoFile').addEventListener('change', (e) => {
+    const f = e.target.files && e.target.files[0];
+    e.target.value = '';
+    if (!f || !/^image\//.test(f.type)) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const im = new Image();
+      im.onload = () => {
+        // kept small (max 320 px, PNG keeps transparency): light to draw, sharp enough at 2400 px
+        const k = Math.min(1, 320 / Math.max(im.naturalWidth, im.naturalHeight));
+        const c = document.createElement('canvas');
+        c.width = Math.max(1, Math.round(im.naturalWidth * k));
+        c.height = Math.max(1, Math.round(im.naturalHeight * k));
+        c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
+        $('logoText').value = '';
+        setLogo({ type: 'image', src: c.toDataURL('image/png') });
+      };
+      im.src = reader.result;
+    };
+    reader.readAsDataURL(f);
+  });
+  $('logoReset').addEventListener('click', () => { $('logoText').value = ''; setLogo(null); });
+  $('logoClose').addEventListener('click', closeLogoPop);
+  document.addEventListener('pointerdown', (e) => {
+    if (pop.hidden || pop.contains(e.target) || e.target.closest('#logoHot')) return;
+    closeLogoPop();
+  });
 
   /* ---------- notice line + buttons ---------- */
   function updateUi() {
@@ -427,6 +529,13 @@
     els.payBtn.tabIndex = showPay ? 0 : -1;
     els.payBtn.setAttribute('aria-label', t('payAria'));
     strip.setAttribute('aria-label', t('designsLabel'));
+    $('logoTitle').textContent = t('logoTitle');
+    $('logoUploadText').textContent = t('logoUpload');
+    $('logoOr').textContent = t('logoOr');
+    $('logoText').placeholder = t('logoLetterPh');
+    $('logoReset').textContent = t('logoReset');
+    $('logoClose').textContent = t('logoClose');
+    $('logoReset').hidden = !ownLogo;
     items.forEach((it, i) => { it.setAttribute('aria-label', DESIGNS[i].name[lang] + ' — ' + (DESIGNS[i].premium ? t('premium') : t('free'))); });
   }
 
@@ -442,7 +551,7 @@
   }
   async function fileFor(i, clean) {
     const d = DESIGNS[i];
-    return D.render(d.id, buildVCard(), { branded: d.premium && !clean, lang });
+    return D.render(d.id, buildVCard(), renderOpts(i, clean));
   }
   async function downloadFree() {
     const d = DESIGNS[current];
@@ -595,7 +704,7 @@
       <p class="qd-msg" id="payMsg" role="status"></p>
       <p class="qd-secure">${LOCK}<span>${esc(t('paySecure'))}</span></p>`;
     // what they get: the clean design with their data
-    D.render(d.id, buildVCard(), { branded: false, lang }).then((r) => { const im = $('payThumb'); if (im) im.src = D.svgUrl(r.svg); }).catch(() => {});
+    D.render(d.id, buildVCard(), renderOpts(i, true)).then((r) => { const im = $('payThumb'); if (im) im.src = D.svgUrl(r.svg); }).catch(() => {});
     renderPayArea();
   }
 
@@ -688,6 +797,6 @@
   /* ---------- start ---------- */
   items.forEach((it, k) => it.setAttribute('aria-selected', k === current ? 'true' : 'false'));
   applyLanguage();
-  requestAnimationFrame(() => { centreOn(current, false); paintCoverflow(); });
+  requestAnimationFrame(() => { measure(); paint(); });
   loadPayConfig();
 })();

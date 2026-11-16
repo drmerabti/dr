@@ -179,7 +179,17 @@ border, frame ring, shadow or filter, whatever the page's own logo rules say. CS
   `qrgen:orders` and asks the server again after a reload. `QR_SALES` in wrangler.jsonc: "live" honoured only on
   dr.merabti.workers.dev (`QR_LIVE_HOSTS`); the page runs a demo (simulated payment) on the
   claude-test Worker preview (claude-test-dr.merabti.workers.dev) and localhost.
+- Frames carry no call-to-action text ("Scan me" was removed on request): only the brand (free) or a small ornament (paid).
+- Classic is always the design selected when the page opens (the last choice is not restored).
+- Premium centre logo: a button over the middle of the big preview (`#logoHot`, placed from `render().hot`) opens
+  `#logoPop`: upload an image (resized to max 320 px PNG in the browser) or type 1–2 letters (drawn on the design's
+  `accent`). It applies to every Premium design (`opts.logo` of `QRDesigns.render`), downloads included; nothing is
+  sent anywhere. Without it, designs keep their own logo (violet M, rose heart, islamic star) or none.
 - The strip is `dir="ltr"` in every language (fixed order); the download row too (buttons do not move).
+  It is not a scrolling list: one number (`pos`) drives transform / opacity of 10 absolutely placed cards, pointer
+  events (mouse + touch, `touch-action: pan-y`) move it 1:1, release snaps (with a small fling). Thumbnails are small
+  PNG bitmaps (168 px) made from each design's SVG; the big preview stays SVG.
+- Form fields: `unicode-bidi: plaintext` on every field, so Latin values sit on the left and Arabic on the right.
 
 ## Home order
 

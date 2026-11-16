@@ -61,6 +61,20 @@
       <!-- 1. big preview of the selected design -->
       <div class="qr-frame" id="qrFrame">
         <div id="qrCanvasWrap"></div>
+        <!-- Premium: tap the middle of the code → own logo (image or 1–2 letters) -->
+        <div class="qd-logo-pop" id="logoPop" hidden>
+          <div class="qd-logo-head"><b id="logoTitle">شعار في وسط الرمز</b><button type="button" class="qd-logo-close" id="logoClose">تم</button></div>
+          <label class="qd-logo-upload">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-8 8"/></svg>
+            <span id="logoUploadText">رفع صورة</span>
+            <input type="file" id="logoFile" accept="image/*" hidden>
+          </label>
+          <div class="qd-logo-or" id="logoOr">أو اكتب حرفًا</div>
+          <div class="qd-logo-row">
+            <input type="text" id="logoText" maxlength="4" autocomplete="off" placeholder="حرف أو حرفان" dir="auto">
+            <button type="button" class="qd-logo-reset" id="logoReset" hidden>إزالة</button>
+          </div>
+        </div>
       </div>
       <!-- 2. designs strip (coverflow): real mini QR codes of the same data; fixed LTR order in every language -->
       <div class="qd-strip" id="qdStrip" dir="ltr" role="listbox" tabindex="0" aria-label="التصاميم">
@@ -94,6 +108,7 @@
         <li>أدخل بياناتك في الخانات: الاسم واللقب، رقم الهاتف، المهنة، البريد الإلكتروني، وملاحظة إن أردت.</li>
         <li>شاهد الرمز يتحدّث فورًا في المعاينة مع كل حرف تكتبه، دون الحاجة إلى أي زر.</li>
         <li>اختر تصميمًا من الشريط تحت المعاينة: اسحبه يمينًا أو يسارًا أو اضغط على التصميم، فيظهر فورًا بالحجم الكبير.</li>
+        <li>في التصاميم المميزة (Premium) اضغط على وسط الرمز لترفع شعارك أو تكتب حرفًا يظهر في الوسط.</li>
         <li>اضغط «تحميل الصورة» لحفظ الرمز صورة PNG، ثم ضعه على بطاقة أعمالك أو سيرتك الذاتية أو أي ملصق.</li>
       </ol>
     </div>
