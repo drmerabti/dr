@@ -70,7 +70,9 @@ www.merabti.com, claude-test-dr.merabti.workers.dev).
   | `eng-cells-kingdom` | `books/eng-cells-kingdom/` | `Eng-Cells-Kingdom.pdf` | 9.99 |
   | `eng-vba` | `books/eng-vba/` | `Eng-VBA.pdf` | 7.99 |
   | `eng-encyclopedia` | `books/eng-encyclopedia/` | `Eng-Encyclopedia-Excel.pdf` | 7.99 |
+  | `eng-excel-shortcuts` | `books/eng-excel-shortcuts/` | `Eng-Mouse-Excel.pdf` | 5.99 |
 
+  Never reuse an Arabic book's file name for an English book (R2 objects are overwritten by name).
   Routes: `GET /api/paypal/config?bookId=` (no PayPal buttons if the file is not in R2),
   `POST /api/paypal/create-order {bookId}`, `POST /api/paypal/capture-order {orderId}`,
   `GET /api/download/:token` (7 days, 5 downloads).

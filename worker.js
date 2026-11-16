@@ -121,6 +121,12 @@ const BOOK_CATALOG = {
     currency: 'USD',
     file: 'Eng-Encyclopedia-Excel.pdf',
   },
+  'eng-excel-shortcuts': {
+    title: 'The Mouse Got Eaten by the Cat — All Excel Shortcuts',
+    price: '5.99',
+    currency: 'USD',
+    file: 'Eng-Mouse-Excel.pdf',   // not Mouse-Excel.pdf: that one is the Arabic book (excel-shortcuts)
+  },
 };
 const CONTACT_EMAIL = 'contact@merabti.com';
 
