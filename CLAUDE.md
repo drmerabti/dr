@@ -170,16 +170,25 @@ border, frame ring, shadow or filter, whatever the page's own logo rules say. CS
   matching shapes (`rounded`/`square`/`classy-rounded`, never a square ring with a round centre); the centre logo
   hides whole modules (library `hideBackgroundDots`). A new design must pass the same scan test before release.
 - Frame text uses system fonts (an SVG drawn as an image cannot load web fonts). Arabic is never letter-spaced.
-- Free download of a Premium design: the site is inside the code, not on the frame — `withSite()` (designs.js, via
-  `opts.branded`) adds `URL:https://merabti.com` to the vCard, so whoever scans saves the contact with the site.
-  $1.99 per design through PayPal removes that line: clean PNG (4×, 2400 px wide) + SVG. Classic never has it. Worker `/api/qr/*` (worker.js, "QR Code tool"): `GET config`,
-  `POST create-order {design}` → `{ id }`, `POST capture-order {orderId}` → `{ ok, orderId, design, until }`.
-  No sign-in. Price and catalogue only in the Worker (`QR_PRICE`, `QR_PREMIUM`); capture checks status, amount,
-  currency and custom_id; UNIQUE capture_id; D1 table `qr_orders` (created on first use, `env` = live | sandbox).
-  A COMPLETED order answers ok again for `QR_UNLOCK_HOURS` (24) — the page keeps the order ID in localStorage
-  `qrgen:orders` and asks the server again after a reload. `QR_SALES` in wrangler.jsonc: "live" honoured only on
-  dr.merabti.workers.dev (`QR_LIVE_HOSTS`); the page runs a demo (simulated payment) on the
-  claude-test Worker preview (claude-test-dr.merabti.workers.dev) and localhost.
+- Classic: free, no account. Premium designs: a sign-in is needed to download them (the site's Firebase account,
+  Google popup; `requireUser()` in app.js). Their free download adds the site INSIDE the code, not on the frame —
+  `withSite()` (designs.js, via `opts.branded`) adds `URL:https://merabti.com` to the vCard.
+- One payment ($1.99, PayPal) = one exact code without the site link: design + vCard text + centre logo. Download
+  (or the PayPal button) on a Premium design opens a floating window: PayPal, or "free download with the site link".
+  After the capture the code is saved in the account and its PNG (4×, 2400 px) + SVG download at once; "My codes"
+  (`#myCodesBtn`) lists the account's codes to download again or open in the editor. Any change = a new code = a new
+  payment (`specKey()`: a code is drawn without the site link only when it matches a paid one exactly).
+- Worker `/api/qr/*` (worker.js, "QR Code tool"): `GET config` (no sign-in) → `{ sales, clientId, currency, price,
+  premium[] }`; with `Authorization: Bearer <Firebase ID token>`: `GET codes` → `{ codes: [{ id, design, data, logo,
+  createdAt }] }`, `POST create-order { design, data, logo }` → `{ id }` (409 `ALREADY_OWNED` + `code` for the same
+  code), `POST capture-order { orderId }` → `{ ok, orderId, code }`. Price and catalogue only in the Worker
+  (`QR_PRICE`, `QR_PREMIUM`); the code is checked (`qrSpec`: a vCard, never the site link, logo = 1–2 letters or a
+  PNG data URL ≤ 400 kB); capture checks owner, status, amount, currency and custom_id; UNIQUE capture_id; D1 tables
+  `qr_code_orders`, `qr_codes` (created on first use, `env` = live | sandbox). A paid but unconfirmed order is kept in
+  localStorage `qrgen:pending` (with the uid) and captured again on the next visit.
+- `QR_SALES` in wrangler.jsonc: **"live"** (owner, 2026-11-15/16); honoured only on `QR_LIVE_HOSTS` =
+  dr.merabti.workers.dev **and the claude-test preview** (claude-test-dr.merabti.workers.dev: real payments there,
+  on the owner's request to test a real purchase). The page runs a demo (simulated payment) only on localhost.
 - Frames carry no text at all ("Scan me" and the printed site name were removed on request): only a small ornament.
 - Classic is always the design selected when the page opens (the last choice is not restored).
 - Premium centre logo: a button over the middle of the big preview (`#logoHot`, placed from `render().hot`) opens

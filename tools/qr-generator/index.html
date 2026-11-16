@@ -93,6 +93,11 @@
           <img src="../../books/word/img/paypal.svg" alt="PayPal" width="62" height="20"><span dir="ltr">$1.99</span>
         </button>
       </div>
+      <!-- the account's paid codes (signed in) -->
+      <button type="button" class="qd-mycodes" id="myCodesBtn" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M17 20h4v-3"/></svg>
+        <span id="myCodesText">أكوادي</span>
+      </button>
     </div>
   </div>
 
@@ -119,7 +124,7 @@
         <details><summary>هل يجب ملء كل الخانات؟</summary><p>لا، يكفي ملء خانة واحدة ليظهر الرمز، وكل خانة تتركها فارغة لا تُضاف إلى بطاقة الاتصال.</p></details>
         <details><summary>هل تُرسل بياناتي إلى أي خادم؟</summary><p>لا، يُنشأ الرمز داخل متصفحك مباشرة، ولا تُحفظ بياناتك ولا تُرسل إلى أي مكان.</p></details>
         <details><summary>كيف أمسح الرمز بالهاتف؟</summary><p>افتح كاميرا الهاتف ووجّهها نحو الرمز، أو استعمل تطبيقًا لقراءة QR، ثم اختر «إضافة جهة اتصال» لحفظ البيانات.</p></details>
-        <details><summary>هل التصاميم الملوّنة مجانية؟</summary><p>نعم، يمكنك تحميل أي تصميم مجانًا، ويُضاف رابط الموقع merabti.com إلى بيانات جهة الاتصال داخل الرمز (يظهر لمن يمسحه). لإزالته ادفع 1.99$ عبر PayPal، فتحصل على صورة PNG عالية الدقة وملف SVG بدون اسم الموقع.</p></details>
+        <details><summary>هل التصاميم الملوّنة مجانية؟</summary><p>التصميم الكلاسيكي مجاني بدون تسجيل. التصاميم المميزة تحتاج تسجيل الدخول، وتحميلها مجاني مع إضافة رابط الموقع merabti.com إلى بيانات الرمز. لإزالته ادفع 1.99$ عبر PayPal: يُحفظ الرمز في حسابك ضمن «أكوادي» وتحمّله بصيغتي PNG وSVG متى شئت، وأي تعديل عليه يصنع رمزًا جديدًا بدفع جديد.</p></details>
       </div>
     </div>
 
@@ -145,6 +150,11 @@
   <div class="qd-sheet" id="paySheet"></div>
 </div>
 
+<!-- the site's account (Firebase): needed only for the Premium designs -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="../../firebase-init.js"></script>
 <script src="vendor/qr-code-styling.js"></script>
 <script src="designs.js"></script>
 <script src="app.js"></script>
