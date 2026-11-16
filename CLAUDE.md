@@ -170,8 +170,9 @@ border, frame ring, shadow or filter, whatever the page's own logo rules say. CS
   matching shapes (`rounded`/`square`/`classy-rounded`, never a square ring with a round centre); the centre logo
   hides whole modules (library `hideBackgroundDots`). A new design must pass the same scan test before release.
 - Frame text uses system fonts (an SVG drawn as an image cannot load web fonts). Arabic is never letter-spaced.
-- Free download of a Premium design: "merabti.com" is part of its frame. $1.99 per design through PayPal removes it:
-  clean PNG (4×, 2400 px wide) + SVG. Worker `/api/qr/*` (worker.js, "QR Code tool"): `GET config`,
+- Free download of a Premium design: the site is inside the code, not on the frame — `withSite()` (designs.js, via
+  `opts.branded`) adds `URL:https://merabti.com` to the vCard, so whoever scans saves the contact with the site.
+  $1.99 per design through PayPal removes that line: clean PNG (4×, 2400 px wide) + SVG. Classic never has it. Worker `/api/qr/*` (worker.js, "QR Code tool"): `GET config`,
   `POST create-order {design}` → `{ id }`, `POST capture-order {orderId}` → `{ ok, orderId, design, until }`.
   No sign-in. Price and catalogue only in the Worker (`QR_PRICE`, `QR_PREMIUM`); capture checks status, amount,
   currency and custom_id; UNIQUE capture_id; D1 table `qr_orders` (created on first use, `env` = live | sandbox).
@@ -179,7 +180,7 @@ border, frame ring, shadow or filter, whatever the page's own logo rules say. CS
   `qrgen:orders` and asks the server again after a reload. `QR_SALES` in wrangler.jsonc: "live" honoured only on
   dr.merabti.workers.dev (`QR_LIVE_HOSTS`); the page runs a demo (simulated payment) on the
   claude-test Worker preview (claude-test-dr.merabti.workers.dev) and localhost.
-- Frames carry no call-to-action text ("Scan me" was removed on request): only the brand (free) or a small ornament (paid).
+- Frames carry no text at all ("Scan me" and the printed site name were removed on request): only a small ornament.
 - Classic is always the design selected when the page opens (the last choice is not restored).
 - Premium centre logo: a button over the middle of the big preview (`#logoHot`, placed from `render().hot`) opens
   `#logoPop`: upload an image (resized to max 320 px PNG in the browser) or type 1–2 letters (drawn on the design's

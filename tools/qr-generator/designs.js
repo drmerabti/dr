@@ -2,7 +2,8 @@
 // designs.js — the 10 QR designs of the QR Code tool.
 //   QRDesigns.list                         → [{ id, premium, name: {ar,en,fr} }]
 //   QRDesigns.render(id, text, opts)       → Promise<{ svg, w, h }>
-//        opts.branded  : true = "merabti.com" is part of the frame (free download of a Premium design)
+//        opts.branded  : true = free version of a Premium design: the site (merabti.com) is added to the contact data
+//                        inside the code (a website line of the vCard), nothing is printed on the frame
 //        opts.logo     : Premium only — { type: 'text', text } (1–2 letters) or { type: 'image', src: dataURL }
 //   QRDesigns.toPngBlob(svg, w, h, scale)  → Promise<Blob>
 //
@@ -23,7 +24,7 @@
   const SANS = "Inter, 'Helvetica Neue', 'Segoe UI', Roboto, Arial, sans-serif";
   const SERIF = "'Playfair Display', Didot, 'Bodoni 72', Georgia, 'Times New Roman', serif";
   const AR = "Tajawal, 'Geeza Pro', 'Segoe UI', 'Noto Sans Arabic', Tahoma, Arial, sans-serif";
-  const BRAND = 'merabti.com';
+  const SITE_URL = 'https://merabti.com';
 
   const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   const isAr = (s) => /[؀-ۿ]/.test(s);
@@ -108,7 +109,7 @@
      accent    colour of the visitor's letter logo
      lib       qr-code-styling options (dots / corners); background is always transparent: the plate is in the frame
      finder    optional custom finder patterns (drawn on top, the library's are made transparent)
-     frame(c)  → { defs, under, over }   c = { branded }  (branded: "merabti.com" in the frame) */
+     frame()   → { defs, under, over } */
   const dots3 = (y, fill, gap) => [-1, 0, 1].map((k) => `<circle cx="${300 + k * (gap || 15)}" cy="${y}" r="3.5" fill="${fill}"/>`).join('');
   const DESIGNS = [
     {
@@ -128,15 +129,12 @@
         cornersSquareOptions: { type: 'extra-rounded', color: '#D4537E' },
         cornersDotOptions: { type: 'dot', color: '#3C3489' },
       },
-      frame(c) {
+      frame() {
         return {
           under: `<rect width="600" height="660" rx="56" fill="#2E3488"/>` +
             `<rect x="14" y="14" width="572" height="632" rx="44" fill="none" stroke="#7F77DD" stroke-width="1.5" stroke-opacity=".7"/>` +
             `<rect x="36" y="36" width="528" height="528" rx="42" fill="#fff"/>`,
-          over: c.branded
-            ? `<circle cx="190" cy="614" r="4" fill="#D4537E"/><circle cx="410" cy="614" r="4" fill="#D4537E"/>` +
-              text(300, 621, BRAND, { size: 21, weight: 600, ls: 3, fill: '#fff', opacity: 0.9 })
-            : dots3(612, '#D4537E'),
+          over: dots3(612, '#D4537E'),
         };
       },
     },
@@ -150,8 +148,7 @@
         cornersSquareOptions: { type: 'classy-rounded', color: '#7A2E12' },
         cornersDotOptions: { type: 'rounded', color: '#9C3A1A' },
       },
-      frame(c) {
-        const dot = (x) => `<circle cx="${x}" cy="736" r="4" fill="#D85A30"/>`;
+      frame() {
         return {
           defs: lin('tbh', [[0, '#4A2412'], [1, '#2B140A']], 0, 0, 0, 1) + lin('tsun', [[0, '#F7B27A'], [1, '#D85A30']], 0, 0, 0, 1) +
             `<mask id="tmask"><rect width="600" height="820" fill="#fff"/><circle cx="0" cy="652" r="24" fill="#000"/><circle cx="600" cy="652" r="24" fill="#000"/>` +
@@ -164,8 +161,7 @@
             `<line x1="30" y1="168" x2="30" y2="634" stroke="#D85A30" stroke-width="3" stroke-dasharray="12 10" stroke-linecap="round" stroke-opacity=".8"/>` +
             `<line x1="570" y1="168" x2="570" y2="634" stroke="#D85A30" stroke-width="3" stroke-dasharray="12 10" stroke-linecap="round" stroke-opacity=".8"/>` +
             `<line x1="40" y1="652" x2="560" y2="652" stroke="#D85A30" stroke-width="3" stroke-dasharray="2 10" stroke-linecap="round"/>`,
-          over: c.branded ? dot(160) + dot(440) + text(300, 744, BRAND, { size: 23, weight: 700, ls: 4, fill: '#F6CBA6' })
-            : dots3(736, '#D85A30', 30),
+          over: dots3(736, '#D85A30', 30),
         };
       },
     },
@@ -179,8 +175,8 @@
         cornersSquareOptions: { type: 'rounded', color: '#4D380A' },
         cornersDotOptions: { type: 'square', color: '#5C430E' },
       },
-      frame(c) {
-        const oy = c.branded ? 598 : 620;
+      frame() {
+        const oy = 620;
         return {
           defs: rad('gbg', [[0, '#26225E'], [0.55, '#151340'], [1, '#090820']], 0.5, 0.32, 0.85) +
             lin('gold', [[0, '#8C6A1C'], [0.25, '#E9CB7A'], [0.5, '#B8912F'], [0.75, '#F6E2A1'], [1, '#94701F']]) +
@@ -195,8 +191,7 @@
             `<rect x="56" y="66" width="488" height="488" rx="24" fill="none" stroke="url(#gold)" stroke-width="1.6"/>` +
             `<rect x="64" y="74" width="472" height="472" rx="18" fill="#FFFCF2"/>`,
           over: `<path d="M150 ${oy}H270M330 ${oy}H450" stroke="url(#goldl)" stroke-width="1.4"/>` +
-            diamond(300, oy, 7, 'url(#gold)') + diamond(280, oy, 3, '#E9CB7A') + diamond(320, oy, 3, '#E9CB7A') +
-            (c.branded ? text(300, 642, BRAND, { size: 21, weight: 400, ls: 3, fill: '#E9CB7A', opacity: 0.9, family: SERIF, italic: true }) : ''),
+            diamond(300, oy, 7, 'url(#gold)') + diamond(280, oy, 3, '#E9CB7A') + diamond(320, oy, 3, '#E9CB7A'),
         };
       },
     },
@@ -215,7 +210,7 @@
           `<path fill="#0E9F6E" d="${leaf(x + 2 * m, y + 2 * m, 3 * m, 1.35 * m, 0.25 * m)}"/>`;
         return one;
       },
-      frame(c) {
+      frame() {
         const sprig = (cx, cy) => `<g transform="translate(${cx} ${cy})"><path d="M-34 0H34" stroke="#A7F3D0" stroke-opacity=".7" stroke-width="1.6" stroke-linecap="round"/>` +
           `<path d="M0 0C-6-12-2-22 0-26C2-22 6-12 0 0Z" fill="#6EE7B7"/><path d="M0 0C-14-4-20-14-21-19C-15-18-5-13 0 0Z" fill="#34D399"/><path d="M0 0C14-4 20-14 21-19C15-18 5-13 0 0Z" fill="#34D399"/></g>`;
         const bigLeaf = (tr) => `<g transform="${tr}"><path d="M0 0C60-70 170-80 240-60C220 10 140 90 0 0Z" fill="#fff" fill-opacity=".06"/>` +
@@ -225,8 +220,7 @@
           under: `<rect width="600" height="680" rx="48" fill="url(#ebg)"/>` +
             `<g clip-path="url(#eclip)">${bigLeaf('translate(-10 690) rotate(-18)')}${bigLeaf('translate(610 700) scale(-1 1) rotate(-24)')}</g>` +
             `<rect x="40" y="40" width="520" height="520" rx="46" fill="#F5FFF9"/>`,
-          over: sprig(300, c.branded ? 600 : 622) +
-            (c.branded ? text(300, 644, BRAND, { size: 21, weight: 600, ls: 3, fill: '#A7F3D0', opacity: 0.95 }) : ''),
+          over: sprig(300, 622),
         };
       },
     },
@@ -240,7 +234,7 @@
         cornersSquareOptions: { type: 'rounded', color: '#0E7490' },
         cornersDotOptions: { type: 'rounded', color: '#1E3A8A' },
       },
-      frame(c) {
+      frame() {
         return {
           defs: lin('obg', [[0, '#1BC6C9'], [0.55, '#0A6DB8'], [1, '#0B2A6F']], 0, 0, 0, 1) +
             `<clipPath id="oclip"><rect width="600" height="700" rx="50"/></clipPath>`,
@@ -251,7 +245,7 @@
             `<path d="${wave(600, 700, 640, 12, 200, 30)}" fill="#0B2A6F" fill-opacity=".45"/>` +
             `<circle cx="540" cy="582" r="7" fill="#fff" fill-opacity=".22"/><circle cx="560" cy="566" r="4" fill="#fff" fill-opacity=".22"/><circle cx="62" cy="590" r="5" fill="#fff" fill-opacity=".18"/></g>` +
             `<rect x="44" y="44" width="512" height="512" rx="42" fill="#fff"/>`,
-          over: c.branded ? text(300, 668, BRAND, { size: 21, weight: 600, ls: 3, fill: '#fff', opacity: 0.9 }) : '',
+          over: '',
         };
       },
     },
@@ -265,7 +259,7 @@
         cornersSquareOptions: { type: 'rounded', color: '#9D174D' },
         cornersDotOptions: { type: 'rounded', color: '#6D28D9' },
       },
-      frame(c) {
+      frame() {
         const flower = (cx, cy, r, col) => {
           let p = '';
           for (let i = 0; i < 5; i++) p += `<ellipse cx="${cx}" cy="${r2(cy - r * 0.62)}" rx="${r2(r * 0.42)}" ry="${r2(r * 0.62)}" fill="${col}" transform="rotate(${i * 72} ${cx} ${cy})"/>`;
@@ -273,7 +267,7 @@
         };
         const leafy = (x, y, rot) => `<path d="M0 0C8-10 22-12 30-8C24 2 10 6 0 0Z" fill="#D8C4F5" transform="translate(${x} ${y}) rotate(${rot})"/>`;
         const corner = (x, y, s) => `<g transform="translate(${x} ${y}) scale(${s} 1)">${leafy(10, 18, 10)}${leafy(16, 6, -60)}${flower(0, 0, 24, '#F9A8D4')}${flower(34, 30, 13, '#C4B5FD')}</g>`;
-        const y = c.branded ? 592 : 618;
+        const y = 618;
         return {
           defs: lin('rbg', [[0, '#FFF1F5'], [1, '#F3EBFF']]) + lin('rln', [[0, '#E879A6'], [1, '#A78BFA']]) +
             linU('rlnu', [[0, '#E879A6'], [1, '#A78BFA']], 170, 430),
@@ -284,8 +278,7 @@
             `<rect x="64" y="78" width="472" height="472" rx="38" fill="#fff" stroke="#F3D1E0" stroke-width="1.5"/>`,
           over: `<path d="M178 ${y}H278M322 ${y}H422" stroke="url(#rlnu)" stroke-width="1.5" stroke-linecap="round"/>` +
             `<circle cx="170" cy="${y}" r="3" fill="#E879A6"/><circle cx="430" cy="${y}" r="3" fill="#A78BFA"/>` +
-            `<path d="M300 ${y + 9}c-8-6.5-12-10.5-12-14.5 0-3.2 2.4-5.5 5.3-5.5 2.7 0 4.8 1.4 6.7 4 1.9-2.6 4-4 6.7-4 2.9 0 5.3 2.3 5.3 5.5 0 4-4 8-12 14.5z" fill="#E879A6"/>` +
-            (c.branded ? text(300, 640, BRAND, { size: 20, weight: 600, ls: 3, fill: '#B07A98' }) : ''),
+            `<path d="M300 ${y + 9}c-8-6.5-12-10.5-12-14.5 0-3.2 2.4-5.5 5.3-5.5 2.7 0 4.8 1.4 6.7 4 1.9-2.6 4-4 6.7-4 2.9 0 5.3 2.3 5.3 5.5 0 4-4 8-12 14.5z" fill="#E879A6"/>`,
         };
       },
     },
@@ -299,14 +292,12 @@
         cornersSquareOptions: { type: 'rounded', color: '#111111' },
         cornersDotOptions: { type: 'rounded', color: '#111111' },
       },
-      frame(c) {
+      frame() {
         return {
           defs: `<filter id="msh" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#1B1B18" flood-opacity=".09"/></filter>`,
           under: `<rect x=".75" y=".75" width="598.5" height="648.5" rx="44" fill="#F6F5F2" stroke="#E2E0D9" stroke-width="1.5"/>` +
             `<rect x="48" y="48" width="504" height="504" rx="32" fill="#fff" filter="url(#msh)"/>`,
-          over: c.branded
-            ? `<path d="M178 598H232M368 598H422" stroke="#111" stroke-width="1.3"/>` + text(300, 604, BRAND, { size: 18, weight: 600, ls: 3, fill: '#55544F' })
-            : `<path d="M270 600H330" stroke="#111" stroke-width="1.3"/>`,
+          over: `<path d="M270 600H330" stroke="#111" stroke-width="1.3"/>`,
         };
       },
     },
@@ -320,11 +311,11 @@
         cornersSquareOptions: { type: 'rounded', color: '#86198F' },
         cornersDotOptions: { type: 'rounded', color: '#0369A1' },
       },
-      frame(c) {
+      frame() {
         const y = 616;
-        const cup = `<g transform="translate(${c.branded ? 66 : 222} ${y - 22})" fill="none" stroke="#22D3EE" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" filter="url(#nglc)">` +
+        const cup = `<g transform="translate(222 ${y - 22})" fill="none" stroke="#22D3EE" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" filter="url(#nglc)">` +
           `<path d="M4 14h26v10a12 12 0 0 1-12 12h-2A12 12 0 0 1 4 24z"/><path d="M30 17h3a5 5 0 0 1 0 10h-3"/><path d="M11 8c0-3 3-3 3-6M19 8c0-3 3-3 3-6"/></g>`;
-        const fork = `<g transform="translate(${c.branded ? 498 : 342} ${y - 24})" fill="none" stroke="#FF4FD8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" filter="url(#nglm)">` +
+        const fork = `<g transform="translate(342 ${y - 24})" fill="none" stroke="#FF4FD8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" filter="url(#nglm)">` +
           `<path d="M8 2v12a5 5 0 0 0 10 0V2M13 2v36"/><path d="M30 38V2c-5 3-7 9-7 16h7"/></g>`;
         return {
           defs: rad('nbg', [[0, '#1E1050'], [0.6, '#0D0826'], [1, '#05040D']], 0.5, 0.35, 0.85) +
@@ -337,8 +328,7 @@
             `<rect x="40" y="40" width="520" height="520" rx="42" fill="none" stroke="url(#nring)" stroke-width="10" filter="url(#nglow)"/>` +
             `<rect x="40" y="40" width="520" height="520" rx="42" fill="none" stroke="url(#nring)" stroke-width="4"/>` +
             `<rect x="42" y="42" width="516" height="516" rx="40" fill="#FBF9FF"/>`,
-          over: cup + fork +
-            (c.branded ? text(300, y + 8, BRAND, { size: 24, weight: 700, ls: 4, fill: '#67E8F9', filter: 'url(#nglc)' }) : ''),
+          over: cup + fork,
         };
       },
     },
@@ -352,7 +342,7 @@
         cornersSquareOptions: { type: 'square', color: '#7A5A14' },
         cornersDotOptions: { type: 'square', color: '#0B4F33' },
       },
-      frame(c) {
+      frame() {
         const star = (cx, cy, s, attrs) => `<rect x="${cx - s}" y="${cy - s}" width="${2 * s}" height="${2 * s}" ${attrs}/>` +
           `<rect x="${cx - s}" y="${cy - s}" width="${2 * s}" height="${2 * s}" ${attrs} transform="rotate(45 ${cx} ${cy})"/>`;
         const arch = 'M60 230V700Q60 724 84 724H516Q540 724 540 700V230C540 156 430 104 300 58C170 104 60 156 60 230Z';
@@ -370,8 +360,7 @@
             `<g fill="#C9A54A">${star(300, 172, 17, '')}</g>` +
             `<path d="M150 172H268M332 172H450" stroke="#C9A54A" stroke-width="1.4"/>` +
             diamond(144, 172, 4, '#B8912F') + diamond(456, 172, 4, '#B8912F'),
-          over: c.branded ? text(300, 763, BRAND, { size: 21, weight: 600, ls: 3, fill: '#E3C77B', opacity: 0.92 })
-            : diamond(300, 756, 6, '#C9A54A') + diamond(278, 756, 3, '#C9A54A') + diamond(322, 756, 3, '#C9A54A'),
+          over: diamond(300, 756, 6, '#C9A54A') + diamond(278, 756, 3, '#C9A54A') + diamond(322, 756, 3, '#C9A54A'),
         };
       },
     },
@@ -431,13 +420,21 @@
     return { inner, count, logoBox };
   }
 
+  /* free version of a Premium design: the site goes into the contact itself (vCard website line),
+     so whoever scans the code saves the contact with merabti.com; the paid version leaves it out */
+  function withSite(data) {
+    if (/^BEGIN:VCARD/.test(data)) return data.replace(/\nEND:VCARD\s*$/, '\nURL:' + SITE_URL + '\nEND:VCARD');
+    return data;
+  }
+
   async function render(id, data, opts) {
     opts = opts || {};
     const d = BY_ID[id] || DESIGNS[0];
     const branded = !!(d.premium && opts.branded);
+    if (branded) data = withSite(data);
     const own = d.premium && opts.logo && (opts.logo.type === 'image' ? opts.logo.src : String(opts.logo.text || '').trim()) ? opts.logo : null;
     const code = await drawCode(d, data, !!(own || d.logo));
-    const f = d.frame({ branded }) || {};
+    const f = d.frame() || {};
     const { x, y, size } = d.qr;
     const k = size / Q;
 
@@ -497,7 +494,7 @@
 
   window.QRDesigns = {
     list: DESIGNS.map((d) => ({ id: d.id, premium: d.premium, name: d.name, w: d.w, h: d.h })),
-    render, toCanvas, toPngBlob, svgUrl,
+    render, toCanvas, toPngBlob, svgUrl, withSite,
     _designs: DESIGNS,   // for the scan tests only
   };
 })();
