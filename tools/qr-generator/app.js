@@ -49,7 +49,7 @@
       payResumed: 'تم تأكيد دفعتك السابقة: التصميم بدون اسم الموقع.',
       downloading: 'جارٍ التحضير…',
       signTitle: 'سجّل الدخول لاستعمال التصاميم المميزة', signText: 'التصميم الكلاسيكي مجاني بدون تسجيل. التصاميم المميزة تحتاج حسابًا، وفيه تُحفظ الرموز التي تدفع ثمنها لتحمّلها متى شئت.',
-      signGoogle: 'المتابعة بحساب Google', signErr: 'تعذّر تسجيل الدخول، حاول مرة أخرى.',
+      signGoogle: 'المتابعة بحساب Google', payStart: 'ادفع 1.99$ واحذف رابط الموقع', signErr: 'تعذّر تسجيل الدخول، حاول مرة أخرى.',
       offerTitle: 'احذف رابط موقعنا من رمزك', offerText: 'التحميل المجاني يضيف رابط merabti.com إلى بيانات الرمز، فيراه كل من يمسحه. ادفع 1.99$ عبر PayPal ليحمل الرمز بياناتك وحدها.',
       offerFree: 'تحميل مجاني مع رابط الموقع', payB4: 'يُحفظ في حسابك: حمّله متى شئت',
       paySavedNote: 'حُفظ هذا الرمز في حسابك ضمن «أكوادي». أي تعديل على البيانات أو التصميم أو الشعار يصنع رمزًا جديدًا يتطلب دفعًا جديدًا.',
@@ -98,7 +98,7 @@
       payResumed: 'Your earlier payment is confirmed: the design is now without the site name.',
       downloading: 'Preparing…',
       signTitle: 'Sign in to use the Premium designs', signText: 'The Classic design is free without an account. Premium designs need one: the codes you pay for are saved there, to download any time.',
-      signGoogle: 'Continue with Google', signErr: 'Sign-in failed, please try again.',
+      signGoogle: 'Continue with Google', payStart: 'Pay $1.99 and remove the site link', signErr: 'Sign-in failed, please try again.',
       offerTitle: 'Remove our site link from your code', offerText: 'The free download adds the merabti.com link to the code, so everyone who scans it sees it. Pay $1.99 with PayPal and the code carries only your details.',
       offerFree: 'Free download with the site link', payB4: 'Saved in your account: download it any time',
       paySavedNote: 'This code is saved in your account under “My codes”. Any change to the details, the design or the logo makes a new code, which needs a new payment.',
@@ -147,7 +147,7 @@
       payResumed: 'Votre paiement précédent est confirmé : le design est sans le nom du site.',
       downloading: 'Préparation…',
       signTitle: 'Connectez-vous pour utiliser les designs Premium', signText: 'Le design Classique est gratuit sans compte. Les designs Premium en demandent un : les codes payés y sont gardés, à télécharger à tout moment.',
-      signGoogle: 'Continuer avec Google', signErr: 'Connexion impossible, réessayez.',
+      signGoogle: 'Continuer avec Google', payStart: 'Payer 1,99 $ et retirer le lien', signErr: 'Connexion impossible, réessayez.',
       offerTitle: 'Retirez le lien de notre site de votre code', offerText: 'Le téléchargement gratuit ajoute le lien merabti.com au code : chaque personne qui le scanne le voit. Payez 1,99 $ avec PayPal et le code ne porte que vos informations.',
       offerFree: 'Téléchargement gratuit avec le lien du site', payB4: 'Gardé dans votre compte : téléchargeable à tout moment',
       paySavedNote: 'Ce code est gardé dans votre compte, dans « Mes codes ». Toute modification des informations, du design ou du logo crée un nouveau code, à payer de nouveau.',
@@ -672,15 +672,13 @@
   els.downloadBtn.addEventListener('click', () => {
     if (!hasAnyData()) { alert(t('alertEmpty')); return; }
     if (!isPremium(current)) { busyDownload(downloadFree); return; }          // Classic: free, no account
-    requireUser(() => {                                                         // Premium: an account first
-      const c = ownedCode(current);
-      if (c) busyDownload(() => downloadCode(c));
-      else openOffer();
-    });
+    const c = ownedCode(current);                                               // this exact code already paid
+    if (c) busyDownload(() => downloadCode(c));
+    else openOffer();                       // Premium: the window first — download with the site link, or pay
   });
   els.payBtn.addEventListener('click', () => {
     if (!hasAnyData()) { alert(t('alertEmpty')); return; }
-    if (isPremium(current)) requireUser(openOffer);
+    if (isPremium(current)) openOffer();
   });
 
   /* ================= Premium: account + $1.99 per code through PayPal =================
@@ -799,8 +797,12 @@
   let afterSignIn = null;
   function requireUser(next) {
     if (user()) { next(); return; }
-    if (!window.fbAuth) { alert(t('signErr')); return; }
     afterSignIn = next;
+    if (!window.fbAuth) {                     // the account service did not load (blocked / offline)
+      sheet.innerHTML = closeBtn() + `<div class="qd-auth"><h3>${esc(t('signTitle'))}</h3><p class="qd-msg err">${esc(t('signErr'))}</p></div>`;
+      showModal();
+      return;
+    }
     sheet.innerHTML = closeBtn() + `<div class="qd-auth">
         <div class="qd-auth-badge"><svg viewBox="0 0 24 24"><path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5z" fill="currentColor"/></svg></div>
         <h3>${esc(t('signTitle'))}</h3><p>${esc(t('signText'))}</p>
@@ -852,12 +854,20 @@
   function renderPayArea() {
     const area = $('payArea');
     if (!area) return;
+    if (PAY.mode === 'demo' && !user()) {
+      area.innerHTML = `<button type="button" class="qd-pp" data-pay="paystart"><img src="../../books/word/img/paypal.svg" alt="PayPal"><small>${esc(t('payStart'))}</small></button>`;
+      return;
+    }
     if (PAY.mode === 'demo') {
       area.innerHTML = `<div class="qd-note">${esc(t('payDemo'))}</div>
         <button type="button" class="qd-pp" data-pay="demo"><img src="../../books/word/img/paypal.svg" alt="PayPal"><small>${esc(t('payDemoBtn'))} · <bdi dir="ltr">${esc(price())}</bdi></small></button>`;
       return;
     }
     if (!(PAY.mode === 'live' || PAY.mode === 'sandbox')) { area.innerHTML = `<div class="qd-note off">${esc(t('payOff'))}</div>`; return; }
+    if (!user()) {                            // the choice first; the sign-in comes when the visitor picks "pay"
+      area.innerHTML = `<button type="button" class="qd-pp" data-pay="paystart"><img src="../../books/word/img/paypal.svg" alt="PayPal"><small>${esc(t('payStart'))}</small></button>`;
+      return;
+    }
     area.innerHTML = (PAY.mode === 'sandbox' ? `<div class="qd-note">${esc(t('paySandbox'))}</div>` : '') + '<div class="qd-ppbox" id="payPP"><div class="qd-spin"></div></div>';
     loadSdk().then(paypalButtons).catch(() => { const h = $('payPP'); if (h) h.innerHTML = `<div class="qd-note off">${esc(t('payErr'))}</div>`; });
   }
@@ -986,7 +996,11 @@
     if (a === 'close') closePay();
     else if (a === 'google') signIn();
     else if (a === 'demo') demoPay();
-    else if (a === 'free') { closePay(); busyDownload(downloadFree); }
+    else if (a === 'free') requireUser(() => { closePay(); busyDownload(downloadFree); });   // Premium: an account, even free
+    else if (a === 'paystart') requireUser(() => {       // after the sign-in: already paid for this exact code? download it
+      const c = ownedCode(current);
+      if (c) { closePay(); busyDownload(() => downloadCode(c)); } else openOffer();
+    });
     else if ((a === 'png' || a === 'svg') && PAY.code) downloadCode(PAY.code, a).catch((err) => console.warn('[qr] download', err));
     else if (a === 'cpng' || a === 'csvg') { const c = byId(); if (c) downloadCode(c, a.slice(1)).catch((err) => console.warn('[qr] download', err)); }
     else if (a === 'copen') { const c = byId(); if (c) openCode(c); }
