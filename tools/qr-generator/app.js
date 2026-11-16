@@ -319,7 +319,8 @@
     const r = rendered[d.id];
     let stage = els.qrCanvasWrap.querySelector('.qr-stage');
     if (!stage) {
-      els.qrCanvasWrap.innerHTML = '<div class="qr-stage"><img class="qr-preview-img" alt="" draggable="false">' +
+      // .qr-shield: on Premium designs the image itself cannot be saved (right-click / long press): Download only
+      els.qrCanvasWrap.innerHTML = '<div class="qr-stage"><img class="qr-preview-img" alt="" draggable="false"><span class="qr-shield" aria-hidden="true"></span>' +
         '<button type="button" class="qd-hot" id="logoHot"><span class="qd-hot-badge" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></span></button></div>';
       stage = els.qrCanvasWrap.querySelector('.qr-stage');
       $('logoHot').addEventListener('click', (e) => { e.stopPropagation(); toggleLogoPop(); });
@@ -844,7 +845,8 @@
       <div class="qd-pay-area" id="payArea"></div>
       <p class="qd-msg" id="payMsg" role="status"></p>
       <button type="button" class="qd-free" data-pay="free">${esc(t('offerFree'))}</button>
-      <p class="qd-secure">${LOCK}<span>${esc(t('paySecure'))}</span></p>`;
+      <p class="qd-secure">${LOCK}<span>${esc(t('paySecure'))}</span></p>
+      ${user() ? `<p class="qd-who">${esc(t('account'))}: <b dir="ltr">${esc(user().email || user().displayName || '')}</b> · <button type="button" class="link-btn" data-pay="signout">${esc(t('signOut'))}</button></p>` : ''}`;
     // what they get: this code without the site link
     D.render(d.id, PAY.spec.data, { branded: false, logo: PAY.spec.logo }).then((r) => { const im = $('payThumb'); if (im) im.src = D.svgUrl(r.svg); }).catch(() => {});
     renderPayArea();
@@ -1010,6 +1012,9 @@
   $('myCodesBtn').addEventListener('click', () => requireUser(openMyCodes));
 
   [els.qName, els.qPhone, els.qJob, els.qEmail, els.qNote].forEach((el) => el.addEventListener('input', renderQr));
+  // Premium designs leave the page only through Download (account + choice window): no "save image" menu on them
+  $('qrFrame').addEventListener('contextmenu', (e) => { if (isPremium(current) && !e.target.closest('.qd-logo-pop')) e.preventDefault(); });
+  strip.addEventListener('contextmenu', (e) => e.preventDefault());
 
   /* ---------- start ---------- */
   items.forEach((it, k) => it.setAttribute('aria-selected', k === current ? 'true' : 'false'));
