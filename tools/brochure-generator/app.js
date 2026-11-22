@@ -127,6 +127,52 @@ Object.assign(UI.en, {
   untitled:'Untitled', current:'Open now', t_new:'New brochure ready'
 });
 
+Object.assign(UI.ar, {
+  cat_premium:'Premium', prem_bar:'قالب Premium · التعديل والمعاينة مجانيان، الطباعة وتحميل PDF بعد شرائه', prem_buy:'شراء القالب', prem_owned:'قالبك ✓',
+  login_buy_t:'سجّل دخولك بحساب Google', login_buy_p:'قالب Premium يُشترى مرة واحدة ويبقى محفوظًا في حسابك، تطبع به وتحمّل PDF متى شئت.',
+  shop_title:'قالب «{n}»', shop_sub:'اشترِه مرة واحدة واستعمله دائمًا. التعديل والمعاينة مجانيان؛ الشراء يفتح الطباعة وتحميل PDF بهذا القالب.',
+  shop_once:'دفعة واحدة · شراء دائم', shop_b1:'طباعة وتحميل PDF دون حدود بهذا القالب', shop_b2:'لكل مطوياتك وبكل أنواع الطيّ واللغات الثلاث',
+  shop_b3:'محفوظ في حسابك على Google', shop_account:'الحساب', shop_secure:'دفع آمن عبر PayPal', shop_restore:'استرجاع مشترياتي',
+  shop_free:'اختيار قالب مجاني', shop_paying:'جارِ تأكيد الدفع…', shop_done:'تم شراء القالب',
+  shop_done_t:'أصبح القالب ملكًا لحسابك: اطبع مطوياتك أو حمّلها به متى شئت، دون دفع جديد.', shop_order:'رقم الطلب',
+  shop_now_pdf:'تحميل PDF الآن', shop_now_print:'الطباعة الآن', shop_err:'تعذّر الاتصال بخدمة الدفع. حاول مرة أخرى.',
+  shop_off:'شراء قوالب Premium غير متاح حاليًا. يمكنك متابعة التعديل والمعاينة، أو اختيار قالب مجاني.',
+  shop_demo:'وضع تجريبي (رابط المعاينة): لا يُدفع أي مبلغ ولا يُحفظ أي شراء.', shop_demo_btn:'محاكاة الدفع',
+  shop_sandbox:'وضع الاختبار (PayPal Sandbox): لا يُخصم أي مبلغ حقيقي.', shop_check_err:'تعذّر التحقق من مشترياتك. تحقق من الاتصال ثم أعد المحاولة.',
+  shop_resumed:'تم تأكيد شرائك السابق ✓', shop_restored:'القوالب المشتراة على هذا الحساب: {n}', shop_restored0:'لا توجد قوالب مشتراة على هذا الحساب.',
+  shop_close:'إغلاق'
+});
+Object.assign(UI.fr, {
+  cat_premium:'Premium', prem_bar:'Modèle Premium · modification et aperçu gratuits, impression et PDF après achat', prem_buy:'Acheter le modèle', prem_owned:'Votre modèle ✓',
+  login_buy_t:'Connectez-vous avec Google', login_buy_p:'Un modèle Premium s’achète une fois et reste dans votre compte : imprimez et téléchargez en PDF quand vous voulez.',
+  shop_title:'Modèle « {n} »', shop_sub:'Achetez-le une fois, gardez-le pour toujours. Modifier et prévisualiser est gratuit ; l’achat débloque l’impression et le PDF avec ce modèle.',
+  shop_once:'Paiement unique · à vie', shop_b1:'Impression et PDF illimités avec ce modèle', shop_b2:'Pour tous vos dépliants, tous les pliages et les 3 langues',
+  shop_b3:'Gardé dans votre compte Google', shop_account:'Compte', shop_secure:'Paiement sécurisé avec PayPal', shop_restore:'Restaurer mes achats',
+  shop_free:'Choisir un modèle gratuit', shop_paying:'Confirmation du paiement…', shop_done:'Modèle acheté',
+  shop_done_t:'Le modèle appartient désormais à votre compte : imprimez ou téléchargez vos dépliants quand vous voulez, sans nouveau paiement.', shop_order:'N° de commande',
+  shop_now_pdf:'Télécharger le PDF', shop_now_print:'Imprimer maintenant', shop_err:'Impossible de joindre le service de paiement. Réessayez.',
+  shop_off:'Les modèles Premium ne sont pas en vente pour le moment. Vous pouvez continuer à modifier et prévisualiser, ou choisir un modèle gratuit.',
+  shop_demo:'Mode démo (lien d’aperçu) : rien n’est payé ni enregistré.', shop_demo_btn:'Simuler le paiement',
+  shop_sandbox:'Mode test (PayPal Sandbox) : aucun argent réel.', shop_check_err:'Impossible de vérifier vos achats. Vérifiez la connexion et réessayez.',
+  shop_resumed:'Votre achat précédent est confirmé ✓', shop_restored:'Modèles achetés sur ce compte : {n}', shop_restored0:'Aucun modèle acheté sur ce compte.',
+  shop_close:'Fermer'
+});
+Object.assign(UI.en, {
+  cat_premium:'Premium', prem_bar:'Premium template · editing and preview are free, printing and PDF after purchase', prem_buy:'Buy this template', prem_owned:'Your template ✓',
+  login_buy_t:'Sign in with Google', login_buy_p:'A Premium template is bought once and stays in your account: print and download PDFs whenever you like.',
+  shop_title:'“{n}” template', shop_sub:'Buy it once, keep it for good. Editing and previewing are free; the purchase unlocks printing and PDF with this template.',
+  shop_once:'One payment · yours for good', shop_b1:'Unlimited printing and PDF with this template', shop_b2:'For all your brochures, every fold and all 3 languages',
+  shop_b3:'Kept in your Google account', shop_account:'Account', shop_secure:'Secure payment with PayPal', shop_restore:'Restore my purchases',
+  shop_free:'Choose a free template', shop_paying:'Confirming your payment…', shop_done:'Template purchased',
+  shop_done_t:'The template now belongs to your account: print or download your brochures with it whenever you like, with no new payment.', shop_order:'Order number',
+  shop_now_pdf:'Download the PDF now', shop_now_print:'Print now', shop_err:'Could not reach the payment service. Please try again.',
+  shop_off:'Premium templates are not on sale right now. You can keep editing and previewing, or choose a free template.',
+  shop_demo:'Demo mode (preview link): nothing is paid and nothing is saved.', shop_demo_btn:'Simulate the payment',
+  shop_sandbox:'Test mode (PayPal Sandbox): no real money is taken.', shop_check_err:'Could not check your purchases. Check your connection and try again.',
+  shop_resumed:'Your earlier purchase is confirmed ✓', shop_restored:'Templates bought on this account: {n}', shop_restored0:'No templates bought on this account.',
+  shop_close:'Close'
+});
+
 /* ---------------------------------------------------------
    Templates
 --------------------------------------------------------- */
@@ -253,9 +299,13 @@ const TEMPLATES = [
       'p3.title':'برنامج الشهر','p3.list':'إفطار صائم يوميًا\nمسابقة حفظ القرآن\nدروس ومحاضرات\nزكاة الفطر',
       'back.title':'ساهم معنا','back.text':'كل مساهمة مهما كانت صغيرة تصنع فرحة في بيت محتاج.'} }
 ];
+/* Premium templates (premium.js, $1.99 each): merged here, sold in "Premium templates" below */
+const BP = window.BROCHURE_PREMIUM || null;
+if (BP) TEMPLATES.push(...BP.templates);
 const TPL = Object.fromEntries(TEMPLATES.map(t => [t.id, t]));
 const CATS = ['edu','aware','school','biz','promo','events','occ'];
-const FONTS = ['Tajawal','Cairo','Almarai','El Messiri','Amiri'];
+const FONTS = ['Tajawal','Cairo','Almarai','El Messiri','Amiri','Changa','Reem Kufi','Aref Ruqaa','Lalezar'];
+const isPrem = id => !!(TPL[id] && TPL[id].premium);
 const COLORS = ['#2F6FB0','#1FA38A','#3E7B27','#E4405F','#E63946','#F6B80C','#5B2A86','#1B2F5B','#0F766E','#C9A227'];
 
 /* Full per-template samples for French and English */
@@ -431,6 +481,7 @@ const SAMPLES_I18N = {
       'Give with us','Every donation, however small, brings joy to a home in need.'])
   }
 };
+if (BP) Object.entries(BP.samples).forEach(([id, l]) => { SAMPLES_I18N[id] = { fr: S(l.fr), en: S(l.en) }; });
 const ADDR = { ar:'الجزائر', fr:'Algérie', en:'Algeria' };
 const EXTRA_P = {
   ar:{'p4.title':'معلومات إضافية','p4.text':'أضف هنا معلومات مكمّلة أو صورة توضيحية تدعم محتوى المطوية.','p5.title':'كلمة أخيرة','p5.text':'اختم برسالة قصيرة تبقى في ذهن القارئ.'},
@@ -440,8 +491,9 @@ const EXTRA_P = {
 
 function sampleFor(id, lang) {
   const t = TPL[id];
-  const base = { 'cover.badge': t.s['cover.badge'] || '', ...CONTACT_AR, addr: ADDR[lang] || ADDR.ar, ...(EXTRA_P[lang] || EXTRA_P.ar) };
-  if (lang === 'ar' || !SAMPLES_I18N[id] || !SAMPLES_I18N[id][lang]) return { ...base, ...t.s, addr: ADDR.ar };
+  const badge = t.badge ? (t.badge[lang] || t.badge.ar) : (t.s['cover.badge'] || '');
+  const base = { 'cover.badge': badge, ...CONTACT_AR, addr: ADDR[lang] || ADDR.ar, ...(EXTRA_P[lang] || EXTRA_P.ar) };
+  if (lang === 'ar' || !SAMPLES_I18N[id] || !SAMPLES_I18N[id][lang]) return { ...base, ...t.s, 'cover.badge': badge, addr: ADDR.ar };
   return { ...base, ...SAMPLES_I18N[id][lang] };
 }
 
@@ -539,7 +591,7 @@ function mkDeco(W) {
   const sp = d => scalePath(d, f);
   const mv = (x, inner) => `<g transform="translate(${(X(x) - x).toFixed(1)} 0)">${inner}</g>`;
   const s1 = Math.min(1, f);
-  return {
+  const D = {
     wave(kind, P) {
       let s = `<rect width="${W}" height="794" fill="${P.bg}"/>`;
       if (kind === 'cover') s += `
@@ -757,6 +809,8 @@ function mkDeco(W) {
         <polygon points="${starPts(cx, 794, 70, 34, 8)}" fill="none" stroke="${P.c1}" stroke-opacity=".35" stroke-width="1.5"/>`;
     }
   };
+  if (BP) Object.assign(D, BP.deco(W, { X, sp, f, rng, shade, starPts, hexPts, uid: () => ++uid }));
+  return D;
 }
 const decoCache = {};
 const decoFor = W => decoCache[W] || (decoCache[W] = mkDeco(W));
@@ -773,10 +827,10 @@ const ICONS = {
 const paras = txt => String(txt || '').split(/\n+/).filter(x => x.trim()).map(p => `<p>${esc(p)}</p>`).join('');
 function listHTML(txt) {
   const items = String(txt || '').split(/\n+/).map(x => x.trim()).filter(Boolean);
-  return `<ul class="lst">${items.map(it => {
+  return `<ul class="lst">${items.map((it, n) => {
     const i = it.indexOf('|');
     if (i > -1) return `<li class="priced"><span class="nm">${esc(it.slice(0, i).trim())}</span><span class="dots"></span><span class="pr">${esc(it.slice(i + 1).trim())}</span></li>`;
-    return `<li>${esc(it)}</li>`;
+    return `<li><i class="n">${String(n + 1).padStart(2, '0')}</i>${esc(it)}</li>`;
   }).join('')}</ul>`;
 }
 const imgTag = (src, cls = 'img') => src ? `<div class="${cls}"><img src="${src}" alt=""></div>` : '';
@@ -787,19 +841,21 @@ const KIND_SEED = { cover:3, flap:5, p1:7, p2:11, p3:13, p4:19, p5:23, back:17 }
 function ctxFor(tplId, content, imgs, opts = {}) {
   const t = TPL[tplId];
   const P = palette(t, opts.color);
-  const font = (opts.font && opts.font !== 'auto') ? opts.font : t.font;
+  const own = opts.font && opts.font !== 'auto';
+  const font = own ? opts.font : t.font;
+  const fontH = own ? opts.font : (t.fontH || t.font);
   const F = FORMATS[opts.fmt] || FORMATS.tri;
-  return { t, P, font, F, c: content, img: imgs || {}, rtl: (opts.clang || 'ar') === 'ar', lang: opts.clang || 'ar', qr: opts.qr };
+  return { t, P, font, fontH, F, c: content, img: imgs || {}, rtl: (opts.clang || 'ar') === 'ar', lang: opts.clang || 'ar', qr: opts.qr };
 }
 
 function panelHTML(kind, ctx) {
   const { t, P, c, img, F } = ctx;
   const W = F.pw;
-  const cls = `pn T-${t.id} ${KIND_CLASS[kind]} F-${F.type}`;
+  const cls = `pn T-${t.id} ${KIND_CLASS[kind]} F-${F.type}${t.premium ? ' prem' : ''}`;
   const decoKind = /^p\d$/.test(kind) ? 'inner' : kind;
   let svg = decoFor(W)[t.id](decoKind, P, KIND_SEED[kind]);
   if (t.mirror && ctx.rtl) svg = `<g transform="translate(${W} 0) scale(-1 1)">${svg}</g>`;
-  const style = `--pw:${W}px;--c1:${P.c1};--c2:${P.c2};--c3:${P.c3};--c4:${P.c4};--bg-p:${P.bg};--ink-p:${P.ink};--f:'${ctx.font}','Tajawal',sans-serif;`;
+  const style = `--pw:${W}px;--c1:${P.c1};--c2:${P.c2};--c3:${P.c3};--c4:${P.c4};--bg-p:${P.bg};--ink-p:${P.ink};--f:'${ctx.font}','Tajawal',sans-serif;--fh:'${ctx.fontH}','${ctx.font}','Tajawal',sans-serif;`;
   let body = '';
   const v = k => c[k] || '';
   if (kind === 'cover') {
@@ -842,7 +898,7 @@ function fitPanel(pn, fixedK, k0 = 1) {
   while (ct.scrollHeight > ct.clientHeight + 1 && k > 0.45) { k -= 0.04; pn.style.setProperty('--k', k.toFixed(2)); }
   return +k.toFixed(2);
 }
-const k0Of = pn => { const m = /F-(\w+)/.exec(pn.className); return (FORMATS[m && m[1]] || FORMATS.tri).k0; };
+const k0Of = pn => { const m = /F-(\w+)/.exec(pn.className); const k = (FORMATS[m && m[1]] || FORMATS.tri).k0; return pn.classList.contains('prem') ? k * 1.1 : k; };
 function fitAll(root, useMap) {
   if (!useMap) kmap = {};
   $$('.pn', root).forEach(pn => {
@@ -899,7 +955,7 @@ function renderFlat() {
 function stageFitScale() {
   const stage = $('#stage'), F = fmtNow();
   const a5 = F.type === 'a5';
-  const w = (stage.clientWidth - 60) / (a5 ? 2.08 : 1), h = stage.clientHeight - 150;
+  const w = (stage.clientWidth - 60) / (a5 ? 2.08 : 1), h = stage.clientHeight - 150 - (isPrem(st.tpl) ? 44 : 0);
   return Math.max(0.2, Math.min(w / F.sw, h / PH, 1.4));
 }
 function applyZoom() {
@@ -1288,19 +1344,20 @@ function miniOutside(tplId) {
   return miniHTML(ctx);
 }
 function buildGallery() {
-  $('#gCats').innerHTML = ['all', ...CATS].map(c => `<button type="button" class="chip ${gCat === c ? 'on' : ''}" data-cat="${c}">${T('cat_' + c)}</button>`).join('');
+  $('#gCats').innerHTML = ['all', 'premium', ...CATS].map(c => `<button type="button" class="chip ${gCat === c ? 'on' : ''}" data-cat="${c}">${T('cat_' + c)}</button>`).join('');
   if (!gFold) gFold = st.fmt;
   $('#gFolds').innerHTML = FMT_KEYS.map(k => `<button type="button" class="chip fold-chip ${gFold === k ? 'on' : ''}" data-gfold="${k}">${FOLD_ICONS[k]}${T(FORMATS[k].label)}</button>`).join('');
   renderGrid();
 }
 function renderGrid() {
   const q = ($('#gSearch').value || '').trim().toLowerCase();
-  const list = TEMPLATES.filter(t => (gCat === 'all' || t.cat === gCat) &&
+  const list = TEMPLATES.filter(t => (gCat === 'all' || t.cat === gCat || (gCat === 'premium' && t.premium)) &&
     (!q || Object.values(t.name).concat(Object.keys(UI).map(l => UI[l]['cat_' + t.cat])).some(n => n.toLowerCase().includes(q))));
+  list.sort((a, b) => (b.premium ? 1 : 0) - (a.premium ? 1 : 0));
   const grid = $('#gGrid');
   if (!list.length) { grid.innerHTML = `<div class="g-empty">${T('no_results')}</div>`; return; }
-  grid.innerHTML = list.map(t => `<button type="button" class="g-card ${t.id === st.tpl ? 'on' : ''}" data-tpl="${t.id}">
-      <div class="g-thumb">${miniOutside(t.id)}</div>
+  grid.innerHTML = list.map(t => `<button type="button" class="g-card ${t.id === st.tpl ? 'on' : ''}${t.premium ? ' prem' : ''}" data-tpl="${t.id}">
+      <div class="g-thumb">${miniOutside(t.id)}${t.premium ? premBadge(t.id) : ''}</div>
       <div class="g-meta"><b>${esc(t.name[uiLang] || t.name.ar)}</b><span>${T('cat_' + t.cat)}</span></div></button>`).join('');
   requestAnimationFrame(() => {
     $$('.g-thumb', grid).forEach(th => {
@@ -1332,6 +1389,10 @@ $('#gallery').addEventListener('click', e => {
 $('#gSearch').addEventListener('input', renderGrid);
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#gallery').classList.contains('hidden')) closeGallery(); });
 
+function premBadge(id) {
+  return owns(id) ? `<span class="g-prem own">${CHECK}<b>${esc(T('prem_owned'))}</b></span>`
+    : `<span class="g-prem">${CROWN}<b>Premium</b><i dir="ltr">${shopPrice()}</i></span>`;
+}
 function renderCurrentThumb() {
   const box = $('#currentThumb');
   const ctx = currentCtx();
@@ -1339,7 +1400,8 @@ function renderCurrentThumb() {
   const mini = box.querySelector('.mini');
   fitAll(mini, true);
   mini.style.transform = `scale(${Math.min(84 / miniWidth(ctx), 60 / PH)})`;
-  $('#currentTplName').textContent = TPL[st.tpl].name[uiLang] || TPL[st.tpl].name.ar;
+  $('#currentTplName').textContent = (TPL[st.tpl].name[uiLang] || TPL[st.tpl].name.ar) + (isPrem(st.tpl) ? ' · Premium' : '');
+  shopApply();
 }
 
 /* ---------------------------------------------------------
@@ -1406,8 +1468,10 @@ const fbUser = () => (hasFb() ? firebase.auth().currentUser : null);
 const brochuresCol = uidv => firebase.firestore().collection('users').doc(uidv).collection('brochures');
 let pendingAfterLogin = null;
 
-function openLogin(after) {
+function openLogin(after, why) {
   pendingAfterLogin = after || null;
+  $('#login h3').textContent = T(why === 'buy' ? 'login_buy_t' : 'login_title');
+  $('#login p').textContent = T(why === 'buy' ? 'login_buy_p' : 'login_text');
   $('#login').classList.remove('hidden');
 }
 function closeLogin() { $('#login').classList.add('hidden'); }
@@ -1531,6 +1595,293 @@ $('#mine').addEventListener('click', async e => {
 document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeMine(); closeLogin(); } });
 
 /* ---------------------------------------------------------
+   Premium templates (premium.js · PayPal · Worker /api/brochure/* · Cloudflare D1)
+   - Editing, previewing and saving need no purchase; free templates print and export with no account.
+   - A Premium template is bought once ($1.99, price from the server) and kept for good by the Google account.
+     Print and PDF of a Premium template pass through requestExport(kind): Google sign-in, then the right.
+   - Rights come from the Worker (D1, payment checked there); the browser never decides alone, except for
+     admins (users/{uid}.isAdmin, the rule of shared/purchase.js), who export every template.
+   - Modes from GET /api/brochure/config: live / sandbox (sales on) · demo (sales off on the claude-test preview
+     or localhost: nothing paid, nothing saved) · off (sales off elsewhere).
+--------------------------------------------------------- */
+const SHOP_LOCAL = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+const SHOP_API = (/\.workers\.dev$/.test(location.hostname) || SHOP_LOCAL) ? '' : 'https://dr.merabti.workers.dev';
+const SHOP_DEMO_HOST = SHOP_LOCAL || location.hostname === 'claude-test-dr.merabti.workers.dev';
+const SHOP_PENDING = 'brochure:pendingOrder';
+const SHOP = { mode: 'loading', cfg: null, owned: new Set(), demoOwned: new Set(), sdk: null, btns: null, busy: false, tpl: '', kind: 'pdf', ready: null };
+let isAdmin = false;
+
+const shopPrice = () => '$' + ((SHOP.cfg && SHOP.cfg.price) || '1.99');
+const salesOn = () => SHOP.mode === 'live' || SHOP.mode === 'sandbox';
+function owns(id) { return !isPrem(id) || isAdmin || SHOP.owned.has(id) || (SHOP.mode === 'demo' && SHOP.demoOwned.has(id)); }
+function googleUser() {
+  const u = fbUser();
+  return u && (u.providerData || []).some(p => p && p.providerId === 'google.com') ? u : null;
+}
+function shopTrack(name, extra) { try { if (window.gtag) gtag('event', name, Object.assign({ tool: 'brochure', method: 'paypal' }, extra || {})); } catch (e) { /* ignore */ } }
+
+async function shopFetch(path, opts) {
+  opts = opts || {};
+  const headers = { 'Content-Type': 'application/json' };
+  const u = googleUser();
+  if (u) headers.Authorization = 'Bearer ' + await u.getIdToken();
+  const r = await fetch(SHOP_API + path, { method: opts.method || 'GET', headers, body: opts.body ? JSON.stringify(opts.body) : undefined, cache: 'no-store' });
+  const d = await r.json().catch(() => ({}));
+  d._status = r.status;
+  return d;
+}
+async function shopLoadConfig() {
+  try {
+    const d = await shopFetch('/api/brochure/config');
+    if (d && d.price) SHOP.cfg = d;
+    if (d && Array.isArray(d.premium) && d.premium.join() !== TEMPLATES.filter(t => t.premium).map(t => t.id).join()) console.warn('[brochure] premium list differs from the server');
+    SHOP.mode = d && (d.sales === 'live' || d.sales === 'sandbox') ? d.sales : (SHOP_DEMO_HOST ? 'demo' : 'off');
+  } catch (e) { SHOP.mode = SHOP_DEMO_HOST ? 'demo' : 'off'; }
+  shopApply();
+}
+SHOP.ready = shopLoadConfig();
+
+/* rights from the server (Google account only); strict = throw when the server cannot answer */
+async function shopRefresh(strict) {
+  if (!salesOn() || !googleUser()) { SHOP.owned = new Set(); shopApply(); return SHOP.owned; }
+  try {
+    const d = await shopFetch('/api/brochure/entitlements');
+    if (!Array.isArray(d.owned)) throw new Error(d.error || 'entitlements');
+    SHOP.owned = new Set(d.owned);
+  } catch (e) { if (strict) throw e; }
+  shopApply();
+  return SHOP.owned;
+}
+
+/* stage bar, PDF button cue and gallery badges follow the rights */
+function shopApply() {
+  const bar = $('#premBar');
+  if (!bar) return;
+  const prem = isPrem(st.tpl), own = prem && owns(st.tpl);
+  $('#stage').classList.toggle('prem', prem);
+  bar.classList.toggle('hidden', !prem);
+  bar.classList.toggle('own', own);
+  $('#btnPdf').classList.toggle('prem', prem && !own);
+  $('#btnPrint').classList.toggle('prem', prem && !own);
+  if (prem) bar.innerHTML = own
+    ? `<span class="pb-tag">${CROWN}<b>Premium</b></span><span class="pb-txt">${esc(TPL[st.tpl].name[uiLang] || TPL[st.tpl].name.ar)}</span><span class="pb-own">${CHECK}${esc(T('prem_owned'))}</span>`
+    : `<span class="pb-tag">${CROWN}<b>Premium</b></span><span class="pb-txt">${esc(T('prem_bar'))}</span><button type="button" class="pb-buy" id="premBuy">${esc(T('prem_buy'))} · <bdi dir="ltr">${shopPrice()}</bdi></button>`;
+  $$('#gGrid .g-card.prem').forEach(c => { const b = c.querySelector('.g-prem'); if (b) b.outerHTML = premBadge(c.dataset.tpl); });
+}
+$('#premBar').addEventListener('click', e => { if (e.target.closest('#premBuy')) requestExport('pdf', true); });
+
+async function loadAdminFlag() {
+  isAdmin = false;
+  const u = fbUser();
+  if (!u) return;
+  try {
+    const d = await firebase.firestore().collection('users').doc(u.uid).get();
+    isAdmin = !!(d.exists && d.data().isAdmin === true);
+  } catch (e) { isAdmin = false; }
+}
+
+/* Print and PDF pass here: free templates at once; a Premium template needs Google sign-in, then the right.
+   buyOnly = the "Buy" button: stop at the purchase window (or say it is owned). */
+const runExport = kind => (kind === 'print' ? doPrint() : doPdf());
+let exportChecking = false;
+async function requestExport(kind, buyOnly) {
+  const id = st.tpl;
+  if (!isPrem(id)) { runExport(kind); return; }
+  if (exportChecking) return;
+  if (!owns(id)) {
+    if (!hasFb()) { toast(T('t_cloud_err')); return; }
+    if (!googleUser()) { openLogin(() => requestExport(kind, buyOnly), 'buy'); return; }
+    exportChecking = true;
+    try {
+      await SHOP.ready;
+      if (salesOn()) await shopRefresh(true);
+    } catch (e) { exportChecking = false; toast(T('shop_check_err')); return; }
+    exportChecking = false;
+    if (!owns(id)) { openShop(id, kind); return; }
+  }
+  if (buyOnly) { shopApply(); toast(T('prem_owned')); return; }
+  runExport(kind);
+}
+
+/* ---- purchase window: one Premium template, one permanent purchase ---- */
+const CROWN = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5z"/></svg>';
+const CHECK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+const LOCK = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+function openShop(id, kind) {
+  SHOP.tpl = id; SHOP.kind = kind || 'pdf';
+  $('#shop').classList.remove('hidden');
+  shopRender();
+  shopTrack('view_promotion', { template: id });
+}
+function closeShop() { if (SHOP.busy) return; $('#shop').classList.add('hidden'); SHOP.btns = null; }
+function shopBusy(on) { SHOP.busy = on; $('#shopBox').classList.toggle('busy', on); }
+function shopMsg(text, err) { const el = $('#shopMsg'); if (el) { el.textContent = text || ''; el.classList.toggle('err', !!err); } }
+const tplName = id => TPL[id].name[uiLang] || TPL[id].name.ar;
+
+function shopRender() {
+  const box = $('#shopBox'), id = SHOP.tpl, u = googleUser();
+  if (owns(id)) { shopSuccess(id, ''); return; }
+  box.innerHTML = `<button type="button" class="shop-x" data-shop="close" aria-label="${esc(T('shop_close'))}">${XICON}</button>
+    <div class="shop-main">
+      <div class="shop-thumb" id="shopThumb"></div>
+      <div class="shop-info">
+        <span class="shop-tag">${CROWN}<b>Premium</b></span>
+        <h3>${esc(T('shop_title').replace('{n}', tplName(id)))}</h3>
+        <p class="shop-sub">${esc(T('shop_sub'))}</p>
+        <div class="shop-price"><b dir="ltr">${shopPrice()}</b><span>${esc(T('shop_once'))}</span></div>
+        <ul class="shop-list"><li>${CHECK}<span>${esc(T('shop_b1'))}</span></li><li>${CHECK}<span>${esc(T('shop_b2'))}</span></li><li>${CHECK}<span>${esc(T('shop_b3'))}</span></li></ul>
+      </div>
+    </div>
+    <div class="shop-pay" id="shopPay"></div>
+    <p class="shop-msg" id="shopMsg" role="status"></p>
+    <div class="shop-foot">
+      <span>${LOCK}${esc(T('shop_secure'))}</span>
+      ${u ? `<span class="shop-who">${esc(T('shop_account'))}: <b dir="ltr">${esc(u.email || u.displayName || '')}</b></span>` : ''}
+      <span class="shop-links">${salesOn() ? `<button type="button" class="link-btn" data-shop="restore">${esc(T('shop_restore'))}</button>` : ''}
+        <button type="button" class="link-btn" data-shop="free">${esc(T('shop_free'))}</button></span>
+    </div>`;
+  requestAnimationFrame(() => {
+    const th = $('#shopThumb'); if (!th) return;
+    const ctx = ctxFor(id, st.dirty ? st.c : sampleFor(id, st.clang), st.dirty ? st.img : {}, { color: st.tpl === id ? st.color : null, font: st.tpl === id ? st.font : 'auto', clang: st.clang, qr: '', fmt: st.fmt });
+    th.innerHTML = miniHTML(ctx);
+    const mini = th.querySelector('.mini'); fitThumbs(mini);
+    mini.style.transform = `scale(${th.clientWidth / mini.offsetWidth})`;
+    th.style.height = (PH * th.clientWidth / mini.offsetWidth) + 'px';
+  });
+  shopRenderPay();
+}
+function shopRenderPay() {
+  const pay = $('#shopPay');
+  SHOP.btns = null;
+  if (SHOP.mode === 'demo') {
+    pay.innerHTML = `<div class="shop-note">${esc(T('shop_demo'))}</div>
+      <button type="button" class="shop-pp" data-shop="demo"><span>PayPal</span><small>${esc(T('shop_demo_btn'))} · <bdi dir="ltr">${shopPrice()}</bdi></small></button>`;
+    return;
+  }
+  if (!salesOn()) { pay.innerHTML = `<div class="shop-note off">${esc(T('shop_off'))}</div>`; return; }
+  pay.innerHTML = (SHOP.mode === 'sandbox' ? `<div class="shop-note">${esc(T('shop_sandbox'))}</div>` : '') +
+    '<div class="shop-ppbox" id="shopPP"><div class="shop-spin"></div></div>';
+  shopLoadSdk().then(shopButtons).catch(() => { const h = $('#shopPP'); if (h) h.innerHTML = `<div class="shop-note off">${esc(T('shop_err'))}</div>`; });
+}
+function shopLoadSdk() {
+  if (window.paypal && window.paypal.Buttons) return Promise.resolve();
+  if (SHOP.sdk) return SHOP.sdk;
+  SHOP.sdk = new Promise((ok, no) => {
+    const sc = document.createElement('script');
+    sc.src = 'https://www.paypal.com/sdk/js?client-id=' + encodeURIComponent(SHOP.cfg.clientId) + '&currency=USD&intent=capture&components=buttons';
+    sc.onload = () => (window.paypal && window.paypal.Buttons ? ok() : no());
+    sc.onerror = () => { SHOP.sdk = null; sc.remove(); no(); };
+    document.head.appendChild(sc);
+  });
+  return SHOP.sdk;
+}
+function shopButtons() {
+  const host = $('#shopPP');
+  if (!host) return;
+  host.innerHTML = '';
+  const id = SHOP.tpl;
+  SHOP.btns = window.paypal.Buttons({
+    style: { layout: 'vertical', color: 'gold', shape: 'pill', label: 'pay', height: 44 },
+    createOrder: async () => {
+      shopMsg('');
+      const d = await shopFetch('/api/brochure/create-order', { method: 'POST', body: { template: id } });
+      if (!d.id) {
+        shopMsg(d.message || T('shop_err'), true);
+        if (d.error === 'ALREADY_OWNED') shopRefresh().then(() => { if (owns(id)) shopSuccess(id, ''); });
+        throw new Error(d.error || 'create');
+      }
+      shopTrack('begin_checkout', { template: id, value: parseFloat(SHOP.cfg.price), currency: 'USD' });
+      return d.id;
+    },
+    onApprove: async (data, actions) => {
+      shopBusy(true); shopMsg(T('shop_paying'));
+      shopPending(data.orderID);
+      const d = await shopCapture(data.orderID);
+      shopBusy(false);
+      if (d.error === 'INSTRUMENT_DECLINED') { shopPending(''); shopMsg(d.message, true); return actions.restart(); }
+      if (!d.ok) { shopMsg(d.message || T('shop_err'), true); return; }
+      shopPending('');
+      SHOP.owned = new Set(d.owned || []);
+      shopTrack('purchase', { transaction_id: d.orderId, template: id, value: parseFloat(SHOP.cfg.price), currency: 'USD' });
+      shopSuccess(d.template || id, d.orderId);
+    },
+    onCancel: () => shopMsg(''),
+    onError: () => shopMsg(T('shop_err'), true)
+  });
+  SHOP.btns.render(host).catch(() => { host.innerHTML = `<div class="shop-note off">${esc(T('shop_err'))}</div>`; });
+}
+/* the PayPal order paid but not confirmed yet (closed tab, lost connection): asked again later, never a proof */
+function shopPending(orderId) {
+  try {
+    const u = googleUser();
+    if (orderId && u) localStorage.setItem(SHOP_PENDING, JSON.stringify({ id: orderId, uid: u.uid }));
+    else localStorage.removeItem(SHOP_PENDING);
+  } catch (e) { /* ignore */ }
+}
+async function shopCapture(orderId) {
+  let d = {};
+  for (let i = 0; i < 3; i++) {
+    d = await shopFetch('/api/brochure/capture-order', { method: 'POST', body: { orderId } }).catch(() => ({}));
+    if (d._status && d._status < 500) break;
+    await new Promise(r => setTimeout(r, 1200 * (i + 1)));
+  }
+  return d;
+}
+async function shopResume() {
+  let p = null;
+  try { p = JSON.parse(localStorage.getItem(SHOP_PENDING) || 'null'); } catch (e) { p = null; }
+  const u = googleUser();
+  if (!p || !p.id || !u || p.uid !== u.uid || !salesOn()) return;
+  const d = await shopCapture(p.id);
+  if (d.ok) { shopPending(''); SHOP.owned = new Set(d.owned || []); shopApply(); toast(T('shop_resumed')); }
+  else if (d._status && d._status < 500 && d.error !== 'AUTH_REQUIRED' && d.error !== 'NOT_COMPLETED') shopPending('');
+}
+function shopSuccess(id, orderId) {
+  shopApply();
+  $('#shopBox').innerHTML = `<button type="button" class="shop-x" data-shop="close" aria-label="${esc(T('shop_close'))}">${XICON}</button>
+    <div class="shop-done"><div class="shop-ok">${CHECK}</div><h3>${esc(T('shop_done'))} · ${esc(tplName(id))}</h3>
+      <p>${esc(T('shop_done_t'))}</p>
+      ${orderId ? `<p class="shop-order">${esc(T('shop_order'))}: <b dir="ltr">${esc(orderId)}</b></p>` : ''}
+      <button type="button" class="shop-cta" data-shop="export">${esc(SHOP.kind === 'print' ? T('shop_now_print') : T('shop_now_pdf'))}</button></div>`;
+}
+async function shopDemoPay() {
+  if (SHOP.busy) return;
+  shopBusy(true); shopMsg(T('shop_paying'));
+  await new Promise(r => setTimeout(r, 900));
+  SHOP.demoOwned.add(SHOP.tpl);
+  shopBusy(false);
+  shopSuccess(SHOP.tpl, 'DEMO-' + Date.now().toString(36).toUpperCase());
+}
+async function shopRestore() {
+  try {
+    const owned = await shopRefresh(true);
+    toast(owned.size ? T('shop_restored').replace('{n}', owned.size) : T('shop_restored0'));
+    if (owns(SHOP.tpl)) shopSuccess(SHOP.tpl, '');
+  } catch (e) { shopMsg(T('shop_check_err'), true); }
+}
+$('#shop').addEventListener('click', e => {
+  if (e.target.id === 'shop') { closeShop(); return; }
+  const b = e.target.closest('[data-shop]');
+  if (!b || b.disabled || SHOP.busy) return;
+  const a = b.dataset.shop;
+  if (a === 'close') closeShop();
+  else if (a === 'free') { closeShop(); gCat = 'all'; openGallery(); }
+  else if (a === 'demo') shopDemoPay();
+  else if (a === 'restore') shopRestore();
+  else if (a === 'export') { closeShop(); requestExport(SHOP.kind); }
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#shop').classList.contains('hidden')) closeShop(); });
+
+/* rights follow the signed-in account */
+if (hasFb()) firebase.auth().onAuthStateChanged(async () => {
+  SHOP.owned = new Set();
+  await loadAdminFlag();
+  await SHOP.ready;
+  if (googleUser()) { await shopRefresh(false); shopResume(); }
+  shopApply();
+});
+
+/* ---------------------------------------------------------
    Toast
 --------------------------------------------------------- */
 let toastTimer = null;
@@ -1576,8 +1927,8 @@ document.addEventListener('click', e => { if (!e.target.closest('.lang-wrap')) $
    Toolbar wiring
 --------------------------------------------------------- */
 $('#btnSave').addEventListener('click', saveToAccount);
-$('#btnPrint').addEventListener('click', doPrint);
-$('#btnPdf').addEventListener('click', doPdf);
+$('#btnPrint').addEventListener('click', () => requestExport('print'));
+$('#btnPdf').addEventListener('click', () => requestExport('pdf'));
 $('#btnFullscreen').addEventListener('click', () => {
   if (!document.fullscreenElement) (document.documentElement.requestFullscreen || function(){}).call(document.documentElement);
   else document.exitFullscreen && document.exitFullscreen();
