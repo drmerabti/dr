@@ -1047,6 +1047,193 @@ async function handleCv(request, env, path, ctx) {
 }
 
 /* =====================================================================
+   Brochure maker Premium templates (tools/brochure-generator) — independent from the books, cards, CV and QR.
+   One template = one permanent purchase at BRO_PRICE (no packs). Free templates stay free (no account).
+     GET  /api/brochure/config         → { sales, clientId, currency, price, premium[] }
+     GET  /api/brochure/entitlements   → { owned[] }
+     POST /api/brochure/create-order   { template } → { id }                (PayPal order made here)
+     POST /api/brochure/capture-order  { orderId }  → { ok, orderId, template, owned[] }
+   Every route except config needs "Authorization: Bearer <Firebase ID token>" of a GOOGLE sign-in
+   (claim firebase.sign_in_provider = "google.com"); the Worker checks the token itself.
+
+   BROCHURE_SALES (wrangler var): "off" (default: nothing is sold, nothing is written),
+   "sandbox" (PAYPAL_SANDBOX_CLIENT_ID + secret PAYPAL_SANDBOX_SECRET) or
+   "live" (the site's PayPal app) — "live" is honoured ONLY on BRO_LIVE_HOSTS (the production Worker):
+   a preview version such as claude-test-dr.merabti.workers.dev stays "off".
+   Test-only overrides, honoured ONLY when BROCHURE_SALES = "sandbox":
+     BROCHURE_PAYPAL_API (a local PayPal mock), BROCHURE_TEST_JWKS (keys of a test signer).
+===================================================================== */
+const BRO_PREMIUM = ['lux', 'clinic', 'academy', 'tech', 'solar', 'realty', 'kids', 'wedding', 'travel', 'islamic'];
+const BRO_PRICE = '1.99';
+const BRO_CURRENCY = 'USD';
+const BRO_LIVE_HOSTS = ['dr.merabti.workers.dev'];
+
+function broMode(env, request) {
+  const m = String(env.BROCHURE_SALES || 'off').toLowerCase();
+  if (m === 'live') return request && BRO_LIVE_HOSTS.includes(new URL(request.url).hostname) ? 'live' : 'off';
+  return m === 'sandbox' ? 'sandbox' : 'off';
+}
+function broPaypal(env, mode) {
+  if (mode === 'live') return { mode, api: 'https://api-m.paypal.com', id: env.PAYPAL_CLIENT_ID, secret: env.PAYPAL_SECRET };
+  if (mode === 'sandbox') return { mode, api: env.BROCHURE_PAYPAL_API || 'https://api-m.sandbox.paypal.com',
+    id: env.PAYPAL_SANDBOX_CLIENT_ID, secret: env.PAYPAL_SANDBOX_SECRET };
+  return { mode };
+}
+async function broKeys(env, mode) {
+  if (mode === 'sandbox' && env.BROCHURE_TEST_JWKS) return JSON.parse(env.BROCHURE_TEST_JWKS).keys || [];
+  return googleKeys();
+}
+async function broUser(request, env, mode) {
+  const claims = await firebaseClaims(request, () => broKeys(env, mode));
+  if (!claims) return null;
+  return { uid: claims.sub, google: !!(claims.firebase && claims.firebase.sign_in_provider === 'google.com') };
+}
+
+/* one JSON line per step, never the payer's details */
+function logBro(step, info) {
+  console.log('[brochure] ' + step + ' ' + JSON.stringify(Object.assign({ step }, info)));
+}
+
+async function ensureBroTables(db) {
+  await db.batch([
+    db.prepare(`CREATE TABLE IF NOT EXISTS brochure_orders (
+      order_id TEXT PRIMARY KEY, ref TEXT NOT NULL UNIQUE, uid TEXT NOT NULL, template_id TEXT NOT NULL,
+      amount TEXT NOT NULL, currency TEXT NOT NULL, status TEXT NOT NULL,
+      capture_id TEXT UNIQUE, env TEXT NOT NULL, created_at TEXT NOT NULL, completed_at TEXT)`),
+    db.prepare(`CREATE TABLE IF NOT EXISTS brochure_entitlements (
+      uid TEXT NOT NULL, template_id TEXT NOT NULL, env TEXT NOT NULL, order_id TEXT NOT NULL, created_at TEXT NOT NULL,
+      PRIMARY KEY (uid, template_id, env))`),
+  ]);
+}
+async function broOwned(db, uid, mode) {
+  const { results } = await db.prepare(`SELECT template_id FROM brochure_entitlements WHERE uid = ? AND env = ?`).bind(uid, mode).all();
+  return results.map(r => r.template_id).filter(id => BRO_PREMIUM.includes(id));
+}
+/* the right to a template, only for an order that is COMPLETED and belongs to this user */
+function broGrant(db, uid, mode, orderId, templateId, nowIso) {
+  return db.prepare(`INSERT OR IGNORE INTO brochure_entitlements (uid, template_id, env, order_id, created_at)
+    SELECT ?, ?, ?, ?, ? WHERE EXISTS (SELECT 1 FROM brochure_orders WHERE order_id = ? AND uid = ? AND env = ? AND status = 'COMPLETED')`)
+    .bind(uid, templateId, mode, orderId, nowIso, orderId, uid, mode);
+}
+
+async function handleBro(request, env, path, ctx) {
+  const mode = broMode(env, request);
+
+  if (path === '/api/brochure/config' && request.method === 'GET') {
+    const pp = broPaypal(env, mode);
+    const ready = mode !== 'off' && !!(pp.id && pp.secret);
+    return json({ sales: ready ? mode : 'off', clientId: ready ? pp.id : null, currency: BRO_CURRENCY, price: BRO_PRICE, premium: BRO_PREMIUM });
+  }
+
+  // sales off: nothing is read from or written to D1, no PayPal call
+  if (mode === 'off') return json({ error: 'SALES_OFF', message: 'شراء القوالب غير مفعّل حاليًا.' }, 503);
+  const pp = broPaypal(env, mode);
+  if (!pp.id || !pp.secret) return json({ error: 'PAYPAL_NOT_CONFIGURED', message: 'الدفع غير مُفعّل حاليًا.' }, 503);
+
+  const user = await broUser(request, env, mode);
+  if (!user) return json({ error: 'AUTH_REQUIRED', message: 'سجّل الدخول بحساب Google أولًا.' }, 401);
+  if (!user.google) return json({ error: 'GOOGLE_REQUIRED', message: 'الشراء يتطلب تسجيل الدخول بحساب Google.' }, 403);
+  await ensureBroTables(env.DB);
+
+  if (path === '/api/brochure/entitlements' && request.method === 'GET') {
+    return json({ owned: await broOwned(env.DB, user.uid, mode) });
+  }
+
+  // ============ create the PayPal order (price from BRO_PRICE only) ============
+  if (path === '/api/brochure/create-order' && request.method === 'POST') {
+    const body = await readJson(request);
+    const templateId = String(body.template || '');
+    if (!BRO_PREMIUM.includes(templateId)) return json({ error: 'UNKNOWN_TEMPLATE', message: 'هذا القالب ليس من قوالب Premium.' }, 400);
+    if ((await broOwned(env.DB, user.uid, mode)).includes(templateId)) {
+      return json({ error: 'ALREADY_OWNED', owned: [templateId], message: 'اشتريت هذا القالب من قبل.' }, 409);
+    }
+    const ref = crypto.randomUUID();
+    const r = await cardsPaypalCall(pp, 'POST', '/v2/checkout/orders', {
+      intent: 'CAPTURE',
+      purchase_units: [{
+        reference_id: 'brochure-' + templateId, custom_id: ref, description: 'Brochure template: ' + templateId + ' (permanent licence)',
+        amount: { currency_code: BRO_CURRENCY, value: BRO_PRICE },
+      }],
+      application_context: { shipping_preference: 'NO_SHIPPING', user_action: 'PAY_NOW', brand_name: 'merabti.com' },
+    }, { 'PayPal-Request-Id': 'brochure-create-' + ref });
+    logBro(r.ok && r.data.id ? 'create-order ok' : 'create-order FAILED', { mode, template: templateId, status: r.status,
+      debugId: r.debugId, orderId: r.data.id || null, error: r.ok ? null : paypalError(r.data) });
+    if (!r.ok || !/^[A-Z0-9]{8,32}$/.test(String(r.data.id || ''))) {
+      return json({ error: 'CREATE_FAILED', message: 'تعذّر إنشاء الطلب، حاول مرة أخرى.' }, 502);
+    }
+    await env.DB.prepare(`INSERT INTO brochure_orders (order_id, ref, uid, template_id, amount, currency, status, env, created_at)
+      VALUES (?, ?, ?, ?, ?, ?, 'CREATED', ?, ?)`)
+      .bind(r.data.id, ref, user.uid, templateId, BRO_PRICE, BRO_CURRENCY, mode, new Date().toISOString()).run();
+    return json({ id: r.data.id });
+  }
+
+  // ============ capture + checks + right in D1 (once per order) ============
+  if (path === '/api/brochure/capture-order' && request.method === 'POST') {
+    const body = await readJson(request);
+    const orderId = String(body.orderId || '');
+    if (!/^[A-Z0-9]{8,32}$/.test(orderId)) return json({ error: 'BAD_ORDER', message: 'رقم الطلب غير صالح.' }, 400);
+    const row = await env.DB.prepare(`SELECT * FROM brochure_orders WHERE order_id = ? AND env = ?`).bind(orderId, mode).first();
+    if (!row) return json({ error: 'UNKNOWN_ORDER', message: 'الطلب غير موجود.' }, 404);
+    if (row.uid !== user.uid) {
+      logBro('capture-order WRONG USER', { mode, orderId });
+      return json({ error: 'NOT_YOUR_ORDER', message: 'هذا الطلب لا يخص حسابك.' }, 403);
+    }
+    if (row.status === 'COMPLETED') {   // already done (retry, double click): same answer; the right is re-checked idempotently
+      await broGrant(env.DB, user.uid, mode, orderId, row.template_id, row.completed_at || new Date().toISOString()).run();
+      return json({ ok: true, orderId, template: row.template_id, owned: await broOwned(env.DB, user.uid, mode) });
+    }
+    if (row.status !== 'CREATED') return json({ error: 'ORDER_CLOSED', message: 'هذا الطلب مغلق. راسلنا برقم الطلب: ' + orderId }, 409);
+
+    let r = await cardsPaypalCall(pp, 'POST', '/v2/checkout/orders/' + orderId + '/capture', null, { 'PayPal-Request-Id': 'brochure-capture-' + orderId });
+    const issue = r.data && r.data.details && r.data.details[0] && r.data.details[0].issue;
+    logBro(r.ok ? 'capture-order ok' : 'capture-order FAILED', { mode, orderId, status: r.status, debugId: r.debugId,
+      issue: issue || null, order: r.ok ? orderSummary(r.data) : null });
+    if (!r.ok && issue === 'ORDER_ALREADY_CAPTURED') r = await cardsPaypalCall(pp, 'GET', '/v2/checkout/orders/' + orderId);
+    else if (!r.ok) {
+      if (issue === 'INSTRUMENT_DECLINED') return json({ error: 'INSTRUMENT_DECLINED', message: 'رُفضت وسيلة الدفع، اختر وسيلة أخرى.' }, 402);
+      return json({ error: 'CAPTURE_FAILED', message: 'لم يكتمل الدفع، لم يُخصم أي مبلغ. حاول مرة أخرى.' }, 502);
+    }
+
+    const order = r.data || {};
+    const unit = (order.purchase_units || [])[0] || {};
+    const capture = ((unit.payments || {}).captures || [])[0] || {};
+    const amount = capture.amount || {};
+    if (order.id !== orderId || order.status !== 'COMPLETED' || capture.status !== 'COMPLETED' || !capture.id) {
+      logBro('capture-order NOT COMPLETED', { mode, orderId, order: orderSummary(order) });
+      return json({ error: 'NOT_COMPLETED', message: capture.status === 'PENDING'
+        ? 'الدفع قيد المراجعة لدى PayPal. سيُفتح القالب بعد اكتماله، رقم الطلب: ' + orderId : 'لم يكتمل الدفع. حاول مرة أخرى.' }, 402);
+    }
+    const refOk = unit.custom_id === row.ref || capture.custom_id === row.ref;
+    if (!refOk || amount.currency_code !== BRO_CURRENCY || amount.currency_code !== row.currency ||
+        toCents(amount.value) !== toCents(BRO_PRICE) || toCents(amount.value) !== toCents(row.amount)) {
+      logBro('capture-order MISMATCH', { mode, orderId, refOk, amount, expected: row.amount + ' ' + row.currency });
+      await env.DB.prepare(`UPDATE brochure_orders SET status = 'MISMATCH' WHERE order_id = ? AND status = 'CREATED'`).bind(orderId).run();
+      alertLater(ctx, env, 'order:' + orderId, { what: 'قوالب المطويات: المبلغ المدفوع ' + (amount.value || '?') + ' ' + (amount.currency_code || '') +
+        ' لا يطابق سعر القالب ' + row.template_id, orderId, bookId: 'brochure-' + row.template_id, issue: 'AMOUNT_MISMATCH', debugId: r.debugId, status: r.status });
+      return json({ error: 'AMOUNT_MISMATCH', message: 'المبلغ المدفوع لا يطابق سعر القالب. راسلنا برقم الطلب: ' + orderId }, 400);
+    }
+
+    // one capture → one right, in ONE transaction (D1 batch): the order is marked COMPLETED once,
+    // capture_id is UNIQUE (the same PayPal payment can never serve two orders), the right is idempotent.
+    const nowIso = new Date().toISOString();
+    try {
+      const res = await env.DB.batch([
+        env.DB.prepare(`UPDATE brochure_orders SET status = 'COMPLETED', capture_id = ?, completed_at = ?
+          WHERE order_id = ? AND status <> 'COMPLETED'`).bind(capture.id, nowIso, orderId),
+        broGrant(env.DB, user.uid, mode, orderId, row.template_id, nowIso),
+      ]);
+      if (res[0].meta && res[0].meta.changes === 1) logBro('right saved', { mode, orderId, template: row.template_id });
+    } catch (e) {
+      logBro('capture-order DUPLICATE CAPTURE ID', { mode, orderId, captureId: capture.id, error: String(e && e.message || e) });
+      return json({ error: 'DUPLICATE', message: 'عملية الدفع هذه مسجّلة من قبل.' }, 409);
+    }
+    return json({ ok: true, orderId, template: row.template_id, owned: await broOwned(env.DB, user.uid, mode) });
+  }
+
+  return null;
+}
+
+/* =====================================================================
    QR Code tool: Premium codes without the site link ($1.99 per code, PayPal) — tools/qr-generator
      GET  /api/qr/config         → { sales, clientId, currency, price, premium[] }            (no sign-in)
      GET  /api/qr/codes          → { codes: [{ id, design, data, logo, createdAt }] }        (the account's paid codes)
@@ -1460,6 +1647,21 @@ export default {
         res = await handleQr(request, env, path, ctx);
       } catch (e) {
         console.log('[qr] route error ' + path + ' ' + (e && e.stack || e));
+        res = json({ error: 'SERVER_ERROR', message: 'حدث خطأ في الخادم، حاول مرة أخرى.' }, 500);
+      }
+      const out = withCors(request, res || json({ error: 'NOT_FOUND' }, 404));
+      out.headers.set('Cache-Control', 'no-store');
+      return out;
+    }
+
+    // ============ Brochure maker Premium templates (independent from the books, cards, CV and QR) ============
+    if (path.startsWith('/api/brochure/')) {
+      if (request.method === 'OPTIONS') return cardsPreflight(request);
+      let res;
+      try {
+        res = await handleBro(request, env, path, ctx);
+      } catch (e) {
+        console.log('[brochure] route error ' + path + ' ' + (e && e.stack || e));
         res = json({ error: 'SERVER_ERROR', message: 'حدث خطأ في الخادم، حاول مرة أخرى.' }, 500);
       }
       const out = withCors(request, res || json({ error: 'NOT_FOUND' }, 404));

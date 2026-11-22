@@ -67,6 +67,10 @@
     // Lesson-plan generator Premium templates (/api/lesson/*, $1.99 each, permanent): "live" requested by the owner (2026-11-22).
     // "live" is honoured ONLY on dr.merabti.workers.dev (LP_LIVE_HOSTS in worker.js); previews stay "off" (the page runs a demo).
     // "off" = nothing sold. "sandbox" needs PAYPAL_SANDBOX_CLIENT_ID + secret PAYPAL_SANDBOX_SECRET.
-    "LP_SALES": "live"
+    "LP_SALES": "live",
+    // Brochure maker Premium templates (/api/brochure/*, $1.99 each, permanent): "live" requested by the owner (2026-11-22).
+    // "live" is honoured ONLY on dr.merabti.workers.dev (BRO_LIVE_HOSTS in worker.js); previews stay "off" (demo on the page).
+    // "off" = nothing sold (free templates stay free). "sandbox" needs PAYPAL_SANDBOX_CLIENT_ID + secret PAYPAL_SANDBOX_SECRET.
+    "BROCHURE_SALES": "live"
   }
 }

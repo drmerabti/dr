@@ -205,6 +205,26 @@ border, frame ring, shadow or filter, whatever the page's own logo rules say. CS
   PNG bitmaps (168 px) made from each design's SVG; the big preview stays SVG.
 - Form fields: `unicode-bidi: plaintext` on every field, so Latin values sit on the left and Arabic on the right.
 
+## Brochure maker Premium templates (tools/brochure-generator)
+
+- 12 free templates in `TEMPLATES` (app.js) + 10 Premium in `premium.js` (`window.BROCHURE_PREMIUM`: `templates`, fr/en
+  `samples` in the order of `K`, `deco(W, helpers)`), merged by app.js; styles in `premium.css` (after style.css).
+  Premium ids: lux, clinic, academy, tech, solar, realty, kids, wedding, travel, islamic. A template may set
+  `fontH` (heading font, CSS `--fh`) and `badge:{ar,fr,en}`. Decorations are drawn for any panel width W (tri 374,
+  bi 561, Z 280.5, A5 559) with literal colours; gradient ids come from `h.uid()`. Same PDF rules as the CV builder
+  (html2canvas: no clip-path / filter / background-clip:text; Arabic never letter-spaced).
+- Sale: **$1.99 per template, one permanent purchase, no packs**, PayPal. Editing, preview and saving are free;
+  free templates print / export with no account. Print and PDF of a Premium template go through
+  `requestExport(kind)`: Google sign-in, then the right from the Worker. Admins (`users/{uid}.isAdmin`) export all.
+  Modes from `/api/brochure/config`: live / sandbox · demo (claude-test preview or localhost: simulated payment) · off.
+  A paid but unconfirmed order is kept in localStorage `brochure:pendingOrder` (with the uid).
+- Worker `/api/brochure/*` (worker.js, "Brochure maker Premium templates"), a copy of the CV routes:
+  `GET config`, `GET entitlements`, `POST create-order {template}`, `POST capture-order {orderId}`; Google ID token
+  required. Price and catalogue only in the Worker (`BRO_PRICE`, `BRO_PREMIUM`, keep in step with premium.js).
+  D1 tables `brochure_orders`, `brochure_entitlements` (`env` = live | sandbox). `BROCHURE_SALES` in wrangler.jsonc:
+  **"live"** (owner, 2026-11-22), honoured only on `BRO_LIVE_HOSTS` = dr.merabti.workers.dev. Test-only (sandbox):
+  `BROCHURE_PAYPAL_API`, `BROCHURE_TEST_JWKS`.
+
 ## Lesson-plan generator Premium templates (tools/lesson-plan-generator)
 
 - 16 free templates (`t1`…`t16` in `T`, app.js, style.css) + 10 Premium in `premium.js` / `premium.css`:
