@@ -1440,10 +1440,204 @@ async function handleQr(request, env, path, ctx) {
   return null;
 }
 
+/* =====================================================================
+   Lesson-plan generator Premium templates (tools/lesson-plan-generator) — independent from the books, cards, CV and QR.
+   One template = one permanent purchase at LP_PRICE (no packs). The 16 free templates are not sold.
+     GET  /api/lesson/config         → { sales, clientId, currency, price, premium[] }      (no sign-in)
+     GET  /api/lesson/entitlements   → { owned[] }
+     POST /api/lesson/create-order   { template } → { id }                (PayPal order made here)
+     POST /api/lesson/capture-order  { orderId }  → { ok, orderId, template, owned[] }
+   Every route except config needs "Authorization: Bearer <Firebase ID token>" (the site's account, checked here).
+   LP_SALES (wrangler var): "off" (default: nothing is sold, nothing is written),
+   "sandbox" (PAYPAL_SANDBOX_CLIENT_ID + secret PAYPAL_SANDBOX_SECRET) or
+   "live" (the site's PayPal app) — "live" is honoured ONLY on LP_LIVE_HOSTS (the production Worker):
+   a preview version such as claude-test-dr.merabti.workers.dev stays "off" (the page then runs a demo).
+   Test-only overrides, honoured ONLY when LP_SALES = "sandbox": LP_PAYPAL_API (PayPal mock), LP_TEST_JWKS (test signer).
+===================================================================== */
+const LP_PREMIUM = ['royal', 'andalus', 'dashboard', 'blueprint', 'cahier', 'editorial', 'oasis', 'botanica', 'swiss', 'kids'];
+const LP_PRICE = '1.99';
+const LP_CURRENCY = 'USD';
+const LP_LIVE_HOSTS = ['dr.merabti.workers.dev'];
+
+function lpMode(env, request) {
+  const m = String(env.LP_SALES || 'off').toLowerCase();
+  if (m === 'live') return request && LP_LIVE_HOSTS.includes(new URL(request.url).hostname) ? 'live' : 'off';
+  return m === 'sandbox' ? 'sandbox' : 'off';
+}
+function lpPaypal(env, mode) {
+  if (mode === 'live') return { mode, api: 'https://api-m.paypal.com', id: env.PAYPAL_CLIENT_ID, secret: env.PAYPAL_SECRET };
+  if (mode === 'sandbox') return { mode, api: env.LP_PAYPAL_API || 'https://api-m.sandbox.paypal.com',
+    id: env.PAYPAL_SANDBOX_CLIENT_ID, secret: env.PAYPAL_SANDBOX_SECRET };
+  return { mode };
+}
+async function lpUser(request, env, mode) {
+  const claims = await firebaseClaims(request, () =>
+    (mode === 'sandbox' && env.LP_TEST_JWKS ? JSON.parse(env.LP_TEST_JWKS).keys || [] : googleKeys()));
+  return claims ? { uid: claims.sub } : null;
+}
+/* one JSON line per step, never the payer's details */
+function logLp(step, info) {
+  console.log('[lesson] ' + step + ' ' + JSON.stringify(Object.assign({ step }, info)));
+}
+async function ensureLpTables(db) {
+  await db.batch([
+    db.prepare(`CREATE TABLE IF NOT EXISTS lp_orders (
+      order_id TEXT PRIMARY KEY, ref TEXT NOT NULL UNIQUE, uid TEXT NOT NULL, template_id TEXT NOT NULL,
+      amount TEXT NOT NULL, currency TEXT NOT NULL, status TEXT NOT NULL,
+      capture_id TEXT UNIQUE, env TEXT NOT NULL, created_at TEXT NOT NULL, completed_at TEXT)`),
+    db.prepare(`CREATE TABLE IF NOT EXISTS lp_entitlements (
+      uid TEXT NOT NULL, template_id TEXT NOT NULL, env TEXT NOT NULL, order_id TEXT NOT NULL, created_at TEXT NOT NULL,
+      PRIMARY KEY (uid, template_id, env))`),
+  ]);
+}
+async function lpOwned(db, uid, mode) {
+  const { results } = await db.prepare(`SELECT template_id FROM lp_entitlements WHERE uid = ? AND env = ?`).bind(uid, mode).all();
+  return results.map(r => r.template_id).filter(id => LP_PREMIUM.includes(id));
+}
+/* the right to a template, only for an order that is COMPLETED and belongs to this user */
+function lpGrant(db, uid, mode, orderId, templateId, nowIso) {
+  return db.prepare(`INSERT OR IGNORE INTO lp_entitlements (uid, template_id, env, order_id, created_at)
+    SELECT ?, ?, ?, ?, ? WHERE EXISTS (SELECT 1 FROM lp_orders WHERE order_id = ? AND uid = ? AND env = ? AND status = 'COMPLETED')`)
+    .bind(uid, templateId, mode, orderId, nowIso, orderId, uid, mode);
+}
+
+async function handleLesson(request, env, path, ctx) {
+  const mode = lpMode(env, request);
+
+  if (path === '/api/lesson/config' && request.method === 'GET') {
+    const pp = lpPaypal(env, mode);
+    const ready = mode !== 'off' && !!(pp.id && pp.secret);
+    return json({ sales: ready ? mode : 'off', clientId: ready ? pp.id : null, currency: LP_CURRENCY, price: LP_PRICE, premium: LP_PREMIUM });
+  }
+
+  // sales off: nothing is read from or written to D1, no PayPal call
+  if (mode === 'off') return json({ error: 'SALES_OFF', message: 'شراء القوالب غير مفعّل حاليًا.' }, 503);
+  const pp = lpPaypal(env, mode);
+  if (!pp.id || !pp.secret) return json({ error: 'PAYPAL_NOT_CONFIGURED', message: 'الدفع غير مُفعّل حاليًا.' }, 503);
+
+  const user = await lpUser(request, env, mode);
+  if (!user) return json({ error: 'AUTH_REQUIRED', message: 'سجّل الدخول أولًا.' }, 401);
+  await ensureLpTables(env.DB);
+
+  if (path === '/api/lesson/entitlements' && request.method === 'GET') {
+    return json({ owned: await lpOwned(env.DB, user.uid, mode) });
+  }
+
+  // ============ create the PayPal order (price from LP_PRICE only) ============
+  if (path === '/api/lesson/create-order' && request.method === 'POST') {
+    const body = await readJson(request);
+    const templateId = String(body.template || '');
+    if (!LP_PREMIUM.includes(templateId)) return json({ error: 'UNKNOWN_TEMPLATE', message: 'هذا القالب ليس من قوالب Premium.' }, 400);
+    if ((await lpOwned(env.DB, user.uid, mode)).includes(templateId)) {
+      return json({ error: 'ALREADY_OWNED', owned: [templateId], message: 'اشتريت هذا القالب من قبل.' }, 409);
+    }
+    const ref = crypto.randomUUID();
+    const r = await cardsPaypalCall(pp, 'POST', '/v2/checkout/orders', {
+      intent: 'CAPTURE',
+      purchase_units: [{
+        reference_id: 'lesson-' + templateId, custom_id: ref, description: 'Lesson plan template: ' + templateId + ' (permanent licence)',
+        amount: { currency_code: LP_CURRENCY, value: LP_PRICE },
+      }],
+      application_context: { shipping_preference: 'NO_SHIPPING', user_action: 'PAY_NOW', brand_name: 'merabti.com' },
+    }, { 'PayPal-Request-Id': 'lesson-create-' + ref });
+    logLp(r.ok && r.data.id ? 'create-order ok' : 'create-order FAILED', { mode, template: templateId, status: r.status,
+      debugId: r.debugId, orderId: r.data.id || null, error: r.ok ? null : paypalError(r.data) });
+    if (!r.ok || !/^[A-Z0-9]{8,32}$/.test(String(r.data.id || ''))) {
+      return json({ error: 'CREATE_FAILED', message: 'تعذّر إنشاء الطلب، حاول مرة أخرى.' }, 502);
+    }
+    await env.DB.prepare(`INSERT INTO lp_orders (order_id, ref, uid, template_id, amount, currency, status, env, created_at)
+      VALUES (?, ?, ?, ?, ?, ?, 'CREATED', ?, ?)`)
+      .bind(r.data.id, ref, user.uid, templateId, LP_PRICE, LP_CURRENCY, mode, new Date().toISOString()).run();
+    return json({ id: r.data.id });
+  }
+
+  // ============ capture + checks + right in D1 (once per order) ============
+  if (path === '/api/lesson/capture-order' && request.method === 'POST') {
+    const body = await readJson(request);
+    const orderId = String(body.orderId || '');
+    if (!/^[A-Z0-9]{8,32}$/.test(orderId)) return json({ error: 'BAD_ORDER', message: 'رقم الطلب غير صالح.' }, 400);
+    const row = await env.DB.prepare(`SELECT * FROM lp_orders WHERE order_id = ? AND env = ?`).bind(orderId, mode).first();
+    if (!row) return json({ error: 'UNKNOWN_ORDER', message: 'الطلب غير موجود.' }, 404);
+    if (row.uid !== user.uid) {
+      logLp('capture-order WRONG USER', { mode, orderId });
+      return json({ error: 'NOT_YOUR_ORDER', message: 'هذا الطلب لا يخص حسابك.' }, 403);
+    }
+    if (row.status === 'COMPLETED') {   // already done (retry, double click): same answer; the right is re-checked idempotently
+      await lpGrant(env.DB, user.uid, mode, orderId, row.template_id, row.completed_at || new Date().toISOString()).run();
+      return json({ ok: true, orderId, template: row.template_id, owned: await lpOwned(env.DB, user.uid, mode) });
+    }
+    if (row.status !== 'CREATED') return json({ error: 'ORDER_CLOSED', message: 'هذا الطلب مغلق. راسلنا برقم الطلب: ' + orderId }, 409);
+
+    let r = await cardsPaypalCall(pp, 'POST', '/v2/checkout/orders/' + orderId + '/capture', null, { 'PayPal-Request-Id': 'lesson-capture-' + orderId });
+    const issue = r.data && r.data.details && r.data.details[0] && r.data.details[0].issue;
+    logLp(r.ok ? 'capture-order ok' : 'capture-order FAILED', { mode, orderId, status: r.status, debugId: r.debugId,
+      issue: issue || null, order: r.ok ? orderSummary(r.data) : null });
+    if (!r.ok && issue === 'ORDER_ALREADY_CAPTURED') r = await cardsPaypalCall(pp, 'GET', '/v2/checkout/orders/' + orderId);
+    else if (!r.ok) {
+      if (issue === 'INSTRUMENT_DECLINED') return json({ error: 'INSTRUMENT_DECLINED', message: 'رُفضت وسيلة الدفع، اختر وسيلة أخرى.' }, 402);
+      alertLater(ctx, env, 'order:' + orderId, { what: 'قوالب مذكرة الأستاذ: فشل تأكيد الدفع (capture-order) للقالب ' + row.template_id,
+        orderId, bookId: 'lesson-' + row.template_id, issue: issue || null, debugId: r.debugId, status: r.status, env: mode });
+      return json({ error: 'CAPTURE_FAILED', message: 'لم يكتمل الدفع، لم يُخصم أي مبلغ. حاول مرة أخرى.' }, 502);
+    }
+
+    const order = r.data || {};
+    const unit = (order.purchase_units || [])[0] || {};
+    const capture = ((unit.payments || {}).captures || [])[0] || {};
+    const amount = capture.amount || {};
+    if (order.id !== orderId || order.status !== 'COMPLETED' || capture.status !== 'COMPLETED' || !capture.id) {
+      logLp('capture-order NOT COMPLETED', { mode, orderId, order: orderSummary(order) });
+      return json({ error: 'NOT_COMPLETED', message: capture.status === 'PENDING'
+        ? 'الدفع قيد المراجعة لدى PayPal. سيُفتح القالب بعد اكتماله، رقم الطلب: ' + orderId : 'لم يكتمل الدفع. حاول مرة أخرى.' }, 402);
+    }
+    const refOk = unit.custom_id === row.ref || capture.custom_id === row.ref;
+    if (!refOk || amount.currency_code !== LP_CURRENCY || amount.currency_code !== row.currency ||
+        toCents(amount.value) !== toCents(LP_PRICE) || toCents(amount.value) !== toCents(row.amount)) {
+      logLp('capture-order MISMATCH', { mode, orderId, refOk, amount, expected: row.amount + ' ' + row.currency });
+      await env.DB.prepare(`UPDATE lp_orders SET status = 'MISMATCH' WHERE order_id = ? AND status = 'CREATED'`).bind(orderId).run();
+      alertLater(ctx, env, 'order:' + orderId, { what: 'قوالب مذكرة الأستاذ: المبلغ المدفوع ' + (amount.value || '?') + ' ' + (amount.currency_code || '') +
+        ' لا يطابق سعر القالب ' + row.template_id, orderId, bookId: 'lesson-' + row.template_id, issue: 'AMOUNT_MISMATCH', debugId: r.debugId, status: r.status, env: mode });
+      return json({ error: 'AMOUNT_MISMATCH', message: 'المبلغ المدفوع لا يطابق سعر القالب. راسلنا برقم الطلب: ' + orderId }, 400);
+    }
+
+    // one capture → one right, in ONE transaction (D1 batch): the order is marked COMPLETED once,
+    // capture_id is UNIQUE (the same PayPal payment can never serve two orders), the right is idempotent.
+    const nowIso = new Date().toISOString();
+    try {
+      const res = await env.DB.batch([
+        env.DB.prepare(`UPDATE lp_orders SET status = 'COMPLETED', capture_id = ?, completed_at = ?
+          WHERE order_id = ? AND status <> 'COMPLETED'`).bind(capture.id, nowIso, orderId),
+        lpGrant(env.DB, user.uid, mode, orderId, row.template_id, nowIso),
+      ]);
+      if (res[0].meta && res[0].meta.changes === 1) logLp('right saved', { mode, orderId, template: row.template_id });
+    } catch (e) {
+      logLp('capture-order DUPLICATE CAPTURE ID', { mode, orderId, captureId: capture.id, error: String(e && e.message || e) });
+      return json({ error: 'DUPLICATE', message: 'عملية الدفع هذه مسجّلة من قبل.' }, 409);
+    }
+    return json({ ok: true, orderId, template: row.template_id, owned: await lpOwned(env.DB, user.uid, mode) });
+  }
+
+  return null;
+}
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     const path = url.pathname;
+
+    // ============ Lesson-plan generator Premium templates (independent from the books, cards, CV and QR) ============
+    if (path.startsWith('/api/lesson/')) {
+      if (request.method === 'OPTIONS') return cardsPreflight(request);
+      let res;
+      try {
+        res = await handleLesson(request, env, path, ctx);
+      } catch (e) {
+        console.log('[lesson] route error ' + path + ' ' + (e && e.stack || e));
+        res = json({ error: 'SERVER_ERROR', message: 'حدث خطأ في الخادم، حاول مرة أخرى.' }, 500);
+      }
+      const out = withCors(request, res || json({ error: 'NOT_FOUND' }, 404));
+      out.headers.set('Cache-Control', 'no-store');
+      return out;
+    }
 
     // ============ QR Code tool: clean Premium designs (independent from the books, cards and CV) ============
     if (path.startsWith('/api/qr/')) {
