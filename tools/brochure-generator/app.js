@@ -631,7 +631,7 @@ function mkDeco(W) {
       if (kind === 'cover') s += `
         <circle cx="${W - 14}" cy="60" r="232" fill="none" stroke="${P.c2}" stroke-width="10"/>
         <circle cx="${W - 14}" cy="60" r="200" fill="${P.c1}"/>
-        <g transform="translate(${W - 88} 108)" fill="#fff" opacity=".9"><rect x="-12" y="-36" width="24" height="72" rx="6"/><rect x="-36" y="-12" width="72" height="24" rx="6"/></g>
+        <path transform="translate(${W - 88} 120)" d="M0 18C-16 4 -34 -4 -34 -22C-34 -34 -24 -42 -14 -42C-7 -42 -2 -38 0 -32C2 -38 7 -42 14 -42C24 -42 34 -34 34 -22C34 -4 16 4 0 18Z" fill="#fff" opacity=".9"/>
         <circle cx="0" cy="770" r="160" fill="${P.c2}" opacity=".7"/><circle cx="64" cy="640" r="16" fill="${P.c3}"/>
         <circle cx="${W - 44}" cy="700" r="40" fill="${P.c1}" opacity=".12"/>`;
       else if (kind === 'back' || kind === 'flap') s += `
@@ -1344,7 +1344,7 @@ function miniOutside(tplId) {
   return miniHTML(ctx);
 }
 function buildGallery() {
-  $('#gCats').innerHTML = ['all', 'premium', ...CATS].map(c => `<button type="button" class="chip ${gCat === c ? 'on' : ''}" data-cat="${c}">${T('cat_' + c)}</button>`).join('');
+  $('#gCats').innerHTML = ['all', ...CATS, 'premium'].map(c => `<button type="button" class="chip ${gCat === c ? 'on' : ''}" data-cat="${c}">${T('cat_' + c)}</button>`).join('');
   if (!gFold) gFold = st.fmt;
   $('#gFolds').innerHTML = FMT_KEYS.map(k => `<button type="button" class="chip fold-chip ${gFold === k ? 'on' : ''}" data-gfold="${k}">${FOLD_ICONS[k]}${T(FORMATS[k].label)}</button>`).join('');
   renderGrid();
@@ -1353,7 +1353,10 @@ function renderGrid() {
   const q = ($('#gSearch').value || '').trim().toLowerCase();
   const list = TEMPLATES.filter(t => (gCat === 'all' || t.cat === gCat || (gCat === 'premium' && t.premium)) &&
     (!q || Object.values(t.name).concat(Object.keys(UI).map(l => UI[l]['cat_' + t.cat])).some(n => n.toLowerCase().includes(q))));
-  list.sort((a, b) => (b.premium ? 1 : 0) - (a.premium ? 1 : 0));
+  /* free and Premium alternate, a free one first: a visitor always finds free templates */
+  const fr = list.filter(t => !t.premium), pr = list.filter(t => t.premium);
+  list.length = 0;
+  for (let i = 0; i < Math.max(fr.length, pr.length); i++) { if (fr[i]) list.push(fr[i]); if (pr[i]) list.push(pr[i]); }
   const grid = $('#gGrid');
   if (!list.length) { grid.innerHTML = `<div class="g-empty">${T('no_results')}</div>`; return; }
   grid.innerHTML = list.map(t => `<button type="button" class="g-card ${t.id === st.tpl ? 'on' : ''}${t.premium ? ' prem' : ''}" data-tpl="${t.id}">

@@ -213,6 +213,9 @@ border, frame ring, shadow or filter, whatever the page's own logo rules say. CS
   `fontH` (heading font, CSS `--fh`) and `badge:{ar,fr,en}`. Decorations are drawn for any panel width W (tri 374,
   bi 561, Z 280.5, A5 559) with literal colours; gradient ids come from `h.uid()`. Same PDF rules as the CV builder
   (html2canvas: no clip-path / filter / background-clip:text; Arabic never letter-spaced).
+  **No cross or plus shapes in any design** (owner's rule): medical motifs use hearts and the heartbeat line.
+- Gallery order: free and Premium alternate, a free template first (visitors always find free ones); the Premium
+  filter chip comes last.
 - Sale: **$1.99 per template, one permanent purchase, no packs**, PayPal. Editing, preview and saving are free;
   free templates print / export with no account. Print and PDF of a Premium template go through
   `requestExport(kind)`: Google sign-in, then the right from the Worker. Admins (`users/{uid}.isAdmin`) export all.
