@@ -178,6 +178,46 @@ const UI = {
     auth_wrong:'Wrong password.', auth_nouser:'No account with this email.', auth_invalid:'Wrong email or password.', auth_popup:'The sign-in window was closed.', auth_default:'Something went wrong, please try again.',
   },
 };
+/* نصوص قوالب Premium ونافذة الشراء */
+Object.assign(UI.ar, {
+  cat_premium:'Premium', cat_free:'مجانية', prem_own:'مملوك', prem_note:'Premium · {p} — المعاينة مجانية، التصدير بعد الشراء', prem_buy:'شراء القالب',
+  prem_owned:'قالب Premium مملوك — PDF والطباعة متاحان', t_tpl_prem:'القالب: {name} (Premium — المعاينة مجانية)', login_prem:'سجّل الدخول لشراء قالب Premium وتصديره، يبقى القالب في حسابك.',
+  shop_title:'قالب «{n}»', shop_sub:'تصميم احترافي فريد بجودة الطباعة، يحوّل مذكرتك إلى وثيقة أنيقة تليق بالتفتيش والأرشيف.',
+  shop_once:'شراء واحد · دائم', shop_b1:'تحميل PDF وطباعة بلا حدود بهذا القالب', shop_b2:'لكل مذكراتك الحالية والقادمة، في حسابك على أي جهاز',
+  shop_b3:'شريط توزيع الزمن وخانات التوقيع والتأشيرة مدمجة', shop_secure:'دفع آمن عبر PayPal (بطاقة بنكية أو حساب PayPal)', shop_account:'الحساب',
+  shop_restore:'استرجاع مشترياتي', shop_free:'اختيار قالب مجاني', shop_close:'إغلاق',
+  shop_demo:'وضع تجريبي (رابط المعاينة): لا يُدفع أي مبلغ ولا يُحفظ أي شراء.', shop_demo_btn:'محاكاة الدفع',
+  shop_sandbox:'وضع الاختبار (PayPal Sandbox): لا يُخصم أي مبلغ حقيقي.', shop_off:'شراء القوالب غير متاح حاليًا. المعاينة والتعديل متاحان، أو اختر قالبًا مجانيًا للتصدير.',
+  shop_err:'تعذّر إتمام العملية، حاول مرة أخرى.', shop_paying:'جارٍ تأكيد الدفع…', shop_done:'تم الشراء', shop_done_t:'القالب لك الآن نهائيًا في هذا الحساب: صدّر وارجع إليه متى شئت.',
+  shop_order:'رقم الطلب', shop_now_pdf:'تحميل PDF الآن', shop_now_print:'الطباعة الآن', shop_check_err:'تعذّر التحقق من مشترياتك، تحقّق من الاتصال وحاول مجددًا.',
+  shop_resumed:'✓ اكتمل شراؤك السابق وفُتح القالب', shop_restored:'✓ تم استرجاع {n} من القوالب', shop_restored0:'لا توجد قوالب مشتراة في هذا الحساب',
+});
+Object.assign(UI.fr, {
+  cat_premium:'Premium', cat_free:'Gratuits', prem_own:'Acheté', prem_note:'Premium · {p} — aperçu gratuit, export après achat', prem_buy:'Acheter le modèle',
+  prem_owned:'Modèle Premium acheté — PDF et impression disponibles', t_tpl_prem:'Modèle : {name} (Premium — aperçu gratuit)', login_prem:'Connectez-vous pour acheter et exporter un modèle Premium ; il reste dans votre compte.',
+  shop_title:'Modèle « {n} »', shop_sub:'Un design professionnel unique, qualité impression, qui fait de votre fiche un document soigné pour l’inspection et l’archive.',
+  shop_once:'Achat unique · à vie', shop_b1:'PDF et impression illimités avec ce modèle', shop_b2:'Pour toutes vos fiches, actuelles et futures, sur tout appareil',
+  shop_b3:'Barre de répartition du temps et cases de signature intégrées', shop_secure:'Paiement sécurisé PayPal (carte bancaire ou compte PayPal)', shop_account:'Compte',
+  shop_restore:'Restaurer mes achats', shop_free:'Choisir un modèle gratuit', shop_close:'Fermer',
+  shop_demo:'Mode démo (lien d’aperçu) : aucun paiement, aucun achat enregistré.', shop_demo_btn:'Simuler le paiement',
+  shop_sandbox:'Mode test (PayPal Sandbox) : aucun débit réel.', shop_off:'L’achat des modèles n’est pas disponible pour le moment. Aperçu et modification restent possibles, ou choisissez un modèle gratuit.',
+  shop_err:'L’opération a échoué, réessayez.', shop_paying:'Confirmation du paiement…', shop_done:'Achat réussi', shop_done_t:'Le modèle est à vous pour toujours dans ce compte.',
+  shop_order:'N° de commande', shop_now_pdf:'Télécharger le PDF', shop_now_print:'Imprimer maintenant', shop_check_err:'Impossible de vérifier vos achats, vérifiez la connexion et réessayez.',
+  shop_resumed:'✓ Votre achat précédent est confirmé, le modèle est débloqué', shop_restored:'✓ {n} modèle(s) restauré(s)', shop_restored0:'Aucun modèle acheté dans ce compte',
+});
+Object.assign(UI.en, {
+  cat_premium:'Premium', cat_free:'Free', prem_own:'Owned', prem_note:'Premium · {p} — free preview, export after purchase', prem_buy:'Buy template',
+  prem_owned:'Premium template owned — PDF and print available', t_tpl_prem:'Template: {name} (Premium — free preview)', login_prem:'Sign in to buy and export a Premium template; it stays in your account.',
+  shop_title:'“{n}” template', shop_sub:'A unique, print-quality professional design that turns your lesson plan into a polished document for inspection and archiving.',
+  shop_once:'One-time · lifetime', shop_b1:'Unlimited PDF and printing with this template', shop_b2:'For all your lesson plans, now and later, on any device',
+  shop_b3:'Built-in time-distribution bar and signature boxes', shop_secure:'Secure PayPal payment (bank card or PayPal account)', shop_account:'Account',
+  shop_restore:'Restore my purchases', shop_free:'Pick a free template', shop_close:'Close',
+  shop_demo:'Demo mode (preview link): nothing is paid and nothing is saved.', shop_demo_btn:'Simulate the payment',
+  shop_sandbox:'Test mode (PayPal Sandbox): no real money is taken.', shop_off:'Template purchases are not available right now. Preview and editing still work, or pick a free template to export.',
+  shop_err:'Something went wrong, please try again.', shop_paying:'Confirming the payment…', shop_done:'Purchase complete', shop_done_t:'The template is yours for good in this account.',
+  shop_order:'Order ID', shop_now_pdf:'Download PDF now', shop_now_print:'Print now', shop_check_err:'Could not check your purchases. Check the connection and try again.',
+  shop_resumed:'✓ Your earlier purchase is confirmed and the template is unlocked', shop_restored:'✓ {n} template(s) restored', shop_restored0:'No purchased templates in this account',
+});
 let uiLang = (() => { try { const l = localStorage.getItem(UI_LANG_KEY); return UI[l] ? l : 'ar'; } catch(e){ return 'ar'; } })();
 function t(key, vars){
   let s = (UI[uiLang] && UI[uiLang][key]) || UI.ar[key] || key;
@@ -297,12 +337,16 @@ const NAMES_I18N = {
   en: {t1:'Classic black',t2:'Framed blue',t3:'Green sequences',t4:'Elegant red',t5:'Default',t6:'Plain formal',t7:'Colour band',t8:'Timeline',
     t9:'Formal double frame',t10:'Modern sidebar',t11:'Soft geometric shapes',t12:'Elegant coloured tables',t13:'Simple elegant',t14:'Ornate header',t15:'Calm black & white',t16:'Ink saver'},
 };
-const tplName = k => (NAMES_I18N[uiLang] && NAMES_I18N[uiLang][k]) || NAMES[k];
+const PREMIUM_NAMES = window.PREMIUM_NAMES || { ar:{} };
+const tplName = k => (PREMIUM_NAMES[uiLang] && PREMIUM_NAMES[uiLang][k]) || PREMIUM_NAMES.ar[k] || (NAMES_I18N[uiLang] && NAMES_I18N[uiLang][k]) || NAMES[k] || k;
+const tplLabel = k => (PREMIUM_NAMES.ar[k] ? '' : k.slice(1) + '. ') + tplName(k);
 const TPL_CATS = {
   t1:['classic','print'], t2:['classic'], t3:['classic'], t4:['classic'], t5:['modern'], t6:['classic','print'], t7:['modern'], t8:['modern'],
   t9:['classic','new'], t10:['modern','new'], t11:['modern','new'], t12:['modern','new'], t13:['modern','print','new'], t14:['classic','new'], t15:['print','new'], t16:['print','new'],
 };
 const COLOR_TPLS = ['t5','t7','t8','t10','t11','t12'];
+Object.assign(TPL_CATS, { royal:['premium','classic'], andalus:['premium','classic'], dashboard:['premium','modern'], blueprint:['premium','modern'],
+  cahier:['premium','modern'], editorial:['premium','modern'], oasis:['premium','modern'], botanica:['premium','classic'], swiss:['premium','modern','print'], kids:['premium','modern'] });
 
 /* ---------- زخارف SVG (ألوان حرفية لتظهر كما هي في PDF) ---------- */
 function corner9(fx, fy){
@@ -590,7 +634,11 @@ t16: p => { const g = grow(p);
   ${evalTxt(p) ? `<div class="sec16"${S('eval')}><h5>التقويم / الواجب المنزلي</h5><p>${evalTxt(p)}</p></div>` : ''}
  </div>`; },
 };
-const TPL_KEYS = Object.keys(T);
+/* قوالب Premium (premium.js): تُعرض أولًا في المعرض */
+const PREMIUM_KEYS = (window.PREMIUM_KEYS || []).filter(k => window.PREMIUM_TPL && window.PREMIUM_TPL[k]);
+PREMIUM_KEYS.forEach(k => { T[k] = window.PREMIUM_TPL[k]; });
+const isPremium = k => PREMIUM_KEYS.includes(k);
+const TPL_KEYS = PREMIUM_KEYS.concat(Object.keys(T).filter(k => !isPremium(k)));
 
 /* =====================================================================
    المحرر
@@ -982,6 +1030,7 @@ function renderPreviewNow(){
   applyZoom();
   renderCurrentThumb(vm);
   updateSummaries();
+  applyPremNote(vm);
 }
 
 /* ---------- صورة مصغّرة حقيقية لقالب ---------- */
@@ -996,14 +1045,14 @@ function fitMinis(root){
 }
 function renderCurrentThumb(vm){
   vm = vm || planView(currentPlan());
-  $('currentThumb').innerHTML = miniHTML(vm);
-  $('currentTplName').textContent = `${vm.template.slice(1)}. ${tplName(vm.template)}`;
+  $('currentThumb').innerHTML = miniHTML(vm) + (isPremium(vm.template) ? `<span class="go-crown">${CROWN}</span>` : '');
+  $('currentTplName').textContent = (isPremium(vm.template) ? 'Premium · ' : '') + tplLabel(vm.template);
   fitMinis($('currentThumb'));
 }
 
 /* ---------- معرض القوالب ---------- */
 let gCat = 'all';
-const G_CATS = ['all', 'classic', 'modern', 'print', 'new'];
+const G_CATS = ['all', 'premium', 'free', 'classic', 'modern', 'print', 'new'];
 function openGallery(){
   $('gallery').classList.remove('hidden');
   $('gSearch').value = '';
@@ -1013,22 +1062,26 @@ function openGallery(){
 }
 function closeGallery(){ $('gallery').classList.add('hidden'); }
 function renderGalleryCats(){
-  $('gCats').innerHTML = G_CATS.map(c => `<button type="button" class="chip${c === gCat ? ' on' : ''}" data-cat="${c}">${esc(t('cat_' + c))}</button>`).join('');
+  $('gCats').innerHTML = G_CATS.map(c => `<button type="button" class="chip${c === gCat ? ' on' : ''}" data-cat="${c}">${c === 'premium' ? CROWN : ''}${esc(t('cat_' + c))}</button>`).join('');
 }
 function renderThumbs(){
   const vm = planView(currentPlan());
   const q = $('gSearch').value.trim().toLowerCase();
   const keys = TPL_KEYS.filter(k => {
-    if (gCat !== 'all' && !TPL_CATS[k].includes(gCat)) return false;
+    if (gCat === 'free' ? isPremium(k) : gCat !== 'all' && !TPL_CATS[k].includes(gCat)) return false;
     if (!q) return true;
-    const hay = [k.slice(1), NAMES[k], NAMES_I18N.fr[k], NAMES_I18N.en[k]].join(' ').toLowerCase();
+    const hay = isPremium(k)
+      ? ['premium', k, PREMIUM_NAMES.ar[k], PREMIUM_NAMES.fr && PREMIUM_NAMES.fr[k], PREMIUM_NAMES.en && PREMIUM_NAMES.en[k]].join(' ').toLowerCase()
+      : [k.slice(1), NAMES[k], NAMES_I18N.fr[k], NAMES_I18N.en[k]].join(' ').toLowerCase();
     return hay.includes(q);
   });
-  $('thumbs').innerHTML = keys.length ? keys.map(k =>
-    `<button type="button" class="g-card thumb${k === vm.template ? ' on' : ''}" data-t="${k}" aria-label="${esc(tplName(k))}">` +
-    (TPL_CATS[k].includes('new') ? `<span class="g-new-tag">${esc(t('new_tag'))}</span>` : '') +
+  $('thumbs').innerHTML = keys.length ? keys.map(k => {
+    const prem = isPremium(k), own = prem && owns(k);
+    return `<button type="button" class="g-card thumb${k === vm.template ? ' on' : ''}${prem ? ' prem-card' : ''}" data-t="${k}" aria-label="${esc(tplName(k))}">` +
+    (prem ? premBadge(k) : TPL_CATS[k].includes('new') ? `<span class="g-new-tag">${esc(t('new_tag'))}</span>` : '') +
     `<div class="g-thumb">${miniHTML(vm, k)}</div>` +
-    `<div class="g-meta"><b>${k.slice(1)}. ${esc(tplName(k))}</b>${COLOR_TPLS.includes(k) ? `<span style="background:${tint(vm.color, .15)};color:${shade(vm.color, .2)}">●</span>` : ''}</div></button>`).join('')
+    `<div class="g-meta"><b>${esc(tplLabel(k))}</b>${prem ? `<span class="g-price${own ? ' own' : ''}">${esc(own ? t('prem_own') : shopPrice())}</span>`
+      : COLOR_TPLS.includes(k) ? `<span style="background:${tint(vm.color, .15)};color:${shade(vm.color, .2)}">●</span>` : ''}</div></button>`; }).join('')
     : `<div class="g-empty">${esc(t('no_results'))}</div>`;
   requestAnimationFrame(() => fitMinis($('thumbs')));
 }
@@ -1048,7 +1101,7 @@ function initTemplates(){
     touchPlan();
     renderPreviewNow();
     closeGallery();
-    toast(t('t_tpl', { name: tplName(b.dataset.t) }));
+    toast(t(isPremium(b.dataset.t) && !owns(b.dataset.t) ? 't_tpl_prem' : 't_tpl', { name: tplName(b.dataset.t) }));
   });
 }
 
@@ -1186,14 +1239,16 @@ function authErrMsg(code){ return t(AUTH_ERR[code] || 'auth_default'); }
 
 let authMode = 'login';
 
-function openAuthModal(){
+function openAuthModal(sub){
   $('authOverlay').classList.remove('hidden');
   $('authError').classList.add('hidden');
+  $('authModalSub').textContent = typeof sub === 'string' ? sub : t('login_text');
   setAuthMode('login');
 }
 function closeAuthModal(){
   $('authOverlay').classList.add('hidden');
   pendingSaveAfterLogin = false;
+  pendingExport = null;
 }
 function setAuthMode(mode){
   authMode = mode;
@@ -1370,7 +1425,7 @@ function deletePlan(id){
 function initMine(){
   $('btnMine').addEventListener('click', openMine);
   $('mClose').addEventListener('click', closeMine);
-  $('guestLoginBtn').addEventListener('click', openAuthModal);
+  $('guestLoginBtn').addEventListener('click', () => openAuthModal());
   $('mine').addEventListener('click', (e) => {
     if (e.target.id === 'mine'){ closeMine(); return; }
     const btn = e.target.closest('[data-act]'); if (!btn) return;
@@ -1453,12 +1508,39 @@ function buildPrintPaper(){
   return root.firstElementChild;
 }
 function doPrint(){
-  buildPrintPaper();
+  void buildPrintPaper().offsetHeight;
   toast(t('t_print'));
   const fonts = document.fonts ? document.fonts.ready : Promise.resolve();
   fonts.then(() => setTimeout(() => window.print(), 250));
 }
 window.addEventListener('afterprint', () => { $('printRoot').innerHTML = ''; });
+
+/* html2canvas 1.4.1 يرسم <svg> المضمّن في صفحة من اليمين إلى اليسار في غير مكانه (أو لا يرسمه)،
+   ويرسم <img> بدقة: قبل الالتقاط تُستبدل كل svg في الورقة بصورة مطابقة لها (نفس الحجم والموضع والألوان). */
+function svgsToImages(root){
+  const waits = [];
+  $$('svg', root).forEach(svg => {
+    if (svg.parentElement && svg.parentElement.closest('svg')) return;
+    const cs = getComputedStyle(svg), w = parseFloat(cs.width), h = parseFloat(cs.height);
+    if (!(w > 0 && h > 0)) return;
+    const c = svg.cloneNode(true);
+    c.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+    c.setAttribute('width', w); c.setAttribute('height', h);
+    c.setAttribute('class', ''); c.setAttribute('style', '');
+    if (!c.hasAttribute('fill')) c.setAttribute('fill', cs.fill || 'none');
+    if (!c.hasAttribute('stroke')) c.setAttribute('stroke', cs.stroke || 'none');
+    const img = new Image();
+    img.alt = '';
+    if (svg.getAttribute('class')) img.className = svg.getAttribute('class');
+    ['display','position','top','right','bottom','left','margin-top','margin-right','margin-bottom','margin-left','flex-grow','flex-shrink','flex-basis',
+     'order','align-self','vertical-align','transform','transform-origin','opacity','z-index'].forEach(k => img.style.setProperty(k, cs.getPropertyValue(k)));
+    Object.assign(img.style, { width: w + 'px', height: h + 'px', maxWidth: 'none', maxHeight: 'none', padding: '0', border: '0' });
+    waits.push(new Promise(r => { img.onload = img.onerror = r; }));
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(new XMLSerializer().serializeToString(c));
+    svg.replaceWith(img);
+  });
+  return Promise.all(waits);
+}
 
 async function doPdf(){
   if (typeof html2canvas === 'undefined' || !window.jspdf){ toast(t('t_pdf_err')); return; }
@@ -1468,6 +1550,9 @@ async function doPdf(){
   try {
     if (document.fonts) await document.fonts.ready;
     const paper = buildPrintPaper();
+    void paper.offsetHeight;                       // يبدأ تحميل خطوط القالب (الرقعة، الكوفي…) قبل انتظارها
+    if (document.fonts) await document.fonts.ready;
+    await svgsToImages(paper);
     await new Promise(r => setTimeout(r, 60));
     const canvas = await html2canvas(paper, { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false, scrollX: 0, scrollY: 0 });
     const imgData = canvas.toDataURL('image/jpeg', 0.95);
@@ -1519,7 +1604,7 @@ function applyUiLang(){
   $('langToggle').textContent = uiLang.toUpperCase();
   $$('#langMenu button').forEach(b => b.classList.toggle('on', b.dataset.lang === uiLang));
   document.title = uiLang === 'ar' ? 'مولد مذكرة تحضير الدروس للأساتذة — أكاديمية مرابطي' : t('tool_name') + (uiLang === 'ar' ? ' — أكاديمية مرابطي' : ' — Merabti Academy');
-  $('colorHint').textContent = t('color_hint', { list: COLOR_TPLS.map(k => k.slice(1)).join('، ').replace(/، /g, uiLang === 'ar' ? '، ' : ', ') });
+  $('colorHint').textContent = t('color_hint', { list: COLOR_TPLS.map(k => k.slice(1)).concat((window.PREMIUM_COLOR || []).map(tplName)).join(uiLang === 'ar' ? '، ' : ', ') });
   setAuthMode(authMode);
   renderAuthUI();
   if (currentPlan()){
@@ -1528,7 +1613,9 @@ function applyUiLang(){
     renderStages();
     renderCurrentThumb();
     updateSummaries();
+    applyPremNote();
   }
+  if (!$('shop').classList.contains('hidden')) shopRender();
   if (!$('gallery').classList.contains('hidden')){ renderGalleryCats(); renderThumbs(); }
   if (!$('mine').classList.contains('hidden')) renderGallery();
 }
@@ -1544,6 +1631,299 @@ function initLang(){
   document.addEventListener('click', (e) => { if (!e.target.closest('.lang-wrap')) $('langMenu').classList.add('hidden'); });
 }
 
+/* =====================================================================
+   قوالب Premium: الشراء والتصدير (PayPal · Worker /api/lesson/* · Cloudflare D1)
+   - التعديل والمعاينة مجانيان لكل القوالب، بلا حساب. القوالب المجانية الـ16 تُصدَّر كما كانت، بلا حساب.
+   - قالب Premium: التصدير (PDF / طباعة) يحتاج تسجيل الدخول ثم شراء القالب مرة واحدة ($1.99، السعر من الخادم)،
+     ويبقى للحساب نهائيًا. الحق يأتي من الـ Worker (D1، الدفع يُتحقَّق منه هناك)، لا من المتصفح؛
+     إلا المشرفين (users/{uid}.isAdmin، قاعدة shared/purchase.js) فيصدّرون كل القوالب.
+   - الأوضاع من GET /api/lesson/config: live / sandbox (البيع مفعّل) · demo (البيع متوقف على رابط المعاينة
+     claude-test أو localhost: دفع وهمي، لا شيء يُحفظ) · off (البيع متوقف في غير ذلك: التصدير ينتظر التفعيل).
+===================================================================== */
+const SHOP_LOCAL = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+const SHOP_API = (/\.workers\.dev$/.test(location.hostname) || SHOP_LOCAL) ? '' : 'https://dr.merabti.workers.dev';
+const SHOP_DEMO_HOST = SHOP_LOCAL || location.hostname === 'claude-test-dr.merabti.workers.dev';
+const SHOP_PENDING = 'lessonplan:pendingOrder';
+const SHOP = { mode: 'loading', cfg: null, owned: new Set(), demoOwned: new Set(), sdk: null, btns: null, busy: false, tpl: '', kind: 'pdf', ready: null };
+let isAdmin = false;
+let pendingExport = null;
+let exportChecking = false;
+const CROWN = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18.5h18L19.6 8l-4.9 4.3L12 5l-2.7 7.3L4.4 8z"/></svg>';
+const CHECK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+const LOCK = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+const XMARK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+
+const shopPrice = () => '$' + ((SHOP.cfg && SHOP.cfg.price) || '1.99');
+const salesOn = () => SHOP.mode === 'live' || SHOP.mode === 'sandbox';
+const owns = id => !isPremium(id) || isAdmin || SHOP.owned.has(id) || (SHOP.mode === 'demo' && SHOP.demoOwned.has(id));
+const premBadge = k => owns(k) ? `<span class="g-prem own">${CHECK}<b>Premium</b></span>` : `<span class="g-prem">${CROWN}<b>Premium</b></span>`;
+const shopUser = () => (window.fbAuth && window.fbAuth.currentUser) || null;
+const currentTpl = () => planView(currentPlan()).template;
+function shopTrack(name, extra){ try { if (window.gtag) gtag('event', name, Object.assign({ tool: 'lessonplan', method: 'paypal' }, extra || {})); } catch(e){} }
+
+async function shopFetch(path, opts){
+  opts = opts || {};
+  const headers = { 'Content-Type': 'application/json' };
+  const u = shopUser();
+  if (u) headers.Authorization = 'Bearer ' + await u.getIdToken();
+  const r = await fetch(SHOP_API + path, { method: opts.method || 'GET', headers, body: opts.body ? JSON.stringify(opts.body) : undefined, cache: 'no-store' });
+  const d = await r.json().catch(() => ({}));
+  d._status = r.status;
+  return d;
+}
+async function shopLoadConfig(){
+  try {
+    const d = await shopFetch('/api/lesson/config');
+    if (d && d.price) SHOP.cfg = d;
+    if (d && Array.isArray(d.premium) && d.premium.join() !== PREMIUM_KEYS.join()) console.warn('[lesson] premium list differs from the server');
+    SHOP.mode = d && (d.sales === 'live' || d.sales === 'sandbox') ? d.sales : (SHOP_DEMO_HOST ? 'demo' : 'off');
+  } catch(e){ SHOP.mode = SHOP_DEMO_HOST ? 'demo' : 'off'; }
+  shopApply();
+}
+
+/* الحقوق من الخادم؛ strict = خطأ إن لم يُجب الخادم */
+async function shopRefresh(strict){
+  if (!salesOn() || !shopUser()){ SHOP.owned = new Set(); shopApply(); return SHOP.owned; }
+  try {
+    const d = await shopFetch('/api/lesson/entitlements');
+    if (!Array.isArray(d.owned)) throw new Error(d.error || 'entitlements');
+    SHOP.owned = new Set(d.owned);
+  } catch(e){ if (strict) throw e; }
+  shopApply();
+  return SHOP.owned;
+}
+
+/* تنبيه أسفل المعاينة + زرّا التصدير يتبعان القالب الحالي */
+function applyPremNote(vm){
+  const note = $('premNote');
+  if (!note || !currentPlan()) return;
+  const id = (vm || planView(currentPlan())).template, prem = isPremium(id), own = prem && owns(id);
+  note.classList.toggle('hidden', !prem);
+  note.classList.toggle('own', own);
+  note.dir = uiLang === 'ar' ? 'rtl' : 'ltr';
+  const html = !prem ? '' : own ? `${CHECK}<span>${esc(t('prem_owned'))}</span>`
+    : `${CROWN}<span>${esc(t('prem_note', { p: shopPrice() }))}</span><button type="button" data-prem="buy">${esc(t('prem_buy'))}</button>`;
+  if (note.innerHTML !== html) note.innerHTML = html;
+  els.exportPdfBtn.classList.toggle('prem', prem && !own);
+  els.printBtn.classList.toggle('prem', prem && !own);
+}
+function shopApply(){
+  if (!currentPlan()) return;
+  applyPremNote();
+  renderCurrentThumb();
+  if (!$('gallery').classList.contains('hidden')) renderThumbs();
+}
+
+async function loadAdminFlag(){
+  isAdmin = false;
+  const u = shopUser();
+  if (!u || !window.fbDb) return;
+  try {
+    const d = await window.fbDb.collection('users').doc(u.uid).get();
+    isAdmin = !!(d.exists && d.data().isAdmin === true);
+  } catch(e){ isAdmin = false; }
+}
+
+/* كل تصدير يمرّ من هنا: القوالب المجانية مباشرة، وقالب Premium بعد التحقق من شرائه */
+const runExport = kind => (kind === 'print' ? doPrint() : doPdf());
+async function requestExport(kind){
+  if (!currentPlan() || exportChecking) return;
+  const id = currentTpl();
+  if (owns(id)){ runExport(kind); return; }
+  exportChecking = true;
+  try { await SHOP.ready; } catch(e){}
+  exportChecking = false;
+  if (!salesOn()){ openShop(id, kind); return; }           // demo / off: النافذة تشرح الوضع، لا حساب مطلوب
+  if (!hasFb()){ toast(t('t_no_fb')); return; }
+  if (!shopUser()){ pendingExport = kind; openAuthModal(t('login_prem')); return; }
+  exportChecking = true;
+  try { await shopRefresh(true); }
+  catch(e){ exportChecking = false; toast(t('shop_check_err')); return; }
+  exportChecking = false;
+  if (!owns(id)){ openShop(id, kind); return; }
+  runExport(kind);
+}
+
+/* ---- نافذة الشراء: قالب واحد، شراء واحد دائم ---- */
+function openShop(id, kind){
+  SHOP.tpl = id; SHOP.kind = kind || 'pdf';
+  $('shop').classList.remove('hidden');
+  shopRender();
+  shopTrack('view_promotion', { template: id });
+}
+function closeShop(){ if (SHOP.busy) return; $('shop').classList.add('hidden'); SHOP.btns = null; }
+function shopBusy(on){ SHOP.busy = on; const box = $('shopBox'); if (box) box.classList.toggle('busy', on); }
+function shopMsg(text, err){ const el = $('shopMsg'); if (el){ el.textContent = text || ''; el.classList.toggle('err', !!err); } }
+
+function shopRender(){
+  const box = $('shopBox'), id = SHOP.tpl, u = shopUser();
+  if (!box || !id) return;
+  box.dir = uiLang === 'ar' ? 'rtl' : 'ltr';
+  if (owns(id)){ shopSuccess(id, ''); return; }
+  box.innerHTML = `<button type="button" class="shop-x" data-shop="close" aria-label="${esc(t('shop_close'))}">${XMARK}</button>
+    <div class="shop-main">
+      <div class="shop-thumb" id="shopThumb">${miniHTML(planView(currentPlan()), id)}</div>
+      <div class="shop-info">
+        <span class="shop-tag">${CROWN}<b>Premium</b></span>
+        <h3>${esc(t('shop_title', { n: tplName(id) }))}</h3>
+        <p class="shop-sub">${esc(t('shop_sub'))}</p>
+        <div class="shop-price"><b dir="ltr">${shopPrice()}</b><span>${esc(t('shop_once'))}</span></div>
+        <ul class="shop-list"><li>${CHECK}<span>${esc(t('shop_b1'))}</span></li><li>${CHECK}<span>${esc(t('shop_b2'))}</span></li><li>${CHECK}<span>${esc(t('shop_b3'))}</span></li></ul>
+      </div>
+    </div>
+    <div class="shop-pay" id="shopPay"></div>
+    <p class="shop-msg" id="shopMsg" role="status"></p>
+    <div class="shop-foot">
+      <span>${LOCK}${esc(t('shop_secure'))}</span>
+      ${u && salesOn() ? `<span class="shop-who">${esc(t('shop_account'))}: <b dir="ltr">${esc(u.email || u.displayName || '')}</b></span>` : ''}
+      <span class="shop-links">${salesOn() && u ? `<button type="button" class="link-btn" data-shop="restore">${esc(t('shop_restore'))}</button>` : ''}
+        <button type="button" class="link-btn" data-shop="free">${esc(t('shop_free'))}</button></span>
+    </div>`;
+  requestAnimationFrame(() => fitMinis($('shopBox')));
+  shopRenderPay();
+}
+function shopRenderPay(){
+  const pay = $('shopPay');
+  if (!pay) return;
+  SHOP.btns = null;
+  if (SHOP.mode === 'demo'){
+    pay.innerHTML = `<div class="shop-note">${esc(t('shop_demo'))}</div>
+      <button type="button" class="shop-pp" data-shop="demo"><span>PayPal</span><small>${esc(t('shop_demo_btn'))} · <bdi dir="ltr">${shopPrice()}</bdi></small></button>`;
+    return;
+  }
+  if (!salesOn()){ pay.innerHTML = `<div class="shop-note off">${esc(t('shop_off'))}</div>`; return; }
+  pay.innerHTML = (SHOP.mode === 'sandbox' ? `<div class="shop-note">${esc(t('shop_sandbox'))}</div>` : '') +
+    '<div class="shop-ppbox" id="shopPP"><div class="shop-spin"></div></div>';
+  shopLoadSdk().then(shopButtons).catch(() => { const h = $('shopPP'); if (h) h.innerHTML = `<div class="shop-note off">${esc(t('shop_err'))}</div>`; });
+}
+function shopLoadSdk(){
+  if (window.paypal && window.paypal.Buttons) return Promise.resolve();
+  if (SHOP.sdk) return SHOP.sdk;
+  SHOP.sdk = new Promise((ok, no) => {
+    const sc = document.createElement('script');
+    sc.src = 'https://www.paypal.com/sdk/js?client-id=' + encodeURIComponent(SHOP.cfg.clientId) + '&currency=USD&intent=capture&components=buttons';
+    sc.onload = () => (window.paypal && window.paypal.Buttons ? ok() : no());
+    sc.onerror = () => { SHOP.sdk = null; sc.remove(); no(); };
+    document.head.appendChild(sc);
+  });
+  return SHOP.sdk;
+}
+function shopButtons(){
+  const host = $('shopPP');
+  if (!host) return;
+  host.innerHTML = '';
+  const id = SHOP.tpl;
+  SHOP.btns = window.paypal.Buttons({
+    style: { layout: 'vertical', color: 'gold', shape: 'pill', label: 'pay', height: 44 },
+    createOrder: async () => {
+      shopMsg('');
+      const d = await shopFetch('/api/lesson/create-order', { method: 'POST', body: { template: id } });
+      if (!d.id){
+        shopMsg(d.message || t('shop_err'), true);
+        if (d.error === 'ALREADY_OWNED') shopRefresh().then(() => { if (owns(id)) shopSuccess(id, ''); });
+        throw new Error(d.error || 'create');
+      }
+      shopTrack('begin_checkout', { template: id, value: parseFloat(SHOP.cfg.price), currency: 'USD' });
+      return d.id;
+    },
+    onApprove: async (data, actions) => {
+      shopBusy(true); shopMsg(t('shop_paying'));
+      shopPending(data.orderID);
+      const d = await shopCapture(data.orderID);
+      shopBusy(false);
+      if (d.error === 'INSTRUMENT_DECLINED'){ shopPending(''); shopMsg(d.message, true); return actions.restart(); }
+      if (!d.ok){ shopMsg(d.message || t('shop_err'), true); return; }
+      shopPending('');
+      SHOP.owned = new Set(d.owned || []);
+      shopTrack('purchase', { transaction_id: d.orderId, template: id, value: parseFloat(SHOP.cfg.price), currency: 'USD' });
+      shopSuccess(d.template || id, d.orderId);
+    },
+    onCancel: () => shopMsg(''),
+    onError: () => shopMsg(t('shop_err'), true),
+  });
+  SHOP.btns.render(host).catch(() => { host.innerHTML = `<div class="shop-note off">${esc(t('shop_err'))}</div>`; });
+}
+
+/* طلب مدفوع لم يُؤكَّد بعد (إغلاق الصفحة، انقطاع): يُعاد تأكيده لاحقًا، وليس دليل شراء */
+function shopPending(orderId){
+  try {
+    const u = shopUser();
+    if (orderId && u) localStorage.setItem(SHOP_PENDING, JSON.stringify({ id: orderId, uid: u.uid }));
+    else localStorage.removeItem(SHOP_PENDING);
+  } catch(e){}
+}
+async function shopCapture(orderId){
+  let d = {};
+  for (let i = 0; i < 3; i++){
+    d = await shopFetch('/api/lesson/capture-order', { method: 'POST', body: { orderId } }).catch(() => ({}));
+    if (d._status && d._status < 500) break;
+    await new Promise(r => setTimeout(r, 1200 * (i + 1)));
+  }
+  return d;
+}
+async function shopResume(){
+  let p = null;
+  try { p = JSON.parse(localStorage.getItem(SHOP_PENDING) || 'null'); } catch(e){ p = null; }
+  const u = shopUser();
+  if (!p || !p.id || !u || p.uid !== u.uid || !salesOn()) return;
+  const d = await shopCapture(p.id);
+  if (d.ok){ shopPending(''); SHOP.owned = new Set(d.owned || []); shopApply(); toast(t('shop_resumed')); }
+  else if (d._status && d._status < 500 && d.error !== 'AUTH_REQUIRED' && d.error !== 'NOT_COMPLETED') shopPending('');
+}
+
+function shopSuccess(id, orderId){
+  shopApply();
+  const box = $('shopBox');
+  if (!box) return;
+  box.innerHTML = `<button type="button" class="shop-x" data-shop="close" aria-label="${esc(t('shop_close'))}">${XMARK}</button>
+    <div class="shop-done"><div class="shop-ok">${CHECK}</div><h3>${esc(t('shop_done'))} · ${esc(tplName(id))}</h3>
+      <p>${esc(t('shop_done_t'))}</p>
+      ${orderId ? `<p class="shop-order">${esc(t('shop_order'))}: <b dir="ltr">${esc(orderId)}</b></p>` : ''}
+      <button type="button" class="shop-cta" data-shop="export">${esc(SHOP.kind === 'print' ? t('shop_now_print') : t('shop_now_pdf'))}</button></div>`;
+}
+async function shopDemoPay(){
+  if (SHOP.busy) return;
+  shopBusy(true); shopMsg(t('shop_paying'));
+  await new Promise(r => setTimeout(r, 900));
+  SHOP.demoOwned.add(SHOP.tpl);
+  shopBusy(false);
+  shopSuccess(SHOP.tpl, 'DEMO-' + Date.now().toString(36).toUpperCase());
+}
+async function shopRestore(){
+  try {
+    const owned = await shopRefresh(true);
+    toast(owned.size ? t('shop_restored', { n: owned.size }) : t('shop_restored0'));
+    if (owns(SHOP.tpl)) shopSuccess(SHOP.tpl, '');
+  } catch(e){ shopMsg(t('shop_check_err'), true); }
+}
+
+/* تغيّر الحساب: صلاحية المشرف، الحقوق، طلب معلّق، ثم التصدير الذي طُلب قبل تسجيل الدخول */
+async function shopOnAuth(){
+  if (!shopUser()){ isAdmin = false; SHOP.owned = new Set(); pendingExport = null; shopApply(); return; }
+  await loadAdminFlag();
+  try { await SHOP.ready; } catch(e){}
+  await shopRefresh(false);
+  shopResume();
+  if (pendingExport){ const k = pendingExport; pendingExport = null; requestExport(k); }
+}
+
+function initShop(){
+  SHOP.ready = shopLoadConfig();
+  $('shop').addEventListener('click', (e) => {
+    if (e.target === $('shop')){ closeShop(); return; }
+    const b = e.target.closest('[data-shop]');
+    if (!b || b.disabled || SHOP.busy) return;
+    const a = b.dataset.shop;
+    if (a === 'close') closeShop();
+    else if (a === 'free'){ closeShop(); gCat = 'free'; openGallery(); }
+    else if (a === 'demo') shopDemoPay();
+    else if (a === 'restore') shopRestore();
+    else if (a === 'export'){ closeShop(); requestExport(SHOP.kind); }
+  });
+  $('premNote').addEventListener('click', (e) => { if (e.target.closest('[data-prem="buy"]')) requestExport('pdf'); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeShop(); });
+}
+
 /* ---------- تهيئة ---------- */
 function init(){
   initAuthModal();
@@ -1555,8 +1935,9 @@ function init(){
   initLang();
 
   els.saveBtn.addEventListener('click', performSave);
-  els.printBtn.addEventListener('click', doPrint);
-  els.exportPdfBtn.addEventListener('click', doPdf);
+  els.printBtn.addEventListener('click', () => requestExport('print'));
+  els.exportPdfBtn.addEventListener('click', () => requestExport('pdf'));
+  initShop();
   $('btnFullscreen').addEventListener('click', () => {
     if (!document.fullscreenElement) (document.documentElement.requestFullscreen || function(){}).call(document.documentElement);
     else if (document.exitFullscreen) document.exitFullscreen();
@@ -1582,6 +1963,7 @@ function init(){
         picture: fbUser.photoURL || null,
       } : null;
       renderAuthUI();
+      shopOnAuth();
       if (currentUser){
         fetchRemotePlans();
         if (pendingSaveAfterLogin){

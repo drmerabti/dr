@@ -63,6 +63,10 @@
     // "live" is honoured ONLY on QR_LIVE_HOSTS in worker.js: dr.merabti.workers.dev and, at the owner's request
     // (2026-11-16, to test a real purchase), the claude-test preview claude-test-dr.merabti.workers.dev.
     // "off" = nothing sold (the free download with the site name stays). "sandbox" needs PAYPAL_SANDBOX_CLIENT_ID + secret PAYPAL_SANDBOX_SECRET.
-    "QR_SALES": "live"
+    "QR_SALES": "live",
+    // Lesson-plan generator Premium templates (/api/lesson/*, $1.99 each, permanent): "live" requested by the owner (2026-11-22).
+    // "live" is honoured ONLY on dr.merabti.workers.dev (LP_LIVE_HOSTS in worker.js); previews stay "off" (the page runs a demo).
+    // "off" = nothing sold. "sandbox" needs PAYPAL_SANDBOX_CLIENT_ID + secret PAYPAL_SANDBOX_SECRET.
+    "LP_SALES": "live"
   }
 }
