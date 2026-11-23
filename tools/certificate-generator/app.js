@@ -182,7 +182,7 @@ const SAMPLE = {
       body:'for excellent discipline, good behavior and brilliant participation in school activities. We wish them continued success.', signerTitle:'School Principal' }
   }
 };
-const CATS = ['honor', 'part', 'train', 'success', 'work', 'school'];
+const CATS = ['honor', 'part', 'train', 'success', 'work', 'school', 'science'];
 const LOCALE = { ar:'ar-DZ-u-nu-latn', fr:'fr-FR', en:'en-US' };
 function today(lang) {
   try { return new Date().toLocaleDateString(LOCALE[lang], { day:'numeric', month:'long', year:'numeric' }); }
@@ -409,12 +409,22 @@ const TEMPLATES = [
   { id:'official', cat:'work', o:'p', name:{ ar:'إداري رسمي', fr:'Administratif officiel', en:'Official' },
     pal:{ c1:'#1F3A5F', c2:'#1F3A5F', c3:'#FFFFFF' }, f:{ ar:['Amiri', 'Amiri', 'Amiri'], lat:['Cormorant Garamond', 'Cormorant Garamond', 'Cormorant Garamond'] } }
 ];
+/* ---- Premium templates (premium.js): merged, free and Premium alternate in the gallery ---- */
+const PREM = window.CERT_PREMIUM || { templates: [], deco: {}, ui: {}, price: '1.99' };
+Object.keys(PREM.ui || {}).forEach(l => { if (UI[l]) Object.assign(UI[l], PREM.ui[l]); });
+const PREMIUM_IDS = PREM.templates.map(t => t.id);
+const isPremium = id => PREMIUM_IDS.includes(id);
+(function mergePremium() {
+  const free = TEMPLATES.slice(), prem = PREM.templates.slice(), out = [];
+  while (free.length || prem.length) { if (free.length) out.push(free.shift()); if (prem.length) out.push(prem.shift()); }
+  TEMPLATES.length = 0; out.forEach(t => TEMPLATES.push(t));
+})();
 const TPL = Object.fromEntries(TEMPLATES.map(t => [t.id, t]));
 const COLORS = ['#1B2A4A', '#7A1F2B', '#0E5E6F', '#1F4D3A', '#5B2A86', '#1565C0', '#B03A2E', '#1E1E24'];
 
 function sampleFor(tplId, lang) {
-  const cat = TPL[tplId].cat;
-  return { ...COMMON[lang], ...SAMPLE[cat][lang], date: today(lang), no:'2026/001' };
+  const t = TPL[tplId], cat = t.cat;
+  return { ...COMMON[lang], ...(SAMPLE[cat] || SAMPLE.success)[lang], ...((t.sample && t.sample[lang]) || {}), date: today(lang), no:'2026/001' };
 }
 
 /* ---------------------------------------------------------
@@ -555,6 +565,21 @@ function ctxFor(tplId, c, img, opts) {
 }
 function currentCtx() { return ctxFor(st.tpl, st.c, st.img, { color: st.color, font: st.font, clang: st.clang, show: st.show }); }
 
+/* Premium decorations are drawn as <img> (an SVG image survives html2canvas exactly); cached per palette */
+const decoCache = new Map();
+function decoHTML(t, W, H, p) {
+  if (!t.premium) return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">${DECO[t.id](W, H, p)}</svg>`;
+  const key = [t.id, W, H, p.c1, p.c2, p.c3].join('|');
+  let url = decoCache.get(key);
+  if (!url) {
+    url = svgUrl(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">${PREM.deco[t.id](W, H, p, HELP)}</svg>`);
+    if (decoCache.size > 60) decoCache.clear();
+    decoCache.set(key, url);
+  }
+  return `<img class="deco-img" src="${url}" width="${W}" height="${H}" alt="">`;
+}
+const HELP = { nid, rng, shade, starPts, star8, star5, frame, ring, corners, alongEdges };
+
 function certHTML(ctx, r) {
   const { t, p, W, H, c, img, show, f } = ctx;
   const q = s => `'${s}'`;
@@ -569,7 +594,7 @@ function certHTML(ctx, r) {
   const no = show.no && r.no ? `<span class="c-no">${esc(CL[ctx.lang].no)} ${esc(r.no)}</span>` : '';
   const pd = placeDate(c, ctx.lang);
   return `<div class="cert T-${t.id} ${t.o}" dir="${ctx.rtl ? 'rtl' : 'ltr'}" lang="${ctx.lang}" style="${style}">
-    <div class="deco"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">${DECO[t.id](W, H, p)}</svg></div>
+    <div class="deco">${decoHTML(t, W, H, p)}</div>
     <div class="ct">
       ${logo || org ? `<div class="c-head" data-sec="org">${logo}${org}</div>` : ''}
       <h1 class="c-title${t.caps ? ' caps' : ''}" data-sec="text">${esc(c.title)}</h1>
@@ -642,11 +667,11 @@ function setZoom(dir) {
 let rTimer = null, thumbTimer = null;
 function scheduleRender() {
   clearTimeout(rTimer);
-  rTimer = setTimeout(() => { renderStage(); updateStates(); autosave(); }, 90);
+  rTimer = setTimeout(() => { renderStage(); updateStates(); autosave(); applyPremNote(); }, 90);
   clearTimeout(thumbTimer);
   thumbTimer = setTimeout(renderCurrentThumb, 500);
 }
-function renderAll() { renderStage(); renderCurrentThumb(); updateStates(); autosave(); }
+function renderAll() { renderStage(); renderCurrentThumb(); updateStates(); autosave(); applyPremNote(); }
 
 /* click on a part of the certificate opens its section */
 holder.addEventListener('click', e => {
@@ -895,20 +920,21 @@ function placeMini(box, W, H) {
   mini.style.transform = `scale(${s})`;
 }
 function buildGallery() {
-  $('#gCats').innerHTML = ['all', ...CATS].map(c => `<button type="button" class="chip ${gCat === c ? 'on' : ''}" data-cat="${c}">${T('cat_' + c)}</button>`).join('');
+  $('#gCats').innerHTML = ['all', 'premium', 'free', ...CATS].map(c => `<button type="button" class="chip ${gCat === c ? 'on' : ''}" data-cat="${c}">${c === 'premium' ? CROWN : ''}${T('cat_' + c)}</button>`).join('');
   $('#gOrs').innerHTML = ['all', 'l', 'p'].map(o => `<button type="button" class="chip or-chip ${gOr === o ? 'on' : ''}" data-or="${o}">${OR_ICONS[o] || ''}${T('or_' + o)}</button>`).join('');
   renderGrid();
 }
 function renderGrid() {
   const q = ($('#gSearch').value || '').trim().toLowerCase();
-  const list = TEMPLATES.filter(t => (gCat === 'all' || t.cat === gCat) && (gOr === 'all' || t.o === gOr) &&
-    (!q || Object.values(t.name).concat(Object.keys(UI).map(l => UI[l]['cat_' + t.cat])).some(n => n.toLowerCase().includes(q))));
+  const list = TEMPLATES.filter(t => (gCat === 'all' || (gCat === 'premium' ? !!t.premium : gCat === 'free' ? !t.premium : t.cat === gCat)) && (gOr === 'all' || t.o === gOr) &&
+    (!q || Object.values(t.name).concat(Object.keys(UI).map(l => UI[l]['cat_' + t.cat]), t.premium ? ['premium'] : []).some(n => n.toLowerCase().includes(q))));
   const grid = $('#gGrid');
   if (!list.length) { grid.innerHTML = `<div class="g-empty">${T('no_results')}</div>`; return; }
   const minis = list.map(t => galleryMini(t.id));
-  grid.innerHTML = list.map((t, i) => `<button type="button" class="g-card ${t.id === st.tpl ? 'on' : ''}" data-tpl="${t.id}">
+  grid.innerHTML = list.map((t, i) => `<button type="button" class="g-card ${t.id === st.tpl ? 'on' : ''}${t.premium ? ' prem-card' : ''}" data-tpl="${t.id}">
+      ${t.premium ? premBadge(t.id) : ''}
       <div class="g-thumb">${minis[i].html}</div>
-      <div class="g-meta"><b>${esc(t.name[uiLang] || t.name.ar)}</b><span>${T('cat_' + t.cat)}</span></div></button>`).join('');
+      <div class="g-meta"><b>${esc(t.name[uiLang] || t.name.ar)}</b>${t.premium ? `<span class="g-price${owns(t.id) ? ' own' : ''}" dir="ltr">${owns(t.id) ? esc(T('prem_own')) : shopPrice()}</span>` : `<span>${T('cat_' + t.cat)}</span>`}</div></button>`).join('');
   requestAnimationFrame(() => $$('.g-thumb', grid).forEach((th, i) => placeMini(th, minis[i].W, minis[i].H)));
 }
 function openGallery() { $('#gallery').classList.remove('hidden'); buildGallery(); $('#gSearch').focus(); }
@@ -926,7 +952,7 @@ $('#gallery').addEventListener('click', e => {
     st.tpl = card.dataset.tpl; st.color = null; st.font = 'auto';
     if (!st.dirty) st.c = sampleFor(st.tpl, st.clang);
     zoom = 'fit';
-    closeGallery(); rebuildKeepOpen(); renderAll(); toast(T('t_tpl'));
+    closeGallery(); rebuildKeepOpen(); renderAll(); toast(T(isPremium(st.tpl) && !owns(st.tpl) ? 't_tpl_prem' : 't_tpl'));
   }
 });
 $('#gSearch').addEventListener('input', renderGrid);
@@ -936,7 +962,8 @@ function renderCurrentThumb() {
   const m = miniFor(st.tpl, st.c, st.img, { color: st.color, font: st.font, clang: st.clang, show: st.show }, recipients()[0]);
   box.innerHTML = m.html;
   placeMini(box, m.W, m.H);
-  $('#currentTplName').textContent = TPL[st.tpl].name[uiLang] || TPL[st.tpl].name.ar;
+  $('#currentTplName').textContent = (isPremium(st.tpl) ? 'Premium · ' : '') + (TPL[st.tpl].name[uiLang] || TPL[st.tpl].name.ar);
+  if (isPremium(st.tpl)) box.insertAdjacentHTML('beforeend', `<span class="go-crown">${CROWN}</span>`);
 }
 
 /* ---------------------------------------------------------
@@ -1001,10 +1028,10 @@ const fbUser = () => (hasFb() ? firebase.auth().currentUser : null);
 const certCol = uidv => firebase.firestore().collection('users').doc(uidv).collection('certificates');
 let pendingAfterLogin = null;
 
-function openLogin(after) { pendingAfterLogin = after || null; $('#login').classList.remove('hidden'); }
+function openLogin(after, msg) { pendingAfterLogin = after || null; $('#login p').textContent = msg || T('login_text'); $('#login').classList.remove('hidden'); }
 function closeLogin() { $('#login').classList.add('hidden'); }
-$('#loginCancel').addEventListener('click', () => { pendingAfterLogin = null; closeLogin(); });
-$('#login').addEventListener('click', e => { if (e.target.id === 'login') { pendingAfterLogin = null; closeLogin(); } });
+$('#loginCancel').addEventListener('click', () => { pendingAfterLogin = null; pendingExport = false; closeLogin(); });
+$('#login').addEventListener('click', e => { if (e.target.id === 'login') { pendingAfterLogin = null; pendingExport = false; closeLogin(); } });
 $('#loginGoogle').addEventListener('click', async () => {
   if (!hasFb()) { toast(T('t_cloud_err')); return; }
   try {
@@ -1162,7 +1189,7 @@ document.addEventListener('click', e => { if (!e.target.closest('.lang-wrap')) $
    Toolbar wiring
 --------------------------------------------------------- */
 $('#btnSave').addEventListener('click', saveToAccount);
-$('#btnPdf').addEventListener('click', doPdf);
+$('#btnPdf').addEventListener('click', () => requestExport('pdf'));
 $('#btnFullscreen').addEventListener('click', () => {
   if (!document.fullscreenElement) (document.documentElement.requestFullscreen || function () {}).call(document.documentElement);
   else document.exitFullscreen && document.exitFullscreen();
@@ -1178,11 +1205,294 @@ $('#recPrev').addEventListener('click', () => { pv = Math.max(0, pv - 1); render
 $('#recNext').addEventListener('click', () => { pv = Math.min(recipients().length - 1, pv + 1); renderStage(); });
 window.addEventListener('resize', () => { if (zoom === 'fit') applyZoom(); });
 
+
+/* =====================================================================
+   Premium templates: purchase and download (PayPal · Worker /api/cert/* · Cloudflare D1)
+   - Editing, preview, saving and every FREE template stay as they were (no account for the free ones).
+   - A Premium template downloads (PDF) only after a Google sign-in and one purchase per template
+     ($1.99, price from the server, permanent). The right comes from the Worker (D1, payment verified there),
+     never from the browser; admins (users/{uid}.isAdmin, same rule as shared/purchase.js) download every template.
+   - Modes from GET /api/cert/config: live / sandbox (sales on) · demo (sales off on the claude-test preview
+     or localhost: simulated payment, nothing saved) · off (sales off elsewhere: the download waits).
+===================================================================== */
+const SHOP_LOCAL = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+const SHOP_API = (/\.workers\.dev$/.test(location.hostname) || SHOP_LOCAL) ? '' : 'https://dr.merabti.workers.dev';
+const SHOP_DEMO_HOST = SHOP_LOCAL || location.hostname === 'claude-test-dr.merabti.workers.dev';
+const SHOP_PENDING = 'certgen:pendingOrder';
+const SHOP = { mode: 'loading', cfg: null, owned: new Set(), demoOwned: new Set(), sdk: null, btns: null, busy: false, tpl: '', ready: null };
+let isAdmin = false, pendingExport = false, exportChecking = false;
+const CROWN = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18.5h18L19.6 8l-4.9 4.3L12 5l-2.7 7.3L4.4 8z"/></svg>';
+const CHECK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+const LOCK = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+
+const shopPrice = () => '$' + ((SHOP.cfg && SHOP.cfg.price) || PREM.price || '1.99');
+const salesOn = () => SHOP.mode === 'live' || SHOP.mode === 'sandbox';
+const owns = id => !isPremium(id) || isAdmin || SHOP.owned.has(id) || (SHOP.mode === 'demo' && SHOP.demoOwned.has(id));
+const premBadge = id => owns(id) ? `<span class="g-prem own">${CHECK}<b>Premium</b></span>` : `<span class="g-prem">${CROWN}<b>Premium</b></span>`;
+function shopTrack(name, extra) { try { if (window.gtag) gtag('event', name, Object.assign({ tool: 'certificate', method: 'paypal' }, extra || {})); } catch (e) {} }
+
+async function shopFetch(path, opts) {
+  opts = opts || {};
+  const headers = { 'Content-Type': 'application/json' };
+  const u = fbUser();
+  if (u) headers.Authorization = 'Bearer ' + await u.getIdToken();
+  const r = await fetch(SHOP_API + path, { method: opts.method || 'GET', headers, body: opts.body ? JSON.stringify(opts.body) : undefined, cache: 'no-store' });
+  const d = await r.json().catch(() => ({}));
+  d._status = r.status;
+  return d;
+}
+async function shopLoadConfig() {
+  try {
+    const d = await shopFetch('/api/cert/config');
+    if (d && d.price) SHOP.cfg = d;
+    if (d && Array.isArray(d.premium) && d.premium.join() !== PREMIUM_IDS.join()) console.warn('[certificate] premium list differs from the server');
+    SHOP.mode = d && (d.sales === 'live' || d.sales === 'sandbox') ? d.sales : (SHOP_DEMO_HOST ? 'demo' : 'off');
+  } catch (e) { SHOP.mode = SHOP_DEMO_HOST ? 'demo' : 'off'; }
+  shopApply();
+}
+/* rights from the server; strict = throw when the server does not answer */
+async function shopRefresh(strict) {
+  if (!salesOn() || !fbUser()) { SHOP.owned = new Set(); shopApply(); return SHOP.owned; }
+  try {
+    const d = await shopFetch('/api/cert/entitlements');
+    if (!Array.isArray(d.owned)) throw new Error(d.error || 'entitlements');
+    SHOP.owned = new Set(d.owned);
+  } catch (e) { if (strict) throw e; }
+  shopApply();
+  return SHOP.owned;
+}
+
+/* note in the stage bar + the PDF button follow the current template */
+function applyPremNote() {
+  const note = $('#premNote'); if (!note) return;
+  const id = st.tpl, prem = isPremium(id), own = prem && owns(id);
+  note.classList.toggle('hidden', !prem);
+  note.classList.toggle('own', own);
+  note.dir = uiLang === 'ar' ? 'rtl' : 'ltr';
+  const html = !prem ? '' : own ? `${CHECK}<span>${esc(T('prem_owned'))}</span>`
+    : `${CROWN}<span>${esc(T('prem_note', { p: shopPrice() }))}</span><button type="button" data-prem="buy">${esc(T('prem_buy'))}</button>`;
+  if (note.innerHTML !== html) note.innerHTML = html;
+  $('#btnPdf').classList.toggle('prem', prem && !own);
+}
+function shopApply() {
+  applyPremNote();
+  renderCurrentThumb();
+  if (!$('#gallery').classList.contains('hidden')) renderGrid();
+}
+async function loadAdminFlag() {
+  isAdmin = false;
+  const u = fbUser();
+  if (!u) return;
+  try {
+    const d = await firebase.firestore().collection('users').doc(u.uid).get();
+    isAdmin = !!(d.exists && d.data().isAdmin === true);
+  } catch (e) { isAdmin = false; }
+}
+async function isGoogleSession(u) {
+  try { return (await u.getIdTokenResult()).signInProvider === 'google.com'; } catch (e) { return false; }
+}
+
+/* every download goes through here: free templates directly, Premium after the purchase is verified */
+async function requestExport() {
+  if (pdfBusy || exportChecking) return;
+  const id = st.tpl;
+  if (owns(id)) { doPdf(); return; }
+  exportChecking = true;
+  try { await SHOP.ready; } catch (e) {}
+  exportChecking = false;
+  if (owns(id)) { doPdf(); return; }
+  if (!salesOn()) { openShop(id); return; }                 // demo / off: the window explains, no account needed
+  if (!hasFb()) { toast(T('t_cloud_err')); return; }
+  const u = fbUser();
+  if (!u || !(await isGoogleSession(u))) { pendingExport = true; openLogin(null, T('login_prem')); return; }
+  exportChecking = true;
+  try { await shopRefresh(true); }
+  catch (e) { exportChecking = false; toast(T('shop_check_err')); return; }
+  exportChecking = false;
+  if (!owns(id)) { openShop(id); return; }
+  doPdf();
+}
+
+/* ---- purchase window: one template, one permanent purchase ---- */
+function openShop(id) { SHOP.tpl = id; $('#shop').classList.remove('hidden'); shopRender(); shopTrack('view_promotion', { template: id }); }
+function closeShop() { if (SHOP.busy) return; $('#shop').classList.add('hidden'); SHOP.btns = null; }
+function shopBusy(on) { SHOP.busy = on; const box = $('#shopBox'); if (box) box.classList.toggle('busy', on); }
+function shopMsg(text, err) { const el = $('#shopMsg'); if (el) { el.textContent = text || ''; el.classList.toggle('err', !!err); } }
+const XMARK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+
+function shopRender() {
+  const box = $('#shopBox'), id = SHOP.tpl, u = fbUser();
+  if (!box || !id) return;
+  box.dir = uiLang === 'ar' ? 'rtl' : 'ltr';
+  if (owns(id)) { shopSuccess(id, ''); return; }
+  const m = galleryMini(id), land = TPL[id].o === 'l';
+  box.innerHTML = `<button type="button" class="shop-x" data-shop="close" aria-label="${esc(T('shop_close'))}">${XMARK}</button>
+    <div class="shop-main">
+      <div class="shop-thumb" id="shopThumb" style="width:${land ? 230 : 160}px;aspect-ratio:${m.W}/${m.H}">${m.html}</div>
+      <div class="shop-info">
+        <span class="shop-tag">${CROWN}<b>Premium</b></span>
+        <h3>${esc(T('shop_title', { n: TPL[id].name[uiLang] || TPL[id].name.ar }))}</h3>
+        <p class="shop-sub">${esc(T('shop_sub'))}</p>
+        <div class="shop-price"><b dir="ltr">${shopPrice()}</b><span>${esc(T('shop_once'))}</span></div>
+        <ul class="shop-list"><li>${CHECK}<span>${esc(T('shop_b1'))}</span></li><li>${CHECK}<span>${esc(T('shop_b2'))}</span></li><li>${CHECK}<span>${esc(T('shop_b3'))}</span></li></ul>
+      </div>
+    </div>
+    <div class="shop-pay" id="shopPay"></div>
+    <p class="shop-msg" id="shopMsg" role="status"></p>
+    <div class="shop-foot">
+      <span>${LOCK}${esc(T('shop_secure'))}</span>
+      ${u && salesOn() ? `<span class="shop-who">${esc(T('shop_account'))}: <b dir="ltr">${esc(u.email || u.displayName || '')}</b></span>` : ''}
+      <span class="shop-links">${salesOn() && u ? `<button type="button" class="link-btn" data-shop="restore">${esc(T('shop_restore'))}</button>` : ''}
+        <button type="button" class="link-btn" data-shop="free">${esc(T('shop_free'))}</button></span>
+    </div>`;
+  requestAnimationFrame(() => placeMini($('#shopThumb'), m.W, m.H));
+  shopRenderPay();
+}
+function shopRenderPay() {
+  const pay = $('#shopPay');
+  if (!pay) return;
+  SHOP.btns = null;
+  if (SHOP.mode === 'demo') {
+    pay.innerHTML = `<div class="shop-note">${esc(T('shop_demo'))}</div>
+      <button type="button" class="shop-pp" data-shop="demo"><span>PayPal</span><small>${esc(T('shop_demo_btn'))} · <bdi dir="ltr">${shopPrice()}</bdi></small></button>`;
+    return;
+  }
+  if (!salesOn()) { pay.innerHTML = `<div class="shop-note off">${esc(T('shop_off'))}</div>`; return; }
+  pay.innerHTML = (SHOP.mode === 'sandbox' ? `<div class="shop-note">${esc(T('shop_sandbox'))}</div>` : '') +
+    '<div class="shop-ppbox" id="shopPP"><div class="shop-spin"></div></div>';
+  shopLoadSdk().then(shopButtons).catch(() => { const h = $('#shopPP'); if (h) h.innerHTML = `<div class="shop-note off">${esc(T('shop_err'))}</div>`; });
+}
+function shopLoadSdk() {
+  if (window.paypal && window.paypal.Buttons) return Promise.resolve();
+  if (SHOP.sdk) return SHOP.sdk;
+  SHOP.sdk = new Promise((ok, no) => {
+    const sc = document.createElement('script');
+    sc.src = 'https://www.paypal.com/sdk/js?client-id=' + encodeURIComponent(SHOP.cfg.clientId) + '&currency=USD&intent=capture&components=buttons';
+    sc.onload = () => (window.paypal && window.paypal.Buttons ? ok() : no());
+    sc.onerror = () => { SHOP.sdk = null; sc.remove(); no(); };
+    document.head.appendChild(sc);
+  });
+  return SHOP.sdk;
+}
+function shopButtons() {
+  const host = $('#shopPP');
+  if (!host) return;
+  host.innerHTML = '';
+  const id = SHOP.tpl;
+  SHOP.btns = window.paypal.Buttons({
+    style: { layout: 'vertical', color: 'gold', shape: 'pill', label: 'pay', height: 44 },
+    createOrder: async () => {
+      shopMsg('');
+      const d = await shopFetch('/api/cert/create-order', { method: 'POST', body: { template: id } });
+      if (!d.id) {
+        shopMsg(d.message || T('shop_err'), true);
+        if (d.error === 'ALREADY_OWNED') shopRefresh().then(() => { if (owns(id)) shopSuccess(id, ''); });
+        throw new Error(d.error || 'create');
+      }
+      shopTrack('begin_checkout', { template: id, value: parseFloat(SHOP.cfg.price), currency: 'USD' });
+      return d.id;
+    },
+    onApprove: async (data, actions) => {
+      shopBusy(true); shopMsg(T('shop_paying'));
+      shopPending(data.orderID);
+      const d = await shopCapture(data.orderID);
+      shopBusy(false);
+      if (d.error === 'INSTRUMENT_DECLINED') { shopPending(''); shopMsg(d.message, true); return actions.restart(); }
+      if (!d.ok) { shopMsg(d.message || T('shop_err'), true); return; }
+      shopPending('');
+      SHOP.owned = new Set(d.owned || []);
+      shopTrack('purchase', { transaction_id: d.orderId, template: id, value: parseFloat(SHOP.cfg.price), currency: 'USD' });
+      shopSuccess(d.template || id, d.orderId);
+    },
+    onCancel: () => shopMsg(''),
+    onError: () => shopMsg(T('shop_err'), true),
+  });
+  SHOP.btns.render(host).catch(() => { host.innerHTML = `<div class="shop-note off">${esc(T('shop_err'))}</div>`; });
+}
+/* a paid order that was not confirmed yet (page closed, network lost) is captured again later; it is not proof of purchase */
+function shopPending(orderId) {
+  try {
+    const u = fbUser();
+    if (orderId && u) localStorage.setItem(SHOP_PENDING, JSON.stringify({ id: orderId, uid: u.uid }));
+    else localStorage.removeItem(SHOP_PENDING);
+  } catch (e) {}
+}
+async function shopCapture(orderId) {
+  let d = {};
+  for (let i = 0; i < 3; i++) {
+    d = await shopFetch('/api/cert/capture-order', { method: 'POST', body: { orderId } }).catch(() => ({}));
+    if (d._status && d._status < 500) break;
+    await wait(1200 * (i + 1));
+  }
+  return d;
+}
+async function shopResume() {
+  let pd = null;
+  try { pd = JSON.parse(localStorage.getItem(SHOP_PENDING) || 'null'); } catch (e) { pd = null; }
+  const u = fbUser();
+  if (!pd || !pd.id || !u || pd.uid !== u.uid || !salesOn()) return;
+  const d = await shopCapture(pd.id);
+  if (d.ok) { shopPending(''); SHOP.owned = new Set(d.owned || []); shopApply(); toast(T('shop_resumed')); }
+  else if (d._status && d._status < 500 && d.error !== 'AUTH_REQUIRED' && d.error !== 'NOT_COMPLETED') shopPending('');
+}
+function shopSuccess(id, orderId) {
+  shopApply();
+  const box = $('#shopBox');
+  if (!box) return;
+  box.innerHTML = `<button type="button" class="shop-x" data-shop="close" aria-label="${esc(T('shop_close'))}">${XMARK}</button>
+    <div class="shop-done"><div class="shop-ok">${CHECK}</div><h3>${esc(T('shop_done'))} · ${esc(TPL[id].name[uiLang] || TPL[id].name.ar)}</h3>
+      <p>${esc(T('shop_done_t'))}</p>
+      ${orderId ? `<p class="shop-order">${esc(T('shop_order'))}: <b dir="ltr">${esc(orderId)}</b></p>` : ''}
+      <button type="button" class="shop-cta" data-shop="export">${esc(T('shop_now_pdf'))}</button></div>`;
+}
+async function shopDemoPay() {
+  if (SHOP.busy) return;
+  shopBusy(true); shopMsg(T('shop_paying'));
+  await wait(900);
+  SHOP.demoOwned.add(SHOP.tpl);
+  shopBusy(false);
+  shopSuccess(SHOP.tpl, 'DEMO-' + Date.now().toString(36).toUpperCase());
+}
+async function shopRestore() {
+  try {
+    const owned = await shopRefresh(true);
+    toast(owned.size ? T('shop_restored', { n: owned.size }) : T('shop_restored0'));
+    if (owns(SHOP.tpl)) shopSuccess(SHOP.tpl, '');
+  } catch (e) { shopMsg(T('shop_check_err'), true); }
+}
+/* account changed: admin flag, rights, a pending order, then the download that was asked for before signing in */
+async function shopOnAuth() {
+  if (!fbUser()) { isAdmin = false; SHOP.owned = new Set(); pendingExport = false; shopApply(); return; }
+  await loadAdminFlag();
+  try { await SHOP.ready; } catch (e) {}
+  await shopRefresh(false);
+  shopResume();
+  if (pendingExport) { pendingExport = false; closeLogin(); requestExport(); }
+}
+function initShop() {
+  SHOP.ready = shopLoadConfig();
+  $('#shop').addEventListener('click', e => {
+    if (e.target === $('#shop')) { closeShop(); return; }
+    const b = e.target.closest('[data-shop]');
+    if (!b || b.disabled || SHOP.busy) return;
+    const a = b.dataset.shop;
+    if (a === 'close') closeShop();
+    else if (a === 'free') { closeShop(); gCat = 'free'; openGallery(); }
+    else if (a === 'demo') shopDemoPay();
+    else if (a === 'restore') shopRestore();
+    else if (a === 'export') { closeShop(); requestExport(); }
+  });
+  $('#premNote').addEventListener('click', e => { if (e.target.closest('[data-prem="buy"]')) requestExport(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeShop(); });
+  if (hasFb()) firebase.auth().onAuthStateChanged(() => { shopOnAuth(); });
+}
+
 /* ---------------------------------------------------------
    Init — every section starts collapsed
 --------------------------------------------------------- */
 applyUiLang();
-renderStage(); renderCurrentThumb(); updateStates();
+initShop();
+renderStage(); renderCurrentThumb(); updateStates(); applyPremNote();
 if (document.fonts) document.fonts.ready.then(() => { renderStage(); renderCurrentThumb(); });
 
 })();

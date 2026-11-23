@@ -272,6 +272,27 @@ border, frame ring, shadow or filter, whatever the page's own logo rules say. CS
   (`INV_PRICE`, `INV_PREMIUM`, D1 `inv_orders`, `inv_entitlements`). `INV_SALES` in wrangler.jsonc: **"live"** (owner,
   2026-11-23), honoured only on dr.merabti.workers.dev (`INV_LIVE_HOSTS`).
 
+## Certificate generator Premium templates (tools/certificate-generator)
+
+- 12 free templates (`TEMPLATES` in app.js, `DECO`, style.css) + 10 Premium in `premium.js` (`window.CERT_PREMIUM`:
+  `templates`, `deco[id](W, H, p, h)`, `ui` strings for ar/fr/en) and `premium.css` (a `.T-<id>` block each: `--pad`, colours, sizes).
+  Premium ids (science / culture, `cat:'science'`, `premium:true`): atom (physics), gears (mechanical engineering), math,
+  arabic (language), history (portrait), philosophy, astro (portrait), chem, circuit (energy / electricity), bio. `dark:true` =
+  dark background (light text, signature on a pale plate, gold default stamp). Samples per template in `premium.js` (`S`).
+  Gallery: free and Premium alternate (a free one first); chips "Premium" (crown) and "free" + category "science".
+- Decorations are drawn by `decoHTML` as `<img src="data:image/svg+xml">` (cached per palette), never inline `<svg>`: literal
+  colours, no text, no `clip-path` / `filter`; gradients over a box use `linB` / `radB` (objectBoundingBox), over the page `lin` / `rad`.
+  Keep side bands (~150 px) and top / bottom (~95 px) for the art and the text inside `--pad`; the bottom corners must stay
+  clear (date and signature swap sides between Arabic and Latin).
+- Editing, preview, saving and free templates need no account. A Premium PDF goes through `requestExport()`: Google sign-in,
+  then the right from the Worker; **$1.99 per template, one permanent purchase, no packs**, PayPal; admins
+  (`users/{uid}.isAdmin`) download all. Modes from `/api/cert/config`: live / sandbox · demo (claude-test preview or localhost:
+  simulated payment) · off. A paid but unconfirmed order is kept in localStorage `certgen:pendingOrder` (with the uid).
+- Worker `/api/cert/*` (worker.js, "Certificate generator Premium templates"): same routes and checks as `/api/invoice/*`
+  (`CERT_PRICE`, `CERT_PREMIUM` = the ids above, D1 `cert_orders`, `cert_entitlements`, `env` = live | sandbox).
+  `CERT_SALES` in wrangler.jsonc: **"live"** (owner, 2026-11-23), honoured only on dr.merabti.workers.dev (`CERT_LIVE_HOSTS`).
+  Test-only (sandbox): `CERT_PAYPAL_API`, `CERT_TEST_JWKS`. Keep `CERT_PREMIUM` in step with `premium.js`.
+
 ## Home order
 
 `SECTIONS_ROW1` = tools, books (`services`), lessons; `SECTIONS_ROW2` = apps, favorites, training.

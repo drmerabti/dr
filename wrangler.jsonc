@@ -75,6 +75,10 @@
     // Invoice generator Premium templates (/api/invoice/*, $1.99 each, permanent): requested by the owner (2026-11-23).
     // "live" is honoured ONLY on dr.merabti.workers.dev (INV_LIVE_HOSTS in worker.js); previews stay "off" (demo).
     // "off" = nothing sold (free templates unchanged). "sandbox" needs PAYPAL_SANDBOX_CLIENT_ID + secret PAYPAL_SANDBOX_SECRET.
-    "INV_SALES": "live"
+    "INV_SALES": "live",
+    // Certificate generator Premium templates (/api/cert/*, $1.99 each, permanent): requested by the owner (2026-11-23).
+    // "live" is honoured ONLY on dr.merabti.workers.dev (CERT_LIVE_HOSTS in worker.js); previews stay "off" (demo on the page).
+    // "off" = nothing sold (free templates unchanged). "sandbox" needs PAYPAL_SANDBOX_CLIENT_ID + secret PAYPAL_SANDBOX_SECRET.
+    "CERT_SALES": "live"
   }
 }

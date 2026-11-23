@@ -17,8 +17,9 @@
 <link rel="icon" type="image/x-icon" href="../../favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="../../apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Cairo:wght@400;600;700;800&family=Amiri:wght@400;700&family=El+Messiri:wght@400;600;700&family=Aref+Ruqaa:wght@400;700&family=Reem+Kufi:wght@400;600;700&family=Lalezar&family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@400;600;700;800&family=Playfair+Display:wght@400;700&family=Cormorant+Garamond:wght@400;600;700&family=Cinzel:wght@400;700&family=Great+Vibes&family=Pinyon+Script&family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Cairo:wght@400;600;700;800&family=Amiri:wght@400;700&family=El+Messiri:wght@400;600;700&family=Aref+Ruqaa:wght@400;700&family=Reem+Kufi:wght@400;600;700&family=Lalezar&family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@400;600;700;800&family=Playfair+Display:wght@400;700&family=Cormorant+Garamond:wght@400;600;700&family=Cinzel:wght@400;700&family=Great+Vibes&family=Pinyon+Script&family=Fredoka:wght@400;600;700&family=Orbitron:wght@500;700;800&family=Marcellus&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="premium.css">
 <link rel="stylesheet" href="../../shared/form-clarity.css">
 <link rel="canonical" href="https://merabti.com/tools/certificate-generator/">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6597793750103940"
@@ -78,6 +79,7 @@
 
   <main class="stage" id="stage">
     <div class="stage-bar">
+      <div class="prem-note hidden" id="premNote" role="status"></div>
       <div class="zoom rec-nav hidden" id="recNav">
         <button type="button" id="recPrev" data-tip="prev"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
         <span id="recVal">1 / 1</span>
@@ -141,6 +143,9 @@
   </div>
 </div>
 
+<!-- Premium template purchase -->
+<div class="gallery hidden" id="shop" role="dialog" aria-modal="true"><div class="shop-box" id="shopBox"></div></div>
+
 <div class="toast" id="toast"></div>
 <div class="print-root" id="printRoot" aria-hidden="true"></div>
 
@@ -152,6 +157,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="../../shared/form-clarity.js" defer></script>
+<script src="premium.js"></script>
 <script src="app.js"></script>
 <footer class="mrb-footer">
   <p class="footer-links">
