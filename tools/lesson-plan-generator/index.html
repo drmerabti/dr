@@ -18,8 +18,9 @@
 <link rel="apple-touch-icon" sizes="180x180" href="../../apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Cairo:wght@400;600;700;800&family=Amiri:wght@400;700&family=El+Messiri:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Cairo:wght@400;600;700;800&family=Amiri:wght@400;700&family=El+Messiri:wght@500;600;700&family=Inter:wght@400;500;600;700;800;900&family=Aref+Ruqaa:wght@400;700&family=Baloo+Bhaijaan+2:wght@500;700;800&family=Reem+Kufi:wght@500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="premium.css">
 <link rel="stylesheet" href="../../shared/form-clarity.css">
 <link rel="canonical" href="https://merabti.com/tools/lesson-plan-generator/">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6597793750103940"
@@ -235,6 +236,7 @@
         <button type="button" id="zoomIn" data-tip="zoom_in" aria-label="+"><svg viewBox="0 0 24 24"><path d="M6 12h12M12 6v12"/></svg></button>
         <button type="button" id="zoomFit" data-tip="fit"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
       </div>
+      <div class="prem-note hidden" id="premNote" role="status"></div>
     </div>
     <div class="flat-view" id="pvBox">
       <div class="sheet-holder" id="pvWrap"><div id="pvScale"></div></div>
@@ -309,6 +311,9 @@
   </div>
 </div>
 
+<!-- ============ نافذة شراء قالب Premium ============ -->
+<div class="gallery hidden" id="shop" role="dialog" aria-modal="true"><div class="shop-box" id="shopBox"></div></div>
+
 <div class="toast" id="toast" role="status"></div>
 <div class="print-root" id="printRoot" aria-hidden="true"></div>
 
@@ -323,6 +328,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script src="../../shared/form-clarity.js" defer></script>
+<script src="premium.js"></script>
 <script src="app.js"></script>
 <footer class="mrb-footer">
   <p class="footer-links">

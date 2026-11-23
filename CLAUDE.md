@@ -205,6 +205,55 @@ border, frame ring, shadow or filter, whatever the page's own logo rules say. CS
   PNG bitmaps (168 px) made from each design's SVG; the big preview stays SVG.
 - Form fields: `unicode-bidi: plaintext` on every field, so Latin values sit on the left and Arabic on the right.
 
+## Brochure maker Premium templates (tools/brochure-generator)
+
+- 12 free templates in `TEMPLATES` (app.js) + 10 Premium in `premium.js` (`window.BROCHURE_PREMIUM`: `templates`, fr/en
+  `samples` in the order of `K`, `deco(W, helpers)`), merged by app.js; styles in `premium.css` (after style.css).
+  Premium ids: lux, clinic, academy, tech, solar, realty, kids, wedding, travel, islamic. A template may set
+  `fontH` (heading font, CSS `--fh`) and `badge:{ar,fr,en}`. Decorations are drawn for any panel width W (tri 374,
+  bi 561, Z 280.5, A5 559) with literal colours; gradient ids come from `h.uid()`. Same PDF rules as the CV builder
+  (html2canvas: no clip-path / filter / background-clip:text; Arabic never letter-spaced).
+  **No cross or plus shapes in any design** (owner's rule): medical motifs use hearts and the heartbeat line.
+- Gallery order: free and Premium alternate, a free template first (visitors always find free ones); the Premium
+  filter chip comes last.
+- Sale: **$1.99 per template, one permanent purchase, no packs**, PayPal. Editing, preview and saving are free;
+  free templates print / export with no account. Print and PDF of a Premium template go through
+  `requestExport(kind)`: Google sign-in, then the right from the Worker. Admins (`users/{uid}.isAdmin`) export all.
+  Modes from `/api/brochure/config`: live / sandbox · demo (claude-test preview or localhost: simulated payment) · off.
+  A paid but unconfirmed order is kept in localStorage `brochure:pendingOrder` (with the uid).
+- Worker `/api/brochure/*` (worker.js, "Brochure maker Premium templates"), a copy of the CV routes:
+  `GET config`, `GET entitlements`, `POST create-order {template}`, `POST capture-order {orderId}`; Google ID token
+  required. Price and catalogue only in the Worker (`BRO_PRICE`, `BRO_PREMIUM`, keep in step with premium.js).
+  D1 tables `brochure_orders`, `brochure_entitlements` (`env` = live | sandbox). `BROCHURE_SALES` in wrangler.jsonc:
+  **"live"** (owner, 2026-11-22), honoured only on `BRO_LIVE_HOSTS` = dr.merabti.workers.dev. Test-only (sandbox):
+  `BROCHURE_PAYPAL_API`, `BROCHURE_TEST_JWKS`.
+
+## Lesson-plan generator Premium templates (tools/lesson-plan-generator)
+
+- 16 free templates (`t1`…`t16` in `T`, app.js, style.css) + 10 Premium in `premium.js` / `premium.css`:
+  royal, andalus, dashboard, blueprint, cahier, editorial, oasis, botanica, swiss, kids (`PREMIUM_KEYS`; dashboard,
+  editorial and swiss take the plan colour). Premium are shown first in the gallery ("Premium" filter, crown badge, price).
+  A Premium template = A4 794×1123 that fills its page (stage rows `flex: var(--g)`), with the extras that sell it:
+  time-distribution bar / ring, automatic stage icons (`kindOf`), signature and visa boxes. Fonts: Amiri, El Messiri,
+  Reem Kufi, Aref Ruqaa, Baloo Bhaijaan 2 (one Google Fonts link in index.html). No text inside SVG (an SVG drawn as an
+  image cannot load web fonts); no box-shadow on rotated elements (html2canvas misplaces it).
+- Editing and previewing are free for every template, no account. Free templates export (PDF / print) as before, no account.
+  A Premium template exports only after sign-in (the site's Firebase account, any provider) and one purchase:
+  **$1.99 per template, permanent, no packs**, PayPal; rights from the Worker, never from the browser. Admins
+  (`users/{uid}.isAdmin`) export every template. All exports go through `requestExport('pdf' | 'print')`.
+  Modes from `/api/lesson/config`: live / sandbox · demo (claude-test preview or localhost: simulated payment, nothing
+  saved) · off. A paid but unconfirmed order is kept in localStorage `lessonplan:pendingOrder` (with the uid) and
+  captured again on the next sign-in.
+- Worker `/api/lesson/*` (worker.js, "Lesson-plan generator Premium templates"): `GET config` → `{ sales, clientId,
+  currency, price, premium[] }`, `GET entitlements` → `{ owned[] }`, `POST create-order {template}` → `{ id }`,
+  `POST capture-order {orderId}` → `{ ok, orderId, template, owned[] }`; every route but config needs
+  `Authorization: Bearer <Firebase ID token>`. Price and catalogue only in the Worker (`LP_PRICE`, `LP_PREMIUM`, same ids
+  as `PREMIUM_KEYS`). Capture checks owner, status, amount, currency and custom_id; UNIQUE capture_id; D1 tables
+  `lp_orders`, `lp_entitlements` (created on first use, `env` = live | sandbox). `LP_SALES` in wrangler.jsonc: **"live"**
+  (owner, 2026-11-22), honoured only on `LP_LIVE_HOSTS` = dr.merabti.workers.dev. Test-only (sandbox): `LP_PAYPAL_API`, `LP_TEST_JWKS`.
+- PDF export: html2canvas 1.4.1 draws inline `<svg>` in a right-to-left page out of place (or not at all), so `doPdf`
+  first swaps every SVG of the paper for an identical `<img>` (`svgsToImages`). Keep it for any new template.
+
 ## Invoice generator Premium templates (tools/invoice-generator)
 
 - 16 templates in `TEMPLATES` (script.js): 6 free (classic, modern, elegant, minimal, sidebar, corporate, CSS in
