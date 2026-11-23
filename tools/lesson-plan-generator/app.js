@@ -180,7 +180,7 @@ const UI = {
 };
 /* نصوص قوالب Premium ونافذة الشراء */
 Object.assign(UI.ar, {
-  cat_premium:'Premium', cat_free:'مجانية', prem_own:'مملوك', prem_note:'Premium · {p} — المعاينة مجانية، التصدير بعد الشراء', prem_buy:'شراء القالب',
+  cat_premium:'Premium', cat_subject:'حسب المادة', cat_free:'مجانية', prem_own:'مملوك', prem_note:'Premium · {p} — المعاينة مجانية، التصدير بعد الشراء', prem_buy:'شراء القالب',
   prem_owned:'قالب Premium مملوك — PDF والطباعة متاحان', t_tpl_prem:'القالب: {name} (Premium — المعاينة مجانية)', login_prem:'سجّل الدخول لشراء قالب Premium وتصديره، يبقى القالب في حسابك.',
   shop_title:'قالب «{n}»', shop_sub:'تصميم احترافي فريد بجودة الطباعة، يحوّل مذكرتك إلى وثيقة أنيقة تليق بالتفتيش والأرشيف.',
   shop_once:'شراء واحد · دائم', shop_b1:'تحميل PDF وطباعة بلا حدود بهذا القالب', shop_b2:'لكل مذكراتك الحالية والقادمة، في حسابك على أي جهاز',
@@ -193,7 +193,7 @@ Object.assign(UI.ar, {
   shop_resumed:'✓ اكتمل شراؤك السابق وفُتح القالب', shop_restored:'✓ تم استرجاع {n} من القوالب', shop_restored0:'لا توجد قوالب مشتراة في هذا الحساب',
 });
 Object.assign(UI.fr, {
-  cat_premium:'Premium', cat_free:'Gratuits', prem_own:'Acheté', prem_note:'Premium · {p} — aperçu gratuit, export après achat', prem_buy:'Acheter le modèle',
+  cat_premium:'Premium', cat_subject:'Par matière', cat_free:'Gratuits', prem_own:'Acheté', prem_note:'Premium · {p} — aperçu gratuit, export après achat', prem_buy:'Acheter le modèle',
   prem_owned:'Modèle Premium acheté — PDF et impression disponibles', t_tpl_prem:'Modèle : {name} (Premium — aperçu gratuit)', login_prem:'Connectez-vous pour acheter et exporter un modèle Premium ; il reste dans votre compte.',
   shop_title:'Modèle « {n} »', shop_sub:'Un design professionnel unique, qualité impression, qui fait de votre fiche un document soigné pour l’inspection et l’archive.',
   shop_once:'Achat unique · à vie', shop_b1:'PDF et impression illimités avec ce modèle', shop_b2:'Pour toutes vos fiches, actuelles et futures, sur tout appareil',
@@ -206,7 +206,7 @@ Object.assign(UI.fr, {
   shop_resumed:'✓ Votre achat précédent est confirmé, le modèle est débloqué', shop_restored:'✓ {n} modèle(s) restauré(s)', shop_restored0:'Aucun modèle acheté dans ce compte',
 });
 Object.assign(UI.en, {
-  cat_premium:'Premium', cat_free:'Free', prem_own:'Owned', prem_note:'Premium · {p} — free preview, export after purchase', prem_buy:'Buy template',
+  cat_premium:'Premium', cat_subject:'By subject', cat_free:'Free', prem_own:'Owned', prem_note:'Premium · {p} — free preview, export after purchase', prem_buy:'Buy template',
   prem_owned:'Premium template owned — PDF and print available', t_tpl_prem:'Template: {name} (Premium — free preview)', login_prem:'Sign in to buy and export a Premium template; it stays in your account.',
   shop_title:'“{n}” template', shop_sub:'A unique, print-quality professional design that turns your lesson plan into a polished document for inspection and archiving.',
   shop_once:'One-time · lifetime', shop_b1:'Unlimited PDF and printing with this template', shop_b2:'For all your lesson plans, now and later, on any device',
@@ -346,7 +346,10 @@ const TPL_CATS = {
 };
 const COLOR_TPLS = ['t5','t7','t8','t10','t11','t12'];
 Object.assign(TPL_CATS, { royal:['premium','classic'], andalus:['premium','classic'], dashboard:['premium','modern'], blueprint:['premium','modern'],
-  cahier:['premium','modern'], editorial:['premium','modern'], oasis:['premium','modern'], botanica:['premium','classic'], swiss:['premium','modern','print'], kids:['premium','modern'] });
+  cahier:['premium','modern'], editorial:['premium','modern'], oasis:['premium','modern'], botanica:['premium','classic'], swiss:['premium','modern','print'], kids:['premium','modern'],
+  algebra:['premium','subject','new','modern'], geometry:['premium','subject','new','classic'], mechanics:['premium','subject','new','modern'], circuit:['premium','subject','new','modern','print'],
+  atom:['premium','subject','new','modern'], manuscript:['premium','subject','new','classic'], chronicle:['premium','subject','new','modern','print'], agora:['premium','subject','new','classic'],
+  calligraphy:['premium','subject','new','classic'], lexicon:['premium','subject','new','modern','print'] });
 
 /* ---------- زخارف SVG (ألوان حرفية لتظهر كما هي في PDF) ---------- */
 function corner9(fx, fy){
@@ -1052,7 +1055,7 @@ function renderCurrentThumb(vm){
 
 /* ---------- معرض القوالب ---------- */
 let gCat = 'all';
-const G_CATS = ['all', 'premium', 'free', 'classic', 'modern', 'print', 'new'];
+const G_CATS = ['all', 'premium', 'subject', 'free', 'classic', 'modern', 'print', 'new'];
 function openGallery(){
   $('gallery').classList.remove('hidden');
   $('gSearch').value = '';

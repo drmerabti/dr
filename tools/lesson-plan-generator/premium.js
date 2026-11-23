@@ -469,6 +469,8 @@
 
   /* ---------- البيانات الوصفية (الأسماء، الترتيب، القوالب التي تأخذ لون المذكرة) ---------- */
   window.PREMIUM_TPL = PT;
+  /* أدوات مشتركة لملفات قوالب Premium الإضافية (premium-subjects.js) */
+  window.PREMIUM_KIT = { mins, shares, pctTxt, two, val, durTxt, totalMins, kindOf, ico, tbar, donut, signs, logoImg, actTS, evalOn };
   window.PREMIUM_KEYS = ['royal', 'andalus', 'dashboard', 'blueprint', 'cahier', 'editorial', 'oasis', 'botanica', 'swiss', 'kids'];
   window.PREMIUM_COLOR = ['dashboard', 'editorial', 'swiss'];
   window.PREMIUM_NAMES = {

@@ -231,7 +231,11 @@ border, frame ring, shadow or filter, whatever the page's own logo rules say. CS
   royal, andalus, dashboard, blueprint, cahier, editorial, oasis, botanica, swiss, kids (`PREMIUM_KEYS`; dashboard,
   editorial and swiss take the plan colour). Premium are shown first in the gallery ("Premium" filter, crown badge, price).
   A Premium template = A4 794×1123 that fills its page (stage rows `flex: var(--g)`), with the extras that sell it:
-  time-distribution bar / ring, automatic stage icons (`kindOf`), signature and visa boxes. Fonts: Amiri, El Messiri,
+  time-distribution bar / ring, automatic stage icons (`kindOf`), signature and visa boxes.
+  10 more, by subject, in `premium-subjects.js` / `premium-subjects.css` (loaded after premium.js / premium.css, using its
+  helpers through `window.PREMIUM_KIT`; shown first, gallery filter "حسب المادة" = category `subject`): algebra, geometry
+  (maths), mechanics, circuit (electricity), atom, manuscript, chronicle (history), agora (philosophy), calligraphy,
+  lexicon (language). Labels, numbers and symbols over their drawings are HTML, never SVG text. Fonts: Amiri, El Messiri,
   Reem Kufi, Aref Ruqaa, Baloo Bhaijaan 2 (one Google Fonts link in index.html). No text inside SVG (an SVG drawn as an
   image cannot load web fonts); no box-shadow on rotated elements (html2canvas misplaces it).
 - Editing and previewing are free for every template, no account. Free templates export (PDF / print) as before, no account.
@@ -244,12 +248,13 @@ border, frame ring, shadow or filter, whatever the page's own logo rules say. CS
 - Worker `/api/lesson/*` (worker.js, "Lesson-plan generator Premium templates"): `GET config` → `{ sales, clientId,
   currency, price, premium[] }`, `GET entitlements` → `{ owned[] }`, `POST create-order {template}` → `{ id }`,
   `POST capture-order {orderId}` → `{ ok, orderId, template, owned[] }`; every route but config needs
-  `Authorization: Bearer <Firebase ID token>`. Price and catalogue only in the Worker (`LP_PRICE`, `LP_PREMIUM`, same ids
-  as `PREMIUM_KEYS`). Capture checks owner, status, amount, currency and custom_id; UNIQUE capture_id; D1 tables
+  `Authorization: Bearer <Firebase ID token>`. Price and catalogue only in the Worker (`LP_PRICE`, `LP_PREMIUM`: the 20 ids,
+  same order as `PREMIUM_KEYS`). Capture checks owner, status, amount, currency and custom_id; UNIQUE capture_id; D1 tables
   `lp_orders`, `lp_entitlements` (created on first use, `env` = live | sandbox). `LP_SALES` in wrangler.jsonc: **"live"**
   (owner, 2026-11-22), honoured only on `LP_LIVE_HOSTS` = dr.merabti.workers.dev. Test-only (sandbox): `LP_PAYPAL_API`, `LP_TEST_JWKS`.
 - PDF export: html2canvas 1.4.1 draws inline `<svg>` in a right-to-left page out of place (or not at all), so `doPdf`
   first swaps every SVG of the paper for an identical `<img>` (`svgsToImages`). Keep it for any new template.
+  html2canvas also drops the text of an `inline-flex` box: use `display:flex` for boxes with text.
 
 ## Home order
 

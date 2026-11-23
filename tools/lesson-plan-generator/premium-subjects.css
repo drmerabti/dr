@@ -1,0 +1,546 @@
+/* =====================================================================
+   مولّد مذكرة الأستاذ — قوالب Premium حسب المادة (premium-subjects.js)
+   نفس القواعد: A4 = 794×1123، المراحل تملأ الصفحة (flex: var(--g))، لا letter-spacing على العربية.
+===================================================================== */
+
+/* =================== 1) الجبر والدوال =================== */
+.pr-algebra{ background-color:#FFFFFF; color:#1B2A4A; }
+.pr-algebra .al-grid{ position:absolute; top:0; left:0; right:0; bottom:0;
+  background-image:linear-gradient(#DCE6F2 1px, transparent 1px), linear-gradient(90deg, #DCE6F2 1px, transparent 1px),
+    linear-gradient(#F0F4FA 1px, transparent 1px), linear-gradient(90deg, #F0F4FA 1px, transparent 1px);
+  background-size:50px 50px, 50px 50px, 10px 10px, 10px 10px; }
+.pr-algebra .al-in{ position:relative; flex:1; display:flex; flex-direction:column; gap:11px; padding:30px 44px 22px; }
+.pr-algebra .al-h{ position:relative; display:flex; gap:22px; align-items:center; }
+.pr-algebra .al-sy{ position:absolute; font:italic 700 44px/1 'Amiri',serif; color:#C9D6EA; }
+.pr-algebra .al-sy.s0{ top:-14px; right:300px; } .pr-algebra .al-sy.s1{ top:120px; right:250px; font-size:34px; } .pr-algebra .al-sy.s2{ top:150px; right:-26px; font-size:30px; }
+.pr-algebra .al-sy.s3{ top:-10px; right:-28px; font-size:34px; } .pr-algebra .al-sy.s4{ top:62px; right:330px; font-size:30px; } .pr-algebra .al-sy.s5{ top:150px; right:160px; font-size:26px; }
+.pr-algebra .al-ht{ position:relative; flex:1; min-width:0; }
+.pr-algebra .al-ht small{ font-size:14px; font-weight:700; color:#E4572E; }
+.pr-algebra .al-ht h1{ font-family:'Cairo','Tajawal',sans-serif; font-size:38px; font-weight:800; line-height:1.25; margin:4px 0 8px; }
+.pr-algebra .al-u{ display:flex; font-size:14px; line-height:1.5; }
+.pr-algebra .al-u span{ flex:none; background:#1B2A4A; color:#fff; border:1.5px solid #1B2A4A; padding:2px 10px; font-weight:700; }
+.pr-algebra .al-u b{ min-width:0; background:#fff; border:1.5px solid #1B2A4A; border-right:0; padding:2px 12px; }
+.pr-algebra .al-ht p{ font-size:13.5px; color:#51607D; margin-top:8px; }
+.pr-algebra .al-lg{ position:absolute; top:0; left:0; height:46px; width:auto; max-width:90px; object-fit:contain; }
+.pr-algebra .al-plot{ position:relative; flex:none; width:260px; height:172px; box-shadow:0 6px 18px rgba(27,42,74,.14); border-radius:10px; }
+.pr-algebra .al-l{ position:absolute; font:italic 700 13px/1 'Inter',serif; color:#1B2A4A; }
+.pr-algebra .al-l.lx{ right:8px; top:102px; } .pr-algebra .al-l.ly{ left:138px; top:6px; } .pr-algebra .al-l.lo{ left:116px; top:101px; }
+.pr-algebra .al-l.lf{ left:12px; top:14px; color:#E4572E; font-size:12px; } .pr-algebra .al-l.lg2{ left:150px; top:146px; color:#17A398; font-size:12px; }
+.pr-algebra .al-info{ display:grid; grid-template-columns:repeat(5, 1fr); background:#fff; border:1.5px solid #1B2A4A; }
+.pr-algebra .al-info > div{ padding:6px 10px; border-left:1px solid #C9D6EA; line-height:1.45; min-width:0; }
+.pr-algebra .al-info > div:last-child{ border-left:0; }
+.pr-algebra .al-info small{ display:block; font-size:11px; color:#17A398; font-weight:700; }
+.pr-algebra .al-info b{ font-size:14px; }
+.pr-algebra .al-two{ display:grid; grid-template-columns:1.6fr 1fr; gap:14px; }
+.pr-algebra .al-two section{ background:#fff; border:1px solid #C9D6EA; border-radius:10px; padding:10px 14px; }
+.pr-algebra h5{ display:flex; align-items:center; gap:8px; font-family:'Cairo','Tajawal',sans-serif; font-size:15.5px; font-weight:700; margin-bottom:6px; }
+.pr-algebra h5 em{ font:700 16px 'Amiri',serif; color:#E4572E; }
+.pr-algebra h5 small{ font-size:12px; color:#6B7A99; font-weight:500; }
+.pr-algebra .al-two li{ display:flex; gap:8px; align-items:flex-start; font-size:14px; line-height:1.6; margin-bottom:3px; }
+.pr-algebra .al-two li i{ flex:none; font:700 11px/20px 'Inter',sans-serif; color:#fff; background:#17A398; border-radius:4px; padding:0 5px; margin-top:1px; }
+.pr-algebra .al-set{ font-size:14.5px; line-height:1.9; }
+.pr-algebra .al-set b{ font:400 26px/1 'Amiri',serif; color:#E4572E; vertical-align:-4px; }
+.pr-algebra .al-set i{ color:#9AA8C2; }
+.pr-algebra .al-nl{ background:#fff; border:1px solid #C9D6EA; border-radius:10px; padding:8px 14px 4px; }
+.pr-algebra .al-nl h5{ margin-bottom:2px; }
+.pr-algebra .al-line{ position:relative; height:52px; margin:0 -6px; }
+.pr-algebra .al-line svg{ position:absolute; top:0; left:0; width:100%; }
+.pr-algebra .al-line span{ position:absolute; top:34px; transform:translateX(-50%); font:700 12px 'Inter',sans-serif; }
+.pr-algebra .al-st{ flex:1; display:flex; flex-direction:column; gap:8px; }
+.pr-algebra .al-s{ flex:var(--g) 1 auto; display:flex; gap:12px; min-height:58px; background:#fff; border:1px solid #C9D6EA; border-right:4px solid; border-radius:10px; padding:8px 14px; }
+.pr-algebra .al-n{ flex:none; width:36px; font:800 18px/1.4 'Inter',sans-serif; }
+.pr-algebra .al-c{ flex:1; min-width:0; }
+.pr-algebra .al-sh{ display:flex; justify-content:space-between; align-items:center; gap:10px; }
+.pr-algebra .al-sh b{ font-size:15.5px; }
+.pr-algebra .al-sh em{ flex:none; font:italic 600 12.5px 'Inter',sans-serif; color:#51607D; background:#F0F4FA; border-radius:6px; padding:1px 8px; }
+.pr-algebra .al-sa{ display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:3px; }
+.pr-algebra .al-p{ font-size:14px; line-height:1.55; }
+.pr-algebra .al-p i{ display:block; font-size:11.5px; font-weight:700; color:#17A398; }
+.pr-algebra .al-ev{ background:#FFF4EE; border:1.5px dashed #E4572E; border-radius:10px; padding:8px 14px; }
+.pr-algebra .al-ev b{ color:#E4572E; font-size:15px; }
+.pr-algebra .al-ev p{ font-size:14px; line-height:1.6; }
+.pr-algebra .al-sg{ gap:18px; }
+.pr-algebra .al-sg > div{ background:#fff; border:1px solid #C9D6EA; border-radius:10px; padding:5px 12px; }
+.pr-algebra .al-sg small{ font-size:12px; font-weight:700; color:#51607D; }
+.pr-algebra .al-sg i{ height:24px; border-bottom:1px dashed #9AA8C2; }
+
+/* =================== 2) الهندسة =================== */
+.pr-geometry{ background-color:#FBF8F1; color:#2E3440; }
+.pr-geometry .ge-ruler{ position:relative; height:46px; flex:none; }
+.pr-geometry .ge-rsvg{ position:absolute; top:0; left:0; }
+.pr-geometry .ge-rn{ position:absolute; top:28px; left:0; right:0; height:16px; }
+.pr-geometry .ge-rn span{ position:absolute; top:-12px; transform:translateX(-50%); font:600 9.5px 'Inter',sans-serif; color:#5C4B2E; }
+.pr-geometry .ge-in{ position:relative; flex:1; display:flex; flex-direction:column; gap:11px; padding:10px 44px 18px; }
+.pr-geometry .ge-h{ display:flex; gap:20px; align-items:center; }
+.pr-geometry .ge-ht{ position:relative; flex:1; min-width:0; }
+.pr-geometry .ge-ht small{ display:block; font-size:13px; color:#6B7280; }
+.pr-geometry .ge-k{ font-size:14px; font-weight:700; color:#3D5A99; }
+.pr-geometry .ge-ht h1{ font-family:'El Messiri','Tajawal',sans-serif; font-size:40px; font-weight:700; line-height:1.25; margin:2px 0 6px; }
+.pr-geometry .ge-dim{ display:flex; align-items:center; gap:8px; font-size:14px; color:#3D5A99; font-weight:700; }
+.pr-geometry .ge-dim i{ flex:1; height:0; border-top:1.2px solid #3D5A99; position:relative; }
+.pr-geometry .ge-dim i::before, .pr-geometry .ge-dim i::after{ content:""; position:absolute; top:-6px; width:1.2px; height:12px; background:#3D5A99; }
+.pr-geometry .ge-dim i::before{ right:0; } .pr-geometry .ge-dim i::after{ left:0; }
+.pr-geometry .ge-lg{ position:absolute; top:0; left:0; height:44px; width:auto; max-width:90px; object-fit:contain; }
+.pr-geometry .ge-fig{ position:relative; flex:none; width:240px; height:180px; }
+.pr-geometry .ge-p{ position:absolute; font:italic 700 14px 'Inter',serif; color:#2E3440; }
+.pr-geometry .ge-p.pa{ left:40px; top:138px; } .pr-geometry .ge-p.pb{ left:190px; top:138px; } .pr-geometry .ge-p.pc{ left:98px; top:6px; } .pr-geometry .ge-p.po{ left:126px; top:94px; color:#3D5A99; font-size:12px; }
+.pr-geometry .ge-info{ display:grid; grid-template-columns:repeat(6, 1fr); gap:8px; }
+.pr-geometry .ge-info > div{ background:#fff; border:1px solid #D9DEE8; border-top:3px solid #3D5A99; padding:5px 9px; line-height:1.45; min-width:0; }
+.pr-geometry .ge-info small{ display:block; font-size:11px; color:#6B7280; font-weight:700; }
+.pr-geometry .ge-info b{ font-size:13.5px; }
+.pr-geometry .ge-two{ display:grid; grid-template-columns:1.55fr 1fr; gap:14px; }
+.pr-geometry .ge-two section{ background:#fff; border:1px solid #D9DEE8; padding:10px 14px; }
+.pr-geometry h5{ display:flex; align-items:center; gap:8px; font-family:'El Messiri','Tajawal',sans-serif; font-size:16px; margin-bottom:6px; }
+.pr-geometry .ge-two li{ display:flex; gap:8px; align-items:flex-start; font-size:14px; line-height:1.6; margin-bottom:3px; }
+.pr-geometry .ge-two li > i{ flex:none; margin-top:3px; }
+.pr-geometry .ge-dot{ width:8px; height:8px; border-radius:50%; border:2px solid #3D5A99; margin:7px 3px 0; }
+.pr-geometry .ge-st{ flex:1; display:flex; flex-direction:column; gap:8px; }
+.pr-geometry .ge-st h4{ display:flex; align-items:center; gap:12px; font-family:'El Messiri','Tajawal',sans-serif; font-size:18px; }
+.pr-geometry .ge-st h4 i{ flex:1; height:0; border-top:1.5px dashed #9AA5B8; }
+.pr-geometry .ge-s{ flex:var(--g) 1 auto; display:flex; gap:12px; min-height:58px; }
+.pr-geometry .ge-n{ position:relative; flex:none; width:44px; height:44px; margin-top:4px; }
+.pr-geometry .ge-n svg{ position:absolute; top:0; left:0; }
+.pr-geometry .ge-n b{ position:absolute; top:0; left:0; right:0; bottom:0; display:flex; align-items:center; justify-content:center; font:800 15px 'Inter',sans-serif; padding-top:3px; }
+.pr-geometry .ge-c{ flex:1; min-width:0; background:#fff; border:1px solid #D9DEE8; padding:8px 14px; }
+.pr-geometry .ge-sh{ display:flex; justify-content:space-between; align-items:center; gap:10px; }
+.pr-geometry .ge-sh b{ font-size:15.5px; }
+.pr-geometry .ge-sh em{ flex:none; font-size:12.5px; font-weight:700; color:#3D5A99; border:1.2px solid #3D5A99; padding:0 9px; }
+.pr-geometry .ge-sa{ display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:3px; }
+.pr-geometry .ge-p2{ font-size:14px; line-height:1.55; }
+.pr-geometry .ge-p2 i{ display:block; font-size:11.5px; font-weight:700; color:#C8553D; }
+.pr-geometry .ge-ev{ background:#FFF8E5; border-right:4px solid #F2C14E; padding:8px 14px; }
+.pr-geometry .ge-ev b{ font-size:15px; color:#3D5A99; }
+.pr-geometry .ge-ev p{ font-size:14px; line-height:1.6; }
+.pr-geometry .ge-foot{ display:grid; grid-template-columns:1fr 140px 1fr; gap:20px; align-items:end; }
+.pr-geometry .ge-sg small{ font-size:12.5px; font-weight:700; color:#3D5A99; }
+.pr-geometry .ge-sg i{ height:30px; border-bottom:1.2px solid #2E3440; }
+
+/* =================== 3) الميكانيك =================== */
+.pr-mechanics{ background-color:#F5F7F8; color:#263238; }
+.pr-mechanics .me-h{ position:relative; flex:none; height:184px; background:#263238; color:#fff; overflow:hidden; }
+.pr-mechanics .me-gears{ position:absolute; left:-30px; top:-10px; }
+.pr-mechanics .me-ht{ position:absolute; top:22px; right:44px; left:290px; }
+.pr-mechanics .me-ht small{ display:block; font-size:13px; color:#B0BEC5; }
+.pr-mechanics .me-ht span{ display:inline-block; margin-top:6px; font-size:13.5px; font-weight:800; color:#263238; background:#FFC107; padding:1px 10px; }
+.pr-mechanics .me-ht h1{ font-family:'Cairo','Tajawal',sans-serif; font-size:38px; font-weight:800; line-height:1.25; margin:6px 0 4px; }
+.pr-mechanics .me-ht p{ font-size:14px; color:#CFD8DC; }
+.pr-mechanics .me-lg{ position:absolute; bottom:16px; right:44px; height:42px; width:auto; max-width:100px; object-fit:contain; background:#fff; padding:3px; }
+.pr-mechanics .me-str{ display:block; flex:none; }
+.pr-mechanics .me-in{ position:relative; flex:1; display:flex; flex-direction:column; gap:10px; padding:12px 40px 12px; }
+.pr-mechanics .me-plate{ position:relative; display:flex; align-items:center; gap:14px; background:#ECEFF1; border:1.5px solid #B0BEC5; border-radius:6px; padding:10px 22px; }
+.pr-mechanics .rv{ position:absolute; width:8px; height:8px; border-radius:50%; background:#90A4AE; border:1.5px solid #607D8B; }
+.pr-mechanics .rv.a{ top:6px; right:6px; } .pr-mechanics .rv.b{ top:6px; left:6px; } .pr-mechanics .rv.c{ bottom:6px; right:6px; } .pr-mechanics .rv.d{ bottom:6px; left:6px; }
+.pr-mechanics .me-cells{ flex:1; display:grid; grid-template-columns:repeat(4, 1fr); gap:8px; }
+.pr-mechanics .me-cells > div{ background:#fff; border:1px solid #CFD8DC; padding:5px 9px; line-height:1.45; min-width:0; }
+.pr-mechanics .me-cells small{ display:block; font-size:11px; color:#F57C00; font-weight:800; }
+.pr-mechanics .me-cells b{ font-size:13.5px; }
+.pr-mechanics .me-gauge{ position:relative; flex:none; width:128px; height:76px; text-align:center; }
+.pr-mechanics .me-gauge svg{ position:absolute; top:0; left:0; }
+.pr-mechanics .me-gauge b{ position:absolute; left:0; right:0; top:30px; font:800 20px/1 'Inter',sans-serif; }
+.pr-mechanics .me-gauge small{ position:absolute; left:0; right:0; top:62px; font-size:10.5px; color:#607D8B; font-weight:700; }
+.pr-mechanics .me-two{ display:grid; grid-template-columns:1.25fr 1fr; gap:14px; }
+.pr-mechanics .me-two section{ position:relative; background:#fff; border:1px solid #CFD8DC; border-top:4px solid #37474F; padding:10px 14px; }
+.pr-mechanics h5{ display:flex; align-items:center; gap:8px; font-family:'Cairo','Tajawal',sans-serif; font-size:15.5px; font-weight:800; margin-bottom:6px; }
+.pr-mechanics .me-two li{ display:flex; gap:8px; align-items:flex-start; font-size:14px; line-height:1.6; margin-bottom:3px; }
+.pr-mechanics .me-two ol li i, .pr-mechanics .me-two ul li i{ flex:none; }
+.pr-mechanics .me-two section:first-child li i{ width:20px; height:20px; background:#263238; color:#FFC107; font:800 11px/20px 'Inter',sans-serif; text-align:center; margin-top:1px; }
+.pr-mechanics .me-mat li i{ width:9px; height:9px; background:#F57C00; margin-top:7px; }
+.pr-mechanics .me-mat{ padding-left:150px !important; min-height:112px; }
+.pr-mechanics .me-fb{ position:absolute; left:4px; bottom:6px; width:150px; height:96px; transform:scale(.92); transform-origin:0 100%; }
+.pr-mechanics .me-fb svg{ position:absolute; top:0; left:0; }
+.pr-mechanics .me-fb em{ position:absolute; font:italic 800 12px 'Inter',serif; }
+.pr-mechanics .me-fb .fp{ left:70px; top:76px; color:#C62828; } .pr-mechanics .me-fb .fr{ left:30px; top:4px; color:#1565C0; } .pr-mechanics .me-fb .ff{ left:14px; top:54px; color:#2E7D32; }
+.pr-mechanics .me-st{ flex:1; display:flex; flex-direction:column; gap:8px; }
+.pr-mechanics .me-st h4{ display:flex; justify-content:space-between; align-items:center; font-family:'Cairo','Tajawal',sans-serif; font-size:18px; font-weight:800; }
+.pr-mechanics .me-st h4 small{ display:flex; gap:4px; }
+.pr-mechanics .me-st h4 small i{ width:26px; height:6px; }
+.pr-mechanics .me-s{ flex:var(--g) 1 auto; display:flex; gap:10px; min-height:58px; }
+.pr-mechanics .me-n{ position:relative; flex:none; width:48px; height:48px; margin-top:4px; }
+.pr-mechanics .me-n svg{ position:absolute; top:0; left:0; }
+.pr-mechanics .me-n b{ position:absolute; top:0; left:0; right:0; bottom:0; display:flex; align-items:center; justify-content:center; font:800 14px 'Inter',sans-serif; color:#263238; }
+.pr-mechanics .me-c{ flex:1; min-width:0; background:#fff; border:1px solid #CFD8DC; border-right:5px solid; padding:8px 14px; }
+.pr-mechanics .me-sh{ display:flex; justify-content:space-between; align-items:center; gap:10px; }
+.pr-mechanics .me-sh b{ font-size:15.5px; }
+.pr-mechanics .me-sh em{ flex:none; font-size:12px; font-weight:800; background:#263238; color:#FFC107; padding:1px 9px; }
+.pr-mechanics .me-sa{ display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:3px; }
+.pr-mechanics .me-p{ font-size:14px; line-height:1.55; }
+.pr-mechanics .me-p i{ display:block; font-size:11.5px; font-weight:800; color:#F57C00; }
+.pr-mechanics .me-ev{ background:#FFF3E0; border:1.5px solid #F57C00; padding:8px 14px; }
+.pr-mechanics .me-ev b{ font-size:15px; color:#E65100; }
+.pr-mechanics .me-ev p{ font-size:14px; line-height:1.6; }
+.pr-mechanics .me-sg{ gap:16px; }
+.pr-mechanics .me-sg > div{ background:#fff; border:1px solid #CFD8DC; padding:5px 12px; }
+.pr-mechanics .me-sg small{ font-size:12px; font-weight:800; color:#37474F; }
+.pr-mechanics .me-sg i{ height:24px; border-bottom:1px dashed #90A4AE; }
+
+/* =================== 4) الدارة الكهربائية =================== */
+.pr-circuit{ background-color:#FFFFFF; color:#1A2530; }
+.pr-circuit .ci-in{ position:relative; flex:1; display:flex; flex-direction:column; gap:11px; padding:30px 40px 14px; }
+.pr-circuit .ci-h{ position:relative; height:210px; flex:none; }
+.pr-circuit .ci-svg{ position:absolute; top:0; left:0; }
+.pr-circuit .ci-l{ position:absolute; font:italic 800 14px 'Inter',serif; color:#D84315; }
+.pr-circuit .ci-l.li{ left:550px; top:174px; } .pr-circuit .ci-l.lr{ left:212px; top:22px; color:#263238; } .pr-circuit .ci-l.lk{ left:356px; top:162px; color:#263238; }
+.pr-circuit .ci-l.lc{ right:22px; top:88px; color:#263238; } .pr-circuit .ci-l.lp{ left:26px; top:86px; color:#263238; font-style:normal; } .pr-circuit .ci-l.lm{ left:26px; top:112px; color:#263238; font-style:normal; }
+.pr-circuit .ci-ht{ position:absolute; top:40px; bottom:34px; left:60px; right:60px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; }
+.pr-circuit .ci-ht small{ font-size:13px; color:#5B6B7A; }
+.pr-circuit .ci-ht span{ font-size:14px; font-weight:800; color:#1565C0; }
+.pr-circuit .ci-ht h1{ font-family:'Cairo','Tajawal',sans-serif; font-size:36px; font-weight:800; line-height:1.25; margin:2px 0; }
+.pr-circuit .ci-ht p{ font-size:14px; color:#5B6B7A; }
+.pr-circuit .ci-lg{ position:absolute; top:34px; right:40px; height:40px; width:auto; max-width:80px; object-fit:contain; }
+.pr-circuit .ci-info{ display:grid; grid-template-columns:repeat(5, 1fr); gap:8px; }
+.pr-circuit .ci-info > div{ border:1.5px solid #263238; border-radius:6px; padding:5px 10px; line-height:1.45; min-width:0; position:relative; }
+.pr-circuit .ci-info small{ display:block; font-size:11px; color:#1565C0; font-weight:800; }
+.pr-circuit .ci-info b{ font-size:13.5px; }
+.pr-circuit .ci-two{ display:grid; grid-template-columns:1.55fr 1fr; gap:14px; }
+.pr-circuit .ci-two section{ background:#F3F8FE; border:1px solid #BBDEFB; border-radius:10px; padding:10px 14px; }
+.pr-circuit h5{ display:flex; align-items:center; gap:8px; font-family:'Cairo','Tajawal',sans-serif; font-size:15.5px; font-weight:800; margin-bottom:6px; color:#0D47A1; }
+.pr-circuit .ci-two li{ display:flex; gap:8px; align-items:flex-start; font-size:14px; line-height:1.6; margin-bottom:3px; }
+.pr-circuit .ci-two li svg{ flex:none; margin-top:4px; }
+.pr-circuit .ci-two li i{ flex:none; width:18px; height:18px; border-radius:50%; font:800 13px/16px 'Inter',sans-serif; text-align:center; margin-top:2px; border:1.5px solid; }
+.pr-circuit .ci-two li i.pl{ color:#D84315; border-color:#D84315; } .pr-circuit .ci-two li i.mn{ color:#1565C0; border-color:#1565C0; }
+.pr-circuit .ci-bat{ display:flex; align-items:center; gap:10px; }
+.pr-circuit .ci-bat small{ font-size:12.5px; font-weight:800; color:#0D47A1; white-space:nowrap; }
+.pr-circuit .ci-cell{ flex:1; border:2.5px solid #263238; border-radius:7px; padding:3px; }
+.pr-circuit .ci-bar{ height:20px; }
+.pr-circuit .ci-bar span{ border-radius:3px; }
+.pr-circuit .ci-nub{ width:7px; height:14px; background:#263238; border-radius:0 3px 3px 0; margin-right:-10px; }
+.pr-circuit .ci-bat b{ font:800 13px 'Inter','Tajawal',sans-serif; white-space:nowrap; }
+.pr-circuit .ci-st{ flex:1; display:flex; flex-direction:column; gap:8px; position:relative; }
+.pr-circuit .ci-st::before{ content:""; position:absolute; top:10px; bottom:10px; right:21px; width:2.5px; background:#263238; }
+.pr-circuit .ci-s{ position:relative; flex:var(--g) 1 auto; display:flex; gap:12px; min-height:58px; }
+.pr-circuit .ci-node{ position:relative; flex:none; width:44px; display:flex; justify-content:center; }
+.pr-circuit .ci-node i{ position:relative; margin-top:8px; width:40px; height:40px; border-radius:50%; background:#fff; border:2.5px solid; display:flex; align-items:center; justify-content:center; }
+.pr-circuit .ci-node::after{ content:""; position:absolute; top:27px; left:40px; width:14px; height:2.5px; background:#263238; }
+.pr-circuit .ci-c{ flex:1; min-width:0; border:1.5px solid; border-radius:10px; padding:8px 14px; background:#fff; }
+.pr-circuit .ci-sh{ display:flex; justify-content:space-between; align-items:center; gap:10px; }
+.pr-circuit .ci-sh b{ font-size:15.5px; }
+.pr-circuit .ci-sh em{ flex:none; font-size:12.5px; font-weight:800; color:#fff; border-radius:999px; padding:1px 10px; }
+.pr-circuit .ci-sa{ display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:3px; }
+.pr-circuit .ci-p{ font-size:14px; line-height:1.55; }
+.pr-circuit .ci-p i{ display:block; font-size:11.5px; font-weight:800; color:#1565C0; }
+.pr-circuit .ci-ev{ display:flex; gap:10px; align-items:flex-start; background:#FFF8E1; border:1.5px solid #FFC400; border-radius:10px; padding:8px 14px; }
+.pr-circuit .ci-ev svg{ flex:none; margin-top:2px; }
+.pr-circuit .ci-ev b{ font-size:15px; color:#0D47A1; }
+.pr-circuit .ci-ev p{ font-size:14px; line-height:1.6; }
+.pr-circuit .ci-sg{ gap:18px; }
+.pr-circuit .ci-sg small{ font-size:12px; font-weight:800; color:#1565C0; }
+.pr-circuit .ci-sg i{ height:28px; border-bottom:1.5px solid #263238; }
+.pr-circuit .ci-gnd{ margin:-4px auto 0; }
+
+/* =================== 5) الذرّة =================== */
+.pr-atom{ background-color:#FCFBFF; color:#1F1B3A; }
+.pr-atom .at-hx{ position:absolute; }
+.pr-atom .at-hx.a{ bottom:110px; left:-20px; } .pr-atom .at-hx.b{ top:250px; right:-34px; }
+.pr-atom .at-in{ position:relative; flex:1; display:flex; flex-direction:column; gap:11px; padding:26px 40px 18px; }
+.pr-atom .at-h{ display:flex; gap:14px; align-items:center; }
+.pr-atom .at-ht{ position:relative; flex:1; min-width:0; }
+.pr-atom .at-ht small{ display:block; font-size:13px; color:#6E6A8A; }
+.pr-atom .at-ht span{ font-size:14px; font-weight:800; color:#D81B60; }
+.pr-atom .at-ht h1{ font-family:'Cairo','Tajawal',sans-serif; font-size:36px; font-weight:800; line-height:1.25; margin:2px 0 4px; color:#311B92; }
+.pr-atom .at-ht p{ font-size:14px; color:#5E35B1; }
+.pr-atom .at-lg{ display:block; margin-top:8px; height:40px; width:auto; max-width:100px; object-fit:contain; }
+.pr-atom .at-el{ position:relative; flex:none; width:112px; height:132px; border:2.5px solid #5E35B1; border-radius:6px; background:#F3EFFB; text-align:center; }
+.pr-atom .at-el i{ position:absolute; top:6px; left:8px; font:800 15px 'Inter',sans-serif; color:#5E35B1; }
+.pr-atom .at-el b{ display:block; margin-top:16px; font:800 46px/1.1 'Cairo','Tajawal',sans-serif; color:#311B92; }
+.pr-atom .at-el span{ display:block; font-size:12.5px; font-weight:700; }
+.pr-atom .at-el em{ display:block; font:700 11.5px 'Inter','Tajawal',sans-serif; color:#6E6A8A; }
+.pr-atom .at-el small{ position:absolute; bottom:-20px; left:0; right:0; font-size:10.5px; color:#5E35B1; font-weight:700; }
+.pr-atom .at-atom{ flex:none; width:220px; height:184px; }
+.pr-atom .at-info{ display:grid; grid-template-columns:repeat(5, 1fr); background:#fff; border:1.5px solid #D1C4E9; border-radius:12px; }
+.pr-atom .at-info > div{ padding:6px 10px; border-left:1px solid #EDE7F6; line-height:1.45; min-width:0; }
+.pr-atom .at-info > div:last-child{ border-left:0; }
+.pr-atom .at-info small{ display:block; font-size:11px; color:#00838F; font-weight:800; }
+.pr-atom .at-info b{ font-size:13.5px; }
+.pr-atom .at-two{ display:grid; grid-template-columns:1.55fr 1fr; gap:14px; }
+.pr-atom .at-two section{ background:#fff; border:1px solid #D1C4E9; border-radius:14px; padding:10px 14px; }
+.pr-atom h5{ display:flex; align-items:center; gap:8px; font-family:'Cairo','Tajawal',sans-serif; font-size:15.5px; font-weight:800; color:#311B92; margin-bottom:6px; }
+.pr-atom .at-two li{ display:flex; gap:8px; align-items:flex-start; font-size:14px; line-height:1.6; margin-bottom:3px; }
+.pr-atom .at-two li svg{ flex:none; margin-top:4px; }
+.pr-atom .at-pills span{ display:inline-block; margin:0 0 6px 6px; padding:3px 12px; border-radius:999px; background:#E0F7FA; color:#006064; font-size:13.5px; font-weight:700; }
+.pr-atom .at-st{ flex:1; display:flex; flex-direction:column; gap:8px; }
+.pr-atom .at-st h4{ display:flex; justify-content:space-between; align-items:baseline; font-family:'Cairo','Tajawal',sans-serif; font-size:18px; font-weight:800; color:#311B92; }
+.pr-atom .at-st h4 small{ font-size:12px; color:#6E6A8A; font-weight:600; }
+.pr-atom .at-s{ flex:var(--g) 1 auto; display:flex; gap:12px; min-height:58px; background:#fff; border:1px solid #D1C4E9; border-radius:14px; padding:7px 14px 7px 12px; }
+.pr-atom .at-sh2{ position:relative; flex:none; width:48px; height:48px; }
+.pr-atom .at-sh2 svg{ position:absolute; top:0; left:0; }
+.pr-atom .at-sh2 b{ position:absolute; top:0; left:0; right:0; bottom:0; display:flex; align-items:center; justify-content:center; font:800 13px 'Inter',sans-serif; color:#fff; }
+.pr-atom .at-c{ flex:1; min-width:0; }
+.pr-atom .at-hd{ display:flex; justify-content:space-between; align-items:center; gap:10px; }
+.pr-atom .at-hd b{ font-size:15.5px; }
+.pr-atom .at-hd em{ flex:none; font-size:12.5px; font-weight:800; }
+.pr-atom .at-sa{ display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:3px; }
+.pr-atom .at-p{ font-size:14px; line-height:1.55; }
+.pr-atom .at-p i{ display:block; font-size:11.5px; font-weight:800; color:#00838F; }
+.pr-atom .at-row{ display:grid; grid-template-columns:1.2fr 1fr; gap:14px; }
+.pr-atom .at-dn{ display:flex; align-items:center; gap:12px; background:#fff; border:1px solid #D1C4E9; border-radius:14px; padding:8px 12px; }
+.pr-atom .at-ring{ position:relative; flex:none; width:96px; height:96px; }
+.pr-atom .at-ring > div{ position:absolute; top:0; left:0; right:0; bottom:0; display:flex; flex-direction:column; align-items:center; justify-content:center; line-height:1.1; }
+.pr-atom .at-ring b{ font:800 20px 'Inter',sans-serif; }
+.pr-atom .at-ring small{ font-size:10.5px; color:#6E6A8A; }
+.pr-atom .at-lgd{ flex:1; min-width:0; }
+.pr-atom .at-lgd > div{ display:flex; align-items:center; gap:6px; font-size:12px; margin-bottom:4px; }
+.pr-atom .at-lgd i{ flex:none; width:9px; height:9px; border-radius:50%; }
+.pr-atom .at-lgd span{ flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.pr-atom .at-lgd b{ font:700 12px 'Inter',sans-serif; }
+.pr-atom .at-ev{ background:#FCE4EC; border-radius:14px; padding:9px 14px; }
+.pr-atom .at-ev b{ font-size:15px; color:#AD1457; }
+.pr-atom .at-ev p{ font-size:14px; line-height:1.6; }
+.pr-atom .at-sg{ gap:16px; }
+.pr-atom .at-sg small{ font-size:12px; font-weight:800; color:#5E35B1; }
+.pr-atom .at-sg i{ height:26px; border-bottom:1.5px dotted #5E35B1; }
+
+/* =================== 6) المخطوطة التاريخية =================== */
+.pr-manuscript{ background-color:#F3E6C8; color:#3E2723; font-family:'Amiri','Tajawal',serif; padding:18px; }
+.pr-manuscript .ms-v{ position:absolute; }
+.pr-manuscript .ms-v.t{ top:0; left:0; right:0; height:44px; background:linear-gradient(to bottom, #DCC294, rgba(243,230,200,0)); }
+.pr-manuscript .ms-v.b{ bottom:0; left:0; right:0; height:44px; background:linear-gradient(to top, #DCC294, rgba(243,230,200,0)); }
+.pr-manuscript .ms-v.r{ top:0; bottom:0; right:0; width:44px; background:linear-gradient(to left, #DCC294, rgba(243,230,200,0)); }
+.pr-manuscript .ms-v.l{ top:0; bottom:0; left:0; width:44px; background:linear-gradient(to right, #DCC294, rgba(243,230,200,0)); }
+.pr-manuscript .ms-o{ position:relative; flex:1; display:flex; border:2px solid #6D4C41; padding:4px; }
+.pr-manuscript .ms-i{ position:relative; flex:1; display:flex; flex-direction:column; gap:9px; border:1px solid #A07A2C; padding:22px 34px 18px; }
+.pr-manuscript .ms-seal{ position:absolute; top:14px; left:22px; width:80px; height:80px; }
+.pr-manuscript .ms-seal svg{ position:absolute; top:0; left:0; }
+.pr-manuscript .ms-seal img{ position:absolute; top:20px; left:20px; width:40px; height:40px; object-fit:contain; border-radius:50%; background:#F3E6C8; }
+.pr-manuscript .ms-top{ display:flex; justify-content:space-between; padding-left:96px; font-size:15px; color:#8E2C1F; font-weight:700; }
+.pr-manuscript .ms-t{ text-align:center; }
+.pr-manuscript .ms-t small{ font-size:17px; color:#A07A2C; font-weight:700; }
+.pr-manuscript .ms-band{ position:relative; margin:6px 52px 2px; background:#8E2C1F; padding:8px 20px 10px; }
+.pr-manuscript .ms-tail{ position:absolute; top:6px; }
+.pr-manuscript .ms-tail.r{ right:-44px; } .pr-manuscript .ms-tail.l{ left:-44px; }
+.pr-manuscript .ms-band h1{ position:relative; font-family:'Amiri',serif; font-size:34px; font-weight:700; line-height:1.3; color:#FFF4DD; }
+.pr-manuscript .ms-orn{ margin:6px auto 0; }
+.pr-manuscript .ms-t p{ font-size:16px; margin-top:2px; }
+.pr-manuscript .ms-info{ display:flex; flex-wrap:wrap; justify-content:center; gap:2px 10px; font-size:15.5px; line-height:1.6; border-top:1px solid #C9A86A; border-bottom:1px solid #C9A86A; padding:4px 0; }
+.pr-manuscript .ms-info b{ color:#8E2C1F; }
+.pr-manuscript .ms-info > i{ color:#A07A2C; }
+.pr-manuscript .ms-two{ display:grid; grid-template-columns:1.5fr 1fr; gap:22px; }
+.pr-manuscript .ms-two section + section{ border-right:1px solid #C9A86A; padding-right:20px; }
+.pr-manuscript h5{ font-family:'Amiri',serif; font-size:18px; font-weight:700; color:#8E2C1F; margin-bottom:2px; }
+.pr-manuscript .ms-two li, .pr-manuscript .ms-two p{ font-size:15.5px; line-height:1.65; }
+.pr-manuscript .ms-two li em{ color:#8E2C1F; font-weight:700; }
+.pr-manuscript .ms-st{ flex:1; display:flex; flex-direction:column; gap:6px; }
+.pr-manuscript .ms-st h4{ display:flex; align-items:center; justify-content:center; gap:10px; font-family:'Amiri',serif; font-size:21px; color:#8E2C1F; }
+.pr-manuscript .ms-st h4 .ms-orn{ width:150px; margin:0; }
+.pr-manuscript .ms-s{ flex:var(--g) 1 auto; min-height:56px; border-bottom:1px dashed #B99560; padding:4px 0 6px; }
+.pr-manuscript .ms-sh{ display:flex; justify-content:space-between; align-items:baseline; gap:10px; }
+.pr-manuscript .ms-sh b{ font-size:17px; color:#8E2C1F; }
+.pr-manuscript .ms-sh em{ flex:none; font-size:15px; color:#6D4C41; }
+.pr-manuscript .ms-sa{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+.pr-manuscript .ms-p{ font-size:15px; line-height:1.6; }
+.pr-manuscript .ms-p i{ color:#A07A2C; font-weight:700; margin-left:6px; }
+.pr-manuscript .ms-p i::after{ content:":"; }
+.pr-manuscript .ms-bar{ height:18px; }
+.pr-manuscript .ms-bar span{ border-radius:2px; font-family:'Tajawal',sans-serif; }
+.pr-manuscript .ms-ev{ border:3px double #8E2C1F; padding:6px 14px; }
+.pr-manuscript .ms-ev b{ font-size:17px; color:#8E2C1F; }
+.pr-manuscript .ms-ev p{ font-size:15.5px; line-height:1.6; }
+.pr-manuscript .ms-foot{ display:flex; align-items:flex-end; gap:24px; }
+.pr-manuscript .ms-foot > span{ font-size:15px; white-space:nowrap; padding-bottom:4px; }
+.pr-manuscript .ms-foot > span b{ color:#8E2C1F; }
+.pr-manuscript .ms-sg{ flex:1; gap:24px; text-align:center; }
+.pr-manuscript .ms-sg small{ font-size:15px; color:#8E2C1F; font-weight:700; }
+.pr-manuscript .ms-sg b{ font-family:'Amiri',serif; font-size:14px; }
+.pr-manuscript .ms-sg i{ height:26px; border-bottom:1px solid #6D4C41; }
+
+/* =================== 7) سجل الأحداث =================== */
+.pr-chronicle{ background-color:#FAFAF7; color:#111418; }
+.pr-chronicle .cr-bar{ height:12px; background:#111418; flex:none; }
+.pr-chronicle .cr-in{ position:relative; flex:1; display:flex; flex-direction:column; gap:9px; padding:20px 44px 14px; }
+.pr-chronicle .cr-h{ display:flex; gap:20px; align-items:stretch; border-bottom:3px solid #111418; padding-bottom:10px; }
+.pr-chronicle .cr-ht{ flex:1; min-width:0; }
+.pr-chronicle .cr-ht small{ display:block; font-size:13px; color:#6B6B6B; }
+.pr-chronicle .cr-ht span{ font-size:14px; font-weight:800; color:#9B2226; }
+.pr-chronicle .cr-ht h1{ font-family:'Cairo','Tajawal',sans-serif; font-size:42px; font-weight:800; line-height:1.2; margin:2px 0 4px; }
+.pr-chronicle .cr-ht p{ font-size:15px; color:#444; }
+.pr-chronicle .cr-tag{ flex:none; width:118px; background:#111418; color:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:10px; }
+.pr-chronicle .cr-tag img{ max-width:80px; max-height:48px; object-fit:contain; background:#fff; padding:3px; }
+.pr-chronicle .cr-tag svg{ background:#FAFAF7; border-radius:6px; padding:2px; }
+.pr-chronicle .cr-tag small{ font-size:12px; color:#E9D8A6; margin-top:6px; }
+.pr-chronicle .cr-tag b{ font:800 34px/1 'Inter',sans-serif; }
+.pr-chronicle .cr-tl{ padding:44px 6px 44px; }
+.pr-chronicle .cr-axis{ position:relative; height:8px; background:#D6D3CA; }
+.pr-chronicle .cr-seg{ position:absolute; top:0; bottom:0; }
+.pr-chronicle .cr-ev{ position:absolute; top:4px; width:0; }
+.pr-chronicle .cr-ev b{ position:absolute; top:-9px; right:-9px; width:18px; height:18px; border-radius:50%; border:3px solid #FAFAF7; }
+.pr-chronicle .cr-ev em{ position:absolute; right:-24px; width:48px; text-align:center; font:800 12px 'Inter',sans-serif; }
+.pr-chronicle .cr-ev small{ position:absolute; right:-6px; width:150px; text-align:right; font-size:11.5px; font-weight:700; color:#333; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.pr-chronicle .cr-ev.up em{ top:-28px; } .pr-chronicle .cr-ev.up small{ top:-46px; }
+.pr-chronicle .cr-ev.dn em{ top:12px; } .pr-chronicle .cr-ev.dn small{ top:28px; }
+.pr-chronicle .cr-end{ position:absolute; left:-6px; top:-28px; }
+.pr-chronicle .cr-end em{ font:800 12px 'Inter',sans-serif; color:#9B2226; }
+.pr-chronicle .cr-end::after{ content:""; position:absolute; left:-4px; top:26px; border:7px solid transparent; border-right:10px solid #111418; }
+.pr-chronicle .cr-info{ display:grid; grid-template-columns:repeat(4, 1fr); border-top:1px solid #111418; border-bottom:1px solid #111418; }
+.pr-chronicle .cr-info > div{ padding:6px 10px; border-left:1px solid #D6D3CA; line-height:1.45; min-width:0; }
+.pr-chronicle .cr-info > div:last-child{ border-left:0; }
+.pr-chronicle .cr-info small{ display:block; font-size:11px; color:#9B2226; font-weight:800; }
+.pr-chronicle .cr-info b{ font-size:14px; }
+.pr-chronicle .cr-two{ display:grid; grid-template-columns:1.55fr 1fr; gap:22px; }
+.pr-chronicle h5{ font-family:'Cairo','Tajawal',sans-serif; font-size:15.5px; font-weight:800; margin-bottom:6px; border-bottom:2px solid #9B2226; display:inline-block; }
+.pr-chronicle .cr-two li{ display:flex; gap:8px; align-items:flex-start; font-size:14px; line-height:1.6; margin-bottom:3px; }
+.pr-chronicle .cr-two li i{ flex:none; width:8px; height:8px; background:#9B2226; transform:rotate(45deg); margin-top:8px; }
+.pr-chronicle .cr-st{ flex:1; display:flex; flex-direction:column; gap:8px; }
+.pr-chronicle .cr-s{ flex:var(--g) 1 auto; display:flex; gap:14px; min-height:58px; }
+.pr-chronicle .cr-time{ flex:none; width:68px; display:flex; flex-direction:column; align-items:center; justify-content:center; border-left:4px solid; background:#F1EEE5; padding:4px 0; }
+.pr-chronicle .cr-time b{ font:800 14px 'Inter',sans-serif; }
+.pr-chronicle .cr-time i{ font-size:12px; color:#888; line-height:1; }
+.pr-chronicle .cr-c{ flex:1; min-width:0; border-bottom:1px solid #D6D3CA; padding-bottom:6px; }
+.pr-chronicle .cr-c h6{ display:flex; align-items:baseline; gap:10px; font-family:'Cairo','Tajawal',sans-serif; font-size:16.5px; font-weight:800; line-height:1.4; }
+.pr-chronicle .cr-c h6 span{ font:800 16px 'Inter',sans-serif; }
+.pr-chronicle .cr-sa{ display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:3px; }
+.pr-chronicle .cr-p{ font-size:14px; line-height:1.55; }
+.pr-chronicle .cr-p i{ display:block; font-size:11.5px; font-weight:800; color:#9B2226; }
+.pr-chronicle .cr-doc{ display:flex; gap:12px; align-items:flex-start; background:#E9D8A6; padding:9px 14px; }
+.pr-chronicle .cr-doc svg{ flex:none; }
+.pr-chronicle .cr-doc b{ font-size:14.5px; }
+.pr-chronicle .cr-doc p{ font-size:14px; line-height:1.6; }
+.pr-chronicle .cr-sg{ gap:20px; }
+.pr-chronicle .cr-sg small{ font-size:12px; font-weight:800; color:#555; }
+.pr-chronicle .cr-sg i{ height:28px; border-bottom:2px solid #111418; }
+
+/* =================== 8) الأغورا الفلسفية =================== */
+.pr-agora{ background-color:#F7F5F0; color:#2B2B2B; }
+.pr-agora .ag-in{ position:relative; flex:1; display:flex; flex-direction:column; gap:10px; padding:22px 40px 14px; }
+.pr-agora .ag-h{ display:flex; flex-direction:column; }
+.pr-agora .ag-ped{ display:block; }
+.pr-agora .ag-fr{ height:16px; }
+.pr-agora .ag-fr svg{ display:block; }
+.pr-agora .ag-body{ display:flex; align-items:stretch; gap:10px; margin-top:4px; }
+.pr-agora .ag-col{ flex:none; }
+.pr-agora .ag-ht{ position:relative; flex:1; min-width:0; text-align:center; display:flex; flex-direction:column; justify-content:center; align-items:center; }
+.pr-agora .ag-k{ display:flex; align-items:center; gap:8px; }
+.pr-agora .ag-k small{ font-size:13px; color:#6B705C; }
+.pr-agora .ag-ht > span{ font-size:14px; font-weight:700; color:#A44A3F; margin-top:6px; }
+.pr-agora .ag-ht h1{ font-family:'Amiri',serif; font-size:40px; font-weight:700; line-height:1.3; margin:2px 0; }
+.pr-agora .ag-ht p{ font-size:15px; color:#6B705C; }
+.pr-agora .ag-lg{ height:40px; width:auto; max-width:90px; object-fit:contain; margin-top:6px; }
+.pr-agora .ag-info{ display:grid; grid-template-columns:repeat(5, 1fr); border-top:2px solid #2B2B2B; border-bottom:1px solid #2B2B2B; }
+.pr-agora .ag-info > div{ padding:6px 10px; text-align:center; border-left:1px solid #D8D0BF; line-height:1.45; min-width:0; }
+.pr-agora .ag-info > div:last-child{ border-left:0; }
+.pr-agora .ag-info small{ display:block; font-size:11px; color:#A44A3F; font-weight:700; }
+.pr-agora .ag-info b{ font-size:14px; }
+.pr-agora .ag-two{ display:grid; grid-template-columns:1.55fr 1fr; gap:14px; }
+.pr-agora .ag-two section{ background:#FFFFFF; border:1px solid #E2DCCF; padding:10px 14px; }
+.pr-agora h5{ font-family:'Amiri',serif; font-size:18px; font-weight:700; color:#A44A3F; margin-bottom:4px; }
+.pr-agora .ag-two li{ display:flex; gap:10px; align-items:flex-start; font-size:14px; line-height:1.6; margin-bottom:3px; }
+.pr-agora .ag-two li em{ flex:none; width:26px; font:700 14px/1.6 'Amiri',serif; color:#A44A3F; text-align:center; }
+.pr-agora .ag-two ul li i{ flex:none; width:7px; height:7px; border:1.5px solid #6B705C; transform:rotate(45deg); margin-top:8px; }
+.pr-agora .ag-st{ flex:1; display:flex; flex-direction:column; gap:8px; }
+.pr-agora .ag-st h4{ display:flex; align-items:center; gap:12px; font-family:'Amiri',serif; font-size:21px; color:#2B2B2B; }
+.pr-agora .ag-st h4 i{ flex:1; height:0; border-top:1px solid #B89A5E; }
+.pr-agora .ag-s{ flex:var(--g) 1 auto; display:flex; gap:12px; min-height:58px; }
+.pr-agora .ag-n{ flex:none; width:52px; display:flex; align-items:flex-start; justify-content:center; padding-top:6px; font:700 24px/1 'Amiri',serif; color:#A44A3F; border-left:1px solid #B89A5E; }
+.pr-agora .ag-c{ flex:1; min-width:0; background:#FFFFFF; border:1px solid #E2DCCF; border-top:3px solid #6B705C; padding:7px 14px; }
+.pr-agora .ag-sh{ display:flex; justify-content:space-between; align-items:center; gap:10px; }
+.pr-agora .ag-sh b{ font-size:15.5px; }
+.pr-agora .ag-sh em{ flex:none; font-size:12.5px; font-weight:700; color:#6B705C; }
+.pr-agora .ag-sa{ display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:3px; }
+.pr-agora .ag-p{ font-size:14px; line-height:1.55; }
+.pr-agora .ag-p i{ display:block; font-size:11.5px; font-weight:700; color:#A44A3F; }
+.pr-agora .ag-ev{ display:flex; gap:12px; align-items:center; background:#EFEAE0; padding:8px 14px; }
+.pr-agora .ag-ev > span{ flex:none; width:38px; height:38px; border-radius:50%; background:#A44A3F; color:#fff; font:700 24px/38px 'Amiri',serif; text-align:center; }
+.pr-agora .ag-ev b{ font-family:'Amiri',serif; font-size:16.5px; color:#A44A3F; }
+.pr-agora .ag-ev p{ font-size:14px; line-height:1.6; }
+.pr-agora .ag-sg{ gap:20px; text-align:center; }
+.pr-agora .ag-sg small{ font-family:'Amiri',serif; font-size:15px; font-weight:700; color:#6B705C; }
+.pr-agora .ag-sg i{ height:26px; border-bottom:1px solid #2B2B2B; }
+
+/* =================== 9) الخط العربي =================== */
+.pr-calligraphy{ background-color:#FBF7EE; color:#1A1A1A; padding:20px; }
+.pr-calligraphy .ca-o{ flex:1; display:flex; border:2px solid #C9A227; padding:5px; }
+.pr-calligraphy .ca-i{ position:relative; flex:1; display:flex; flex-direction:column; gap:10px; border:1px solid #C9A227; padding:22px 34px 16px; }
+.pr-calligraphy .ca-c{ position:absolute; width:14px; height:14px; }
+.pr-calligraphy .ca-c.tl{ top:-8px; left:-8px; } .pr-calligraphy .ca-c.tr{ top:-8px; right:-8px; } .pr-calligraphy .ca-c.bl{ bottom:-8px; left:-8px; } .pr-calligraphy .ca-c.br{ bottom:-8px; right:-8px; }
+.pr-calligraphy .ca-h{ position:relative; display:flex; align-items:center; gap:12px; min-height:190px; }
+.pr-calligraphy .ca-wm{ position:absolute; top:-70px; left:120px; font:700 270px/1 'Amiri',serif; color:#F1E8D2; }
+.pr-calligraphy .ca-ht{ position:relative; flex:1; min-width:0; }
+.pr-calligraphy .ca-ht small{ display:block; font-size:13.5px; color:#6B5B3A; }
+.pr-calligraphy .ca-ht span{ font-family:'Reem Kufi','Tajawal',sans-serif; font-size:15px; font-weight:700; color:#1F3A93; }
+.pr-calligraphy .ca-ht h1{ font-family:'Aref Ruqaa','Amiri',serif; font-size:54px; font-weight:700; line-height:1.3; margin:2px 0 0; }
+.pr-calligraphy .ca-ht p{ font-family:'Amiri',serif; font-size:17px; color:#B22222; }
+.pr-calligraphy .ca-lg{ display:block; margin-top:6px; height:40px; width:auto; max-width:90px; object-fit:contain; }
+.pr-calligraphy .ca-pen{ position:relative; flex:none; }
+.pr-calligraphy .ca-info{ display:flex; justify-content:space-between; border-top:1px solid #C9A227; border-bottom:1px solid #C9A227; padding:6px 4px; }
+.pr-calligraphy .ca-info span{ font-size:14px; font-weight:700; line-height:1.45; text-align:center; }
+.pr-calligraphy .ca-info small{ display:block; font-size:11px; color:#A0811C; }
+.pr-calligraphy .ca-two{ display:grid; grid-template-columns:1.55fr 1fr; gap:22px; }
+.pr-calligraphy h5{ display:flex; align-items:center; gap:8px; font-family:'Reem Kufi','Tajawal',sans-serif; font-size:16.5px; font-weight:700; color:#1F3A93; margin-bottom:6px; }
+.pr-calligraphy .ca-dots{ display:inline-flex; align-items:center; gap:2px; }
+.pr-calligraphy .ca-two li{ display:flex; gap:9px; align-items:flex-start; font-size:14.5px; line-height:1.6; margin-bottom:3px; }
+.pr-calligraphy .ca-two li svg{ flex:none; margin-top:7px; }
+.pr-calligraphy .ca-st{ flex:1; display:flex; flex-direction:column; gap:8px; }
+.pr-calligraphy .ca-st h4{ display:flex; align-items:center; justify-content:center; gap:12px; font-family:'Aref Ruqaa','Amiri',serif; font-size:26px; line-height:1.3; }
+.pr-calligraphy .ca-s{ flex:var(--g) 1 auto; display:flex; gap:12px; min-height:58px; }
+.pr-calligraphy .ca-n{ position:relative; flex:none; width:44px; height:44px; margin-top:4px; }
+.pr-calligraphy .ca-n svg{ position:absolute; top:0; left:0; }
+.pr-calligraphy .ca-n b{ position:absolute; top:0; left:0; right:0; bottom:0; display:flex; align-items:center; justify-content:center; font:700 19px/1 'Amiri',serif; color:#fff; padding-bottom:3px; }
+.pr-calligraphy .ca-cc{ flex:1; min-width:0; border-bottom:1px solid #E4D3A3; padding-bottom:6px; }
+.pr-calligraphy .ca-sh{ display:flex; justify-content:space-between; align-items:center; gap:10px; }
+.pr-calligraphy .ca-sh b{ font-family:'Amiri',serif; font-size:18px; font-weight:700; }
+.pr-calligraphy .ca-sh em{ flex:none; font-size:12.5px; font-weight:700; color:#A0811C; border:1px solid #C9A227; border-radius:999px; padding:0 10px; }
+.pr-calligraphy .ca-sa{ display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:2px; }
+.pr-calligraphy .ca-p{ font-size:14px; line-height:1.55; }
+.pr-calligraphy .ca-p i{ display:block; font-family:'Reem Kufi','Tajawal',sans-serif; font-size:12px; color:#1F3A93; }
+.pr-calligraphy .ca-bar{ height:16px; }
+.pr-calligraphy .ca-bar span{ border-radius:999px; font-size:10.5px; }
+.pr-calligraphy .ca-ev{ border:1.5px solid #C9A227; border-radius:40px; padding:8px 26px; text-align:center; }
+.pr-calligraphy .ca-ev b{ font-family:'Reem Kufi','Tajawal',sans-serif; font-size:15px; color:#B22222; }
+.pr-calligraphy .ca-ev p{ font-size:14.5px; line-height:1.6; }
+.pr-calligraphy .ca-sg{ gap:60px; padding:0 30px; text-align:center; }
+.pr-calligraphy .ca-sg small{ font-family:'Aref Ruqaa','Amiri',serif; font-size:18px; color:#1F3A93; }
+.pr-calligraphy .ca-sg i{ height:24px; border-bottom:1px solid #C9A227; }
+
+/* =================== 10) القاموس =================== */
+.pr-lexicon{ background-color:#FFFFFF; color:#111111; }
+.pr-lexicon .lx-idx{ position:absolute; top:0; bottom:0; right:0; width:30px; display:flex; flex-direction:column; background:#F1F4F9; border-left:1px solid #D9E0EA; }
+.pr-lexicon .lx-idx span{ flex:1; display:flex; align-items:center; justify-content:center; font:700 12.5px 'Cairo','Tajawal',sans-serif; color:#6B7280; border-bottom:1px solid #E3E8F0; }
+.pr-lexicon .lx-idx span.on{ background:#0057B8; color:#FFFFFF; font-size:15px; }
+.pr-lexicon .lx-in{ position:relative; flex:1; display:flex; flex-direction:column; gap:10px; padding:18px 62px 16px 40px; }
+.pr-lexicon .lx-guide{ display:flex; justify-content:space-between; align-items:center; gap:12px; border-bottom:2px solid #111; padding-bottom:5px; font-size:12.5px; }
+.pr-lexicon .lx-guide b{ font-family:'Cairo','Tajawal',sans-serif; font-weight:800; max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.pr-lexicon .lx-guide span{ color:#6B7280; }
+.pr-lexicon .lx-h{ display:flex; gap:16px; align-items:center; }
+.pr-lexicon .lx-ht{ position:relative; flex:1; min-width:0; }
+.pr-lexicon .lx-ht small{ font-size:13.5px; font-weight:700; color:#0057B8; }
+.pr-lexicon .lx-ht h1{ font-family:'Cairo','Tajawal',sans-serif; font-size:42px; font-weight:800; line-height:1.2; margin:2px 0 6px; }
+.pr-lexicon .lx-ht p{ font-size:14.5px; color:#374151; }
+.pr-lexicon .lx-ht p i{ color:#C3C9D3; margin:0 4px; }
+.pr-lexicon .lx-pos{ display:inline-block; background:#FFD500; color:#111; font-size:12.5px; font-weight:800; padding:0 8px; border-radius:4px; margin-left:4px; }
+.pr-lexicon .lx-lg{ display:block; margin-top:8px; height:38px; width:auto; max-width:90px; object-fit:contain; }
+.pr-lexicon .lx-bb{ position:relative; flex:none; width:230px; height:150px; }
+.pr-lexicon .lx-bb svg{ position:absolute; top:0; left:0; }
+.pr-lexicon .lx-bb span{ position:absolute; font-weight:800; }
+.pr-lexicon .lx-bb .b1{ left:28px; top:24px; width:106px; text-align:center; color:#fff; font-family:'Cairo','Tajawal',sans-serif; font-size:21px; }
+.pr-lexicon .lx-bb .b2{ left:96px; top:80px; width:112px; text-align:center; font:800 21px 'Inter',sans-serif; color:#111; }
+.pr-lexicon .lx-bb .b3{ left:26px; top:107px; width:78px; text-align:center; font:700 13px 'Inter',sans-serif; color:#0057B8; }
+.pr-lexicon .lx-info{ display:grid; grid-template-columns:repeat(3, 1fr); border-top:1px solid #111; border-bottom:1px solid #111; }
+.pr-lexicon .lx-info span{ padding:6px 10px; border-left:1px solid #E5E7EB; font-size:14px; font-weight:700; line-height:1.45; }
+.pr-lexicon .lx-info span:last-child{ border-left:0; }
+.pr-lexicon .lx-info small{ display:block; font-size:11px; color:#0057B8; font-weight:800; }
+.pr-lexicon .lx-two{ display:grid; grid-template-columns:1.55fr 1fr; gap:20px; }
+.pr-lexicon h5, .pr-lexicon h4{ font-family:'Cairo','Tajawal',sans-serif; font-weight:800; }
+.pr-lexicon h5{ font-size:15px; margin-bottom:4px; }
+.pr-lexicon h5::before{ content:""; display:inline-block; width:10px; height:10px; background:#FFD500; margin-left:7px; }
+.pr-lexicon .lx-two li{ font-size:14px; line-height:1.65; margin-bottom:2px; }
+.pr-lexicon .lx-two li b{ color:#0057B8; font-family:'Inter','Tajawal',sans-serif; }
+.pr-lexicon .lx-two li i{ color:#0057B8; }
+.pr-lexicon .lx-st{ flex:1; display:flex; flex-direction:column; gap:6px; }
+.pr-lexicon .lx-st h4{ font-size:17px; border-bottom:1px solid #111; padding-bottom:3px; }
+.pr-lexicon .lx-grid{ flex:1; display:grid; grid-template-columns:1fr 1fr; grid-auto-rows:1fr; column-gap:0; }
+.pr-lexicon .lx-e{ padding:8px 16px 8px 14px; border-bottom:1px solid #E5E7EB; min-height:90px; }
+.pr-lexicon .lx-e:nth-child(odd){ border-left:1px solid #111; padding-right:0; }
+.pr-lexicon .lx-e:nth-child(even){ padding-left:0; padding-right:16px; }
+.pr-lexicon .lx-w{ font-size:14px; line-height:1.5; margin-bottom:4px !important; }
+.pr-lexicon .lx-w b{ font-family:'Cairo','Tajawal',sans-serif; font-size:17px; font-weight:800; color:#0057B8; }
+.pr-lexicon .lx-w span{ color:#6B7280; font-size:13px; }
+.pr-lexicon .lx-w small{ display:inline-block; vertical-align:super; font:700 10px 'Inter',sans-serif; color:#111; }
+.pr-lexicon .lx-d{ font-size:14px; line-height:1.6; margin-bottom:2px !important; }
+.pr-lexicon .lx-d i{ font-weight:800; color:#0057B8; }
+.pr-lexicon .lx-d u{ text-decoration:none; font-weight:700; }
+.pr-lexicon .lx-bar{ height:18px; }
+.pr-lexicon .lx-bar span{ border-radius:3px; }
+.pr-lexicon .lx-ev{ background:#FFF9D6; border-right:5px solid #FFD500; padding:8px 14px; }
+.pr-lexicon .lx-ev b{ font-size:14.5px; color:#0057B8; }
+.pr-lexicon .lx-ev p{ font-size:14px; line-height:1.6; }
+.pr-lexicon .lx-sg{ gap:18px; }
+.pr-lexicon .lx-sg small{ font-size:12px; font-weight:800; color:#0057B8; }
+.pr-lexicon .lx-sg i{ height:26px; border-bottom:1px solid #111; }

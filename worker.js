@@ -1454,7 +1454,8 @@ async function handleQr(request, env, path, ctx) {
    a preview version such as claude-test-dr.merabti.workers.dev stays "off" (the page then runs a demo).
    Test-only overrides, honoured ONLY when LP_SALES = "sandbox": LP_PAYPAL_API (PayPal mock), LP_TEST_JWKS (test signer).
 ===================================================================== */
-const LP_PREMIUM = ['royal', 'andalus', 'dashboard', 'blueprint', 'cahier', 'editorial', 'oasis', 'botanica', 'swiss', 'kids'];
+const LP_PREMIUM = ['algebra', 'geometry', 'mechanics', 'circuit', 'atom', 'manuscript', 'chronicle', 'agora', 'calligraphy', 'lexicon',
+  'royal', 'andalus', 'dashboard', 'blueprint', 'cahier', 'editorial', 'oasis', 'botanica', 'swiss', 'kids'];
 const LP_PRICE = '1.99';
 const LP_CURRENCY = 'USD';
 const LP_LIVE_HOSTS = ['dr.merabti.workers.dev'];
