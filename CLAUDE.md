@@ -205,6 +205,24 @@ border, frame ring, shadow or filter, whatever the page's own logo rules say. CS
   PNG bitmaps (168 px) made from each design's SVG; the big preview stays SVG.
 - Form fields: `unicode-bidi: plaintext` on every field, so Latin values sit on the left and Arabic on the right.
 
+## Invoice generator Premium templates (tools/invoice-generator)
+
+- 16 templates in `TEMPLATES` (script.js): 6 free (classic, modern, elegant, minimal, sidebar, corporate, CSS in
+  `style.css`) + 10 Premium (`premium: true`: royal, prestige, horizon, ledger, arabesque, executive, nova, blueprint,
+  ivory, industrial, CSS in `premium.css`). **$1.99 each, one permanent purchase per template, no packs**, PayPal.
+- Layouts: the sheet's parts keep their elements/ids; `arrangeSheet()` moves them into the wrappers of the template's
+  `layout`: `flow` (free templates' order), `std` (x-top / x-row / table / x-sum / x-end) or `side` (x-side + x-main).
+  Thumbnails re-arrange their clone. Premium sheet rules are scoped `:where(.invoice-sheet.prem)` (never plain `.prem`:
+  it also matches the gallery cards, and a higher specificity would beat the template rules).
+- Decorations: `decoSvg()` returns SVG as `<img src="data:image/svg+xml,…">` (inline `<svg>` parts went missing in
+  html2canvas PDFs) with literal colours, in `.inv-deco` (whole sheet) and `.inv-hdeco` (inside x-top / x-side).
+- Editing, preview and free exports need no account. A Premium PDF / print goes through `requestExport()`: Google
+  sign-in, then the right from the Worker; admins (`users/{uid}.isAdmin`) export all. Modes from `/api/invoice/config`
+  as in the CV builder (demo on the claude-test preview / localhost). Pending order: localStorage `invoiceApp:pendingOrder`.
+- Worker `/api/invoice/*` (worker.js, "Invoice generator Premium templates"): same routes and checks as `/api/cv/*`
+  (`INV_PRICE`, `INV_PREMIUM`, D1 `inv_orders`, `inv_entitlements`). `INV_SALES` in wrangler.jsonc: **"live"** (owner,
+  2026-11-23), honoured only on dr.merabti.workers.dev (`INV_LIVE_HOSTS`).
+
 ## Home order
 
 `SECTIONS_ROW1` = tools, books (`services`), lessons; `SECTIONS_ROW2` = apps, favorites, training.
