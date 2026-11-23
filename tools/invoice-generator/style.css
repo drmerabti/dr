@@ -379,10 +379,10 @@ html[dir="rtl"] .acc-next svg{ transform: scaleX(-1); }
   background:#fff; color: var(--t-ink);
   padding: var(--sheet-pad);
   position:relative;
-  font-family: 'Inter', 'Tajawal', sans-serif;
+  font-family: var(--f-body, 'Inter', 'Tajawal', sans-serif);
   display:flex; flex-direction:column;
 }
-html[lang="ar"] .invoice-sheet{ font-family: 'Tajawal', 'Inter', sans-serif; direction: rtl; }
+html[lang="ar"] .invoice-sheet{ font-family: var(--f-body-ar, 'Tajawal', 'Inter', sans-serif); direction: rtl; }
 html[dir="ltr"] .invoice-sheet{ direction: ltr; }
 .invoice-sheet.density-compact{ --sheet-pad: 44px; --section-gap: 16px; --row-pad-v: 7px; --row-font: 12.5px; --heading-size: 28px; }
 .invoice-sheet.density-tight{ --sheet-pad: 34px; --section-gap: 9px; --row-pad-v: 4px; --row-font: 11.5px; --heading-size: 22px; }
@@ -396,7 +396,8 @@ html[lang="ar"] .invoice-sheet *{ letter-spacing: 0 !important; }
 .flat-view .invoice-sheet [data-sec]:hover{ outline-color: rgba(47,87,112,.18); }
 .flat-view .invoice-sheet [data-sec].hl{ outline-color: var(--hl); background: color-mix(in srgb, var(--hl) 5%, transparent); }
 
-.inv-band, .inv-foot{ display:none; }
+.inv-band, .inv-foot, .inv-deco, .inv-hdeco, .inv-due, .inv-closing, .inv-ref-label{ display:none; }
+.inv-org-name{ font-size:17px; font-weight:800; color: var(--t-ink); margin-bottom:6px; white-space:pre-line; }
 
 .inv-header{ display:flex; align-items:flex-start; justify-content:space-between; gap:20px; margin-bottom: var(--section-gap); }
 .inv-logo-wrap{
@@ -466,7 +467,7 @@ html[lang="ar"] .invoice-sheet *{ letter-spacing: 0 !important; }
 /* modern: colored header band */
 .tpl-modern .inv-band{ display:block; position:absolute; top:0; left:0; right:0; height:190px; background: var(--ac); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 .tpl-modern .inv-header{ position:relative; color:#fff; min-height:130px; }
-.tpl-modern .inv-meta-label, .tpl-modern .contact-label, .tpl-modern .inv-contact-line, .tpl-modern .inv-meta-value{ color:#fff; }
+.tpl-modern .inv-meta-label, .tpl-modern .contact-label, .tpl-modern .inv-contact-line, .tpl-modern .inv-meta-value, .tpl-modern .inv-org-name{ color:#fff; }
 .tpl-modern .inv-logo-wrap{ background:#fff; border-color: transparent; box-shadow: 0 6px 16px rgba(0,0,0,.15); }
 .tpl-modern .inv-customer{ margin-top:22px; }
 .tpl-modern .inv-doctype-block{ text-align:start; border-inline-start:5px solid var(--ac); padding-inline-start:14px; }

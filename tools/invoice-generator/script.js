@@ -29,14 +29,27 @@
     { id: "minimal", color: "#111827" },
     { id: "sidebar", color: "#0D9488" },
     { id: "corporate", color: "#B91C1C" },
+    // Premium (premium.css): one permanent purchase each, price from the Worker (/api/invoice/*, $1.99)
+    { id: "royal", color: "#14284B", premium: true, layout: "std" },
+    { id: "prestige", color: "#B08D57", premium: true, layout: "side" },
+    { id: "horizon", color: "#0E7490", premium: true, layout: "std" },
+    { id: "ledger", color: "#0F766E", premium: true, layout: "std" },
+    { id: "arabesque", color: "#0B5D4B", premium: true, layout: "std" },
+    { id: "executive", color: "#7A1F2B", premium: true, layout: "std" },
+    { id: "nova", color: "#5B4BDB", premium: true, layout: "std" },
+    { id: "blueprint", color: "#1D4E89", premium: true, layout: "std" },
+    { id: "ivory", color: "#9C5B32", premium: true, layout: "std" },
+    { id: "industrial", color: "#E09A00", premium: true, layout: "std" },
   ];
   const TPL = Object.fromEntries(TEMPLATES.map((x) => [x.id, x]));
+  const tplIsPremium = (id) => !!(TPL[id] && TPL[id].premium);
   const SWATCHES = ["#2F5770", "#2563EB", "#0D9488", "#16A34A", "#7C3AED", "#DB2777", "#B91C1C", "#D97706", "#111827"];
   const SEC_COLORS = { style: "#64748B", org: "#16A34A", client: "#0891B2", meta: "#7C3AED", items: "#D97706", totals: "#2563EB", notes: "#DB2777" };
 
   const state = {
     docType: "facture",
     issuerContacts: [],
+    orgName: "",
     logoDataUrl: null,
     signatureDataUrl: null,
     date: todayISO(),
@@ -181,6 +194,10 @@
     invoiceDate: $("#invoiceDate"),
     invoiceNumber: $("#invoiceNumber"),
     customerName: $("#customerName"),
+    orgNameInput: $("#orgNameInput"),
+    previewOrgName: $("#previewOrgName"),
+    previewDue: $("#previewDue"),
+    previewDueCur: $("#previewDueCur"),
 
     itemsTbody: $("#itemsTbody"),
     addArticleBtn: $("#addArticleBtn"),
@@ -347,6 +364,7 @@
     return {
       docType: state.docType,
       issuerContacts: state.issuerContacts,
+      orgName: state.orgName,
       logoDataUrl: state.logoDataUrl,
       signatureDataUrl: state.signatureDataUrl,
       date: state.date,
@@ -427,6 +445,7 @@
     state.issuerContacts = Array.isArray(entry.issuerContacts)
       ? entry.issuerContacts.map((c) => ({ id: nextContactId(), type: c.type, value: c.value || "" }))
       : [];
+    state.orgName = entry.orgName || "";
     state.date = entry.date || todayISO();
     state.invoiceNumber = entry.invoiceNumber || "";
     state.customer = entry.customer || "";
@@ -500,8 +519,10 @@
     });
   }
 
-  function openLogin(after) {
+  function openLogin(after, mode) {
     pendingAfterLogin = after || null;
+    $("#loginTitle").textContent = t(mode === "buy" ? "buy_login_title" : "login_title");
+    $("#loginText").textContent = t(mode === "buy" ? "buy_login_text" : "login_text");
     show($("#login"));
   }
   function closeLogin() { hide($("#login")); }
@@ -765,7 +786,7 @@
   });
   document.addEventListener("keydown", (e) => {
     if (e.key !== "Escape") return;
-    closeMine(); closeLogin(); closeGallery();
+    closeMine(); closeLogin(); closeGallery(); closeShop();
     hide(els.settingsOverlay); hide(els.confirmOverlay);
   });
 
@@ -937,6 +958,12 @@
     renderPreview();
   });
 
+  els.orgNameInput.addEventListener("input", () => {
+    usingExampleData = false;
+    state.orgName = els.orgNameInput.value;
+    renderPreview();
+  });
+
   els.customerName.addEventListener("input", () => {
     usingExampleData = false;
     state.customer = els.customerName.value;
@@ -1090,11 +1117,134 @@
     else if (count >= 6) sheet.classList.add("density-compact");
   }
 
+  /* ---------------- Sheet layouts (the same parts, placed per template) ----------------
+     Every part of the sheet keeps its element (and id); arrangeSheet() moves the parts into the
+     wrappers of the template's layout. Wrappers are rebuilt each time (class names only, no ids).
+     "flow" = the free templates' order; "std" / "side" = Premium layouts styled in premium.css. */
+  const PART_SEL = {
+    band: ".inv-band", deco: ".inv-deco", hdeco: ".inv-hdeco", logo: ".inv-logo-wrap", num: ".inv-num", org: ".inv-org-name",
+    date: ".inv-meta-row", contacts: ".inv-issuer-contacts", customer: ".inv-customer", doctype: ".inv-doctype-block",
+    table: ".inv-table", totals: ".inv-totals", due: ".inv-due", words: ".inv-words", notes: ".inv-notes",
+    signature: ".inv-signature", closing: ".inv-closing", foot: ".inv-foot",
+  };
+  const W = (c, k) => ({ c, k });
+  const LAYOUTS = {
+    flow: ["band", "deco", W("inv-header", ["logo", W("inv-meta", ["num", "org", "date", "contacts"])]),
+      "customer", "doctype", "table", "totals", "due", "words", "notes", "signature", "closing", "foot", "hdeco"],
+    std: ["band", "deco",
+      W("x-top", ["hdeco", W("x-brand", ["logo", W("x-id", ["org", "contacts"])]), W("x-title", ["doctype", "date", "num"])]),
+      W("x-row", [W("x-to", ["customer"]), "due"]),
+      "table",
+      W("x-sum", [W("x-sum-l", ["words", "notes"]), "totals"]),
+      W("x-end", ["closing", "signature"]),
+      "foot"],
+    side: ["band", "deco",
+      W("x-side", ["hdeco", "logo", "org", "contacts", W("x-to", ["customer"]), "due", W("x-grow", []), "signature"]),
+      W("x-main", [W("x-title", ["doctype", "date", "num"]), "table",
+        W("x-sum", [W("x-sum-l", ["words", "notes"]), "totals"]), "closing"]),
+      "foot"],
+  };
+  function arrangeSheet(sheet, tplId) {
+    const layout = (TPL[tplId] && TPL[tplId].layout) || "flow";
+    if (sheet.dataset.layout === layout) return;
+    const parts = {};
+    Object.keys(PART_SEL).forEach((k) => { parts[k] = sheet.querySelector(PART_SEL[k]); });
+    const frag = document.createDocumentFragment();
+    const build = (spec, parent) => spec.forEach((x) => {
+      if (typeof x === "string") { if (parts[x]) parent.appendChild(parts[x]); return; }
+      const w = document.createElement("div");
+      w.className = x.c;
+      parent.appendChild(w);
+      build(x.k, w);
+    });
+    build(LAYOUTS[layout], frag);
+    sheet.replaceChildren(frag);
+    sheet.dataset.layout = layout;
+  }
+
+  /* Decorations drawn in SVG with literal colours (an SVG image cannot read the page's CSS variables).
+     page = layer over the whole sheet (.inv-deco), head = layer inside the header block (.inv-hdeco). */
+  let decoSeq = 0;
+  function decoSvg(tplId, ac) {
+    const dk = mixHex(ac, "#000000", 0.62), lt = mixHex(ac, "#ffffff", 0.22), pale = mixHex(ac, "#ffffff", 0.07);
+    const u = "dg" + (++decoSeq);
+    // drawn as <img> of an SVG data URL: html2canvas draws those reliably (inline <svg> parts went missing in the PDF)
+    const svg = (cls, w, h, body, par) => `<img class="${cls}" width="${w}" height="${h}" alt="" src="data:image/svg+xml,${encodeURIComponent(
+      `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" preserveAspectRatio="${par || "none"}" fill="none" stroke="none" xmlns="http://www.w3.org/2000/svg">${body}</svg>`)}">`;
+    switch (tplId) {
+      case "royal": {
+        let rings = "";
+        for (let i = 0; i < 10; i++) rings += `<circle cx="60" cy="40" r="${36 + i * 18}" fill="none" stroke="#C9A44C" stroke-opacity="${(0.42 - i * 0.035).toFixed(3)}" stroke-width="1"/>`;
+        return { head: svg("d-ring", 260, 230, rings, "xMinYMin meet") };
+      }
+      case "horizon": {
+        const wave = `<path d="M0 60V30C120 58 250 64 400 40C560 14 690 8 794 30V60Z" fill="#ffffff"/><path d="M0 30C120 58 250 64 400 40C560 14 690 8 794 30" fill="none" stroke="${lt}" stroke-width="3" stroke-opacity=".7"/>`;
+        const dots = `<circle cx="230" cy="40" r="120" fill="#ffffff" fill-opacity=".07"/><circle cx="90" cy="150" r="70" fill="#ffffff" fill-opacity=".06"/>`;
+        return { head: svg("d-bubbles", 300, 260, dots, "xMinYMin meet") + svg("d-wave", 794, 60, wave) };
+      }
+      case "arabesque": {
+        const gold = "#B08D57";
+        let tile = "";
+        for (let x = 9; x < 794 + 36; x += 36) {
+          tile += `<g transform="translate(${x} 17)"><rect x="-8.5" y="-8.5" width="17" height="17" fill="none" stroke="${gold}" stroke-width="1.1"/><rect x="-8.5" y="-8.5" width="17" height="17" transform="rotate(45)" fill="${pale}" stroke="${gold}" stroke-width="1.1"/><circle r="2.6" fill="${ac}"/></g>`;
+        }
+        const band = `<rect width="794" height="34" fill="${pale}"/><path d="M0 .6H794M0 33.4H794" stroke="${gold}" stroke-width="1.2"/>${tile}`;
+        return { page: svg("d-top", 794, 34, band) + svg("d-bot", 794, 34, band) + `<div class="d-frame"></div>` };
+      }
+      case "blueprint": {
+        let grid = "";
+        for (let x = 0; x <= 794; x += 14) grid += `<path d="M${x} 0V230" stroke="${ac}" stroke-opacity="${x % 70 ? 0.06 : 0.13}" stroke-width="1"/>`;
+        for (let y = 0; y <= 230; y += 14) grid += `<path d="M0 ${y}H794" stroke="${ac}" stroke-opacity="${y % 70 ? 0.06 : 0.13}" stroke-width="1"/>`;
+        const fade = `<defs><linearGradient id="${u}" x1="0" y1="0" x2="0" y2="1"><stop offset=".55" stop-color="#ffffff" stop-opacity="0"/><stop offset="1" stop-color="#ffffff"/></linearGradient></defs><rect width="794" height="230" fill="url(#${u})"/>`;
+        const tick = (x, y, sx, sy) => `<path d="M${x} ${y + 26 * sy}V${y}H${x + 26 * sx}" fill="none" stroke="${ac}" stroke-width="2.2"/>`;
+        return { page: svg("d-top", 794, 230, grid + fade) + `<div class="d-frame"></div>` +
+          svg("d-tick d-tl", 40, 40, tick(6, 6, 1, 1)) + svg("d-tick d-tr", 40, 40, tick(34, 6, -1, 1)) +
+          svg("d-tick d-bl", 40, 40, tick(6, 34, 1, -1)) + svg("d-tick d-br", 40, 40, tick(34, 34, -1, -1)) };
+      }
+      case "ivory": {
+        const orn = `<path d="M0 12H158M242 12H400" stroke="${ac}" stroke-width=".9"/><path d="M200 1L211 12L200 23L189 12Z" fill="none" stroke="${ac}" stroke-width="1.1"/><path d="M200 7L205 12L200 17L195 12Z" fill="${ac}"/><circle cx="174" cy="12" r="2.1" fill="${ac}"/><circle cx="226" cy="12" r="2.1" fill="${ac}"/><circle cx="164" cy="12" r="1.2" fill="${ac}"/><circle cx="236" cy="12" r="1.2" fill="${ac}"/>`;
+        return { head: svg("d-orn", 400, 24, orn), page: `<div class="d-frame"></div>` };
+      }
+      case "industrial": {
+        let st = "";
+        for (let x = -30; x < 830; x += 28) st += `<path d="M${x} 16L${x + 16} 0H${x + 30}L${x + 14} 16Z" fill="#1F2429"/>`;
+        return { page: svg("d-bot", 794, 16, `<rect width="794" height="16" fill="${ac}"/>${st}`) };
+      }
+      case "nova": {
+        const glow = `<defs><radialGradient id="${u}" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="${lt}" stop-opacity=".55"/><stop offset="1" stop-color="${lt}" stop-opacity="0"/></radialGradient></defs><circle cx="210" cy="210" r="210" fill="url(#${u})"/>`;
+        const rings = `<circle cx="300" cy="40" r="120" fill="none" stroke="#ffffff" stroke-opacity=".16" stroke-width="1.2"/><circle cx="300" cy="40" r="80" fill="none" stroke="#ffffff" stroke-opacity=".16" stroke-width="1.2"/><circle cx="300" cy="40" r="160" fill="none" stroke="#ffffff" stroke-opacity=".1" stroke-width="1.2"/>`;
+        return { page: svg("d-glow", 420, 420, glow), head: svg("d-rings", 340, 200, rings, "xMaxYMin meet") };
+      }
+      case "prestige": {
+        let lines = "";
+        for (let i = 0; i < 16; i++) lines += `<path d="M${-120 + i * 20} 260L${140 + i * 20} 0" stroke="${ac}" stroke-opacity=".2" stroke-width="1"/>`;
+        return { head: svg("d-lines", 260, 260, lines, "xMinYMin slice") };
+      }
+      case "executive": {
+        const m = `<path d="M0 0L120 0L0 120Z" fill="#ffffff" fill-opacity=".07"/><path d="M0 0L70 0L0 70Z" fill="#ffffff" fill-opacity=".08"/>`;
+        return { head: svg("d-corner", 120, 120, m) };
+      }
+      default: return {};
+    }
+  }
+
+  function paintDeco(sheet, tplId, color) {
+    const d = decoSvg(tplId, color);
+    const page = sheet.querySelector(".inv-deco"), head = sheet.querySelector(".inv-hdeco");
+    if (page) page.innerHTML = d.page || "";
+    if (head) head.innerHTML = d.head || "";
+  }
+
   function applyTemplate() {
     const sheet = els.sheet;
+    arrangeSheet(sheet, state.tpl);
     TEMPLATES.forEach((x) => sheet.classList.remove("tpl-" + x.id));
     sheet.classList.add("tpl-" + state.tpl);
+    sheet.classList.toggle("prem", tplIsPremium(state.tpl));
     setAccentVars(sheet, accentColor());
+    const deco = sheet.querySelector(".inv-deco");
+    const key = state.tpl + accentColor();
+    if (deco.dataset.key !== key) { paintDeco(sheet, state.tpl, accentColor()); deco.dataset.key = key; }
   }
 
   function renderPreview() {
@@ -1113,6 +1263,11 @@
       els.removeLogoBtn.hidden = true;
       els.previewLogoWrap.classList.remove("has-logo");
     }
+
+    // Company name
+    const org = (state.orgName || "").trim();
+    els.previewOrgName.innerHTML = org ? `<bdi>${escapeHtml(org)}</bdi>` : "";
+    els.previewOrgName.hidden = !org;
 
     // Meta
     els.previewInvoiceNumber.textContent = state.invoiceNumber || "—";
@@ -1154,6 +1309,8 @@
     els.previewTvaLabel.textContent = `${t("tva")} (${tvaPct}%)`;
     els.previewTva.textContent = formatMoney(tvaAmount);
     els.previewTtc.textContent = formatMoney(ttc);
+    els.previewDue.textContent = formatMoney(ttc);
+    els.previewDueCur.textContent = currencyNames().main;
 
     // Words
     els.previewWords.textContent = state.wordsIsStale ? "—" : state.wordsGenerated;
@@ -1299,9 +1456,12 @@
     $$("[id]", clone).forEach((n) => n.removeAttribute("id"));
     $$(".hl", clone).forEach((n) => n.classList.remove("hl"));
     $$(".inv-remove-btn", clone).forEach((n) => n.remove());
+    arrangeSheet(clone, tplId);
     TEMPLATES.forEach((x) => clone.classList.remove("tpl-" + x.id));
     clone.classList.add("tpl-" + tplId);
+    clone.classList.toggle("prem", tplIsPremium(tplId));
     setAccentVars(clone, color);
+    paintDeco(clone, tplId, color);
     const wrap = document.createElement("div");
     wrap.className = "mini";
     wrap.style.width = SHEET_W + "px";
@@ -1319,7 +1479,7 @@
 
   function renderTplStrip() {
     const strip = $("#tplStrip");
-    strip.innerHTML = TEMPLATES.map((x) => `<button type="button" class="tpl-chip ${x.id === state.tpl ? "on" : ""}" data-tpl="${x.id}"><span class="t-thumb"></span><span>${t("tpl_" + x.id)}</span></button>`).join("");
+    strip.innerHTML = TEMPLATES.map((x) => `<button type="button" class="tpl-chip ${x.id === state.tpl ? "on" : ""}" data-tpl="${x.id}">${x.premium ? `<span class="t-prem ${owns(x.id) ? "own" : ""}">${owns(x.id) ? CHECK : CROWN}</span>` : ""}<span class="t-thumb"></span><span>${t("tpl_" + x.id)}</span></button>`).join("");
     requestAnimationFrame(() => {
       $$(".tpl-chip", strip).forEach((b) => {
         const th = b.querySelector(".t-thumb");
@@ -1345,6 +1505,7 @@
     buildStyleControls();
     renderPreview();
     renderCurrentThumb();
+    shopApply();
     if (fromGallery) toast(t("t_tpl"));
   }
 
@@ -1366,9 +1527,15 @@
     renderPreview();
   });
 
+  let gCat = "all";
   function buildGallery() {
     const grid = $("#gGrid");
-    grid.innerHTML = TEMPLATES.map((x) => `<button type="button" class="g-card ${x.id === state.tpl ? "on" : ""}" data-tpl="${x.id}">
+    $$("#gTabs .chip").forEach((c) => c.classList.toggle("on", c.dataset.cat === gCat));
+    // Premium first: they are the showcase of the gallery
+    const list = TEMPLATES.filter((x) => gCat === "all" || (gCat === "prem") === !!x.premium)
+      .sort((a, b) => (b.premium ? 1 : 0) - (a.premium ? 1 : 0));
+    grid.innerHTML = list.map((x) => `<button type="button" class="g-card ${x.id === state.tpl ? "on" : ""} ${x.premium ? "prem" : ""}" data-tpl="${x.id}">
+        ${x.premium ? premBadge(x.id) : ""}
         <div class="g-thumb"></div>
         <div class="g-meta"><b>${t("tpl_" + x.id)}</b><span>A4</span></div></button>`).join("");
     requestAnimationFrame(() => {
@@ -1378,15 +1545,298 @@
       });
     });
   }
-  function openGallery() { show($("#gallery")); buildGallery(); }
+  function openGallery(cat) { if (cat) gCat = cat; show($("#gallery")); buildGallery(); }
+  $("#gTabs").addEventListener("click", (e) => {
+    const c = e.target.closest("[data-cat]");
+    if (!c) return;
+    gCat = c.dataset.cat;
+    buildGallery();
+  });
   function closeGallery() { hide($("#gallery")); }
-  $("#btnGallery").addEventListener("click", openGallery);
+  $("#btnGallery").addEventListener("click", () => openGallery());
   $("#gClose").addEventListener("click", closeGallery);
   $("#gallery").addEventListener("click", (e) => {
     if (e.target.id === "gallery") { closeGallery(); return; }
     const card = e.target.closest("[data-tpl]");
     if (card) { closeGallery(); setTemplate(card.dataset.tpl, true); }
   });
+
+  /* ================= Premium templates (PayPal · Worker /api/invoice/* · Cloudflare D1) =================
+     - Editing and previewing every template is free, with no account. Free templates export with no account.
+     - A Premium template's PDF / print needs a GOOGLE sign-in and the purchase of that template:
+       one permanent purchase per template (price from the server: $1.99), kept by the Google account.
+       Rights come from the Worker (D1, payment checked there), except for admins (users/{uid}.isAdmin,
+       the rule of shared/purchase.js), who export every template.
+     - Modes from GET /api/invoice/config: live / sandbox (sales on) · demo (sales off on the claude-test
+       preview or localhost: nothing paid, nothing saved) · off (sales off elsewhere). */
+  const CROWN = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 10H5z"/></svg>';
+  const CHECK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>';
+  const LOCK = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+  const IC_X = '<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+  const SHOP_LOCAL = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+  const SHOP_API = (/\.workers\.dev$/.test(location.hostname) || SHOP_LOCAL) ? "" : "https://dr.merabti.workers.dev";
+  const SHOP_DEMO_HOST = SHOP_LOCAL || location.hostname === "claude-test-dr.merabti.workers.dev";
+  const SHOP_PENDING = "invoiceApp:pendingOrder";
+  const SHOP = { mode: "loading", cfg: null, owned: new Set(), demoOwned: new Set(), sdk: null, btns: null, busy: false, tpl: "", kind: "pdf", ready: null };
+  let isAdmin = false;
+
+  const shopPrice = () => "$" + ((SHOP.cfg && SHOP.cfg.price) || "1.99");
+  const salesOn = () => SHOP.mode === "live" || SHOP.mode === "sandbox";
+  function owns(id) { return !tplIsPremium(id) || isAdmin || SHOP.owned.has(id) || (SHOP.mode === "demo" && SHOP.demoOwned.has(id)); }
+  function premBadge(id) {
+    const own = owns(id);
+    return `<span class="g-prem${own ? " own" : ""}">${own ? CHECK : CROWN}<b>${escapeHtml(own ? t("shop_owned") : t("premium_tag") + " · " + shopPrice())}</b></span>`;
+  }
+  function googleUser() {
+    const u = hasFb() && firebase.auth().currentUser;
+    return u && (u.providerData || []).some((x) => x && x.providerId === "google.com") ? u : null;
+  }
+  function shopTrack(name, extra) { try { if (window.gtag) gtag("event", name, Object.assign({ tool: "invoice", method: "paypal" }, extra || {})); } catch (e) { /* ignore */ } }
+
+  async function shopFetch(path, opts) {
+    opts = opts || {};
+    const headers = { "Content-Type": "application/json" };
+    const u = googleUser();
+    if (u) headers.Authorization = "Bearer " + await u.getIdToken();
+    const r = await fetch(SHOP_API + path, { method: opts.method || "GET", headers, body: opts.body ? JSON.stringify(opts.body) : undefined, cache: "no-store" });
+    const d = await r.json().catch(() => ({}));
+    d._status = r.status;
+    return d;
+  }
+  async function shopLoadConfig() {
+    try {
+      const d = await shopFetch("/api/invoice/config");
+      if (d && d.price) SHOP.cfg = d;
+      SHOP.mode = d && (d.sales === "live" || d.sales === "sandbox") ? d.sales : (SHOP_DEMO_HOST ? "demo" : "off");
+    } catch (e) { SHOP.mode = SHOP_DEMO_HOST ? "demo" : "off"; }
+    shopApply();
+  }
+
+  /* rights from the server (Google account only); strict = throw when the server cannot answer */
+  async function shopRefresh(strict) {
+    if (!salesOn() || !googleUser()) { SHOP.owned = new Set(); shopApply(); return SHOP.owned; }
+    try {
+      const d = await shopFetch("/api/invoice/entitlements");
+      if (!Array.isArray(d.owned)) throw new Error(d.error || "entitlements");
+      SHOP.owned = new Set(d.owned);
+    } catch (e) { if (strict) throw e; }
+    shopApply();
+    return SHOP.owned;
+  }
+
+  /* PDF button cue, note under the strip, gallery and strip badges follow the rights */
+  function shopApply() {
+    const prem = tplIsPremium(state.tpl), own = owns(state.tpl);
+    els.generatePdfBtn.classList.toggle("prem", prem && !own);
+    const note = $("#premNote");
+    note.classList.toggle("hidden", !prem);
+    note.classList.toggle("own", prem && own);
+    note.innerHTML = prem ? `${own ? CHECK : CROWN}<span>${escapeHtml(own ? t("shop_note_own") : t("shop_note").replace("{p}", shopPrice()))}</span>` : "";
+    $$("#gGrid .g-card[data-tpl] .g-prem").forEach((b) => { b.outerHTML = premBadge(b.parentElement.dataset.tpl); });
+    $$("#tplStrip .tpl-chip[data-tpl] .t-prem").forEach((b) => { const o = owns(b.parentElement.dataset.tpl); b.classList.toggle("own", o); b.innerHTML = o ? CHECK : CROWN; });
+  }
+
+  async function loadAdminFlag(user) {
+    isAdmin = false;
+    if (!user || !hasFb()) return;
+    try {
+      const u = await firebase.firestore().collection("users").doc(user.uid).get();
+      isAdmin = !!(u.exists && u.data().isAdmin === true);
+    } catch (e) { isAdmin = false; }
+  }
+
+  /* Every PDF / print passes here: free templates at once; Premium = Google sign-in, then the right. */
+  let exportChecking = false;
+  async function requestExport(kind) {
+    const run = () => (kind === "print" ? doPrint() : doPdf());
+    const id = state.tpl;
+    if (owns(id)) { run(); return; }
+    if (exportChecking) return;
+    if (!hasFb()) { toast(t("t_cloud_err")); return; }
+    if (!googleUser()) { openLogin(() => requestExport(kind), "buy"); return; }
+    exportChecking = true;
+    try {
+      await SHOP.ready;
+      if (salesOn()) await shopRefresh(true);
+    } catch (e) { exportChecking = false; toast(t("shop_check_err")); return; }
+    exportChecking = false;
+    if (owns(id)) run(); else openShop(id, kind);
+  }
+
+  /* ---- purchase window: one Premium template, one permanent purchase ---- */
+  function openShop(id, kind) {
+    SHOP.tpl = id; SHOP.kind = kind || "pdf";
+    show($("#shop"));
+    shopRender();
+    shopTrack("view_promotion", { template: id });
+  }
+  function closeShop() { if (SHOP.busy) return; hide($("#shop")); SHOP.btns = null; }
+  function shopBusy(on) { SHOP.busy = on; const box = $("#shopBox"); if (box) box.classList.toggle("busy", on); }
+  function shopMsg(text, err) { const el = $("#shopMsg"); if (el) { el.textContent = text || ""; el.classList.toggle("err", !!err); } }
+
+  function shopRender() {
+    const box = $("#shopBox"), id = SHOP.tpl, u = googleUser();
+    if (!box || !id) return;
+    if (owns(id)) { shopSuccess(id, ""); return; }
+    box.innerHTML = `<button type="button" class="shop-x" data-shop="close" aria-label="${escapeAttr(t("shop_close"))}">${IC_X}</button>
+      <div class="shop-main">
+        <div class="shop-thumb" id="shopThumb"></div>
+        <div class="shop-info">
+          <span class="shop-tag">${CROWN}<b>Premium</b></span>
+          <h3>${escapeHtml(t("shop_title").replace("{n}", t("tpl_" + id)))}</h3>
+          <p class="shop-sub">${escapeHtml(t("shop_sub"))}</p>
+          <div class="shop-price"><b dir="ltr">${shopPrice()}</b><span>${escapeHtml(t("shop_once"))}</span></div>
+          <ul class="shop-list"><li>${CHECK}<span>${escapeHtml(t("shop_b1"))}</span></li><li>${CHECK}<span>${escapeHtml(t("shop_b2"))}</span></li><li>${CHECK}<span>${escapeHtml(t("shop_b3"))}</span></li></ul>
+        </div>
+      </div>
+      <div class="shop-pay" id="shopPay"></div>
+      <p class="shop-msg" id="shopMsg" role="status"></p>
+      <div class="shop-foot">
+        <span>${LOCK}${escapeHtml(t("shop_secure"))}</span>
+        ${u ? `<span class="shop-who">${escapeHtml(t("shop_account"))}: <b dir="ltr">${escapeHtml(u.email || u.displayName || "")}</b></span>` : ""}
+        <span class="shop-links">${salesOn() ? `<button type="button" class="link-btn" data-shop="restore">${escapeHtml(t("shop_restore"))}</button>` : ""}
+          <button type="button" class="link-btn" data-shop="free">${escapeHtml(t("shop_free"))}</button></span>
+      </div>`;
+    requestAnimationFrame(() => { const th = $("#shopThumb"); if (th) th.appendChild(miniSheet(id, id === state.tpl ? accentColor() : TPL[id].color, th.clientWidth || 150)); });
+    shopRenderPay();
+  }
+
+  function shopRenderPay() {
+    const pay = $("#shopPay");
+    if (!pay) return;
+    SHOP.btns = null;
+    if (SHOP.mode === "demo") {
+      pay.innerHTML = `<div class="shop-note">${escapeHtml(t("shop_demo"))}</div>
+        <button type="button" class="shop-pp" data-shop="demo"><span>PayPal</span><small>${escapeHtml(t("shop_demo_btn"))} · <bdi dir="ltr">${shopPrice()}</bdi></small></button>`;
+      return;
+    }
+    if (!salesOn()) { pay.innerHTML = `<div class="shop-note off">${escapeHtml(t("shop_off"))}</div>`; return; }
+    pay.innerHTML = (SHOP.mode === "sandbox" ? `<div class="shop-note">${escapeHtml(t("shop_sandbox"))}</div>` : "") +
+      '<div class="shop-ppbox" id="shopPP"><div class="shop-spin"></div></div>';
+    shopLoadSdk().then(shopButtons).catch(() => { const h = $("#shopPP"); if (h) h.innerHTML = `<div class="shop-note off">${escapeHtml(t("shop_err"))}</div>`; });
+  }
+  function shopLoadSdk() {
+    if (window.paypal && window.paypal.Buttons) return Promise.resolve();
+    if (SHOP.sdk) return SHOP.sdk;
+    SHOP.sdk = new Promise((ok, no) => {
+      const sc = document.createElement("script");
+      sc.src = "https://www.paypal.com/sdk/js?client-id=" + encodeURIComponent(SHOP.cfg.clientId) + "&currency=USD&intent=capture&components=buttons";
+      sc.onload = () => (window.paypal && window.paypal.Buttons ? ok() : no());
+      sc.onerror = () => { SHOP.sdk = null; sc.remove(); no(); };
+      document.head.appendChild(sc);
+    });
+    return SHOP.sdk;
+  }
+  function shopButtons() {
+    const host = $("#shopPP");
+    if (!host) return;
+    host.innerHTML = "";
+    const id = SHOP.tpl;
+    SHOP.btns = window.paypal.Buttons({
+      style: { layout: "vertical", color: "gold", shape: "pill", label: "pay", height: 44 },
+      createOrder: async () => {
+        shopMsg("");
+        const d = await shopFetch("/api/invoice/create-order", { method: "POST", body: { template: id } });
+        if (!d.id) {
+          shopMsg(d.message || t("shop_err"), true);
+          if (d.error === "ALREADY_OWNED") shopRefresh().then(() => { if (owns(id)) shopSuccess(id, ""); });
+          throw new Error(d.error || "create");
+        }
+        shopTrack("begin_checkout", { template: id, value: parseFloat(SHOP.cfg.price), currency: "USD" });
+        return d.id;
+      },
+      onApprove: async (data, actions) => {
+        shopBusy(true); shopMsg(t("shop_paying"));
+        shopPending(data.orderID);
+        const d = await shopCapture(data.orderID);
+        shopBusy(false);
+        if (d.error === "INSTRUMENT_DECLINED") { shopPending(""); shopMsg(d.message, true); return actions.restart(); }
+        if (!d.ok) { shopMsg(d.message || t("shop_err"), true); return; }
+        shopPending("");
+        SHOP.owned = new Set(d.owned || []);
+        shopTrack("purchase", { transaction_id: d.orderId, template: id, value: parseFloat(SHOP.cfg.price), currency: "USD" });
+        shopSuccess(d.template || id, d.orderId);
+      },
+      onCancel: () => shopMsg(""),
+      onError: () => shopMsg(t("shop_err"), true),
+    });
+    SHOP.btns.render(host).catch(() => { host.innerHTML = `<div class="shop-note off">${escapeHtml(t("shop_err"))}</div>`; });
+  }
+
+  /* the PayPal order paid but not confirmed yet (closed tab, lost connection): asked again later, never a proof */
+  function shopPending(orderId) {
+    try {
+      const u = googleUser();
+      if (orderId && u) localStorage.setItem(SHOP_PENDING, JSON.stringify({ id: orderId, uid: u.uid }));
+      else localStorage.removeItem(SHOP_PENDING);
+    } catch (e) { /* ignore */ }
+  }
+  async function shopCapture(orderId) {
+    let d = {};
+    for (let i = 0; i < 3; i++) {
+      d = await shopFetch("/api/invoice/capture-order", { method: "POST", body: { orderId } }).catch(() => ({}));
+      if (d._status && d._status < 500) break;       // answered (ok or a final refusal): no retry
+      await new Promise((r) => setTimeout(r, 1200 * (i + 1)));
+    }
+    return d;
+  }
+  async function shopResume() {
+    let pnd = null;
+    try { pnd = JSON.parse(localStorage.getItem(SHOP_PENDING) || "null"); } catch (e) { pnd = null; }
+    const u = googleUser();
+    if (!pnd || !pnd.id || !u || pnd.uid !== u.uid || !salesOn()) return;
+    const d = await shopCapture(pnd.id);
+    if (d.ok) { shopPending(""); SHOP.owned = new Set(d.owned || []); shopApply(); toast(t("shop_resumed")); }
+    else if (d._status && d._status < 500 && d.error !== "AUTH_REQUIRED" && d.error !== "NOT_COMPLETED") shopPending("");
+  }
+
+  function shopSuccess(id, orderId) {
+    shopApply();
+    if (openSec === "style") renderTplStrip();
+    const box = $("#shopBox");
+    if (!box) return;
+    box.innerHTML = `<button type="button" class="shop-x" data-shop="close" aria-label="${escapeAttr(t("shop_close"))}">${IC_X}</button>
+      <div class="shop-done"><div class="shop-ok">${CHECK}</div><h3>${escapeHtml(t("shop_done"))} · ${escapeHtml(t("tpl_" + id))}</h3>
+        <p>${escapeHtml(t("shop_done_t"))}</p>
+        ${orderId ? `<p class="shop-order">${escapeHtml(t("shop_order"))}: <b dir="ltr">${escapeHtml(orderId)}</b></p>` : ""}
+        <button type="button" class="soft-btn primary shop-cta" data-shop="export">${escapeHtml(SHOP.kind === "print" ? t("shop_now_print") : t("shop_now_pdf"))}</button></div>`;
+  }
+  async function shopDemoPay() {
+    if (SHOP.busy) return;
+    shopBusy(true); shopMsg(t("shop_paying"));
+    await new Promise((r) => setTimeout(r, 900));
+    SHOP.demoOwned.add(SHOP.tpl);
+    shopBusy(false);
+    shopSuccess(SHOP.tpl, "DEMO-" + Date.now().toString(36).toUpperCase());
+  }
+  async function shopRestore() {
+    try {
+      const owned = await shopRefresh(true);
+      toast(owned.size ? t("shop_restored").replace("{n}", owned.size) : t("shop_restored0"));
+      if (owns(SHOP.tpl)) shopSuccess(SHOP.tpl, "");
+    } catch (e) { shopMsg(t("shop_check_err"), true); }
+  }
+  $("#shop").addEventListener("click", (e) => {
+    if (e.target.id === "shop") { closeShop(); return; }
+    const b = e.target.closest("[data-shop]");
+    if (!b || b.disabled || SHOP.busy) return;
+    const a = b.dataset.shop;
+    if (a === "close") closeShop();
+    else if (a === "free") { closeShop(); openGallery("free"); }
+    else if (a === "demo") shopDemoPay();
+    else if (a === "restore") shopRestore();
+    else if (a === "export") { closeShop(); requestExport(SHOP.kind); }
+  });
+
+  SHOP.ready = shopLoadConfig();   // starts at once; Premium exports wait for it
+  if (hasFb()) {
+    firebase.auth().onAuthStateChanged(async (user) => {
+      await loadAdminFlag(user);
+      if (!user) SHOP.owned = new Set();
+      shopApply();
+      if (user) SHOP.ready.then(() => shopRefresh()).then(() => shopResume());
+    });
+  }
 
   /* ---------------- Actions: Print / PDF / Clear ---------------- */
 
@@ -1406,12 +1856,13 @@
     return clone;
   }
 
-  els.printBtn.addEventListener("click", () => {
+  function doPrint() {
     buildPrintCopy();
     toast(t("t_print"));
     const fonts = document.fonts ? document.fonts.ready : Promise.resolve();
     fonts.then(() => setTimeout(() => window.print(), 250));
-  });
+  }
+  els.printBtn.addEventListener("click", () => requestExport("print"));
   window.addEventListener("afterprint", () => { $("#printRoot").innerHTML = ""; });
 
   let pendingPdfCanvas = null;
@@ -1479,7 +1930,7 @@
     pdf.save(filename);
   }
 
-  els.generatePdfBtn.addEventListener("click", async () => {
+  async function doPdf() {
     if (typeof html2canvas === "undefined" || !window.jspdf) { toast(t("t_pdf_err")); return; }
     els.generatePdfBtn.disabled = true;
     toast(t("t_pdf"));
@@ -1493,7 +1944,8 @@
     } finally {
       els.generatePdfBtn.disabled = false;
     }
-  });
+  }
+  els.generatePdfBtn.addEventListener("click", () => requestExport("pdf"));
 
   els.pdfPreviewBack.addEventListener("click", () => {
     hide(els.pdfPreviewOverlay);
@@ -1523,6 +1975,7 @@
     els.invoiceDate.value = state.date;
     els.invoiceNumber.value = state.invoiceNumber;
     els.customerName.value = state.customer;
+    els.orgNameInput.value = state.orgName;
     els.tvaPercent.value = state.tvaPercent;
     els.notesInput.value = state.notes;
 
@@ -1557,6 +2010,7 @@
     usingExampleData = false;
     state.docType = "facture";
     state.issuerContacts = [];
+    state.orgName = "";
     state.logoDataUrl = null;
     state.signatureDataUrl = null;
     state.date = todayISO();
@@ -1599,6 +2053,7 @@
         { article: "Content writing (per page)", qty: 6, price: 800 },
       ],
       notes: "Payment due within 15 days of invoice date. Bank transfer or check accepted. Late payments subject to a 2% monthly fee.",
+      orgName: "Nour Digital Services",
       contacts: [
         { type: "phone", value: "+213 555 12 34 56" },
         { type: "email", value: "contact@yourcompany.com" },
@@ -1615,6 +2070,7 @@
         { article: "Rédaction de contenu (par page)", qty: 6, price: 800 },
       ],
       notes: "Paiement exigible sous 15 jours à compter de la date de facture. Virement bancaire ou chèque acceptés. Pénalité de 2% par mois de retard.",
+      orgName: "Nour Services Numériques",
       contacts: [
         { type: "phone", value: "+213 555 12 34 56" },
         { type: "email", value: "contact@votreentreprise.com" },
@@ -1631,6 +2087,7 @@
         { article: "كتابة محتوى (للصفحة الواحدة)", qty: 6, price: 800 },
       ],
       notes: "الدفع مستحق خلال 15 يومًا من تاريخ الفاتورة. يُقبل التحويل البنكي أو الشيك. تُطبَّق غرامة تأخير 2% شهريًا.",
+      orgName: "مؤسسة النور للخدمات الرقمية",
       contacts: [
         { type: "phone", value: "+213 555 12 34 56" },
         { type: "email", value: "contact@yourcompany.com" },
@@ -1644,6 +2101,7 @@
     state.customer = ex.customer;
     state.items = ex.items.map((it) => ({ id: nextItemId(), article: it.article, qty: it.qty, price: it.price }));
     state.notes = ex.notes || "";
+    state.orgName = ex.orgName || "";
     state.issuerContacts = (ex.contacts || []).map((c) => ({ id: nextContactId(), type: c.type, value: c.value }));
   }
 

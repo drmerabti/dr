@@ -71,6 +71,10 @@
     // Brochure maker Premium templates (/api/brochure/*, $1.99 each, permanent): "live" requested by the owner (2026-11-22).
     // "live" is honoured ONLY on dr.merabti.workers.dev (BRO_LIVE_HOSTS in worker.js); previews stay "off" (demo on the page).
     // "off" = nothing sold (free templates stay free). "sandbox" needs PAYPAL_SANDBOX_CLIENT_ID + secret PAYPAL_SANDBOX_SECRET.
-    "BROCHURE_SALES": "live"
+    "BROCHURE_SALES": "live",
+    // Invoice generator Premium templates (/api/invoice/*, $1.99 each, permanent): requested by the owner (2026-11-23).
+    // "live" is honoured ONLY on dr.merabti.workers.dev (INV_LIVE_HOSTS in worker.js); previews stay "off" (demo).
+    // "off" = nothing sold (free templates unchanged). "sandbox" needs PAYPAL_SANDBOX_CLIENT_ID + secret PAYPAL_SANDBOX_SECRET.
+    "INV_SALES": "live"
   }
 }

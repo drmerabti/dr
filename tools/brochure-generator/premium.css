@@ -62,7 +62,7 @@
 .T-clinic .ct{ padding-top:74px; padding-bottom:84px; }
 .T-clinic h2{ display:flex; align-items:center; gap:12px; color: var(--c1); font-size: calc(23px * var(--k)); }
 .T-clinic h2::before{ content:""; flex:none; width: calc(34px * var(--k)); height: calc(34px * var(--k)); border-radius:11px;
-  background: linear-gradient(#fff, #fff) center/calc(14px * var(--k)) calc(4px * var(--k)) no-repeat, linear-gradient(#fff, #fff) center/calc(4px * var(--k)) calc(14px * var(--k)) no-repeat, var(--c1); }
+  background: radial-gradient(circle, var(--c1) calc(4px * var(--k)), #fff calc(4.6px * var(--k)), #fff calc(7.4px * var(--k)), transparent calc(8px * var(--k))), var(--c1); }
 .T-clinic.in .txt, .T-clinic.bk .txt{ background:#fff; border-radius:18px; padding: calc(14px * var(--k)) calc(16px * var(--k)); box-shadow: 0 6px 18px rgba(14,124,134,.08); border-inline-start: 4px solid var(--c2); }
 .T-clinic .img{ border-radius:22px; }
 .T-clinic ul.lst li{ background:#fff; border-radius:14px; padding: calc(11px * var(--k)) 14px; padding-inline-start: calc(48px * var(--k)); box-shadow: 0 4px 14px rgba(14,124,134,.07); }
@@ -72,7 +72,7 @@
 .T-clinic ul.lst li.priced .pr{ color: var(--c1); }
 .T-clinic.fl .ct{ justify-content:center; padding-top:230px; color:#fff; }
 .T-clinic.fl h2{ color:#fff; }
-.T-clinic.fl h2::before{ background: linear-gradient(var(--c1), var(--c1)) center/calc(14px * var(--k)) calc(4px * var(--k)) no-repeat, linear-gradient(var(--c1), var(--c1)) center/calc(4px * var(--k)) calc(14px * var(--k)) no-repeat, #fff; }
+.T-clinic.fl h2::before{ background: radial-gradient(circle, #fff calc(4px * var(--k)), var(--c1) calc(4.6px * var(--k)), var(--c1) calc(7.4px * var(--k)), transparent calc(8px * var(--k))), #fff; }
 .T-clinic.fl .txt{ font-size: calc(16px * var(--k)); font-weight:600; }
 .T-clinic.bk .ct{ padding-bottom:40px; }
 .T-clinic.bk .bk-org{ color:#fff; }

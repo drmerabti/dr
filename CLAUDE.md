@@ -213,6 +213,9 @@ border, frame ring, shadow or filter, whatever the page's own logo rules say. CS
   `fontH` (heading font, CSS `--fh`) and `badge:{ar,fr,en}`. Decorations are drawn for any panel width W (tri 374,
   bi 561, Z 280.5, A5 559) with literal colours; gradient ids come from `h.uid()`. Same PDF rules as the CV builder
   (html2canvas: no clip-path / filter / background-clip:text; Arabic never letter-spaced).
+  **No cross or plus shapes in any design** (owner's rule): medical motifs use hearts and the heartbeat line.
+- Gallery order: free and Premium alternate, a free template first (visitors always find free ones); the Premium
+  filter chip comes last.
 - Sale: **$1.99 per template, one permanent purchase, no packs**, PayPal. Editing, preview and saving are free;
   free templates print / export with no account. Print and PDF of a Premium template go through
   `requestExport(kind)`: Google sign-in, then the right from the Worker. Admins (`users/{uid}.isAdmin`) export all.
@@ -255,6 +258,24 @@ border, frame ring, shadow or filter, whatever the page's own logo rules say. CS
 - PDF export: html2canvas 1.4.1 draws inline `<svg>` in a right-to-left page out of place (or not at all), so `doPdf`
   first swaps every SVG of the paper for an identical `<img>` (`svgsToImages`). Keep it for any new template.
   html2canvas also drops the text of an `inline-flex` box: use `display:flex` for boxes with text.
+
+## Invoice generator Premium templates (tools/invoice-generator)
+
+- 16 templates in `TEMPLATES` (script.js): 6 free (classic, modern, elegant, minimal, sidebar, corporate, CSS in
+  `style.css`) + 10 Premium (`premium: true`: royal, prestige, horizon, ledger, arabesque, executive, nova, blueprint,
+  ivory, industrial, CSS in `premium.css`). **$1.99 each, one permanent purchase per template, no packs**, PayPal.
+- Layouts: the sheet's parts keep their elements/ids; `arrangeSheet()` moves them into the wrappers of the template's
+  `layout`: `flow` (free templates' order), `std` (x-top / x-row / table / x-sum / x-end) or `side` (x-side + x-main).
+  Thumbnails re-arrange their clone. Premium sheet rules are scoped `:where(.invoice-sheet.prem)` (never plain `.prem`:
+  it also matches the gallery cards, and a higher specificity would beat the template rules).
+- Decorations: `decoSvg()` returns SVG as `<img src="data:image/svg+xml,…">` (inline `<svg>` parts went missing in
+  html2canvas PDFs) with literal colours, in `.inv-deco` (whole sheet) and `.inv-hdeco` (inside x-top / x-side).
+- Editing, preview and free exports need no account. A Premium PDF / print goes through `requestExport()`: Google
+  sign-in, then the right from the Worker; admins (`users/{uid}.isAdmin`) export all. Modes from `/api/invoice/config`
+  as in the CV builder (demo on the claude-test preview / localhost). Pending order: localStorage `invoiceApp:pendingOrder`.
+- Worker `/api/invoice/*` (worker.js, "Invoice generator Premium templates"): same routes and checks as `/api/cv/*`
+  (`INV_PRICE`, `INV_PREMIUM`, D1 `inv_orders`, `inv_entitlements`). `INV_SALES` in wrangler.jsonc: **"live"** (owner,
+  2026-11-23), honoured only on dr.merabti.workers.dev (`INV_LIVE_HOSTS`).
 
 ## Home order
 

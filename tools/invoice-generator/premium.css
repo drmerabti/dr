@@ -1,0 +1,503 @@
+/* =====================================================================
+   Invoice generator — Premium templates (10).
+   Same parts as the free templates; script.js (arrangeSheet) places them in the
+   wrappers of a layout: "std" (x-top / x-row / table / x-sum / x-end) or
+   "side" (x-side + x-main). Decorations are SVG drawn by decoSvg() in
+   .inv-deco (whole sheet) and .inv-hdeco (inside the header block).
+   PDF = html2canvas: no clip-path, filter, writing-mode, background-clip:text,
+   colours inside SVG are literal; Arabic is never letter-spaced.
+   ===================================================================== */
+
+/* ---------- Shared Premium base ---------- */
+:where(.invoice-sheet.prem) .inv-org-name[hidden]{ display:none !important; }
+:where(.invoice-sheet.prem) .inv-deco{ display:block; position:absolute; inset:0; overflow:hidden; pointer-events:none; z-index:0; }
+:where(.invoice-sheet.prem) .inv-deco > *{ position:absolute; display:block; }
+:where(.invoice-sheet.prem) .inv-deco img, :where(.invoice-sheet.prem) .inv-hdeco img{ max-width:none; }
+:where(.invoice-sheet.prem) .inv-deco .d-top{ top:0; left:0; }
+:where(.invoice-sheet.prem) .inv-deco .d-bot{ bottom:0; left:0; }
+:where(.invoice-sheet.prem) .inv-hdeco{ display:block; position:absolute; inset:0; overflow:hidden; pointer-events:none; z-index:0; }
+:where(.invoice-sheet.prem) .inv-hdeco > *{ position:absolute; display:block; }
+:where(.invoice-sheet.prem) > *:not(.inv-deco){ position:relative; z-index:1; }
+:where(.invoice-sheet.prem) .x-top > *:not(.inv-hdeco), :where(.invoice-sheet.prem) .x-side > *:not(.inv-hdeco){ position:relative; z-index:1; }
+
+:where(.invoice-sheet.prem) .inv-doctype-heading, :where(.invoice-sheet.prem) .inv-org-name, :where(.invoice-sheet.prem) .inv-closing{ font-family: var(--f-head, inherit); }
+html[lang="ar"] :where(.invoice-sheet.prem) .inv-doctype-heading, html[lang="ar"] :where(.invoice-sheet.prem) .inv-org-name, html[lang="ar"] :where(.invoice-sheet.prem) .inv-closing{ font-family: var(--f-head-ar, var(--f-head, inherit)); }
+
+:where(.invoice-sheet.prem) .x-top{ position:relative; display:flex; justify-content:space-between; align-items:flex-start; gap:24px; margin-bottom: var(--section-gap); }
+:where(.invoice-sheet.prem) .x-brand{ display:flex; align-items:flex-start; gap:16px; min-width:0; flex:1; }
+:where(.invoice-sheet.prem) .x-id{ min-width:0; padding-top:2px; }
+:where(.invoice-sheet.prem) .x-title{ flex:none; display:flex; flex-direction:column; align-items:flex-end; text-align:end; max-width:300px; }
+:where(.invoice-sheet.prem) .inv-doctype-block{ text-align:inherit; margin:0; }
+:where(.invoice-sheet.prem) .inv-doctype-heading{ line-height:1.1; }
+:where(.invoice-sheet.prem) .inv-doctype-ref{ margin-top:6px; }
+:where(.invoice-sheet.prem) .inv-ref-label{ display:inline; margin-inline-end:6px; font-weight:700; }
+:where(.invoice-sheet.prem) .inv-meta-row{ margin:4px 0 0; }
+:where(.invoice-sheet.prem) .inv-org-name{ font-size:21px; font-weight:800; line-height:1.3; margin-bottom:6px; }
+:where(.invoice-sheet.prem) .inv-logo-wrap{ width:92px; height:92px; border-radius:14px; }
+:where(.invoice-sheet.prem) .inv-logo-placeholder{ font-size:10.5px; }
+:where(.invoice-sheet.prem) .inv-issuer-contacts{ margin-top:0; gap:3px; }
+:where(.invoice-sheet.prem) .inv-contact-line{ grid-template-columns:auto 1fr; gap:7px; font-size:11.5px; max-width:330px; }
+
+:where(.invoice-sheet.prem) .x-row{ display:flex; gap:18px; align-items:stretch; margin-bottom: var(--section-gap); }
+:where(.invoice-sheet.prem) .x-to{ flex:1; min-width:0; display:flex; flex-direction:column; justify-content:center; }
+:where(.invoice-sheet.prem) .inv-customer{ margin:0; padding:0; }
+:where(.invoice-sheet.prem) .inv-due{ display:flex; flex-direction:column; justify-content:center; gap:4px; min-width:220px; }
+:where(.invoice-sheet.prem) .inv-due-label{ font-size:10.5px; font-weight:800; text-transform:uppercase; letter-spacing:.08em; }
+:where(.invoice-sheet.prem) .inv-due-value b{ font-size: calc(var(--heading-size) * .72); font-weight:800; line-height:1.1; }
+:where(.invoice-sheet.prem) .inv-due-value small{ font-size:12px; font-weight:700; margin-inline-start:3px; }
+
+:where(.invoice-sheet.prem) .inv-table{ margin-bottom: var(--section-gap); }
+:where(.invoice-sheet.prem) .inv-table thead th{ border-radius:0 !important; }
+:where(.invoice-sheet.prem) .inv-table tbody td:last-child{ font-weight:700; }
+
+:where(.invoice-sheet.prem) .x-sum{ display:flex; gap:30px; align-items:flex-start; margin-bottom: var(--section-gap); }
+:where(.invoice-sheet.prem) .x-sum-l{ flex:1; min-width:0; display:flex; flex-direction:column; gap: calc(var(--section-gap) * .7); }
+:where(.invoice-sheet.prem) .x-sum-l .inv-words, :where(.invoice-sheet.prem) .x-sum-l .inv-notes{ margin:0; }
+:where(.invoice-sheet.prem) .x-sum .inv-totals{ flex:none; width:290px; max-width:none; margin:0; }
+:where(.invoice-sheet.prem) .x-end{ display:flex; justify-content:space-between; align-items:flex-end; gap:24px; margin-top:auto; padding-top:14px; }
+:where(.invoice-sheet.prem) .inv-closing{ display:block; }
+:where(.invoice-sheet.prem) .inv-signature{ align-self:auto; min-width:190px; }
+:where(.invoice-sheet.prem) .inv-foot{ display:block; }
+
+/* the "side" layout */
+:where(.invoice-sheet.prem) .x-side{ position:relative; display:flex; flex-direction:column; }
+:where(.invoice-sheet.prem) .x-main{ display:flex; flex-direction:column; min-width:0; }
+:where(.invoice-sheet.prem) .x-grow{ flex:1; }
+
+
+/* =====================================================================
+   1. ROYAL — navy & gold, classic serif banner
+   ===================================================================== */
+.tpl-royal{ --gold:#C9A44C; --gold-l:#E6CC86; --f-head:'Playfair Display', 'Amiri', serif; --f-head-ar:'El Messiri', 'Amiri', serif; }
+.tpl-royal .x-top{
+  margin: calc(var(--sheet-pad) * -1) calc(var(--sheet-pad) * -1) calc(var(--section-gap) + 10px);
+  padding: 40px var(--sheet-pad) 32px; background: var(--ac); color:#fff; overflow:hidden;
+  border-bottom:4px solid var(--gold);
+}
+.tpl-royal .x-top .d-ring{ top:-10px; inset-inline-end:-60px; }
+html[dir="rtl"] .tpl-royal .x-top .d-ring{ transform: scaleX(-1); }
+.tpl-royal .inv-logo-wrap{ background:#fff; border:0; border-radius:12px; box-shadow: 0 0 0 3px rgba(201,164,76,.55); }
+.tpl-royal .inv-logo-placeholder{ color:#8B95A5; }
+.tpl-royal .inv-org-name{ color:#fff; font-size:23px; font-weight:700; }
+.tpl-royal .inv-contact-line, .tpl-royal .contact-value{ color: rgba(255,255,255,.82); }
+.tpl-royal .contact-label{ color: var(--gold-l); font-weight:600; }
+.tpl-royal .inv-doctype-heading{ color: var(--gold-l); font-size: calc(var(--heading-size) * 1.25); font-style:italic; font-weight:700; }
+html[lang="ar"] .tpl-royal .inv-doctype-heading{ font-style:normal; }
+.tpl-royal .inv-doctype-ref, .tpl-royal .inv-meta-value{ color:#fff; font-size:13px; }
+.tpl-royal .inv-ref-label, .tpl-royal .inv-meta-label{ color: var(--gold-l); }
+.tpl-royal .x-to{ border-inline-start:3px solid var(--gold); padding-inline-start:16px; }
+.tpl-royal .inv-customer-label, .tpl-royal .inv-words-label, .tpl-royal .inv-notes-label, .tpl-royal .inv-signature-label{ color:#9A7A2E; }
+.tpl-royal .inv-customer-value{ font-size:17px; color: var(--ac); }
+.tpl-royal .inv-due{ background:#FAF6EA; border:1px solid #E5D3A3; padding:14px 20px; text-align:end; align-items:flex-end; }
+.tpl-royal .inv-due-label{ color:#9A7A2E; }
+.tpl-royal .inv-due-value{ color: var(--ac); }
+.tpl-royal .inv-table thead th{ background: var(--ac); color: var(--gold-l); border:0; font-size:12px; text-transform:uppercase; letter-spacing:.06em; padding:12px 10px; }
+.tpl-royal .inv-table tbody tr:nth-child(even) td{ background:#FAF8F2; }
+.tpl-royal .inv-table tbody td{ border-bottom:1px solid #EEE7D6; }
+.tpl-royal .inv-table tbody tr:last-child td{ border-bottom:2px solid var(--gold); }
+.tpl-royal .inv-totals-row{ border-bottom:1px solid #EEE7D6; }
+.tpl-royal .inv-totals-ttc{ background: var(--ac); color:#fff; border-radius:0; border:0; padding:12px; }
+.tpl-royal .inv-totals-ttc span:last-child{ color: var(--gold-l); }
+.tpl-royal .inv-closing{ color: var(--ac); font-size:21px; font-style:italic; }
+html[lang="ar"] .tpl-royal .inv-closing{ font-style:normal; }
+.tpl-royal .inv-closing::after{ content:""; display:block; width:70px; height:2px; background: var(--gold); margin-top:8px; }
+.tpl-royal .inv-foot{ margin: 22px calc(var(--sheet-pad) * -1) calc(var(--sheet-pad) * -1); height:16px; background: var(--ac); border-top:3px solid var(--gold); }
+
+
+/* =====================================================================
+   2. PRESTIGE — dark side column, champagne accents (layout "side")
+   ===================================================================== */
+.tpl-prestige{ --ink:#1C1F24; --f-head:'Cormorant Garamond', 'Amiri', serif; --f-head-ar:'El Messiri', 'Amiri', serif; --f-body:'Manrope', 'IBM Plex Sans Arabic', sans-serif; --f-body-ar:'IBM Plex Sans Arabic', 'Manrope', sans-serif;
+  padding:0; flex-direction:row; align-items:stretch; }
+.tpl-prestige .x-side{ width:236px; flex:none; background: var(--ink); color:#E9E4DA; padding:46px 28px 34px; gap:20px; overflow:hidden; }
+.tpl-prestige .x-side .d-lines{ top:0; inset-inline-start:0; }
+.tpl-prestige .inv-logo-wrap{ width:110px; height:110px; background:#fff; border:0; border-radius:12px; }
+.tpl-prestige .inv-org-name{ color:#fff; font-size:25px; font-weight:700; margin:0; }
+html[lang="ar"] .tpl-prestige .inv-org-name{ font-size:21px; }
+.tpl-prestige .inv-issuer-contacts{ gap:9px; }
+.tpl-prestige .inv-contact-line{ display:flex; flex-direction:column; gap:1px; color:#CFC8BA; font-size:11.5px; }
+.tpl-prestige .contact-label{ color: var(--ac); font-size:9.5px; font-weight:800; text-transform:uppercase; letter-spacing:.12em; }
+.tpl-prestige .x-to{ flex:none; border-top:1px solid rgba(176,141,87,.45); padding-top:18px; }
+.tpl-prestige .inv-customer-label, .tpl-prestige .inv-signature-label{ color: var(--ac); font-size:9.5px; letter-spacing:.12em; }
+.tpl-prestige .inv-customer-value{ color:#fff; font-size:14.5px; line-height:1.5; }
+.tpl-prestige .inv-due{ min-width:0; border-top:1px solid rgba(176,141,87,.45); padding-top:18px; }
+.tpl-prestige .inv-due-label{ color: var(--ac); font-size:9.5px; letter-spacing:.12em; }
+.tpl-prestige .inv-due-value{ color: var(--ac); }
+.tpl-prestige .inv-due-value b{ font-size:27px; }
+.tpl-prestige .inv-due-value small{ display:block; margin:2px 0 0; color:#CFC8BA; }
+.tpl-prestige .inv-signature{ min-width:0; background:#fff; border-radius:10px; padding:10px 12px; text-align:center; }
+.tpl-prestige .inv-signature .inv-signature-label{ color:#8A7552; }
+.tpl-prestige .inv-signature-img{ max-width:100%; }
+.tpl-prestige .x-main{ flex:1; padding: 54px 40px 40px; }
+.tpl-prestige .x-title{ align-items:flex-start; text-align:start; max-width:none; margin-bottom: calc(var(--section-gap) + 6px); }
+.tpl-prestige .inv-doctype-heading{ font-size: calc(var(--heading-size) * 1.6); font-weight:600; color: var(--ink); letter-spacing:.02em; }
+.tpl-prestige .inv-doctype-block::after{ content:""; display:block; width:64px; height:3px; background: var(--ac); margin:14px 0 10px; }
+.tpl-prestige .inv-doctype-ref, .tpl-prestige .inv-meta-value{ color: var(--ink); font-size:13px; font-weight:600; }
+.tpl-prestige .inv-ref-label, .tpl-prestige .inv-meta-label{ color: var(--ac); }
+.tpl-prestige .inv-table thead th{ background:none; color:#7A7468; border-bottom:2px solid var(--ink); font-size:10.5px; text-transform:uppercase; letter-spacing:.1em; padding:10px 8px; }
+.tpl-prestige .inv-table tbody td{ border-bottom:1px solid #ECE7DE; padding-left:8px; padding-right:8px; }
+.tpl-prestige .x-sum{ flex-direction:column; align-items:stretch; gap: var(--section-gap); }
+.tpl-prestige .x-sum .inv-totals{ order:-1; align-self:flex-end; width:270px; }
+.tpl-prestige .inv-totals-ttc{ background: var(--ink); color: var(--ac); border-radius:0; }
+.tpl-prestige .inv-words-label, .tpl-prestige .inv-notes-label{ color: var(--ac); letter-spacing:.1em; }
+.tpl-prestige .inv-closing{ margin-top:auto; padding-top:18px; font-size:24px; font-style:italic; color: var(--ac); }
+html[lang="ar"] .tpl-prestige .inv-closing{ font-style:normal; font-size:20px; }
+.tpl-prestige .inv-foot{ display:none; }
+/* many lines: a narrower side column and a tighter main column keep the table on one page longer */
+.tpl-prestige.density-tight .x-side, .tpl-prestige.density-extra-tight .x-side{ width:206px; padding:34px 20px 26px; gap:14px; }
+.tpl-prestige.density-tight .x-main, .tpl-prestige.density-extra-tight .x-main{ padding:36px 30px 28px; }
+.tpl-prestige.density-tight .inv-doctype-block::after, .tpl-prestige.density-extra-tight .inv-doctype-block::after{ margin:8px 0 6px; }
+
+
+/* =====================================================================
+   3. HORIZON — gradient header with a wave, floating cards
+   ===================================================================== */
+.tpl-horizon{ --f-head:'Manrope', 'IBM Plex Sans Arabic', sans-serif; --f-head-ar:'IBM Plex Sans Arabic', sans-serif; --f-body:'Manrope', 'IBM Plex Sans Arabic', sans-serif; --f-body-ar:'IBM Plex Sans Arabic', 'Manrope', sans-serif; }
+.tpl-horizon .x-top{
+  margin: calc(var(--sheet-pad) * -1) calc(var(--sheet-pad) * -1) 0;
+  padding: 42px var(--sheet-pad) 92px; color:#fff; overflow:hidden;
+  background: linear-gradient(125deg, var(--ac-dark) 0%, var(--ac) 100%);
+}
+.tpl-horizon .x-top .d-wave{ left:0; bottom:-1px; width:100%; }
+.tpl-horizon .x-top .d-bubbles{ top:-40px; inset-inline-end:-40px; }
+.tpl-horizon .inv-logo-wrap{ background:#fff; border:0; border-radius:18px; box-shadow: 0 8px 22px rgba(0,0,0,.18); }
+.tpl-horizon .inv-org-name{ color:#fff; font-size:22px; }
+.tpl-horizon .inv-contact-line, .tpl-horizon .contact-label{ color: rgba(255,255,255,.88); }
+.tpl-horizon .contact-label{ font-weight:700; }
+.tpl-horizon .inv-doctype-heading{ color:#fff; font-size: calc(var(--heading-size) * 1.15); font-weight:800; text-transform:uppercase; letter-spacing:.04em; }
+.tpl-horizon .inv-doctype-ref, .tpl-horizon .inv-meta-value, .tpl-horizon .inv-ref-label, .tpl-horizon .inv-meta-label{ color: rgba(255,255,255,.9); }
+.tpl-horizon .x-row{ margin-top:-46px; }
+.tpl-horizon .x-to, .tpl-horizon .inv-due{ background:#fff; border-radius:18px; padding:18px 22px; box-shadow: 0 12px 30px rgba(15,40,60,.13); }
+.tpl-horizon .inv-customer-label, .tpl-horizon .inv-due-label{ color: var(--ac); }
+.tpl-horizon .inv-due{ background: var(--ac-soft); box-shadow: 0 12px 30px rgba(15,40,60,.1); }
+.tpl-horizon .inv-due-value{ color: var(--ac-dark); }
+.tpl-horizon .inv-table thead th{ background: var(--ac); color:#fff; border:0; padding:12px 12px; }
+.tpl-horizon .inv-table thead th:first-child{ border-start-start-radius:12px !important; border-end-start-radius:12px !important; }
+.tpl-horizon .inv-table thead th:last-child{ border-start-end-radius:12px !important; border-end-end-radius:12px !important; }
+.tpl-horizon .inv-table tbody td{ border-bottom:1px solid #E8EEF1; padding-left:12px; padding-right:12px; }
+.tpl-horizon .inv-totals{ background:#F4F8FA; border-radius:16px; padding:10px; }
+.tpl-horizon .inv-totals-ttc{ background: var(--ac); color:#fff; border-radius:12px; }
+.tpl-horizon .inv-words-label, .tpl-horizon .inv-notes-label, .tpl-horizon .inv-signature-label{ color: var(--ac); }
+.tpl-horizon .inv-closing{ color: var(--ac); font-size:19px; font-weight:800; }
+.tpl-horizon .inv-foot{ margin: 22px calc(var(--sheet-pad) * -1) calc(var(--sheet-pad) * -1); height:10px; background: linear-gradient(90deg, var(--ac-dark), var(--ac)); }
+
+
+/* =====================================================================
+   4. LEDGER — Swiss grid, thin rules, oversized light title
+   ===================================================================== */
+.tpl-ledger{ --ink:#111418; --f-head:'Manrope', 'IBM Plex Sans Arabic', sans-serif; --f-head-ar:'IBM Plex Sans Arabic', sans-serif; --f-body:'Manrope', 'IBM Plex Sans Arabic', sans-serif; --f-body-ar:'IBM Plex Sans Arabic', 'Manrope', sans-serif; color: var(--ink); }
+.tpl-ledger .x-top{ border-bottom:2px solid var(--ink); padding-bottom:22px; align-items:flex-end; }
+.tpl-ledger .x-title{ order:-1; align-items:flex-start; text-align:start; max-width:none; }
+.tpl-ledger .x-brand{ flex-direction:row-reverse; justify-content:flex-start; text-align:end; flex:0 1 auto; max-width:380px; }
+.tpl-ledger .x-id{ display:flex; flex-direction:column; align-items:flex-end; }
+.tpl-ledger .inv-contact-line{ text-align:end; display:block; }
+.tpl-ledger .contact-label{ display:none; }
+.tpl-ledger .inv-logo-wrap{ width:64px; height:64px; border-radius:10px; }
+.tpl-ledger .inv-org-name{ font-size:17px; margin-bottom:4px; }
+.tpl-ledger .inv-doctype-heading{ font-size: calc(var(--heading-size) * 1.9); font-weight:300; letter-spacing:-.01em; color: var(--ink); }
+.tpl-ledger .inv-doctype-ref{ color: var(--ac); font-weight:700; font-size:14px; }
+.tpl-ledger .inv-ref-label, .tpl-ledger .inv-meta-label{ color:#6B7280; }
+.tpl-ledger .x-row{ gap:0; border-bottom:1px solid #D1D5DB; padding-bottom: var(--section-gap); }
+.tpl-ledger .inv-due{ border-inline-start:1px solid #D1D5DB; padding-inline-start:26px; align-items:flex-end; text-align:end; }
+.tpl-ledger .inv-customer-label, .tpl-ledger .inv-due-label, .tpl-ledger .inv-words-label, .tpl-ledger .inv-notes-label, .tpl-ledger .inv-signature-label{ color:#6B7280; font-size:10px; letter-spacing:.14em; }
+.tpl-ledger .inv-due-value{ color: var(--ac); }
+.tpl-ledger .inv-due-value b{ font-size: calc(var(--heading-size) * .95); font-weight:300; }
+.tpl-ledger .inv-table thead th{ background:none; border-top:0; border-bottom:1px solid var(--ink); color:#6B7280; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.14em; padding:12px 8px; }
+.tpl-ledger .inv-table tbody td{ border-bottom:1px solid #E5E7EB; padding-left:8px; padding-right:8px; }
+.tpl-ledger .inv-table tbody tr:last-child td{ border-bottom:1px solid var(--ink); }
+.tpl-ledger .inv-num-col{ color: var(--ac) !important; font-weight:700; }
+.tpl-ledger .inv-totals-row{ border-bottom:1px solid #E5E7EB; padding:8px 4px; }
+.tpl-ledger .inv-totals-ttc{ background:none; border-radius:0; border-top:2px solid var(--ink); border-bottom:2px solid var(--ink); padding:12px 4px; font-size:17px; }
+.tpl-ledger .inv-totals-ttc span:last-child{ color: var(--ac); }
+.tpl-ledger .x-end{ border-top:1px solid #D1D5DB; }
+.tpl-ledger .inv-closing{ font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.16em; color: var(--ac); }
+.tpl-ledger .inv-foot{ display:none; }
+
+
+/* =====================================================================
+   5. ARABESQUE — eight-point star friezes, emerald & gold, double frame
+   ===================================================================== */
+.tpl-arabesque{ --gold:#B08D57; --f-head:'Playfair Display', 'Amiri', serif; --f-head-ar:'El Messiri', 'Amiri', serif;
+  padding: calc(var(--sheet-pad) + 34px) calc(var(--sheet-pad) + 4px) calc(var(--sheet-pad) + 30px); }
+.tpl-arabesque .d-frame{ top:46px; bottom:46px; left:20px; right:20px; border:4px double var(--gold); }
+.tpl-arabesque .x-top{ flex-direction:column; align-items:center; text-align:center; gap:14px; }
+.tpl-arabesque .x-brand{ flex-direction:column; align-items:center; gap:10px; flex:none; }
+.tpl-arabesque .x-id{ display:flex; flex-direction:column; align-items:center; }
+.tpl-arabesque .inv-logo-wrap{ width:86px; height:86px; border-radius:50%; border:1.5px solid var(--gold); }
+.tpl-arabesque .inv-logo-wrap.has-logo{ border-color: var(--gold); }
+.tpl-arabesque .inv-org-name{ color: var(--ac); font-size:24px; font-weight:700; }
+.tpl-arabesque .inv-issuer-contacts{ flex-direction:row; flex-wrap:wrap; justify-content:center; gap:2px 18px; }
+.tpl-arabesque .inv-contact-line{ display:inline-flex; gap:5px; max-width:none; }
+.tpl-arabesque .contact-label{ color: var(--gold); }
+.tpl-arabesque .x-title{ align-items:center; text-align:center; max-width:none; }
+.tpl-arabesque .inv-doctype-heading{ color: var(--ac); font-size: calc(var(--heading-size) * 1.05); display:flex; align-items:center; gap:14px; justify-content:center; }
+.tpl-arabesque .inv-doctype-heading::before, .tpl-arabesque .inv-doctype-heading::after{ content:""; width:70px; height:1px; background: var(--gold); }
+.tpl-arabesque .inv-doctype-ref, .tpl-arabesque .inv-meta-value{ color: var(--ac); font-size:13px; }
+.tpl-arabesque .inv-ref-label, .tpl-arabesque .inv-meta-label{ color: var(--gold); }
+.tpl-arabesque .x-to{ border:1px solid #E0D2B6; background:#FDFBF6; padding:14px 18px; }
+.tpl-arabesque .inv-customer-label, .tpl-arabesque .inv-words-label, .tpl-arabesque .inv-notes-label, .tpl-arabesque .inv-signature-label{ color: var(--gold); }
+.tpl-arabesque .inv-customer-value{ color: var(--ac); }
+.tpl-arabesque .inv-due{ background: var(--ac); color:#fff; padding:14px 20px; border:1px solid var(--gold); }
+.tpl-arabesque .inv-due-label{ color:#E7D3A8; }
+.tpl-arabesque .inv-due-value{ color:#F3E3C3; }
+.tpl-arabesque .inv-table thead th{ background: var(--ac); color:#F3E3C3; border:0; border-bottom:2px solid var(--gold); padding:11px 10px; }
+.tpl-arabesque .inv-table tbody tr:nth-child(even) td{ background:#F8F5EC; }
+.tpl-arabesque .inv-table tbody td{ border-bottom:1px solid #EAE1CC; }
+.tpl-arabesque .inv-totals-row{ border-bottom:1px solid #EAE1CC; }
+.tpl-arabesque .inv-totals-ttc{ background: var(--ac); color:#fff; border-radius:0; border:1px solid var(--gold); }
+.tpl-arabesque .inv-totals-ttc span:last-child{ color:#F3E3C3; }
+.tpl-arabesque .inv-closing{ color: var(--ac); font-size:21px; }
+
+
+/* =====================================================================
+   6. EXECUTIVE — split header, coloured title block
+   ===================================================================== */
+.tpl-executive{ --f-head:'Inter', 'Cairo', sans-serif; --f-head-ar:'Cairo', sans-serif; }
+.tpl-executive .x-top{ margin: calc(var(--sheet-pad) * -1) calc(var(--sheet-pad) * -1) calc(var(--section-gap) + 8px); gap:0; align-items:stretch; border-bottom:5px solid var(--ac-dark); }
+.tpl-executive .x-brand{ padding: 40px var(--sheet-pad) 30px; padding-inline-end:24px; align-items:center; }
+.tpl-executive .x-title{ position:relative; width:300px; max-width:none; padding: 40px var(--sheet-pad) 30px 34px; padding-inline-start:34px; padding-inline-end: var(--sheet-pad); background: var(--ac); color:#fff; justify-content:center; overflow:hidden; }
+.tpl-executive .x-top .inv-hdeco{ inset-inline-start:auto; width:300px; }
+.tpl-executive .x-top .d-corner{ top:0; inset-inline-end:0; }
+html[dir="rtl"] .tpl-executive .x-top .d-corner{ transform: scaleX(-1); }
+.tpl-executive .inv-logo-wrap{ width:96px; height:96px; }
+.tpl-executive .inv-org-name{ color: var(--ac); font-size:22px; }
+.tpl-executive .contact-label{ color: var(--ac); }
+.tpl-executive .inv-doctype-heading{ color:#fff; font-size: calc(var(--heading-size) * 1.12); font-weight:800; text-transform:uppercase; letter-spacing:.06em; }
+.tpl-executive .inv-doctype-ref, .tpl-executive .inv-meta-value, .tpl-executive .inv-ref-label, .tpl-executive .inv-meta-label{ color: rgba(255,255,255,.92); }
+.tpl-executive .x-to{ padding-inline-start:16px; border-inline-start:4px solid var(--ac); }
+.tpl-executive .inv-customer-label, .tpl-executive .inv-words-label, .tpl-executive .inv-notes-label, .tpl-executive .inv-signature-label{ color: var(--ac); }
+.tpl-executive .inv-due{ border:2px solid var(--ac); border-radius:8px; padding:12px 20px; align-items:flex-end; text-align:end; }
+.tpl-executive .inv-due-label{ color: var(--ac); }
+.tpl-executive .inv-due-value{ color: var(--ac-dark); }
+.tpl-executive .inv-table thead th{ background: var(--ac); color:#fff; border:0; padding:12px 10px; }
+.tpl-executive .inv-table tbody tr:nth-child(even) td{ background: #F9F4F5; }
+.tpl-executive .inv-totals-ttc{ background: var(--ac); color:#fff; border-radius:6px; }
+.tpl-executive .inv-closing{ color: var(--ac); font-size:18px; font-weight:800; }
+.tpl-executive .inv-foot{ margin: 22px calc(var(--sheet-pad) * -1) calc(var(--sheet-pad) * -1); height:22px; background: linear-gradient(90deg, var(--ac-dark) 0%, var(--ac-dark) 22%, var(--ac) 22%, var(--ac) 100%); }
+html[dir="rtl"] .tpl-executive .inv-foot{ background: linear-gradient(270deg, var(--ac-dark) 0%, var(--ac-dark) 22%, var(--ac) 22%, var(--ac) 100%); }
+
+
+/* =====================================================================
+   7. NOVA — modern startup: soft glow, gradient summary card, pills
+   ===================================================================== */
+.tpl-nova{ --ink:#17142E; --f-head:'Manrope', 'IBM Plex Sans Arabic', sans-serif; --f-head-ar:'IBM Plex Sans Arabic', sans-serif; --f-body:'Manrope', 'IBM Plex Sans Arabic', sans-serif; --f-body-ar:'IBM Plex Sans Arabic', 'Manrope', sans-serif; color: var(--ink); }
+.tpl-nova .d-glow{ top:-150px; inset-inline-end:-130px; }
+.tpl-nova .x-top{ align-items:center; }
+.tpl-nova .x-top .inv-hdeco{ display:none; }
+.tpl-nova .x-brand{ align-items:center; }
+.tpl-nova .inv-logo-wrap{ width:78px; height:78px; border-radius:20px; background:#fff; box-shadow: 0 6px 18px rgba(23,20,46,.1); border-color: transparent; }
+.tpl-nova .inv-org-name{ font-size:20px; color: var(--ink); }
+.tpl-nova .contact-label{ color: var(--ac); }
+.tpl-nova .inv-doctype-heading{ font-size: calc(var(--heading-size) * 1.05); font-weight:800; color: var(--ink); }
+.tpl-nova .inv-doctype-ref{ display:inline-block; background: var(--ac-soft); color: var(--ac); font-weight:800; font-size:12.5px; padding:5px 12px; border-radius:999px; margin-top:8px; }
+.tpl-nova .inv-ref-label{ color: var(--ac); }
+.tpl-nova .inv-meta-label{ color:#7C7A93; }
+.tpl-nova .x-row{ position:relative; overflow:hidden; border-radius:24px; padding:26px 30px; gap:24px; color:#fff;
+  background: linear-gradient(120deg, var(--ac) 0%, var(--ac-dark) 100%); box-shadow: 0 16px 36px rgba(60,40,160,.22); }
+.tpl-nova .x-row::after{ content:""; position:absolute; width:260px; height:260px; border-radius:50%; border:40px solid rgba(255,255,255,.07); top:-120px; inset-inline-end:120px; }
+.tpl-nova .x-row > *{ position:relative; z-index:1; }
+.tpl-nova .inv-customer-label, .tpl-nova .inv-due-label{ color: rgba(255,255,255,.72); }
+.tpl-nova .inv-customer-value{ color:#fff; }
+.tpl-nova .inv-due{ align-items:flex-end; text-align:end; }
+.tpl-nova .inv-due-value b{ font-size: calc(var(--heading-size) * .95); }
+.tpl-nova .inv-due-value small{ color: rgba(255,255,255,.8); }
+.tpl-nova .inv-table{ border-collapse:separate; border-spacing:0; }
+.tpl-nova .inv-table thead th{ background:#F3F2FB; color: var(--ac); border:0; font-size:12px; font-weight:800; padding:12px 12px; }
+.tpl-nova .inv-table thead th:first-child{ border-start-start-radius:14px !important; border-end-start-radius:14px !important; }
+.tpl-nova .inv-table thead th:last-child{ border-start-end-radius:14px !important; border-end-end-radius:14px !important; }
+.tpl-nova .inv-table tbody td{ border-bottom:1px dashed #E4E2F2; padding-left:12px; padding-right:12px; }
+.tpl-nova .inv-totals{ background:#F7F7FC; border-radius:18px; padding:10px; }
+.tpl-nova .inv-totals-ttc{ background: linear-gradient(120deg, var(--ac) 0%, var(--ac-dark) 100%); color:#fff; border-radius:12px; }
+.tpl-nova .inv-words-label, .tpl-nova .inv-notes-label, .tpl-nova .inv-signature-label{ color: var(--ac); }
+.tpl-nova .inv-closing{ color: var(--ac); font-size:19px; font-weight:800; }
+.tpl-nova .inv-foot{ display:none; }
+
+
+/* =====================================================================
+   8. BLUEPRINT — engineering drawing: grid, frame, title-block cartouche
+   ===================================================================== */
+.tpl-blueprint{ --f-head:'IBM Plex Mono', 'IBM Plex Sans Arabic', monospace; --f-head-ar:'IBM Plex Sans Arabic', sans-serif; --f-body:'IBM Plex Sans Arabic', 'Inter', sans-serif; --f-body-ar:'IBM Plex Sans Arabic', sans-serif; --ln:#9FB6D3;
+  padding: calc(var(--sheet-pad) + 6px); }
+.tpl-blueprint .d-frame{ inset:14px; border:1px solid var(--ac); }
+.tpl-blueprint .d-tick{ width:40px; height:40px; }
+.tpl-blueprint .d-tl{ top:0; left:0; } .tpl-blueprint .d-tr{ top:0; right:0; } .tpl-blueprint .d-bl{ bottom:0; left:0; } .tpl-blueprint .d-br{ bottom:0; right:0; }
+.tpl-blueprint .x-top{ border:1.5px solid var(--ac); padding:18px 20px; gap:0; align-items:stretch; background: rgba(255,255,255,.75); }
+.tpl-blueprint .x-brand{ padding-inline-end:20px; }
+.tpl-blueprint .x-title{ border-inline-start:1.5px solid var(--ac); padding-inline-start:20px; justify-content:center; min-width:220px; }
+.tpl-blueprint .inv-logo-wrap{ width:84px; height:84px; border-radius:0; border-style:dashed; border-color: var(--ln); }
+.tpl-blueprint .inv-org-name{ color: var(--ac); font-size:19px; text-transform:uppercase; letter-spacing:.04em; }
+.tpl-blueprint .contact-label{ color: var(--ac); }
+.tpl-blueprint .inv-doctype-heading{ color: var(--ac); font-size: calc(var(--heading-size) * .95); font-weight:600; text-transform:uppercase; letter-spacing:.18em; }
+.tpl-blueprint .inv-doctype-ref{ display:inline-block; border:1.5px solid var(--ac); padding:3px 10px; font-family:'IBM Plex Mono', monospace; font-weight:600; color: var(--ac); font-size:13px; }
+.tpl-blueprint .inv-ref-label{ color: var(--ac); }
+.tpl-blueprint .inv-meta-value{ font-family:'IBM Plex Mono', 'IBM Plex Sans Arabic', monospace; font-size:13px; }
+.tpl-blueprint .inv-meta-label{ color: var(--ac); }
+.tpl-blueprint .x-row{ gap:0; border:1.5px solid var(--ac); }
+.tpl-blueprint .x-to{ padding:14px 18px; }
+.tpl-blueprint .inv-due{ background: var(--ac); color:#fff; padding:14px 20px; }
+.tpl-blueprint .inv-due-label{ color: rgba(255,255,255,.8); }
+.tpl-blueprint .inv-due-value b{ font-family:'IBM Plex Mono', monospace; font-weight:600; }
+.tpl-blueprint .inv-customer-label, .tpl-blueprint .inv-words-label, .tpl-blueprint .inv-notes-label, .tpl-blueprint .inv-signature-label{ color: var(--ac); font-family:'IBM Plex Mono', 'IBM Plex Sans Arabic', monospace; font-size:10px; letter-spacing:.12em; }
+html[lang="ar"] .tpl-blueprint .inv-customer-label, html[lang="ar"] .tpl-blueprint .inv-words-label, html[lang="ar"] .tpl-blueprint .inv-notes-label, html[lang="ar"] .tpl-blueprint .inv-signature-label{ font-family:'IBM Plex Sans Arabic', sans-serif; font-size:11px; }
+.tpl-blueprint .inv-table thead th{ background:#EEF3F9; color: var(--ac); border:1px solid var(--ac); font-family:'IBM Plex Mono', 'IBM Plex Sans Arabic', monospace; font-size:11px; text-transform:uppercase; letter-spacing:.08em; padding:10px; }
+html[lang="ar"] .tpl-blueprint .inv-table thead th{ font-family:'IBM Plex Sans Arabic', sans-serif; font-size:12px; }
+.tpl-blueprint .inv-table tbody td{ border:1px solid var(--ln); }
+.tpl-blueprint .inv-table tbody tr:last-child td{ border-bottom:1px solid var(--ln); }
+.tpl-blueprint .inv-table td:nth-child(n+3){ font-family:'IBM Plex Mono', monospace; }
+.tpl-blueprint .inv-totals{ border:1.5px solid var(--ac); }
+.tpl-blueprint .inv-totals-row{ border-bottom:1px solid var(--ln); font-family:'IBM Plex Mono', 'IBM Plex Sans Arabic', monospace; }
+.tpl-blueprint .inv-totals-ttc{ background: var(--ac); color:#fff; border-radius:0; margin:0; border:0; }
+.tpl-blueprint .x-end{ border:1.5px solid var(--ac); padding:0; gap:0; align-items:stretch; margin-top:auto; }
+.tpl-blueprint .inv-closing{ flex:1; padding:16px 20px; display:flex; align-items:center; color: var(--ac); font-size:15px; font-weight:600; text-transform:uppercase; letter-spacing:.12em; }
+.tpl-blueprint .inv-signature{ border-inline-start:1.5px solid var(--ac); padding:10px 18px; min-width:240px; min-height:96px; }
+.tpl-blueprint .inv-foot{ display:none; }
+
+
+/* =====================================================================
+   9. IVORY — cream paper, centred letterhead, copper ornament
+   ===================================================================== */
+.tpl-ivory{ --paper:#FBF7F0; --f-head:'Cormorant Garamond', 'Amiri', serif; --f-head-ar:'Amiri', serif; background: var(--paper); color:#2E2620;
+  padding: calc(var(--sheet-pad) + 6px) calc(var(--sheet-pad) + 6px); }
+.tpl-ivory .d-frame{ inset:18px; border:1px solid #D8C3AA; }
+.tpl-ivory .d-frame::after{ content:""; position:absolute; inset:5px; border:1px solid #EADCCB; }
+.tpl-ivory .x-top{ flex-direction:column; align-items:center; text-align:center; gap:12px; padding-bottom:40px; }
+.tpl-ivory .x-top .d-orn{ bottom:4px; left:50%; margin-left:-200px; }
+.tpl-ivory .x-brand{ flex-direction:column; align-items:center; gap:10px; flex:none; }
+.tpl-ivory .x-id{ display:flex; flex-direction:column; align-items:center; }
+.tpl-ivory .inv-logo-wrap{ width:84px; height:84px; border-radius:50%; border-color:#D8C3AA; }
+.tpl-ivory .inv-org-name{ font-size:28px; font-weight:600; color:#2E2620; letter-spacing:.02em; }
+html[lang="ar"] .tpl-ivory .inv-org-name{ font-size:24px; font-weight:700; }
+.tpl-ivory .inv-issuer-contacts{ flex-direction:row; flex-wrap:wrap; justify-content:center; gap:2px 16px; }
+.tpl-ivory .inv-contact-line{ display:inline-flex; gap:5px; max-width:none; color:#6E6157; }
+.tpl-ivory .contact-label{ color: var(--ac); font-weight:600; }
+.tpl-ivory .x-title{ align-items:center; text-align:center; max-width:none; }
+.tpl-ivory .inv-doctype-heading{ font-size: calc(var(--heading-size) * 1.3); font-style:italic; font-weight:600; color: var(--ac); }
+html[lang="ar"] .tpl-ivory .inv-doctype-heading{ font-style:normal; font-weight:700; font-size: calc(var(--heading-size) * 1.05); }
+.tpl-ivory .inv-doctype-ref, .tpl-ivory .inv-meta-value{ color:#2E2620; font-size:13px; }
+.tpl-ivory .inv-ref-label, .tpl-ivory .inv-meta-label{ color: var(--ac); }
+.tpl-ivory .x-row{ border-top:1px solid #D8C3AA; border-bottom:1px solid #D8C3AA; padding:16px 0; }
+.tpl-ivory .inv-due{ border-inline-start:1px solid #D8C3AA; padding-inline-start:24px; align-items:flex-end; text-align:end; }
+.tpl-ivory .inv-customer-label, .tpl-ivory .inv-due-label, .tpl-ivory .inv-words-label, .tpl-ivory .inv-notes-label, .tpl-ivory .inv-signature-label{ color: var(--ac); }
+.tpl-ivory .inv-due-value{ color: var(--ac); }
+.tpl-ivory .inv-due-value b{ font-size: calc(var(--heading-size) * .8); font-weight:700; }
+.tpl-ivory .inv-table thead th{ background:none; color: var(--ac); border-top:1px solid var(--ac); border-bottom:1px solid var(--ac); font-family:'Cormorant Garamond', 'Amiri', serif; font-size:14px; font-weight:700; padding:10px; }
+html[lang="ar"] .tpl-ivory .inv-table thead th{ font-family:'Amiri', serif; }
+.tpl-ivory .inv-table tbody td{ border-bottom:1px solid #EADCCB; }
+.tpl-ivory .inv-totals-row{ border-bottom:1px solid #EADCCB; }
+.tpl-ivory .inv-totals-ttc{ background:none; border-radius:0; border-top:3px double var(--ac); border-bottom:3px double var(--ac); color:#2E2620; font-size:17px; }
+.tpl-ivory .inv-totals-ttc span:last-child{ color: var(--ac); }
+.tpl-ivory .x-end{ flex-direction:column; align-items:center; text-align:center; gap:14px; }
+.tpl-ivory .inv-closing{ font-size:24px; font-style:italic; color: var(--ac); }
+html[lang="ar"] .tpl-ivory .inv-closing{ font-style:normal; font-size:21px; }
+.tpl-ivory .inv-signature{ text-align:center; }
+.tpl-ivory .inv-foot{ display:none; }
+
+
+/* =====================================================================
+   10. INDUSTRIAL — graphite header with an angled cut, safety stripes
+   ===================================================================== */
+.tpl-industrial{ --steel:#1F2429; --f-head:'Inter', 'Cairo', sans-serif; --f-head-ar:'Cairo', sans-serif;
+  padding-bottom: calc(var(--sheet-pad) + 16px); }
+.tpl-industrial .x-top{
+  margin: calc(var(--sheet-pad) * -1) calc(var(--sheet-pad) * -1) calc(var(--section-gap) + 6px);
+  padding: 38px var(--sheet-pad) 34px; color:#fff;
+  background: linear-gradient(112deg, #1F2429 0%, #1F2429 62%, var(--ac) 62%, var(--ac) 63.4%, #2C333A 63.4%, #2C333A 100%);
+}
+html[dir="rtl"] .tpl-industrial .x-top{ background: linear-gradient(248deg, #1F2429 0%, #1F2429 62%, var(--ac) 62%, var(--ac) 63.4%, #2C333A 63.4%, #2C333A 100%); }
+.tpl-industrial .inv-logo-wrap{ background:#fff; border:0; border-radius:4px; }
+.tpl-industrial .x-brand{ max-width:440px; }
+.tpl-industrial .inv-org-name{ color:#fff; font-size:20px; font-weight:900; text-transform:uppercase; letter-spacing:.03em; }
+.tpl-industrial .inv-contact-line{ color:#C9CED4; }
+.tpl-industrial .contact-label{ color: var(--ac); }
+.tpl-industrial .inv-doctype-heading{ color: var(--ac); font-size: calc(var(--heading-size) * 1.2); font-weight:900; text-transform:uppercase; letter-spacing:.04em; }
+.tpl-industrial .inv-doctype-ref, .tpl-industrial .inv-meta-value{ color:#fff; font-weight:700; }
+.tpl-industrial .inv-ref-label, .tpl-industrial .inv-meta-label{ color:#AEB5BD; }
+.tpl-industrial .x-to{ background:#F3F4F5; border-inline-start:6px solid var(--ac); padding:14px 18px; }
+.tpl-industrial .inv-customer-label, .tpl-industrial .inv-words-label, .tpl-industrial .inv-notes-label, .tpl-industrial .inv-signature-label{ color:#4B535C; }
+.tpl-industrial .inv-due{ background: var(--steel); color:#fff; padding:14px 20px; }
+.tpl-industrial .inv-due-label{ color:#AEB5BD; }
+.tpl-industrial .inv-due-value{ color: var(--ac); }
+.tpl-industrial .inv-table thead th{ background: var(--steel); color:#fff; border:0; border-bottom:3px solid var(--ac); font-size:12px; text-transform:uppercase; letter-spacing:.06em; padding:12px 10px; }
+.tpl-industrial .inv-table tbody tr:nth-child(even) td{ background:#F5F6F7; }
+.tpl-industrial .inv-totals-ttc{ background: var(--ac); color: var(--steel); border-radius:0; font-weight:900; }
+.tpl-industrial .inv-closing{ color: var(--steel); font-size:17px; font-weight:900; text-transform:uppercase; letter-spacing:.06em; }
+.tpl-industrial .inv-closing::before{ content:""; display:inline-block; width:12px; height:12px; background: var(--ac); margin-inline-end:10px; }
+.tpl-industrial .inv-foot{ display:none; }
+
+/* Arabic is never letter-spaced (joined letters) — repeated here after the template rules */
+html[lang="ar"] .invoice-sheet.prem *{ letter-spacing:0 !important; }
+
+/* ---------- Premium marks in the editor (gallery, strip, shop window) ---------- */
+.g-prem{ position:absolute; top:18px; inset-inline-start:18px; z-index:2; display:inline-flex; align-items:center; gap:5px; padding:4px 10px 4px 8px; border-radius:999px; background: linear-gradient(135deg, #2B2416, #4A3A17); color:#F4D58A; font-size:.7rem; font-weight:800; box-shadow: 0 3px 10px rgba(43,36,22,.35); font-family:'Inter', sans-serif; direction:ltr; }
+.g-prem svg{ width:13px; height:13px; fill:#F4D58A; stroke:none; }
+.g-prem.own{ background:#E7F6EE; color:#1E8C55; box-shadow: 0 3px 10px rgba(30,140,85,.2); }
+.g-prem.own svg{ fill:none; stroke:#1E8C55; stroke-width:2.6; }
+.g-card.prem .g-thumb{ box-shadow: inset 0 0 0 1px rgba(201,164,92,.55); }
+.g-card.prem.on{ border-color:#C9A45C; }
+.chip.prem{ display:inline-flex; align-items:center; gap:6px; border-color:#D9BE7C; color:#8A6A1F; background:#FFF9EA; }
+.chip.prem svg{ width:14px; height:14px; fill:#C9A45C; stroke:none; }
+.chip.prem.on{ background: linear-gradient(135deg, #2B2416, #4A3A17); color:#F4D58A; border-color:#2B2416; }
+.chip.prem.on svg{ fill:#F4D58A; }
+.tpl-chip{ position:relative; }
+.t-prem{ position:absolute; top:3px; inset-inline-end:3px; z-index:2; width:17px; height:17px; border-radius:50%; background:#2B2416; display:grid; place-items:center; box-shadow: 0 1px 4px rgba(0,0,0,.25); }
+.t-prem svg{ width:10px; height:10px; fill:#F4D58A; stroke:none; }
+.t-prem.own{ background:#1E8C55; }
+.t-prem.own svg{ fill:none; stroke:#fff; stroke-width:3; }
+.icon-btn.pdf.prem{ background: linear-gradient(135deg, #2B2416, #4A3A17); border-color:#2B2416; color:#F4D58A; }
+.prem-line{ display:flex; align-items:center; gap:8px; margin-top:10px; padding:9px 12px; border-radius:12px; font-size:.8rem; font-weight:700; line-height:1.5; color:#8A6A1F; background:#FFF9EA; border:1px solid #F0DFB4; }
+.prem-line svg{ width:15px; height:15px; flex:none; fill:#C9A45C; stroke:none; }
+.prem-line.own{ color:#1E8C55; background:#E7F6EE; border-color:#BFE6CF; }
+.prem-line.own svg{ fill:none; stroke:#1E8C55; stroke-width:2.6; }
+.prem-line.hidden{ display:none; }
+
+.shop-box{ position:relative; width:min(640px, 100%); max-height:100%; overflow:auto; background:#fff; border-radius:22px; padding:24px 24px 16px; box-shadow: 0 30px 80px rgba(0,0,0,.35); animation: gIn .25s ease; text-align:start; }
+.shop-box.busy .shop-pay, .shop-box.busy .shop-foot{ opacity:.5; pointer-events:none; }
+.shop-x{ position:absolute; top:12px; inset-inline-end:12px; width:36px; height:36px; border-radius:50%; border:0; background:#F5F8FA; cursor:pointer; display:grid; place-items:center; color: var(--ink-soft); z-index:2; }
+.shop-x svg{ width:16px; height:16px; }
+.shop-main{ display:flex; gap:20px; align-items:flex-start; }
+.shop-thumb{ position:relative; flex:none; width:150px; aspect-ratio:794/1123; overflow:hidden; border-radius:10px; background:#fff; box-shadow: 0 10px 26px rgba(21,36,49,.22), inset 0 0 0 1px rgba(201,164,92,.55); }
+.shop-thumb .mini{ position:absolute; top:0; left:0; transform-origin:0 0; pointer-events:none; }
+.shop-info{ flex:1; min-width:0; padding-inline-end:28px; }
+.shop-tag{ display:inline-flex; align-items:center; gap:5px; padding:4px 10px 4px 8px; border-radius:999px; background: linear-gradient(135deg, #2B2416, #4A3A17); color:#F4D58A; font-size:.72rem; font-weight:800; font-family:'Inter', sans-serif; direction:ltr; }
+.shop-tag svg{ width:13px; height:13px; fill:#F4D58A; stroke:none; }
+.shop-info h3{ margin:10px 0 6px; font-size:1.2rem; line-height:1.4; }
+.shop-sub{ margin:0 0 12px; color: var(--ink-soft); font-size:.88rem; line-height:1.7; }
+.shop-price{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:12px; }
+.shop-price b{ font-family:'Inter',sans-serif; font-size:2rem; font-weight:800; color:#2B2416; line-height:1; }
+.shop-price span{ font-size:.8rem; font-weight:700; color:#8A6A1F; background:#FFF9EA; border:1px solid #D9BE7C; padding:3px 10px; border-radius:999px; }
+.shop-list{ list-style:none; margin:0; padding:0; display:grid; gap:6px; font-size:.86rem; }
+.shop-list li{ display:flex; gap:8px; align-items:flex-start; line-height:1.5; }
+.shop-list svg{ width:16px; height:16px; flex:none; margin-top:2px; fill:none; stroke:#1E8C55; stroke-width:2.6; }
+.shop-pay{ margin-top:18px; min-height:50px; }
+.shop-ppbox{ min-height:50px; display:flex; flex-direction:column; justify-content:center; }
+.shop-spin{ width:26px; height:26px; margin:auto; border-radius:50%; border:3px solid var(--accent-soft); border-top-color: var(--accent); animation: shopSpin .8s linear infinite; }
+@keyframes shopSpin{ to{ transform: rotate(360deg); } }
+.shop-note{ font-size:.84rem; line-height:1.6; color:#8A6A1F; background:#FFF9EA; border:1px solid #F0DFB4; border-radius:12px; padding:9px 12px; margin-bottom:10px; }
+.shop-note.off{ color: var(--ink-soft); background:#F5F8FA; border-color: var(--line); margin-bottom:0; }
+.shop-pp{ width:100%; height:46px; border:0; border-radius:999px; background:#FFC439; color:#003087; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; font-weight:800; font-family:'Inter',sans-serif; }
+.shop-pp:hover{ filter: brightness(.97); }
+.shop-pp span{ font-style:italic; font-size:1.15rem; }
+.shop-pp small{ font-size:.8rem; font-weight:700; color:#2C2E2F; }
+.shop-msg{ margin:10px 0 0; font-size:.86rem; font-weight:700; color:#1E8C55; text-align:center; line-height:1.6; }
+.shop-msg.err{ color: var(--danger); }
+.shop-msg:empty{ display:none; }
+.shop-foot{ display:flex; flex-wrap:wrap; align-items:center; gap:6px 16px; margin-top:14px; padding-top:12px; border-top:1px solid var(--line); font-size:.8rem; color: var(--ink-soft); }
+.shop-foot > span{ display:inline-flex; align-items:center; gap:6px; }
+.shop-foot svg{ width:15px; height:15px; }
+.shop-who b{ color: var(--ink); font-weight:700; }
+.shop-links{ margin-inline-start:auto; gap:14px !important; }
+.link-btn{ border:0; background:none; padding:0; color: var(--accent); font-weight:700; cursor:pointer; font-size:.82rem; font-family:inherit; }
+.link-btn:hover{ text-decoration:underline; }
+.shop-done{ text-align:center; padding:12px 6px 6px; }
+.shop-ok{ width:62px; height:62px; margin:0 auto 12px; border-radius:50%; background:#E7F6EE; display:grid; place-items:center; }
+.shop-ok svg{ width:30px; height:30px; fill:none; stroke:#1E8C55; stroke-width:2.6; }
+.shop-done h3{ margin:0 0 8px; font-size:1.2rem; }
+.shop-done p{ margin:0 0 12px; color: var(--ink-soft); font-size:.92rem; line-height:1.7; }
+.shop-order b{ font-family:'Inter',sans-serif; color: var(--ink); }
+.shop-cta{ min-width:220px; }
+@media (max-width: 560px){
+  .shop-main{ flex-direction:column; align-items:center; text-align:center; }
+  .shop-info{ padding-inline-end:0; }
+  .shop-price, .shop-list li{ justify-content:center; }
+  .shop-links{ margin-inline-start:0; }
+}

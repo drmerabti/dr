@@ -315,32 +315,31 @@ function deco(W, h) {
         dia(W - 23, 23, 5, `url(#${g})`) + dia(23, H - 23, 5, `url(#${g})`) + fan(cx, H - 23, 26, Math.min(150, W * .4), 5, false, .35);
     },
 
-    /* ===== 2. Clinic: teal gradient wave, crosses and heartbeat line ===== */
+    /* ===== 2. Clinic: teal gradient wave, hearts and heartbeat line (no cross / plus shapes) ===== */
     clinic(kind, P) {
       const g = nid('clg');
       const defs = `<defs>${lin(g, [[0, shade(P.c1, .16)], [1, shade(P.c1, -.3)]], 1, 1)}</defs>`;
-      const cross = (x, y, s, fill, op) => { const a = s / 3, b = s / 2, c = s / 6;
-        return `<path d="M${n1(x - c)} ${n1(y - b)}h${n1(a)}v${n1(a)}h${n1(a)}v${n1(a)}h${n1(-a)}v${n1(a)}h${n1(-a)}v${n1(-a)}h${n1(-a)}v${n1(-a)}h${n1(a)}z" fill="${fill}" opacity="${op}"/>`; };
+      const heart = (x, y, s, fill, op) => `<path transform="translate(${n1(x)} ${n1(y + s * .18)}) scale(${(s / 68).toFixed(3)})" d="M0 18C-16 4 -34 -4 -34 -22C-34 -34 -24 -42 -14 -42C-7 -42 -2 -38 0 -32C2 -38 7 -42 14 -42C24 -42 34 -34 34 -22C34 -4 16 4 0 18Z" fill="${fill}" opacity="${op}"/>`;
       const ecg = (y, col, w, op) => `<path d="${sp(`M0 ${y}H118L130 ${y - 24}L144 ${y + 32}L158 ${y - 46}L172 ${y + 18}L182 ${y}H374`)}" fill="none" stroke="${col}" stroke-width="${w}" stroke-linejoin="round" stroke-linecap="round" opacity="${op}"/>`;
       const dots = (x0, y0, nx, ny, col, op) => { let s = ''; for (let i = 0; i < nx; i++) for (let j = 0; j < ny; j++) s += `<circle cx="${x0 + i * 16}" cy="${y0 + j * 16}" r="1.8" fill="${col}" opacity="${op}"/>`; return s; };
       if (kind === 'cover') return defs + full(P.bg) +
         `<path d="${sp('M0 0H374V436C312 476 250 418 178 446C110 472 52 476 0 452Z')}" fill="url(#${g})"/>` +
         `<path d="${sp('M0 452C52 476 110 472 178 446C250 418 312 476 374 436V454C312 494 250 436 178 464C110 490 52 494 0 470Z')}" fill="${P.c2}" opacity=".6"/>` +
         dots(W - 130, 36, 7, 6, '#fff', .28) + `<circle cx="${n1(W - 40)}" cy="60" r="140" fill="none" stroke="#fff" stroke-width="24" opacity=".07"/>` +
-        cross(W * .78, 300, 70, '#fff', .13) + ecg(372, '#fff', 3, .8) +
+        heart(W * .78, 300, 70, '#fff', .13) + ecg(372, '#fff', 3, .8) +
         `<circle cx="${W + 30}" cy="${H + 20}" r="170" fill="${P.c2}" opacity=".3"/><circle cx="${n1(W - 52)}" cy="${H - 64}" r="10" fill="${P.c3}"/>` +
-        cross(40, H - 46, 20, P.c1, .25);
+        heart(40, H - 46, 20, P.c1, .25);
       if (kind === 'flap') return defs + full(`url(#${g})`) + dots(28, 34, 6, 5, '#fff', .25) +
         `<circle cx="${n1(W - 20)}" cy="${H - 120}" r="150" fill="none" stroke="#fff" stroke-width="22" opacity=".07"/>` +
-        cross(cx, 150, 64, '#fff', .16) + ecg(H - 90, '#fff', 2.5, .55);
+        heart(cx, 150, 64, '#fff', .16) + ecg(H - 90, '#fff', 2.5, .55);
       if (kind === 'back') return defs + full(P.bg) +
-        `<circle cx="${n1(W - 10)}" cy="-10" r="120" fill="${P.c2}" opacity=".28"/>` + cross(W - 56, 46, 22, P.c1, .45) +
+        `<circle cx="${n1(W - 10)}" cy="-10" r="120" fill="${P.c2}" opacity=".28"/>` + heart(W - 56, 46, 22, P.c1, .45) +
         `<path d="${sp('M0 794V600C70 570 150 620 230 590C300 565 340 580 374 570V794Z')}" fill="url(#${g})"/>` +
         `<path d="${sp('M0 600C70 570 150 620 230 590C300 565 340 580 374 570V584C340 594 300 579 230 604C150 634 70 584 0 614Z')}" fill="${P.c2}" opacity=".6"/>` +
         ecg(H - 34, '#fff', 2, .35);
       return defs + full(P.bg) +
         `<circle cx="${n1(W - 10)}" cy="-10" r="124" fill="${P.c2}" opacity=".28"/><circle cx="${n1(W - 64)}" cy="44" r="48" fill="${P.c1}" opacity=".08"/>` +
-        cross(W - 56, 46, 22, P.c1, .45) + dots(30, H - 120, 5, 4, P.c1, .18) +
+        heart(W - 56, 46, 22, P.c1, .45) + dots(30, H - 120, 5, 4, P.c1, .18) +
         `<g transform="translate(${n1(W - 96)} ${H - 230}) scale(1.5)" fill="none" stroke="${P.c1}" stroke-width="2.4" opacity=".1"><path d="M0 18C-16 4 -34 -4 -34 -22C-34 -34 -24 -42 -14 -42C-7 -42 -2 -38 0 -32C2 -38 7 -42 14 -42C24 -42 34 -34 34 -22C34 -4 16 4 0 18Z"/><path d="M-30 -14H-12L-6 -26L2 -2L8 -14H30"/></g>` +
         `<path d="${sp('M0 794V736C60 716 120 756 190 740C260 724 320 756 374 742V794Z')}" fill="${P.c2}" opacity=".3"/>` + ecg(H - 34, P.c1, 2, .35);
     },
@@ -579,7 +578,7 @@ function deco(W, h) {
       return defs + full(P.bg) + stamp(W - 64, 74) +
         `<path d="M-10 ${H - 34}C${X(80)} ${H - 120} ${X(150)} ${H - 24} ${X(226)} ${H - 84}" fill="none" stroke="${P.c2}" stroke-width="1.8" stroke-dasharray="5 7" opacity=".7"/>` +
         plane(X(240), H - 92, 150, .7, P.c2) +
-        `<g transform="translate(${n1(W - 70)} ${H - 230})" fill="none" stroke="${P.c1}" stroke-width="1.6" opacity=".16"><circle r="72"/><ellipse rx="30" ry="72"/><ellipse rx="58" ry="72"/><path d="M-72 0H72M-64 -34H64M-64 34H64M0 -72V72"/></g>` +
+        `<g transform="translate(${n1(W - 70)} ${H - 230})" fill="none" stroke="${P.c1}" stroke-width="1.6" opacity=".16"><circle r="72"/><ellipse rx="30" ry="72"/><ellipse rx="58" ry="72"/><path d="M-72 0H72M-64 -34H64M-64 34H64"/></g>` +
         `<path d="${sp('M0 794V770C100 752 220 784 374 760V794Z')}" fill="${shade(P.c2, .6)}"/>`;
     },
 
